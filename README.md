@@ -1,2 +1,2 @@
 # agave
-A fast and full featured Javascript engine
+A fast and full featured web browser
