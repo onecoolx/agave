@@ -1,0 +1,66 @@
+cmake_minimum_required(VERSION 3.16)
+
+project(Agave LANGUAGES C CXX ASM HOMEPAGE_URL https://github.com/onecoolx/agave)
+
+set(BUILD_SHARED_LIBS ON) # build shared library, OFF for static
+
+set(PROJ_ROOT ${CMAKE_CURRENT_LIST_DIR})
+set(PROJ_OUT ${CMAKE_CURRENT_BINARY_DIR})
+
+set(VERSION_MAJOR 1)
+set(VERSION_MINOR 0)
+set(VERSION_MICRO 0)
+set(VERSION_INFO ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO})
+
+if(POLICY CMP0135)
+  cmake_policy(SET CMP0135 NEW)
+endif()
+
+if(POLICY CMP0114)
+  cmake_policy(SET CMP0114 NEW)
+endif()
+
+if (NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build Type" FORCE)
+endif()
+
+include (${CMAKE_CURRENT_LIST_DIR}/build/configs.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/build/defines.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/3rdparty/3rdparty.cmake)
+
+option(OPT_UNITTEST "Build Unit tests" OFF)
+if (OPT_UNITTEST)
+enable_testing()
+#include (${CMAKE_CURRENT_LIST_DIR}/unittest/unittest.cmake)
+endif(OPT_UNITTEST)
+
+include(CheckIncludeFile)
+check_include_file(stdint.h HAVE_STDINT_H)
+
+OPTION_MACRO_DEFINE(OPT_SYSTEM_MALLOC USE_SYSTEM_MALLOC "Build System Memory Allocator (new/delete/malloc/free/realloc/calloc) used support." ON)
+OPTION_MACRO_DEFINE(OPT_PNG_SUPPORT PNG_SUPPORT "Build support PNG image format." ON)
+OPTION_MACRO_DEFINE(OPT_JPEG_SUPPORT JPEG_SUPPORT "Build support JPEG image format." ON)
+OPTION_MACRO_DEFINE(OPT_GIF_SUPPORT GIF_SUPPORT "Build support GIF image format." ON)
+OPTION_MACRO_DEFINE(OPT_FILESYSTEM ENABLE_FILESYSTEM "Build support file system." ON)
+OPTION_MACRO_DEFINE(OPT_FTPDIR ENABLE_FTPDIR "Build support list ftp dir." ON)
+OPTION_MACRO_DEFINE(OPT_COOKIES ENABLE_COOKIES "Build cookie support." ON)
+OPTION_MACRO_DEFINE(OPT_FILECOOKIE ENABLE_FILECOOKIE "Build file support with cookies." ON)
+OPTION_MACRO_DEFINE(OPT_HTTPCACHE ENABLE_HTTPCACHE "Build http disk cache support." ON)
+OPTION_MACRO_DEFINE(OPT_SSL ENABLE_SSL "Build with SSL support." ON)
+OPTION_MACRO_DEFINE(OPT_AJAX ENABLE_AJAX "Build support ajax." ON)
+OPTION_MACRO_DEFINE(OPT_SSLFILE ENABLE_SSLFILE "Build with file support with SSL." ON)
+OPTION_MACRO_DEFINE(OPT_XML ENABLE_XML "Build XML support." ON)
+OPTION_MACRO_DEFINE(OPT_XSLT ENABLE_XSLT "Build XSLT support." ON)
+OPTION_MACRO_DEFINE(OPT_XPATH ENABLE_XPATH "Build XPATH support." ON)
+OPTION_MACRO_DEFINE(OPT_FOCUSRING FOCUSRING_DRAWING "Build support focus ring of owner drawing style." OFF)
+OPTION_MACRO_DEFINE(OPT_BIG5_SUPPORT ENABLE_BIG5_SUPPORT "Build support charset BIG5." ON)
+OPTION_MACRO_DEFINE(OPT_GBK_SUPPORT ENABLE_GBK_SUPPORT "Build support charset GBK." ON)
+OPTION_MACRO_DEFINE(OPT_GB2312_SUPPORT ENABLE_GB2312_SUPPORT "Build support charset GB2312." ON)
+OPTION_MACRO_DEFINE(OPT_EUCJP_SUPPORT ENABLE_EUCJP_SUPPORT "Build support charset EUCJP." ON)
+OPTION_MACRO_DEFINE(OPT_EUCKR_SUPPORT ENABLE_EUCKR_SUPPORT "Build support charset EUCKR." ON)
+OPTION_MACRO_DEFINE(OPT_SHIFTJIS_SUPPORT ENABLE_SHIFTJIS_SUPPORT "Build support charset SHIFTJIS." ON)
+
+configure_file(
+    "${PROJ_ROOT}/build/mconfig.h.in"
+    "${PROJ_OUT}/mconfig.h"
+)

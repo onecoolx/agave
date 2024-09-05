@@ -1,2 +1,2 @@
 # agave
-A fast and full featured web browser
+A fast, lightweight and full featured web browser
