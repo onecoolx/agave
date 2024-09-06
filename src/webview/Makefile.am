@@ -1,4 +1,5 @@
-INCLUDES = -I../../include/ \
+
+AM_CPPFLAGS=-I../../include/ \
 		   -I../ \
 		   -I../wtf \
 		   -I../webcore/ \

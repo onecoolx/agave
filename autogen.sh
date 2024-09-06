@@ -6,4 +6,17 @@ autoconf
 autoheader
 automake --add-missing 
 
-./configure --disable-png  --disable-xml --disable-xslt
+
+CFLAGS="-Os -g" \
+CXXFLAGS="-O1 -g" \
+./configure \
+    --disable-png \
+    --disable-ajax \
+    --disable-xml \
+    --disable-xslt \
+    --disable-plugin \
+    --disable-xpath \
+    --disable-ftpdir \
+    --disable-schemeextension \
+    --disable-jsnativebinding \
+    --disable-nativeerror

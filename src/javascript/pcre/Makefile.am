@@ -1,7 +1,7 @@
 # Process this file with automake to produce Makefile.in
 NULL=
 
-INCLUDES = -I./ -I../kjs/ -I../../ -I../../wtf -I../../../
+AM_CPPFLAGS = -I./ -I../kjs/ -I../../ -I../../wtf -I../../../
 
 noinst_LTLIBRARIES = libjscore_pcre.la
 

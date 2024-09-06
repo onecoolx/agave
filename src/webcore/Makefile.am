@@ -2,7 +2,7 @@ NULL=
 
 PLATFORM_DIR=./platform/picasso
 
-INCLUDES =  -I. \
+AM_CPPFLAGS=-I. \
 			-I../ \
 			-I../../include \
 			-I../wtf \

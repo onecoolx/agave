@@ -1,0 +1,33 @@
+CC=gcc -g -static
+CXX=g++ -g -static 
+
+INC=${INCPATH} -I./ -I../ -I../include
+CFLAGS= `pkg-config --cflags gtk+-2.0` -Wno-deprecated-declarations
+CXXFLAGS= ${CFLAGS}
+
+SYSTEM_LIBS = `pkg-config --libs gtk+-2.0` ${FREETYPE_LIBS} -lpicasso2_sw -lpthread -lstdc++ -lm
+
+objs = main.o callback.o interface.o functions.o popmenu.o
+
+all: agave_browser
+
+agave_browser : ${objs}
+	libtool --mode=link ${CC} ${objs} ../src/libagave.la -o $@ ${INC} ${SYSTEM_LIBS}
+
+interface.o : interface.cpp
+	${CC} ${CFLAGS} -c $< -o $@ ${INC}
+
+callback.o : callback.cpp
+	${CC} ${CFLAGS} -c $< -o $@ ${INC}
+
+functions.o : gtk2/functions.cpp
+	${CXX} ${CXXFLAGS} -c $< -o $@ ${INC}
+
+popmenu.o : gtk2/popmenu.cpp
+	${CXX} ${CXXFLAGS} -c $< -o $@ ${INC}
+
+main.o : gtk2/main.cpp
+	${CXX} ${CXXFLAGS} -c $< -o $@ ${INC}
+
+clean:
+	rm *.o *.out agave_browser

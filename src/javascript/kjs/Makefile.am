@@ -1,6 +1,6 @@
 # Process this file with automake to produce Makefile.in
 
-INCLUDES = -I./ \
+AM_CPPFLAGS=-I./ \
 		   -I../ \
 		   -I../pcre \
 		   -I../bindings \
@@ -59,7 +59,6 @@ libjscore_kjs_cpp_sources=\
 	../../wtf/Assertions.cpp \
 	../../wtf/FastMalloc.cpp \
 	../../wtf/HashTable.cpp \
-	../../wtf/TCSystemAlloc.cpp\
 	$(NULL)
 
 libjscore_kjs_h_private_sources=\
@@ -133,9 +132,6 @@ libjscore_kjs_h_private_sources=\
 	../../wtf/ListRefPtr.h \
 	../../wtf/MathExtras.h \
 	../../wtf/StringExtras.h \
-	../../wtf/TCPageMap.h \
-	../../wtf/TCSpinLock.h \
-	../../wtf/TCSystemAlloc.h \
 	../../wtf/unicode/Unicode.h \
 	$(NULL)
 

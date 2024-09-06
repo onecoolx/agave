@@ -1,19 +1,10 @@
-/* main.cpp - MaCross application 
+/* main.cpp - Agave application 
  * 
- * Copyright (C) 2009 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
-#include <QApplication>
-#include <QMainWindow>
-#include <QImage>
-#include <QTimer>
-#include <QPainter>
-#include <QSize>
-#include <QDebug>
-#include <QResizeEvent>
 
-#include "macross.h"
-#include "interface.h"
+#include "main_win.h"
 
 static int g_width;
 static int g_height;
@@ -22,6 +13,7 @@ static const char *home_url;
 extern void init_callback(void);
 int get_virtual_key(int pk);
 
+#if 0
 class MsgTimer : public QTimer
 {
 protected:
@@ -48,80 +40,32 @@ private:
 	void(*m_func)(void*);
 	void* m_data;
 };
+#endif
 
-class MainWindow : public QMainWindow 
+void MainWindow::destroy(GtkWidget *widget, gpointer data)
 {
-public:
-	MainWindow(QWidget* parent = 0)
-		: QMainWindow(parent, 0)
-		, view(0)
-	{
-		setMouseTracking(true);
-    	image = QImage(g_width, g_height, QImage::Format_RGB32);
-		image.fill(0xFFFFFFFF);
-		view = on_init(image.bits(), g_width, g_height, g_width*4, this);		
-	}
-
-	virtual ~MainWindow()
-	{
-		on_term(view);
-		macross_shutdown();
-	}
-
-	void loadUrl(const char* url)
-	{
-		load_url(view, home_url);
-	}
-
-	MaCrossView * getView(void) 
-	{
-		return view;
-	}
-
-protected:
-    void paintEvent(QPaintEvent *event);
-    void resizeEvent(QResizeEvent * event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void wheelEvent(QWheelEvent* event);
-    void keyPressEvent(QKeyEvent * event);
-    void keyReleaseEvent(QKeyEvent * event);
-    void focusInEvent(QFocusEvent * event);
-    void focusOutEvent(QFocusEvent * event);
-    void contextMenuEvent(QContextMenuEvent * event);
-	void closeEvent(QCloseEvent * event);
-private:
-	MaCrossView* view;
-    QImage image;
-};
-
-inline void MainWindow::closeEvent(QCloseEvent *event)
-{
-	on_term(view);
-	view = 0;
+    MainWindow * mainWindow = (MainWindow*)data;
+    delete mainWindow;
+    macross_shutdown();
 }
 
-inline void MainWindow::paintEvent(QPaintEvent *event)
+gboolean MainWindow::expose(GtkWidget *widget, GdkEventExpose *event, gpointer data)
 {
-    QPainter painter(this);
-	QRect rect = event->rect();
-	on_draw(view, rect.x(), rect.y(), rect.width(), rect.height());
-	painter.drawImage(rect, image, rect);
+    MainWindow * mainWindow = (MainWindow*)data;
+	GdkRectangle * r = &event->area;
+    mainWindow->onDraw(r->x, r->y, r->width, r->height);
+    return FALSE;
 }
 
-inline void MainWindow::resizeEvent(QResizeEvent * event)
+void MainWindow::sizeChange(GtkWidget* widget, GtkAllocation* allocation, gpointer data)
 {
-	QWidget::resizeEvent(event);
-	g_width = event->size().width();
-	g_height = event->size().height();
-	if (g_width < 1) g_width = 1;
-	if (g_height < 1) g_height = 1;
-    image = QImage(g_width, g_height, QImage::Format_RGB32);
-	image.fill(0xFFFFFFFF);
-	on_size(view, image.bits(), g_width, g_height, g_width*4);
+    MainWindow * mainWindow = (MainWindow*)data;
+	int width = allocation->width;
+	int height = allocation->height;
+    mainWindow->onSize(width, height);
 }
 
+#if 0
 inline void MainWindow::contextMenuEvent(QContextMenuEvent *event)
 {
 	unsigned int key = 0;
@@ -231,12 +175,13 @@ inline void MainWindow::focusOutEvent(QFocusEvent * event)
 {
 	on_lose_focus(view);
 }
+#endif
 
 MainWindow* window = 0;
 
-QMainWindow* getMainWindow()
+GtkWidget* getMainWindow()
 {
-	return window;
+	return window->getWindow();
 }
 
 extern "C" MaCrossView* getMainView(void)
@@ -246,9 +191,8 @@ extern "C" MaCrossView* getMainView(void)
 
 MaCrossView* OpenWindow(const char* url, int w, int h)
 {
-   	MainWindow* win = new MainWindow;
-    win->setWindowTitle("MaCross Browser");
-	win->resize(w, h);
+   	MainWindow* win = new MainWindow(w, h);
+    win->setWindowTitle("Agave Browser");
 	win->loadUrl(url);
 	win->show();
 
@@ -260,22 +204,28 @@ int main(int argc, char* argv[])
     if (argv[1])
         home_url = argv[1];
 
-	g_width = 640;
-	g_height = 480;
-	macross_initialize(PIXEL_FORMAT_BGRA32, 1024, 768);
+	g_width = 1024;
+	g_height = 768;
+	macross_initialize(PIXEL_FORMAT_BGR24, g_width, g_height);
 	init_callback();
 
-	QApplication app(argc, argv);
+    gtk_init(&argc, &argv);
+
+#if 0
 	MsgTimer * timer = new MsgTimer;
 	timer->start(10);
-   	window = new MainWindow;
-    window->setWindowTitle("MaCross Browser");
-	window->resize(g_width, g_height);
+#endif
+
+   	window = new MainWindow(g_width, g_height);
+    window->setWindowTitle("Agave Browser");
 	window->loadUrl(home_url);
 	window->show();
-	return app.exec();
+
+    gtk_main();
+	return 0;
 }
 
+#if 0
 typedef struct {
 	int vk;
 	int pk;
@@ -400,3 +350,4 @@ extern "C" void kill_timer(unsigned int id)
 	UserTimer* timer = reinterpret_cast<UserTimer*>(id);
 	delete timer;
 }
+#endif

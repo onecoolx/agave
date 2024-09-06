@@ -2,7 +2,6 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(Agave, 1.0, onecoolx@gmail.com)
 
 VERSION_MAJOR=1
 VERSION_MINOR=0
@@ -13,8 +12,12 @@ AC_SUBST(VERSION_MINOR)
 AC_SUBST(VERSION_MICRO)
 AC_SUBST(VERSION)
 
-AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, $VERSION, [subdir-objects])
+AC_INIT(Agave, 1.0, onecoolx@gmail.com)
+AM_INIT_AUTOMAKE([subdir-objects] [-Wno-portability])
+
+AC_CONFIG_MACRO_DIRS([m4])
 AC_CONFIG_HEADER(mconfig.h)
+AC_DEFINE(VERSION, "1.0.0")
 
 # Checks for programs.
 AC_PROG_YACC
@@ -49,7 +52,6 @@ AC_PREFIX_DEFAULT(/usr/local)
 build_cookies="yes"
 build_focusring_drawing="no"
 build_cookies_files="yes"
-build_system_malloc="no"
 build_xml="yes"
 build_xslt="yes"
 build_xpath="yes"
@@ -91,10 +93,6 @@ build_plugin=$enableval)
 AC_ARG_ENABLE(focusring_drawing,
 [  --enable-focusring_drawing      support focus ring of the owner drawing style <default=no>],
 build_focusring_drawing=$enableval)
-
-AC_ARG_ENABLE(system_malloc,
-[  --enable-system_malloc      build std libc malloc functions instead of FastMalloc <default=no>],
-build_system_malloc=$enableval)
 
 AC_ARG_ENABLE(xml,
 [  --enable-xml      build XML support <default=yes>],
@@ -202,10 +200,6 @@ fi
 
 if test "x$build_focusring_drawing" = "xyes"; then
     AC_DEFINE(FOCUSRING_DRAWING, 1, [Define if focus ring of the owner drawing style is supported.])
-fi
-
-if test "x$build_system_malloc" = "xyes"; then
-    AC_DEFINE(USE_SYSTEM_MALLOC, 1, [Define if use std libc malloc functions.])
 fi
 
 if test "x$build_ssl" = "xyes"; then

@@ -24,7 +24,7 @@
 #define WTF_FastMalloc_h
 
 #include "Platform.h"
-#include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
 
 namespace WTF {
@@ -33,11 +33,6 @@ namespace WTF {
     void *fastCalloc(size_t n_elements, size_t element_size);
     void fastFree(void* p);
     void *fastRealloc(void* p, size_t n);
-
-#ifndef NDEBUG    
-    void fastMallocForbid();
-    void fastMallocAllow();
-#endif
 } // namespace WTF
 
 using WTF::fastMalloc;
@@ -46,22 +41,10 @@ using WTF::fastCalloc;
 using WTF::fastRealloc;
 using WTF::fastFree;
 
-#ifndef NDEBUG    
-using WTF::fastMallocForbid;
-using WTF::fastMallocAllow;
-#endif
-
 #if COMPILER(GCC)
 #define WTF_PRIVATE_INLINE inline __attribute__((always_inline))
 #else
 #define WTF_PRIVATE_INLINE inline
-#endif
-
-#if !defined(USE_SYSTEM_MALLOC) || !(USE_SYSTEM_MALLOC)
-WTF_PRIVATE_INLINE void* operator new(size_t s) { return fastMalloc(s); }
-WTF_PRIVATE_INLINE void operator delete(void* p) { fastFree(p); }
-WTF_PRIVATE_INLINE void* operator new[](size_t s) { return fastMalloc(s); }
-WTF_PRIVATE_INLINE void operator delete[](void* p) { fastFree(p); }
 #endif
 
 #endif /* WTF_FastMalloc_h */

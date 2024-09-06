@@ -37,7 +37,6 @@ endif(OPT_UNITTEST)
 include(CheckIncludeFile)
 check_include_file(stdint.h HAVE_STDINT_H)
 
-OPTION_MACRO_DEFINE(OPT_SYSTEM_MALLOC USE_SYSTEM_MALLOC "Build System Memory Allocator (new/delete/malloc/free/realloc/calloc) used support." ON)
 OPTION_MACRO_DEFINE(OPT_PNG_SUPPORT PNG_SUPPORT "Build support PNG image format." ON)
 OPTION_MACRO_DEFINE(OPT_JPEG_SUPPORT JPEG_SUPPORT "Build support JPEG image format." ON)
 OPTION_MACRO_DEFINE(OPT_GIF_SUPPORT GIF_SUPPORT "Build support GIF image format." ON)
