@@ -10,7 +10,7 @@
 #define FontPlatformData_H
 
 #include "StringImpl.h"
-#include "picasso.h"
+#include "picasso/picasso.h"
 
 namespace WebCore {
 

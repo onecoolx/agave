@@ -1,6 +1,7 @@
 /* ANSI-C code produced by gperf version 3.0.3 */
 /* Command-line: gperf -a -L ANSI-C -C -G -c -o -t -N findEntity -D -s 2 /home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf  */
 /* Computed positions: -k'1-3,5,$' */
+#include <string.h>
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
       && ('%' == 37) && ('&' == 38) && ('\'' == 39) && ('(' == 40) \

@@ -32,7 +32,7 @@
 #include "GraphicsContext.h"
 #include "ImageSource.h"
 
-#include <picasso.h>
+#include <picasso/picasso.h>
 
 namespace WebCore {
 

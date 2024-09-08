@@ -9,6 +9,7 @@ rm -rf \
         config.guess \
         config.sub \
         configure \
+        configure~ \
         depcomp \
         include/Makefile.in \
         install-sh \

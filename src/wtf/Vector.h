@@ -36,7 +36,7 @@ namespace WTF {
 	using std::max;
 
     template <bool needsDestruction, typename T>
-    class VectorDestructor;
+    struct VectorDestructor;
 
     template<typename T>
     struct VectorDestructor<false, T>
@@ -55,7 +55,7 @@ namespace WTF {
     };
 
     template <bool needsInitialization, bool canInitializeWithMemset, typename T>
-    class VectorInitializer;
+    struct VectorInitializer;
 
     template<bool ignore, typename T>
     struct VectorInitializer<false, ignore, T>
@@ -83,7 +83,7 @@ namespace WTF {
     };
 
     template <bool canMoveWithMemcpy, typename T>
-    class VectorMover;
+    struct VectorMover;
 
     template<typename T>
     struct VectorMover<false, T>
@@ -127,7 +127,7 @@ namespace WTF {
     };
 
     template <bool canCopyWithMemcpy, typename T>
-    class VectorCopier;
+    struct VectorCopier;
 
     template<typename T>
     struct VectorCopier<false, T>
@@ -152,7 +152,7 @@ namespace WTF {
     };
 
     template <bool canFillWithMemset, typename T>
-    class VectorFiller;
+    struct VectorFiller;
 
     template<typename T>
     struct VectorFiller<false, T>
@@ -177,7 +177,7 @@ namespace WTF {
     };
     
     template<bool canCompareWithMemcmp, typename T>
-    class VectorComparer;
+    struct VectorComparer;
     
     template<typename T>
     struct VectorComparer<false, T>

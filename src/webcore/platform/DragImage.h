@@ -26,11 +26,10 @@
 #ifndef DragImage_h
 #define DragImage_h
 
-#include <picasso.h>
-
 #include "IntSize.h"
 #include "FloatSize.h"
 
+#include <picasso/picasso.h>
 
 //We need to #define YOffset as it needs to be shared with WebKit
 #define DragLabelBorderYOffset 2

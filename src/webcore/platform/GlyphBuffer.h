@@ -30,9 +30,9 @@
 #define GlyphBuffer_h
 
 #include "FloatSize.h"
-#include "picasso.h"
 #include <wtf/Vector.h>
 #include "GlyphWidthMap.h"
+#include <picasso/picasso.h>
 
 namespace WebCore {
 

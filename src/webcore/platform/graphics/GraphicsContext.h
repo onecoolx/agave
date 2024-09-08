@@ -34,7 +34,7 @@
 #include "Path.h"
 #include "TextDirection.h"
 
-#include <picasso.h>
+#include <picasso/picasso.h>
 
 typedef ps_context* PlatformGraphicsContext;
 

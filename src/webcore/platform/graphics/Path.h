@@ -27,7 +27,7 @@
 #ifndef Path_h
 #define Path_h
 
-#include <picasso.h>
+#include <picasso/picasso.h>
 
 namespace WebCore {
 

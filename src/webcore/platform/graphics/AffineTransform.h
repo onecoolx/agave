@@ -26,7 +26,7 @@
 #ifndef AffineTransform_h
 #define AffineTransform_h
 
-#include <picasso.h>
+#include <picasso/picasso.h>
 
 namespace WebCore {
 

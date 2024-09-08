@@ -29,7 +29,7 @@
 #include <wtf/Noncopyable.h>
 #include <wtf/Vector.h>
 
-#include <picasso.h>
+#include <picasso/picasso.h>
 
 namespace WebCore {
 

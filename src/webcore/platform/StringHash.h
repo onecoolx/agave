@@ -79,7 +79,7 @@ namespace WTF {
 
     template<typename T> struct CaseInsensitiveHash;
 
-    template<> class CaseInsensitiveHash<WebCore::StringImpl*> {
+    template<> struct CaseInsensitiveHash<WebCore::StringImpl*> {
     private:
         // Golden ratio - arbitrary start value to avoid mapping all 0's to all 0's
         static const unsigned PHI = 0x9e3779b9U;

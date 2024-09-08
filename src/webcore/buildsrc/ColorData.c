@@ -1,6 +1,7 @@
 /* ANSI-C code produced by gperf version 3.0.3 */
 /* Command-line: gperf -CDEot -L ANSI-C -N findColor -D -s 2 /home/zhangjipeng/macross-browser/source/webcore/platform/ColorData.gperf  */
 /* Computed positions: -k'3-4,6-8,12-13' */
+#include <string.h>
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
       && ('%' == 37) && ('&' == 38) && ('\'' == 39) && ('(' == 40) \
