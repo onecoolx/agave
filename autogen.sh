@@ -14,7 +14,7 @@ CXXFLAGS="$FLAGS"  \
     --disable-plugin \
     --disable-schemeextension \
     --disable-jsnativebinding \
-    --disable-nativeerror
-    --disable-xml2 \
+    --disable-nativeerror \
+    --disable-xml \
     --disable-xslt \
     --disable-xpath
