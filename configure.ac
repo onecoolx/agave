@@ -3,6 +3,7 @@
 
 AC_PREREQ(2.59)
 
+AC_INIT(Agave, 1.0, onecoolx@gmail.com)
 VERSION_MAJOR=1
 VERSION_MINOR=0
 VERSION_MICRO=0
@@ -12,7 +13,6 @@ AC_SUBST(VERSION_MINOR)
 AC_SUBST(VERSION_MICRO)
 AC_SUBST(VERSION)
 
-AC_INIT(Agave, 1.0, onecoolx@gmail.com)
 AM_INIT_AUTOMAKE([subdir-objects] [-Wno-portability])
 
 AC_CONFIG_MACRO_DIRS([m4])
@@ -210,7 +210,7 @@ if test "x$build_ssl" = "xyes"; then
 fi
 
 if test "x$build_png" = "xyes"; then
-    AC_CHECK_LIB(png, png_check_sig, LIBS="$LIBS -lpng -lz", AC_MSG_ERROR([Couldn't find libpng ** you should install this package first! **]))
+    AC_CHECK_LIB(png, png_sig_cmp, LIBS="$LIBS -lpng -lz", AC_MSG_ERROR([Couldn't find libpng ** you should install this package first! **]))
     AC_CHECK_HEADER(png.h, ,AC_MSG_ERROR([][** Couldn't find libpng headers in your include path **]))
     AC_DEFINE(PNG_SUPPORT, 1, [Define if PNG image is supported.])
 fi
@@ -350,8 +350,8 @@ LIBS="$LIBS `xslt-config --libs`"
 fi
 fi
 
-CFLAGS="$CFLAGS -Wall -pipe -fPIC" 
-CXXFLAGS="$CXXFLAGS -Wall -Wno-strict-aliasing -pipe -fPIC -std=c++98 -fno-permissive"
+CFLAGS="$CFLAGS -Wall -fno-strict-aliasing -pipe -fPIC" 
+CXXFLAGS="$CXXFLAGS -Wall -fno-strict-aliasing -pipe -fPIC -std=c++98"
 LIBS="$LIBS -lpicasso2_sw -lpthread"
 
 AC_CONFIG_FILES(

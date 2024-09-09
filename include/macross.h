@@ -123,9 +123,17 @@ typedef enum _mc_format {
 	 */
 	PIXEL_FORMAT_BGRA32,	
 	/** 
+	 * 32bit per pixel RGBA format. (8888)
+	 */
+	PIXEL_FORMAT_RGBA32,	
+	/** 
 	 * 24bit per pixel BGR format.  (888) 
 	 */
 	PIXEL_FORMAT_BGR24,				
+	/** 
+	 * 24bit per pixel RGB format.  (888) 
+	 */
+	PIXEL_FORMAT_RGB24,				
 	/** 
 	 * 16bit per pixel RGB format.  (565) 
 	 */

@@ -5,7 +5,6 @@
 **
 */
 #include "config.h"
-#include "picasso.h"
 #include "Image.h"
 #include "BitmapImage.h"
 #include "ImageObserver.h"
@@ -13,6 +12,8 @@
 #include "GraphicsContext.h"
 #include "AffineTransform.h"
 #include "wtf/MathExtras.h"
+
+#include <picasso/picasso.h>
 #include "Debug.h"
 
 PassRefPtr<WebCore::SharedBuffer> loadResourceIntoBuffer(const char*);

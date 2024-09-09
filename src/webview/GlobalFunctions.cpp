@@ -49,7 +49,7 @@
 #include "WebCallback.h"
 
 #include "macross.h"
-#include <picasso.h>
+#include <picasso/picasso.h>
 
 using namespace WebCore;
 using namespace MaCross;
@@ -102,8 +102,14 @@ void setPixelFormat(_mc_format format)
 		case PIXEL_FORMAT_BGRA32:
 			g_pixel_format = COLOR_FORMAT_BGRA;
 			break;
+		case PIXEL_FORMAT_RGBA32:
+			g_pixel_format = COLOR_FORMAT_RGBA;
+			break;
 		case PIXEL_FORMAT_BGR24:
 			g_pixel_format = COLOR_FORMAT_BGR;
+			break;
+		case PIXEL_FORMAT_RGB24:
+			g_pixel_format = COLOR_FORMAT_RGB;
 			break;
 		case PIXEL_FORMAT_RGB16:
 			g_pixel_format = COLOR_FORMAT_RGB565;

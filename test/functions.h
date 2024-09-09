@@ -21,9 +21,9 @@ void change_cursor(int c);
 
 MaCrossView* window_open(const char* url, int x, int y, int w, int h);
 
-unsigned int set_timer(unsigned int mscend, void(*func)(void*), void* data);
+void* set_timer(unsigned int mscend, void(*func)(void*), void* data);
 
-void kill_timer(unsigned int id);
+void kill_timer(void* id);
 
 #ifdef __cplusplus
 }

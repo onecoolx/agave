@@ -8,12 +8,13 @@
 
 #include "config.h"
 #include "Font.h"
-#include "picasso.h"
 #include "FontCache.h"
 #include "FloatRect.h"
 #include "FontData.h"
 #include "FontDescription.h"
 #include <wtf/MathExtras.h>
+
+#include <picasso/picasso.h>
 
 namespace WebCore
 {

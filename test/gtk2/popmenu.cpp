@@ -181,6 +181,7 @@ static void Capture(MC_POPUP_MENU* m)
 
 extern MC_POPUP_MENU* create_popmenu(const MC_RECT* r)
 {
+    printf("context menu!\n");
 #if 0
 	MC_POPUP_MENU * p = (MC_POPUP_MENU*)malloc(sizeof(MC_POPUP_MENU));
 	memset(p, 0, sizeof(MC_POPUP_MENU));

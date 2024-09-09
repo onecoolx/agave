@@ -15,7 +15,7 @@
 #include "GraphicsContext.h"
 #include "Debug.h"
 
-#include <picasso.h>
+#include <picasso/picasso.h>
 
 // Generic state constants
 #define TS_NORMAL    0x00

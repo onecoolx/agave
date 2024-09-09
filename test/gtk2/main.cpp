@@ -11,19 +11,43 @@ static int g_height;
 static const char *home_url;
 
 extern void init_callback(void);
-int get_virtual_key(int pk);
+static int get_virtual_key(int pk);
 
-#if 0
-class MsgTimer : public QTimer
+class GtkTimer
 {
+public:
+    GtkTimer() : tid(0) {}
+    virtual ~GtkTimer() { g_source_remove(tid); }
+
+    void start(int ms)
+    {
+        tid = g_timeout_add(ms, GtkTimer::GtkTimerCb, this);
+    }
+
+    static gboolean GtkTimerCb(gpointer data)
+    {
+        GtkTimer* t = (GtkTimer*)data;
+        t->timerEvent();
+        return TRUE;
+    }
 protected:
-void timerEvent(QTimerEvent * timer)
-{
-	macross_event_dispatch();
-}
+    virtual void timerEvent(void) = 0;
+private:
+    gint tid;
 };
 
-class UserTimer : public QTimer
+class MsgTimer : public GtkTimer
+{
+public:
+    virtual ~MsgTimer() {}
+protected:
+    virtual void timerEvent(void)
+    {
+	    macross_event_dispatch();
+    }
+};
+
+class UserTimer : public GtkTimer
 {
 public:
 	UserTimer(void(*func)(void*), void* data)
@@ -31,16 +55,16 @@ public:
 		, m_data(data)
 	{
 	}
+    virtual ~UserTimer() {}
 protected:
-void timerEvent(QTimerEvent * timer)
-{
-	m_func(m_data);
-}
+    virtual void timerEvent(void)
+    {
+	    m_func(m_data);
+    }
 private:
 	void(*m_func)(void*);
 	void* m_data;
 };
-#endif
 
 void MainWindow::destroy(GtkWidget *widget, gpointer data)
 {
@@ -65,117 +89,108 @@ void MainWindow::sizeChange(GtkWidget* widget, GtkAllocation* allocation, gpoint
     mainWindow->onSize(width, height);
 }
 
-#if 0
-inline void MainWindow::contextMenuEvent(QContextMenuEvent *event)
+gboolean MainWindow::keyPress(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
+    MainWindow * mainWindow = (MainWindow*)data;
 	unsigned int key = 0;
-	on_context_menu(view, event->x(), event->y(), key);
-}
-
-inline void MainWindow::mousePressEvent(QMouseEvent *event)
-{
-	MC_MOUSE_BUTTON btn = MOUSE_BTN_NONE;
-	unsigned int key = 0;
-	if (event->buttons() & Qt::LeftButton) {
-		btn = MOUSE_BTN_LEFT;
-	if (event->buttons() & Qt::SHIFT)
+	if (event->state & GDK_SHIFT_MASK)
 		key |= MF_SHIFT;
-	if (event->buttons() & Qt::CTRL)
+	if (event->state & GDK_CONTROL_MASK)
 		key |= MF_CTRL;
 
-	on_mouse(view, EVT_MOUSE_DOWN, btn, event->x(), event->y(), key);
-	}
+	on_key(mainWindow->getView(), EVT_KEY_DOWN, (MC_VIRTUAL_KEY)get_virtual_key(event->keyval), key);
+    return FALSE;
 }
 
-inline void MainWindow::mouseReleaseEvent(QMouseEvent *event)
+gboolean MainWindow::keyRelease(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
+    MainWindow * mainWindow = (MainWindow*)data;
+	unsigned int key = 0;
+	if (event->state & GDK_SHIFT_MASK)
+		key |= MF_SHIFT;
+	if (event->state & GDK_CONTROL_MASK)
+		key |= MF_CTRL;
+
+	MC_VIRTUAL_KEY code = (MC_VIRTUAL_KEY)get_virtual_key(event->keyval);
+	on_key(mainWindow->getView(), EVT_KEY_UP, code, key);
+	if (!key && (code >= 0x30 && code <= 0x5A) && event->length && event->string)
+		on_chars(mainWindow->getView(), event->string);
+    return FALSE;
+}
+
+gboolean MainWindow::mouseButtonPress(GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+    MainWindow * mainWindow = (MainWindow*)data;
 	MC_MOUSE_BUTTON btn = MOUSE_BTN_NONE;
 	unsigned int key = 0;
-	if (event->buttons() & Qt::LeftButton)
+	if (event->button == 1) {
 		btn = MOUSE_BTN_LEFT;
-	if (event->buttons() & Qt::MidButton)
+	    if (event->state & 1)
+		    key |= MF_SHIFT;
+	    if (event->state & 4)
+		    key |= MF_CTRL;
+
+	    on_mouse(mainWindow->getView(), EVT_MOUSE_DOWN, btn, event->x, event->y, key);
+	} else if(event->button == 3) {
+	    on_context_menu(mainWindow->getView(), event->x, event->y, key);
+    }
+    return FALSE;
+}
+
+gboolean MainWindow::mouseButtonRelease(GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+    MainWindow * mainWindow = (MainWindow*)data;
+	MC_MOUSE_BUTTON btn = MOUSE_BTN_NONE;
+	unsigned int key = 0;
+	if (event->button == 1)
+		btn = MOUSE_BTN_LEFT;
+	if (event->button == 2)
 		btn = MOUSE_BTN_MIDDLE;
-	if (event->buttons() & Qt::RightButton)
+	if (event->button == 3)
 		btn = MOUSE_BTN_RIGHT;
-	if (event->buttons() & Qt::SHIFT)
+	if (event->state & 1)
 		key |= MF_SHIFT;
-	if (event->buttons() & Qt::CTRL)
+	if (event->state & 4)
 		key |= MF_CTRL;
 
-	on_mouse(view, EVT_MOUSE_UP, btn, event->x(), event->y(), key);
+	on_mouse(mainWindow->getView(), EVT_MOUSE_UP, btn, event->x, event->y, key);
+    return FALSE;
 }
 
-inline void MainWindow::mouseMoveEvent(QMouseEvent *event)
+gboolean MainWindow::mouseMotionNotify(GtkWidget *widget, GdkEventMotion *event, gpointer data)
 {
+    MainWindow * mainWindow = (MainWindow*)data;
 	unsigned int key = 0;
 	MC_MOUSE_BUTTON btn = MOUSE_BTN_NONE;
-	if (event->buttons() & Qt::SHIFT)
+	if (event->state & 1)
 		key |= MF_SHIFT;
-	if (event->buttons() & Qt::CTRL)
+	if (event->state & 4)
 		key |= MF_CTRL;
 
-	if (event->buttons() & Qt::LeftButton)
+	if (event->state & 256)
 		btn = MOUSE_BTN_LEFT;
-	if (event->buttons() & Qt::MidButton)
+	if (event->state & 512)
 		btn = MOUSE_BTN_MIDDLE;
-	if (event->buttons() & Qt::RightButton)
+	if (event->state & 1024)
 		btn = MOUSE_BTN_RIGHT;
 
-	on_mouse(view, EVT_MOUSE_MOVE, btn, event->x(), event->y(), key);
+	on_mouse(mainWindow->getView(), EVT_MOUSE_MOVE, btn, event->x, event->y, key);
+    return FALSE;
 }
 
-inline void MainWindow::wheelEvent(QWheelEvent* event)
+gboolean MainWindow::focusInEvent(GtkWidget *widget, GdkEventFocus *event, gpointer data)
 {
-	unsigned int key = 0;
-	MC_MOUSE_BUTTON btn = MOUSE_BTN_NONE;
-	if (event->buttons() & Qt::SHIFT)
-		key |= MF_SHIFT;
-	if (event->buttons() & Qt::CTRL)
-		key |= MF_CTRL;
-
-	if (event->delta() > 0)
-		btn = MOUSE_WHEEL_DOWN;
-	else
-		btn = MOUSE_WHEEL_UP;
-
-	on_mouse(view, EVT_MOUSE_WHEEL, btn, event->x(), event->y(), key);
+    MainWindow * mainWindow = (MainWindow*)data;
+	on_focus(mainWindow->getView());
+    return FALSE;
 }
 
-inline void MainWindow::keyPressEvent(QKeyEvent * event)
+gboolean MainWindow::focusOutEvent(GtkWidget *widget, GdkEventFocus *event, gpointer data)
 {
-	unsigned int key = 0;
-	if (event->modifiers() & Qt::ShiftModifier)
-		key |= MF_SHIFT;
-	if (event->modifiers() & Qt::ControlModifier)
-		key |= MF_CTRL;
-
-	on_key(view, EVT_KEY_DOWN, (MC_VIRTUAL_KEY)get_virtual_key(event->key()), key);
+    MainWindow * mainWindow = (MainWindow*)data;
+	on_lose_focus(mainWindow->getView());
+    return FALSE;
 }
-
-inline void MainWindow::keyReleaseEvent(QKeyEvent * event)
-{
-	unsigned int key = 0;
-	if (event->modifiers() & Qt::ShiftModifier)
-		key |= MF_SHIFT;
-	if (event->modifiers() & Qt::ControlModifier)
-		key |= MF_CTRL;
-
-	MC_VIRTUAL_KEY code = (MC_VIRTUAL_KEY)get_virtual_key(event->key());
-	on_key(view, EVT_KEY_UP, code, key);
-	if (!key && (code >= 0x30 && code <= 0x5A) && !event->text().isEmpty())
-		on_chars(view, event->text().toUtf8().data());
-}
-
-inline void MainWindow::focusInEvent(QFocusEvent * event)
-{
-	on_focus(view);
-}
-
-inline void MainWindow::focusOutEvent(QFocusEvent * event)
-{
-	on_lose_focus(view);
-}
-#endif
 
 MainWindow* window = 0;
 
@@ -206,15 +221,13 @@ int main(int argc, char* argv[])
 
 	g_width = 1024;
 	g_height = 768;
-	macross_initialize(PIXEL_FORMAT_BGR24, g_width, g_height);
+	macross_initialize(PIXEL_FORMAT_RGB24, g_width, g_height);
 	init_callback();
 
     gtk_init(&argc, &argv);
 
-#if 0
 	MsgTimer * timer = new MsgTimer;
 	timer->start(10);
-#endif
 
    	window = new MainWindow(g_width, g_height);
     window->setWindowTitle("Agave Browser");
@@ -225,107 +238,106 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-#if 0
 typedef struct {
-	int vk;
-	int pk;
+    int vk;
+    int pk;
 }KeyEntities;
 
 static KeyEntities key_map[] = {
-	{KEY_BACK, Qt::Key_Backspace},
-	{KEY_TAB, Qt::Key_Tab},
-	{KEY_CLEAR, Qt::Key_Clear},
-	{KEY_ENTER, Qt::Key_Return},
-	{KEY_SHIFT, Qt::Key_Shift},
-	{KEY_CTRL, Qt::Key_Control},
-	{KEY_ALT, Qt::Key_Menu},
-	{KEY_PAUSE, Qt::Key_Pause},
-	{KEY_CAPSLOCK, Qt::Key_CapsLock},
-	{KEY_ESCAPE, Qt::Key_Escape},
-	{KEY_SPACE, Qt::Key_Space},
-	{KEY_PAGEUP, Qt::Key_PageUp},
-	{KEY_PAGEDOWN, Qt::Key_PageDown},
-	{KEY_END, Qt::Key_End},
-	{KEY_HOME, Qt::Key_Home},
-	{KEY_LEFT, Qt::Key_Left},
-	{KEY_UP, Qt::Key_Up},
-	{KEY_RIGHT, Qt::Key_Right},
-	{KEY_DOWN, Qt::Key_Down},
-	{KEY_SELECT, Qt::Key_Select},
-	{KEY_PRINT, Qt::Key_Print},
-	{KEY_EXEC, Qt::Key_Execute},
-	{KEY_INSERT, Qt::Key_Insert},
-	{KEY_DELETE, Qt::Key_Delete},
-	{KEY_HELP, Qt::Key_Help},
-	{KEY_0, Qt::Key_0},
-	{KEY_1, Qt::Key_1},
-	{KEY_2, Qt::Key_2},
-	{KEY_3, Qt::Key_3},
-	{KEY_4, Qt::Key_4},
-	{KEY_5, Qt::Key_5},
-	{KEY_6, Qt::Key_6},
-	{KEY_7, Qt::Key_7},
-	{KEY_8, Qt::Key_8},
-	{KEY_9, Qt::Key_9},
-	{KEY_A, Qt::Key_A},
-	{KEY_B, Qt::Key_B},
-	{KEY_C, Qt::Key_C},
-	{KEY_D, Qt::Key_D},
-	{KEY_E, Qt::Key_E},
-	{KEY_F, Qt::Key_F},
-	{KEY_G, Qt::Key_G},
-	{KEY_H, Qt::Key_H},
-	{KEY_I, Qt::Key_I},
-	{KEY_J, Qt::Key_J},
-	{KEY_K, Qt::Key_K},
-	{KEY_L, Qt::Key_L},
-	{KEY_M, Qt::Key_M},
-	{KEY_N, Qt::Key_N},
-	{KEY_O, Qt::Key_O},
-	{KEY_P, Qt::Key_P},
-	{KEY_Q, Qt::Key_Q},
-	{KEY_R, Qt::Key_R},
-	{KEY_S, Qt::Key_S},
-	{KEY_T, Qt::Key_T},
-	{KEY_U, Qt::Key_U},
-	{KEY_V, Qt::Key_V},
-	{KEY_W, Qt::Key_W},
-	{KEY_X, Qt::Key_X},
-	{KEY_Y, Qt::Key_Y},
-	{KEY_Z, Qt::Key_Z},
-	{KEY_LWIN, Qt::Key_Meta},
-	{KEY_RWIN, Qt::Key_Meta},
-	{KEY_EQUAL, Qt::Key_Equal},
-	{KEY_MINUS, Qt::Key_Minus},
-	{KEY_DECIMAL, Qt::Key_Greater},
-	{KEY_SLASH, Qt::Key_Question},
-	{KEY_F1, Qt::Key_F1},
-	{KEY_F2, Qt::Key_F2},
-	{KEY_F3, Qt::Key_F3},
-	{KEY_F4, Qt::Key_F4},
-	{KEY_F5, Qt::Key_F5},
-	{KEY_F6, Qt::Key_F6},
-	{KEY_F7, Qt::Key_F7},
-	{KEY_F8, Qt::Key_F8},
-	{KEY_F9, Qt::Key_F9},
-	{KEY_F10, Qt::Key_F10},
-	{KEY_F11, Qt::Key_F11},
-	{KEY_F12, Qt::Key_F12},
-	{KEY_F13, Qt::Key_F13},
-	{KEY_F14, Qt::Key_F14},
-	{KEY_F15, Qt::Key_F15},
-	{KEY_F16, Qt::Key_F16},
-	{KEY_F17, Qt::Key_F17},
-	{KEY_F18, Qt::Key_F18},
-	{KEY_F19, Qt::Key_F19},
-	{KEY_F20, Qt::Key_F20},
-	{KEY_F21, Qt::Key_F21},
-	{KEY_F22, Qt::Key_F22},
-	{KEY_F23, Qt::Key_F23},
-	{KEY_F24, Qt::Key_F24},
+    {KEY_BACK, GDK_BackSpace},
+    {KEY_TAB, GDK_Tab},
+    {KEY_CLEAR, GDK_Clear},
+    {KEY_ENTER, GDK_Return},
+    {KEY_SHIFT, GDK_Shift_L},
+    {KEY_CTRL, GDK_Control_L},
+    {KEY_ALT, GDK_Menu},
+    {KEY_PAUSE, GDK_Pause},
+    {KEY_CAPSLOCK, GDK_Caps_Lock},
+    {KEY_ESCAPE, GDK_Escape},
+    {KEY_SPACE, GDK_space},
+    {KEY_PAGEUP, GDK_Prior},
+    {KEY_PAGEDOWN, GDK_Next},
+    {KEY_END, GDK_End},
+    {KEY_HOME, GDK_Home},
+    {KEY_LEFT, GDK_Left},
+    {KEY_UP, GDK_Up},
+    {KEY_RIGHT, GDK_Right},
+    {KEY_DOWN, GDK_Down},
+    {KEY_SELECT, GDK_Select},
+    {KEY_PRINT, GDK_Print},
+    {KEY_EXEC, GDK_Execute},
+    {KEY_INSERT, GDK_Insert},
+    {KEY_DELETE, GDK_Delete},
+    {KEY_HELP, GDK_Help},
+    {KEY_0, GDK_0},
+    {KEY_1, GDK_1},
+    {KEY_2, GDK_2},
+    {KEY_3, GDK_3},
+    {KEY_4, GDK_4},
+    {KEY_5, GDK_5},
+    {KEY_6, GDK_6},
+    {KEY_7, GDK_7},
+    {KEY_8, GDK_8},
+    {KEY_9, GDK_9},
+    {KEY_A, GDK_a},
+    {KEY_B, GDK_b},
+    {KEY_C, GDK_c},
+    {KEY_D, GDK_d},
+    {KEY_E, GDK_e},
+    {KEY_F, GDK_f},
+    {KEY_G, GDK_g},
+    {KEY_H, GDK_h},
+    {KEY_I, GDK_i},
+    {KEY_J, GDK_j},
+    {KEY_K, GDK_k},
+    {KEY_L, GDK_l},
+    {KEY_M, GDK_m},
+    {KEY_N, GDK_n},
+    {KEY_O, GDK_o},
+    {KEY_P, GDK_p},
+    {KEY_Q, GDK_q},
+    {KEY_R, GDK_r},
+    {KEY_S, GDK_s},
+    {KEY_T, GDK_t},
+    {KEY_U, GDK_u},
+    {KEY_V, GDK_v},
+    {KEY_W, GDK_w},
+    {KEY_X, GDK_x},
+    {KEY_Y, GDK_y},
+    {KEY_Z, GDK_z},
+    {KEY_LWIN, GDK_Meta_L},
+    {KEY_RWIN, GDK_Meta_R},
+    {KEY_EQUAL, GDK_equal},
+    {KEY_MINUS, GDK_minus},
+    {KEY_DECIMAL, GDK_decimalpoint},
+    {KEY_DIVIDE, GDK_division},
+    {KEY_F1, GDK_F1},
+    {KEY_F2, GDK_F2},
+    {KEY_F3, GDK_F3},
+    {KEY_F4, GDK_F4},
+    {KEY_F5, GDK_F5},
+    {KEY_F6, GDK_F6},
+    {KEY_F7, GDK_F7},
+    {KEY_F8, GDK_F8},
+    {KEY_F9, GDK_F9},
+    {KEY_F10, GDK_F10},
+    {KEY_F11, GDK_F11},
+    {KEY_F12, GDK_F12},
+    {KEY_F13, GDK_F13},
+    {KEY_F14, GDK_F14},
+    {KEY_F15, GDK_F15},
+    {KEY_F16, GDK_F16},
+    {KEY_F17, GDK_F17},
+    {KEY_F18, GDK_F18},
+    {KEY_F19, GDK_F19},
+    {KEY_F20, GDK_F20},
+    {KEY_F21, GDK_F21},
+    {KEY_F22, GDK_F22},
+    {KEY_F23, GDK_F23},
+    {KEY_F24, GDK_F24},
 };
 
-int get_virtual_key(int pk)
+static int get_virtual_key(int pk)
 {
 	int i;
 	for(i = 0; i < (sizeof(key_map)/sizeof(KeyEntities)); i++)
@@ -338,16 +350,15 @@ void platform_exception(void(*dump)(int))
 {
 }
 
-extern "C" unsigned int set_timer(unsigned int mscend, void(*func)(void*), void* data)
+extern "C" void* set_timer(unsigned int mscend, void(*func)(void*), void* data)
 {
 	UserTimer* timer = new UserTimer(func, data);
 	timer->start(mscend);
-	return reinterpret_cast<unsigned int>(timer);
+	return reinterpret_cast<void*>(timer);
 }
 
-extern "C" void kill_timer(unsigned int id)
+extern "C" void kill_timer(void* id)
 {
 	UserTimer* timer = reinterpret_cast<UserTimer*>(id);
 	delete timer;
 }
-#endif

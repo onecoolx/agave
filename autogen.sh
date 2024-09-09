@@ -6,11 +6,11 @@ autoconf
 autoheader
 automake --add-missing 
 
+FLAGS="-Os -g"
 
-CFLAGS="-Os -g" \
-CXXFLAGS="-O1 -g" \
+CFLAGS="$FLAGS" \
+CXXFLAGS="$FLAGS"  \
 ./configure \
-    --disable-png \
     --disable-ajax \
     --disable-xml \
     --disable-xslt \

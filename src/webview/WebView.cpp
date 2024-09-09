@@ -5,9 +5,9 @@
 **
 */
 #include "config.h"
-#include <picasso.h>
 
 #include <wtf/StringExtras.h>
+#include <picasso/picasso.h>
 
 #include "Page.h"
 #include "Frame.h"

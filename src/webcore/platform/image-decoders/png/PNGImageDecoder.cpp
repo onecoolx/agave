@@ -42,6 +42,11 @@
 #include "png.h"
 #include "assert.h"
 
+#if defined(PNG_LIBPNG_VER_MAJOR) && defined(PNG_LIBPNG_VER_MINOR) && (PNG_LIBPNG_VER_MAJOR > 1 || (PNG_LIBPNG_VER_MAJOR == 1 && PNG_LIBPNG_VER_MINOR >= 4))
+#define JMPBUF(png_ptr) png_jmpbuf(png_ptr)
+#else
+#define JMPBUF(png_ptr) png_ptr->jmpbuf
+#endif
 
 namespace WebCore {
 
@@ -58,7 +63,7 @@ const double cDefaultGamma = 2.2;
 const double cInverseGamma = 0.45455;
 
 // Protect against large PNGs. See Mozilla's bug #251381 for more info.
-const long cMaxPNGSize = 1000000L;
+const unsigned long cMaxPNGSize = 1000000L;
 
 // Called if the decoding of the image fails.
 static void PNGAPI decodingFailed(png_structp png_ptr, png_const_charp error_msg);
@@ -105,7 +110,7 @@ public:
         m_decodingSizeOnly = sizeOnly;
 
         // We need to do the setjmp here. Otherwise bad things will happen
-        if (setjmp(m_png->jmpbuf)) {
+        if (setjmp(JMPBUF(m_png))) {
             close();
             return;
         }
@@ -214,7 +219,7 @@ void PNGImageDecoder::decode(bool sizeOnly)
 void decodingFailed(png_structp png, png_const_charp errorMsg)
 {
     static_cast<PNGImageDecoder*>(png_get_progressive_ptr(png))->decodingFailed();
-    longjmp(png->jmpbuf, 1);
+    longjmp(JMPBUF(png), 1);
 }
 
 void decodingWarning(png_structp png, png_const_charp warningMsg)
@@ -234,13 +239,13 @@ void PNGImageDecoder::headerAvailable()
 {
     png_structp png = reader()->pngPtr();
     png_infop info = reader()->infoPtr();
-    png_uint_32 width = png->width;
-    png_uint_32 height = png->height;
+    png_uint_32 width = png_get_image_width(png, info);
+    png_uint_32 height = png_get_image_height(png, info);
     
     // Protect against large images.
-    if (png->width > (unsigned)cMaxPNGSize || png->height > (unsigned)cMaxPNGSize) {
+    if (width > cMaxPNGSize || height > cMaxPNGSize) {
         m_failed = true;
-        longjmp(png->jmpbuf, 1);
+        longjmp(JMPBUF(png), 1);
         return;
     }
     
@@ -300,8 +305,12 @@ void PNGImageDecoder::headerAvailable()
 
     if (reader()->decodingSizeOnly()) {
         // If we only needed the size, halt the reader.     
+#if defined(PNG_LIBPNG_VER_MAJOR) && defined(PNG_LIBPNG_VER_MINOR) && (PNG_LIBPNG_VER_MAJOR > 1 || (PNG_LIBPNG_VER_MAJOR == 1 && PNG_LIBPNG_VER_MINOR >= 5))
+        reader()->setReadOffset(m_data.size() - png_process_data_pause(png, 0));
+#else
         reader()->setReadOffset(m_data.size() - png->buffer_size);
         png->buffer_size = 0;
+#endif
     }
 }
 
@@ -329,7 +338,7 @@ void PNGImageDecoder::rowAvailable(unsigned char* rowBuffer, unsigned rowIndex, 
         // For PNGs, the frame always fills the entire image.
         buffer.setRect(IntRect(0, 0, m_size.width(), m_size.height()));
 
-        if (reader()->pngPtr()->interlaced)
+        if (PNG_INTERLACE_ADAM7 == png_get_interlace_type(reader()->pngPtr(), m_reader->infoPtr()))
             reader()->createInterlaceBuffer((reader()->hasAlpha() ? 4 : 3) * m_size.width() * m_size.height());
     }
 

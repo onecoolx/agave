@@ -30,32 +30,41 @@ void update_window(void *p)
 
 void change_cursor(int c)
 {
-#if 0
-	QMainWindow* window = getMainWindow();
+    GdkDisplay * disp = gdk_display_get_default();
+    GdkScreen * screen = gdk_screen_get_default();
+    GdkWindow * win = gdk_screen_get_root_window(screen);
+    GdkCursor * cursor = NULL;
+
 	switch (c) {
 	case 1:
-    	window->setCursor(Qt::CrossCursor);
+        cursor = gdk_cursor_new_for_display(disp, GDK_CROSSHAIR);
+        gdk_window_set_cursor(win, cursor);
 		break;
 	case 2:
-    	window->setCursor(Qt::PointingHandCursor);
+        cursor = gdk_cursor_new_for_display(disp, GDK_HAND2);
+        gdk_window_set_cursor(win, cursor);
 		break;
 	case 3:
-    	window->setCursor(Qt::SizeAllCursor);
+        cursor = gdk_cursor_new_for_display(disp, GDK_FLEUR);
+        gdk_window_set_cursor(win, cursor);
 		break;
 	case 4:
-    	window->setCursor(Qt::IBeamCursor);
+        cursor = gdk_cursor_new_for_display(disp, GDK_PENCIL);
+        gdk_window_set_cursor(win, cursor);
 		break;
 	case 5:
-    	window->setCursor(Qt::WaitCursor);
+        cursor = gdk_cursor_new_for_display(disp, GDK_WATCH);
+        gdk_window_set_cursor(win, cursor);
 		break;
 	case 6:
-    	window->setCursor(Qt::WhatsThisCursor);
+        cursor = gdk_cursor_new_for_display(disp, GDK_WATCH);
+        gdk_window_set_cursor(win, cursor);
 		break;
 	default:
-    	window->setCursor(Qt::ArrowCursor);
+        cursor = gdk_cursor_new_for_display(disp, GDK_LEFT_PTR);
+        gdk_window_set_cursor(win, cursor);
 		break;
 	}
-#endif
 }
 
 MaCrossView* window_open(const char* url, int x, int y, int w, int h)

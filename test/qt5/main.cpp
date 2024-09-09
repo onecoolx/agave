@@ -388,14 +388,14 @@ void platform_exception(void(*dump)(int))
 {
 }
 
-extern "C" unsigned int set_timer(unsigned int mscend, void(*func)(void*), void* data)
+extern "C" void* set_timer(unsigned int mscend, void(*func)(void*), void* data)
 {
 	UserTimer* timer = new UserTimer(func, data);
 	timer->start(mscend);
-	return (unsigned int)reinterpret_cast<uintptr_t>(timer);
+	return reinterpret_cast<void*>(timer);
 }
 
-extern "C" void kill_timer(unsigned int id)
+extern "C" void kill_timer(void* id)
 {
 	UserTimer* timer = reinterpret_cast<UserTimer*>(id);
 	delete timer;

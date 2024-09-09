@@ -16,7 +16,7 @@
 #include "PlatformMouseEvent.h"
 #include "Debug.h"
 
-#include <picasso.h>
+#include <picasso/picasso.h>
 
 namespace WebCore {
 using namespace std;

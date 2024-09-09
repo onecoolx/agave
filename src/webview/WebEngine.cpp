@@ -5,8 +5,9 @@
 **
 */
 #include "config.h"
-#include <picasso.h>
 #include "macross.h"
+
+#include <picasso/picasso.h>
 
 #include "SharedTimer.h"
 #include <wtf/FastMalloc.h>

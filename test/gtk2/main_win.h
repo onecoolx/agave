@@ -36,17 +36,19 @@ public:
         g_signal_connect (G_OBJECT(window), "destroy", G_CALLBACK (MainWindow::destroy), this);
         g_signal_connect (G_OBJECT(drawarea), "expose_event", G_CALLBACK (MainWindow::expose), this);
         g_signal_connect (G_OBJECT(window), "size_allocate", G_CALLBACK (MainWindow::sizeChange), this);
-#if 0
-        g_signal_connect (G_OBJECT(window), "key_press_event", G_CALLBACK (key_press), NULL);
-        g_signal_connect (G_OBJECT(window), "key_release_event", G_CALLBACK (key_release), NULL);
+        g_signal_connect (G_OBJECT(window), "key_press_event", G_CALLBACK (MainWindow::keyPress), this);
+        g_signal_connect (G_OBJECT(window), "key_release_event", G_CALLBACK (MainWindow::keyRelease), this);
 
         gtk_widget_add_events (GTK_WIDGET(window), GDK_BUTTON_PRESS_MASK);
-        g_signal_connect (G_OBJECT(window), "button_press_event", G_CALLBACK (mouse_button_press), NULL);
+        g_signal_connect (G_OBJECT(window), "button_press_event", G_CALLBACK (MainWindow::mouseButtonPress), this);
         gtk_widget_add_events (GTK_WIDGET(window), GDK_BUTTON_RELEASE_MASK);
-        g_signal_connect (G_OBJECT(window), "button_release_event", G_CALLBACK (mouse_button_release), NULL);
+        g_signal_connect (G_OBJECT(window), "button_release_event", G_CALLBACK (MainWindow::mouseButtonRelease), this);
         gtk_widget_add_events (GTK_WIDGET(window), GDK_POINTER_MOTION_MASK);
-        g_signal_connect (G_OBJECT(window), "motion_notify_event", G_CALLBACK (mouse_motion_notify), NULL);
-#endif
+        g_signal_connect (G_OBJECT(window), "motion_notify_event", G_CALLBACK (MainWindow::mouseMotionNotify), this);
+
+        gtk_widget_add_events (GTK_WIDGET(window), GDK_FOCUS_CHANGE_MASK);
+        g_signal_connect (G_OBJECT(window), "focus-in-event", G_CALLBACK (MainWindow::focusInEvent), this);
+        g_signal_connect (G_OBJECT(window), "focus-out-event", G_CALLBACK (MainWindow::focusOutEvent), this);
 
         gtk_container_add (GTK_CONTAINER (window), drawarea);
 
@@ -78,6 +80,12 @@ public:
 
     void update(int x, int y, int w, int h)
     {
+        gtk_widget_queue_draw_area(GTK_WIDGET(drawarea), x, y, w, h);
+    }
+
+    void update(void)
+    {
+        gtk_widget_queue_draw(GTK_WIDGET(drawarea));
     }
 
     void resize(int w, int h)
@@ -98,17 +106,16 @@ public:
 protected:
     static gboolean expose(GtkWidget *widget, GdkEventExpose *event, gpointer data);
     static void sizeChange(GtkWidget* widget, GtkAllocation* allocation, gpointer data);
-#if 0
-    void mousePressEvent(QMouseEvent* event);
-    void mouseReleaseEvent(QMouseEvent* event);
-    void mouseMoveEvent(QMouseEvent* event);
-    void wheelEvent(QWheelEvent* event);
-    void keyPressEvent(QKeyEvent * event);
-    void keyReleaseEvent(QKeyEvent * event);
-    void focusInEvent(QFocusEvent * event);
-    void focusOutEvent(QFocusEvent * event);
-    void contextMenuEvent(QContextMenuEvent * event);
-#endif
+    static gboolean keyPress(GtkWidget *widget, GdkEventKey *event, gpointer data);
+    static gboolean keyRelease(GtkWidget *widget, GdkEventKey *event, gpointer data);
+
+    static gboolean mouseButtonPress(GtkWidget *widget, GdkEventButton *event, gpointer data);
+    static gboolean mouseButtonRelease(GtkWidget *widget, GdkEventButton *event, gpointer data);
+    static gboolean mouseMotionNotify(GtkWidget *widget, GdkEventMotion *event, gpointer data);
+
+    static gboolean focusInEvent(GtkWidget *widget, GdkEventFocus *event, gpointer data);
+    static gboolean focusOutEvent(GtkWidget *widget, GdkEventFocus *event, gpointer data);
+
     static void destroy(GtkWidget *widget, gpointer data);
 
     void onDraw(int x, int y, int w, int h)
