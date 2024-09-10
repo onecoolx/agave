@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>起始页</title>
+</head>
+<style type="text/css" media="all">
+@charset "utf-8";
+*{margin:0; padding:0;}
+img{border:0;}
+ul{list-style:none;}
+
+a{color:#236E01; text-decoration:underline;}
+a:visited{color:#236E01; text-decoration:underline;}
+a:hover{color:#6CC444; text-decoration:underline;}
+
+.red{color:#FF9C1B;font-weight:bold;}
+.green{color:#86B809;font-weight:bold;}
+.blue{color:#296DB5;font-weight:bold;}
+
+.body{width:220px;}
+.page{width:90%;margin:0 auto;}
+
+.title{float:left;width:100%;padding:40px 0 10px 0;color:#296DB5;text-align:center;font-size:20px;font-weight:bold;}
+.search{float:left;width:100%;padding:10px 0;}
+.txt{float:left;width:90%;padding:10px;font-size:12px;color:#6699CC;}
+
+.s-center{width:90%;margin:0 auto;}
+.searchbar{width:70%;height:20px;float:left;border:1px #6699CC solid;background:#E3EFFA;}
+.searchimg{float:left;}
+.sbtn{font-size:12px}
+</style>
+<body>
+<div class="body">
+   <div class="page">
+      <div class="title">
+	     <b>MaCross Mobile</b> 
+	  </div>
+	  <div class="search">
+	   <div class="s-center"><input name="search" type="input" class="searchbar" />&nbsp;<input name="commit" class="sbtn" type="button" value="搜索" onclick="javascript:search();"/></div>
+	  </div>
+	  <div class="txt">
+	    <span class="blue">MaCross Mobile</span> 是一款专为智能手机设计的浏览器软件。它的特点是<span class="red">高性能</span>，<span class="green">低资源</span>占用，提供与PC浏览器一致的用户体验。
+	  </div>   
+   </div>
+</div>
+<script language="javascript">
+<!--
+function search()
+{
+	var query;
+	var keyword = document.getElementsByName("search")[0].value;
+	
+	if (keyword) {
+		query = "http://www.google.com.hk/search?q=" + keyword;
+		window.location = query;
+	}
+}
+-->	
+</script>
+</body>
+</html>

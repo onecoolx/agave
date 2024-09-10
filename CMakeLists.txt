@@ -26,7 +26,8 @@ endif()
 
 include (${CMAKE_CURRENT_LIST_DIR}/build/configs.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/build/defines.cmake)
-include (${CMAKE_CURRENT_LIST_DIR}/3rdparty/3rdparty.cmake)
+#include (${CMAKE_CURRENT_LIST_DIR}/3rdparty/3rdparty.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/dist/allinone.cmake)
 
 option(OPT_UNITTEST "Build Unit tests" OFF)
 if (OPT_UNITTEST)

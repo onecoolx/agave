@@ -1,5 +1,5 @@
-CC=gcc -g -static
-CXX=g++ -g -static 
+CC=gcc -g -Os
+CXX=g++ -g -Os
 #CC=gcc -O2
 INC=${INCPATH} -I./ -I../ -I../include
 CFLAGS= `pkg-config --cflags Qt5Core Qt5Gui Qt5Widgets` -fPIC
