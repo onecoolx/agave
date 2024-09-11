@@ -3,13 +3,17 @@
 
 #include <libxml/xmlversion.h>
 
-#include "win32config.h"
+#if (defined(WIN32)||defined(WINCE)) && !defined (__CYGWIN__) && (!__MINGW32__)
+#include <win32config.h>
+#else
+#include "config.h"
+#endif
 
 #include <libxslt/xsltconfig.h>
 #include <libxslt/extensions.h>
 
-#include "exsltconfig.h"
-#include "exslt.h"
+#include <libexslt/exsltconfig.h>
+#include <libexslt/exslt.h>
 
 const char *exsltLibraryVersion = LIBEXSLT_VERSION_STRING 
 				LIBEXSLT_VERSION_EXTRA;

@@ -16,14 +16,14 @@
 #include <libxml/hash.h>
 #include <libxml/parser.h>
 #include <libxml/parserInternals.h>
-#include "xslt.h"
-#include "xsltInternals.h"
-#include "xsltutils.h"
-#include "documents.h"
-#include "transform.h"
-#include "imports.h"
-#include "keys.h"
-#include "security.h"
+#include "libxslt/xslt.h"
+#include "libxslt/xsltInternals.h"
+#include "libxslt/xsltutils.h"
+#include "libxslt/documents.h"
+#include "libxslt/transform.h"
+#include "libxslt/imports.h"
+#include "libxslt/keys.h"
+#include "libxslt/security.h"
 
 #ifdef LIBXML_XINCLUDE_ENABLED
 #include <libxml/xinclude.h>

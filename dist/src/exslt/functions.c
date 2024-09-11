@@ -22,7 +22,7 @@
 #include <libxslt/transform.h>
 #include <libxslt/imports.h>
 
-#include "exslt.h"
+#include <libexslt/exslt.h>
 
 typedef struct _exsltFuncFunctionData exsltFuncFunctionData;
 struct _exsltFuncFunctionData {

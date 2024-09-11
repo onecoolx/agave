@@ -48,10 +48,10 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/tree.h>
 #include <libxml/uri.h>
-#include "xslt.h"
-#include "xsltInternals.h"
-#include "xsltutils.h"
-#include "security.h"
+#include "libxslt/xslt.h"
+#include "libxslt/xsltInternals.h"
+#include "libxslt/xsltutils.h"
+#include "libxslt/security.h"
 
 
 struct _xsltSecurityPrefs {

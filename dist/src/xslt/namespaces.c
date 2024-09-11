@@ -38,11 +38,11 @@
 #include <libxml/hash.h>
 #include <libxml/xmlerror.h>
 #include <libxml/uri.h>
-#include "xslt.h"
-#include "xsltInternals.h"
-#include "xsltutils.h"
-#include "namespaces.h"
-#include "imports.h"
+#include "libxslt/xslt.h"
+#include "libxslt/xsltInternals.h"
+#include "libxslt/xsltutils.h"
+#include "libxslt/namespaces.h"
+#include "libxslt/imports.h"
 
 /************************************************************************
  *									*

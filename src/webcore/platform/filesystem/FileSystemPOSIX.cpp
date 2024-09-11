@@ -28,6 +28,8 @@
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
+#if ENABLE(FILESYSTEM) && PLATFORM(UNIX)
+
 #if HAVE(SYS_TYPES_H)
 #include <sys/types.h>
 #endif
@@ -45,7 +47,6 @@
 
 namespace WebCore {
 
-#if ENABLE(FILESYSTEM)
 bool fileExists(const String& path)
 {
     if (path.isNull() || path.isEmpty())
@@ -181,6 +182,5 @@ bool closeFile(HFile file)
     return fclose((FILE*)file) == 0;
 }
 
-#endif
-
 } // namespace WebCore
+#endif

@@ -28,6 +28,7 @@
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
+#if ENABLE(FILESYSTEM) && PLATFORM(WIN32)
 #include <windows.h>
 
 #include "FileSystem.h"
@@ -36,8 +37,6 @@
 #include "PlatformString.h"
 
 namespace WebCore {
-
-#if ENABLE(FILESYSTEM)
 
 bool fileExists(const String& path)
 {
@@ -174,6 +173,6 @@ bool closeFile(HFile file)
 {
     return fclose((FILE*)file) == 0;
 }
-#endif
 } // namespace WebCore
+#endif
 

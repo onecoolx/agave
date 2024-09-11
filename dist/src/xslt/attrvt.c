@@ -22,10 +22,10 @@
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
-#include "xslt.h"
-#include "xsltutils.h"
-#include "xsltInternals.h"
-#include "templates.h"
+#include "libxslt/xslt.h"
+#include "libxslt/xsltutils.h"
+#include "libxslt/xsltInternals.h"
+#include "libxslt/templates.h"
 
 #ifdef WITH_XSLT_DEBUG
 #define WITH_XSLT_DEBUG_AVT

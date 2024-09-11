@@ -25,14 +25,14 @@
 #include <libxml/hash.h>
 #include <libxml/xmlerror.h>
 #include <libxml/parserInternals.h>
-#include "xslt.h"
-#include "xsltInternals.h"
-#include "xsltutils.h"
-#include "imports.h"
-#include "templates.h"
-#include "keys.h"
-#include "pattern.h"
-#include "documents.h"
+#include "libxslt/xslt.h"
+#include "libxslt/xsltInternals.h"
+#include "libxslt/xsltutils.h"
+#include "libxslt/imports.h"
+#include "libxslt/templates.h"
+#include "libxslt/keys.h"
+#include "libxslt/pattern.h"
+#include "libxslt/documents.h"
 
 #ifdef WITH_XSLT_DEBUG
 #define WITH_XSLT_DEBUG_PATTERN

@@ -416,7 +416,7 @@ typedef unsigned char boolean;
  * as short on such a machine.  MULTIPLIER must be at least 16 bits wide.
  */
 
-typedef __int16 int16;
+typedef int16_t int16;
 
 #ifndef MULTIPLIER
 #define MULTIPLIER  int16		/* type for fastest integer multiply */

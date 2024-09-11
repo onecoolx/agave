@@ -20,15 +20,15 @@
 #include <libxml/tree.h>
 #include <libxml/xpathInternals.h>
 #include <libxml/parserInternals.h>
-#include "xslt.h"
-#include "xsltInternals.h"
-#include "xsltutils.h"
-#include "variables.h"
-#include "functions.h"
-#include "templates.h"
-#include "transform.h"
-#include "namespaces.h"
-#include "attributes.h"
+#include "libxslt/xslt.h"
+#include "libxslt/xsltInternals.h"
+#include "libxslt/xsltutils.h"
+#include "libxslt/variables.h"
+#include "libxslt/functions.h"
+#include "libxslt/templates.h"
+#include "libxslt/transform.h"
+#include "libxslt/namespaces.h"
+#include "libxslt/attributes.h"
 
 #ifdef WITH_XSLT_DEBUG
 #define WITH_XSLT_DEBUG_TEMPLATES

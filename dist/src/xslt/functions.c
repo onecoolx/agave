@@ -33,14 +33,14 @@
 #include <libxml/parserInternals.h>
 #include <libxml/uri.h>
 #include <libxml/xpointer.h>
-#include "xslt.h"
-#include "xsltInternals.h"
-#include "xsltutils.h"
-#include "functions.h"
-#include "extensions.h"
-#include "numbersInternals.h"
-#include "keys.h"
-#include "documents.h"
+#include "libxslt/xslt.h"
+#include "libxslt/xsltInternals.h"
+#include "libxslt/xsltutils.h"
+#include "libxslt/functions.h"
+#include "libxslt/extensions.h"
+#include "libxslt/numbersInternals.h"
+#include "libxslt/keys.h"
+#include "libxslt/documents.h"
 
 #ifdef WITH_XSLT_DEBUG
 #define WITH_XSLT_DEBUG_FUNCTION

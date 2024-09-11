@@ -30,11 +30,11 @@
 #include <libxml/HTMLtree.h>
 #include <libxml/xmlerror.h>
 #include <libxml/xmlIO.h>
-#include "xsltutils.h"
-#include "templates.h"
-#include "xsltInternals.h"
-#include "imports.h"
-#include "transform.h"
+#include "libxslt/xsltutils.h"
+#include "libxslt/templates.h"
+#include "libxslt/xsltInternals.h"
+#include "libxslt/imports.h"
+#include "libxslt/transform.h"
 
 /* gettimeofday on Windows ??? */
 #if defined(WIN32) && !defined(__CYGWIN__)

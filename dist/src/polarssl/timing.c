@@ -144,6 +144,7 @@ unsigned long hardclock( void )
 
 #else
 
+#if defined(_WIN32)
 void gettimeofday(struct timeval *tv, struct timezone *tz)
 {
     time_t clock;
@@ -162,7 +163,7 @@ void gettimeofday(struct timeval *tv, struct timezone *tz)
     tv->tv_sec = (long)clock;
     tv->tv_usec = wtm.wMilliseconds * 1000;
 }
-
+#endif
 
 static int hardclock_init = 0;
 static struct timeval tv_init;

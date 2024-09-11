@@ -45,6 +45,9 @@
 #endif
 
 /* #define DEBUG_THREADS */
+#if !defined(LIBXML_THREAD_ENABLED)
+#undef HAVE_PTHREAD_H
+#endif
 
 #ifdef HAVE_PTHREAD_H
 

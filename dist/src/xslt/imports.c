@@ -38,14 +38,14 @@
 #include <libxml/hash.h>
 #include <libxml/xmlerror.h>
 #include <libxml/uri.h>
-#include "xslt.h"
-#include "xsltInternals.h"
-#include "xsltutils.h"
-#include "preproc.h"
-#include "imports.h"
-#include "documents.h"
-#include "security.h"
-#include "pattern.h"
+#include "libxslt/xslt.h"
+#include "libxslt/xsltInternals.h"
+#include "libxslt/xsltutils.h"
+#include "libxslt/preproc.h"
+#include "libxslt/imports.h"
+#include "libxslt/documents.h"
+#include "libxslt/security.h"
+#include "libxslt/pattern.h"
 
 
 /************************************************************************

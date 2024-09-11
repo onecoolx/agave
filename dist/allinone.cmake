@@ -7,11 +7,9 @@ file(GLOB_RECURSE SOURCES ${PROJ_ROOT}/dist/src/*.c)
 
 include_directories(${PROJ_ROOT}/dist ${PROJ_ROOT}/dist/include)
 
-set(LIB_NAME dist)
+set(LIB_DEPS dist)
 
-add_library(${LIB_NAME} ${SOURCES})
+add_library(${LIB_DEPS} STATIC ${SOURCES})
 
-install(TARGETS ${LIB_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
-
-include_directories(${PROJ_ROOT}/dist/include)
+install(TARGETS ${LIB_DEPS} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 

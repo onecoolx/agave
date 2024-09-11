@@ -38,7 +38,7 @@
 #include <libxslt/xsltInternals.h>
 #include <libxslt/extensions.h>
 
-#include "exslt.h"
+#include <libexslt/exslt.h>
 
 /**
  * exsltDynEvaluateFunction:

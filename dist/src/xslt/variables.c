@@ -23,14 +23,14 @@
 #include <libxml/xpathInternals.h>
 #include <libxml/parserInternals.h>
 #include <libxml/dict.h>
-#include "xslt.h"
-#include "xsltInternals.h"
-#include "xsltutils.h"
-#include "variables.h"
-#include "transform.h"
-#include "imports.h"
-#include "preproc.h"
-#include "keys.h"
+#include "libxslt/xslt.h"
+#include "libxslt/xsltInternals.h"
+#include "libxslt/xsltutils.h"
+#include "libxslt/variables.h"
+#include "libxslt/transform.h"
+#include "libxslt/imports.h"
+#include "libxslt/preproc.h"
+#include "libxslt/keys.h"
 
 #ifdef WITH_XSLT_DEBUG
  #define WITH_XSLT_DEBUG_VARIABLE

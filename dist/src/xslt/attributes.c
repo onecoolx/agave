@@ -39,15 +39,15 @@
 #include <libxml/xmlerror.h>
 #include <libxml/uri.h>
 #include <libxml/parserInternals.h>
-#include "xslt.h"
-#include "xsltInternals.h"
-#include "xsltutils.h"
-#include "attributes.h"
-#include "namespaces.h"
-#include "templates.h"
-#include "imports.h"
-#include "transform.h"
-#include "preproc.h"
+#include "libxslt/xslt.h"
+#include "libxslt/xsltInternals.h"
+#include "libxslt/xsltutils.h"
+#include "libxslt/attributes.h"
+#include "libxslt/namespaces.h"
+#include "libxslt/templates.h"
+#include "libxslt/imports.h"
+#include "libxslt/transform.h"
+#include "libxslt/preproc.h"
 
 #define WITH_XSLT_DEBUG_ATTRIBUTES
 #ifdef WITH_XSLT_DEBUG

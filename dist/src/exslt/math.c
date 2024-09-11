@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #endif
 
-#include "exslt.h"
+#include <libexslt/exslt.h>
 
 /**
  * exsltMathMin:

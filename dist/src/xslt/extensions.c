@@ -26,11 +26,11 @@
 #endif
 #include <libxml/list.h>
 #include <libxml/xmlIO.h>
-#include "xslt.h"
-#include "xsltInternals.h"
-#include "xsltutils.h"
-#include "imports.h"
-#include "extensions.h"
+#include "libxslt/xslt.h"
+#include "libxslt/xsltInternals.h"
+#include "libxslt/xsltutils.h"
+#include "libxslt/imports.h"
+#include "libxslt/extensions.h"
 
 #ifdef _WIN32
 #include <stdlib.h>             /* for _MAX_PATH */

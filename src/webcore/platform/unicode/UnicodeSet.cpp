@@ -1,4 +1,4 @@
-
+#include <stdlib.h>
 #include "UnicodeSet.h"
 #include "UnicodeTrie.h"
 #include "UnicodeCase.h"

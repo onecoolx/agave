@@ -1,124 +1,108 @@
-#ifndef __LIBXML_WIN32_CONFIG__
-#define __LIBXML_WIN32_CONFIG__
 
-#define HAVE_CTYPE_H
-#define HAVE_STDARG_H
-#define HAVE_MALLOC_H
-#define HAVE_ERRNO_H
+#include "build.h"
+/* A form that will not confuse apibuild.py */
+#define ATTRIBUTE_DESTRUCTOR __attribute__((destructor))
 
-#if defined(_WIN32_WCE)
-#undef HAVE_ERRNO_H
-#include <windows.h>
-#include "wincecompat.h"
-#else
-#define HAVE_SYS_STAT_H
-#define HAVE__STAT
-#define HAVE_STAT
-#define HAVE_STDLIB_H
-#define HAVE_TIME_H
-#define HAVE_FCNTL_H
-#include <io.h>
-#include <direct.h>
-#endif
+/* Define to 1 if you have the <arpa/inet.h> header file. */
+#define HAVE_ARPA_INET_H 1
 
-#include <libxml/xmlversion.h>
+/* Define if __attribute__((destructor)) is accepted */
+#define HAVE_ATTRIBUTE_DESTRUCTOR 1
 
-#ifndef ICONV_CONST
-#define ICONV_CONST const
-#endif
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#define HAVE_DLFCN_H 1
 
-#ifdef NEED_SOCKETS
-#include <wsockcompat.h>
-#endif
+/* Have dlopen based dso */
+#define HAVE_DLOPEN 1
 
-/*
- * Windows platforms may define except 
- */
-#undef except
+/* Define to 1 if you have the <dl.h> header file. */
+/* #undef HAVE_DL_H */
 
-#define HAVE_ISINF
-#define HAVE_ISNAN
-#include <math.h>
-#if defined(_MSC_VER) || defined(__BORLANDC__)
-/* MS C-runtime has functions which can be used in order to determine if
-   a given floating-point variable contains NaN, (+-)INF. These are 
-   preferred, because floating-point technology is considered propriatary
-   by MS and we can assume that their functions know more about their 
-   oddities than we do. */
-#include <float.h>
-/* Bjorn Reese figured a quite nice construct for isinf() using the _fpclass
-   function. */
-#ifndef isinf
-#define isinf(d) ((_fpclass(d) == _FPCLASS_PINF) ? 1 \
-	: ((_fpclass(d) == _FPCLASS_NINF) ? -1 : 0))
-#endif
-/* _isnan(x) returns nonzero if (x == NaN) and zero otherwise. */
-#ifndef isnan
-#define isnan(d) (_isnan(d))
-#endif
-#else /* _MSC_VER */
-#ifndef isinf
-static int isinf (double d) {
-    int expon = 0;
-    double val = frexp (d, &expon);
-    if (expon == 1025) {
-        if (val == 0.5) {
-            return 1;
-        } else if (val == -0.5) {
-            return -1;
-        } else {
-            return 0;
-        }
-    } else {
-        return 0;
-    }
-}
-#endif
-#ifndef isnan
-static int isnan (double d) {
-    int expon = 0;
-    double val = frexp (d, &expon);
-    if (expon == 1025) {
-        if (val == 0.5) {
-            return 0;
-        } else if (val == -0.5) {
-            return 0;
-        } else {
-            return 1;
-        }
-    } else {
-        return 0;
-    }
-}
-#endif
-#endif /* _MSC_VER */
+/* Define to 1 if you have the <fcntl.h> header file. */
+#define HAVE_FCNTL_H 1
 
-#if defined(_MSC_VER)
-#define mkdir(p,m) _mkdir(p)
-#define snprintf _snprintf
-#if _MSC_VER < 1500
-#define vsnprintf(b,c,f,a) _vsnprintf(b,c,f,a)
-#endif
-#elif defined(__MINGW32__)
-#define mkdir(p,m) _mkdir(p)
+/* Define to 1 if you have the `ftime' function. */
+#define HAVE_FTIME 1
+
+/* Define to 1 if you have the `getentropy' function. */
+#define HAVE_GETENTROPY 1
+
+/* Define to 1 if you have the `gettimeofday' function. */
+#define HAVE_GETTIMEOFDAY 1
+
+/* Define if history library is there (-lhistory) */
+#define HAVE_LIBHISTORY 1
+
+/* Define if readline library is there (-lreadline) */
+#define HAVE_LIBREADLINE 1
+
+/* Define to 1 if you have the `mmap' function. */
+#define HAVE_MMAP 1
+
+/* Define to 1 if you have the `munmap' function. */
+#define HAVE_MUNMAP 1
+
+/* mmap() is no good without munmap() */
+#if defined(HAVE_MMAP) && !defined(HAVE_MUNMAP)
+#  undef /**/ HAVE_MMAP
 #endif
 
-/* Threading API to use should be specified here for compatibility reasons.
-   This is however best specified on the compiler's command-line. */
-#if defined(LIBXML_THREAD_ENABLED)
-#if !defined(HAVE_PTHREAD_H) && !defined(HAVE_WIN32_THREADS) && !defined(_WIN32_WCE)
-#define HAVE_WIN32_THREADS
-#endif
-#endif
+/* Define to 1 if you have the <netdb.h> header file. */
+#define HAVE_NETDB_H 1
 
-/* Some third-party libraries far from our control assume the following
-   is defined, which it is not if we don't include windows.h. */
-#if !defined(FALSE)
-#define FALSE 0
-#endif
-#if !defined(TRUE)
-#define TRUE (!(FALSE))
-#endif
+/* Define to 1 if you have the <netinet/in.h> header file. */
+#define HAVE_NETINET_IN_H 1
 
-#endif /* __LIBXML_WIN32_CONFIG__ */
+/* Define to 1 if you have the <poll.h> header file. */
+#define HAVE_POLL_H 1
 
+/* Define to 1 if you have the <pthread.h> header file. */
+#define HAVE_PTHREAD_H 1
+
+/* Have shl_load based dso */
+/* #undef HAVE_SHLLOAD */
+
+/* Define to 1 if you have the `stat' function. */
+#define HAVE_STAT 1
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#define HAVE_STDINT_H 1
+
+/* Define to 1 if you have the <sys/mman.h> header file. */
+#define HAVE_SYS_MMAN_H 1
+
+/* Define to 1 if you have the <sys/random.h> header file. */
+#define HAVE_SYS_RANDOM_H 1
+
+/* Define to 1 if you have the <sys/select.h> header file. */
+#define HAVE_SYS_SELECT_H 1
+
+/* Define to 1 if you have the <sys/socket.h> header file. */
+#define HAVE_SYS_SOCKET_H 1
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#define HAVE_SYS_STAT_H 1
+
+/* Define to 1 if you have the <sys/timeb.h> header file. */
+#define HAVE_SYS_TIMEB_H 1
+
+/* Define to 1 if you have the <sys/time.h> header file. */
+#define HAVE_SYS_TIME_H 1
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#define HAVE_UNISTD_H 1
+
+/* Define to 1 if you have the <zlib.h> header file. */
+/* #undef HAVE_ZLIB_H */
+
+/* Support for IPv6 */
+/* #undef SUPPORT_IP6 */
+
+/* Version number of package */
+#define VERSION "2.13.2"
+
+/* Determine what socket length (socklen_t) data type is */
+#define XML_SOCKLEN_T socklen_t
+
+/* TLS specifier */
+/* #undef XML_THREAD_LOCAL */

@@ -23,11 +23,11 @@
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
 #include <libxml/encoding.h>
-#include "xsltutils.h"
-#include "pattern.h"
-#include "templates.h"
-#include "transform.h"
-#include "numbersInternals.h"
+#include "libxslt/xsltutils.h"
+#include "libxslt/pattern.h"
+#include "libxslt/templates.h"
+#include "libxslt/transform.h"
+#include "libxslt/numbersInternals.h"
 
 #ifndef FALSE
 # define FALSE (0 == 1)

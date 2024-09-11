@@ -1,4 +1,5 @@
 
+#include <stdlib.h>
 #include  "UChar.h"
 #include  "UnicodeGlobal.h"
 #include  "Normalize.h"

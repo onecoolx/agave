@@ -19,7 +19,7 @@
 #include <libxslt/extra.h>
 #include <libxslt/preproc.h>
 
-#include "exslt.h"
+#include <libexslt/exslt.h>
 
 static void
 exsltNodeSetFunction (xmlXPathParserContextPtr ctxt, int nargs) {
