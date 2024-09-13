@@ -6,7 +6,6 @@
 if (WIN32)
     add_compile_definitions(WIN32)
     add_compile_definitions(_WIN32)
-    add_compile_definitions(DLL_EXPORT)
     add_compile_definitions(_UNICODE=1)
     add_compile_definitions(UNICODE=1)
     add_compile_definitions(_HAS_EXCEPTIONS=0)

@@ -8,6 +8,7 @@ file(GLOB_RECURSE SOURCES ${PROJECT_ROOT}/src/*.cpp)
 include_directories(${PROJECT_ROOT}/include
                     ${PROJECT_ROOT}/src/include
                     ${PROJECT_ROOT}/src
+                    ${PROJECT_ROOT}/src/font
                     ${PROJECT_ROOT}/src/gfx
                     ${PROJECT_ROOT}/src/simd
                     ${PROJECT_OUT}/include)
@@ -24,12 +25,18 @@ if (WIN32)
 elseif (APPLE)
     set(SOURCES
         ${SOURCES}
-        ${PROJECT_ROOT}/src/gfx/gfx_font_adapter_apple.mm
+        ${PROJECT_ROOT}/src/font/font_adapter_apple.mm
     )
 endif()
 
 add_definitions(-DEXPORT)
-add_library(${LIB_NAME} ${SOURCES})
+if (BUILD_SHARED_LIBS)
+  set(BUILD_LIBS_TYPE SHARED)
+else()
+  set(BUILD_LIBS_TYPE STATIC)
+endif()
+
+add_library(${LIB_NAME} ${BUILD_LIBS_TYPE} ${SOURCES})
 install(TARGETS ${LIB_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
 
 if (UNIX AND NOT APPLE)

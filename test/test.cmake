@@ -44,11 +44,3 @@ target_link_libraries(${APP_NAME} PRIVATE ${LIB_NAME} ${LIB_DEPS}
                                   PUBLIC picasso2_sw ${SYSTEM_LIBS} 
 )
 
-set_target_properties(${APP_NAME}
-    PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-)
-
-

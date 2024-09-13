@@ -31,13 +31,17 @@
 #endif
 
 #if defined(WIN32) || defined(WINCE)
-#ifdef DLL_EXPORT
-#define MACROSS_API __declspec(dllexport)
+#ifdef BUILD_DLL
+    #ifdef DLL_EXPORT
+        #define MACROSS_API __declspec(dllexport)
+    #else
+        #define MACROSS_API __declspec(dllimport)
+    #endif
 #else
-#define MACROSS_API __declspec(dllimport)
+    #define MACROSS_API
 #endif
 #else
-#define MACROSS_API
+    #define MACROSS_API
 #endif
 
 #ifdef __cplusplus
