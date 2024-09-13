@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 1999-2000 Harri Porten (porten@kde.org)
  * Copyright (C) 2006, 2007 Apple Inc. All rights reserved.
  *
@@ -54,11 +54,8 @@
 #include <sys/time.h>
 #endif
 
-#if HAVE(SYS_TIMEB_H)
-#include <sys/timeb.h>
-#endif
-
-#if PLATFORM(WINCE)
+#if PLATFORM(WIN32)
+#define NOMINMAX
 #include <windows.h>
 #endif
 
@@ -282,12 +279,7 @@ static int dateToDayInYear(int year, int month, int day)
 
 double getCurrentUTCTime()
 {
-#if PLATFORM(WIN32) && !PLATFORM(WINCE)
-    struct _timeb timebuffer;
-    _ftime(&timebuffer);
-    double utc = timebuffer.time * msPerSecond + timebuffer.millitm;
-
-#elif PLATFORM(WINCE)
+#if PLATFORM(WIN32)
     SYSTEMTIME systemTime;
     GetSystemTime(&systemTime);
     struct tm tmtime;

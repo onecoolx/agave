@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 1998-2000 Netscape Communications Corporation.
  * Copyright (C) 2003-6 Apple Computer
  *

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 1998-2000 Netscape Communications Corporation.
  * Copyright (C) 2003-6 Apple Computer
  *
@@ -44,7 +44,7 @@
 
 namespace WebCore {
 
-typedef unsigned long uword;
+typedef uintptr_t uword;
 
 struct Arena {
     Arena* next;        // next arena

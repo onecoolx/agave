@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright 2005 Frerich Raabe <raabe@kde.org>
  * Copyright (C) 2006 Apple Computer, Inc.
  *
@@ -54,14 +54,13 @@ namespace WebCore {
             Value(unsigned value) : m_type(NumberValue), m_number(value) {}
             Value(unsigned long value) : m_type(NumberValue), m_number(value) {}
             Value(double value) : m_type(NumberValue), m_number(value) {}
+            Value(size_t value) : m_type(NumberValue), m_number(value) {}
 
             Value(const char* value) : m_type(StringValue), m_data(new ValueData(value)) {}
             Value(const String& value) : m_type(StringValue), m_data(new ValueData(value)) {}
             Value(const NodeSet& value) : m_type(NodeSetValue), m_data(new ValueData(value)) {}
             Value(Node* value) : m_type(NodeSetValue), m_data(new ValueData) { m_data->m_nodeSet.append(value); }
-
-            // This is needed to safely implement constructing from bool - with normal function overloading, any pointer type would match.
-            template<typename T> Value(T);
+            Value(bool value) : m_type(BooleanValue), m_bool(value) {}
 
             static const struct AdoptTag {} adopt;
             Value(NodeSet& value, const AdoptTag&) : m_type(NodeSetValue), m_data(new ValueData) { value.swap(m_data->m_nodeSet); }
@@ -85,13 +84,6 @@ namespace WebCore {
             double m_number;
             RefPtr<ValueData> m_data;
         };
-
-        template<>
-        inline Value::Value(bool value)
-            : m_type(BooleanValue)
-            , m_bool(value)
-        {
-        }
     }
 }
 

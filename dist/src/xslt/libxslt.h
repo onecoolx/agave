@@ -11,7 +11,7 @@
 #define __XSLT_LIBXSLT_H__
 
 #if defined(WIN32) && !defined (__CYGWIN__) && !defined (__MINGW32__) && !defined(_WIN32_WCE)
-#include <win32config.h>
+#include "win32config.h"
 #elif defined(_WIN32_WCE)
 #include "ceconfig.h"
 #else

@@ -1,4 +1,4 @@
-// -*- c-basic-offset: 2 -*-
+﻿// -*- c-basic-offset: 2 -*-
 /*
  *  This file is part of the KDE libraries
  *  Copyright (C) 1999-2001 Harri Porten (porten@kde.org)
@@ -46,6 +46,7 @@
 #include "string_object.h"
 #include "types.h"
 #include "value.h"
+#include <time.h>
 #include <math.h>
 #include <stdio.h>
 #include <wtf/Assertions.h>
@@ -54,11 +55,7 @@
 #include <sys/time.h>
 #endif
 
-#if HAVE(SYS_TIMEB_H)
-#include <sys/timeb.h>
-#endif
-
-#if PLATFORM(WINCE)
+#if PLATFORM(WIN32)
 #include <windows.h>
 #endif
 
@@ -746,11 +743,7 @@ static inline unsigned getCurrentTime() {
     gettimeofday(&tv, 0);
     return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 #else
-	#if PLATFORM(WIN32) && !PLATFORM(WINCE)
-    struct _timeb timebuffer;
-    _ftime(&timebuffer);
-	return (unsigned int)(timebuffer.time * 1000 + timebuffer.millitm);
-	#elif PLATFORM(WINCE)
+	#if PLATFORM(WIN32)
     SYSTEMTIME systemTime;
     GetSystemTime(&systemTime);
     struct tm tmtime;

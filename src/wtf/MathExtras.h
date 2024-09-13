@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2006 Apple Computer, Inc.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,7 @@
 #ifndef WTF_MathExtras_h
 #define WTF_MathExtras_h
 
+#include <stdlib.h>
 #include <math.h>
 #include <time.h>
 
@@ -44,20 +45,6 @@ const float piFloat = static_cast<float>(M_PI);
 #endif
 const double piOverFourDouble = M_PI_4;
 const float piOverFourFloat = static_cast<float>(M_PI_4);
-
-#if PLATFORM(WIN32) && !COMPILER(GCC)
-inline bool isinf(double num) { return !_finite(num) && !_isnan(num); }
-inline int isfinite(double x) { return _finite(x); }
-inline bool signbit(double num) { return _copysign(1.0, num) < 0; }
-inline double copysign(double x, double n) { return _copysign(x, n); }
-inline int isnan(double x) { return _isnan(x);}
-inline double round(double num) { return num > 0 ? floor(num + 0.5) : ceil(num - 0.5); }
-inline float roundf(float num) { return num > 0 ? floorf(num + 0.5f) : ceilf(num - 0.5f); }
-inline long lround(double num) { return static_cast<long>(num > 0 ? num + 0.5 : ceil(num - 0.5)); }
-inline long lroundf(float num) { return static_cast<long>(num > 0 ? num + 0.5f : ceilf(num - 0.5f)); }
-inline float nextafterf(float x, float y) { return x > y ? x - FLT_EPSILON : x + FLT_EPSILON; }
-inline double nextafter(double x, double y) { return x > y ? x - DBL_EPSILON : x + DBL_EPSILON; }
-#endif /* PLATFORM(WIN32) */
 
 // Initializes the random number generator.
 inline void wtf_random_init()

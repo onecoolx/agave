@@ -10,7 +10,7 @@
 #define __XSLT_LIBEXSLT_H__
 
 #if (defined(WIN32)||defined(WINCE))  && !defined (__CYGWIN__) && !defined (__MINGW32__)
-#include <win32config.h>
+#include "win32config.h"
 #else
 #include "config.h"
 #endif

@@ -30,7 +30,7 @@ endif()
 
 include (${CMAKE_CURRENT_LIST_DIR}/build/configs.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/build/defines.cmake)
-#include (${CMAKE_CURRENT_LIST_DIR}/3rdparty/3rdparty.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/3rdparty/3rdparty.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/dist/allinone.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/src/src.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/test/test.cmake)

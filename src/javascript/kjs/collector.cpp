@@ -1,4 +1,4 @@
-// -*- mode: c++; c-basic-offset: 4 -*-
+﻿// -*- mode: c++; c-basic-offset: 4 -*-
 /*
  *  This file is part of the KDE libraries
  *  Copyright (C) 2003, 2004, 2005, 2006 Apple Computer, Inc.
@@ -240,7 +240,7 @@ allocateNewBlock:
   return newCell;
 }
 
-#if PLATFORM(WINCE)
+#if PLATFORM(WIN32) && !PLATFORM(X86)
 void* g_stackBase = 0;
 
 inline bool isPageWritable(void* page)
@@ -266,7 +266,7 @@ static void* getStackBase(void* previousFrame)
     void* thisFrame = (void*)(&isGrowingDownward);
 
     isGrowingDownward = previousFrame < &thisFrame;
-    static DWORD pageSize = 0;
+    static uintptr_t pageSize = 0;
     if (!pageSize) {
         SYSTEM_INFO systemInfo;
         GetSystemInfo(&systemInfo);
@@ -274,7 +274,7 @@ static void* getStackBase(void* previousFrame)
     }
 
     // scan all of memory starting from this frame, and return the last writeable page found
-    register char* currentPage = (char*)((DWORD)thisFrame & ~(pageSize - 1));
+    register char* currentPage = (char*)((uintptr_t)thisFrame & ~(pageSize - 1));
     if (isGrowingDownward) {
         while (currentPage > 0) {
             // check for underflow
@@ -339,7 +339,7 @@ static inline void* currentThreadStackBase()
         stackThread = thread;
     }
     return (void*)(size_t(stackBase) + stackSize);
-#elif PLATFORM(WINCE)
+#elif PLATFORM(WIN32) && !PLATFORM(X86)
     if (g_stackBase)
         return g_stackBase;
     else {
@@ -681,13 +681,6 @@ bool Collector::collect()
 
   // MARK: first mark all referenced objects recursively starting out from the set of root objects
 
-#ifndef NDEBUG
-  // Forbid malloc during the mark phase. Marking a thread suspends it, so 
-  // a malloc inside mark() would risk a deadlock with a thread that had been 
-  // suspended while holding the malloc lock.
-  fastMallocForbid();
-#endif
-
   if (Interpreter::s_hook) {
     Interpreter* scr = Interpreter::s_hook;
     do {
@@ -702,10 +695,6 @@ bool Collector::collect()
 #if USE(MULTIPLE_THREADS)
   if (!currentThreadIsMainThread)
     markMainThreadOnlyObjects();
-#endif
-
-#ifndef NDEBUG
-  fastMallocAllow();
 #endif
 
   // SWEEP: delete everything with a zero refcount (garbage) and unmark everything else
@@ -732,8 +721,9 @@ bool Collector::collect()
             continue;
 
           JSCell* imp = reinterpret_cast<JSCell*>(cell);
-
+#if USE(MULTIPLE_THREADS)
           ASSERT(currentThreadIsMainThread || !curBlock->collectOnMainThreadOnly.get(i));
+#endif
           if (curBlock->collectOnMainThreadOnly.get(i)) {
             curBlock->collectOnMainThreadOnly.clear(i);
             --mainThreadOnlyObjectCount;
@@ -757,7 +747,9 @@ bool Collector::collect()
         } else {
           if (!curBlock->marked.get(i)) {
             JSCell *imp = reinterpret_cast<JSCell *>(cell);
+#if USE(MULTIPLE_THREADS)
             ASSERT(currentThreadIsMainThread || !curBlock->collectOnMainThreadOnly.get(i));
+#endif
             if (curBlock->collectOnMainThreadOnly.get(i)) {
               curBlock->collectOnMainThreadOnly.clear(i);
               --mainThreadOnlyObjectCount;

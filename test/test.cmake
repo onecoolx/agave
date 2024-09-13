@@ -6,29 +6,49 @@
 set(APP_SRCS 
     ${PROJ_ROOT}/test/callback.cpp
     ${PROJ_ROOT}/test/interface.cpp
-    ${PROJ_ROOT}/test/gtk2/functions.cpp
-    ${PROJ_ROOT}/test/gtk2/main.cpp
-    ${PROJ_ROOT}/test/gtk2/popmenu.cpp
 )
 
 set(APP_NAME agave_browser)
 
-include(FindPkgConfig)
-pkg_search_module(GTK2 REQUIRED gtk+-2.0)
+if (WIN32)
+    set(APP_SRCS ${APP_SRCS}
+        ${PROJ_ROOT}/test/win32/functions.cpp
+        ${PROJ_ROOT}/test/win32/main.cpp
+        ${PROJ_ROOT}/test/win32/popmenu.cpp
+    )
+    set(APP_TYPE WIN32)
+else()
+    set(APP_SRCS ${APP_SRCS}
+        ${PROJ_ROOT}/test/gtk2/functions.cpp
+        ${PROJ_ROOT}/test/gtk2/main.cpp
+        ${PROJ_ROOT}/test/gtk2/popmenu.cpp
+    )
+    include(FindPkgConfig)
+    pkg_search_module(GTK2 REQUIRED gtk+-2.0)
+    set(SYSTEM_INCLUDE ${GTK2_INCLUDE_DIRS})
+    set(SYSTEM_LIBS ${GTK2_LIBRARIES} ${GTK2_LIBRARIES} pthread m z stdc++)
+endif()
 
-add_executable(${APP_NAME} ${APP_SRCS})
+add_executable(${APP_NAME} ${APP_TYPE} ${APP_SRCS})
+
+install(TARGETS ${APP_NAME} RUNTIME DESTINATION bin)
 
 target_include_directories(${APP_NAME} PRIVATE 
                     ${PROJ_ROOT}/include
                     ${PROJ_ROOT}/test
                     SYSTEM PUBLIC
-                    ${GTK2_INCLUDE_DIRS}
+                    ${SYSTEM_INCLUDE}
 )
 
 target_link_libraries(${APP_NAME} PRIVATE ${LIB_NAME} ${LIB_DEPS}
-                                  PUBLIC
-                                  ${GTK2_LIBRARIES} 
-                                  picasso2_sw pthread m z stdc++
+                                  PUBLIC picasso2_sw ${SYSTEM_LIBS} 
+)
+
+set_target_properties(${APP_NAME}
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
 
 

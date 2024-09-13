@@ -44,10 +44,10 @@
 #ifdef _WIN32_WCE
 #  include "config-win32ce.h"
 #  include <altcecrt.h>
+#elif defined(WIN32)
+#  include "config-win32.h"
 #else
-#  ifdef WIN32
-#    include "config-win32.h"
-#  endif
+#  include "config-posix.h"
 #endif
 
 #if defined(macintosh) && defined(__MRC__)

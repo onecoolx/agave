@@ -68,6 +68,9 @@
 /* Define to 1 if you have the `_stat' function. */
 /* #undef HAVE__STAT */
 
+/* Define to 1 if you have the <ctype.h> header file. */
+#define HAVE_CTYPE_H 1
+
 /* Define to the sub-directory where libtool stores uninstalled libraries. */
 #define LT_OBJDIR ".libs/"
 

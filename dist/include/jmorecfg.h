@@ -1,4 +1,4 @@
-/*
+﻿/*
  * jmorecfg.h
  *
  * Copyright (C) 1991-1997, Thomas G. Lane.
@@ -415,8 +415,11 @@ typedef unsigned char boolean;
  * two 16-bit shorts is faster than multiplying two ints.  Define MULTIPLIER
  * as short on such a machine.  MULTIPLIER must be at least 16 bits wide.
  */
-
+#ifndef WIN32
 typedef int16_t int16;
+#else
+typedef __int16 int16;
+#endif
 
 #ifndef MULTIPLIER
 #define MULTIPLIER  int16		/* type for fastest integer multiply */

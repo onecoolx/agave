@@ -22,6 +22,7 @@ list(REMOVE_ITEM SOURCES
     ${PROJ_ROOT}/src/webcore/platform/unicode/uchar_props_data.cpp
     ${PROJ_ROOT}/src/webcore/platform/unicode/unorm_props_data.cpp
     ${PROJ_ROOT}/src/webcore/platform/unicode/word_break_data.cpp
+    ${PROJ_ROOT}/src/webcore/bridge/JavaScriptStatistics.cpp
 )
 
 include_directories(${PROJ_ROOT}/include
@@ -58,14 +59,22 @@ include_directories(${PROJ_ROOT}/include
                     ${PROJ_ROOT}/src/webcore/platform/image-decoders/ico
                     ${PROJ_ROOT}/src/webcore/xml
                     ${PROJ_ROOT}/src/webview
+                    ${PROJ_OUT}/include
                     ${PROJ_OUT}/
 )
 
 set(LIB_NAME agave)
 
+if (MSVC)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4838 /wd4305 /wd4291 /wd4065 /wd4146")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4838 /wd4305 /wd4291 /wd4065 /wd4146")
+endif()
+
 add_library(${LIB_NAME} ${SOURCES})
 
 target_link_libraries(${LIB_NAME} PRIVATE ${LIB_DEPS})
+
+target_compile_definitions(${LIB_NAME} PRIVATE CURL_STATICLIB)
 
 set_target_properties(${LIB_NAME} PROPERTIES VERSION ${VERSION_INFO} SOVERSION 1)
 

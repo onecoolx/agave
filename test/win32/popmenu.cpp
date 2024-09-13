@@ -1,4 +1,4 @@
-/* popmenu - MaCross application 
+﻿/* popmenu - MaCross application 
  * 
  * Copyright (C) 2009 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
@@ -52,7 +52,7 @@ LRESULT CALLBACK POPWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			menu->menu->buffer = buffer;
 			menu->menu->pitch = width*CBYTE;
 
-			SetWindowLong(hWnd, GWL_USERDATA, (LONG)menu);
+			SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)menu);
 		}
 		break;
 	case WM_PAINT:
@@ -66,7 +66,7 @@ LRESULT CALLBACK POPWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			BITMAP* pm;
 #endif
 			GetClientRect(hWnd, &crc);
-			menu = (struct menu_data*)GetWindowLong(hWnd, GWL_USERDATA);
+			menu = (struct menu_data*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 			rc.x = crc.left;  rc.y = crc.top; rc.w = crc.right-crc.left; rc.h = crc.bottom-crc.top;
 			macross_menu_update(menu->menu, &rc);
 			hdc = BeginPaint(hWnd, &ps);
@@ -99,7 +99,7 @@ LRESULT CALLBACK POPWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			width = LOWORD(lParam);
 			height = HIWORD(lParam);
 
-			menu = (struct menu_data*)GetWindowLong(hWnd, GWL_USERDATA);
+			menu = (struct menu_data*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
  
 			if (menu) {
 				free(menu->menu->buffer);
@@ -135,7 +135,7 @@ LRESULT CALLBACK POPWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			if (wParam == MK_SHIFT)
 				key |= MF_SHIFT;
 
-			menu = (struct menu_data*)GetWindowLong(hWnd, GWL_USERDATA);
+			menu = (struct menu_data*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
 			e.type = EVT_MOUSE_DOWN;
 			e.button =  MOUSE_BTN_LEFT;
@@ -153,7 +153,7 @@ LRESULT CALLBACK POPWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			if (wParam == MK_SHIFT)
 				key |= MF_SHIFT;
 
-			menu = (struct menu_data*)GetWindowLong(hWnd, GWL_USERDATA);
+			menu = (struct menu_data*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
 			e.type = EVT_KEY_DOWN;
 			e.key = (MC_VIRTUAL_KEY)wParam;
@@ -174,7 +174,7 @@ LRESULT CALLBACK POPWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			if (wParam == MK_SHIFT)
 				key |= MF_SHIFT;
 
-			menu = (struct menu_data*)GetWindowLong(hWnd, GWL_USERDATA);
+			menu = (struct menu_data*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
 			e.type = EVT_MOUSE_UP;
 			e.button =  MOUSE_BTN_LEFT;
@@ -196,7 +196,7 @@ LRESULT CALLBACK POPWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			if (wParam == MK_SHIFT)
 				key |= MF_SHIFT;
 
-			menu = (struct menu_data*)GetWindowLong(hWnd, GWL_USERDATA);
+			menu = (struct menu_data*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
 			e.type = EVT_MOUSE_MOVE;
 			e.button =  MOUSE_BTN_NONE;
@@ -208,7 +208,7 @@ LRESULT CALLBACK POPWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 	case WM_KILLFOCUS:
 		{
 			ReleaseCapture();
-			menu = (struct menu_data*)GetWindowLong(hWnd, GWL_USERDATA);
+			menu = (struct menu_data*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 			macross_menu_hide(menu->menu);
 		}
 		break;
@@ -216,7 +216,7 @@ LRESULT CALLBACK POPWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		break;
 	case WM_DESTROY:
 		{
-			menu = (struct menu_data*)GetWindowLong(hWnd, GWL_USERDATA);
+			menu = (struct menu_data*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 			free(menu->menu->buffer);
 			free(menu);
 		}

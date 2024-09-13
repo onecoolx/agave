@@ -6,8 +6,8 @@
  *
  * Author: Igor Zlatkovic
  */
-#ifndef __LIBXSLT_WIN32_CONFIG__
-#define __LIBXSLT_WIN32_CONFIG__
+#ifndef __LIBEXSLT_WIN32_CONFIG__
+#define __LIBEXSLT_WIN32_CONFIG__
 
 #include "build.h"
 
@@ -92,8 +92,6 @@ static int isnan (double d) {
 #define HAVE__STAT
 #endif
 #define HAVE_STRING_H
-
-#include <libxml/xmlversion.h>
 
 #ifndef ATTRIBUTE_UNUSED
 #define ATTRIBUTE_UNUSED

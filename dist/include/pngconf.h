@@ -1,4 +1,4 @@
-
+﻿
 /* pngconf.h - machine configurable file for libpng
  *
  * libpng version 1.2.44 - June 26, 2010
@@ -1444,6 +1444,7 @@ typedef z_stream FAR *  png_zstreamp;
 #if !defined(PNG_IMPEXP) && defined(PNG_BUILD_DLL) && !defined(PNG_NO_MODULEDEF)
 #  define PNG_IMPEXP
 #endif
+#  define PNG_IMPEXP
 
 #if defined(PNG_DLL) || defined(_DLL) || defined(__DLL__ ) || \
     (( defined(_Windows) || defined(_WINDOWS) || \

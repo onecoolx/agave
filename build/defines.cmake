@@ -16,6 +16,7 @@ if (WIN32)
     add_compile_definitions(_CRT_NONSTDC_NO_WARNINGS)
     add_compile_definitions(_SCL_SECURE_NO_WARNINGS)
     add_compile_definitions(_SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS)
+    add_compile_definitions(_WINSOCK_DEPRECATED_NO_WARNINGS)
 endif()
 
 macro(OPTION_MACRO_DEFINE _option _macro _desc _initval)

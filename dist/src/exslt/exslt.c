@@ -4,7 +4,7 @@
 #include <libxml/xmlversion.h>
 
 #if (defined(WIN32)||defined(WINCE)) && !defined (__CYGWIN__) && (!__MINGW32__)
-#include <win32config.h>
+#include "win32config.h"
 #else
 #include "config.h"
 #endif
