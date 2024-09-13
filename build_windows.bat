@@ -1,3 +1,3 @@
 mkdir vcproj
 cd vcproj
-cmake ../
+cmake ../ -A Win32

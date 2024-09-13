@@ -54,7 +54,6 @@ namespace WebCore {
             Value(unsigned value) : m_type(NumberValue), m_number(value) {}
             Value(unsigned long value) : m_type(NumberValue), m_number(value) {}
             Value(double value) : m_type(NumberValue), m_number(value) {}
-            Value(size_t value) : m_type(NumberValue), m_number(value) {}
 
             Value(const char* value) : m_type(StringValue), m_data(new ValueData(value)) {}
             Value(const String& value) : m_type(StringValue), m_data(new ValueData(value)) {}
