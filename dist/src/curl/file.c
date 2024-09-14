@@ -550,7 +550,6 @@ static CURLcode file_do(struct connectdata *conn, bool *done)
   char *buf = data->state.buffer;
   curl_off_t bytecount = 0;
   int fd;
-  char* path;
   struct timeval now = Curl_tvnow();
 
   *done = TRUE; /* unconditionally */
@@ -563,7 +562,6 @@ static CURLcode file_do(struct connectdata *conn, bool *done)
 
   /* get the fd from the connection phase */
   fd = conn->data->state.proto.file->fd;
-  path = conn->data->state.proto.file->path;
 
   /* VMS: This only works reliable for STREAMLF files */
 #ifndef _WIN32_WCE
@@ -575,6 +573,7 @@ static CURLcode file_do(struct connectdata *conn, bool *done)
     fstated = TRUE;
   }
 #else
+  char* path = conn->data->state.proto.file->path;
   if (-1 != get_file_size(path, &tsize)) {
  /* we could stat it, then read out the size */
     expected_size = tsize;

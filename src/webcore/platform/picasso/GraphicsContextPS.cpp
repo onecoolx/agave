@@ -439,7 +439,13 @@ void GraphicsContext::clip(const IntRect& r)
     if (paintingDisabled())
         return;	
 
-	ps_rect rt = {r.x(), r.y(), r.width(), r.height()};
+    ps_point p1 = {r.x(), r.y()};
+    ps_point p2 = {r.x() + r.width(), r.y() + r.height()};
+    
+    ps_world_to_viewport(m_data->context, &p1);
+    ps_world_to_viewport(m_data->context, &p2);
+
+	ps_rect rt = {p1.x, p1.y, p2.x - p1.x, p2.y - p1.y};
     ps_scissor_rect(m_data->context, &rt);
 }
 
@@ -720,15 +726,21 @@ void GraphicsContext::fillRoundedRect(const IntRect& rc, const IntSize& topLeft,
 	}
 }
 
-void GraphicsContext::clearRect(const FloatRect& rect) 
+void GraphicsContext::clearRect(const FloatRect& r)
 {
     if (paintingDisabled())
         return;	
 		
 	ps_save(m_data->context);
 	ps_color c = {0, 0, 0, 0};
-	ps_rect r = {rect.x(), rect.y(), rect.width(), rect.height()};
-	ps_scissor_rect(m_data->context, &r);
+
+    ps_point p1 = {r.x(), r.y()};
+    ps_point p2 = {r.x() + r.width(), r.y() + r.height()};
+    ps_world_to_viewport(m_data->context, &p1);
+    ps_world_to_viewport(m_data->context, &p2);
+	ps_rect rt = {p1.x, p1.y, p2.x - p1.x, p2.y - p1.y};
+	ps_scissor_rect(m_data->context, &rt);
+
 	ps_set_source_color(m_data->context, &c);
 	ps_clear(m_data->context);
 	ps_restore(m_data->context);

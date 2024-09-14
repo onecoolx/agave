@@ -227,7 +227,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	hInst = hInstance;
-	hmWnd = CreateWindow(L"MaCross", L"MaCross Browser", WS_VISIBLE|WS_SYSMENU,
+	hmWnd = CreateWindow(L"Agave", L"Agave Browser", WS_VISIBLE|WS_SYSMENU,
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInstance, NULL);
 
 	if (!hmWnd) {
@@ -253,7 +253,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wc.hCursor			= 0;
 	wc.hbrBackground	= (HBRUSH) GetStockObject(WHITE_BRUSH);
 	wc.lpszMenuName		= 0;
-	wc.lpszClassName	= L"MaCross";
+	wc.lpszClassName	= L"Agave";
 	
 	return RegisterClass(&wc);
 }
@@ -269,7 +269,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     	home_url = lpCmdLine;
 
 
-	macross_initialize(PIXEL_FORMAT_BGRA32, 1024, 768);
+	macross_initialize(PIXEL_FORMAT_BGRA32, width, height);
 
 	init_callback();
 

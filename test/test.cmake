@@ -26,7 +26,7 @@ else()
     include(FindPkgConfig)
     pkg_search_module(GTK2 REQUIRED gtk+-2.0)
     set(SYSTEM_INCLUDE ${GTK2_INCLUDE_DIRS})
-    set(SYSTEM_LIBS ${GTK2_LIBRARIES} ${GTK2_LIBRARIES} pthread m z stdc++)
+    set(SYSTEM_LIBS ${GTK2_LIBRARIES} pthread m z stdc++)
 endif()
 
 add_executable(${APP_NAME} ${APP_TYPE} ${APP_SRCS})

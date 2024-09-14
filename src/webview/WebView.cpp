@@ -379,8 +379,9 @@ void WebView::setContentsPosition(int x, int y)
 
 void WebView::contentsPosition(int *x, int *y)
 {
-    if (!x || !y)
+    if (!x || !y) {
         return;
+    }
 
 	Frame* frame = d->m_frame->page()->focusController()->focusedOrMainFrame();
 	*x = frame->view()->contentsX();

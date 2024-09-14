@@ -47,11 +47,6 @@
 /* Define if you have the <netinet/in.h> header file.  */
 /* #define HAVE_NETINET_IN_H 1 */
 
-/* Define if you have the <process.h> header file.  */
-#ifndef __SALFORDC__
-#define HAVE_PROCESS_H 1
-#endif
-
 /* Define if you have the <sys/poll.h> header file. */
 #define HAVE_SYS_POLL_H 1
 
@@ -190,7 +185,7 @@
 #define HAVE_SOCKET 1
 
 /* Define if you have the strcasecmp function.  */
-/* #define HAVE_STRCASECMP 1 */
+#define HAVE_STRCASECMP 1
 
 /* Define if you have the strdup function.  */
 #define HAVE_STRDUP 1
@@ -202,7 +197,7 @@
 #define HAVE_STRICMP 1
 
 /* Define if you have the strncasecmp function. */
-/* #define HAVE_STRNCASECMP 1 */
+#define HAVE_STRNCASECMP 1
 
 /* Define if you have the strnicmp function. */
 #define HAVE_STRNICMP 1
@@ -245,7 +240,7 @@
 #define HAVE_RECV 1
 
 /* Define to the type of arg 1 for recv. */
-#define RECV_TYPE_ARG1 SOCKET
+#define RECV_TYPE_ARG1 int
 
 /* Define to the type of arg 2 for recv. */
 #define RECV_TYPE_ARG2 char *
@@ -263,7 +258,7 @@
 #define HAVE_RECVFROM 1
 
 /* Define to the type of arg 1 for recvfrom. */
-#define RECVFROM_TYPE_ARG1 SOCKET
+#define RECVFROM_TYPE_ARG1 int
 
 /* Define to the type pointed by arg 2 for recvfrom. */
 #define RECVFROM_TYPE_ARG2 char
@@ -287,7 +282,7 @@
 #define HAVE_SEND 1
 
 /* Define to the type of arg 1 for send. */
-#define SEND_TYPE_ARG1 SOCKET
+#define SEND_TYPE_ARG1 int
 
 /* Define to the type qualifier of arg 2 for send. */
 #define SEND_QUAL_ARG2 const
@@ -309,7 +304,7 @@
 /* ---------------------------------------------------------------- */
 
 /* Define this if in_addr_t is not an available 'typedefed' type */
-#define in_addr_t unsigned long
+//#define in_addr_t unsigned long
 
 /* Define as the return type of signal handlers (int or void).  */
 #define RETSIGTYPE void
@@ -322,9 +317,6 @@
 #  elif defined(_WIN64)
 #    define _SSIZE_T_DEFINED
 #    define ssize_t __int64
-#  else
-#    define _SSIZE_T_DEFINED
-#    define ssize_t int
 #  endif
 #endif
 
@@ -417,4 +409,4 @@
 #  define ENABLE_IPV6 1
 #endif
 
-#endif /* __LIB_CONFIG_WIN32_H */
+#endif /* __LIB_CONFIG_POSIX_H */

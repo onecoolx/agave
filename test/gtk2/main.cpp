@@ -36,15 +36,30 @@ private:
     gint tid;
 };
 
-class MsgTimer : public GtkTimer
+class MsgTimer
 {
 public:
-    virtual ~MsgTimer() {}
+    MsgTimer() : tid(0) {}
+    virtual ~MsgTimer() { g_source_remove(tid); }
+
+    void start(int ms)
+    {
+        tid = g_idle_add(GtkTimer::GtkTimerCb, this);
+    }
+
+    static gboolean GtkTimerCb(gpointer data)
+    {
+        MsgTimer* t = (MsgTimer*)data;
+        t->timerEvent();
+        return TRUE;
+    }
 protected:
     virtual void timerEvent(void)
     {
 	    macross_event_dispatch();
     }
+private:
+    gint tid;
 };
 
 class UserTimer : public GtkTimer
@@ -216,8 +231,9 @@ MaCrossView* OpenWindow(const char* url, int w, int h)
 
 int main(int argc, char* argv[])
 {
-    if (argv[1])
+    if (argv[1]) {
         home_url = argv[1];
+    }
 
 	g_width = 1024;
 	g_height = 768;
