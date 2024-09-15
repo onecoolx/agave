@@ -22,6 +22,9 @@
 
 #include "config.h"
 #include "Cache.h"
+#ifndef NDEBUG
+#include <stdio.h>
+#endif
 
 #include "CachedCSSStyleSheet.h"
 #include "CachedFont.h"

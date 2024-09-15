@@ -26,6 +26,9 @@
 
 #include "RenderObject.h"
 
+#ifndef NDEBUG
+#include <stdio.h>
+#endif
 // FIXME: There's currently no strategy for getting the counter tree updated when new
 // elements with counter-reset and counter-increment styles are added to the render tree.
 // Also, the code can't handle changes where an existing node needs to change into a

@@ -116,18 +116,20 @@ void WTFLogVerbose(const char* file, int line, const char* function, WTFLogChann
 
 #else
 
-#define ASSERT(assertion) do \
+#define ASSERT(assertion) do {\
     if (!(assertion)) { \
         WTFReportAssertionFailure(__FILE__, __LINE__, WTF_PRETTY_FUNCTION, #assertion); \
         CRASH(); \
     } \
-while (0)
-#define ASSERT_WITH_MESSAGE(assertion, ...) do \
+} while (0)
+
+#define ASSERT_WITH_MESSAGE(assertion, ...) do {\
     if (!(assertion)) { \
         WTFReportAssertionFailureWithMessage(__FILE__, __LINE__, WTF_PRETTY_FUNCTION, #assertion, __VA_ARGS__); \
         CRASH(); \
     } \
-while (0)
+} while (0)
+
 #define ASSERT_NOT_REACHED() do { \
     WTFReportAssertionFailure(__FILE__, __LINE__, WTF_PRETTY_FUNCTION, 0); \
     CRASH(); \

@@ -86,10 +86,6 @@ public:
     bool isHttp() const;
     bool isFtp() const;
 
-#ifndef NDEBUG
-    void print() const;
-#endif
-
     static DeprecatedString decode_string(const DeprecatedString&);
     static DeprecatedString decode_string(const DeprecatedString&, const TextEncoding&);
     static DeprecatedString encode_string(const DeprecatedString&);

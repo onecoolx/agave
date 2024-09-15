@@ -24,8 +24,10 @@
  */
 
 #include "config.h"
+#ifndef NDEBUG
+#include <stdio.h>
+#endif
 #include "HistoryItem.h"
-
 #include "Document.h"
 #include "FrameLoader.h"
 #include "IntSize.h"

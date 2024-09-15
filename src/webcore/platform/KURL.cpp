@@ -1542,11 +1542,4 @@ unsigned KURL::urlHash() const
 	return m_hash;
 }
 
-#ifndef NDEBUG
-void KURL::print() const
-{
-    printf("%s\n", urlString.ascii());
-}
-#endif
-
 }

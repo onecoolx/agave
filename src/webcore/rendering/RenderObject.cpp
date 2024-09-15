@@ -62,6 +62,10 @@
 #include "TextStream.h"
 #include <algorithm>
 
+#ifndef NDEBUG
+#include <stdio.h>
+#endif
+
 using namespace std;
 
 namespace WebCore {

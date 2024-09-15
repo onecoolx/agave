@@ -727,9 +727,6 @@ void HTMLFormElement::CheckedRadioButtons::removeButton(HTMLGenericFormElement* 
     if (it == m_nameToCheckedRadioButtonMap->end() || it->second != element)
         return;
     
-    ASSERT(element->isRadioButton());
-    ASSERT(element->isChecked());
-    
     m_nameToCheckedRadioButtonMap->remove(it);
     if (m_nameToCheckedRadioButtonMap->isEmpty())
         m_nameToCheckedRadioButtonMap.clear();

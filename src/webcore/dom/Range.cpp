@@ -24,6 +24,10 @@
 #include "config.h"
 #include "Range.h"
 
+#ifndef NDEBUG
+#include <stdio.h>
+#endif
+
 #include "Document.h"
 #include "DocumentFragment.h"
 #include "ExceptionCode.h"
