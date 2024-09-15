@@ -57,6 +57,18 @@
 
 #cmakedefine HAVE_SYS_STAT_H @HAVE_SYS_STAT_H@
 
+#cmakedefine HAVE_FCNTL_H @HAVE_FCNTL_H@
+
+#cmakedefine HAVE_STRCASECMP @HAVE_STRCASECMP@
+
 #cmakedefine HAVE_STRNCASECMP @HAVE_STRNCASECMP@
+
+#cmakedefine HAVE_FTIME @HAVE_FTIME@
+
+#cmakedefine HAVE_GETTIMEOFDAY @HAVE_GETTIMEOFDAY@
+
+#cmakedefine HAVE_MMAP @HAVE_MMAP@
+
+#cmakedefine HAVE_MUNMAP @HAVE_MUNMAP@
 
 #endif /*_GLOBAL_AGAVE_CONF_H_*/
