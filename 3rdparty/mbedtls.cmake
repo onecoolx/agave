@@ -20,3 +20,8 @@ ExternalProject_Add(
   BUILD_IN_SOURCE
   CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DENABLE_PROGRAMS=OFF -DENABLE_TESTING=OFF -DCMAKE_INSTALL_PREFIX=${PROJ_OUT}
 )
+
+include_directories(${PROJ_OUT}/include)
+link_directories(${PROJ_OUT}/lib)
+
+set(LIB_DEPS ${LIB_DEPS} mbedtls-static mbedcrypto p256m mbedx509 everest)

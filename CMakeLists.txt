@@ -28,10 +28,14 @@ if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build Type" FORCE)
 endif()
 
+option(OPT_USE_INTERNAL_LIBS "Build internal libs" ON)
+
 include (${CMAKE_CURRENT_LIST_DIR}/build/configs.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/build/defines.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/3rdparty/3rdparty.cmake)
+if (OPT_USE_INTERNAL_LIBS)
 include (${CMAKE_CURRENT_LIST_DIR}/dist/allinone.cmake)
+endif()
 include (${CMAKE_CURRENT_LIST_DIR}/src/src.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/test/test.cmake)
 
@@ -39,7 +43,7 @@ option(OPT_UNITTEST "Build Unit tests" OFF)
 if (OPT_UNITTEST)
 enable_testing()
 include (${CMAKE_CURRENT_LIST_DIR}/unit_tests/unit_tests.cmake)
-endif(OPT_UNITTEST)
+endif()
 
 include(CheckIncludeFile)
 check_include_file(stdint.h HAVE_STDINT_H)

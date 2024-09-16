@@ -243,7 +243,7 @@ if (NOT USE_STATIC_MBEDTLS_LIBRARY AND NOT USE_SHARED_MBEDTLS_LIBRARY)
     message(FATAL_ERROR "Need to choose static or shared mbedtls build!")
 endif(NOT USE_STATIC_MBEDTLS_LIBRARY AND NOT USE_SHARED_MBEDTLS_LIBRARY)
 
-set(mbedtls_target    "${MBEDTLS_TARGET_PREFIX}mbedtls")
+set(mbedtls_target    "${MBEDTLS_TARGET_PREFIX}mbedtls-s")
 set(mbedx509_target   "${MBEDTLS_TARGET_PREFIX}mbedx509")
 set(mbedcrypto_target "${MBEDTLS_TARGET_PREFIX}mbedcrypto")
 
@@ -291,7 +291,7 @@ if(USE_STATIC_MBEDTLS_LIBRARY)
     target_link_libraries(${mbedx509_static_target} PUBLIC ${libs} ${mbedcrypto_static_target})
 
     add_library(${mbedtls_static_target} STATIC ${src_tls})
-    set_target_properties(${mbedtls_static_target} PROPERTIES OUTPUT_NAME mbedtls)
+    set_target_properties(${mbedtls_static_target} PROPERTIES OUTPUT_NAME mbedtls-static)
     target_link_libraries(${mbedtls_static_target} PUBLIC ${libs} ${mbedx509_static_target})
 endif(USE_STATIC_MBEDTLS_LIBRARY)
 

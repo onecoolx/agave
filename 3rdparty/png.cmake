@@ -23,3 +23,4 @@ link_directories(${PROJ_OUT}/lib)
 
 add_dependencies(${PNG_NAME} ${ZLIB_NAME})
 
+set(LIB_DEPS ${LIB_DEPS} png)

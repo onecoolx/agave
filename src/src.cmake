@@ -69,7 +69,7 @@ if (MSVC)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4838 /wd4305 /wd4291 /wd4065 /wd4146")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4838 /wd4305 /wd4291 /wd4065 /wd4146")
 else()
-    set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -Wmisleading-indentation")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wmisleading-indentation")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wmisleading-indentation")
 endif()
 

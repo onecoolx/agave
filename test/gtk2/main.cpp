@@ -36,30 +36,16 @@ private:
     gint tid;
 };
 
-class MsgTimer
+class MsgTimer : public GtkTimer
 {
 public:
-    MsgTimer() : tid(0) {}
-    virtual ~MsgTimer() { g_source_remove(tid); }
+    virtual ~MsgTimer() { }
 
-    void start(int ms)
-    {
-        tid = g_idle_add(GtkTimer::GtkTimerCb, this);
-    }
-
-    static gboolean GtkTimerCb(gpointer data)
-    {
-        MsgTimer* t = (MsgTimer*)data;
-        t->timerEvent();
-        return TRUE;
-    }
 protected:
     virtual void timerEvent(void)
     {
 	    macross_event_dispatch();
     }
-private:
-    gint tid;
 };
 
 class UserTimer : public GtkTimer

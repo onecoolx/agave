@@ -23,6 +23,8 @@ else()
         ${PROJ_ROOT}/test/gtk2/main.cpp
         ${PROJ_ROOT}/test/gtk2/popmenu.cpp
     )
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wdeprecated-declarations")
+
     include(FindPkgConfig)
     pkg_search_module(GTK2 REQUIRED gtk+-2.0)
     set(SYSTEM_INCLUDE ${GTK2_INCLUDE_DIRS})
@@ -40,7 +42,6 @@ target_include_directories(${APP_NAME} PRIVATE
                     ${SYSTEM_INCLUDE}
 )
 
-target_link_libraries(${APP_NAME} PRIVATE ${LIB_NAME} ${LIB_DEPS}
-                                  PUBLIC picasso2_sw ${SYSTEM_LIBS} 
+target_link_libraries(${APP_NAME} PRIVATE ${LIB_NAME} ${LIB_DEPS} picasso2_sw ${SYSTEM_LIBS} 
 )
 

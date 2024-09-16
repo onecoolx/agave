@@ -1,0 +1,26 @@
+# HTML5 runtime
+# 
+# Copyright (C) 2024 Zhang Ji Peng
+# Contact: onecoolx@gmail.com
+
+include(ExternalProject)
+
+set(XML2_NAME "libxml2")
+set(XML2_VERSION "2.13.2")
+set(XML2_PACKAGE "${PROJ_ROOT}/packages/${XML2_NAME}-${XML2_VERSION}.tar.gz")
+set(XML2_HASH "a7da2ef965770b6777c4ae136798254bf37037b656dc2eeb4bd30b50e6acd275")
+
+ExternalProject_Add(
+  ${XML2_NAME}
+  PREFIX "${PROJ_OUT}/${XML2_NAME}"
+  URL "${XML2_PACKAGE}"
+  URL_HASH SHA256=${XML2_HASH}
+  BUILD_IN_SOURCE
+  CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DBUILD_SHARED_LIBS=OFF -DLIBXML2_WITH_DEBUG=OFF -DLIBXML2_WITH_ICONV=OFF -DLIBXML2_WITH_PYTHON=OFF -DLIBXML2_WITH_TESTS=OFF -DLIBXML2_WITH_ZLIB=ON -DLIBXML2_WITH_PROGRAMS=OFF -DCMAKE_INSTALL_PREFIX=${PROJ_OUT}
+)
+include_directories(${PROJ_OUT}/include/libxml2)
+link_directories(${PROJ_OUT}/lib)
+
+add_dependencies(${XML2_NAME} ${ZLIB_NAME})
+
+set(LIB_DEPS ${LIB_DEPS} xml2)
