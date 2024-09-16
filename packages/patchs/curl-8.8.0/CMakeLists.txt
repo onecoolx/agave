@@ -128,11 +128,6 @@ if(ENABLE_CURLDEBUG)
   set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS CURLDEBUG)
 endif()
 
-# For debug libs and exes, add "-d" postfix
-if(NOT DEFINED CMAKE_DEBUG_POSTFIX)
-  set(CMAKE_DEBUG_POSTFIX "-d")
-endif()
-
 set(LIB_STATIC "libcurl_static")
 set(LIB_SHARED "libcurl_shared")
 

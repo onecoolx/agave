@@ -81,6 +81,8 @@ target_compile_definitions(${LIB_NAME} PRIVATE CURL_STATICLIB)
 
 set_target_properties(${LIB_NAME} PROPERTIES VERSION ${VERSION_INFO} SOVERSION 1)
 
+add_dependencies(${LIB_NAME} ${PICASSO_NAME})
+
 install(TARGETS ${LIB_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 
