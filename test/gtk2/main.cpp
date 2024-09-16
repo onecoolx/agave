@@ -341,8 +341,7 @@ static KeyEntities key_map[] = {
 
 static int get_virtual_key(int pk)
 {
-	int i;
-	for(i = 0; i < (sizeof(key_map)/sizeof(KeyEntities)); i++)
+	for(uint32_t i = 0; i < (sizeof(key_map)/sizeof(KeyEntities)); i++)
 		if (key_map[i].pk == pk)
 			return key_map[i].vk;
 	return KEY_UNKNOWN; 
