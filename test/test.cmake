@@ -8,7 +8,7 @@ set(APP_SRCS
     ${PROJ_ROOT}/test/interface.cpp
 )
 
-set(APP_NAME agave_browser)
+set(APP_NAME agave_test)
 
 if (WIN32)
     set(APP_SRCS ${APP_SRCS}
@@ -32,6 +32,8 @@ else()
 endif()
 
 add_executable(${APP_NAME} ${APP_TYPE} ${APP_SRCS})
+
+set_property(TARGET ${APP_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 install(TARGETS ${APP_NAME} RUNTIME DESTINATION bin)
 

@@ -14,3 +14,4 @@ include (${CMAKE_CURRENT_LIST_DIR}/xslt.cmake)
 endif()
 
 include (${CMAKE_CURRENT_LIST_DIR}/picasso.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/quickjs.cmake)
