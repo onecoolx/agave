@@ -46,6 +46,10 @@ include_directories(${QJS_DIR})
 
 find_package(Threads)
 
+if(NOT WIN32)
+set(MATH_LIBS m)
+endif()
+
 set(QUICKJS_COMPILER qjsc)
 add_executable(${QUICKJS_COMPILER} qjsc.c)
 target_compile_definitions(${QUICKJS_COMPILER} PRIVATE
@@ -53,7 +57,7 @@ target_compile_definitions(${QUICKJS_COMPILER} PRIVATE
     CONFIG_VERSION="${LIB_VERSION}"
     CONFIG_BIGNUM
 )
-target_link_libraries(${QUICKJS_COMPILER} PRIVATE ${LIB_QUICKJS} PUBLIC Threads::Threads ${CMAKE_DL_LIBS})
+target_link_libraries(${QUICKJS_COMPILER} PRIVATE ${LIB_QUICKJS} PUBLIC Threads::Threads ${MATH_LIBS} ${CMAKE_DL_LIBS})
 install(TARGETS ${QUICKJS_COMPILER} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
 
 set(REPLSRCS repl.c)
@@ -78,7 +82,7 @@ target_compile_definitions(${QUICKJS_EXE} PRIVATE
     CONFIG_VERSION="${LIB_VERSION}"
     CONFIG_BIGNUM
 )
-target_link_libraries(${QUICKJS_EXE} PRIVATE ${LIB_QUICKJS} PUBLIC Threads::Threads ${CMAKE_DL_LIBS})
+target_link_libraries(${QUICKJS_EXE} PRIVATE ${LIB_QUICKJS} PUBLIC Threads::Threads ${MATH_LIBS} ${CMAKE_DL_LIBS})
 install(TARGETS ${QUICKJS_EXE} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin)
 
 if(BUILD_EXAMPLES)
