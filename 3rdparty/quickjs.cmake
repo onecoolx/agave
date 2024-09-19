@@ -18,6 +18,24 @@ ExternalProject_Add(
   PATCH_COMMAND
      ${CMAKE_COMMAND} -E copy
     "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/CMakeLists.txt" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/CMakeLists.txt"
+  && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/cutils.h" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/cutils.h"
+  && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/dirent.h" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/dirent.h"
+  && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/getopt.h" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/getopt.h"
+  && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/cutils.c" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/cutils.c"
+  && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/libregexp.c" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/libregexp.c"
+  && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/qjs.c" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/qjs.c"
+  && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/qjsc.c" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/qjsc.c"
+  && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/quickjs.c" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/quickjs.c"
+  && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/quickjs-libc.c" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/quickjs-libc.c"
   BUILD_IN_SOURCE
   CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${PROJ_OUT}
 )
