@@ -43107,6 +43107,18 @@ static double js_math_round(double a)
     return u.d;
 }
 
+#if defined(_MSC_VER)
+static double js_math_floor(double a)
+{
+    return floor(a);
+}
+
+static double js_math_ceil(double a)
+{
+    return ceil(a);
+}
+#endif
+
 static JSValue js_math_hypot(JSContext *ctx, JSValueConst this_val,
                              int argc, JSValueConst *argv)
 {
@@ -43201,8 +43213,14 @@ static const JSCFunctionListEntry js_math_funcs[] = {
     JS_CFUNC_MAGIC_DEF("min", 2, js_math_min_max, 0 ),
     JS_CFUNC_MAGIC_DEF("max", 2, js_math_min_max, 1 ),
     JS_CFUNC_SPECIAL_DEF("abs", 1, f_f, fabs ),
+#if defined(_MSC_VER)
+    JS_CFUNC_SPECIAL_DEF("floor", 1, f_f, js_math_floor ),
+    JS_CFUNC_SPECIAL_DEF("ceil", 1, f_f, js_math_ceil ),
+#else
     JS_CFUNC_SPECIAL_DEF("floor", 1, f_f, floor ),
     JS_CFUNC_SPECIAL_DEF("ceil", 1, f_f, ceil ),
+#endif
+
     JS_CFUNC_SPECIAL_DEF("round", 1, f_f, js_math_round ),
     JS_CFUNC_SPECIAL_DEF("sqrt", 1, f_f, sqrt ),
 
