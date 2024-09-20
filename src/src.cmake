@@ -22,7 +22,6 @@ list(REMOVE_ITEM SOURCES
     ${PROJ_ROOT}/src/webcore/platform/unicode/uchar_props_data.cpp
     ${PROJ_ROOT}/src/webcore/platform/unicode/unorm_props_data.cpp
     ${PROJ_ROOT}/src/webcore/platform/unicode/word_break_data.cpp
-    ${PROJ_ROOT}/src/webcore/bridge/JavaScriptStatistics.cpp
 )
 
 include_directories(${PROJ_ROOT}/include

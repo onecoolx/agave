@@ -656,7 +656,7 @@ UserAgentStyleSheets.h : css/make-css-file-arrays.pl $(USER_AGENT_STYLE_SHEETS)
 
 # character set name table
 
-CharsetData.cpp : platform/make-charset-table.pl platform/character-sets.txt mg-encodings.txt
+CharsetData.cpp : platform/make-charset-table.pl platform/character-sets.txt encodings.txt
 	perl $^ kTextEncoding > $@
 
 # lookup tables for old-style JavaScript bindings
