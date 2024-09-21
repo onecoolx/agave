@@ -26,7 +26,7 @@
 #ifndef DeprecatedString_h
 #define DeprecatedString_h
 
-#include "DeprecatedCString.h"
+#include "CString.h"
 #include <wtf/ASCIICType.h>
 #include <wtf/unicode/Unicode.h>
 
@@ -63,6 +63,7 @@ public:
     DeprecatedChar lower() const;
     DeprecatedChar upper() const;
 
+    operator char() const { return latin1(); }
 private:
     unsigned short c;
 } PACK_STRUCT;
@@ -264,7 +265,7 @@ public:
     DeprecatedString &operator=(char);
     DeprecatedString &operator=(DeprecatedChar);
     DeprecatedString &operator=(const char *);
-    DeprecatedString &operator=(const DeprecatedCString &);
+    DeprecatedString &operator=(const CString &);
 
     unsigned length() const;
 
@@ -276,8 +277,8 @@ public:
     bool isAllLatin1() const;
     bool hasFastLatin1() const;
     void copyLatin1(char *buffer, unsigned position = 0, unsigned length = 0xffffffff) const;
-    DeprecatedCString utf8() const { int length; return utf8(length); }
-    DeprecatedCString utf8(int &length) const;
+    CString utf8() const { int length; return utf8(length); }
+    CString utf8(int &length) const;
 
     bool isNull() const;
     bool isEmpty() const;

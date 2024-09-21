@@ -96,8 +96,8 @@ void ContextMenu::populate()
         KURL imageURL = result.absoluteImageURL();
 		if (!linkURL.isEmpty() || !imageURL.isEmpty() || result.isSelected()) {
 			if (cb_context_menu) {
-				DeprecatedCString lurl_str;
-				DeprecatedCString murl_str;
+				CString lurl_str;
+				CString murl_str;
 				CString sel_text;
 				MC_CONTEXT_MENU_DATA menu;
 				memset(&menu, 0, sizeof(MC_CONTEXT_MENU_DATA));
@@ -145,7 +145,7 @@ void ContextMenu::populate()
 
 		if (cb_context_menu) {
 			CString sel_text;
-			DeprecatedCString lurl_str;
+			CString lurl_str;
 			MC_CONTEXT_MENU_DATA menu;
 			memset(&menu, 0, sizeof(MC_CONTEXT_MENU_DATA));
 			menu.type |= MENU_TYPE_EDIT;

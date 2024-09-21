@@ -724,9 +724,9 @@ DeprecatedString &DeprecatedString::operator=(const DeprecatedString &qs)
     return *this;
 }
 
-DeprecatedString &DeprecatedString::operator=(const DeprecatedCString &qcs)
+DeprecatedString &DeprecatedString::operator=(const CString &qcs)
 {
-    return setLatin1(qcs);
+    return setLatin1(qcs.data());
 }
 
 DeprecatedString &DeprecatedString::operator=(const char *chs)
@@ -2574,9 +2574,9 @@ DeprecatedString DeprecatedString::fromUtf8(const char *chs, int len)
     return UTF8Encoding().decode(chs, len).deprecatedString();
 }
 
-DeprecatedCString DeprecatedString::utf8(int& length) const
+CString DeprecatedString::utf8(int& length) const
 {
-    DeprecatedCString result = UTF8Encoding().encode((::UChar*)unicode(), this->length()).deprecatedCString();
+    CString result = UTF8Encoding().encode((::UChar*)unicode(), this->length());
     length = result.length();
     return result;
 }

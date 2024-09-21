@@ -33,8 +33,6 @@ using std::min;
 
 namespace WebCore {
 
-    class DeprecatedCString;
-    
     class CStringBuffer : public Shared<CStringBuffer> {
     public:
         CStringBuffer(unsigned length) : m_vector(length) { }
@@ -60,9 +58,6 @@ namespace WebCore {
         unsigned length() const;
 
         bool isNull() const { return !m_buffer; }
-
-        CString(const DeprecatedCString&);
-        DeprecatedCString deprecatedCString() const;
 
     private:
         void copyBufferIfNeeded();

@@ -26,7 +26,6 @@
 
 #include "config.h"
 #include "CString.h"
-#include "DeprecatedCString.h"
 
 namespace WebCore {
 
@@ -38,11 +37,6 @@ CString::CString(const char* str)
 CString::CString(const char* str, unsigned length)
 {
     init(str, length);
-}
-
-CString::CString(const DeprecatedCString& str)
-{
-    init(str.data(), str.length());
 }
 
 void CString::init(const char* str, unsigned length)
@@ -73,11 +67,6 @@ unsigned CString::length() const
     return m_buffer ? m_buffer->length() - 1 : 0;
 }
 
-DeprecatedCString CString::deprecatedCString() const
-{
-    return DeprecatedCString(data(), length() + 1);
-}
-    
 CString CString::newUninitialized(size_t length, char*& characterBuffer)
 {
     CString result;

@@ -99,6 +99,7 @@ static void loading_status(MaCrossView* view, unsigned p, MC_BOOL b)
 
 MaCrossView* win_open(const char* url, unsigned int f, const MC_RECT* r)
 {
+	fprintf(stderr, "open at new window:  %s \n", url);
 	return 0;
 }
 

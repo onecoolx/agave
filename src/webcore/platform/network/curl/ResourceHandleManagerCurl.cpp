@@ -585,7 +585,7 @@ void ResourceHandleManager::doAuth(ResourceHandle* job)
         int pos = strTitle.find('=');
         if (pos != -1)
             strTitle = strTitle.substring(pos+1, strTitle.length()-pos-1);
-        isOk = MaCross::cb_provide_auth(strTitle.deprecatedString().utf8(), user, 128, pass, 128);
+        isOk = MaCross::cb_provide_auth(strTitle.utf8().data(), user, 128, pass, 128);
     }
 
     if (isOk) {

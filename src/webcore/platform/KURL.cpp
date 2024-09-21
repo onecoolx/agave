@@ -1292,12 +1292,12 @@ bool equalIgnoringRef(const KURL& a, const KURL& b)
 
 DeprecatedString KURL::encode_string(const DeprecatedString& notEncodedString)
 {
-    DeprecatedCString asUTF8 = notEncodedString.utf8();
+    CString asUTF8 = notEncodedString.utf8();
     
     Vector<char, 4096> buffer(asUTF8.length() * 3 + 1);
     char *p = buffer.data();
 
-    const char *str = asUTF8;
+    const char *str = asUTF8.data();
     const char *strEnd = str + asUTF8.length();
     while (str < strEnd) {
         unsigned char c = *str++;

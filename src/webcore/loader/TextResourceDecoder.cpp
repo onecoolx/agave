@@ -25,7 +25,6 @@
 
 #include "CString.h"
 #include "DOMImplementation.h"
-#include "DeprecatedCString.h"
 #include "DeprecatedString.h"
 #include "HTMLNames.h"
 #include "TextCodec.h"
@@ -297,7 +296,7 @@ void TextResourceDecoder::setEncoding(const TextEncoding& encoding, EncodingSour
 }
 
 // Returns the position of the encoding string.
-static int findXMLEncoding(const DeprecatedCString &str, int &encodingLength)
+static int findXMLEncoding(const DeprecatedString &str, int &encodingLength)
 {
     int len = str.length();
 
@@ -497,7 +496,7 @@ bool TextResourceDecoder::checkForHeadCharset(const char* data, size_t len, bool
             ++xmlDeclarationEnd;
         if (xmlDeclarationEnd == pEnd)
             return false;
-        DeprecatedCString str(ptr, xmlDeclarationEnd - ptr); // No need for +1, because we have an extra "?" to lose at the end of XML declaration.
+        DeprecatedString str(ptr, xmlDeclarationEnd - ptr); // No need for +1, because we have an extra "?" to lose at the end of XML declaration.
         int len = 0;
         int pos = findXMLEncoding(str, len);
         if (pos != -1)
@@ -611,7 +610,7 @@ bool TextResourceDecoder::checkForHeadCharset(const char* data, size_t len, bool
             }
             
             if (!end && tag == metaTag && !sawNamespace) {
-                DeprecatedCString str(tagContentStart, ptr - tagContentStart);
+                DeprecatedString str(tagContentStart, ptr - tagContentStart);
                 str = str.lower();
                 int pos = 0;
                 while (pos < (int)str.length()) {

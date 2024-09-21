@@ -43,6 +43,8 @@
 #include "MIMETypeRegistry.h"
 #include "RenderTextControl.h"
 
+#include "DeprecatedCString.h"
+
 namespace WebCore {
 
 using namespace EventNames;
@@ -151,7 +153,7 @@ void HTMLFormElement::submitClick(Event* event)
 
 static DeprecatedCString encodeCString(const CString& cstr)
 {
-    DeprecatedCString e = cstr.deprecatedCString();
+    DeprecatedCString e(cstr.data(), cstr.length());
 
     // http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.1
     // same safe characters as Netscape for compatibility
