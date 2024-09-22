@@ -1,12 +1,13 @@
-/* webview.cpp - MaCross application
+/* webview.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
-#include <string.h>
 #include "config.h"
+#include <string.h>
+#include <picasso/picasso.h>
+
 #include "url.h"
-#include "picasso.h"
 #include "macross.h"
 #include "webview.h"
 #include "tabpage.h"
@@ -26,14 +27,14 @@
 #include "autofill.h"
 #include "renderthread.h"
 
-#if defined(WIN32) || defined(WINCE)
+#if defined(WIN32)
 #include "application_win32.h"
 #include "webview_win32.h"
 #endif
 
-#ifdef QT4
-#include "application_qt4.h"
-#include "webview_qt4.h"
+#ifdef GTK2
+#include "application_gtk2.h"
+#include "webview_gtk2.h"
 #endif
 
 #define BUFFER_RAISE 1  //define buffer raise mode.
@@ -351,9 +352,9 @@ static void error_report(int e, const char* url)
 {
 	MainWindow* m = Application::getInstance()->getMainWindow();
 	if ((e > 400000) && (e < 400005))
-		Dialog::AlertBox(m, U("ÎÞ·¨·ÃÎÊ¸ÃµØÖ·"), U("¾¯¸æ"));
+		Dialog::AlertBox(m, U("ÃŽÃžÂ·Â¨Â·ÃƒÃŽÃŠÂ¸ÃƒÂµÃ˜Ã–Â·"), U("Â¾Â¯Â¸Ã¦"));
 	else if ((e > 401000) && (e < 402000 ))
-		Dialog::AlertBox(m, U("ÍøÂç´íÎó"), U("¾¯¸æ"));
+		Dialog::AlertBox(m, U("ÃÃ¸Ã‚Ã§Â´Ã­ÃŽÃ³"), U("Â¾Â¯Â¸Ã¦"));
 }
 
 static void loading_progress(MaCrossView* view, unsigned int prog, MC_BOOL finish)
@@ -365,13 +366,13 @@ static void loading_progress(MaCrossView* view, unsigned int prog, MC_BOOL finis
 static void alert_box(MaCrossView* view, const char* msg)
 {
 	MainWindow* m = Application::getInstance()->getMainWindow();
-	Dialog::AlertBox(m, Unicode::ConvertUTF8ToUTF16(msg), U("¾¯¸æ"));
+	Dialog::AlertBox(m, Unicode::ConvertUTF8ToUTF16(msg), U("Â¾Â¯Â¸Ã¦"));
 }
 
 static MC_BOOL confirm_box(MaCrossView* view, const char* msg)
 {
 	MainWindow* m = Application::getInstance()->getMainWindow();
-	if (Dialog::ConfirmBox(m, Unicode::ConvertUTF8ToUTF16(msg), U("ÐÅÏ¢")))
+	if (Dialog::ConfirmBox(m, Unicode::ConvertUTF8ToUTF16(msg), U("ÃÃ…ÃÂ¢")))
 		return True;
 	else
 		return False;
@@ -383,7 +384,7 @@ static char* prompt_box(MaCrossView* view, const char* msg, const char* def)
 
 	MainWindow* m = Application::getInstance()->getMainWindow();
 	ret = Unicode::ConvertUTF16ToUTF8(Dialog::PromptBox(m, Unicode::ConvertUTF8ToUTF16(msg), 
-													Unicode::ConvertUTF8ToUTF16(def), U("ÐÅÏ¢")));
+													Unicode::ConvertUTF8ToUTF16(def), U("ÃÃ…ÃÂ¢")));
 	if (ret.empty()) {
 		return 0;
 	} else {
@@ -561,7 +562,7 @@ void WebView::shutdown(void)
 	int i = 0;
 	while (WebView::render->isRunning()){
 		i++;
-		VGCL::VThread::Sleep(10); // wait for rendering thread exit.
+		vgcl::VThread::Sleep(10); // wait for rendering thread exit.
 	}
     delete WebView::render;
     WebView::render = NULL;

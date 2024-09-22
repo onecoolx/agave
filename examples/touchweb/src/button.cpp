@@ -1,14 +1,15 @@
-/* vbutton.cpp - MaCross application
+/* vbutton.cpp - Agave application
  *
  * Vector Graphic Component button.
  *
- * Copyright (C) 2010 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
-#include <string>
 #include "config.h"
-#include "picasso.h"
+#include <string>
+#include <picasso/picasso.h>
+
 #include "button.h"
 
 VButton::VButton(Widget* parent)
@@ -77,7 +78,8 @@ void VButton::OnPaint(ps_context* gc, const Rect* r)
 		ps_color c = {0, 0, 0, 1};
 		ps_set_text_color(gc, &c);
 
-		ps_size sz = ps_get_text_extent(gc, (ps_uchar16*)m_text.c_str(), m_text.length());
+		ps_size sz = {0};
+        ps_get_text_extent(gc, (ps_uchar16*)m_text.c_str(), m_text.length(), &sz);
 
 		ps_wide_text_out_length(gc, (rc.w-sz.w)/2, (rc.h-sz.h)/2, 
 												(ps_uchar16*)m_text.c_str(), m_text.length());

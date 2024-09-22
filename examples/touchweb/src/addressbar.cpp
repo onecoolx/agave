@@ -1,11 +1,12 @@
-/* addressbar.cpp - MaCross application
+/* addressbar.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "addressbar.h"
 #include "tabpage.h"
 #include "webview.h"
@@ -15,12 +16,12 @@
 #include "mainwindow.h"
 #include "application.h"
 
-#if defined(WIN32) || defined(WINCE)
+#if defined(WIN32)
 #include "application_win32.h"
 #endif
 
-#ifdef QT4
-#include "application_qt4.h"
+#ifdef GTK2
+#include "application_gtk2.h"
 #endif
 
 NavButton::NavButton(Widget* parent)
@@ -95,14 +96,14 @@ void NavButton::draw_reloadbtn(ps_context* gc, ps_rect& r)
 	int b = TOOLBAR_HEIGHT/15;
 	ps_color c = {1, 1, 1, 1};
 	ps_set_source_color(gc, &c);
-	ps_rect ry = {r.x+r.w/2-TOOLBAR_HEIGHT/10*3, r.y+b, TOOLBAR_HEIGHT/5*3, TOOLBAR_HEIGHT/5*3};
-	ps_rect rn = {r.x+r.w/2-b*2.2, r.y+b*3.5, TOOLBAR_HEIGHT/10*3, TOOLBAR_HEIGHT/10*3};
-	ps_tangent_arc(gc, &ry, -1.57, 4.71);
-	ps_tangent_arc(gc, &rn, 3.14, -4.71);
+	ps_rect ry = {r.x+r.w/2-TOOLBAR_HEIGHT/10*3.0f, r.y+b, TOOLBAR_HEIGHT/5*3.0f, TOOLBAR_HEIGHT/5*3.0f};
+	ps_rect rn = {r.x+r.w/2-b*2.2f, r.y+b*3.5f, TOOLBAR_HEIGHT/10*3.0f, TOOLBAR_HEIGHT/10*3.0f};
+	ps_tangent_arc(gc, &ry, -1.57f, 4.71f);
+	ps_tangent_arc(gc, &rn, 3.14f, -4.71f);
 	ps_new_sub_path(gc);
 	ps_point p1 = {r.x+r.w/2-b*2, r.y+TOOLBAR_HEIGHT/6};
 	ps_point p2 = {r.x+r.w/2, r.y};
-	ps_point p3 = {r.x+r.w/2, r.y+b*4.4};
+	ps_point p3 = {r.x+r.w/2, r.y+b*4.4f};
 	ps_move_to(gc, &p1);
 	ps_line_to(gc, &p2);
 	ps_line_to(gc, &p3);
@@ -119,8 +120,8 @@ void NavButton::OnPaint(ps_context* gc, const Rect* d)
 
 	if (m_click) {
 		int rds = TOOLBAR_HEIGHT/10;
-		ps_color cb = {0.56, 0.56, 0.56, 1};
-		ps_rect rb = {rds/3, rds/3, width()-rds, height()-rds};
+		ps_color cb = {0.56f, 0.56f, 0.56f, 1};
+		ps_rect rb = {rds/3.0f, rds/3.0f, width()-rds, height()-rds};
 		ps_set_line_width(gc, TOOLBAR_HEIGHT/30);
 		ps_set_stroke_color(gc, &cb);
 		ps_color c1 = {0.95, 0.95, 0.95, 1};
@@ -151,7 +152,7 @@ void NavButton::OnPaint(ps_context* gc, const Rect* d)
 
 void NavButton::button_event(void* param)
 {
-	int type = (int)param;
+	int type = (intptr_t)param;
 	if (type == LoadBtn) {
 		//load url
 		m_main->getAddressBar()->loadUrl();		
@@ -197,7 +198,7 @@ AddressBar::AddressBar(Widget* parent)
 	, m_sy(0)
 {
 	m_btn = new NavButton(this);
-	m_tip = ustring(U("ÊäÈëÍøÖ·»òËÑË÷¹Ø¼ü×Ö"));
+	m_tip = ustring(U("ÃŠÃ¤ÃˆÃ«ÃÃ¸Ã–Â·Â»Ã²Ã‹Ã‘Ã‹Ã·Â¹Ã˜Â¼Ã¼Ã—Ã–"));
 }
 
 AddressBar::~AddressBar()
@@ -274,7 +275,8 @@ void AddressBar::OnPaint(ps_context* gc, const Rect* d)
 		ps_set_text_antialias(gc, False);
 #endif
 
-	ps_size sz = ps_get_text_extent(gc, m_text.c_str(), m_text.length());
+	ps_size sz = {0};
+    ps_get_text_extent(gc, m_text.c_str(), m_text.length(), &sz);
 	if (sz.w <= box_len) {
 		m_cur = sz.w;
 		m_len = m_text.length();
@@ -333,7 +335,7 @@ void AddressBar::OnPaint(ps_context* gc, const Rect* d)
 		}
 		ps_save(gc);
 
-		ps_clip_fast_rect(gc, &tr);
+		ps_scissor_rect(gc, &tr);
 	
 		if (hasFocus())
 			ps_wide_text_out_length(gc, rds*4, rds*4, (ps_uchar16*)(m_text.c_str()+m_pos), m_len);

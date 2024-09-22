@@ -1,13 +1,14 @@
-/* setting.cpp - MaCross application
+/* setting.cpp - Agave application
  *
- * Copyright (C) 2010 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
+#include "config.h"
 #include <stdlib.h>
 #include <string.h>
-#include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "application.h"
 #include "about.h"
 #include "secmgr.h"
@@ -31,9 +32,9 @@ Setting::Setting(Widget* parent)
 	, m_config(0)
 	, m_refresh(false)
 {
-	setTitle(U("设置"));
-	setCommitText(U("保存"));
-	setCancelText(U("取消"));
+	setTitle(U("脡猫脰脙"));
+	setCommitText(U("卤拢麓忙"));
+	setCancelText(U("脠隆脧没"));
 
 	m_config = (MC_CONFIG*)malloc(sizeof(MC_CONFIG));
 	memset(m_config, 0, sizeof(MC_CONFIG));
@@ -92,9 +93,9 @@ void Setting::draw_button(ps_context* gc, const Rect& r, bool enable, bool highl
 	ps_fill(gc);
 
 	if (enable) 
-		ps_wide_text_out_length(gc, r.x+r.w/2-b*12, r.y+r.h/2-b*6, (ps_uchar16*)U("启用"), 2);
+		ps_wide_text_out_length(gc, r.x+r.w/2-b*12, r.y+r.h/2-b*6, (ps_uchar16*)U("脝么脫脙"), 2);
 	else
-		ps_wide_text_out_length(gc, r.x+r.w/2-b*12, r.y+r.h/2-b*6, (ps_uchar16*)U("禁用"), 2);
+		ps_wide_text_out_length(gc, r.x+r.w/2-b*12, r.y+r.h/2-b*6, (ps_uchar16*)U("陆没脫脙"), 2);
 
 	ps_color tc = {1, 1, 1, 0.8};
 	ps_color tc2 = {1, 1, 1, 0.2};
@@ -125,7 +126,7 @@ void Setting::draw_about_button(ps_context* gc, const Rect& r, bool highlight)
 	ps_rounded_rect(gc, &rc, rds, rds, rds, rds, rds, rds, rds, rds);
 	ps_fill(gc);
 
-	ps_wide_text_out_length(gc, r.x+r.w/2-b*12, r.y+r.h/2-b*6, (ps_uchar16*)U("关于"), 2);
+	ps_wide_text_out_length(gc, r.x+r.w/2-b*12, r.y+r.h/2-b*6, (ps_uchar16*)U("鹿脴脫脷"), 2);
 
 	ps_color tc = {1, 1, 1, 0.8};
 	ps_color tc2 = {1, 1, 1, 0.2};
@@ -238,19 +239,19 @@ void Setting::OnPaint(ps_context* gc, const Rect* r)
 	int border = DASH_TITLE_HEIGHT/30;
 
 	ps_wide_text_out_length(gc, border*8, DASH_TITLE_HEIGHT
-						+cell_height/2-cell_height/4, (ps_uchar16*)U("显示图片"), 4);
+						+cell_height/2-cell_height/4, (ps_uchar16*)U("脧脭脢戮脥录脝卢"), 4);
 
 	ps_wide_text_out_length(gc, border*8, DASH_TITLE_HEIGHT
-						+cell_height+cell_height/2-cell_height/4, (ps_uchar16*)U("JavaScript支持"), 12);
+						+cell_height+cell_height/2-cell_height/4, (ps_uchar16*)U("JavaScript脰搂鲁脰"), 12);
 
 	ps_wide_text_out_length(gc, border*8, DASH_TITLE_HEIGHT
-						+cell_height*2+cell_height/2-cell_height/4, (ps_uchar16*)U("Cookies支持"), 9);
+						+cell_height*2+cell_height/2-cell_height/4, (ps_uchar16*)U("Cookies脰搂鲁脰"), 9);
 
 	ps_wide_text_out_length(gc, border*8, DASH_TITLE_HEIGHT
-						+cell_height*3+cell_height/2-cell_height/4, (ps_uchar16*)U("字体平滑"), 4);
+						+cell_height*3+cell_height/2-cell_height/4, (ps_uchar16*)U("脳脰脤氓脝陆禄卢"), 4);
 
 	ps_wide_text_out_length(gc, border*8, DASH_TITLE_HEIGHT
-						+cell_height*4+cell_height/2-cell_height/4, (ps_uchar16*)U("用户隐私"), 4);
+						+cell_height*4+cell_height/2-cell_height/4, (ps_uchar16*)U("脫脙禄搂脪镁脣陆"), 4);
 
 	draw_buttons(gc, *r);
 
@@ -300,7 +301,7 @@ void Setting::OnMouseEvent(const MouseEvent* e)
 
 void Setting::button_event(void* param)
 {
-	int btn = (int)param;
+	int btn = (intptr_t)param;
 	switch (btn)
 	{
 		case 1:

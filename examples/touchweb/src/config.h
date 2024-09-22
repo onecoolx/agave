@@ -1,11 +1,11 @@
-/* config.h - MaCross application
+/* config.h - Agave application
  *
- * Copyright (C) 2010 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
-#define APP_VERSION "102080"  /* version 1.2.8 */
-#define VERSION_STRING "1.2.8"
+#define APP_VERSION "105000"  /* version 1.2.8 */
+#define VERSION_STRING "1.5.0"
 
 #define THREAD_RENDER 1
 
@@ -62,7 +62,7 @@ typedef std::wstring ustring;
 #define FILENAME_UNICODE 1
 #endif
 
-#if defined(linux) && defined(__GNUC__)
+#if defined(__linux)
 #include <stdint.h>
 #include <wctype.h>
 #include <string>
@@ -91,7 +91,7 @@ typedef std::basic_string<uchar_t> ustring;
 	}while(0)
 
 
-#if 1
+#if 0
 #include <windows.h>
 //debug tools
 		//FILE* pf=_wfopen(L"Disk\\new_tg.log", L"a+"); 

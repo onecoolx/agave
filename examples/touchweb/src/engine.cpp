@@ -1,4 +1,4 @@
-/* engine.cpp - MaCross application
+/* engine.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -7,8 +7,8 @@
 #include "config.h"
 #include <string>
 #include <sstream>
+#include <picasso/picasso.h>
 
-#include "picasso.h"
 #include "engine.h"
 #include "application.h"
 
@@ -60,7 +60,7 @@ public:
 		m_items.push_back(item);
 
 		engine_item item2;
-		item2.name = ustring(U("百度"));
+		item2.name = ustring(U("掳脵露脠"));
 		if (bits_pixel == 32)
 			item2.img = b_img32;
 		else
@@ -72,7 +72,7 @@ public:
 		m_items.push_back(item2);
 
 		engine_item item3;
-		item3.name = ustring(U("易查"));
+		item3.name = ustring(U("脪脳虏茅"));
 		if (bits_pixel == 32)
 			item3.img = y_img32;
 		else
@@ -85,7 +85,7 @@ public:
 
 /*
 		engine_item item4;
-		item4.name = ustring(U("宜搜"));
+		item4.name = ustring(U("脪脣脣脩"));
 		if (bits_pixel == 32)
 			item4.img = e_img32;
 		else

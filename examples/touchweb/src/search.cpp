@@ -1,11 +1,12 @@
-/* search.cpp - MaCross application
+/* search.cpp - Agave application
  *
- * Copyright (C) 2010 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "search.h"
 #include "edit.h"
 #include "engine.h"
@@ -24,8 +25,8 @@ Search::Search(Widget* parent)
 	, m_btn(0)
 	, m_ebtn(0)
 {
-	setTitle(U("ËÑË÷"));
-	setCommitText(U("·µ»Ø"));
+	setTitle(U("Ã‹Ã‘Ã‹Ã·"));
+	setCommitText(U("Â·ÂµÂ»Ã˜"));
 	setCancel(false);
 
 	m_words = new LineEdit(this);
@@ -101,7 +102,8 @@ void Search::draw_engine_btns(ps_context* gc)
 		ps_fill(gc);
 		ps_image_unref(pm);
 
-		ps_size sz = ps_get_text_extent(gc, m_items[i].name.c_str(), m_items[i].name.length());
+		ps_size sz = {0};
+        ps_get_text_extent(gc, m_items[i].name.c_str(), m_items[i].name.length(), &sz);
 		ps_wide_text_out_length(gc, r.x+r.w/2-sz.w/2, r.y+r.h-b*18, 
 								(ps_uchar16*)m_items[i].name.c_str(), m_items[i].name.length());
 
@@ -138,7 +140,7 @@ void Search::OnPaint(ps_context* gc, const Rect* d)
 
 	ps_font* of = ps_set_font(gc, f);
 
-	draw_sebtn(gc, U("ËÑË÷"), m_sebtn, true, m_btn ? true : false);
+	draw_sebtn(gc, U("Ã‹Ã‘Ã‹Ã·"), m_sebtn, true, m_btn ? true : false);
 
 	draw_engine_btns(gc);
 
@@ -262,7 +264,7 @@ void Search::button_search(void* param)
 
 void Search::button_set(void* param)
 {
-	int ed = int(param);
+	int ed = (intptr_t)param;
 	if (ed) {
 		Application::getInstance()->getSearchEngine()->setDefaultById(ed-1);
 		m_words->setTipText(Application::getInstance()->getSearchEngine()->getDefaultName());

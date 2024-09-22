@@ -18,7 +18,7 @@ NetStatPanel::NetStatPanel(Widget* parent)
 	, m_count(0)
 	, m_flat(0)
 {
-	setTitle(U("网络连接"));
+	setTitle(U("脥酶脗莽脕卢陆脫"));
 }
 
 NetStatPanel::~NetStatPanel()
@@ -51,13 +51,13 @@ void NetStatPanel::OnPaint(ps_context* gc, const Rect* r)
 #endif
 
 	if (m_flat == 1) {
-		ps_wide_text_out_length(gc, b*50, b*35+titleHeight(), P16(U("正在连接网络.")), 7);
+		ps_wide_text_out_length(gc, b*50, b*35+titleHeight(), P16(U("脮媒脭脷脕卢陆脫脥酶脗莽.")), 7);
 	} else if (m_flat == 2) {
-		ps_wide_text_out_length(gc, b*50, b*35+titleHeight(), P16(U("正在连接网络..")), 8);
+		ps_wide_text_out_length(gc, b*50, b*35+titleHeight(), P16(U("脮媒脭脷脕卢陆脫脥酶脗莽..")), 8);
 	} else if (m_flat == 3) {
-		ps_wide_text_out_length(gc, b*50, b*35+titleHeight(), P16(U("正在连接网络...")), 9);
+		ps_wide_text_out_length(gc, b*50, b*35+titleHeight(), P16(U("脮媒脭脷脕卢陆脫脥酶脗莽...")), 9);
 	} else {
-		ps_wide_text_out_length(gc, b*50, b*35+titleHeight(), P16(U("正在连接网络")), 6);
+		ps_wide_text_out_length(gc, b*50, b*35+titleHeight(), P16(U("脮媒脭脷脕卢陆脫脥酶脗莽")), 6);
 	}
 
 	ps_set_font(gc, of);
@@ -74,7 +74,7 @@ void NetStatPanel::OnTimer(void *data)
 	if (m_count > 80) {
 		stop();
 		Hide();
-		Dialog::AlertBox(m_main, U("无法连接网络,请检查网络设置"), U("提示"));
+		Dialog::AlertBox(m_main, U("脦脼路篓脕卢陆脫脥酶脗莽,脟毛录矛虏茅脥酶脗莽脡猫脰脙"), U("脤谩脢戮"));
 		return;
 	}
 

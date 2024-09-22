@@ -1,11 +1,12 @@
-/* hismgr.cpp - MaCross application
+/* hismgr.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "hismgr.h"
 #include "history.h"
 #include "mainwindow.h"
@@ -152,7 +153,7 @@ void HistoryView::draw_icon(ps_context* gc, const ps_rect* r)
 	ps_paint(gc);
 	ps_matrix_translate(m_impl->t_mtx, -rc.x*2, -rc.y*2);
 	ps_gradient_transform(m_impl->g_icon, m_impl->t_mtx);
-	ps_matrix_reset(m_impl->t_mtx);
+	ps_matrix_identity(m_impl->t_mtx);
 	ps_set_line_width(gc, 1);
 }
 
@@ -200,7 +201,8 @@ void HistoryView::OnPaint(ps_context* gc, const Rect* r)
 					ps_color tc = {0,0,0,1};
 					ps_set_text_color(gc, &tc);
 
-					ps_size sz = ps_get_text_extent(gc, m_items[i].title.c_str(), m_items[i].title.length());
+					ps_size sz = {0};
+                    ps_get_text_extent(gc, m_items[i].title.c_str(), m_items[i].title.length(), &sz);
 					if (sz.w <= (rc.w-40*b)) {
 						ps_wide_text_out_length(gc, b*20, rc.y+b*5, 
 								(ps_uchar16*)m_items[i].title.c_str(), m_items[i].title.length());
@@ -216,7 +218,7 @@ void HistoryView::OnPaint(ps_context* gc, const Rect* r)
 					ps_set_font(gc, of);
 					ps_font* of = ps_set_font(gc, uf);
 
-					sz = ps_get_text_extent(gc, m_items[i].url.c_str(), m_items[i].url.length());
+					ps_get_text_extent(gc, m_items[i].url.c_str(), m_items[i].url.length(), &sz);
 					if (sz.w <= (rc.w-40*b)) {
 						ps_wide_text_out_length(gc, b*20, rc.y+b*8+b*12, 
 								(ps_uchar16*)m_items[i].url.c_str(), m_items[i].url.length());
@@ -238,14 +240,14 @@ void HistoryView::OnPaint(ps_context* gc, const Rect* r)
 		if (tr.intersect(pr)) {
 			Rect brc = m_pageup;
 			brc.x -= scrollX(); brc.y -= scrollY();
-			draw_button(gc, U("<<��һҳ"), brc, m_enableup, (m_pagebtn == 1) ? true : false);
+			draw_button(gc, U("<<ÉÏÒ»Ò³"), brc, m_enableup, (m_pagebtn == 1) ? true : false);
 		}
 
 		tr = m_pagedown;
 		if (tr.intersect(pr)) {
 			Rect brc = m_pagedown;
 			brc.x -= scrollX(); brc.y -= scrollY();
-			draw_button(gc, U("��һҳ>>"), brc, m_enabledown, (m_pagebtn == 2) ? true : false);
+			draw_button(gc, U("ÏÂÒ»Ò³>>"), brc, m_enabledown, (m_pagebtn == 2) ? true : false);
 		}
 
 		ps_set_font(gc, of);
@@ -284,7 +286,8 @@ void HistoryView::OnPaintContents(ps_context* gc, const Rect* r)
 			ps_color tc = {0,0,0,1};
 			ps_set_text_color(gc, &tc);
 
-			ps_size sz = ps_get_text_extent(gc, m_items[i].title.c_str(), m_items[i].title.length());
+			ps_size sz = {0};
+            ps_get_text_extent(gc, m_items[i].title.c_str(), m_items[i].title.length(), &sz);
 			if (sz.w <= (rc.w-40*b)) {
 				ps_wide_text_out_length(gc, b*20, rc.y+b*5, 
 								(ps_uchar16*)m_items[i].title.c_str(), m_items[i].title.length());
@@ -300,7 +303,7 @@ void HistoryView::OnPaintContents(ps_context* gc, const Rect* r)
 			ps_set_font(gc, of);
 			ps_font* of = ps_set_font(gc, uf);
 
-			sz = ps_get_text_extent(gc, m_items[i].url.c_str(), m_items[i].url.length());
+			ps_get_text_extent(gc, m_items[i].url.c_str(), m_items[i].url.length(), &sz);
 			if (sz.w <= (rc.w-40*b)) {
 				ps_wide_text_out_length(gc, b*20, rc.y+b*8+b*12, 
 							(ps_uchar16*)m_items[i].url.c_str(), m_items[i].url.length());
@@ -319,11 +322,11 @@ void HistoryView::OnPaintContents(ps_context* gc, const Rect* r)
 
 	tr = m_pageup;
 	if (tr.intersect(*r))
-		draw_button(gc, U("<<��һҳ"), m_pageup, m_enableup, (m_pagebtn == 1) ? true : false);
+		draw_button(gc, U("<<ÉÏÒ»Ò³"), m_pageup, m_enableup, (m_pagebtn == 1) ? true : false);
 
 	tr = m_pagedown;
 	if (tr.intersect(*r))
-		draw_button(gc, U("��һҳ>>"), m_pagedown, m_enabledown, (m_pagebtn == 2) ? true : false);
+		draw_button(gc, U("ÏÂÒ»Ò³>>"), m_pagedown, m_enabledown, (m_pagebtn == 2) ? true : false);
 
 	ps_set_font(gc, of);
 }
@@ -361,7 +364,7 @@ void HistoryView::draw_button(ps_context* gc, const ustring& text, const Rect& r
 	ps_fill(gc);
 	ps_matrix_translate(m_impl->t_mtx, -lrc.x*2, -lrc.y*2);
 	ps_gradient_transform(m_impl->g_btn, m_impl->t_mtx);
-	ps_matrix_reset(m_impl->t_mtx);
+	ps_matrix_identity(m_impl->t_mtx);
 }
 
 void HistoryView::build(int offset)
@@ -445,7 +448,7 @@ void HistoryView::OnIdle(void)
 
 void HistoryView::item_click(void* p)
 {
-	int i = (int)p;
+	int i = (intptr_t)p;
 	std::string url = Unicode::ConvertUTF16ToUTF8(m_items[i].url);
 	m_main->getTabs()->getActiveView()->loadUrl(url);
 }
@@ -573,8 +576,8 @@ HistoryManager::HistoryManager(Widget* parent)
 	, m_enable(false)
 	, m_btn(0)
 {
-	setTitle(U("��ʷ"));
-	setCommitText(U("����"));
+	setTitle(U("ÀúÊ·"));
+	setCommitText(U("·µ»Ø"));
 	setCancel(false);
 
 	m_view = new HistoryView(this);
@@ -637,7 +640,7 @@ void HistoryManager::OnMouseEvent(const MouseEvent* e)
 		if (m_btn) {
 			m_btn = 0;
 
-			if (Dialog::ConfirmBox(m_main, U("ȷ��Ҫɾ����?"), U("��ʾ"))) {
+			if (Dialog::ConfirmBox(m_main, U("È·¶¨ÒªÉ¾³ýÂð?"), U("ÌáÊ¾"))) {
 				Application::getInstance()->getHistory()->clearAllHistory();
 				m_enable = false;
 				Widget::postEvent(m_view, EVENT_FUNC(HistoryView, reset), 0);
@@ -705,7 +708,7 @@ void HistoryManager::draw_button(ps_context* gc, const Rect& r, bool enable, boo
 	ps_rounded_rect(gc, &rc, rds, rds, rds, rds, rds, rds, rds, rds);
 	ps_fill(gc);
 
-	ps_wide_text_out_length(gc, r.x+r.w/2-b*12, r.y+r.h/2-b*6, (ps_uchar16*)U("���"), 2);
+	ps_wide_text_out_length(gc, r.x+r.w/2-b*12, r.y+r.h/2-b*6, (ps_uchar16*)U("Çå³ý"), 2);
 
 	ps_color tc = {1, 1, 1, 0.8};
 	ps_color tc2 = {1, 1, 1, 0.2};

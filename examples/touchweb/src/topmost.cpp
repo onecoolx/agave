@@ -1,10 +1,12 @@
-/* topmost.cpp - MaCross application
+/* topmost.cpp - Agave application
  *
- * Copyright (C) 2010 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
+
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "topmost.h"
 
 TopWidget::TopWidget(Widget* parent)

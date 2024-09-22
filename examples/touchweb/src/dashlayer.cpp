@@ -1,11 +1,12 @@
-/* Dashlayer.cpp - MaCross application
+/* Dashlayer.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "dashlayer.h"
 #include "mainwindow.h"
 
@@ -28,8 +29,8 @@ DashLayer::DashLayer(Widget* parent)
 	, m_scanbtn(true)
 	, m_btn(0)
 {
-	setCommitText(U("确定"));
-	setCancelText(U("取消"));
+	setCommitText(U("脠路露篓"));
+	setCancelText(U("脠隆脧没"));
 }
 
 DashLayer::~DashLayer()
@@ -69,7 +70,8 @@ void DashLayer::draw_btnText(ps_context* gc, const ustring& text, const Rect& r)
 			ps_set_text_antialias(gc, False);
 #endif
 
-		ps_size sz = ps_get_text_extent(gc, text.c_str(), text.length());
+		ps_size sz = {0};
+        ps_get_text_extent(gc, text.c_str(), text.length(), &sz);
 
 		ps_wide_text_out_length(gc, r.x+(r.w-sz.w)/2, r.y+r.h/2-DASH_TITLE_HEIGHT/5, 
 												(ps_uchar16*)text.c_str(), text.length());
@@ -91,7 +93,7 @@ void DashLayer::draw_lights(ps_context* gc, const Rect& r)
 	ps_fill(gc);
 	ps_matrix_translate(DashLayer::mtx, -lrc.x*2, -lrc.y*2);
 	ps_gradient_transform(DashLayer::grads[LIGHT_GRADIENT], DashLayer::mtx);
-	ps_matrix_reset(DashLayer::mtx);
+	ps_matrix_identity(DashLayer::mtx);
 }
 
 void DashLayer::draw_btns(ps_context* gc, const Rect& rc)
@@ -119,7 +121,7 @@ void DashLayer::draw_btns(ps_context* gc, const Rect& rc)
 			ps_fill(gc);
 			ps_matrix_translate(DashLayer::mtx, -r.x*2, -(r.y)*2);
 			ps_gradient_transform(DashLayer::grads[COMMIT_GRADIENT], DashLayer::mtx);
-			ps_matrix_reset(DashLayer::mtx);
+			ps_matrix_identity(DashLayer::mtx);
 		}
 
 		draw_btnText(gc, m_comText, m_commit);
@@ -143,7 +145,7 @@ void DashLayer::draw_btns(ps_context* gc, const Rect& rc)
 			ps_fill(gc);
 			ps_matrix_translate(DashLayer::mtx, -r.x*2, -(r.y)*2);
 			ps_gradient_transform(DashLayer::grads[CANCEL_GRADIENT], DashLayer::mtx);
-			ps_matrix_reset(DashLayer::mtx);
+			ps_matrix_identity(DashLayer::mtx);
 		}
 
 		draw_btnText(gc, m_canText, m_cancel);
@@ -168,7 +170,8 @@ void DashLayer::draw_title(ps_context* gc)
 			ps_set_text_antialias(gc, False);
 #endif
 
-		ps_size sz = ps_get_text_extent(gc, m_title.c_str(), m_title.length());
+		ps_size sz = {0};
+        ps_get_text_extent(gc, m_title.c_str(), m_title.length(), &sz);
 
 		ps_wide_text_out_length(gc, (width()-sz.w)/2, 
 			DASH_TITLE_HEIGHT/2-DASH_TITLE_HEIGHT/30*7, (ps_uchar16*)m_title.c_str(), m_title.length());
@@ -202,7 +205,7 @@ void DashLayer::OnPaint(ps_context* gc, const Rect* r)
 		ps_fill(gc);
 		ps_matrix_translate(DashLayer::mtx, -tr.x*2, -tr.y*2);
 		ps_gradient_transform(DashLayer::grads[BAR_GRADIENT], DashLayer::mtx);
-		ps_matrix_reset(DashLayer::mtx);
+		ps_matrix_identity(DashLayer::mtx);
 
 		draw_title(gc);
 	}
@@ -218,7 +221,7 @@ void DashLayer::OnPaint(ps_context* gc, const Rect* r)
 		ps_fill(gc);
 		ps_matrix_translate(DashLayer::mtx, -br.x*2, -br.y*2);
 		ps_gradient_transform(DashLayer::grads[BAR_GRADIENT], DashLayer::mtx);
-		ps_matrix_reset(DashLayer::mtx);
+		ps_matrix_identity(DashLayer::mtx);
 
 		draw_btns(gc, *r);
 	}
@@ -296,7 +299,7 @@ void DashLayer::OnCreate(uint32_t f, int x, int y, int w, int h)
 
 void DashLayer::button_event(void* param)
 {
-	int btn = (int)param;
+	int btn = (intptr_t)param;
 	if (btn == 1)
 		Commit();
 	else if (btn == 2)
@@ -372,7 +375,7 @@ void DashLayer::Hide(void)
 ps_font* DashLayer::getTitleFont(void)
 {
 	if (!tfont) {
-		tfont = ps_font_create("宋体", CHARSET_UNICODE, DASH_TITLE_HEIGHT/15*7, FONT_WEIGHT_BOLD, False); 
+		tfont = ps_font_create("脣脦脤氓", CHARSET_UNICODE, DASH_TITLE_HEIGHT/15*7, FONT_WEIGHT_BOLD, False); 
 	}
 	return tfont;
 }

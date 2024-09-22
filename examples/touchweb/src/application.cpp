@@ -1,11 +1,12 @@
-/* application.cpp - MaCross application
+/* application.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 #include "config.h"
 #include <string.h>
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "application.h"
 #include "mainwindow.h"
 #include "macross.h"
@@ -21,12 +22,12 @@
 #include "scripts.h"
 #include "webview.h"
 
-#if defined(WIN32) || defined(WINCE)
+#if defined(WIN32)
 #include "application_win32.h"
 #endif
 
-#ifdef QT4
-#include "application_qt4.h"
+#ifdef GTK2
+#include "application_gtk2.h"
 #endif
 
 Application* Application::g_instance = 0;
@@ -75,6 +76,7 @@ bool Application::init(void* hInst, char* cmdline)
 {
 	init_config();
 	init_extra();
+    m_impl->init();
 	m_window->setHomeUrl(cmdline);
 	return m_window->Create(hInst);
 }
@@ -83,6 +85,7 @@ bool Application::init(void* hInst, uchar_t* cmdline)
 {
 	init_config();
 	init_extra();
+    m_impl->init();
 	std::string cstr = Unicode::ConvertUTF16ToUTF8(ustring(cmdline));
 	m_window->setHomeUrl(cstr.c_str());
 	return m_window->Create(hInst);

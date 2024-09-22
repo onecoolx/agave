@@ -1,11 +1,12 @@
-/* tabpage.cpp - MaCross application
+/* tabpage.cpp - Agave application
  *
- * Copyright (C) 2010 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "tabpage.h"
 #include "webview.h"
 #include "mainwindow.h"
@@ -123,12 +124,12 @@ bool TabPage::newView(const std::string& url)
 	WebView::init();
 
 	if (m_tabs.size() == MAX_TABS) {
-		Dialog::AlertBox(m_main, U("无法打开更多页面"), U("警告"));
+		Dialog::AlertBox(m_main, U("脦脼路篓麓貌驴陋赂眉露脿脪鲁脙忙"), U("戮炉赂忙"));
 		return false;
 	}
 
 	if (!WebView::haveMemory()) {
-		Dialog::AlertBox(m_main, U("内存不足,无法打开更多页面"), U("警告"));
+		Dialog::AlertBox(m_main, U("脛脷麓忙虏禄脳茫,脦脼路篓麓貌驴陋赂眉露脿脪鲁脙忙"), U("戮炉赂忙"));
 		return false;
 	}
 
@@ -159,12 +160,12 @@ bool TabPage::newViewBack(const std::string& url)
 	WebView::init();
 
 	if (m_tabs.size() == MAX_TABS) {
-		Dialog::AlertBox(m_main, U("无法打开更多页面"), U("警告"));
+		Dialog::AlertBox(m_main, U("脦脼路篓麓貌驴陋赂眉露脿脪鲁脙忙"), U("戮炉赂忙"));
 		return false;
 	}
 
 	if (!WebView::haveMemory()) {
-		Dialog::AlertBox(m_main, U("内存不足,无法打开更多页面"), U("警告"));
+		Dialog::AlertBox(m_main, U("脛脷麓忙虏禄脳茫,脦脼路篓麓貌驴陋赂眉露脿脪鲁脙忙"), U("戮炉赂忙"));
 		return false;
 	}
 

@@ -13,6 +13,9 @@
 #if defined(WIN32) && !defined(WINCE)
 #include <direct.h>
 #endif
+#if defined(LINUX)
+#include <unistd.h>
+#endif
 #include <string.h>
 #include "files.h"
 #include "unicode.h"

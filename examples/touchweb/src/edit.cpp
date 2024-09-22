@@ -1,12 +1,13 @@
-/* edit.cpp - MaCross application
+/* edit.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
-#include <string>
 #include "config.h"
-#include "picasso.h"
+#include <string>
+#include <picasso/picasso.h>
+
 #include "edit.h"
 #include "mainwindow.h"
 #include "application.h"
@@ -126,7 +127,8 @@ void LineEdit::OnPaint(ps_context* gc, const Rect* d)
 		ps_set_text_antialias(gc, False);
 #endif
 
-	ps_size sz = ps_get_text_extent(gc, m_text.c_str(), m_text.length());
+	ps_size sz = {0};
+    ps_get_text_extent(gc, m_text.c_str(), m_text.length(), &sz);
 	if (sz.w <= box_len) {
 		m_cur = sz.w;
 		m_len = m_text.length();
@@ -135,7 +137,8 @@ void LineEdit::OnPaint(ps_context* gc, const Rect* d)
 		size_t tl = 0;	
 		int tw = 0;
 		while(tw < box_len) {
-			ps_size tz = ps_get_text_extent(gc, m_text.c_str(), tl+1);
+			ps_size tz = {0};
+            ps_get_text_extent(gc, m_text.c_str(), tl+1, &tz);
 			tw = tz.w; 
 			tl++;
 		}
@@ -144,13 +147,15 @@ void LineEdit::OnPaint(ps_context* gc, const Rect* d)
 		tl = 0;
 		tw = 0;
 		while(tw < box_len) {
-			ps_size tz = ps_get_text_extent(gc, m_text.c_str()+m_text.length()-tl-1, tl+1);
+			ps_size tz = {0};
+            ps_get_text_extent(gc, m_text.c_str()+m_text.length()-tl-1, tl+1, &tz);
 			tw = tz.w; 
 			tl++;
 		}
 		m_pos = m_text.length()-tl+1;
 
-		ps_size lz = ps_get_text_extent(gc, m_text.c_str()+m_pos, m_text.length()-m_pos);
+		ps_size lz = {0};
+        ps_get_text_extent(gc, m_text.c_str()+m_pos, m_text.length()-m_pos, &lz);
 		m_cur = lz.w;
 	}
 
@@ -181,9 +186,11 @@ void LineEdit::OnPaint(ps_context* gc, const Rect* d)
 	//draw text
 	if (!m_text.empty()) {
 		if (m_ispwd) {
-			ps_size sz = ps_get_text_extent(gc, U("*"), 1);
-			for (unsigned int i=0; i<m_len; i++)
+			ps_size sz = {0};
+            ps_get_text_extent(gc, U("*"), 1, &sz);
+			for (unsigned int i=0; i<m_len; i++) {
 				ps_wide_text_out_length(gc, b*4+sz.w*i, ft, (ps_uchar16*)U("*"), 1);
+            }
 		} else {
 			if (hasFocus())
 				ps_wide_text_out_length(gc, b*4, ft, (ps_uchar16*)m_text.c_str()+m_pos, m_text.length()-m_pos);

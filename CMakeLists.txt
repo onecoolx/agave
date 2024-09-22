@@ -39,10 +39,15 @@ endif()
 include (${CMAKE_CURRENT_LIST_DIR}/src/src.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/test/test.cmake)
 
-option(OPT_UNITTEST "Build Unit tests" OFF)
+option(OPT_UNITTEST "Build unit tests" OFF)
 if (OPT_UNITTEST)
 enable_testing()
 include (${CMAKE_CURRENT_LIST_DIR}/unit_tests/unit_tests.cmake)
+endif()
+
+option(OPT_EXAMPLES "Build examples" OFF)
+if (OPT_EXAMPLES)
+include (${CMAKE_CURRENT_LIST_DIR}/examples/examples.cmake)
 endif()
 
 include(CheckIncludeFile)

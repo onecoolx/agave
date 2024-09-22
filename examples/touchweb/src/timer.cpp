@@ -1,4 +1,4 @@
-/* timer.cpp - MaCross application
+/* timer.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -7,12 +7,12 @@
 #include "config.h"
 #include "timer.h"
 
-#if defined(WIN32) || defined(WINCE)
+#if defined(WIN32)
 #include "timer_win32.h"
 #endif
 
-#ifdef QT4
-#include "timer_qt4.h"
+#ifdef GTK2
+#include "timer_gtk2.h"
 #endif
 
 Timer::Timer()

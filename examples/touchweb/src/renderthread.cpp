@@ -13,7 +13,7 @@
 #include <vgcl.h>
 #include "macross.h"
 
-using namespace VGCL;
+using namespace vgcl;
 
 static void create_view(WebView* view, const WebEventParam* param)
 {

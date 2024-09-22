@@ -1,20 +1,21 @@
-/* dialog.cpp - MaCross application
+/* dialog.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "dialog.h"
 #include "mainwindow.h"
 #include "edit.h"
 
-#if defined(WIN32) || defined(WINCE)
+#if defined(WIN32)
 #include "dialog_win32.h"
 #endif
 
-#ifdef QT4
-#include "dialog_qt4.h"
+#ifdef GTK2
+#include "dialog_gtk2.h"
 #endif
 
 Dialog::Dialog(Widget* parent, MainWindow* main)
@@ -170,8 +171,10 @@ void MsgDialog::setMessage(const ustring& msg)
 
 void MsgDialog::draw_msgText(ps_context* gc, const Rect& r)
 {
-	ps_size sz = ps_get_text_extent(gc, m_msg.c_str(), m_msg.length());
-	ps_size sz1 = ps_get_text_extent(gc, m_msg.c_str(), 1);
+	ps_size sz = {0};
+    ps_get_text_extent(gc, m_msg.c_str(), m_msg.length(), &sz);
+	ps_size sz1 = {0};
+    ps_get_text_extent(gc, m_msg.c_str(), 1, &sz1);
 	int max_lines = r.h/sz.h;
 	int num_lines = sz.w/r.w+1;
 	int ns = r.w/sz1.w;
@@ -187,7 +190,8 @@ void MsgDialog::draw_msgText(ps_context* gc, const Rect& r)
 void MsgDialog::draw_btnText(ps_context* gc, const ustring& text, const Rect& r)
 {
 	if (!text.empty()) {
-		ps_size sz = ps_get_text_extent(gc, text.c_str(), text.length());
+		ps_size sz = {0};
+        ps_get_text_extent(gc, text.c_str(), text.length(), &sz);
 		ps_wide_text_out_length(gc, r.x+(r.w-sz.w)/2, r.y+r.h/2-6*(TITLE_HEIGHT/22), 
 												(ps_uchar16*)text.c_str(), text.length());
 	}
@@ -241,7 +245,7 @@ void MsgDialog::draw_btns(ps_context* gc)
 			ps_gradient_unref(g);
 		}
 
-		draw_btnText(gc, U("确定"), m_commit);
+		draw_btnText(gc, U("脠路露篓"), m_commit);
 		draw_light(gc, m_commit);
 	}
 
@@ -273,7 +277,7 @@ void MsgDialog::draw_btns(ps_context* gc)
 			ps_gradient_unref(g);
 		}
 
-		draw_btnText(gc, U("取消"), m_cancel);
+		draw_btnText(gc, U("脠隆脧没"), m_cancel);
 		draw_light(gc, m_cancel);
 	}
 }
@@ -430,8 +434,10 @@ void InputDialog::setMessage(const ustring& msg)
 
 void InputDialog::draw_msgText(ps_context* gc, const Rect& r)
 {
-	ps_size sz = ps_get_text_extent(gc, m_msg.c_str(), m_msg.length());
-	ps_size sz1 = ps_get_text_extent(gc, m_msg.c_str(), 1);
+	ps_size sz = {0};
+    ps_get_text_extent(gc, m_msg.c_str(), m_msg.length(), &sz);
+	ps_size sz1 = {0};
+    ps_get_text_extent(gc, m_msg.c_str(), 1, &sz1);
 	int max_lines = r.h/sz.h;
 	int num_lines = sz.w/r.w+1;
 	int ns = r.w/sz1.w;
@@ -446,7 +452,8 @@ void InputDialog::draw_msgText(ps_context* gc, const Rect& r)
 void InputDialog::draw_btnText(ps_context* gc, const ustring& text, const Rect& r)
 {
 	if (!text.empty()) {
-		ps_size sz = ps_get_text_extent(gc, text.c_str(), text.length());
+		ps_size sz = {0};
+        ps_get_text_extent(gc, text.c_str(), text.length(), &sz);
 		ps_wide_text_out_length(gc, r.x+(r.w-sz.w)/2, r.y+r.h/2-6*(TITLE_HEIGHT/22), 
 												(ps_uchar16*)text.c_str(), text.length());
 	}
@@ -500,7 +507,7 @@ void InputDialog::draw_btns(ps_context* gc)
 			ps_gradient_unref(g);
 		}
 
-		draw_btnText(gc, U("确定"), m_commit);
+		draw_btnText(gc, U("脠路露篓"), m_commit);
 		draw_light(gc, m_commit);
 	}
 
@@ -532,7 +539,7 @@ void InputDialog::draw_btns(ps_context* gc)
 			ps_gradient_unref(g);
 		}
 
-		draw_btnText(gc, U("取消"), m_cancel);
+		draw_btnText(gc, U("脠隆脧没"), m_cancel);
 		draw_light(gc, m_cancel);
 	}
 }
@@ -677,7 +684,8 @@ LoginDialog::~LoginDialog()
 void LoginDialog::draw_btnText(ps_context* gc, const ustring& text, const Rect& r)
 {
 	if (!text.empty()) {
-		ps_size sz = ps_get_text_extent(gc, text.c_str(), text.length());
+		ps_size sz = {0};
+        ps_get_text_extent(gc, text.c_str(), text.length(), &sz);
 		ps_wide_text_out_length(gc, r.x+(r.w-sz.w)/2, r.y+r.h/2-6*(TITLE_HEIGHT/22), 
 													(ps_uchar16*)text.c_str(), text.length());
 	}
@@ -731,7 +739,7 @@ void LoginDialog::draw_btns(ps_context* gc)
 			ps_gradient_unref(g);
 		}
 
-		draw_btnText(gc, U("确定"), m_commit);
+		draw_btnText(gc, U("脠路露篓"), m_commit);
 		draw_light(gc, m_commit);
 	}
 
@@ -763,7 +771,7 @@ void LoginDialog::draw_btns(ps_context* gc)
 			ps_gradient_unref(g);
 		}
 
-		draw_btnText(gc, U("取消"), m_cancel);
+		draw_btnText(gc, U("脠隆脧没"), m_cancel);
 		draw_light(gc, m_cancel);
 	}
 }
@@ -788,8 +796,8 @@ void LoginDialog::OnPaint(ps_context* gc, const Rect* d)
 #endif
 
 	int b = TITLE_HEIGHT/22;
-	ps_wide_text_out_length(gc, b*5, titleHeight()+b*8, (ps_uchar16*)U("用户名:"), 4);
-	ps_wide_text_out_length(gc, b*5, titleHeight()+b*16+TOOLBAR_HEIGHT/3*2, (ps_uchar16*)U("密  码:"), 5);
+	ps_wide_text_out_length(gc, b*5, titleHeight()+b*8, (ps_uchar16*)U("脫脙禄搂脙没:"), 4);
+	ps_wide_text_out_length(gc, b*5, titleHeight()+b*16+TOOLBAR_HEIGHT/3*2, (ps_uchar16*)U("脙脺  脗毛:"), 5);
 
 	draw_btns(gc);
 

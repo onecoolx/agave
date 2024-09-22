@@ -1,6 +1,6 @@
-/* network.cpp - MaCross application
+/* network.cpp - Agave application
  *
- * Copyright (C) 2010 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
@@ -9,12 +9,12 @@
 #include "network.h"
 #include "macross.h"
 
-#if defined(WIN32) || defined(WINCE)
+#if defined(WIN32)
 #include "network_win32.h"
 #endif
 
-#ifdef QT4
-#include "network_qt4.h"
+#ifdef GTK2
+#include "network_gtk2.h"
 #endif
 
 NetService::NetService()

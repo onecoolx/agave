@@ -1,4 +1,4 @@
-/* RenderThread.h - MaCross application
+/* RenderThread.h - Agave application
  *
  * Vector Graphic Component button.
  *
@@ -43,7 +43,7 @@ struct WebEventParam
     }cmd;
 };
 
-class WebEvent : public VGCL::VEvent
+class WebEvent : public vgcl::VEvent
 {
 public:
     typedef enum {
@@ -107,7 +107,7 @@ private:
 };
 
 
-class RenderThread : public VGCL::VThread
+class RenderThread : public vgcl::VThread
 {
 public:
     RenderThread();
@@ -121,7 +121,7 @@ public:
 
 private:
     std::deque<WebEvent> m_events;
-    VGCL::VMutex m_mutex;
+    vgcl::VMutex m_mutex;
 };
 
 #endif

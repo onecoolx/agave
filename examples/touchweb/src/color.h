@@ -1,4 +1,4 @@
-/* color.h - MaCross application
+/* color.h - Agave application
  *
  * Copyright (C) 2011 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -8,7 +8,7 @@
 #define _COLORDEF_H_
 
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
 
 struct Color
 {

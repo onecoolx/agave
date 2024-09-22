@@ -1,11 +1,12 @@
-/* fillmgr.cpp - MaCross application
+/* fillmgr.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "fillmgr.h"
 #include "shadebtn.h"
 #include "autofill.h"
@@ -19,18 +20,18 @@ AutoFillManager::AutoFillManager(Widget* parent)
 	, m_exit(0)
 	, m_notsave(0)
 {
-	setTitle(U("ÃÜÂë¹ÜÀí"));
+	setTitle(U("ÃƒÃœÃ‚Ã«Â¹ÃœÃ€Ã­"));
 	m_save = new ShadeButton(this, ShadeButton::GreenBtn);
 	m_save->setClickHandle(EVENT_OBJECT(this), EVENT_OBJECT_FUNC(AutoFillManager, form_save));
-	m_save->setText(U("±£´æÃÜÂë"));
+	m_save->setText(U("Â±Â£Â´Ã¦ÃƒÃœÃ‚Ã«"));
 
 	m_exit = new ShadeButton(this, ShadeButton::RedBtn);
 	m_exit->setClickHandle(EVENT_OBJECT(this), EVENT_OBJECT_FUNC(AutoFillManager, form_exit));
-	m_exit->setText(U("È¡Ïû"));
+	m_exit->setText(U("ÃˆÂ¡ÃÃ»"));
 
 	m_notsave = new ShadeButton(this, ShadeButton::BlueBtn);
 	m_notsave->setClickHandle(EVENT_OBJECT(this), EVENT_OBJECT_FUNC(AutoFillManager, form_notsave));
-	m_notsave->setText(U("²»±£´æ"));
+	m_notsave->setText(U("Â²Â»Â±Â£Â´Ã¦"));
 
 	clear();
 }

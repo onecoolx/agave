@@ -1,11 +1,12 @@
-/* floatbtn.cpp - MaCross application
+/* floatbtn.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "floatbtn.h"
 #include "mainwindow.h"
 #include "tabpage.h"
@@ -83,7 +84,7 @@ void ModeButton::OnCreate(uint32_t flags, int x, int y, int w, int h)
 	FloatButton::OnCreate(flags, x, y, w, h);
 
 	m_face = ps_canvas_create(Application::getInstance()->color_format(), w, h);
-	ps_context * gc = ps_context_create(m_face);
+	ps_context * gc = ps_context_create(m_face, 0);
 
 	Rect client(0, 0, width(), height());
 	Rect * r = &client;
@@ -220,7 +221,7 @@ void BackButton::OnCreate(uint32_t flags, int x, int y, int w, int h)
 	FloatButton::OnCreate(flags, x, y, w, h);
 
 	m_face = ps_canvas_create(Application::getInstance()->color_format(), w, h);
-	ps_context * gc = ps_context_create(m_face);
+	ps_context * gc = ps_context_create(m_face, 0);
 
 	Rect client(0, 0, width(), height());
 	Rect * r = &client;

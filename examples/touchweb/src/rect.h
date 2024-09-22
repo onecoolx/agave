@@ -1,4 +1,4 @@
-/* rect.h - MaCross application
+/* rect.h - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -8,7 +8,7 @@
 #define _RECTANGLE_H_
 
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
 
 struct Rect 
 {

@@ -1,4 +1,4 @@
-/* about.cpp - MaCross application
+/* about.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -17,7 +17,7 @@
 #elif defined(WINCE)
 #define APP_NAME U("MaCross Mobile (WinCE)")
 #define APP_NAME_LEN 22
-#elif defined(linux)
+#elif defined(__linux)
 #define APP_NAME U("MaCross Mobile (Linux)")
 #define APP_NAME_LEN 22
 #elif defined(WIN32)
@@ -32,8 +32,8 @@ About::About(Widget* parent)
 	, m_conn(0,0,0,0)
 	, m_click(0)
 {
-	setTitle(U("关于"));
-	setCommitText(U("返回"));
+	setTitle(U("鹿脴脫脷"));
+	setCommitText(U("路碌禄脴"));
 	setCancel(false);
 }
 
@@ -82,8 +82,8 @@ void About::OnPaint(ps_context* gc, const Rect* r)
 	of = ps_set_font(gc, f);
 	ps_text_out_length(gc, b*85, b*100, VERSION_STRING, strlen(VERSION_STRING));
 
-	ps_wide_text_out_length(gc, b*15, b*150, P16(U("官方主页:")), 5);
-	ps_wide_text_out_length(gc, b*15, b*170, P16(U("联系我们:")), 5);
+	ps_wide_text_out_length(gc, b*15, b*150, P16(U("鹿脵路陆脰梅脪鲁:")), 5);
+	ps_wide_text_out_length(gc, b*15, b*170, P16(U("脕陋脧碌脦脪脙脟:")), 5);
 	if (m_click) {
 		ps_color tc = {1, 0, 0, 1};
 		ps_set_text_color(gc, &tc);
@@ -107,7 +107,7 @@ void About::OnPaint(ps_context* gc, const Rect* r)
 
 void About::link_click(void * p)
 {
-	int click = (int)p;
+	int click = (intptr_t)p;
 
 	if (click == 1) {
 		Update(&m_url);

@@ -217,8 +217,9 @@ static std::map<int, int> g_key_map;
 
 static void init_key_map(void)
 {
-	for(int i = 0; i < (sizeof(key_map)/sizeof(KeyEntities)); i++)
+	for(int i = 0; i < (sizeof(key_map)/sizeof(KeyEntities)); i++) {
 		g_key_map[key_map[i].pk] = key_map[i].vk; 
+    }
 }
 
 int get_virtual_key(int pk)

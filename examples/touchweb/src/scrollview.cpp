@@ -1,11 +1,12 @@
-/* scrollview.cpp - MaCross application
+/* scrollview.cpp - Agave application
  *
- * Copyright (C) 2010 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "application.h"
 #include "scrollview.h"
 
@@ -32,14 +33,14 @@ void ScrollView::OnCreate(uint32_t flags, int x, int y, int w, int h)
 	m_content_h = h;
 
 	m_dc = ps_canvas_create(Application::getInstance()->color_format(), w, h);
-	m_gc = ps_context_create(m_dc);
+	m_gc = ps_context_create(m_dc, 0);
 
 	ps_rect rc = {0, 0, w, h};
 	Rect tc = rc;
 	ps_color c = {1,1,1,1};
 	ps_save(m_gc);
 	ps_set_source_color(m_gc, &c);
-	ps_clip_fast_rect(m_gc, &rc);
+	ps_scissor_rect(m_gc, &rc);
 	ps_clear(m_gc);
 	OnPaintContents(m_gc, &tc);
 	ps_restore(m_gc);
@@ -88,19 +89,20 @@ void ScrollView::setContentSize(int w, int h)
 		ps_canvas_unref(m_dc);
 
 		m_dc = ps_canvas_create(Application::getInstance()->color_format(), w, h);
-		m_gc = ps_context_create(m_dc);
+		m_gc = ps_context_create(m_dc, 0);
 	}
 
 	m_content_w = w;
 	m_content_h = h;
 
-	ps_size sz = ps_canvas_get_size(m_dc);
+	ps_size sz = {0};
+    ps_canvas_get_size(m_dc, &sz);
 	ps_rect rc = {0, 0, sz.w, sz.h};
 	Rect tc = rc;
 	ps_color c = {1,1,1,1};
 	ps_save(m_gc);
 	ps_set_source_color(m_gc, &c);
-	ps_clip_fast_rect(m_gc, &rc);
+	ps_scissor_rect(m_gc, &rc);
 	ps_clear(m_gc);
 	OnPaintContents(m_gc, &tc);
 	ps_restore(m_gc);

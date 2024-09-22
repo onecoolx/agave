@@ -1,11 +1,12 @@
-/* favmgr.cpp - MaCross application
+/* favmgr.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "favmgr.h"
 #include "favorites.h"
 #include "mainwindow.h"
@@ -52,7 +53,7 @@ void FavoritesPanel::OnCreate(uint32_t flags, int x, int y, int w, int h)
 	m_title->OnCreate(WF_VISIBLE|WF_ENABLED|WF_FOCUSABLE|WF_EDITABLE, b*5, b*4, width()-b*10, hc);
 	m_addr->OnCreate(WF_VISIBLE|WF_ENABLED|WF_FOCUSABLE|WF_EDITABLE, b*5, b*5+hc, width()-b*10, hc);
 	m_tags->OnCreate(WF_VISIBLE|WF_ENABLED|WF_FOCUSABLE|WF_EDITABLE, b*5, b*6+hc*2, width()-b*10, hc);
-	m_tags->setTipText(U("ʹ�ö��ŷָ���ǩ"));
+	m_tags->setTipText(U("Ê¹ÓÃ¶ººÅ·Ö¸ô±êÇ©"));
 
 	m_commit = Rect(b*20, hc*3+b*10, b*60, bc);
 	m_cancel = Rect(width()-b*80, hc*3+b*10, b*60, bc);
@@ -67,7 +68,7 @@ void FavoritesPanel::OnPaint(ps_context* gc, const Rect* d)
 	Widget::OnPaint(gc, d);
 	ps_save(gc);
 
-	ps_color c = {0.8, 0.8, 0.8, 1};
+	ps_color c = {0.8f, 0.8f, 0.8f, 1};
 	ps_rect rc = {0,0,width(),height()};
 	ps_rectangle(gc, &rc);
 	ps_set_source_color(gc, &c);
@@ -84,8 +85,8 @@ void FavoritesPanel::OnPaint(ps_context* gc, const Rect* d)
 		ps_set_text_antialias(gc, False);
 #endif
 
-	draw_button(gc, m_cancel, U("ȡ��"), true, (m_btn == 1) ? true : false);
-	draw_button(gc, m_commit, U("ȷ��"), true, (m_btn == 2) ? true : false);
+	draw_button(gc, m_cancel, U("È¡Ïû"), true, (m_btn == 1) ? true : false);
+	draw_button(gc, m_commit, U("È·¶¨"), true, (m_btn == 2) ? true : false);
 
 	ps_set_font(gc, of);
 	ps_restore(gc);
@@ -287,7 +288,7 @@ void FavoritesView::draw_icon(ps_context* gc, const ps_rect* r)
 	ps_paint(gc);
 	ps_matrix_translate(m_impl->t_mtx, -rc.x*2, -rc.y*2);
 	ps_gradient_transform(m_impl->g_icon, m_impl->t_mtx);
-	ps_matrix_reset(m_impl->t_mtx);
+	ps_matrix_identity(m_impl->t_mtx);
 	ps_set_line_width(gc, 1);
 }
 
@@ -337,7 +338,8 @@ void FavoritesView::OnPaint(ps_context* gc, const Rect* r)
 
 					int tip_w = m_items[i].rect.w/4;
 
-					ps_size sz = ps_get_text_extent(gc, m_items[i].title.c_str(), m_items[i].title.length());
+					ps_size sz = {0};
+                    ps_get_text_extent(gc, m_items[i].title.c_str(), m_items[i].title.length(), &sz);
 					if (sz.w <= (rc.w-45*b-m_items[i].closebtn.w-tip_w)) {
 						ps_wide_text_out_length(gc, b*20, rc.y+b*5, 
 								(ps_uchar16*)m_items[i].title.c_str(), m_items[i].title.length());
@@ -351,7 +353,7 @@ void FavoritesView::OnPaint(ps_context* gc, const Rect* r)
 					ps_font* of = ps_set_font(gc, uf);
 
 					if (!m_items[i].tags.empty()) {
-						sz = ps_get_text_extent(gc, m_items[i].tags.c_str(), m_items[i].tags.length());
+						ps_get_text_extent(gc, m_items[i].tags.c_str(), m_items[i].tags.length(), &sz);
 
 						if (sz.w <= tip_w-m_items[i].closebtn.w) {
 							ps_wide_text_out_length(gc, m_items[i].rect.w-tip_w-m_items[i].closebtn.w, rc.y+b*5, 
@@ -367,7 +369,7 @@ void FavoritesView::OnPaint(ps_context* gc, const Rect* r)
 					ps_color uc = {0,0,1,1};
 					ps_set_text_color(gc, &uc);
 
-					sz = ps_get_text_extent(gc, m_items[i].url.c_str(), m_items[i].url.length());
+					ps_get_text_extent(gc, m_items[i].url.c_str(), m_items[i].url.length(), &sz);
 					if (sz.w <= (rc.w-45*b-m_items[i].closebtn.w)) {
 						ps_wide_text_out_length(gc, b*20, rc.y+b*8+b*12, 
 								(ps_uchar16*)m_items[i].url.c_str(), m_items[i].url.length());
@@ -399,14 +401,14 @@ void FavoritesView::OnPaint(ps_context* gc, const Rect* r)
 		if (tr.intersect(pr)) {
 			Rect brc = m_pageup;
 			brc.x -= scrollX(); brc.y -= scrollY();
-			draw_pagebtn(gc, U("<<��һҳ"), brc, m_enableup, (m_pagebtn == 1) ? true : false);
+			draw_pagebtn(gc, U("<<ÉÏÒ»Ò³"), brc, m_enableup, (m_pagebtn == 1) ? true : false);
 		}
 
 		tr = m_pagedown;
 		if (tr.intersect(pr)) {
 			Rect brc = m_pagedown;
 			brc.x -= scrollX(); brc.y -= scrollY();
-			draw_pagebtn(gc, U("��һҳ>>"), brc, m_enabledown, (m_pagebtn == 2) ? true : false);
+			draw_pagebtn(gc, U("ÏÂÒ»Ò³>>"), brc, m_enabledown, (m_pagebtn == 2) ? true : false);
 		}
 		ps_set_font(gc, of);
 	}
@@ -446,7 +448,8 @@ void FavoritesView::OnPaintContents(ps_context* gc, const Rect* r)
 
 			int tip_w = m_items[i].rect.w/4;
 
-			ps_size sz = ps_get_text_extent(gc, m_items[i].title.c_str(), m_items[i].title.length());
+			ps_size sz = {0};
+            ps_get_text_extent(gc, m_items[i].title.c_str(), m_items[i].title.length(), &sz);
 			if (sz.w <= (rc.w-45*b-m_items[i].closebtn.w-tip_w)) {
 				ps_wide_text_out_length(gc, b*20, rc.y+b*5, 
 								(ps_uchar16*)m_items[i].title.c_str(), m_items[i].title.length());
@@ -460,7 +463,7 @@ void FavoritesView::OnPaintContents(ps_context* gc, const Rect* r)
 			ps_font* of = ps_set_font(gc, uf);
 
 			if (!m_items[i].tags.empty()) {
-				sz = ps_get_text_extent(gc, m_items[i].tags.c_str(), m_items[i].tags.length());
+				ps_get_text_extent(gc, m_items[i].tags.c_str(), m_items[i].tags.length(), &sz);
 
 				if (sz.w <= tip_w-m_items[i].closebtn.w) {
 					ps_wide_text_out_length(gc, m_items[i].rect.w-tip_w-m_items[i].closebtn.w, rc.y+b*5, 
@@ -476,7 +479,7 @@ void FavoritesView::OnPaintContents(ps_context* gc, const Rect* r)
 			ps_color uc = {0,0,1,1};
 			ps_set_text_color(gc, &uc);
 
-			sz = ps_get_text_extent(gc, m_items[i].url.c_str(), m_items[i].url.length());
+			ps_get_text_extent(gc, m_items[i].url.c_str(), m_items[i].url.length(), &sz);
 			if (sz.w <= (rc.w-45*b-m_items[i].closebtn.w)) {
 				ps_wide_text_out_length(gc, b*20, rc.y+b*8+b*12, 
 							(ps_uchar16*)m_items[i].url.c_str(), m_items[i].url.length());
@@ -497,11 +500,11 @@ void FavoritesView::OnPaintContents(ps_context* gc, const Rect* r)
 
 	tr = m_pageup;
 	if (tr.intersect(*r))
-		draw_pagebtn(gc, U("<<��һҳ"), m_pageup, m_enableup, (m_pagebtn == 1) ? true : false);
+		draw_pagebtn(gc, U("<<ÉÏÒ»Ò³"), m_pageup, m_enableup, (m_pagebtn == 1) ? true : false);
 
 	tr = m_pagedown;
 	if (tr.intersect(*r))
-		draw_pagebtn(gc, U("��һҳ>>"), m_pagedown, m_enabledown, (m_pagebtn == 2) ? true : false);
+		draw_pagebtn(gc, U("ÏÂÒ»Ò³>>"), m_pagedown, m_enabledown, (m_pagebtn == 2) ? true : false);
 
 	ps_set_font(gc, of);
 }
@@ -571,7 +574,7 @@ void FavoritesView::draw_pagebtn(ps_context* gc, const ustring& text, const Rect
 	ps_fill(gc);
 	ps_matrix_translate(m_impl->t_mtx, -lrc.x*2, -lrc.y*2);
 	ps_gradient_transform(m_impl->g_btn, m_impl->t_mtx);
-	ps_matrix_reset(m_impl->t_mtx);
+	ps_matrix_identity(m_impl->t_mtx);
 }
 
 void FavoritesView::initFilter(void)
@@ -676,7 +679,7 @@ void FavoritesView::OnIdle(void)
 
 void FavoritesView::item_click(void* p)
 {
-	int i = (int)p;
+	int i = (intptr_t)p;
 	std::string url = Unicode::ConvertUTF16ToUTF8(m_items[i].url);
 	m_main->getTabs()->getActiveView()->loadUrl(url);
 }
@@ -779,7 +782,7 @@ void FavoritesView::OnMouseEvent(const MouseEvent* e)
 				m_cbtn = 0;
 				m_event = Rect(0,0,0,0);
 
-				if (Dialog::ConfirmBox(m_main, U("ȷ��Ҫɾ����?"), U("��ʾ"))) {
+				if (Dialog::ConfirmBox(m_main, U("È·¶¨ÒªÉ¾³ýÂð?"), U("ÌáÊ¾"))) {
 					Application::getInstance()->getFavorites()->deleteFavortesByID(sid);
 					build(m_page);
 					Update(NULL);
@@ -822,8 +825,8 @@ FavoritesManager::FavoritesManager(Widget* parent)
 	, m_event(0,0,0,0)
 	, m_btn(0)
 {
-	setTitle(U("�ղ�"));
-	setCommitText(U("����"));
+	setTitle(U("ÊÕ²Ø"));
+	setCommitText(U("·µ»Ø"));
 	setCancel(false);
 
 	m_fltbox = new LineEdit(this);
@@ -854,7 +857,7 @@ void FavoritesManager::OnCreate(uint32_t flags, int x, int y, int w, int h)
 	int b = DASH_TITLE_HEIGHT/30;
 
 	m_fltbox->OnCreate(WF_ENABLED|WF_VISIBLE|WF_FOCUSABLE|WF_EDITABLE, b*5, DASH_TITLE_HEIGHT+(cell_height-hc)/2+b*2, width()/3*2-30*b, hc-b*5);
-	m_fltbox->setTipText(U("������ǩ"));
+	m_fltbox->setTipText(U("ËÑË÷ÊéÇ©"));
 
 	m_listbtn = Rect(m_fltbox->width()+10*b, DASH_TITLE_HEIGHT+(cell_height-hc)/2, (width()-m_fltbox->width())/2-10*b, hc);
 	m_addbtn = Rect(m_listbtn.x+m_listbtn.w+5*b, DASH_TITLE_HEIGHT+(cell_height-hc)/2, (width()-m_fltbox->width())/2-10*b, hc);
@@ -967,7 +970,7 @@ void FavoritesManager::OnPaint(ps_context* gc, const Rect* r)
 
 	tr = m_listbtn;
 	if (tr.intersect(*r)) {
-		draw_button(gc, m_listbtn, U("����"), true, (m_btn == 1) ? true : false);
+		draw_button(gc, m_listbtn, U("²éÕÒ"), true, (m_btn == 1) ? true : false);
 	}
 
 	tr = m_addbtn;
@@ -976,7 +979,7 @@ void FavoritesManager::OnPaint(ps_context* gc, const Rect* r)
 		if (m_panel->isVisible()) {
 			click = true;
 		}
-		draw_button(gc, m_addbtn, U("����"), true, click);
+		draw_button(gc, m_addbtn, U("Ìí¼Ó"), true, click);
 	}
 	ps_set_font(gc, of);
 	ps_restore(gc);
@@ -1026,5 +1029,5 @@ static void draw_button(ps_context* gc, const Rect& r, const ustring& text, bool
 	ps_fill(gc);
 	ps_matrix_translate(g_mtx, -lrc.x*2, -lrc.y*2);
 	ps_gradient_transform(g_btn_grad, g_mtx);
-	ps_matrix_reset(g_mtx);
+	ps_matrix_identity(g_mtx);
 }

@@ -1,11 +1,13 @@
-/* ctrlpanel.cpp - MaCross application
+/* ctrlpanel.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
-#include <math.h>
+
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+#include <math.h>
+
 #include "ctrlpanel.h"
 #include "tabpage.h"
 #include "webview.h"
@@ -58,7 +60,7 @@ CtrlPanel::CtrlPanel(Widget* parent)
 	, m_main(0)
 	, m_btn(0)
 {
-	setTitle(U("¹¦ÄÜÃæ°å"));
+	setTitle(U("Â¹Â¦Ã„ÃœÃƒÃ¦Â°Ã¥"));
 }
 
 CtrlPanel::~CtrlPanel()
@@ -97,7 +99,7 @@ static void draw_history_btn(ps_context* gc, const ps_rect& r)
 	ps_set_text_color(gc, &c);
 	ps_set_line_width(gc, br/2);
 	ps_wide_text_out_length(gc, r.x+r.w/2-DASH_TITLE_HEIGHT/5*2, 
-								r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("ÀúÊ·"), 2);
+								r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("Ã€ÃºÃŠÂ·"), 2);
 }
 
 static void draw_favorite_btn(ps_context* gc, const ps_rect& r)
@@ -131,7 +133,7 @@ static void draw_favorite_btn(ps_context* gc, const ps_rect& r)
 
 	ps_set_text_color(gc, &c);
 	ps_wide_text_out_length(gc, r.x+r.w/2-DASH_TITLE_HEIGHT/5*2, 
-							r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("ÊÕ²Ø"), 2);
+							r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("ÃŠÃ•Â²Ã˜"), 2);
 }
 
 static void draw_full_btn(ps_context* gc, const ps_rect& r)
@@ -156,7 +158,7 @@ static void draw_full_btn(ps_context* gc, const ps_rect& r)
 
 	ps_set_text_color(gc, &c);
 	ps_wide_text_out_length(gc, r.x+r.w/2-DASH_TITLE_HEIGHT/5*2, 
-								r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("È«ÆÁ"), 2);
+								r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("ÃˆÂ«Ã†Ã"), 2);
 }
 
 static void draw_newpage_btn(ps_context* gc, const ps_rect& r)
@@ -185,7 +187,7 @@ static void draw_newpage_btn(ps_context* gc, const ps_rect& r)
 	ps_set_line_width(gc, 1);
 	ps_set_text_color(gc, &c);
 	ps_wide_text_out_length(gc, r.x+r.w/2-DASH_TITLE_HEIGHT/5*3, 
-								r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("ÐÂÒ³Ãæ"), 3);
+								r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("ÃÃ‚Ã’Â³ÃƒÃ¦"), 3);
 }
 
 static void draw_exit_btn(ps_context* gc, const ps_rect& r)
@@ -212,7 +214,7 @@ static void draw_exit_btn(ps_context* gc, const ps_rect& r)
 	ps_set_line_width(gc, 1);
 	ps_set_text_color(gc, &c);
 	ps_wide_text_out_length(gc, r.x+r.w/2-DASH_TITLE_HEIGHT/5*2, 
-								r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("ÍË³ö"), 2);
+								r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("ÃÃ‹Â³Ã¶"), 2);
 }
 
 static void draw_config_btn(ps_context* gc, const ps_rect& r)
@@ -258,7 +260,7 @@ static void draw_config_btn(ps_context* gc, const ps_rect& r)
 
 	ps_set_text_color(gc, &c);
 	ps_wide_text_out_length(gc, r.x+r.w/2-DASH_TITLE_HEIGHT/5*2, 
-								r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("ÉèÖÃ"), 2);
+								r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("Ã‰Ã¨Ã–Ãƒ"), 2);
 }
 
 static void draw_mode_btn(ps_context* gc, const ps_rect& r)
@@ -310,7 +312,7 @@ static void draw_mode_btn(ps_context* gc, const ps_rect& r)
 
 	ps_set_text_color(gc, &c);
 	ps_wide_text_out_length(gc, r.x+r.w/2-DASH_TITLE_HEIGHT/5*2, 
-								r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("Ä£Ê½"), 2);
+								r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("Ã„Â£ÃŠÂ½"), 2);
 }
 
 static void draw_search_btn(ps_context* gc, const ps_rect& r)
@@ -337,7 +339,7 @@ static void draw_search_btn(ps_context* gc, const ps_rect& r)
 
 	ps_set_text_color(gc, &c);
 	ps_wide_text_out_length(gc, r.x+r.w/2-DASH_TITLE_HEIGHT/5*2, 
-								r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("ËÑË÷"), 2);
+								r.y+r.h-DASH_TITLE_HEIGHT/2, (ps_uchar16*)U("Ã‹Ã‘Ã‹Ã·"), 2);
 }
 
 void CtrlPanel::draw_buttons(ps_context* gc, const Rect& r)
@@ -432,7 +434,7 @@ void CtrlPanel::draw_button_face(ps_context* gc, const Rect& rc)
 	ps_fill(gc);
 	ps_matrix_translate(m_impl->t_mtx, -r.x*2, -r.y*2);
 	ps_gradient_transform(m_impl->g_light, m_impl->t_mtx);
-	ps_matrix_reset(m_impl->t_mtx);
+	ps_matrix_identity(m_impl->t_mtx);
 }
 
 void CtrlPanel::draw_event(ps_context* gc)
@@ -447,7 +449,7 @@ void CtrlPanel::draw_event(ps_context* gc)
 		ps_fill(gc);
 		ps_matrix_translate(m_impl->t_mtx, -r.x*2, -r.y*2);
 		ps_gradient_transform(m_impl->g_event, m_impl->t_mtx);
-		ps_matrix_reset(m_impl->t_mtx);
+		ps_matrix_identity(m_impl->t_mtx);
 	}
 }
 
@@ -577,7 +579,7 @@ void CtrlPanel::button_event(void * p)
 {
 	Hide();
 
-	int btn = (int)p;
+	int btn = (intptr_t)p;
 	switch (btn)
 	{
 	case 1:

@@ -1,6 +1,6 @@
-/* event.h - MaCross application
+/* event.h - Agave application
  *
- * Copyright (C) 2010 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
@@ -9,7 +9,7 @@
 
 #include <vgcl.h>
 
-class MouseEvent : public VGCL::VEvent
+class MouseEvent : public vgcl::VEvent
 {
 public:
 	enum {
@@ -47,7 +47,7 @@ private:
 	int 		m_y;
 };
 
-class KeyEvent : public VGCL::VEvent
+class KeyEvent : public vgcl::VEvent
 {
 public:
 	enum {
@@ -80,9 +80,9 @@ typedef void (Widget::*EventSlot)(void);
 
 typedef void (Widget::*EventHandler)(void * param);
 #define EVENT_FUNC(t, f) ((EventHandler)(&t::f))
-#define EVENT_PARAM(p) ((void*)p)
+#define EVENT_PARAM(p) ((void*)((intptr_t)p))
 
-class PostEvent : public VGCL::VEvent
+class PostEvent : public vgcl::VEvent
 {
 public:
 	PostEvent() 

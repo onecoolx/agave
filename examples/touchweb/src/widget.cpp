@@ -4,10 +4,11 @@
  * Contact : onecoolx@gmail.com
  */
 
+#include "config.h"
+#include <picasso/picasso.h>
 #include <deque>
 #include <vgcl.h>
-#include "config.h"
-#include "picasso.h"
+
 #include "widget.h"
 
 Widget* Widget::g_focusedWidget = NULL;
@@ -15,7 +16,7 @@ Widget* Widget::g_capturedWidget = NULL;
 
 //post event queue
 static std::deque<PostEvent> g_events;
-static VGCL::VMutex g_mutex;
+static vgcl::VMutex g_mutex;
 #define EVENT_LOCK g_mutex.Lock()
 #define EVENT_UNLOCK g_mutex.UnLock()
 
@@ -216,7 +217,7 @@ void Widget::Paint(ps_context* gc, const Rect* rc)
 		if (trc.intersect(*rc)) {
 			ps_rect r = trc;
 			ps_save(gc);
-			ps_clip_fast_rect(gc, &r);
+			ps_scissor_rect(gc, &r);
 			ps_translate(gc, m_bound.x, m_bound.y);
 
 			trc.x -= m_bound.x;

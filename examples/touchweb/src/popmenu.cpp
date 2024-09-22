@@ -1,12 +1,14 @@
-/* popmenu.cpp - MaCross application
+/* popmenu.cpp - Agave application
  *
- * Copyright (C) 2010 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
+
+#include "config.h"
 #include <stdlib.h>
 #include <string.h>
-#include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "popmenu.h"
 #include "tabpage.h"
 #include "webview.h"

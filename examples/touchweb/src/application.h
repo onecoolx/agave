@@ -1,4 +1,4 @@
-/* application.h - MaCross application
+/* application.h - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -7,7 +7,8 @@
 #ifndef _APPLICATION_H_
 #define _APPLICATION_H_
 
-#include "picasso.h"
+#include "config.h"
+#include <picasso/picasso.h>
 
 class MainWindow;
 class Engine;

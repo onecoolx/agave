@@ -1,11 +1,13 @@
-/* pagemgr.cpp - MaCross application
+/* pagemgr.cpp - Agave application
  *
- * Copyright (C) 2010 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
-#include <vector>
+
 #include "config.h"
-#include "picasso.h"
+#include <vector>
+#include <picasso/picasso.h>
+
 #include "pagemgr.h"
 #include "webview.h"
 #include "tabpage.h"
@@ -57,7 +59,7 @@ PageManager::PageManager(Widget* parent)
 	, m_impl(new PageMgrImpl)
 	, m_main(0)
 {
-	setTitle(U("Ò³Ãæ¹ÜÀí"));
+	setTitle(U("Ã’Â³ÃƒÃ¦Â¹ÃœÃ€Ã­"));
 }
 
 PageManager::~PageManager()
@@ -197,10 +199,11 @@ void PageManager::draw_btnText(ps_context* gc, const ustring& text, const Rect& 
 #endif
 
 	size_t len = 0;
-	ps_size sz = ps_get_text_extent(gc, text.c_str(), text.length());
+	ps_size sz = {0};
+    ps_get_text_extent(gc, text.c_str(), text.length(), &sz);
 
 	ps_rect rc = {r.x, r.y, r.w-b*2, r.h};
-	ps_clip_fast_rect(gc, &rc);
+	ps_scissor_rect(gc, &rc);
 
 	if (sz.w > r.w) {
 		len = (size_t)((r.w / (sz.w/text.length())) - 3);

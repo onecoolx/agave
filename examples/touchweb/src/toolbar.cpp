@@ -1,10 +1,14 @@
-/* toolbar.cpp - MaCross application
+/* toolbar.cpp - Agave application
  *
- * Copyright (C) 2010 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
+
 #include "config.h"
-#include "picasso.h"
+#include <stdio.h>
+#include <string.h>
+#include <picasso/picasso.h>
+
 #include "toolbar.h"
 #include "tabpage.h"
 #include "webview.h"
@@ -166,7 +170,8 @@ static void draw_tabs_btn(ps_context* gc, const ps_rect& rt)
 
 	char num[4] = {0};
 	snprintf(num, 3, "%d", Application::getInstance()->getMainWindow()->getTabs()->getCount());
-	ps_size s = ps_get_text_extent(gc, num, strlen(num));
+	ps_size s = {0};
+    ps_get_text_extent(gc, num, strlen(num), &s);
 	ps_text_out_length(gc, rn.x+rn.w/2-s.w/2, rn.y+w, num, strlen(num));
 
 	ps_set_line_width(gc, 1);
@@ -277,7 +282,7 @@ void ToolBar::draw_event(ps_context* gc)
 		ps_paint(gc);
 		ps_matrix_translate(m_impl->t_event, -r.x*2, -r.y*2);
 		ps_gradient_transform(m_impl->g_event, m_impl->t_event);
-		ps_matrix_reset(m_impl->t_event);
+		ps_matrix_identity(m_impl->t_event);
 		ps_set_line_width(gc, 1);
 	}
 }
@@ -395,7 +400,7 @@ void ToolBar::button_event(void* param)
 {
 	WebView * view = m_main->getTabs()->getActiveView();
 
-	int btn = (int)param;
+	int btn = (intptr_t)param;
 	if (view) {
 		switch(btn)
 		{
@@ -545,7 +550,8 @@ void ImToolBar::draw_btnText(ps_context* gc, const ustring& text, const Rect& r)
 			ps_set_text_antialias(gc, False);
 #endif
 
-		ps_size sz = ps_get_text_extent(gc, text.c_str(), text.length());
+		ps_size sz = {0};
+        ps_get_text_extent(gc, text.c_str(), text.length(), &sz);
 
 		ps_wide_text_out_length(gc, r.x+(r.w-sz.w)/2, r.y+r.h/2-DASH_TITLE_HEIGHT/5, 
 												(ps_uchar16*)text.c_str(), text.length());

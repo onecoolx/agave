@@ -9,7 +9,6 @@
 
 #include <QTimer>
 #include <QApplication>
-#include <QDesktopWidget>
 
 class Application;
 class ApplicationImpl : public QApplication , public QTimer

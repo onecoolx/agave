@@ -1,4 +1,4 @@
-/* Dashlayer.h - MaCross application
+/* Dashlayer.h - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -9,7 +9,7 @@
 
 #include <string>
 #include "layer.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
 
 class DashLayer : public Layer
 {

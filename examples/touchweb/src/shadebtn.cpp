@@ -1,14 +1,14 @@
-/* shadebtn.cpp - MaCross application
+/* shadebtn.cpp - Agave application
  *
- * Copyright (C) 2010 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "shadebtn.h"
 #include "mainwindow.h"
-
 
 class ShadeButtonImpl
 {
@@ -110,7 +110,7 @@ void ShadeButton::OnPaint(ps_context* gc, const Rect* r)
 		ps_fill(gc);
 		ps_matrix_translate(m_impl->mtx, -rc.x*2, -(rc.y)*2);
 		ps_gradient_transform(m_impl->high_gradient, m_impl->mtx);
-		ps_matrix_reset(m_impl->mtx);
+		ps_matrix_identity(m_impl->mtx);
 	}
 
 	// draw text
@@ -128,7 +128,8 @@ void ShadeButton::OnPaint(ps_context* gc, const Rect* r)
 		else
 			ps_set_text_antialias(gc, False);
 #endif
-		ps_size sz = ps_get_text_extent(gc, m_text.c_str(), m_text.length());
+		ps_size sz = {0};
+        ps_get_text_extent(gc, m_text.c_str(), m_text.length(), &sz);
 
 		ps_wide_text_out_length(gc, rc.x+(rc.w-sz.w)/2, rc.y+rc.h/2-DASH_TITLE_HEIGHT/5, 
 												(ps_uchar16*)m_text.c_str(), m_text.length());
@@ -147,7 +148,7 @@ void ShadeButton::OnPaint(ps_context* gc, const Rect* r)
 	ps_fill(gc);
 	ps_matrix_translate(m_impl->mtx, -lrc.x*2, -lrc.y*2);
 	ps_gradient_transform(m_impl->light_gradient, m_impl->mtx);
-	ps_matrix_reset(m_impl->mtx);
+	ps_matrix_identity(m_impl->mtx);
 
 	ps_restore(gc);
 }

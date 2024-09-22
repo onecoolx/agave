@@ -1,11 +1,13 @@
-/* mainwindow.cpp - MaCross application
+/* mainwindow.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
-#include <string.h>
 #include "config.h"
-#include "picasso.h"
+
+#include <string.h>
+#include <picasso/picasso.h>
+
 #include "widget.h"
 #include "toolbar.h"
 #include "tabpage.h"
@@ -28,12 +30,12 @@
 #include "extracfg.h"
 #include "floatbtn.h"
 
-#if defined(WIN32) || defined(WINCE)
+#if defined(WIN32)
 #include "mainwindow_win32.h"
 #endif
 
-#ifdef QT4
-#include "mainwindow_qt4.h"
+#ifdef GTK2
+#include "mainwindow_gtk2.h"
 #endif
 
 ps_font* MainWindow::m_uifont = 0;
@@ -121,7 +123,7 @@ bool MainWindow::Create(void* hInst)
 
 bool MainWindow::Destroy(void)
 {
-	if (Dialog::ConfirmBox(this, U("确定要退出吗？"), U("消息"))){
+	if (Dialog::ConfirmBox(this, U("脠路露篓脪陋脥脣鲁枚脗冒拢驴"), U("脧没脧垄"))){
 		m_impl->Destroy();
 		return true;
 	}
@@ -268,7 +270,7 @@ void MainWindow::Paint(ps_context* gc, const Rect* rc)
 ps_font* MainWindow::getUIFont(void)
 {
 	if (!m_uifont) {
-		m_uifont = ps_font_create("宋体", CHARSET_UNICODE, DASH_TITLE_HEIGHT/5*2, FONT_WEIGHT_REGULAR, False); 
+		m_uifont = ps_font_create("脣脦脤氓", CHARSET_UNICODE, DASH_TITLE_HEIGHT/5*2, FONT_WEIGHT_REGULAR, False); 
 	}
 	return m_uifont;
 }
@@ -276,7 +278,7 @@ ps_font* MainWindow::getUIFont(void)
 ps_font* MainWindow::getUIBoldFont(void)
 {
 	if (!m_uibfont) {
-		m_uibfont = ps_font_create("宋体", CHARSET_UNICODE, DASH_TITLE_HEIGHT/5*2, FONT_WEIGHT_BOLD, False); 
+		m_uibfont = ps_font_create("脣脦脤氓", CHARSET_UNICODE, DASH_TITLE_HEIGHT/5*2, FONT_WEIGHT_BOLD, False); 
 	}
 	return m_uibfont;
 }
