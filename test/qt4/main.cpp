@@ -1,8 +1,9 @@
-/* main.cpp - MaCross application 
+/* main.cpp - Agave application 
  * 
  * Copyright (C) 2009 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
  */
+
 #include <QApplication>
 #include <QMainWindow>
 #include <QImage>

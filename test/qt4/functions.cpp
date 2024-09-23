@@ -1,4 +1,4 @@
-/* functions.cpp - MaCross application 
+/* functions.cpp - Agave application 
  * 
  * Copyright (C) 2009 Zhang Ji Peng
  * Contact: onecoolx@gmail.com

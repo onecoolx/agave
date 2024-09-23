@@ -1,4 +1,4 @@
-/* popmenu - MaCross application 
+/* popmenu - Agave application 
  * 
  * Copyright (C) 2009 Zhang Ji Peng
  * Contact: onecoolx@gmail.com
