@@ -1,4 +1,4 @@
-/* network_qt4.cpp - MaCross application
+/* network_qt4.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -7,7 +7,7 @@
 #include "config.h"
 #include "network_qt4.h"
 
-NetServiceImpl::NetServiceImpl()
+NetServiceImpl::NetServiceImpl(NetService*)
 {
 }
 

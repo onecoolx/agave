@@ -1,13 +1,13 @@
-/* network_qt4.cpp - MaCross application
+/* network_gtk2.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "config.h"
-#include "network_qt4.h"
+#include "network_gtk2.h"
 
-NetServiceImpl::NetServiceImpl()
+NetServiceImpl::NetServiceImpl(NetService*)
 {
 }
 
@@ -40,3 +40,6 @@ bool NetServiceImpl::isConnected(void)
 	return true;
 }
 
+void NetServiceImpl::readNetConfigs(void)
+{
+}

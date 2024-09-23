@@ -66,6 +66,10 @@ else()
         ${APP_MOBILE_DIR}/src/gtk2/mainwindow_gtk2.cpp
         ${APP_MOBILE_DIR}/src/gtk2/application_gtk2.cpp
         ${APP_MOBILE_DIR}/src/gtk2/main.cpp
+        ${APP_MOBILE_DIR}/src/gtk2/timer_gtk2.cpp
+        ${APP_MOBILE_DIR}/src/gtk2/network_gtk2.cpp
+        ${APP_MOBILE_DIR}/src/gtk2/dialog_gtk2.cpp
+        ${APP_MOBILE_DIR}/src/gtk2/webview_gtk2.cpp
     )
 
     include_directories(${APP_MOBILE_DIR}/src/gtk2
@@ -96,7 +100,7 @@ else()
 include_directories(${APP_MOBILE_DIR}/vgcl/src/posix
 )
 set(APP_MOBILE_SRCS ${APP_MOBILE_SRCS}
-    ${APP_MOBILE_DIR}/vgcl/src/posix/vplatform.cpp
+    ${APP_MOBILE_DIR}/vgcl/src/posix/vplatform_thread.cpp
 )
 endif()
 

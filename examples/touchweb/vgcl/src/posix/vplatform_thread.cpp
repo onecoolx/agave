@@ -27,9 +27,13 @@
  */
 
 #include "vgconfig.h"
-#include "vplatform.h"
+#include "vplatform_thread.h"
 
 namespace vgcl {
+
+PlatformThreadHandle CreatePlatformThread(PlatformThreadFunc func, void* ThreadHost)
+{
+}
 
 void KillPlatformThread(PlatformThreadHandle handle, PlatformThreadResult exit)
 {

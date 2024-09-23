@@ -61,7 +61,8 @@ void PlatformSleep(int miliSeconds);
 
 /* Mutex function. */
 
-typedef CRITICAL_SECTION* PlatformMutexHandle;
+typedef CRITICAL_SECTION PlatformMutex;
+typedef PlatformMutex* PlatformMutexHandle;
 
 void InitPlatformMutex(PlatformMutexHandle);
 

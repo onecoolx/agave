@@ -1,4 +1,4 @@
-/* mainwindow_qt4.cpp - MaCross application
+/* mainwindow_qt4.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com

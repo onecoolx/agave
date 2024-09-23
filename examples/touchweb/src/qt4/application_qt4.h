@@ -1,4 +1,4 @@
-/* application_qt4.h - MaCross application
+/* application_qt4.h - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com

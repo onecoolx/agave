@@ -30,7 +30,7 @@
 #define _VGCL_THREAD_H_
 
 #include "vobject.h"
-#include "vplatform.h"
+#include "vplatform_thread.h"
 
 namespace vgcl {
 

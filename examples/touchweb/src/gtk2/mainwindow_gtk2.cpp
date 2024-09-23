@@ -301,3 +301,7 @@ int MainWindowImpl::SysHeight(void)
 	return DEFAULT_HEIGHT;
 }
 
+bool MainWindowImpl::getChooseFile(uchar_t* name, unsigned int len)
+{
+    return false;
+}

@@ -7,6 +7,8 @@
 #ifndef _NETWORK_GTK2_H_
 #define _NETWORK_GTK2_H_
 
+class NetService;
+
 class NetServiceImpl
 {
 public:

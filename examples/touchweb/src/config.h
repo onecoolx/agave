@@ -4,7 +4,7 @@
  * Contact : onecoolx@gmail.com
  */
 
-#define APP_VERSION "105000"  /* version 1.2.8 */
+#define APP_VERSION "105000"  /* version 1.5.0 */
 #define VERSION_STRING "1.5.0"
 
 #define THREAD_RENDER 1

@@ -1,16 +1,16 @@
-/* webview_qt4.h - MaCross application
+/* webview_gtk2.h - Agave application
  *
- * Copyright (C) 2010 Zhang Ji Peng
+ * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
-#ifndef _WEBVIEW_QT4_H_
-#define _WEBVIEW_QT4_H_
+#ifndef _WEBVIEW_GTK2_H_
+#define _WEBVIEW_GTK2_H_
+
+#include <gtk/gtk.h>
 
 class WebView;
 class MainWindowImpl;
-
-class QImage;
 
 class WebViewPlat
 {
@@ -29,7 +29,7 @@ public:
 	static bool haveMemory(void);
 private:
 	WebView* m_view;
-	QImage* m_img;
+    GdkPixbuf*  m_buf;
 	ps_context* m_context;
 	ps_canvas* m_canvas;
 };

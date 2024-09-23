@@ -12,8 +12,8 @@
 #include "mainwindow_gtk2.h"
 
 DialogImpl::DialogImpl(Dialog* d)
-    : m_dlg(d), m_gtkwindow(NULL), m_drawarea(NULL),
-    ，m_buf(NULL), m_gc(NULL), m_canvas(NULL)
+    : m_dlg(d), m_gtkwindow(NULL), m_drawarea(NULL)
+    , m_buf(NULL), m_gc(NULL), m_canvas(NULL)
     , m_x(0), m_y(0), m_w(0), m_h(0)
     , m_inst(NULL)
 {
@@ -39,31 +39,32 @@ DialogImpl::~DialogImpl()
 
 void DialogImpl::OnUpdate(int x, int y, int w, int h)
 {
-	update(x, y, w, h);
+    gtk_widget_queue_draw_area(GTK_WIDGET(m_drawarea), x, y, w, h);
 }
 
 void DialogImpl::OnPaint(int x, int y, int w, int h)
 {
 	Rect rc(x, y, w, h);
-	m_data->m_dlg->Paint(m_data->m_gc, &rc);
+	m_dlg->Paint(m_gc, &rc);
 }
 
 void DialogImpl::OnCreate(int x, int y, int w, int h)
 {
-	m_data->m_dlg->OnCreate(0, x, y, w, h);
+	m_dlg->OnCreate(0, x, y, w, h);
 }
 
 void DialogImpl::OnChar(unsigned int c)
 {
-	m_data->m_dlg->CharInput(c);
+	m_dlg->CharInput(c);
 }
 
 void DialogImpl::OnMouse(int t, unsigned b, int x, int y)
 {
 	MouseEvent evt(t, b, x, y);
-	m_data->m_dlg->SendMouseEvent(&evt);
+	m_dlg->SendMouseEvent(&evt);
 }
 
+#if 0
 void DialogImpl::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
@@ -93,15 +94,16 @@ void DialogImpl::keyPressEvent(QKeyEvent *event)
 {
 	OnChar(*(event->text().utf16()));
 }
+#endif
 
 void DialogImpl::EndModal(int code)
 {
-    gtk_dialog_response(m_gtkwindow, code);
+    gtk_dialog_response(GTK_DIALOG(m_gtkwindow), code);
 }
 
 int DialogImpl::DoModal(void)
 {
-    return gtk_dialog_run(m_gtkwindow);
+    return gtk_dialog_run(GTK_DIALOG(m_gtkwindow));
 }
 
 void DialogImpl::Create(const MainWindowImpl* main, int x, int y, int w, int h)
@@ -118,7 +120,6 @@ void DialogImpl::Create(const MainWindowImpl* main, int x, int y, int w, int h)
 
     g_signal_connect (G_OBJECT(m_drawarea), "expose_event", G_CALLBACK (DialogImpl::expose), this);
     g_signal_connect (G_OBJECT(m_gtkwindow), "key_press_event", G_CALLBACK (DialogImpl::keyPress), this);
-    g_signal_connect (G_OBJECT(m_gtkwindow), "key_release_event", G_CALLBACK (DialogImpl::keyRelease), this);
 
     gtk_widget_add_events (GTK_WIDGET(m_gtkwindow), GDK_BUTTON_PRESS_MASK);
     g_signal_connect (G_OBJECT(m_gtkwindow), "button_press_event", G_CALLBACK (DialogImpl::mouseButtonPress), this);
@@ -128,7 +129,6 @@ void DialogImpl::Create(const MainWindowImpl* main, int x, int y, int w, int h)
     g_signal_connect (G_OBJECT(m_gtkwindow), "motion_notify_event", G_CALLBACK (DialogImpl::mouseMotionNotify), this);
 
 	OnCreate(0, 0, w, h);
-	setFocus();
 
     m_buf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, w, h);
     gchar* buf = (gchar*)gdk_pixbuf_get_pixels(m_buf);
@@ -136,8 +136,27 @@ void DialogImpl::Create(const MainWindowImpl* main, int x, int y, int w, int h)
     gdk_pixbuf_fill(m_buf, 0xFFFFFFFF);
 
 	m_canvas = ps_canvas_create_with_data((ps_byte*)buf, COLOR_FORMAT_RGB, w, h, stride);
-	m_gc = ps_context_create(m_canvas);
+	m_gc = ps_context_create(m_canvas, 0);
 
     gtk_container_add (GTK_CONTAINER (m_gtkwindow), m_drawarea);
 }
 
+gboolean DialogImpl::expose(GtkWidget *widget, GdkEventExpose *event, gpointer data)
+{
+}
+
+gboolean DialogImpl::mouseButtonPress(GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+}
+
+gboolean DialogImpl::mouseButtonRelease(GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+}
+
+gboolean DialogImpl::mouseMotionNotify(GtkWidget *widget, GdkEventMotion *event, gpointer data)
+{
+}
+
+gboolean DialogImpl::keyPress(GtkWidget *widget, GdkEventKey *event, gpointer data)
+{
+}
