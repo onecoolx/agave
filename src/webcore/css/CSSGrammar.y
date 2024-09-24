@@ -1098,7 +1098,7 @@ function:
         f->name = $1;
         f->args = p->sinkFloatingValueList($3);
         $$.id = 0;
-        $$.unit = Value::Function;
+        $$.unit = Value::QFunction;
         $$.function = f;
     } |
     FUNCTION maybe_space error {
@@ -1107,7 +1107,7 @@ function:
         f->name = $1;
         f->args = 0;
         $$.id = 0;
-        $$.unit = Value::Function;
+        $$.unit = Value::QFunction;
         $$.function = f;
   }
   ;

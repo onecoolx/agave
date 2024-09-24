@@ -75,7 +75,7 @@ ValueList::~ValueList()
 {
      size_t numValues = m_values.size();
      for (size_t i = 0; i < numValues; i++)
-         if (m_values[i].unit == Value::Function)
+         if (m_values[i].unit == Value::QFunction)
              delete m_values[i].function;
 }
 
@@ -609,7 +609,7 @@ bool CSSParser::parseValue(int propId, bool important)
     case CSS_PROP_CLIP:                 // <shape> | auto | inherit
         if (id == CSS_VAL_AUTO)
             valid_primitive = true;
-        else if (value->unit == Value::Function)
+        else if (value->unit == Value::QFunction)
             return parseShape(propId, important);
         break;
 
@@ -1399,7 +1399,7 @@ bool CSSParser::parseValue(int propId, bool important)
         break;
 
     case CSS_PROP__WEBKIT_DASHBOARD_REGION:                 // <dashboard-region> | <dashboard-region> 
-        if (value->unit == Value::Function || id == CSS_VAL_NONE)
+        if (value->unit == Value::QFunction || id == CSS_VAL_NONE)
             return parseDashboardRegions(propId, important);
         break;
     // End Apple-specific properties
@@ -1765,7 +1765,7 @@ bool CSSParser::parseContent(int propId, bool important)
             String value = parseURL(domString(val->string));
             parsedValue = new CSSImageValue(
                 String(KURL(styleElement->baseURL().deprecatedString(), value.deprecatedString()).url()), styleElement);
-        } else if (val->unit == Value::Function) {
+        } else if (val->unit == Value::QFunction) {
             // attr(X) | counter(X [,Y]) | counters(X, Y, [,Z])
             ValueList *args = val->function->args;
             String fname = domString(val->function->name).lower();
@@ -2121,7 +2121,7 @@ bool CSSParser::parseDashboardRegions(int propId, bool important)
             region = nextRegion.get();
         }
         
-        if (value->unit != Value::Function) {
+        if (value->unit != Value::QFunction) {
             valid = false;
             break;
         }
@@ -2516,7 +2516,7 @@ bool CSSParser::parseFontFaceSrc()
             parsedValue = new CSSFontFaceSrcValue(String(KURL(styleElement->baseURL().deprecatedString(), value.deprecatedString()).url()), false);
             uriValue = parsedValue;
             allowFormat = true;
-        } else if (val->unit == Value::Function) {
+        } else if (val->unit == Value::QFunction) {
             // There are two allowed functions: local() and format().             
             String fname = domString(val->function->name).lower();
             ValueList* args = val->function->args;
@@ -2663,7 +2663,7 @@ bool CSSParser::parseColorFromValue(Value* value, RGBA32& c, bool svg)
                 (!strict && value->unit == CSSPrimitiveValue::CSS_DIMENSION)) {
         if (!CSSParser::parseColor(domString(value->string), c, strict && value->unit == CSSPrimitiveValue::CSS_IDENT))
             return false;
-    } else if (value->unit == Value::Function &&
+    } else if (value->unit == Value::QFunction &&
                 value->function->args != 0 &&
                 value->function->args->size() == 5 /* rgb + two commas */ &&
                 domString(value->function->name).lower() == "rgb(") {
@@ -2672,7 +2672,7 @@ bool CSSParser::parseColorFromValue(Value* value, RGBA32& c, bool svg)
             return false;
         c = makeRGB(colorValues[0], colorValues[1], colorValues[2]);
     } else if (!svg) {
-        if (value->unit == Value::Function &&
+        if (value->unit == Value::QFunction &&
                 value->function->args != 0 &&
                 value->function->args->size() == 7 /* rgba + three commas */ &&
                 domString(value->function->name).lower() == "rgba(") {
@@ -2680,7 +2680,7 @@ bool CSSParser::parseColorFromValue(Value* value, RGBA32& c, bool svg)
             if (!parseColorParameters(value, colorValues, true))
                 return false;
             c = makeRGBA(colorValues[0], colorValues[1], colorValues[2], colorValues[3]);
-        } else if (value->unit == Value::Function &&
+        } else if (value->unit == Value::QFunction &&
                     value->function->args != 0 &&
                     value->function->args->size() == 5 /* hsl + two commas */ &&
                     domString(value->function->name).lower() == "hsl(") {
@@ -2688,7 +2688,7 @@ bool CSSParser::parseColorFromValue(Value* value, RGBA32& c, bool svg)
             if (!parseHSLParameters(value, colorValues, false))
                 return false;
             c = makeRGBAFromHSLA(colorValues[0], colorValues[1], colorValues[2], 1.0);
-        } else if (value->unit == Value::Function &&
+        } else if (value->unit == Value::QFunction &&
                     value->function->args != 0 &&
                     value->function->args->size() == 7 /* hsla + three commas */ &&
                     domString(value->function->name).lower() == "hsla(") {
@@ -3108,7 +3108,7 @@ PassRefPtr<CSSValue> CSSParser::parseTransform()
     // of CSSTransformValues, where each value specifies a single operation.
     RefPtr<CSSValueList> list = new CSSValueList;
     for (Value* value = valueList->current(); value; value = valueList->next()) {
-        if (value->unit != Value::Function || !value->function)
+        if (value->unit != Value::QFunction || !value->function)
             return 0;
         String fname = domString(value->function->name).lower();
         
@@ -3454,7 +3454,7 @@ Function* CSSParser::sinkFloatingFunction(Function* function)
 
 Value& CSSParser::sinkFloatingValue(Value& value)
 {
-    if (value.unit == Value::Function) {
+    if (value.unit == Value::QFunction) {
         ASSERT(m_floatingFunctions->contains(value.function));
         m_floatingFunctions->remove(value.function);
     }

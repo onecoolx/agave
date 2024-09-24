@@ -3467,7 +3467,7 @@ yyreduce:
         f->name = (yyvsp[(1) - (5)].string);
         f->args = p->sinkFloatingValueList((yyvsp[(3) - (5)].valueList));
         (yyval.value).id = 0;
-        (yyval.value).unit = Value::Function;
+        (yyval.value).unit = Value::QFunction;
         (yyval.value).function = f;
     }
     break;
@@ -3482,7 +3482,7 @@ yyreduce:
         f->name = (yyvsp[(1) - (3)].string);
         f->args = 0;
         (yyval.value).id = 0;
-        (yyval.value).unit = Value::Function;
+        (yyval.value).unit = Value::QFunction;
         (yyval.value).function = f;
   }
     break;
