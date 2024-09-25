@@ -9,12 +9,12 @@
 #include "application.h"
 
 ImClient::ImClient(Widget* parent)
-	: DashLayer(parent)
+    : DashLayer(parent)
 {
 #ifdef WINCE
-	DashLayer::setCancelText(U("ƴ^"));
+    DashLayer::setCancelText(U("ƴ^"));
 #else
-	DashLayer::setCancel(false);
+    DashLayer::setCancel(false);
 #endif
 }
 
@@ -24,8 +24,9 @@ ImClient::~ImClient()
 
 void ImClient::Cancel(void)
 {
-	if (ImeIsShow())
-		SetImeStatus(false);
-	else
-		SetImeStatus(true);
+    if (ImeIsShow()) {
+        SetImeStatus(false);
+    } else {
+        SetImeStatus(true);
+    }
 }

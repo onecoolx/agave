@@ -14,30 +14,29 @@
 class VButton : public Widget
 {
 public:
-	enum {
-		BS_NONE  = 0,
-		BS_PRESS = 1,
-	};
+    enum {
+        BS_NONE = 0,
+        BS_PRESS = 1,
+    };
 public:
-	VButton(Widget* parent);
-	virtual ~VButton();
+    VButton(Widget* parent);
+    virtual ~VButton();
 
-	virtual void OnPaint(ps_context* gc, const Rect* r);
-	virtual void OnMouseEvent(const MouseEvent* e);
+    virtual void OnPaint(ps_context* gc, const Rect* r);
+    virtual void OnMouseEvent(const MouseEvent* e);
 
-	ustring getText(void) const;
-	void setText(const ustring& text);
+    ustring getText(void) const;
+    void setText(const ustring& text);
 
-	void setClickHandle(Widget* t, EventSlot f);
-	void clearHandle(void);
+    void setClickHandle(Widget* t, EventSlot f);
+    void clearHandle(void);
 protected:
-	void click_event_task(void* p);
-	Widget* m_target;
-	EventSlot m_handle;
-	unsigned int m_state;
+    void click_event_task(void* p);
+    Widget* m_target;
+    EventSlot m_handle;
+    unsigned int m_state;
 
-	ustring m_text;
+    ustring m_text;
 };
 
 #endif /*_VBUTTON_H_*/
-

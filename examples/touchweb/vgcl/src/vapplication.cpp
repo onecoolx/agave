@@ -37,7 +37,7 @@ VApplication::VApplication()
 
 VApplication::VApplication(int argc, char** argv)
 {
-	init(argc, argv);
+    init(argc, argv);
 }
 
 VApplication::~VApplication()
@@ -50,7 +50,7 @@ void VApplication::init(int argc, char** argv)
 
 int VApplication::run(void)
 {
-	return 0;
+    return 0;
 }
 
 }

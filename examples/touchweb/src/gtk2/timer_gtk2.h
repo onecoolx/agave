@@ -14,18 +14,18 @@ class Timer;
 class TimerImpl
 {
 public:
-	TimerImpl(Timer* t);
-	~TimerImpl();
-	
-	void start(unsigned int m, void* d);
-	void stop(void);
+    TimerImpl(Timer* t);
+    ~TimerImpl();
 
-	void OnTimer(void);
+    void start(unsigned int m, void* d);
+    void stop(void);
+
+    void OnTimer(void);
 protected:
     static gboolean TimerCb(gpointer data);
 private:
-	Timer* timer;
-	void* data;
+    Timer* timer;
+    void* data;
     gint tid;
 };
 

@@ -36,11 +36,10 @@ namespace vgcl {
 class VEvent : public VObject
 {
 public:
-	VEvent() {}
-	virtual ~VEvent() {}
+    VEvent() {}
+    virtual ~VEvent() {}
 };
 
 }
 
 #endif /*_VGCL_VEVENT_H_*/
-

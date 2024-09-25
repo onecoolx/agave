@@ -33,17 +33,17 @@ namespace vgcl {
 
 void KillPlatformThread(PlatformThreadHandle handle, PlatformThreadResult exit)
 {
-	TerminateThread(handle, exit);
+    TerminateThread(handle, exit);
 }
 
 void CloseThreadHandle(PlatformThreadHandle handle)
 {
-	CloseHandle(handle);
+    CloseHandle(handle);
 }
 
 PlatformThreadHandle CreatePlatformThread(PlatformThreadFunc func, void* ThreadHost)
 {
-	return CreateThread(NULL, 0, func, ThreadHost, CREATE_SUSPENDED, 0);
+    return CreateThread(NULL, 0, func, ThreadHost, CREATE_SUSPENDED, 0);
 }
 
 bool SuspendPlatformThread(PlatformThreadHandle handle)
@@ -82,7 +82,7 @@ bool TryLockPlatformMutex(PlatformMutexHandle m)
 #if(_WIN32_WINNT >= 0x0400)
     return TryEnterCriticalSection(m) ? true : false;
 #else
-	return false;
+    return false;
 #endif
 }
 

@@ -8,32 +8,32 @@
 #include "timer.h"
 
 #if defined(WIN32)
-#include "timer_win32.h"
+    #include "timer_win32.h"
 #endif
 
 #ifdef GTK2
-#include "timer_gtk2.h"
+    #include "timer_gtk2.h"
 #endif
 
 Timer::Timer()
-	: m_impl(0)
+    : m_impl(0)
 {
-	m_impl = new TimerImpl(this);
+    m_impl = new TimerImpl(this);
 }
 
 Timer::~Timer()
 {
-	delete m_impl;
+    delete m_impl;
 }
 
 void Timer::start(unsigned int ms, void* d)
 {
-	m_impl->start(ms, d);
+    m_impl->start(ms, d);
 }
 
 void Timer::stop(void)
 {
-	m_impl->stop();
+    m_impl->stop();
 }
 
 void Timer::OnTimer(void* d)

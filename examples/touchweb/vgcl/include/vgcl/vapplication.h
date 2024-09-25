@@ -37,16 +37,16 @@ namespace vgcl {
 class VApplication : public VCmdTarget
 {
 public:
-	VApplication();
-	VApplication(int argc, char** argv);
-	virtual ~VApplication();
+    VApplication();
+    VApplication(int argc, char** argv);
+    virtual ~VApplication();
 
-	void init(int argc, char** argv);
+    void init(int argc, char** argv);
 
-	int run(void);
+    int run(void);
 private:
-	VApplication(const VApplication&);
-	VApplication& operator=(const VApplication&);
+    VApplication(const VApplication&);
+    VApplication& operator=(const VApplication&);
 };
 
 }

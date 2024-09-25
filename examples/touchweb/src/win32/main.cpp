@@ -9,13 +9,14 @@
 #include "application.h"
 
 #ifdef WINCE
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
+    int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 #else
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+    int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 #endif
 {
-	Application app;
-	if(!app.init(hInstance, lpCmdLine))
-		return 0;
-	return app.run();
+    Application app;
+    if (!app.init(hInstance, lpCmdLine)) {
+        return 0;
+    }
+    return app.run();
 }

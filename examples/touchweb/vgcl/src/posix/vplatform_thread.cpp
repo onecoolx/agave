@@ -54,6 +54,7 @@ bool ResumePlatformThread(PlatformThreadHandle handle)
 
 void PlatformSleep(int miliSeconds)
 {
+    usleep(miliSeconds * 1000);
 }
 
 void InitPlatformMutex(PlatformMutexHandle)

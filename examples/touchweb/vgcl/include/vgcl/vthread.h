@@ -42,24 +42,23 @@ public:
     VThread();
     virtual ~VThread();
 
-	virtual void Run(void) = 0;
+    virtual void Run(void) = 0;
 
-	bool Start(void);
+    bool Start(void);
     bool StartOnce(void);
-	bool Stop(void);
-	bool isRunning(void) const;
-	void Exit(int code = 0);
+    bool Stop(void);
+    bool isRunning(void) const;
+    void Exit(int code = 0);
 
     static void Sleep(int ms);
 protected:
-	PlatformThreadHandle Handle(void);
+    PlatformThreadHandle Handle(void);
 private:
     VThread(const VThread&);
     VThread& operator=(const VThread&);
 
     VThreadPriv* m_data;
 };
-
 
 class VMutex : public VObject
 {
@@ -78,7 +77,6 @@ private:
     PlatformMutex m_handle;
 };
 
-
 template<typename T>
 class VMutexLocker
 {
@@ -86,7 +84,7 @@ public:
     VMutexLocker(T& mutex)
         : m_mutex(mutex)
     {
-        m_mutex.Lock(); 
+        m_mutex.Lock();
     }
 
     ~VMutexLocker()

@@ -7,11 +7,11 @@
 #ifndef _UNICODE_H_
 #define _UNICODE_H_
 
-class Unicode 
+class Unicode
 {
 public:
-	static ustring ConvertUTF8ToUTF16(const std::string& str);
-	static std::string ConvertUTF16ToUTF8(const ustring& str);
+    static ustring ConvertUTF8ToUTF16(const std::string& str);
+    static std::string ConvertUTF16ToUTF8(const ustring& str);
 };
 
 #endif/*_UNICODE_H_*/

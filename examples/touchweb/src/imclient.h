@@ -12,12 +12,12 @@
 class ImClient : public DashLayer
 {
 public:
-	ImClient(Widget* parent);
-	virtual ~ImClient();
+    ImClient(Widget* parent);
+    virtual ~ImClient();
 
-	void setCancel(bool) {}
-	void setCancelText(const ustring&) {}
-	virtual void Cancel(void);
+    void setCancel(bool) {}
+    void setCancelText(const ustring&) {}
+    virtual void Cancel(void);
 };
 
 #endif /*_IMCLIENT_H_*/

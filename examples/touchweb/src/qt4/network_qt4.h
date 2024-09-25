@@ -12,16 +12,15 @@ class NetService;
 class NetServiceImpl
 {
 public:
-	NetServiceImpl(NetService*);
-	~NetServiceImpl();
+    NetServiceImpl(NetService*);
+    ~NetServiceImpl();
 
-	bool isAvaliable(void);
-	bool establishConnection(void);
-	bool establishConnectionSync(void);
-	bool isConnected(void);
+    bool isAvaliable(void);
+    bool establishConnection(void);
+    bool establishConnectionSync(void);
+    bool isConnected(void);
 private:
-	void releaseConnection(void);
+    void releaseConnection(void);
 };
 
 #endif /*_NETWORK_QT4_H_*/
-

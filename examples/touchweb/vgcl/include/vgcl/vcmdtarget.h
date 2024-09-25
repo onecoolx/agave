@@ -36,8 +36,8 @@ namespace vgcl {
 class VCmdTarget : public VObject
 {
 public:
-	VCmdTarget() {}
-	virtual ~VCmdTarget() {}
+    VCmdTarget() {}
+    virtual ~VCmdTarget() {}
 };
 
 }

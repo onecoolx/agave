@@ -42,10 +42,9 @@ typedef HANDLE PlatformThreadHandle;
 
 typedef DWORD PlatformThreadResult;
 
-typedef LPVOID PlatformThreadArg; 
+typedef LPVOID PlatformThreadArg;
 
-typedef PlatformThreadResult (WINAPI *PlatformThreadFunc)(PlatformThreadArg);
-
+typedef PlatformThreadResult (WINAPI* PlatformThreadFunc)(PlatformThreadArg);
 
 PlatformThreadHandle CreatePlatformThread(PlatformThreadFunc func, void* ThreadHost);
 

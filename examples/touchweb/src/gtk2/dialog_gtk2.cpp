@@ -44,55 +44,55 @@ void DialogImpl::OnUpdate(int x, int y, int w, int h)
 
 void DialogImpl::OnPaint(int x, int y, int w, int h)
 {
-	Rect rc(x, y, w, h);
-	m_dlg->Paint(m_gc, &rc);
+    Rect rc(x, y, w, h);
+    m_dlg->Paint(m_gc, &rc);
 }
 
 void DialogImpl::OnCreate(int x, int y, int w, int h)
 {
-	m_dlg->OnCreate(0, x, y, w, h);
+    m_dlg->OnCreate(0, x, y, w, h);
 }
 
 void DialogImpl::OnChar(unsigned int c)
 {
-	m_dlg->CharInput(c);
+    m_dlg->CharInput(c);
 }
 
 void DialogImpl::OnMouse(int t, unsigned b, int x, int y)
 {
-	MouseEvent evt(t, b, x, y);
-	m_dlg->SendMouseEvent(&evt);
+    MouseEvent evt(t, b, x, y);
+    m_dlg->SendMouseEvent(&evt);
 }
 
 #if 0
-void DialogImpl::paintEvent(QPaintEvent *event)
+void DialogImpl::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
-	QRect rect = event->rect();
-	OnPaint(rect.x(), rect.y(), rect.width(), rect.height());
-	painter.drawImage(rect, *(m_data->m_img), rect);
+    QRect rect = event->rect();
+    OnPaint(rect.x(), rect.y(), rect.width(), rect.height());
+    painter.drawImage(rect, *(m_data->m_img), rect);
 }
 
-void DialogImpl::mousePressEvent(QMouseEvent *event)
+void DialogImpl::mousePressEvent(QMouseEvent* event)
 {
-	if (event->buttons() & Qt::LeftButton) {
-		OnMouse(1, 1, event->x(), event->y());
-	}
+    if (event->buttons() & Qt::LeftButton) {
+        OnMouse(1, 1, event->x(), event->y());
+    }
 }
 
-void DialogImpl::mouseReleaseEvent(QMouseEvent *event)
+void DialogImpl::mouseReleaseEvent(QMouseEvent* event)
 {
-	OnMouse(0, 1, event->x(), event->y());
+    OnMouse(0, 1, event->x(), event->y());
 }
 
-void DialogImpl::mouseMoveEvent(QMouseEvent *event)
+void DialogImpl::mouseMoveEvent(QMouseEvent* event)
 {
-	OnMouse(2, 0, event->x(), event->y());
+    OnMouse(2, 0, event->x(), event->y());
 }
 
-void DialogImpl::keyPressEvent(QKeyEvent *event)
+void DialogImpl::keyPressEvent(QKeyEvent* event)
 {
-	OnChar(*(event->text().utf16()));
+    OnChar(*(event->text().utf16()));
 }
 #endif
 
@@ -108,11 +108,11 @@ int DialogImpl::DoModal(void)
 
 void DialogImpl::Create(const MainWindowImpl* main, int x, int y, int w, int h)
 {
-	m_inst = main->getInstance();
-	m_x = x;
-	m_y = y;
-	m_w = w;
-	m_h = h;
+    m_inst = main->getInstance();
+    m_x = x;
+    m_y = y;
+    m_w = w;
+    m_h = h;
 
     m_gtkwindow = gtk_dialog_new();
     m_drawarea = gtk_drawing_area_new();
@@ -128,35 +128,35 @@ void DialogImpl::Create(const MainWindowImpl* main, int x, int y, int w, int h)
     gtk_widget_add_events (GTK_WIDGET(m_gtkwindow), GDK_POINTER_MOTION_MASK);
     g_signal_connect (G_OBJECT(m_gtkwindow), "motion_notify_event", G_CALLBACK (DialogImpl::mouseMotionNotify), this);
 
-	OnCreate(0, 0, w, h);
+    OnCreate(0, 0, w, h);
 
     m_buf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8, w, h);
     gchar* buf = (gchar*)gdk_pixbuf_get_pixels(m_buf);
     gint stride = gdk_pixbuf_get_rowstride(m_buf);
     gdk_pixbuf_fill(m_buf, 0xFFFFFFFF);
 
-	m_canvas = ps_canvas_create_with_data((ps_byte*)buf, COLOR_FORMAT_RGB, w, h, stride);
-	m_gc = ps_context_create(m_canvas, 0);
+    m_canvas = ps_canvas_create_with_data((ps_byte*)buf, COLOR_FORMAT_RGB, w, h, stride);
+    m_gc = ps_context_create(m_canvas, 0);
 
     gtk_container_add (GTK_CONTAINER (m_gtkwindow), m_drawarea);
 }
 
-gboolean DialogImpl::expose(GtkWidget *widget, GdkEventExpose *event, gpointer data)
+gboolean DialogImpl::expose(GtkWidget* widget, GdkEventExpose* event, gpointer data)
 {
 }
 
-gboolean DialogImpl::mouseButtonPress(GtkWidget *widget, GdkEventButton *event, gpointer data)
+gboolean DialogImpl::mouseButtonPress(GtkWidget* widget, GdkEventButton* event, gpointer data)
 {
 }
 
-gboolean DialogImpl::mouseButtonRelease(GtkWidget *widget, GdkEventButton *event, gpointer data)
+gboolean DialogImpl::mouseButtonRelease(GtkWidget* widget, GdkEventButton* event, gpointer data)
 {
 }
 
-gboolean DialogImpl::mouseMotionNotify(GtkWidget *widget, GdkEventMotion *event, gpointer data)
+gboolean DialogImpl::mouseMotionNotify(GtkWidget* widget, GdkEventMotion* event, gpointer data)
 {
 }
 
-gboolean DialogImpl::keyPress(GtkWidget *widget, GdkEventKey *event, gpointer data)
+gboolean DialogImpl::keyPress(GtkWidget* widget, GdkEventKey* event, gpointer data)
 {
 }

@@ -14,22 +14,21 @@ class HistoryImpl;
 class History
 {
 public:
-	typedef struct {
-		int id;
-		std::string title;
-		std::string url;
-	}Item;
+    typedef struct {
+        int id;
+        std::string title;
+        std::string url;
+    } Item;
 
-	History();
-	~History();
-	
-	std::vector<Item> getHistoryItems(unsigned int offset, unsigned int nums);
-	unsigned int getHistoryCount(void);
-	void clearAllHistory(void);
-	void addHistory(const std::string& utf8_title, const std::string& utf8_url);
+    History();
+    ~History();
+
+    std::vector<Item> getHistoryItems(unsigned int offset, unsigned int nums);
+    unsigned int getHistoryCount(void);
+    void clearAllHistory(void);
+    void addHistory(const std::string& utf8_title, const std::string& utf8_url);
 private:
-	HistoryImpl* m_impl;
+    HistoryImpl* m_impl;
 };
 
 #endif/*_HISTORY_H_*/
-

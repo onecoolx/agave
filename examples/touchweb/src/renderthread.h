@@ -17,30 +17,27 @@
 
 #include "webview.h"
 
-struct WebEventParam
-{
-    struct ViewDesc 
-    {
-       ViewDesc(): width(0),height(0),buffer(0)
-           , buffer_width(0), buffer_height(0), buffer_pitch(0)
-           , default_scale(1.0) {}
+struct WebEventParam {
+    struct ViewDesc {
+        ViewDesc(): width(0), height(0), buffer(0)
+            , buffer_width(0), buffer_height(0), buffer_pitch(0)
+            , default_scale(1.0) {}
 
-       int width;
-       int height;
-       unsigned char* buffer; 
-       int buffer_width;
-       int buffer_height;
-       int buffer_pitch;
-       float default_scale;
-    }desc;
+        int width;
+        int height;
+        unsigned char* buffer;
+        int buffer_width;
+        int buffer_height;
+        int buffer_pitch;
+        float default_scale;
+    } desc;
 
-    struct ViewCmd
-    {
+    struct ViewCmd {
         ViewCmd(): view(0) {}
         MaCrossView* view;
         std::string url;
         Rect dirty;
-    }cmd;
+    } cmd;
 };
 
 class WebEvent : public vgcl::VEvent
@@ -52,12 +49,12 @@ public:
     } EventLevel;
 
     typedef enum {
-        Unknown     = 0,
-        CreateView  = 1,
+        Unknown = 0,
+        CreateView = 1,
         DestroyView = 2,
-        LoadUrl     = 3,
-        PaintView   = 4,
-    }EventType;
+        LoadUrl = 3,
+        PaintView = 4,
+    } EventType;
 
     WebEvent()
         : m_source(0)
@@ -74,26 +71,27 @@ public:
     {
     }
 
-	WebEvent(const WebEvent& o)
-	{
-		m_source = o.m_source;
+    WebEvent(const WebEvent& o)
+    {
+        m_source = o.m_source;
         m_type = o.m_type;
-		m_param = o.m_param;
+        m_param = o.m_param;
         m_level = o.m_level;
-	}
+    }
 
-	WebEvent& operator=(const WebEvent& o)
-	{
-		if (this == &o)
-			return *this;
+    WebEvent& operator=(const WebEvent& o)
+    {
+        if (this == &o) {
+            return *this;
+        }
 
-		m_source = o.m_source;
+        m_source = o.m_source;
         m_type = o.m_type;
-		m_param = o.m_param;
+        m_param = o.m_param;
         m_level = o.m_level;
 
-		return *this;
-	}
+        return *this;
+    }
 
     const WebEventParam* getParam(void) const { return &m_param; }
     WebView* getView(void) const { return m_source; }
@@ -105,7 +103,6 @@ private:
     WebEventParam m_param;
     EventLevel m_level;
 };
-
 
 class RenderThread : public vgcl::VThread
 {
@@ -127,4 +124,3 @@ private:
 #endif
 
 #endif /*_RENDER_THREAD_H_*/
-

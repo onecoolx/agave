@@ -12,18 +12,17 @@ class NetService;
 class NetServiceImpl
 {
 public:
-	NetServiceImpl(NetService* service);
-	~NetServiceImpl();
+    NetServiceImpl(NetService* service);
+    ~NetServiceImpl();
 
-	bool isAvaliable(void);
-	bool establishConnection(void);
-	bool establishConnectionSync(void);
-	bool isConnected(void);
+    bool isAvaliable(void);
+    bool establishConnection(void);
+    bool establishConnectionSync(void);
+    bool isConnected(void);
 
-	void readNetConfigs(void);
+    void readNetConfigs(void);
 private:
-	void releaseConnection(void);
+    void releaseConnection(void);
 };
 
 #endif /*_NETWORK_GTK2_H_*/
-

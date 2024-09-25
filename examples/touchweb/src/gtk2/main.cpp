@@ -7,10 +7,11 @@
 #include "config.h"
 #include "application.h"
 
-int main(int argc, char*argv[])
+int main(int argc, char* argv[])
 {
-	Application app;
-	if(!app.init(0, argv[1]))
-		return 0;
-	return app.run();
+    Application app;
+    if (!app.init(0, argv[1])) {
+        return 0;
+    }
+    return app.run();
 }

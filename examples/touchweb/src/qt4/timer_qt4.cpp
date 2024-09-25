@@ -8,34 +8,34 @@
 #include "timer_qt4.h"
 
 TimerImpl::TimerImpl(Timer* t)
-	: timer(t)
-	, data(0)
+    : timer(t)
+    , data(0)
 {
 }
 
 TimerImpl::~TimerImpl()
 {
-	stop();
+    stop();
 }
 
 void TimerImpl::OnTimer(void)
 {
-	timer->OnTimer(data);
+    timer->OnTimer(data);
 }
 
 void TimerImpl::start(unsigned int ms, void* d)
 {
-	stop();
-	data = d;
-	QTimer::start(ms);
+    stop();
+    data = d;
+    QTimer::start(ms);
 }
 
 void TimerImpl::stop(void)
 {
-	QTimer::stop();
+    QTimer::stop();
 }
 
-void TimerImpl::timerEvent(QTimerEvent * timer)
+void TimerImpl::timerEvent(QTimerEvent* timer)
 {
-	OnTimer();
+    OnTimer();
 }

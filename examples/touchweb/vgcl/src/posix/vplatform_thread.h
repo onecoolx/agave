@@ -36,16 +36,15 @@ namespace vgcl {
 /* Thread functions. */
 #define InvalidThreadHandle NULL
 
-#define CALL_TYPE
+#define CALLBACK_TYPE
 
 typedef pthread_t* PlatformThreadHandle;
 
 typedef void* PlatformThreadResult;
 
-typedef void* PlatformThreadArg; 
+typedef void* PlatformThreadArg;
 
 typedef PlatformThreadResult (*PlatformThreadFunc)(PlatformThreadArg);
-
 
 PlatformThreadHandle CreatePlatformThread(PlatformThreadFunc func, void* ThreadHost);
 

@@ -12,10 +12,10 @@
 class TopWidget : public Widget
 {
 public:
-	TopWidget(Widget* parent);
-	virtual ~TopWidget();
+    TopWidget(Widget* parent);
+    virtual ~TopWidget();
 
-	virtual void OnCreate(uint32_t flags, int x, int y, int w, int h);
+    virtual void OnCreate(uint32_t flags, int x, int y, int w, int h);
 };
 
 #endif/*_TOPMOSTWIDGET_H_*/

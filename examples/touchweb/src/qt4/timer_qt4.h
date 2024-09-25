@@ -14,18 +14,18 @@ class Timer;
 class TimerImpl : public QTimer
 {
 public:
-	TimerImpl(Timer* t);
-	virtual ~TimerImpl();
-	
-	void start(unsigned int m, void* d);
-	void stop(void);
+    TimerImpl(Timer* t);
+    virtual ~TimerImpl();
 
-	virtual void OnTimer(void);
+    void start(unsigned int m, void* d);
+    void stop(void);
+
+    virtual void OnTimer(void);
 protected:
-	void timerEvent(QTimerEvent * timer);
+    void timerEvent(QTimerEvent* timer);
 private:
-	Timer* timer;
-	void* data;
+    Timer* timer;
+    void* data;
 };
 
 #endif/*_TIMER_QT4_H_*/

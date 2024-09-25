@@ -15,23 +15,23 @@ class MainWindowImpl;
 class WebViewPlat
 {
 public:
-	WebViewPlat(WebView* view);
-	~WebViewPlat();
+    WebViewPlat(WebView* view);
+    ~WebViewPlat();
 
-	bool CreateStoreBuffer(int width, int height);
-	void DestroyStoreBuffer(void);
+    bool CreateStoreBuffer(int width, int height);
+    void DestroyStoreBuffer(void);
 
-	void Paint(MainWindowImpl* window, int sx, int sy, int x, int y, int w, int h);
+    void Paint(MainWindowImpl* window, int sx, int sy, int x, int y, int w, int h);
 
-	unsigned char* GetBuffer(int* pitch);
+    unsigned char* GetBuffer(int* pitch);
 
-	ps_context* getContext(void);
-	static bool haveMemory(void);
+    ps_context* getContext(void);
+    static bool haveMemory(void);
 private:
-	WebView* m_view;
-    GdkPixbuf*  m_buf;
-	ps_context* m_context;
-	ps_canvas* m_canvas;
+    WebView* m_view;
+    GdkPixbuf* m_buf;
+    ps_context* m_context;
+    ps_canvas* m_canvas;
 };
 
 #endif/*_WEBVIEW_QT4_H_*/

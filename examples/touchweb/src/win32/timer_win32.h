@@ -12,17 +12,17 @@ class Timer;
 class TimerImpl
 {
 public:
-	TimerImpl(Timer* t);
-	~TimerImpl();
-	
-	void start(unsigned int m, void* d);
-	void stop(void);
+    TimerImpl(Timer* t);
+    ~TimerImpl();
 
-	virtual void OnTimer(void);
+    void start(unsigned int m, void* d);
+    void stop(void);
+
+    virtual void OnTimer(void);
 private:
-	Timer* timer;
-	unsigned int id;
-	void* data;
+    Timer* timer;
+    unsigned int id;
+    void* data;
 };
 
 #endif/*_TIMER_WIN32_H_*/

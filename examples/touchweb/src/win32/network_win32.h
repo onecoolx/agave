@@ -11,43 +11,40 @@
 
 class NetService;
 
-enum ConnType{
-	ConnType_Direct,
-	ConnType_Proxy,
+enum ConnType {
+    ConnType_Direct,
+    ConnType_Proxy,
 };
 
-struct NetConfItemImpl
-{
+struct NetConfItemImpl {
 #if defined(WINCE) && !defined(M8)
-	int  index;
-	GUID guid; //DestNetwork
+    int index;
+    GUID guid; //DestNetwork
 #endif
 };
-
 
 class NetServiceImpl
 {
 public:
-	NetServiceImpl(NetService* service);
-	~NetServiceImpl();
+    NetServiceImpl(NetService* service);
+    ~NetServiceImpl();
 
-	bool isAvaliable(void);
-	bool establishConnection(ConnType t=ConnType_Direct);
-	bool establishConnectionSync(ConnType t=ConnType_Direct);
-	bool isConnected(void);
+    bool isAvaliable(void);
+    bool establishConnection(ConnType t = ConnType_Direct);
+    bool establishConnectionSync(ConnType t = ConnType_Direct);
+    bool isConnected(void);
 
-	void readNetConfigs();
+    void readNetConfigs();
 private:
-	void checkConnectType(void);
-	void releaseConnection(void);
-	NetService* m_service;
+    void checkConnectType(void);
+    void releaseConnection(void);
+    NetService* m_service;
 #if defined(WINCE) && !defined(M8)
-	bool getConnectedGUID(GUID* guid);
-	HANDLE m_hConn;
-	DWORD m_index;
-	GUID m_guid;
+    bool getConnectedGUID(GUID* guid);
+    HANDLE m_hConn;
+    DWORD m_index;
+    GUID m_guid;
 #endif
 };
 
 #endif /*_NETWORK_WIN32_H_*/
-

@@ -12,20 +12,20 @@ struct config_data;
 class ExtraConfig
 {
 public:
-	ExtraConfig();
-	~ExtraConfig();
+    ExtraConfig();
+    ~ExtraConfig();
 
-	void load(void);
-	void save(void);
+    void load(void);
+    void save(void);
 
-	bool needReport(void) const;
-	void setNeedReport(bool b);
+    bool needReport(void) const;
+    void setNeedReport(bool b);
 
-	bool getEquipId(std::string&);
-	void setEquipId(const std::string&);
+    bool getEquipId(std::string&);
+    void setEquipId(const std::string&);
 
 private:
-	config_data* m_data;
+    config_data* m_data;
 };
 
 #endif /*_EXTRACFG_H_*/

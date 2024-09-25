@@ -13,22 +13,22 @@ NetServiceImpl::NetServiceImpl(NetService*)
 
 NetServiceImpl::~NetServiceImpl()
 {
-	releaseConnection();
+    releaseConnection();
 }
 
 bool NetServiceImpl::isAvaliable(void)
 {
-	return true;
+    return true;
 }
 
 bool NetServiceImpl::establishConnection(void)
 {
-	return true;
+    return true;
 }
 
 bool NetServiceImpl::establishConnectionSync(void)
 {
-	return true;
+    return true;
 }
 
 void NetServiceImpl::releaseConnection(void)
@@ -37,7 +37,7 @@ void NetServiceImpl::releaseConnection(void)
 
 bool NetServiceImpl::isConnected(void)
 {
-	return true;
+    return true;
 }
 
 void NetServiceImpl::readNetConfigs(void)

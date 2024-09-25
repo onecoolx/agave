@@ -12,17 +12,17 @@ class TimerImpl;
 class Timer
 {
 public:
-	Timer();
-	virtual ~Timer();
+    Timer();
+    virtual ~Timer();
 
-	void start(unsigned int ms, void* data);
-	void stop(void);
+    void start(unsigned int ms, void* data);
+    void stop(void);
 
 protected:
-	virtual void OnTimer(void *data);
-	friend class TimerImpl;
+    virtual void OnTimer(void* data);
+    friend class TimerImpl;
 private:
-	TimerImpl* m_impl;
+    TimerImpl* m_impl;
 };
 
 #endif/*_TIMER_H_*/

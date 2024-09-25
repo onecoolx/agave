@@ -16,24 +16,24 @@ class MainWindow;
 class PopMenu : public TopWidget
 {
 public:
-	PopMenu(Widget* parent);
-	virtual ~PopMenu();
+    PopMenu(Widget* parent);
+    virtual ~PopMenu();
 
-	virtual void OnPaint(ps_context* gc, const Rect* r);
-	virtual void OnCreate(uint32_t flags, int x, int y, int w, int h);
-	virtual void OnDestroy(void);
-	virtual void OnMouseEvent(const MouseEvent* e);
-	virtual void OnKillFocus(void);
+    virtual void OnPaint(ps_context* gc, const Rect* r);
+    virtual void OnCreate(uint32_t flags, int x, int y, int w, int h);
+    virtual void OnDestroy(void);
+    virtual void OnMouseEvent(const MouseEvent* e);
+    virtual void OnKillFocus(void);
 
-	MC_POPUP_MENU* getPopMenu(void);
+    MC_POPUP_MENU* getPopMenu(void);
 
-	void setMainWindow(MainWindow* main);
+    void setMainWindow(MainWindow* main);
 
-	void size(int w, int h);
-	void create(void);
-	void release(void);
+    void size(int w, int h);
+    void create(void);
+    void release(void);
 private:
-	PopMenuImpl* m_impl;
+    PopMenuImpl* m_impl;
 };
 
 #ifdef __cplusplus

@@ -11,24 +11,23 @@
 #include "timer.h"
 
 class MainWindow;
-class NetStatPanel : public Panel , public Timer
+class NetStatPanel : public Panel, public Timer
 {
 public:
-	NetStatPanel(Widget* parent);
-	virtual ~NetStatPanel();
+    NetStatPanel(Widget* parent);
+    virtual ~NetStatPanel();
 
-	virtual void OnPaint(ps_context* gc, const Rect* r);
+    virtual void OnPaint(ps_context* gc, const Rect* r);
 
-	void setMainWindow(MainWindow* main);
+    void setMainWindow(MainWindow* main);
 
-	void startNetWorkCheck(void);
+    void startNetWorkCheck(void);
 protected:
-	virtual void OnTimer(void *data);
+    virtual void OnTimer(void* data);
 private:
-	MainWindow* m_main;
-	int m_count;
-	int m_flat;
+    MainWindow* m_main;
+    int m_count;
+    int m_flat;
 };
 
 #endif/*_NETSTATUS_H_*/
-

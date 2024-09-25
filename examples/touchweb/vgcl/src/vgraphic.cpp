@@ -30,21 +30,21 @@
 #include "vgraphic.h"
 
 #ifdef ENABLE_PICASSO_GRAPHIC
-#include "ps/vgraphic_p.h"
+    #include "ps/vgraphic_p.h"
 #else
-#error No valid graphic engine!
+    #error No valid graphic engine!
 #endif
 
 namespace vgcl {
 
 VGraphic::VGraphic()
-	: m_data(new VGraphicPrivate)
+    : m_data(new VGraphicPrivate)
 {
 }
 
 VGraphic::~VGraphic()
 {
-	delete m_data;
+    delete m_data;
 }
 
 }

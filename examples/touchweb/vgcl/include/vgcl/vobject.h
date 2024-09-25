@@ -31,11 +31,11 @@
 
 namespace vgcl {
 
-class VObject 
+class VObject
 {
 public:
-	VObject() {}
-	virtual ~VObject() {}
+    VObject() {}
+    virtual ~VObject() {}
 };
 
 }

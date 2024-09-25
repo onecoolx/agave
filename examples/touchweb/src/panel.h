@@ -12,16 +12,15 @@
 class Panel : public TopWidget
 {
 public:
-	Panel(Widget* parent);
-	virtual ~Panel();
+    Panel(Widget* parent);
+    virtual ~Panel();
 
-	void setTitle(const ustring& title);
-	int titleHeight(void) const;
+    void setTitle(const ustring& title);
+    int titleHeight(void) const;
 
-	virtual void OnPaint(ps_context* gc, const Rect* r);
+    virtual void OnPaint(ps_context* gc, const Rect* r);
 private:
-	ustring m_title;
+    ustring m_title;
 };
 
 #endif/*_PANEL_H_*/
-

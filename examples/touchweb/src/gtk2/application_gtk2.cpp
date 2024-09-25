@@ -18,22 +18,22 @@
 static void init_key_map(void);
 
 ApplicationImpl::ApplicationImpl(Application* app)
-	: m_data(app)
-	, m_cbit(0)
-	, m_cbyte(0)
-	, m_format(COLOR_FORMAT_UNKNOWN)
+    : m_data(app)
+    , m_cbit(0)
+    , m_cbyte(0)
+    , m_format(COLOR_FORMAT_UNKNOWN)
 {
-	m_cbit = 24;	
-	m_cbyte = m_cbit/8;
-	m_format = COLOR_FORMAT_RGB;
-	init_key_map();
-	macross_initialize(PIXEL_FORMAT_RGB24, screen_width(), screen_height());
-	start(10);
+    m_cbit = 24;
+    m_cbyte = m_cbit / 8;
+    m_format = COLOR_FORMAT_RGB;
+    init_key_map();
+    macross_initialize(PIXEL_FORMAT_RGB24, screen_width(), screen_height());
+    start(10);
 }
 
 ApplicationImpl::~ApplicationImpl()
 {
-	macross_shutdown();
+    macross_shutdown();
 }
 
 void ApplicationImpl::idleEvent(void)
@@ -51,61 +51,63 @@ void ApplicationImpl::timerEvent(void)
 
 unsigned long ApplicationImpl::tickCount(void)
 {
-	return clock();
+    return clock();
 }
 
 int ApplicationImpl::today(void) const
 {
-	int today = 0;
-	time_t tm = 0;
-	struct tm *ptm = 0;
+    int today = 0;
+    time_t tm = 0;
+    struct tm* ptm = 0;
 
-	tm = time(0);
-	ptm = localtime(&tm);
+    tm = time(0);
+    ptm = localtime(&tm);
 
-	today = ptm->tm_year+1900;
-	today *= 100;
-	today += ptm->tm_mon+1;
-	today *= 100;
-	today += ptm->tm_mday;
-	return today;
+    today = ptm->tm_year + 1900;
+    today *= 100;
+    today += ptm->tm_mon + 1;
+    today *= 100;
+    today += ptm->tm_mday;
+    return today;
 }
 
 bool ApplicationImpl::macAddress(std::string& retstr)
 {
-	int socketfd = 0;
-	struct ifreq req;
+    int socketfd = 0;
+    struct ifreq req;
 
-	if ((socketfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-		return false;
+    if ((socketfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        return false;
+    }
 
-	memset(&req, 0, sizeof(struct ifreq));
-	strncpy(req.ifr_name, "eth0", sizeof(req.ifr_name));
+    memset(&req, 0, sizeof(struct ifreq));
+    strncpy(req.ifr_name, "eth0", sizeof(req.ifr_name));
 
-	if(ioctl(socketfd, SIOCGIFHWADDR, &req) < 0)
-		return false;
+    if (ioctl(socketfd, SIOCGIFHWADDR, &req) < 0) {
+        return false;
+    }
 
-	char inmac[16] = {0};
-	sprintf(inmac, "%02X%02X%02X%02X%02X%02X",
-			(unsigned char)req.ifr_hwaddr.sa_data[0],
-			(unsigned char)req.ifr_hwaddr.sa_data[1],
-			(unsigned char)req.ifr_hwaddr.sa_data[2],
-			(unsigned char)req.ifr_hwaddr.sa_data[3],
-			(unsigned char)req.ifr_hwaddr.sa_data[4],
-			(unsigned char)req.ifr_hwaddr.sa_data[5]);
+    char inmac[16] = {0};
+    sprintf(inmac, "%02X%02X%02X%02X%02X%02X",
+            (unsigned char)req.ifr_hwaddr.sa_data[0],
+            (unsigned char)req.ifr_hwaddr.sa_data[1],
+            (unsigned char)req.ifr_hwaddr.sa_data[2],
+            (unsigned char)req.ifr_hwaddr.sa_data[3],
+            (unsigned char)req.ifr_hwaddr.sa_data[4],
+            (unsigned char)req.ifr_hwaddr.sa_data[5]);
 
-	retstr = std::string(inmac);
-	return true;
+    retstr = std::string(inmac);
+    return true;
 }
 
 int ApplicationImpl::screen_height(void) const
 {
-	return gdk_screen_height();
+    return gdk_screen_height();
 }
 
-int ApplicationImpl::screen_width(void) const 
+int ApplicationImpl::screen_width(void) const
 {
-	return gdk_screen_width();
+    return gdk_screen_width();
 }
 
 void ApplicationImpl::init(void)
@@ -116,13 +118,13 @@ void ApplicationImpl::init(void)
 int ApplicationImpl::run_loop(void)
 {
     gtk_main();
-	return 0;
+    return 0;
 }
 
 typedef struct {
     int vk;
     int pk;
-}KeyEntities;
+} KeyEntities;
 
 static KeyEntities key_map[] = {
     {KEY_BACK, GDK_BackSpace},
@@ -222,14 +224,14 @@ static std::map<int, int> g_key_map;
 
 static void init_key_map(void)
 {
-	for(int i = 0; i < (sizeof(key_map)/sizeof(KeyEntities)); i++) {
-		g_key_map[key_map[i].pk] = key_map[i].vk; 
+    for (int i = 0; i < (sizeof(key_map) / sizeof(KeyEntities)); i++) {
+        g_key_map[key_map[i].pk] = key_map[i].vk;
     }
 }
 
 int get_virtual_key(int pk)
 {
-	return g_key_map[pk];
+    return g_key_map[pk];
 }
 
 void SetImeStatus_platform(bool b)
@@ -238,7 +240,7 @@ void SetImeStatus_platform(bool b)
 
 bool ImeIsShow_platform(void)
 {
-	return false;
+    return false;
 }
 
 void System_init(void)

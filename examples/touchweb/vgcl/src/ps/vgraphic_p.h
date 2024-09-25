@@ -36,8 +36,8 @@ namespace vgcl {
 class VGraphicPrivate : public VObject
 {
 public:
-	VGraphicPrivate() {}
-	virtual ~VGraphicPrivate() {}
+    VGraphicPrivate() {}
+    virtual ~VGraphicPrivate() {}
 
 };
 

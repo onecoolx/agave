@@ -38,11 +38,11 @@ class VGraphicPrivate;
 class VGraphic : public VObject
 {
 public:
-	VGraphic();
-	virtual ~VGraphic();
+    VGraphic();
+    virtual ~VGraphic();
 
 private:
-	VGraphicPrivate * m_data;
+    VGraphicPrivate* m_data;
 };
 
 }

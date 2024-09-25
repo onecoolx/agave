@@ -12,10 +12,10 @@
 class Layer : public Widget
 {
 public:
-	Layer(Widget* parent);
-	virtual ~Layer();
+    Layer(Widget* parent);
+    virtual ~Layer();
 
-	virtual void OnCreate(uint32_t flags, int x, int y, int w, int h);
+    virtual void OnCreate(uint32_t flags, int x, int y, int w, int h);
 };
 
 #endif/*_LAYER_H_*/

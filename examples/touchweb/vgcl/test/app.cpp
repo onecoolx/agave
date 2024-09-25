@@ -6,8 +6,6 @@ VApplication app;
 
 int main(int argc, char* argv[])
 {
-	app.init(argc, argv);
-	return app.run();
+    app.init(argc, argv);
+    return app.run();
 }
-
-

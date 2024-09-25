@@ -32,7 +32,7 @@
 namespace vgcl {
 
 // VThread
-class VThreadPriv 
+class VThreadPriv
 {
 public:
     VThreadPriv(VThread* thread)
@@ -40,14 +40,14 @@ public:
         , handle(InvalidThreadHandle)
         , isRunning(false)
         , needLoop(false)
-		, retval(0)
+        , retval(0)
     {
     }
 
     ~VThreadPriv()
     {
         if (handle != InvalidThreadHandle) {
-			KillPlatformThread(handle, (PlatformThreadResult)-1);
+            KillPlatformThread(handle, (PlatformThreadResult) - 1);
             CloseThreadHandle(handle);
             handle = InvalidThreadHandle;
             isRunning = false;
@@ -58,9 +58,9 @@ public:
 
     VThread* thread;
     PlatformThreadHandle handle;
-	bool isRunning;
+    bool isRunning;
     bool needLoop;
-	int retval;
+    int retval;
 };
 
 bool VThreadPriv::runInternal(void)
@@ -71,17 +71,16 @@ bool VThreadPriv::runInternal(void)
     return needLoop;
 }
 
-
-static PlatformThreadResult CALL_TYPE ThreadRoutine(PlatformThreadArg host)
+static PlatformThreadResult CALLBACK_TYPE ThreadRoutine(PlatformThreadArg host)
 {
-	VThreadPriv * thread = (VThreadPriv*)host;
-	
-	while (thread->runInternal())
+    VThreadPriv* thread = (VThreadPriv*)host;
+
+    while (thread->runInternal())
         ;//run loop
 
-	CloseThreadHandle(thread->handle);
-	thread->handle = InvalidThreadHandle;
-	return (PlatformThreadResult)thread->retval;
+    CloseThreadHandle(thread->handle);
+    thread->handle = InvalidThreadHandle;
+    return (PlatformThreadResult)thread->retval;
 }
 
 VThread::VThread()
@@ -98,35 +97,36 @@ VThread::~VThread()
 bool VThread::Start(void)
 {
     m_data->needLoop = true;
-	PlatformThreadHandle thandle = Handle();
-	bool ret = ResumePlatformThread(thandle);
-	if (ret) m_data->isRunning = true;
-	return ret;
+    PlatformThreadHandle thandle = Handle();
+    bool ret = ResumePlatformThread(thandle);
+    if (ret) { m_data->isRunning = true; }
+    return ret;
 }
 
 bool VThread::StartOnce(void)
 {
     m_data->needLoop = false;
-	PlatformThreadHandle thandle = Handle();
-	bool ret = ResumePlatformThread(thandle);
-	if (ret) m_data->isRunning = true;
-	return ret;
+    PlatformThreadHandle thandle = Handle();
+    bool ret = ResumePlatformThread(thandle);
+    if (ret) { m_data->isRunning = true; }
+    return ret;
 }
 
 bool VThread::Stop(void)
 {
-	PlatformThreadHandle thandle = Handle();
-	bool ret = SuspendPlatformThread(thandle);
-	if (ret) m_data->isRunning = false;
-	return ret;
+    PlatformThreadHandle thandle = Handle();
+    bool ret = SuspendPlatformThread(thandle);
+    if (ret) { m_data->isRunning = false; }
+    return ret;
 }
 
 PlatformThreadHandle VThread::Handle(void)
 {
-	if (m_data->handle == InvalidThreadHandle)
-		m_data->handle = CreatePlatformThread(ThreadRoutine, m_data);
+    if (m_data->handle == InvalidThreadHandle) {
+        m_data->handle = CreatePlatformThread(ThreadRoutine, m_data);
+    }
 
-	return m_data->handle;
+    return m_data->handle;
 }
 
 void VThread::Sleep(int ms)
@@ -136,13 +136,13 @@ void VThread::Sleep(int ms)
 
 bool VThread::isRunning(void) const
 {
-	return m_data->isRunning;
+    return m_data->isRunning;
 }
 
 void VThread::Exit(int c)
 {
-	m_data->retval = c;
-	m_data->needLoop = false;
+    m_data->retval = c;
+    m_data->needLoop = false;
 }
 
 //VMutex
