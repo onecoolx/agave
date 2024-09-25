@@ -1,6 +1,6 @@
 #include <vapplication.h>
 
-using namespace VGCL;
+using namespace vgcl;
 
 VApplication app;
 

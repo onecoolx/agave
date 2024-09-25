@@ -26,8 +26,12 @@ ApplicationImpl::ApplicationImpl(Application* app)
     m_cbit = 24;
     m_cbyte = m_cbit / 8;
     m_format = COLOR_FORMAT_RGB;
+
+    m_screen_width = 1024;
+    m_screen_height = 768;
+
     init_key_map();
-    macross_initialize(PIXEL_FORMAT_RGB24, screen_width(), screen_height());
+    macross_initialize(PIXEL_FORMAT_RGB24, m_screen_width, m_screen_height);
     start(10);
 }
 
@@ -102,12 +106,12 @@ bool ApplicationImpl::macAddress(std::string& retstr)
 
 int ApplicationImpl::screen_height(void) const
 {
-    return gdk_screen_height();
+    return m_screen_height;
 }
 
 int ApplicationImpl::screen_width(void) const
 {
-    return gdk_screen_width();
+    return m_screen_width;
 }
 
 void ApplicationImpl::init(void)

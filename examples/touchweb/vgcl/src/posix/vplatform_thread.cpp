@@ -26,6 +26,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <unistd.h>
+#include <stdlib.h>
+
 #include "vgconfig.h"
 #include "vplatform_thread.h"
 
@@ -33,23 +36,57 @@ namespace vgcl {
 
 PlatformThreadHandle CreatePlatformThread(PlatformThreadFunc func, void* ThreadHost)
 {
+    posix_thread* thread = (posix_thread*)calloc(1, sizeof(posix_thread));
+    pthread_create(&thread->thread, NULL, func, ThreadHost);
+    pthread_cond_init(&thread->cond, NULL);
+    pthread_mutex_init(&thread->lock, NULL);
+    thread->suspend = 1;
+
+    return thread;
 }
 
 void KillPlatformThread(PlatformThreadHandle handle, PlatformThreadResult exit)
 {
-
+    posix_thread* thread = handle;
+    pthread_cancel(thread->thread);
+    pthread_join(thread->thread, NULL);
 }
 
 void CloseThreadHandle(PlatformThreadHandle handle)
 {
+    posix_thread* thread = handle;
+    pthread_cond_destroy(&thread->cond);
+    pthread_mutex_destroy(&thread->lock);
+    free(thread);
+}
+
+void TrySuspendPlatformThread(PlatformThreadHandle handle)
+{
+    posix_thread* thread = handle;
+    pthread_mutex_lock(&thread->lock);
+    if (thread->suspend == 1) {
+        pthread_cond_wait(&thread->cond, &thread->lock);
+    }
+    pthread_mutex_unlock(&thread->lock);
 }
 
 bool SuspendPlatformThread(PlatformThreadHandle handle)
 {
+    posix_thread* thread = handle;
+    pthread_mutex_lock(&thread->lock);
+    thread->suspend = 1;
+    pthread_mutex_unlock(&thread->lock);
+    return true;
 }
 
 bool ResumePlatformThread(PlatformThreadHandle handle)
 {
+    posix_thread* thread = handle;
+    pthread_mutex_lock(&thread->lock);
+    thread->suspend = 0;
+    pthread_cond_signal(&thread->cond);
+    pthread_mutex_unlock(&thread->lock);
+    return true;
 }
 
 void PlatformSleep(int miliSeconds)
@@ -67,14 +104,17 @@ void DestroyPlatformMutex(PlatformMutexHandle)
 
 bool LockPlatformMutex(PlatformMutexHandle)
 {
+    return false;
 }
 
 bool TryLockPlatformMutex(PlatformMutexHandle)
 {
+    return false;
 }
 
 bool UnLockPlatformMutex(PlatformMutexHandle)
 {
+    return false;
 }
 
 }

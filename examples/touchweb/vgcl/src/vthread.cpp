@@ -29,6 +29,8 @@
 #include "vgconfig.h"
 #include "vthread.h"
 
+#include <stdint.h>
+
 namespace vgcl {
 
 // VThread
@@ -47,7 +49,7 @@ public:
     ~VThreadPriv()
     {
         if (handle != InvalidThreadHandle) {
-            KillPlatformThread(handle, (PlatformThreadResult) - 1);
+            KillPlatformThread(handle, (PlatformThreadResult)(-1));
             CloseThreadHandle(handle);
             handle = InvalidThreadHandle;
             isRunning = false;
@@ -60,11 +62,13 @@ public:
     PlatformThreadHandle handle;
     bool isRunning;
     bool needLoop;
-    int retval;
+    intptr_t retval;
 };
 
 bool VThreadPriv::runInternal(void)
 {
+    TrySuspendPlatformThread(handle);
+
     isRunning = true;
     thread->Run();
     isRunning = false;
@@ -99,7 +103,9 @@ bool VThread::Start(void)
     m_data->needLoop = true;
     PlatformThreadHandle thandle = Handle();
     bool ret = ResumePlatformThread(thandle);
-    if (ret) { m_data->isRunning = true; }
+    if (ret) {
+        m_data->isRunning = true;
+    }
     return ret;
 }
 
@@ -108,7 +114,9 @@ bool VThread::StartOnce(void)
     m_data->needLoop = false;
     PlatformThreadHandle thandle = Handle();
     bool ret = ResumePlatformThread(thandle);
-    if (ret) { m_data->isRunning = true; }
+    if (ret) {
+        m_data->isRunning = true;
+    }
     return ret;
 }
 
@@ -116,7 +124,9 @@ bool VThread::Stop(void)
 {
     PlatformThreadHandle thandle = Handle();
     bool ret = SuspendPlatformThread(thandle);
-    if (ret) { m_data->isRunning = false; }
+    if (ret) {
+        m_data->isRunning = false;
+    }
     return ret;
 }
 

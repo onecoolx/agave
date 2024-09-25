@@ -1,7 +1,7 @@
 /*
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        rijndael.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
 // Modified by:
 // Created:     2006-12-06
@@ -82,8 +82,8 @@
 #define MAX_IV_SIZE      16
 
 /* We assume that unsigned int is 32 bits long....  */
-typedef unsigned char  UINT8;
-typedef unsigned int   UINT32;
+typedef unsigned char UINT8;
+typedef unsigned int UINT32;
 typedef unsigned short UINT16;
 
 /* Error codes */
@@ -114,14 +114,13 @@ typedef unsigned short UINT16;
 /// Class implementing the Rijndael cipher. (For internal use only)
 */
 
-typedef struct _Rijndael
-{	
-	int     m_state;
-	int     m_mode;
-	int     m_direction;
-	UINT8   m_initVector[MAX_IV_SIZE];
-	UINT32  m_uRounds;
-	UINT8   m_expandedKey[_MAX_ROUNDS+1][4][4];
+typedef struct _Rijndael {
+    int m_state;
+    int m_mode;
+    int m_direction;
+    UINT8 m_initVector[MAX_IV_SIZE];
+    UINT32 m_uRounds;
+    UINT8 m_expandedKey[_MAX_ROUNDS + 1][4][4];
 } Rijndael;
 
 void RijndaelCreate(Rijndael* rijndael);
@@ -157,7 +156,7 @@ int RijndaelInit(Rijndael* rijndael, int mode, int dir, UINT8* key, int keyLen, 
 // outBuffer must be at least inputLen / 8 bytes long.
 // Returns the encrypted buffer length in BITS or an error code < 0 in case of error
 */
-int RijndaelBlockEncrypt(Rijndael* rijndael, UINT8 *input, int inputLen, UINT8 *outBuffer);
+int RijndaelBlockEncrypt(Rijndael* rijndael, UINT8* input, int inputLen, UINT8* outBuffer);
 
 /*
 // Encrypts the input array (can be binary data)
@@ -166,7 +165,7 @@ int RijndaelBlockEncrypt(Rijndael* rijndael, UINT8 *input, int inputLen, UINT8 *
 // outBuffer must be at least (inputLen + 16) bytes long
 // Returns the encrypted buffer length in BYTES or an error code < 0 in case of error
 */
-int RijndaelPadEncrypt(Rijndael* rijndael, UINT8 *input, int inputOctets, UINT8 *outBuffer);
+int RijndaelPadEncrypt(Rijndael* rijndael, UINT8* input, int inputOctets, UINT8* outBuffer);
 
 /*
 // Decrypts the input vector
@@ -174,7 +173,7 @@ int RijndaelPadEncrypt(Rijndael* rijndael, UINT8 *input, int inputOctets, UINT8 
 // outBuffer must be at least inputLen / 8 bytes long
 // Returns the decrypted buffer length in BITS and an error code < 0 in case of error
 */
-int RijndaelBlockDecrypt(Rijndael* rijndael, UINT8 *input, int inputLen, UINT8 *outBuffer);
+int RijndaelBlockDecrypt(Rijndael* rijndael, UINT8* input, int inputLen, UINT8* outBuffer);
 
 /*
 // Decrypts the input vector
@@ -182,12 +181,12 @@ int RijndaelBlockDecrypt(Rijndael* rijndael, UINT8 *input, int inputLen, UINT8 *
 // outBuffer must be at least inputLen bytes long
 // Returns the decrypted buffer length in BYTES and an error code < 0 in case of error
 */
-int RijndaelPadDecrypt(Rijndael* rijndael, UINT8 *input, int inputOctets, UINT8 *outBuffer);
+int RijndaelPadDecrypt(Rijndael* rijndael, UINT8* input, int inputOctets, UINT8* outBuffer);
 
 void RijndaelInvalidate(Rijndael* rijndael);
 void RijndaelKeySched(Rijndael* rijndael, UINT8 key[_MAX_KEY_COLUMNS][4]);
 void RijndaelKeyEncToDec(Rijndael* rijndael);
 void RijndaelEncrypt(Rijndael* rijndael, UINT8 a[16], UINT8 b[16]);
 void RijndaelDecrypt(Rijndael* rijndael, UINT8 a[16], UINT8 b[16]);
-	
+
 #endif /* _RIJNDAEL_H_ */

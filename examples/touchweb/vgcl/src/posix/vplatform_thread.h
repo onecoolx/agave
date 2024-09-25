@@ -38,7 +38,14 @@ namespace vgcl {
 
 #define CALLBACK_TYPE
 
-typedef pthread_t* PlatformThreadHandle;
+struct posix_thread {
+    pthread_t thread;
+    pthread_cond_t cond;
+    pthread_mutex_t lock;
+    int suspend;
+};
+
+typedef struct posix_thread* PlatformThreadHandle;
 
 typedef void* PlatformThreadResult;
 
@@ -47,6 +54,8 @@ typedef void* PlatformThreadArg;
 typedef PlatformThreadResult (*PlatformThreadFunc)(PlatformThreadArg);
 
 PlatformThreadHandle CreatePlatformThread(PlatformThreadFunc func, void* ThreadHost);
+
+void TrySuspendPlatformThread(PlatformThreadHandle handle);
 
 void KillPlatformThread(PlatformThreadHandle, PlatformThreadResult exit);
 

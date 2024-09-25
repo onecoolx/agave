@@ -89,12 +89,6 @@ set(APP_MOBILE_SRCS ${APP_MOBILE_SRCS}
     ${APP_MOBILE_DIR}/src/sqlite/sqlite3secure.c
 )
 
-# VGCL library
-include_directories(${APP_MOBILE_DIR}/vgcl/include
-                    ${APP_MOBILE_DIR}/vgcl/include/vgcl
-                    ${APP_MOBILE_DIR}/vgcl/src/ps
-)
-
 if (WIN32)
 else()
 include_directories(${APP_MOBILE_DIR}/vgcl/src/posix
@@ -104,11 +98,21 @@ set(APP_MOBILE_SRCS ${APP_MOBILE_SRCS}
 )
 endif()
 
-set(APP_MOBILE_SRCS ${APP_MOBILE_SRCS}
+set(LIB_VGCL vgcl)
+
+set(VGCL_SRCS 
     ${APP_MOBILE_DIR}/vgcl/src/vapplication.cpp
     ${APP_MOBILE_DIR}/vgcl/src/vgraphic.cpp
     ${APP_MOBILE_DIR}/vgcl/src/vthread.cpp
 )
+
+# VGCL library
+include_directories(${APP_MOBILE_DIR}/vgcl/include
+                    ${APP_MOBILE_DIR}/vgcl/include/vgcl
+                    ${APP_MOBILE_DIR}/vgcl/src/ps
+)
+
+add_library(${LIB_VGCL} STATIC ${VGCL_SRCS})
 
 add_executable(${APP_MOBILE} ${APP_TYPE} ${APP_MOBILE_SRCS})
 
@@ -130,6 +134,7 @@ target_include_directories(${APP_MOBILE} PRIVATE
 )
 
 target_link_libraries(${APP_MOBILE} PRIVATE
+                                    ${LIB_VGCL}
                                     ${LIB_NAME}
                                     ${LIB_DEPS}
                                     picasso2_sw

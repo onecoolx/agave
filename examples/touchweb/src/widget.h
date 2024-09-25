@@ -85,6 +85,8 @@ public:
     static bool dispatchEvents(void);
     static void postEvent(Widget* target, EventHandler handler, void* param, bool high_level = false);
     static void cancelEvent(Widget* target);
+protected:
+    void clipRect(ps_context* gc, const Rect& rc);
 private:
     Widget* m_parent;
     Rect m_bound;

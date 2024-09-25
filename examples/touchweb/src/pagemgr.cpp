@@ -211,7 +211,9 @@ void PageManager::draw_btnText(ps_context* gc, const ustring& text, const Rect& 
     ps_get_text_extent(gc, text.c_str(), text.length(), &sz);
 
     ps_rect rc = {r.x, r.y, r.w - b * 2, r.h};
-    ps_scissor_rect(gc, &rc);
+
+    Rect ctr(rc);
+    clipRect(gc, ctr);
 
     if (sz.w > r.w) {
         len = (size_t)((r.w / (sz.w / text.length())) - 3);

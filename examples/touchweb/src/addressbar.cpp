@@ -335,7 +335,8 @@ void AddressBar::OnPaint(ps_context* gc, const Rect* d)
         }
         ps_save(gc);
 
-        ps_scissor_rect(gc, &tr);
+        Rect ctr(tr);
+        clipRect(gc, ctr);
 
         if (hasFocus()) {
             ps_wide_text_out_length(gc, rds * 4, rds * 4, (ps_uchar16*)(m_text.c_str() + m_pos), m_len);

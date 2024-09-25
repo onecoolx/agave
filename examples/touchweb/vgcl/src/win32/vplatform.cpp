@@ -46,6 +46,11 @@ PlatformThreadHandle CreatePlatformThread(PlatformThreadFunc func, void* ThreadH
     return CreateThread(NULL, 0, func, ThreadHost, CREATE_SUSPENDED, 0);
 }
 
+void TrySuspendPlatformThread(PlatformThreadHandle handle)
+{
+    // not needed
+}
+
 bool SuspendPlatformThread(PlatformThreadHandle handle)
 {
     return SuspendThread(handle) == (DWORD)(-1) ? false : true;

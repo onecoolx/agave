@@ -48,6 +48,8 @@ typedef PlatformThreadResult (WINAPI* PlatformThreadFunc)(PlatformThreadArg);
 
 PlatformThreadHandle CreatePlatformThread(PlatformThreadFunc func, void* ThreadHost);
 
+void TrySuspendPlatformThread(PlatformThreadHandle handle);
+
 void KillPlatformThread(PlatformThreadHandle, PlatformThreadResult exit);
 
 void CloseThreadHandle(PlatformThreadHandle);

@@ -224,9 +224,8 @@ void Widget::Paint(ps_context* gc, const Rect* rc)
     if (!m_bound.isEmpty() && isVisible()) {
         Rect trc = m_bound;
         if (trc.intersect(*rc)) {
-            ps_rect r = trc;
             ps_save(gc);
-            ps_scissor_rect(gc, &r);
+            clipRect(gc, trc);
             ps_translate(gc, m_bound.x, m_bound.y);
 
             trc.x -= m_bound.x;
@@ -313,6 +312,18 @@ void Widget::OnMouseEvent(const MouseEvent* e)
     } else if (e->type() == MouseEvent::MouseUp) {
         freeCapture();
     }
+}
+
+void Widget::clipRect(ps_context* gc, const Rect& rc)
+{
+    ps_point p1 = { rc.x, rc.y };
+    ps_point p2 = { rc.x + rc.w, rc.y + rc.h };
+
+    ps_world_to_viewport(gc, &p1);
+    ps_world_to_viewport(gc, &p2);
+
+    ps_rect rt = { p1.x, p1.y, p2.x - p1.x, p2.y - p1.y };
+    ps_scissor_rect(gc, &rt);
 }
 
 void Widget::OnPaint(ps_context* gc, const Rect* r)

@@ -79,6 +79,8 @@ private:
     int m_cbit;
     int m_cbyte;
     ps_color_format m_format;
+    int m_screen_width;
+    int m_screen_height;
 };
 
 void SetImeStatus_platform(bool b);

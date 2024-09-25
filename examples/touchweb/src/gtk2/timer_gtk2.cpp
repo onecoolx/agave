@@ -40,6 +40,8 @@ void TimerImpl::start(unsigned int ms, void* d)
 
 void TimerImpl::stop(void)
 {
-    g_source_remove(tid);
-    tid = 0;
+    if (tid > 0) {
+        g_source_remove(tid);
+        tid = 0;
+    }
 }

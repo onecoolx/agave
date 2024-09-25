@@ -40,7 +40,10 @@ void ScrollView::OnCreate(uint32_t flags, int x, int y, int w, int h)
     ps_color c = {1, 1, 1, 1};
     ps_save(m_gc);
     ps_set_source_color(m_gc, &c);
-    ps_scissor_rect(m_gc, &rc);
+
+    Rect ctr(rc);
+    clipRect(m_gc, ctr);
+
     ps_clear(m_gc);
     OnPaintContents(m_gc, &tc);
     ps_restore(m_gc);
@@ -102,7 +105,10 @@ void ScrollView::setContentSize(int w, int h)
     ps_color c = {1, 1, 1, 1};
     ps_save(m_gc);
     ps_set_source_color(m_gc, &c);
-    ps_scissor_rect(m_gc, &rc);
+
+    Rect ctr(rc);
+    clipRect(m_gc, ctr);
+
     ps_clear(m_gc);
     OnPaintContents(m_gc, &tc);
     ps_restore(m_gc);

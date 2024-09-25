@@ -45,53 +45,53 @@
 #define SHA224_BLOCK_SIZE  SHA256_BLOCK_SIZE
 
 #ifndef SHA2_TYPES
-#define SHA2_TYPES
-typedef unsigned char uint8;
-typedef unsigned int  uint32;
+    #define SHA2_TYPES
+    typedef unsigned char uint8;
+    typedef unsigned int  uint32;
 
-#if defined(_MSC_VER)
-#if _MSC_VER >= 1310
-typedef unsigned long long uint64;
-#define li_64(h) 0x##h##ull
-#else
-typedef unsigned __int64 uint64;
-#define li_64(h) 0x##h##ui64
-#endif
-#elif defined(__BORLANDC__) && !defined(__MSDOS__)
-#define li_64(h) 0x##h##ull
-typedef __int64 uint64;
-#elif defined(__sun)
-#if defined(ULONG_MAX) && ULONG_MAX == 0xfffffffful
-#define li_64(h) 0x##h##ull
-typedef unsigned long long uint64;
-#elif defined(ULONG_LONG_MAX) && ULONG_LONG_MAX == 0xfffffffffffffffful
-#define li_64(h) 0x##h##ul
-typedef unsigned long uint64;
-#endif
-#elif defined(__MVS__)
-#define li_64(h)    0x##h##ull
-typedef unsigned int long long uint64;
-#elif defined(ULLONG_MAX) && ULLONG_MAX > 4294967295
-#if ULLONG_MAX == 18446744073709551615ull
-#define li_64(h) 0x##h##ull
-typedef unsigned long long uint64;
-#endif
-#elif defined(ULONG_LONG_MAX) && ULONG_LONG_MAX > 4294967295
-#if ULONG_LONG_MAX == 18446744073709551615
-#define li_64(h) 0x##h##ull
-typedef unsigned long long uint64;
-#endif
-#elif defined(ULONG_MAX) && ULONG_MAX > 4294967295
-#if ULONG_MAX == 18446744073709551615
-#define li_64(h) 0x##h##ul
-typedef unsigned long uint64;
-#endif
-#elif defined(UINT_MAX) && UINT_MAX > 4294967295
-#if UINT_MAX == 18446744073709551615
-#define li_64(h) 0x##h##u
-typedef unsigned int uint64;
-#endif
-#endif
+    #if defined(_MSC_VER)
+        #if _MSC_VER >= 1310
+            typedef unsigned long long uint64;
+            #define li_64(h) 0x##h##ull
+        #else
+            typedef unsigned __int64 uint64;
+            #define li_64(h) 0x##h##ui64
+        #endif
+    #elif defined(__BORLANDC__) && !defined(__MSDOS__)
+        #define li_64(h) 0x##h##ull
+        typedef __int64 uint64;
+    #elif defined(__sun)
+        #if defined(ULONG_MAX) && ULONG_MAX == 0xfffffffful
+            #define li_64(h) 0x##h##ull
+            typedef unsigned long long uint64;
+        #elif defined(ULONG_LONG_MAX) && ULONG_LONG_MAX == 0xfffffffffffffffful
+            #define li_64(h) 0x##h##ul
+            typedef unsigned long uint64;
+        #endif
+    #elif defined(__MVS__)
+        #define li_64(h)    0x##h##ull
+        typedef unsigned int long long uint64;
+    #elif defined(ULLONG_MAX) && ULLONG_MAX > 4294967295
+        #if ULLONG_MAX == 18446744073709551615ull
+            #define li_64(h) 0x##h##ull
+            typedef unsigned long long uint64;
+        #endif
+    #elif defined(ULONG_LONG_MAX) && ULONG_LONG_MAX > 4294967295
+        #if ULONG_LONG_MAX == 18446744073709551615
+            #define li_64(h) 0x##h##ull
+            typedef unsigned long long uint64;
+        #endif
+    #elif defined(ULONG_MAX) && ULONG_MAX > 4294967295
+        #if ULONG_MAX == 18446744073709551615
+            #define li_64(h) 0x##h##ul
+            typedef unsigned long uint64;
+        #endif
+    #elif defined(UINT_MAX) && UINT_MAX > 4294967295
+        #if UINT_MAX == 18446744073709551615
+            #define li_64(h) 0x##h##u
+            typedef unsigned int uint64;
+        #endif
+    #endif
 #endif
 
 #ifdef __cplusplus
@@ -115,37 +115,36 @@ typedef struct {
 typedef sha512_ctx sha384_ctx;
 typedef sha256_ctx sha224_ctx;
 
-void sha224_init(sha224_ctx *ctx);
-void sha224_update(sha224_ctx *ctx, const unsigned char *message,
+void sha224_init(sha224_ctx* ctx);
+void sha224_update(sha224_ctx* ctx, const unsigned char* message,
                    unsigned int len);
-void sha224_final(sha224_ctx *ctx, unsigned char *digest);
-void sha224(const unsigned char *message, unsigned int len,
-            unsigned char *digest);
+void sha224_final(sha224_ctx* ctx, unsigned char* digest);
+void sha224(const unsigned char* message, unsigned int len,
+            unsigned char* digest);
 
-void sha256_init(sha256_ctx * ctx);
-void sha256_update(sha256_ctx *ctx, const unsigned char *message,
+void sha256_init(sha256_ctx* ctx);
+void sha256_update(sha256_ctx* ctx, const unsigned char* message,
                    unsigned int len);
-void sha256_final(sha256_ctx *ctx, unsigned char *digest);
-void sha256(const unsigned char *message, unsigned int len,
-            unsigned char *digest);
+void sha256_final(sha256_ctx* ctx, unsigned char* digest);
+void sha256(const unsigned char* message, unsigned int len,
+            unsigned char* digest);
 
-void sha384_init(sha384_ctx *ctx);
-void sha384_update(sha384_ctx *ctx, const unsigned char *message,
+void sha384_init(sha384_ctx* ctx);
+void sha384_update(sha384_ctx* ctx, const unsigned char* message,
                    unsigned int len);
-void sha384_final(sha384_ctx *ctx, unsigned char *digest);
-void sha384(const unsigned char *message, unsigned int len,
-            unsigned char *digest);
+void sha384_final(sha384_ctx* ctx, unsigned char* digest);
+void sha384(const unsigned char* message, unsigned int len,
+            unsigned char* digest);
 
-void sha512_init(sha512_ctx *ctx);
-void sha512_update(sha512_ctx *ctx, const unsigned char *message,
+void sha512_init(sha512_ctx* ctx);
+void sha512_update(sha512_ctx* ctx, const unsigned char* message,
                    unsigned int len);
-void sha512_final(sha512_ctx *ctx, unsigned char *digest);
-void sha512(const unsigned char *message, unsigned int len,
-            unsigned char *digest);
+void sha512_final(sha512_ctx* ctx, unsigned char* digest);
+void sha512(const unsigned char* message, unsigned int len,
+            unsigned char* digest);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* !SHA2_H */
-

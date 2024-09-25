@@ -32,8 +32,6 @@ MainWindowImpl::MainWindowImpl(MainWindow* main)
 
 MainWindowImpl::~MainWindowImpl()
 {
-    Destroy();
-
     if (m_gc) {
         ps_context_unref(m_gc);
         m_gc = NULL;
@@ -67,26 +65,46 @@ gboolean MainWindowImpl::expose(GtkWidget* widget, GdkEventExpose* event, gpoint
 
 gboolean MainWindowImpl::mouseButtonPress(GtkWidget* widget, GdkEventButton* event, gpointer data)
 {
+    MainWindowImpl* mainWindow = (MainWindowImpl*)data;
+	if (event->button == 1) {
+        mainWindow->OnMouse(1, 1, event->x, event->y);
+    }
+    return FALSE;
 }
 
 gboolean MainWindowImpl::mouseButtonRelease(GtkWidget* widget, GdkEventButton* event, gpointer data)
 {
+    MainWindowImpl* mainWindow = (MainWindowImpl*)data;
+    mainWindow->OnMouse(0, 1, event->x, event->y);
+    return FALSE;
 }
 
 gboolean MainWindowImpl::mouseMotionNotify(GtkWidget* widget, GdkEventMotion* event, gpointer data)
 {
+    MainWindowImpl* mainWindow = (MainWindowImpl*)data;
+    mainWindow->OnMouse(2, 0, event->x, event->y);
+    return FALSE;
 }
 
 gboolean MainWindowImpl::keyPress(GtkWidget* widget, GdkEventKey* event, gpointer data)
 {
+    MainWindowImpl* mainWindow = (MainWindowImpl*)data;
+    mainWindow->OnKey(1, get_virtual_key(event->keyval));
+    //OnChar(*(event->text().utf16()));
+    return FALSE;
 }
 
 gboolean MainWindowImpl::keyRelease(GtkWidget* widget, GdkEventKey* event, gpointer data)
 {
+    MainWindowImpl* mainWindow = (MainWindowImpl*)data;
+    mainWindow->OnKey(0, get_virtual_key(event->keyval));
+    return FALSE;
 }
 
 void MainWindowImpl::destroy(GtkWidget* widget, gpointer data)
 {
+    MainWindowImpl* mainWindow = (MainWindowImpl*)data;
+    mainWindow->m_window->Destroy();
 }
 
 bool MainWindowImpl::Create(void* hInstance, const char* title, int x, int y, int w, int h)
@@ -173,58 +191,10 @@ void MainWindowImpl::OnChar(unsigned int c)
     m_window->CharInput(c);
 }
 
-#if 0
-void MainWindowImpl::closeEvent(QCloseEvent* event)
-{
-    if (m_window->Destroy()) {
-        event->accept();
-    } else {
-        event->ignore();
-    }
-}
-
-void MainWindowImpl::mousePressEvent(QMouseEvent* event)
-{
-    if (event->buttons() & Qt::LeftButton) {
-        OnMouse(1, 1, event->x(), event->y());
-    }
-}
-
-void MainWindowImpl::mouseReleaseEvent(QMouseEvent* event)
-{
-    OnMouse(0, 1, event->x(), event->y());
-}
-
-void MainWindowImpl::mouseMoveEvent(QMouseEvent* event)
-{
-    OnMouse(2, 0, event->x(), event->y());
-}
-
-void MainWindowImpl::keyPressEvent(QKeyEvent* event)
-{
-    OnKey(1, get_virtual_key(event->key()));
-
-    OnChar(*(event->text().utf16()));
-}
-
-void MainWindowImpl::keyReleaseEvent(QKeyEvent* event)
-{
-    OnKey(0, get_virtual_key(event->key()));
-}
-
-void MainWindowImpl::inputMethodEvent(QInputMethodEvent* event)
-{
-    QString str = event->commitString();
-    for (int i = 0; i < str.length(); i++) {
-        OnChar(str.utf16()[i]);
-    }
-}
-#endif
-
 void MainWindowImpl::paintProcess(ps_context* gc)
 {
     if (m_view && !m_dirty.isEmpty()) {
-        GdkGC* dgc = m_drawarea->style->white_gc;
+        cairo_t* cr = gdk_cairo_create(m_drawarea->window);
 
         int x = m_dirty.x + m_vx;
         int y = m_dirty.y + m_vy;
@@ -233,6 +203,7 @@ void MainWindowImpl::paintProcess(ps_context* gc)
         GdkRectangle cliprect = {m_vx, m_vy, m_cx, m_cy};
         //clip topmost childs area.
         std::list<Widget*> tops = m_window->getChilds(true);
+        cairo_save(cr);
         if (!tops.empty()) {
             GdkRegion* clip = gdk_region_rectangle(&cliprect);
             GdkRegion* clipouts = gdk_region_new();
@@ -246,16 +217,17 @@ void MainWindowImpl::paintProcess(ps_context* gc)
                 }
             }
             gdk_region_subtract(clip, clipouts);
-            gdk_gc_set_clip_region(dgc, clip);
+            gdk_cairo_region(cr, clip);
+            cairo_clip(cr);
             gdk_region_destroy(clip);
             gdk_region_destroy(clipouts);
         }
 
-        gdk_draw_pixbuf(m_drawarea->window, dgc, m_view, x, y, m_dirty.x - m_sx, m_dirty.y - m_sy, w, h, GDK_RGB_DITHER_NONE, 0, 0);
+        gdk_cairo_set_source_pixbuf (cr, m_view, -x, -y);
+        cairo_rectangle(cr, m_dirty.x - m_sx, m_dirty.y - m_sy, w, h);
+        cairo_paint (cr);
 
-        GdkRegion* tclip = gdk_region_rectangle(&cliprect);
-        gdk_gc_set_clip_region(dgc, tclip);
-        gdk_region_destroy(tclip);
+        cairo_restore(cr);
 
         if (!tops.empty()) {
             for (std::list<Widget*>::iterator it = tops.begin(); it != tops.end(); it++) {
@@ -263,7 +235,9 @@ void MainWindowImpl::paintProcess(ps_context* gc)
                 Rect rc((*it)->boundRect().x, (*it)->boundRect().y, (*it)->boundRect().w, (*it)->boundRect().h);
                 if ((*it)->isVisible() && erc.intersect(rc)) {
                     //draw top window
-                    gdk_draw_pixbuf(m_drawarea->window, dgc, m_buf, erc.x, erc.y, erc.x, erc.y, erc.w, erc.h, GDK_RGB_DITHER_NONE, 0, 0);
+                    gdk_cairo_set_source_pixbuf (cr, m_buf, -erc.x, -erc.y);
+                    cairo_rectangle(cr, erc.x, erc.y, erc.w, erc.h);
+                    cairo_paint (cr);
                 }
             }
         }
@@ -272,6 +246,8 @@ void MainWindowImpl::paintProcess(ps_context* gc)
         m_dirty = Rect(0, 0, 0, 0);
         m_vx = 0;
         m_vy = 0;
+
+        cairo_destroy(cr);
     }
 }
 
