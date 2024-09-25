@@ -4,10 +4,11 @@
  * Contact : onecoolx@gmail.com
  */
 
-#include "config.h"
+#include "../config.h"
+#include "../unicode.h"
+#include "../event.h"
+#include "../mainwindow.h"
 
-#include "event.h"
-#include "mainwindow.h"
 #include "mainwindow_gtk2.h"
 #include "application_gtk2.h"
 
@@ -90,7 +91,8 @@ gboolean MainWindowImpl::keyPress(GtkWidget* widget, GdkEventKey* event, gpointe
 {
     MainWindowImpl* mainWindow = (MainWindowImpl*)data;
     mainWindow->OnKey(1, get_virtual_key(event->keyval));
-    //OnChar(*(event->text().utf16()));
+    ustring str = Unicode::ConvertUTF8ToUTF16(std::string(event->string));
+    mainWindow->OnChar(str[0]);
     return FALSE;
 }
 
@@ -242,12 +244,14 @@ void MainWindowImpl::paintProcess(ps_context* gc)
             }
         }
 
+        cairo_reset_clip(cr);
+        cairo_destroy(cr);
+
         m_view = 0;
         m_dirty = Rect(0, 0, 0, 0);
         m_vx = 0;
         m_vy = 0;
 
-        cairo_destroy(cr);
     }
 }
 

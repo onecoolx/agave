@@ -4,7 +4,7 @@
  * Contact : onecoolx@gmail.com
  */
 
-#include "config.h"
+#include "../config.h"
 #include "network_gtk2.h"
 
 NetServiceImpl::NetServiceImpl(NetService*)

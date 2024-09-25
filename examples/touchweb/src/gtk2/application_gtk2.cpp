@@ -4,15 +4,16 @@
  * Contact : onecoolx@gmail.com
  */
 
-#include "config.h"
+#include "../config.h"
+#include "../application.h"
+#include "macross.h"
+
 #include <map>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <net/if.h>
 #include <netinet/if_ether.h>
 
-#include "macross.h"
-#include "application.h"
 #include "application_gtk2.h"
 
 static void init_key_map(void);

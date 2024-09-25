@@ -94,27 +94,34 @@ void PlatformSleep(int miliSeconds)
     usleep(miliSeconds * 1000);
 }
 
-void InitPlatformMutex(PlatformMutexHandle)
+void InitPlatformMutex(PlatformMutexHandle handle)
 {
+    pthread_mutex_t * mutex = handle;
+    pthread_mutex_init(mutex, NULL);
 }
 
-void DestroyPlatformMutex(PlatformMutexHandle)
+void DestroyPlatformMutex(PlatformMutexHandle handle)
 {
+    pthread_mutex_t * mutex = handle;
+    pthread_mutex_destroy(mutex);
 }
 
-bool LockPlatformMutex(PlatformMutexHandle)
+bool LockPlatformMutex(PlatformMutexHandle handle)
 {
-    return false;
+    pthread_mutex_t * mutex = handle;
+    return pthread_mutex_lock(mutex) == 0;
 }
 
-bool TryLockPlatformMutex(PlatformMutexHandle)
+bool TryLockPlatformMutex(PlatformMutexHandle handle)
 {
-    return false;
+    pthread_mutex_t * mutex = handle;
+    return pthread_mutex_trylock(mutex) == 0;
 }
 
-bool UnLockPlatformMutex(PlatformMutexHandle)
+bool UnLockPlatformMutex(PlatformMutexHandle handle)
 {
-    return false;
+    pthread_mutex_t * mutex = handle;
+    return pthread_mutex_unlock(mutex) == 0;
 }
 
 }

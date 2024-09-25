@@ -4,7 +4,7 @@
  * Contact : onecoolx@gmail.com
  */
 
-#include "timer.h"
+#include "../timer.h"
 #include "timer_gtk2.h"
 
 TimerImpl::TimerImpl(Timer* t)

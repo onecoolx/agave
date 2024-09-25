@@ -67,7 +67,9 @@ public:
 
 bool VThreadPriv::runInternal(void)
 {
-    TrySuspendPlatformThread(handle);
+    if (handle != InvalidThreadHandle) {
+        TrySuspendPlatformThread(handle);
+    }
 
     isRunning = true;
     thread->Run();

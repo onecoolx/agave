@@ -4,10 +4,11 @@
  * Contact : onecoolx@gmail.com
  */
 
-#include "config.h"
+#include "../config.h"
+#include "../dialog.h"
+
 #include <picasso/picasso.h>
 
-#include "dialog.h"
 #include "dialog_gtk2.h"
 #include "mainwindow_gtk2.h"
 

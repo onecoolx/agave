@@ -4,8 +4,8 @@
  * Contact : onecoolx@gmail.com
  */
 
-#include "config.h"
-#include "application.h"
+#include "../config.h"
+#include "../application.h"
 
 int main(int argc, char* argv[])
 {

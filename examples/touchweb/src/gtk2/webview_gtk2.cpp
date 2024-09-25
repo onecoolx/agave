@@ -4,11 +4,12 @@
  * Contact : onecoolx@gmail.com
  */
 
-#include "config.h"
+#include "../config.h"
+#include "../webview.h"
+#include "../mainwindow.h"
+
 #include <picasso/picasso.h>
 
-#include "webview.h"
-#include "mainwindow.h"
 #include "mainwindow_gtk2.h"
 #include "webview_gtk2.h"
 
