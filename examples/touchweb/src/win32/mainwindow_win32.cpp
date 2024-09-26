@@ -1,4 +1,4 @@
-/* mainwindow_win32.cpp - MaCross application
+/* mainwindow_win32.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -14,15 +14,6 @@
 
 #ifdef WINCE
     #include <aygshell.h>
-#endif
-
-#if defined(WINCE) && defined(M8)
-    #include <mzfc_inc.h>
-    #include <InitGuid.h>
-    #include <IMzUnknown.h>
-    #include <IMzUnknown_IID.h>
-    #include <IFileBrowser.h>
-    #include <IFileBrowser_GUID.h>
 #endif
 
 HWND g_MainWnd = 0;
@@ -171,10 +162,10 @@ bool MainWindowImpl::Create(void* hInstance, const char* title, int x, int y, in
 
     m_data->m_hInst = hInstance;
 #if defined(WINCE)
-    g_MainWnd = m_data->m_hWnd = CreateWindow(_T("MaCross"), _T("MaCross"), WS_VISIBLE, x, y, w, h,
+    g_MainWnd = m_data->m_hWnd = CreateWindow(_T("Agave"), _T("Agave"), WS_VISIBLE, x, y, w, h,
                                               NULL, NULL, (HINSTANCE)hInstance, this);
 #else
-    g_MainWnd = m_data->m_hWnd = CreateWindowA("MaCross", title, WS_VISIBLE, x, y, w, h + GetSystemMetrics(SM_CYCAPTION),
+    g_MainWnd = m_data->m_hWnd = CreateWindowA("Agave", title, WS_VISIBLE, x, y, w, h + GetSystemMetrics(SM_CYCAPTION),
                                                NULL, NULL, (HINSTANCE)hInstance, this);
 #endif
 
@@ -182,7 +173,7 @@ bool MainWindowImpl::Create(void* hInstance, const char* title, int x, int y, in
         return false;
     }
 
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     SetForegroundWindow(m_data->m_hWnd);
     SHFullScreen(m_data->m_hWnd, SHFS_HIDETASKBAR | SHFS_HIDESIPBUTTON | SHFS_HIDESTARTICON);
 #endif
@@ -364,7 +355,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
     HDC hdc;
     MainWindowImpl* window;
 
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     static SHACTIVATEINFO s_sai;
 #endif
     switch (message) {
@@ -375,13 +366,13 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
                 SetWindowLong(hWnd, GWL_USERDATA, (LONG)cs->lpCreateParams);
                 window = (MainWindowImpl*)cs->lpCreateParams;
                 window->OnCreate(r.left, r.top, r.right - r.left, r.bottom - r.top);
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
                 memset(&s_sai, 0, sizeof (s_sai));
                 s_sai.cbSize = sizeof (s_sai);
 #endif
             }
             break;
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
         case WM_WINDOWPOSCHANGED: {
                 LPWINDOWPOS lps = (LPWINDOWPOS)lParam;
                 if (lps->hwndInsertAfter == HWND_TOP) {
@@ -479,7 +470,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 
 bool MainWindowImpl::getChooseFile(uchar_t* name, unsigned int len)
 {
-#if (defined(WIN32) || defined(WINCE)) && !defined(M8)
+#if (defined(WIN32) || defined(WINCE))
     OPENFILENAME ofn;
     ZeroMemory(&ofn, sizeof(ofn));
 
@@ -500,28 +491,6 @@ bool MainWindowImpl::getChooseFile(uchar_t* name, unsigned int len)
     } else {
         return false;
     }
-#elif defined(M8)
-    IMzSelect* pSelect = NULL;
-    IFileBrowser* pFile = NULL;
-    bool ret = false;
-    if (SUCCEEDED(CoCreateInstance(CLSID_FileBrowser, NULL, CLSCTX_INPROC_SERVER, IID_MZ_FileBrowser, (void**)&pFile ) ) ) {
-        if ( SUCCEEDED( pFile->QueryInterface(IID_MZ_Select, (void**)&pSelect ) ) ) {
-            pFile->SetParentWnd(g_MainWnd);
-            pFile->SetOpenDirectoryPath(L"\\Disk");
-            pFile->SetExtFilter(L"*.*;");
-            pFile->SetOpenDocumentType(DOCUMENT_SELECT_SINGLE_FILE);
-            if (pSelect->Invoke()) {
-                _tcsncpy(name, pFile->GetSelectedFileName(), len);
-                ret = true;
-            }
-            pSelect->Release();
-        }
-        pFile->Release();
-        return ret;
-    } else {
-        return false;
-    }
-#else
     return false;
 #endif
 }

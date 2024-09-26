@@ -10,23 +10,20 @@
 #include "network.h"
 #include "network_win32.h"
 
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     #include <connmgr.h>
     #include <connmgr_status.h>
     #include <connmgr_proxy.h>
-#elif defined(WINCE) && defined(M8)
-    #include <CallNotifyApi.h>
-    extern HWND g_MainWnd;
 #endif
 
 NetServiceImpl::NetServiceImpl(NetService* service)
     : m_service(service)
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     , m_hConn(0)
     , m_index(0)
 #endif
 {
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     memset(&m_guid, 0, sizeof(GUID));
 #endif
 }
@@ -38,7 +35,7 @@ NetServiceImpl::~NetServiceImpl()
 
 bool NetServiceImpl::isAvaliable(void)
 {
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     bool ret = false;
     HANDLE h = ConnMgrApiReadyEvent();
     if (WaitForSingleObject(h, 2000) == WAIT_OBJECT_0) {
@@ -55,13 +52,13 @@ bool NetServiceImpl::isAvaliable(void)
 
 bool NetServiceImpl::establishConnection(ConnType type)
 {
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     if (m_hConn) {
         releaseConnection();
     }
 
     if (!getConnectedGUID(&m_guid)) {
-        if (FAILED(ConnMgrMapURL(L"http://zncsoft/", &m_guid, &m_index))) {
+        if (FAILED(ConnMgrMapURL(L"http://agave/", &m_guid, &m_index))) {
             return false;
         }
     }
@@ -84,12 +81,6 @@ bool NetServiceImpl::establishConnection(ConnType type)
     } else {
         return true;
     }
-#elif defined(WINCE) && defined(M8)
-    if (RESULT_OK == Dial_StartGprsConnect2(g_MainWnd, GPRS_FORCE_APP_TYPE)) {
-        return true;
-    } else {
-        return false;
-    }
 #else
     return true;
 #endif
@@ -97,13 +88,13 @@ bool NetServiceImpl::establishConnection(ConnType type)
 
 bool NetServiceImpl::establishConnectionSync(ConnType type)
 {
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     if (!m_hConn) {
         releaseConnection();
     }
 
     if (!getConnectedGUID(&m_guid)) {
-        if (FAILED(ConnMgrMapURL(L"http://zncsoft/", &m_guid, &m_index))) {
+        if (FAILED(ConnMgrMapURL(L"http://agave/", &m_guid, &m_index))) {
             return false;
         }
     }
@@ -131,30 +122,21 @@ bool NetServiceImpl::establishConnectionSync(ConnType type)
     } else {
         return false;
     }
-#elif defined(WINCE) && defined(M8)
-    if (RESULT_OK == Dial_StartGprsConnect2(g_MainWnd, GPRS_FORCE_APP_TYPE)) {
-        return isConnected();
-    } else {
-        return false;
-    }
-#else
     return true;
 #endif
 }
 
 void NetServiceImpl::releaseConnection(void)
 {
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     if (m_hConn) {
         ConnMgrReleaseConnection(m_hConn, FALSE);
         m_hConn = 0;
     }
-#elif defined(WINCE) && defined(M8)
-    Dial_StopGprsConnect2(g_MainWnd);
 #endif
 }
 
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
 bool NetServiceImpl::getConnectedGUID(GUID* guid)
 {
     CONNMGR_CONNECTION_DETAILED_STATUS* pInfo = 0;
@@ -187,7 +169,7 @@ bool NetServiceImpl::getConnectedGUID(GUID* guid)
 
 void NetServiceImpl::checkConnectType(void)
 {
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     CONNMGR_CONNECTION_DETAILED_STATUS* pInfo = 0;
     DWORD size = 0;
 
@@ -229,7 +211,7 @@ void NetServiceImpl::checkConnectType(void)
 bool NetServiceImpl::isConnected(void)
 {
     DWORD dwStatus = 0;
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     if (SUCCEEDED(ConnMgrConnectionStatus(m_hConn, &dwStatus))) {
         if (dwStatus == CONNMGR_STATUS_CONNECTED) {
             checkConnectType();
@@ -240,26 +222,6 @@ bool NetServiceImpl::isConnected(void)
     } else {
         return false;
     }
-#elif defined(WINCE) && defined(M8)
-    if (NETWORK_NONE == (dwStatus = QueryNetWorkStatus())) {
-        return false;
-    } else {
-        if (dwStatus == NETWORK_EDGE_PROXY) {
-            //proxy needed
-            NetConfItem item;
-            item.isProxy = true;
-            item.name = L"cmwap";
-            item.hostip = "10.0.0.172";
-            item.port = "80";
-            item.user = "";
-            item.pass = "";
-
-            m_service->setProxy(item);
-        } else {
-            m_service->clearProxy();
-        }
-        return true;
-    }
 #else
     return true;
 #endif
@@ -269,7 +231,7 @@ bool NetServiceImpl::isConnected(void)
 
 void NetServiceImpl::readNetConfigs()
 {
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     int index = 0;
     HRESULT hr = 0;
     CONNMGR_DESTINATION_INFO info = {0};

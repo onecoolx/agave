@@ -17,7 +17,7 @@ enum ConnType {
 };
 
 struct NetConfItemImpl {
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     int index;
     GUID guid; //DestNetwork
 #endif
@@ -39,7 +39,7 @@ private:
     void checkConnectType(void);
     void releaseConnection(void);
     NetService* m_service;
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     bool getConnectedGUID(GUID* guid);
     HANDLE m_hConn;
     DWORD m_index;

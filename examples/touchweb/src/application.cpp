@@ -221,7 +221,7 @@ bool Application::report(void)
     std::string reportform = std::string("mac=");
     reportform += mac;
     reportform += std::string("&ver="APP_VERSION);
-#if defined(M8)
+#if defined(MOBILE_PHONE)
     reportform += std::string("&os=m8");
 #elif defined(WINCE)
     reportform += std::string("&os=wince");
@@ -236,7 +236,7 @@ bool Application::report(void)
     reportform += std::string("&pdr=0");
     reportform += std::string("&oem=0");
 
-    std::string url("http://www.zncsoft.net/signal?");
+    std::string url("http://www.agave.com/signal?");
     url += reportform;
     macross_network_request(REQUEST_POST, url.c_str(), 0, 30);
 #endif

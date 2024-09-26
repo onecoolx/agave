@@ -197,8 +197,5 @@ void System_init(void)
     int dpi = GetDeviceCaps(hdc, LOGPIXELSX);
     global_scale = (dpi / 96) ? (dpi / 96) : 1;
     ReleaseDC(0, hdc);
-#if defined(M8)
-    CoInitializeEx(0, COINIT_MULTITHREADED);
-#endif
 #endif
 }

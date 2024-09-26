@@ -98,7 +98,7 @@ void WebViewPlat::Paint(MainWindowImpl* window, int sx, int sy, int x, int y, in
 
 bool WebViewPlat::haveMemory(void)
 {
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE)
     MEMORYSTATUS mem;
     GlobalMemoryStatus(&mem);
     return ((mem.dwAvailVirtual / 1024) > 1024) ? true : false; //free memory > 1MB

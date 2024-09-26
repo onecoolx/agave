@@ -11,18 +11,18 @@
 
 #define SETUI(x)  (x)
 
-#ifdef M8
+#ifdef MOBILE_PHONE
     #define DEFAULT_WIDTH   SETUI(480)
     #define DEFAULT_HEIGHT  SETUI(688)
 #else
-    #define DEFAULT_WIDTH   SETUI(240)
-    #define DEFAULT_HEIGHT  SETUI(320)
+    #define DEFAULT_WIDTH   SETUI(480)
+    #define DEFAULT_HEIGHT  SETUI(480)
 #endif
 
-#if defined(WINCE) && !defined(M8)
+#if defined(WINCE) && !defined(MOBILE_PHONE)
     extern int global_scale;
     #define GLOBAL_SCALE  global_scale
-#elif defined(M8)
+#elif defined(MOBILE_PHONE)
     #define GLOBAL_SCALE  2
 #else
     #define GLOBAL_SCALE  1
@@ -36,7 +36,7 @@
 
 #define BUTTON_HEIGHT (TITLE_HEIGHT*1.4)
 
-#ifdef M8
+#ifdef MOBILE_PHONE
     #define MAX_TABS        12
 #else
     #define MAX_TABS        5
@@ -89,27 +89,3 @@
         x=(x/ABS(x)*st);\
     }while(0)
 
-#if 0
-#include <windows.h>
-//debug tools
-//FILE* pf=_wfopen(L"Disk\\new_tg.log", L"a+");
-#define debug_str_val(s, v) \
-    do { \
-        FILE* pf=_wfopen(L"Storage Card\\tg.log", L"a+"); \
-        fprintf(pf, "%s :%d\n", s, v); \
-        fclose(pf); \
-    } while(0)
-
-#define debug_wstr_val(s, v) \
-    do { \
-        FILE* pf=_wfopen(L"Storage Card\\tg.log", L"a+"); \
-        fwprintf(pf, L"%s :%d\n", s, v); \
-        fclose(pf); \
-    } while(0)
-
-#define debug_str(s) \
-    do { \
-        OutputDebugStringA(s); \
-    }while(0)
-
-#endif

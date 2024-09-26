@@ -110,7 +110,7 @@ static int start_offset_Y(MaCrossView* v, int currentY, int height)
 #define start_offset_Y(v, cy, h) (0)
 #endif
 
-#if defined(M8)
+#if defined(MOBILE_PHONE)
     #define DEFAULE_SCALE   2
 #else
     #define DEFAULE_SCALE   GLOBAL_SCALE

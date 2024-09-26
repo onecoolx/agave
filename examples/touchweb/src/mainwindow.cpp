@@ -114,11 +114,7 @@ MainWindow::~MainWindow()
 
 bool MainWindow::Create(void* hInst)
 {
-#ifdef M8
-    return m_impl->Create(hInst, "Agave", 0, 32, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-#else
-    return m_impl->Create(hInst, "Agave", 0, 0, m_impl->SysWidth(), m_impl->SysHeight());
-#endif
+    return m_impl->Create(hInst, "Agave", 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 }
 
 bool MainWindow::Destroy(void)

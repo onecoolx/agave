@@ -11,17 +11,17 @@
 #include "mainwindow.h"
 #include "application.h"
 
-#if defined(M8)
-    #define APP_NAME U("MaCross Mobile (M8)")
+#if defined(MOBILE_PHONE)
+    #define APP_NAME U("Agave Mobile (Mobile)")
     #define APP_NAME_LEN 19
 #elif defined(WINCE)
-    #define APP_NAME U("MaCross Mobile (WinCE)")
+    #define APP_NAME U("Agave Mobile (WinCE)")
     #define APP_NAME_LEN 22
 #elif defined(__linux)
-    #define APP_NAME U("MaCross Mobile (Linux)")
+    #define APP_NAME U("Agave Mobile (Linux)")
     #define APP_NAME_LEN 22
 #elif defined(WIN32)
-    #define APP_NAME U("MaCross Mobile (WIN32)")
+    #define APP_NAME U("Agave Mobile (WIN32)")
     #define APP_NAME_LEN 22
 #endif
 
