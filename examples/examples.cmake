@@ -62,6 +62,7 @@ if (WIN32)
     )
     set(APP_TYPE WIN32)
 else()
+#[[
     set(APP_MOBILE_SRCS ${APP_MOBILE_SRCS}
         ${APP_MOBILE_DIR}/src/gtk2/mainwindow_gtk2.cpp
         ${APP_MOBILE_DIR}/src/gtk2/application_gtk2.cpp
@@ -79,6 +80,26 @@ else()
     pkg_search_module(GTK2 REQUIRED gtk+-2.0)
     set(SYSTEM_INCLUDE ${GTK2_INCLUDE_DIRS})
     set(SYSTEM_LIBS ${GTK2_LIBRARIES} pthread m z stdc++)
+    ]]
+    set(APP_MOBILE_SRCS ${APP_MOBILE_SRCS}
+        ${APP_MOBILE_DIR}/src/qt4/mainwindow_qt4.cpp
+        ${APP_MOBILE_DIR}/src/qt4/application_qt4.cpp
+        ${APP_MOBILE_DIR}/src/qt4/main.cpp
+        ${APP_MOBILE_DIR}/src/qt4/timer_qt4.cpp
+        ${APP_MOBILE_DIR}/src/qt4/network_qt4.cpp
+        ${APP_MOBILE_DIR}/src/qt4/dialog_qt4.cpp
+        ${APP_MOBILE_DIR}/src/qt4/webview_qt4.cpp
+    )
+
+    include_directories(${APP_MOBILE_DIR}/src/qt4
+    )
+
+    include(FindPkgConfig)
+    pkg_search_module(QTCore REQUIRED Qt5Core)
+    pkg_search_module(QTGui REQUIRED Qt5Gui)
+    pkg_search_module(QTWidgets REQUIRED Qt5Widgets)
+    set(SYSTEM_INCLUDE ${QTCore_INCLUDE_DIRS} ${QTGui_INCLUDE_DIRS} ${QTWidgets_INCLUDE_DIRS})
+    set(SYSTEM_LIBS ${QTCore_LIBRARIES} ${QTGui_LIBRARIES} ${QTWidgets_LIBRARIES} freetype fontconfig pthread m z stdc++)
 endif()
 
 include_directories(${APP_MOBILE_DIR}/src
@@ -120,7 +141,8 @@ target_compile_definitions(${APP_MOBILE} PRIVATE SQLITE_HAS_CODEC)
 
 if (WIN32)
 else()
-target_compile_definitions(${APP_MOBILE} PRIVATE GTK2)
+#target_compile_definitions(${APP_MOBILE} PRIVATE GTK2)
+target_compile_definitions(${APP_MOBILE} PRIVATE QT4)
 endif()
 
 set_property(TARGET ${APP_MOBILE} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)

@@ -48,7 +48,7 @@ inline
 #endif
 #endif
 static unsigned int
-hash_val (register const char *str, register unsigned int len)
+hash_val (register const char *str, register size_t len)
 {
   static const unsigned short asso_values[] =
     {
@@ -79,7 +79,7 @@ hash_val (register const char *str, register unsigned int len)
       2694, 2694, 2694, 2694, 2694, 2694, 2694, 2694, 2694, 2694,
       2694, 2694, 2694, 2694, 2694, 2694, 2694
     };
-  register int hval = 0;
+  register unsigned int hval = 0;
 
   switch (len)
     {
@@ -177,14 +177,8 @@ hash_val (register const char *str, register unsigned int len)
   return hval;
 }
 
-#ifdef __GNUC__
-__inline
-#ifdef __GNUC_STDC_INLINE__
-__attribute__ ((__gnu_inline__))
-#endif
-#endif
 const struct css_value *
-findValue (register const char *str, register unsigned int len)
+findValue (register const char *str, register size_t len)
 {
   enum
     {

@@ -80,7 +80,7 @@ int getPropertyID(const char* tagStr, int len)
         }
     }
 
-    const struct props* propsPtr = findProp(tagStr, len);
+    const struct props* propsPtr = findProp(tagStr, (size_t)len);
     if (!propsPtr)
         return 0;
 
@@ -105,7 +105,7 @@ static inline int getValueID(const char* tagStr, int len)
         }
     }
 
-    const struct css_value* val = findValue(tagStr, len);
+    const struct css_value* val = findValue(tagStr, (size_t)len);
     if (!val)
         return 0;
 

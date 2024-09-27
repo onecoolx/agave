@@ -4,8 +4,9 @@
  * Contact : onecoolx@gmail.com
  */
 #include <QImage>
+#include <picasso/picasso.h>
+
 #include "config.h"
-#include "picasso.h"
 #include "webview.h"
 #include "mainwindow.h"
 #include "mainwindow_qt4.h"
@@ -32,7 +33,7 @@ bool WebViewPlat::CreateStoreBuffer(int w, int h)
     m_img = new QImage(w, h, QImage::Format_RGB32);
     m_img->fill(0xFFFFFFFF);
     m_canvas = ps_canvas_create_with_data((ps_byte*)m_img->bits(), COLOR_FORMAT_BGRA, w, h, w * 4);
-    m_context = ps_context_create(m_canvas);
+    m_context = ps_context_create(m_canvas, 0);
     return true;
 }
 

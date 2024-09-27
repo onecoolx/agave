@@ -39,3 +39,7 @@ bool NetServiceImpl::isConnected(void)
 {
     return true;
 }
+
+void NetServiceImpl::readNetConfigs(void)
+{
+}

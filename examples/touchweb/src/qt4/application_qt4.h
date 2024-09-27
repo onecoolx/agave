@@ -9,6 +9,7 @@
 
 #include <QTimer>
 #include <QApplication>
+#include <QDesktopWidget>
 
 class Application;
 class ApplicationImpl : public QApplication, public QTimer
@@ -20,6 +21,7 @@ public:
     int screen_width(void) const;
     int screen_height(void) const;
 
+    void init(void);
     int run_loop(void);
 
     ps_color_format color_format(void) const { return m_format; }

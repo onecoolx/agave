@@ -17,6 +17,10 @@
     #include "network_gtk2.h"
 #endif
 
+#ifdef QT4
+    #include "network_qt4.h"
+#endif
+
 NetService::NetService()
     : m_impl(0)
     , m_avaliable(false)

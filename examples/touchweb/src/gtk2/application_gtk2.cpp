@@ -28,8 +28,8 @@ ApplicationImpl::ApplicationImpl(Application* app)
     m_cbyte = m_cbit / 8;
     m_format = COLOR_FORMAT_RGB;
 
-    m_screen_width = 1024;
-    m_screen_height = 768;
+    m_screen_width = DEFAULT_WIDTH;
+    m_screen_height = DEFAULT_HEIGHT;
 
     init_key_map();
     macross_initialize(PIXEL_FORMAT_RGB24, m_screen_width, m_screen_height);
@@ -41,17 +41,16 @@ ApplicationImpl::~ApplicationImpl()
     macross_shutdown();
 }
 
-void ApplicationImpl::idleEvent(void)
-{
-    if (!m_data->event_loop()) {
-        m_data->idle_loop();
-    }
-    m_data->loop_callback();
-}
-
 void ApplicationImpl::timerEvent(void)
 {
-    m_data->event_loop();
+    if (!gtk_events_pending()) {
+        if (!m_data->event_loop()) {
+            m_data->idle_loop();
+        }
+        m_data->loop_callback();
+    } else {
+        m_data->event_loop();
+    }
 }
 
 unsigned long ApplicationImpl::tickCount(void)

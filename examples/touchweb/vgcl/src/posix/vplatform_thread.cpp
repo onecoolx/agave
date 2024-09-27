@@ -96,31 +96,31 @@ void PlatformSleep(int miliSeconds)
 
 void InitPlatformMutex(PlatformMutexHandle handle)
 {
-    pthread_mutex_t * mutex = handle;
+    pthread_mutex_t* mutex = handle;
     pthread_mutex_init(mutex, NULL);
 }
 
 void DestroyPlatformMutex(PlatformMutexHandle handle)
 {
-    pthread_mutex_t * mutex = handle;
+    pthread_mutex_t* mutex = handle;
     pthread_mutex_destroy(mutex);
 }
 
 bool LockPlatformMutex(PlatformMutexHandle handle)
 {
-    pthread_mutex_t * mutex = handle;
+    pthread_mutex_t* mutex = handle;
     return pthread_mutex_lock(mutex) == 0;
 }
 
 bool TryLockPlatformMutex(PlatformMutexHandle handle)
 {
-    pthread_mutex_t * mutex = handle;
+    pthread_mutex_t* mutex = handle;
     return pthread_mutex_trylock(mutex) == 0;
 }
 
 bool UnLockPlatformMutex(PlatformMutexHandle handle)
 {
-    pthread_mutex_t * mutex = handle;
+    pthread_mutex_t* mutex = handle;
     return pthread_mutex_unlock(mutex) == 0;
 }
 

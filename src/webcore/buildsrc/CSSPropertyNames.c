@@ -47,7 +47,7 @@ inline
 #endif
 #endif
 static unsigned int
-hash_prop (register const char *str, register unsigned int len)
+hash_prop (register const char *str, register size_t len)
 {
   static const unsigned short asso_values[] =
     {
@@ -78,7 +78,7 @@ hash_prop (register const char *str, register unsigned int len)
       1037, 1037, 1037, 1037, 1037, 1037, 1037, 1037, 1037, 1037,
       1037, 1037, 1037, 1037, 1037, 1037
     };
-  register int hval = len;
+  register unsigned int hval = len;
 
   switch (hval)
     {
@@ -215,14 +215,8 @@ hash_prop (register const char *str, register unsigned int len)
   return hval;
 }
 
-#ifdef __GNUC__
-__inline
-#ifdef __GNUC_STDC_INLINE__
-__attribute__ ((__gnu_inline__))
-#endif
-#endif
 const struct props *
-findProp (register const char *str, register unsigned int len)
+findProp (register const char *str, register size_t len)
 {
   enum
     {
@@ -751,7 +745,7 @@ findProp (register const char *str, register unsigned int len)
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = hash_prop (str, len);
+      register unsigned int key = hash_prop (str, len);
 
       if (key <= MAX_HASH_VALUE && key >= 0)
         {
@@ -761,7 +755,7 @@ findProp (register const char *str, register unsigned int len)
             {
               register const char *s = wordlist_prop[index].name;
 
-              if (*str == *s && !strncmp (str + 1, s + 1, len - 1) && s[len] == '\0')
+              if (*str == *s && !strncmp (str + 1, s + 1, len - 1))
                 return &wordlist_prop[index];
             }
         }

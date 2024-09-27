@@ -19,6 +19,8 @@ public:
     bool establishConnection(void);
     bool establishConnectionSync(void);
     bool isConnected(void);
+
+    void readNetConfigs();
 private:
     void releaseConnection(void);
 };

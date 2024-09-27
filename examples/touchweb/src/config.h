@@ -89,3 +89,5 @@
         x=(x/ABS(x)*st);\
     }while(0)
 
+
+#include <stdio.h>

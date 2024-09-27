@@ -38,6 +38,10 @@
     #include "mainwindow_gtk2.h"
 #endif
 
+#ifdef QT4
+    #include "mainwindow_qt4.h"
+#endif
+
 ps_font* MainWindow::m_uifont = 0;
 ps_font* MainWindow::m_uibfont = 0;
 bool MainWindow::m_font_antialias = false;

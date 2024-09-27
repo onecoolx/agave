@@ -17,8 +17,11 @@
 
 static void init_key_map(void);
 
+extern int __argc;
+extern char** __argv;
+
 ApplicationImpl::ApplicationImpl(Application* app)
-    : QApplication(0, 0)
+    : QApplication(__argc, __argv)
     , m_data(app)
     , m_cbit(0)
     , m_cbyte(0)
@@ -109,6 +112,10 @@ int ApplicationImpl::screen_height(void) const
 int ApplicationImpl::screen_width(void) const
 {
     return QApplication::desktop()->screenGeometry().width();
+}
+
+void ApplicationImpl::init(void)
+{
 }
 
 int ApplicationImpl::run_loop(void)

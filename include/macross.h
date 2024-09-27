@@ -1,17 +1,17 @@
 /**
- * \file macross.h
+ * \file agave.h
  * \author Zhang Ji Peng (onecoolx@gmail.com)
- * \date 2009/11/01
+ * \date 2024/19/27
  * 
- * This file includes interfaces of macross browser.
+ * This file includes interfaces of Agave.
  *
  \verbatim
 
-    Copyright (C) 2009 ~ 2013 ZNCSoft .Inc
+    Copyright (C) 2009 ~ 2024 Zhang Ji Peng
 
     All rights reserved.
 
-    This file is part of MaCross web browser.
+    This file is part of Agave web browser.
 
  \endverbatim
  */
@@ -21,25 +21,20 @@
 
 #include "mconfig.h"
 
-#ifdef ENABLE_JSNATIVEBINDING
-#include "JSBase.h"
-#include "JSContextRef.h"
-#include "JSStringRef.h"
-#include "JSObjectRef.h"
-#include "JSValueRef.h"
-#include "JSBinding.h"
-#endif
-
-#if defined(WIN32) || defined(WINCE)
-#ifdef BUILD_DLL
-    #ifdef DLL_EXPORT
-        #define MACROSS_API __declspec(dllexport)
+#ifdef _EXPORT_API_
+    #if defined(WIN32)
+        #ifdef EXPORT
+            #define MACROSS_API __declspec(dllexport)
+        #else
+            #define MACROSS_API __declspec(dllimport)
+        #endif
     #else
-        #define MACROSS_API __declspec(dllimport)
+        #if (defined(__GNUC__) && ((__GNUC__ >= 4) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3))) || (defined(__clang__))
+            #define MACROSS_API __attribute__((visibility("default")))
+        #else
+            #define MACROSS_API
+        #endif
     #endif
-#else
-    #define MACROSS_API
-#endif
 #else
     #define MACROSS_API
 #endif

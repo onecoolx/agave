@@ -8,7 +8,7 @@
 #define _MAINWINDOW_QT4_H_
 
 #include <QMainWindow>
-#include "picasso.h"
+#include <picasso/picasso.h>
 
 class QImage;
 class QMainWindow;
@@ -37,6 +37,8 @@ public:
     void DrawImage(const QImage* img, int vx, int vy, int cx, int cy, int sx, int sy, int x, int y, int w, int h);
     int SysWidth(void);
     int SysHeight(void);
+public:
+    bool getChooseFile(uchar_t* name, unsigned int len);
 protected:
     void paintEvent(QPaintEvent* event);
     void mousePressEvent(QMouseEvent* event);

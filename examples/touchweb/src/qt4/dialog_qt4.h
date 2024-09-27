@@ -8,7 +8,7 @@
 #define _DIALOG_QT4_H_
 
 #include <QDialog>
-#include "picasso.h"
+#include <picasso/picasso.h>
 
 class DialogImplPrive;
 class MainWindowImpl;

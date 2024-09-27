@@ -7,8 +7,9 @@
 #include <QImage>
 #include <QPainter>
 #include <QPaintEvent>
+#include <picasso/picasso.h>
+
 #include "config.h"
-#include "picasso.h"
 #include "dialog.h"
 #include "dialog_qt4.h"
 #include "mainwindow_qt4.h"
@@ -163,5 +164,5 @@ void DialogImpl::Create(const MainWindowImpl* main, int x, int y, int w, int h)
     m_data->m_img->fill(0xFFFFFFFF);
     m_data->m_canvas = ps_canvas_create_with_data((ps_byte*)m_data->m_img->bits(),
                                                   COLOR_FORMAT_BGRA, w, h, w * 4);
-    m_data->m_gc = ps_context_create(m_data->m_canvas);
+    m_data->m_gc = ps_context_create(m_data->m_canvas, 0);
 }

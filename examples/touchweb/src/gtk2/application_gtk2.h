@@ -15,15 +15,13 @@ class GtkLoop
 {
 public:
     GtkLoop()
-        : tid(0), eid(0)
+        : tid(0)
     {
-        eid = g_idle_add(GtkLoop::IdleCb, this);
     }
 
     virtual ~GtkLoop()
     {
         g_source_remove(tid);
-        g_source_remove(eid);
     }
 
     void start(int ms)
@@ -37,18 +35,10 @@ public:
         t->timerEvent();
         return TRUE;
     }
-    static gboolean IdleCb(gpointer data)
-    {
-        GtkLoop* t = (GtkLoop*)data;
-        t->idleEvent();
-        return TRUE;
-    }
 protected:
     virtual void timerEvent(void) = 0;
-    virtual void idleEvent(void) = 0;
 private:
     gint tid;
-    gint eid;
 };
 
 class Application;
@@ -73,7 +63,6 @@ public:
     static unsigned long tickCount(void);
 protected:
     void timerEvent(void);
-    void idleEvent(void);
 private:
     Application* m_data;
     int m_cbit;

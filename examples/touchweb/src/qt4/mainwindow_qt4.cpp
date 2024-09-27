@@ -8,8 +8,9 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QApplication>
+#include <picasso/picasso.h>
+
 #include "config.h"
-#include "picasso.h"
 #include "event.h"
 #include "mainwindow.h"
 #include "mainwindow_qt4.h"
@@ -106,7 +107,7 @@ bool MainWindowImpl::Create(void* hInstance, const char* title, int x, int y, in
 
     m_data->m_canvas = ps_canvas_create_with_data((ps_byte*)m_data->m_img->bits(),
                                                   COLOR_FORMAT_BGRA, w, h, w * 4);
-    m_data->m_gc = ps_context_create(m_data->m_canvas);
+    m_data->m_gc = ps_context_create(m_data->m_canvas, 0);
 
     show();
     return true;
@@ -233,7 +234,7 @@ void MainWindowImpl::paintProcess(QPainter* p, ps_context* gc)
                 if ((*it)->isVisible() && erc.intersect(rc)) {
                     //clip area
                     QRect cxr(erc.x, erc.y, erc.w, erc.h);
-                    clipouts.unite(cxr);
+                    clipouts = clipouts.united(cxr);
                 }
             }
             clip -= clipouts;
@@ -292,4 +293,9 @@ int MainWindowImpl::SysWidth(void)
 int MainWindowImpl::SysHeight(void)
 {
     return DEFAULT_HEIGHT;
+}
+
+bool MainWindowImpl::getChooseFile(uchar_t* name, unsigned int len)
+{
+    return false;
 }

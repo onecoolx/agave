@@ -60,14 +60,15 @@ gboolean MainWindowImpl::expose(GtkWidget* widget, GdkEventExpose* event, gpoint
     GdkRectangle* r = &event->area;
     mainWindow->OnPaint(mainWindow->m_drawarea, r->x, r->y, r->width, r->height);
     gdk_draw_pixbuf(mainWindow->m_drawarea->window,
-                    mainWindow->m_drawarea->style->white_gc, mainWindow->m_buf, r->x, r->y, r->x, r->y, r->width, r->height, GDK_RGB_DITHER_NONE, 0, 0);
+                    mainWindow->m_drawarea->style->white_gc, mainWindow->m_buf,
+                    r->x, r->y, r->x, r->y, r->width, r->height, GDK_RGB_DITHER_NONE, 0, 0);
     return FALSE;
 }
 
 gboolean MainWindowImpl::mouseButtonPress(GtkWidget* widget, GdkEventButton* event, gpointer data)
 {
     MainWindowImpl* mainWindow = (MainWindowImpl*)data;
-	if (event->button == 1) {
+    if (event->button == 1) {
         mainWindow->OnMouse(1, 1, event->x, event->y);
     }
     return FALSE;
@@ -203,6 +204,7 @@ void MainWindowImpl::paintProcess(ps_context* gc)
         int w = m_dirty.w;
         int h = m_dirty.h;
         GdkRectangle cliprect = {m_vx, m_vy, m_cx, m_cy};
+printf("cliprect : %d  %d  %d  %d\n", m_vx, m_vy, m_cx, m_cy);
         //clip topmost childs area.
         std::list<Widget*> tops = m_window->getChilds(true);
         cairo_save(cr);
@@ -218,6 +220,7 @@ void MainWindowImpl::paintProcess(ps_context* gc)
                     gdk_region_union_with_rect(clipouts, &cxr);
                 }
             }
+
             gdk_region_subtract(clip, clipouts);
             gdk_cairo_region(cr, clip);
             cairo_clip(cr);
@@ -238,8 +241,8 @@ void MainWindowImpl::paintProcess(ps_context* gc)
                 if ((*it)->isVisible() && erc.intersect(rc)) {
                     //draw top window
                     gdk_cairo_set_source_pixbuf (cr, m_buf, -erc.x, -erc.y);
-                    cairo_rectangle(cr, erc.x, erc.y, erc.w, erc.h);
-                    cairo_paint (cr);
+                    //cairo_rectangle(cr, erc.x, erc.y, erc.w, erc.h);
+                    //cairo_paint (cr);
                 }
             }
         }

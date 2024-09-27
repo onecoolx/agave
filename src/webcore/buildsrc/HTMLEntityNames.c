@@ -1,5 +1,5 @@
-/* ANSI-C code produced by gperf version 3.0.3 */
-/* Command-line: gperf -a -L ANSI-C -C -G -c -o -t -N findEntity -D -s 2 /home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf  */
+/* ANSI-C code produced by gperf version 3.1 */
+/* Command-line: gperf -a -L ANSI-C -C -G -c -o -t -N findEntity -D -s 2 html/HTMLEntityNames.gperf  */
 /* Computed positions: -k'1-3,5,$' */
 #include <string.h>
 
@@ -27,10 +27,10 @@
       && ('w' == 119) && ('x' == 120) && ('y' == 121) && ('z' == 122) \
       && ('{' == 123) && ('|' == 124) && ('}' == 125) && ('~' == 126))
 /* The character set is not based on ISO-646.  */
-#error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gnu-gperf@gnu.org>."
+#error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gperf@gnu.org>."
 #endif
 
-#line 1 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 1 "html/HTMLEntityNames.gperf"
 
 /*   This file is part of the KDE libraries
   
@@ -59,7 +59,7 @@
     from HTMLEntityNames.gperf 
 
 */
-#line 30 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 30 "html/HTMLEntityNames.gperf"
 struct Entity {
     const char *name;
     int code;
@@ -80,7 +80,7 @@ inline
 #endif
 #endif
 static unsigned int
-hash (register const char *str, register unsigned int len)
+hash (register const char *str, register size_t len)
 {
   static const unsigned short asso_values[] =
     {
@@ -111,7 +111,7 @@ hash (register const char *str, register unsigned int len)
       667, 667, 667, 667, 667, 667, 667, 667, 667, 667,
       667, 667, 667, 667, 667, 667, 667
     };
-  register int hval = len;
+  register unsigned int hval = len;
 
   switch (hval)
     {
@@ -134,529 +134,529 @@ hash (register const char *str, register unsigned int len)
 
 static const struct Entity wordlist[] =
   {
-#line 228 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 228 "html/HTMLEntityNames.gperf"
     {"phi", 0x03c6},
-#line 79 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 79 "html/HTMLEntityNames.gperf"
     {"Phi", 0x03a6},
-#line 233 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 233 "html/HTMLEntityNames.gperf"
     {"prime", 0x2032},
-#line 236 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 236 "html/HTMLEntityNames.gperf"
     {"psi", 0x03c8},
-#line 235 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 235 "html/HTMLEntityNames.gperf"
     {"prop", 0x221d},
-#line 81 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 81 "html/HTMLEntityNames.gperf"
     {"Prime", 0x2033},
-#line 275 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 275 "html/HTMLEntityNames.gperf"
     {"thinsp", 0x2009},
-#line 82 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 82 "html/HTMLEntityNames.gperf"
     {"Psi", 0x03a8},
-#line 143 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 143 "html/HTMLEntityNames.gperf"
     {"ensp", 0x2002},
-#line 171 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 171 "html/HTMLEntityNames.gperf"
     {"iota", 0x03b9},
-#line 272 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 272 "html/HTMLEntityNames.gperf"
     {"there4", 0x2234},
-#line 142 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 142 "html/HTMLEntityNames.gperf"
     {"emsp", 0x2003},
-#line 90 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 90 "html/HTMLEntityNames.gperf"
     {"Theta", 0x0398},
-#line 107 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 107 "html/HTMLEntityNames.gperf"
     {"amp", 38},
-#line 254 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 254 "html/HTMLEntityNames.gperf"
     {"sdot", 0x22c5},
-#line 279 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 279 "html/HTMLEntityNames.gperf"
     {"trade", 0x2122},
-#line 173 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 173 "html/HTMLEntityNames.gperf"
     {"isin", 0x2208},
-#line 273 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 273 "html/HTMLEntityNames.gperf"
     {"theta", 0x03b8},
-#line 170 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 170 "html/HTMLEntityNames.gperf"
     {"int", 0x222b},
-#line 234 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 234 "html/HTMLEntityNames.gperf"
     {"prod", 0x220f},
-#line 168 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 168 "html/HTMLEntityNames.gperf"
     {"image", 0x2111},
-#line 221 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 221 "html/HTMLEntityNames.gperf"
     {"otimes", 0x2297},
-#line 146 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 146 "html/HTMLEntityNames.gperf"
     {"eta", 0x03b7},
-#line 202 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 202 "html/HTMLEntityNames.gperf"
     {"not", 0x00ac},
-#line 175 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 175 "html/HTMLEntityNames.gperf"
     {"kappa", 0x03ba},
-#line 123 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 123 "html/HTMLEntityNames.gperf"
     {"chi", 0x03c7},
-#line 64 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 64 "html/HTMLEntityNames.gperf"
     {"Kappa", 0x039a},
-#line 205 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 205 "html/HTMLEntityNames.gperf"
     {"nsup", 0x2285},
-#line 213 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 213 "html/HTMLEntityNames.gperf"
     {"omega", 0x03c9},
-#line 264 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 264 "html/HTMLEntityNames.gperf"
     {"sup", 0x2283},
-#line 113 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 113 "html/HTMLEntityNames.gperf"
     {"atilde", 0x00e3},
-#line 268 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 268 "html/HTMLEntityNames.gperf"
     {"supe", 0x2287},
-#line 102 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 102 "html/HTMLEntityNames.gperf"
     {"acute", 0x00b4},
-#line 220 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 220 "html/HTMLEntityNames.gperf"
     {"otilde", 0x00f5},
-#line 57 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 57 "html/HTMLEntityNames.gperf"
     {"GT", 62},
-#line 276 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 276 "html/HTMLEntityNames.gperf"
     {"thorn", 0x00fe},
-#line 253 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 253 "html/HTMLEntityNames.gperf"
     {"scaron", 0x0161},
-#line 108 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 108 "html/HTMLEntityNames.gperf"
     {"and", 0x2227},
-#line 198 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 198 "html/HTMLEntityNames.gperf"
     {"nbsp", 0x00a0},
-#line 232 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 232 "html/HTMLEntityNames.gperf"
     {"pound", 0x00a3},
-#line 206 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 206 "html/HTMLEntityNames.gperf"
     {"ntilde", 0x00f1},
-#line 89 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 89 "html/HTMLEntityNames.gperf"
     {"Tau", 0x03a4},
-#line 203 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 203 "html/HTMLEntityNames.gperf"
     {"notin", 0x2209},
-#line 86 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 86 "html/HTMLEntityNames.gperf"
     {"Scaron", 0x0160},
-#line 67 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 67 "html/HTMLEntityNames.gperf"
     {"Mu", 0x039c},
-#line 119 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 119 "html/HTMLEntityNames.gperf"
     {"cap", 0x2229},
-#line 62 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 62 "html/HTMLEntityNames.gperf"
     {"Iota", 0x0399},
-#line 65 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 65 "html/HTMLEntityNames.gperf"
     {"LT", 60},
-#line 271 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 271 "html/HTMLEntityNames.gperf"
     {"tau", 0x03c4},
-#line 204 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 204 "html/HTMLEntityNames.gperf"
     {"nsub", 0x2284},
-#line 112 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 112 "html/HTMLEntityNames.gperf"
     {"asymp", 0x2248},
-#line 55 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 55 "html/HTMLEntityNames.gperf"
     {"Eta", 0x0397},
-#line 216 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 216 "html/HTMLEntityNames.gperf"
     {"or", 0x2228},
-#line 47 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 47 "html/HTMLEntityNames.gperf"
     {"Chi", 0x03a7},
-#line 262 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 262 "html/HTMLEntityNames.gperf"
     {"sube", 0x2286},
-#line 150 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 150 "html/HTMLEntityNames.gperf"
     {"exist", 0x2203},
-#line 85 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 85 "html/HTMLEntityNames.gperf"
     {"Rho", 0x03a1},
-#line 197 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 197 "html/HTMLEntityNames.gperf"
     {"nabla", 0x2207},
-#line 164 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 164 "html/HTMLEntityNames.gperf"
     {"iacute", 0x00ed},
-#line 207 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 207 "html/HTMLEntityNames.gperf"
     {"nu", 0x03bd},
-#line 50 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 50 "html/HTMLEntityNames.gperf"
     {"ETH", 0x00d0},
-#line 138 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 138 "html/HTMLEntityNames.gperf"
     {"eacute", 0x00e9},
-#line 248 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 248 "html/HTMLEntityNames.gperf"
     {"rho", 0x03c1},
-#line 100 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 100 "html/HTMLEntityNames.gperf"
     {"aacute", 0x00e1},
-#line 129 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 129 "html/HTMLEntityNames.gperf"
     {"cup", 0x222a},
-#line 294 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 294 "html/HTMLEntityNames.gperf"
     {"zeta", 0x03b6},
-#line 208 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 208 "html/HTMLEntityNames.gperf"
     {"oacute", 0x00f3},
-#line 200 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 200 "html/HTMLEntityNames.gperf"
     {"ne", 0x2260},
-#line 84 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 84 "html/HTMLEntityNames.gperf"
     {"REG", 0x00ae},
-#line 127 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 127 "html/HTMLEntityNames.gperf"
     {"copy", 0x00a9},
-#line 212 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 212 "html/HTMLEntityNames.gperf"
     {"oline", 0x203e},
-#line 172 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 172 "html/HTMLEntityNames.gperf"
     {"iquest", 0x00bf},
-#line 261 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 261 "html/HTMLEntityNames.gperf"
     {"sub", 0x2282},
-#line 223 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 223 "html/HTMLEntityNames.gperf"
     {"para", 0x00b6},
-#line 106 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 106 "html/HTMLEntityNames.gperf"
     {"alpha", 0x03b1},
-#line 281 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 281 "html/HTMLEntityNames.gperf"
     {"uacute", 0x00fa},
-#line 274 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 274 "html/HTMLEntityNames.gperf"
     {"thetasym", 0x03d1},
-#line 224 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 224 "html/HTMLEntityNames.gperf"
     {"part", 0x2202},
-#line 42 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 42 "html/HTMLEntityNames.gperf"
     {"Atilde", 0x00c3},
-#line 256 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 256 "html/HTMLEntityNames.gperf"
     {"shy", 0x00ad},
-#line 217 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 217 "html/HTMLEntityNames.gperf"
     {"ordf", 0x00aa},
-#line 165 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 165 "html/HTMLEntityNames.gperf"
     {"icirc", 0x00ee},
-#line 68 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 68 "html/HTMLEntityNames.gperf"
     {"Ntilde", 0x00d1},
-#line 218 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 218 "html/HTMLEntityNames.gperf"
     {"ordm", 0x00ba},
-#line 139 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 139 "html/HTMLEntityNames.gperf"
     {"ecirc", 0x00ea},
-#line 265 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 265 "html/HTMLEntityNames.gperf"
     {"sup1", 0x00b9},
-#line 101 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 101 "html/HTMLEntityNames.gperf"
     {"acirc", 0x00e2},
-#line 250 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 250 "html/HTMLEntityNames.gperf"
     {"rsaquo", 0x203a},
-#line 214 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 214 "html/HTMLEntityNames.gperf"
     {"omicron", 0x03bf},
-#line 116 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 116 "html/HTMLEntityNames.gperf"
     {"beta", 0x03b2},
-#line 209 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 209 "html/HTMLEntityNames.gperf"
     {"ocirc", 0x00f4},
-#line 91 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 91 "html/HTMLEntityNames.gperf"
     {"Uacute", 0x00da},
-#line 99 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 99 "html/HTMLEntityNames.gperf"
     {"Zeta", 0x0396},
-#line 169 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 169 "html/HTMLEntityNames.gperf"
     {"infin", 0x221e},
-#line 97 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 97 "html/HTMLEntityNames.gperf"
     {"Yacute", 0x00dd},
-#line 45 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 45 "html/HTMLEntityNames.gperf"
     {"COPY", 0x00a9},
-#line 283 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 283 "html/HTMLEntityNames.gperf"
     {"ucirc", 0x00fb},
-#line 51 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 51 "html/HTMLEntityNames.gperf"
     {"Eacute", 0x00c9},
-#line 255 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 255 "html/HTMLEntityNames.gperf"
     {"sect", 0x00a7},
-#line 141 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 141 "html/HTMLEntityNames.gperf"
     {"empty", 0x2205},
-#line 69 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 69 "html/HTMLEntityNames.gperf"
     {"Nu", 0x039d},
-#line 36 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 36 "html/HTMLEntityNames.gperf"
     {"AMP", 38},
-#line 149 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 149 "html/HTMLEntityNames.gperf"
     {"euro", 0x20ac},
-#line 74 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 74 "html/HTMLEntityNames.gperf"
     {"Omega", 0x03a9},
-#line 59 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 59 "html/HTMLEntityNames.gperf"
     {"Iacute", 0x00cd},
-#line 267 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 267 "html/HTMLEntityNames.gperf"
     {"sup3", 0x00b3},
-#line 58 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 58 "html/HTMLEntityNames.gperf"
     {"Gamma", 0x0393},
-#line 291 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 291 "html/HTMLEntityNames.gperf"
     {"yacute", 0x00fd},
-#line 186 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 186 "html/HTMLEntityNames.gperf"
     {"loz", 0x25ca},
-#line 83 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 83 "html/HTMLEntityNames.gperf"
     {"QUOT", 34},
-#line 125 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 125 "html/HTMLEntityNames.gperf"
     {"clubs", 0x2663},
-#line 77 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 77 "html/HTMLEntityNames.gperf"
     {"Otilde", 0x00d5},
-#line 159 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 159 "html/HTMLEntityNames.gperf"
     {"gt", 62},
-#line 227 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 227 "html/HTMLEntityNames.gperf"
     {"perp", 0x22a5},
-#line 92 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 92 "html/HTMLEntityNames.gperf"
     {"Ucirc", 0x00db},
-#line 37 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 37 "html/HTMLEntityNames.gperf"
     {"Aacute", 0x00c1},
-#line 196 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 196 "html/HTMLEntityNames.gperf"
     {"mu", 0x03bc},
-#line 122 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 122 "html/HTMLEntityNames.gperf"
     {"cent", 0x00a2},
-#line 154 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 154 "html/HTMLEntityNames.gperf"
     {"frac14", 0x00bc},
-#line 266 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 266 "html/HTMLEntityNames.gperf"
     {"sup2", 0x00b2},
-#line 52 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 52 "html/HTMLEntityNames.gperf"
     {"Ecirc", 0x00ca},
-#line 117 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 117 "html/HTMLEntityNames.gperf"
     {"brvbar", 0x00a6},
-#line 40 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 40 "html/HTMLEntityNames.gperf"
     {"Alpha", 0x0391},
-#line 289 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 289 "html/HTMLEntityNames.gperf"
     {"weierp", 0x2118},
-#line 60 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 60 "html/HTMLEntityNames.gperf"
     {"Icirc", 0x00ce},
-#line 260 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 260 "html/HTMLEntityNames.gperf"
     {"spades", 0x2660},
-#line 185 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 185 "html/HTMLEntityNames.gperf"
     {"lowast", 0x2217},
-#line 292 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 292 "html/HTMLEntityNames.gperf"
     {"yen", 0x00a5},
-#line 110 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 110 "html/HTMLEntityNames.gperf"
     {"apos", 0x0027},
-#line 66 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 66 "html/HTMLEntityNames.gperf"
     {"Lambda", 0x039b},
-#line 190 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 190 "html/HTMLEntityNames.gperf"
     {"lt", 60},
-#line 38 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 38 "html/HTMLEntityNames.gperf"
     {"Acirc", 0x00c2},
-#line 155 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 155 "html/HTMLEntityNames.gperf"
     {"frac34", 0x00be},
-#line 105 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 105 "html/HTMLEntityNames.gperf"
     {"alefsym", 0x2135},
-#line 151 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 151 "html/HTMLEntityNames.gperf"
     {"fnof", 0x0192},
-#line 225 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 225 "html/HTMLEntityNames.gperf"
     {"percnt", 0x0025},
-#line 126 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 126 "html/HTMLEntityNames.gperf"
     {"cong", 0x2245},
-#line 229 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 229 "html/HTMLEntityNames.gperf"
     {"pi", 0x03c0},
-#line 282 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 282 "html/HTMLEntityNames.gperf"
     {"uarr", 0x2191},
-#line 71 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 71 "html/HTMLEntityNames.gperf"
     {"Oacute", 0x00d3},
-#line 80 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 80 "html/HTMLEntityNames.gperf"
     {"Pi", 0x03a0},
-#line 133 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 133 "html/HTMLEntityNames.gperf"
     {"darr", 0x2193},
-#line 130 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 130 "html/HTMLEntityNames.gperf"
     {"curren", 0x00a4},
-#line 96 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 96 "html/HTMLEntityNames.gperf"
     {"Xi", 0x039e},
-#line 128 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 128 "html/HTMLEntityNames.gperf"
     {"crarr", 0x21b5},
-#line 188 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 188 "html/HTMLEntityNames.gperf"
     {"lsaquo", 0x2039},
-#line 290 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 290 "html/HTMLEntityNames.gperf"
     {"xi", 0x03be},
-#line 269 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 269 "html/HTMLEntityNames.gperf"
     {"supl", 0x00b9},
-#line 145 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 145 "html/HTMLEntityNames.gperf"
     {"equiv", 0x2261},
-#line 162 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 162 "html/HTMLEntityNames.gperf"
     {"hearts", 0x2665},
-#line 158 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 158 "html/HTMLEntityNames.gperf"
     {"ge", 0x2265},
-#line 231 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 231 "html/HTMLEntityNames.gperf"
     {"plusmn", 0x00b1},
-#line 201 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 201 "html/HTMLEntityNames.gperf"
     {"ni", 0x220b},
-#line 115 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 115 "html/HTMLEntityNames.gperf"
     {"bdquo", 0x201e},
-#line 239 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 239 "html/HTMLEntityNames.gperf"
     {"radic", 0x221a},
-#line 75 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 75 "html/HTMLEntityNames.gperf"
     {"Omicron", 0x039f},
-#line 72 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 72 "html/HTMLEntityNames.gperf"
     {"Ocirc", 0x00d4},
-#line 263 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 263 "html/HTMLEntityNames.gperf"
     {"sum", 0x2211},
-#line 296 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 296 "html/HTMLEntityNames.gperf"
     {"zwnj", 0x200c},
-#line 136 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 136 "html/HTMLEntityNames.gperf"
     {"diams", 0x2666},
-#line 120 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 120 "html/HTMLEntityNames.gperf"
     {"ccedil", 0x00e7},
-#line 252 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 252 "html/HTMLEntityNames.gperf"
     {"sbquo", 0x201a},
-#line 48 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 48 "html/HTMLEntityNames.gperf"
     {"Dagger", 0x2021},
-#line 147 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 147 "html/HTMLEntityNames.gperf"
     {"eth", 0x00f0},
-#line 191 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 191 "html/HTMLEntityNames.gperf"
     {"macr", 0x00af},
-#line 183 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 183 "html/HTMLEntityNames.gperf"
     {"le", 0x2264},
-#line 237 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 237 "html/HTMLEntityNames.gperf"
     {"quot", 34},
-#line 167 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 167 "html/HTMLEntityNames.gperf"
     {"igrave", 0x00ec},
-#line 199 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 199 "html/HTMLEntityNames.gperf"
     {"ndash", 0x2013},
-#line 140 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 140 "html/HTMLEntityNames.gperf"
     {"egrave", 0x00e8},
-#line 240 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 240 "html/HTMLEntityNames.gperf"
     {"rang", 0x3009},
-#line 104 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 104 "html/HTMLEntityNames.gperf"
     {"agrave", 0x00e0},
-#line 242 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 242 "html/HTMLEntityNames.gperf"
     {"rarr", 0x2192},
-#line 49 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 49 "html/HTMLEntityNames.gperf"
     {"Delta", 0x0394},
-#line 211 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 211 "html/HTMLEntityNames.gperf"
     {"ograve", 0x00f2},
-#line 157 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 157 "html/HTMLEntityNames.gperf"
     {"gamma", 0x03b3},
-#line 132 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 132 "html/HTMLEntityNames.gperf"
     {"dagger", 0x2020},
-#line 111 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 111 "html/HTMLEntityNames.gperf"
     {"aring", 0x00e5},
-#line 284 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 284 "html/HTMLEntityNames.gperf"
     {"ugrave", 0x00f9},
-#line 244 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 244 "html/HTMLEntityNames.gperf"
     {"rdquo", 0x201d},
-#line 46 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 46 "html/HTMLEntityNames.gperf"
     {"Ccedil", 0x00c7},
-#line 109 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 109 "html/HTMLEntityNames.gperf"
     {"ang", 0x2220},
-#line 251 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 251 "html/HTMLEntityNames.gperf"
     {"rsquo", 0x2019},
-#line 153 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 153 "html/HTMLEntityNames.gperf"
     {"frac12", 0x00bd},
-#line 135 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 135 "html/HTMLEntityNames.gperf"
     {"delta", 0x03b4},
-#line 93 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 93 "html/HTMLEntityNames.gperf"
     {"Ugrave", 0x00d9},
-#line 161 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 161 "html/HTMLEntityNames.gperf"
     {"harr", 0x2194},
-#line 219 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 219 "html/HTMLEntityNames.gperf"
     {"oslash", 0x00f8},
-#line 241 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 241 "html/HTMLEntityNames.gperf"
     {"raquo", 0x00bb},
-#line 53 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 53 "html/HTMLEntityNames.gperf"
     {"Egrave", 0x00c8},
-#line 174 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 174 "html/HTMLEntityNames.gperf"
     {"iuml", 0x00ef},
-#line 278 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 278 "html/HTMLEntityNames.gperf"
     {"times", 0x00d7},
-#line 61 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 61 "html/HTMLEntityNames.gperf"
     {"Igrave", 0x00cc},
-#line 148 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 148 "html/HTMLEntityNames.gperf"
     {"euml", 0x00eb},
-#line 177 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 177 "html/HTMLEntityNames.gperf"
     {"lambda", 0x03bb},
-#line 114 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 114 "html/HTMLEntityNames.gperf"
     {"auml", 0x00e4},
-#line 195 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 195 "html/HTMLEntityNames.gperf"
     {"minus", 0x2212},
-#line 137 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 137 "html/HTMLEntityNames.gperf"
     {"divide", 0x00f7},
-#line 230 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 230 "html/HTMLEntityNames.gperf"
     {"piv", 0x03d6},
-#line 222 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 222 "html/HTMLEntityNames.gperf"
     {"ouml", 0x00f6},
-#line 88 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 88 "html/HTMLEntityNames.gperf"
     {"THORN", 0x00de},
-#line 39 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 39 "html/HTMLEntityNames.gperf"
     {"Agrave", 0x00c0},
-#line 44 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 44 "html/HTMLEntityNames.gperf"
     {"Beta", 0x0392},
-#line 192 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 192 "html/HTMLEntityNames.gperf"
     {"mdash", 0x2014},
-#line 226 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 226 "html/HTMLEntityNames.gperf"
     {"permil", 0x2030},
-#line 288 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 288 "html/HTMLEntityNames.gperf"
     {"uuml", 0x00fc},
-#line 245 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 245 "html/HTMLEntityNames.gperf"
     {"real", 0x211c},
-#line 41 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 41 "html/HTMLEntityNames.gperf"
     {"Aring", 0x00c5},
-#line 187 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 187 "html/HTMLEntityNames.gperf"
     {"lrm", 0x200e},
-#line 178 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 178 "html/HTMLEntityNames.gperf"
     {"lang", 0x3008},
-#line 215 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 215 "html/HTMLEntityNames.gperf"
     {"oplus", 0x2295},
-#line 180 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 180 "html/HTMLEntityNames.gperf"
     {"larr", 0x2190},
-#line 194 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 194 "html/HTMLEntityNames.gperf"
     {"middot", 0x00b7},
-#line 249 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 249 "html/HTMLEntityNames.gperf"
     {"rlm", 0x200f},
-#line 95 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 95 "html/HTMLEntityNames.gperf"
     {"Uuml", 0x00dc},
-#line 98 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 98 "html/HTMLEntityNames.gperf"
     {"Yuml", 0x0178},
-#line 257 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 257 "html/HTMLEntityNames.gperf"
     {"sigma", 0x03c3},
-#line 144 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 144 "html/HTMLEntityNames.gperf"
     {"epsilon", 0x03b5},
-#line 56 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 56 "html/HTMLEntityNames.gperf"
     {"Euml", 0x00cb},
-#line 182 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 182 "html/HTMLEntityNames.gperf"
     {"ldquo", 0x201c},
-#line 163 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 163 "html/HTMLEntityNames.gperf"
     {"hellip", 0x2026},
-#line 285 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 285 "html/HTMLEntityNames.gperf"
     {"uml", 0x00a8},
-#line 87 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 87 "html/HTMLEntityNames.gperf"
     {"Sigma", 0x03a3},
-#line 73 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 73 "html/HTMLEntityNames.gperf"
     {"Ograve", 0x00d2},
-#line 63 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 63 "html/HTMLEntityNames.gperf"
     {"Iuml", 0x00cf},
-#line 189 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 189 "html/HTMLEntityNames.gperf"
     {"lsquo", 0x2018},
-#line 293 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 293 "html/HTMLEntityNames.gperf"
     {"yuml", 0x00ff},
-#line 193 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 193 "html/HTMLEntityNames.gperf"
     {"micro", 0x00b5},
-#line 287 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 287 "html/HTMLEntityNames.gperf"
     {"upsilon", 0x03c5},
-#line 134 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 134 "html/HTMLEntityNames.gperf"
     {"deg", 0x00b0},
-#line 43 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 43 "html/HTMLEntityNames.gperf"
     {"Auml", 0x00c4},
-#line 124 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 124 "html/HTMLEntityNames.gperf"
     {"circ", 0x02c6},
-#line 179 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 179 "html/HTMLEntityNames.gperf"
     {"laquo", 0x00ab},
-#line 259 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 259 "html/HTMLEntityNames.gperf"
     {"sim", 0x223c},
-#line 277 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 277 "html/HTMLEntityNames.gperf"
     {"tilde", 0x02dc},
-#line 94 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 94 "html/HTMLEntityNames.gperf"
     {"Upsilon", 0x03a5},
-#line 280 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 280 "html/HTMLEntityNames.gperf"
     {"uArr", 0x21d1},
-#line 76 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 76 "html/HTMLEntityNames.gperf"
     {"Oslash", 0x00d8},
-#line 131 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 131 "html/HTMLEntityNames.gperf"
     {"dArr", 0x21d3},
-#line 54 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 54 "html/HTMLEntityNames.gperf"
     {"Epsilon", 0x0395},
-#line 118 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 118 "html/HTMLEntityNames.gperf"
     {"bull", 0x2022},
-#line 286 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 286 "html/HTMLEntityNames.gperf"
     {"upsih", 0x03d2},
-#line 156 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 156 "html/HTMLEntityNames.gperf"
     {"frasl", 0x2044},
-#line 78 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 78 "html/HTMLEntityNames.gperf"
     {"Ouml", 0x00d6},
-#line 166 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 166 "html/HTMLEntityNames.gperf"
     {"iexcl", 0x00a1},
-#line 295 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 295 "html/HTMLEntityNames.gperf"
     {"zwj", 0x200d},
-#line 270 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 270 "html/HTMLEntityNames.gperf"
     {"szlig", 0x00df},
-#line 246 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 246 "html/HTMLEntityNames.gperf"
     {"reg", 0x00ae},
-#line 243 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 243 "html/HTMLEntityNames.gperf"
     {"rceil", 0x2309},
-#line 258 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 258 "html/HTMLEntityNames.gperf"
     {"sigmaf", 0x03c2},
-#line 238 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 238 "html/HTMLEntityNames.gperf"
     {"rArr", 0x21d2},
-#line 247 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 247 "html/HTMLEntityNames.gperf"
     {"rfloor", 0x230b},
-#line 121 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 121 "html/HTMLEntityNames.gperf"
     {"cedil", 0x00b8},
-#line 160 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 160 "html/HTMLEntityNames.gperf"
     {"hArr", 0x21d4},
-#line 152 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 152 "html/HTMLEntityNames.gperf"
     {"forall", 0x2200},
-#line 35 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 35 "html/HTMLEntityNames.gperf"
     {"AElig", 0x00c6},
-#line 181 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 181 "html/HTMLEntityNames.gperf"
     {"lceil", 0x2308},
-#line 103 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 103 "html/HTMLEntityNames.gperf"
     {"aelig", 0x00e6},
-#line 210 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 210 "html/HTMLEntityNames.gperf"
     {"oelig", 0x0153},
-#line 176 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 176 "html/HTMLEntityNames.gperf"
     {"lArr", 0x21d0},
-#line 70 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 70 "html/HTMLEntityNames.gperf"
     {"OElig", 0x0152},
-#line 184 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 184 "html/HTMLEntityNames.gperf"
     {"lfloor", 0x230a}
   };
 
@@ -731,20 +731,14 @@ static const short lookup[] =
      -1,  -1,  -1,  -1,  -1,  -1, 261
   };
 
-#ifdef __GNUC__
-__inline
-#ifdef __GNUC_STDC_INLINE__
-__attribute__ ((__gnu_inline__))
-#endif
-#endif
 const struct Entity *
-findEntity (register const char *str, register unsigned int len)
+findEntity (register const char *str, register size_t len)
 {
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = hash (str, len);
+      register unsigned int key = hash (str, len);
 
-      if (key <= MAX_HASH_VALUE && key >= 0)
+      if (key <= MAX_HASH_VALUE)
         {
           register int index = lookup[key];
 
@@ -759,5 +753,5 @@ findEntity (register const char *str, register unsigned int len)
     }
   return 0;
 }
-#line 297 "/home/zhangjipeng/macross-browser/source/webcore/html/HTMLEntityNames.gperf"
+#line 297 "html/HTMLEntityNames.gperf"
 

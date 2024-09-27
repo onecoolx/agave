@@ -1,6 +1,7 @@
-/* ANSI-C code produced by gperf version 3.0.3 */
-/* Command-line: gperf -CEot -L ANSI-C -N findDoctypeEntry -F ,PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards /home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf  */
+/* ANSI-C code produced by gperf version 3.1 */
+/* Command-line: gperf -CEot -L ANSI-C -N findDoctypeEntry -F ,PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards html/DocTypeStrings.gperf  */
 /* Computed positions: -k'19,21,24-25,29,31-32,36-37' */
+#include <string.h>
 
 #if !((' ' == 32) && ('!' == 33) && ('"' == 34) && ('#' == 35) \
       && ('%' == 37) && ('&' == 38) && ('\'' == 39) && ('(' == 40) \
@@ -26,10 +27,10 @@
       && ('w' == 119) && ('x' == 120) && ('y' == 121) && ('z' == 122) \
       && ('{' == 123) && ('|' == 124) && ('}' == 125) && ('~' == 126))
 /* The character set is not based on ISO-646.  */
-#error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gnu-gperf@gnu.org>."
+#error "gperf generated tables don't work with this execution character set. Please report a bug to <bug-gperf@gnu.org>."
 #endif
 
-#line 1 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 1 "html/DocTypeStrings.gperf"
 struct PubIDInfo {
     enum eMode { 
         eQuirks,         
@@ -51,7 +52,7 @@ inline
 #endif
 #endif
 static unsigned int
-hash (register const char *str, register unsigned int len)
+hash (register const char *str, register size_t len)
 {
   static const unsigned char asso_values[] =
     {
@@ -82,7 +83,7 @@ hash (register const char *str, register unsigned int len)
       208, 208, 208, 208, 208, 208, 208, 208, 208, 208,
       208, 208, 208, 208, 208, 208
     };
-  register int hval = len;
+  register unsigned int hval = len;
 
   switch (hval)
     {
@@ -143,14 +144,8 @@ hash (register const char *str, register unsigned int len)
   return hval;
 }
 
-#ifdef __GNUC__
-__inline
-#ifdef __GNUC_STDC_INLINE__
-__attribute__ ((__gnu_inline__))
-#endif
-#endif
 const struct PubIDInfo *
-findDoctypeEntry (register const char *str, register unsigned int len)
+findDoctypeEntry (register const char *str, register size_t len)
 {
   enum
     {
@@ -167,7 +162,7 @@ findDoctypeEntry (register const char *str, register unsigned int len)
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 89 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 89 "html/DocTypeStrings.gperf"
       {"html", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
@@ -185,143 +180,143 @@ findDoctypeEntry (register const char *str, register unsigned int len)
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 47 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 47 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 27 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 27 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html 3//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 72 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 72 "html/DocTypeStrings.gperf"
       {"-//w3c//dtd html 3.2//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 49 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 49 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html//en//3.0", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 80 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 80 "html/DocTypeStrings.gperf"
       {"-//w3c//dtd w3 html//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 83 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 83 "html/DocTypeStrings.gperf"
       {"-//w3o//dtd w3 html 3.0//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 44 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 44 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html strict//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 84 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 84 "html/DocTypeStrings.gperf"
       {"-//w3o//dtd w3 html 3.0//en//", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 26 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 26 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html 3.2//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 48 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 48 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html//en//2.0", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 46 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 46 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html strict//en//3.0", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 34 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 34 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html level 3//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 68 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 68 "html/DocTypeStrings.gperf"
       {"-//w30//dtd w3 html 2.0//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 35 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 35 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html level 3//en//3.0", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 23 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 23 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html 3.0//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 25 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 25 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html 3.2 final//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 24 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 24 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html 3.0//en//", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 45 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 45 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html strict//en//2.0", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 32 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 32 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html level 2//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 42 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 42 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html strict level 3//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 88 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 88 "html/DocTypeStrings.gperf"
       {"-/w3c/dtd html 4.0 transitional/en", PubIDInfo::eQuirks, PubIDInfo::eQuirks},
-#line 21 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 21 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html 2.0//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 43 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 43 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html strict level 3//en//3.0", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 69 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 69 "html/DocTypeStrings.gperf"
       {"-//w3c//dtd html 3 1995-03-24//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 28 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 28 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html level 0//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 40 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 40 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html strict level 2//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 20 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 20 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html 2.0 strict//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 64 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 64 "html/DocTypeStrings.gperf"
       {"-//spyglass//dtd html 2.0 extended//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 33 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 33 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html level 2//en//2.0", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 41 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 41 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html strict level 2//en//2.0", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 36 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 36 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html strict level 0//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 17 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 17 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html 2.0 level 2//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 29 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 29 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html level 0//en//2.0", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 37 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 37 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html strict level 0//en//2.0", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 62 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 62 "html/DocTypeStrings.gperf"
       {"-//softquad software//dtd hotmetal pro 6.0::19990601::extensions to html 4.0//en", PubIDInfo::eQuirks, PubIDInfo::eQuirks},
-#line 22 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 22 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html 2.1e//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 30 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 30 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html level 1//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 19 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 19 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html 2.0 strict level 2//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 71 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 71 "html/DocTypeStrings.gperf"
       {"-//w3c//dtd html 3.2 final//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 73 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 73 "html/DocTypeStrings.gperf"
       {"-//w3c//dtd html 3.2s draft//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 74 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 74 "html/DocTypeStrings.gperf"
       {"-//w3c//dtd html 4.0 frameset//en", PubIDInfo::eQuirks, PubIDInfo::eQuirks},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 65 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 65 "html/DocTypeStrings.gperf"
       {"-//sq//dtd html 2.0 hotmetal + extensions//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 38 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 38 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html strict level 1//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 57 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 57 "html/DocTypeStrings.gperf"
       {"-//netscape comm. corp.//dtd html//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 31 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 31 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html level 1//en//2.0", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 70 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 70 "html/DocTypeStrings.gperf"
       {"-//w3c//dtd html 3.2 draft//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 39 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 39 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html strict level 1//en//2.0", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 87 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 87 "html/DocTypeStrings.gperf"
       {"-//webtechs//dtd mozilla html//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 85 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 85 "html/DocTypeStrings.gperf"
       {"-//w3o//dtd w3 html strict 3.0//en//", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 16 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 16 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html 2.0 level 1//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
@@ -331,44 +326,44 @@ findDoctypeEntry (register const char *str, register unsigned int len)
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 86 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 86 "html/DocTypeStrings.gperf"
       {"-//webtechs//dtd mozilla html 2.0//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 59 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 59 "html/DocTypeStrings.gperf"
       {"-//o'reilly and associates//dtd html 2.0//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 18 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 18 "html/DocTypeStrings.gperf"
       {"-//ietf//dtd html 2.0 strict level 1//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 55 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 55 "html/DocTypeStrings.gperf"
       {"-//microsoft//dtd internet explorer 3.0 html//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 58 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 58 "html/DocTypeStrings.gperf"
       {"-//netscape comm. corp.//dtd strict html//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 56 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 56 "html/DocTypeStrings.gperf"
       {"-//microsoft//dtd internet explorer 3.0 tables//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 60 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 60 "html/DocTypeStrings.gperf"
       {"-//o'reilly and associates//dtd html extended 1.0//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 13 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 13 "html/DocTypeStrings.gperf"
       {"+//silmaril//dtd html pro v0r11 19970101//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 54 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 54 "html/DocTypeStrings.gperf"
       {"-//microsoft//dtd internet explorer 3.0 html strict//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 52 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 52 "html/DocTypeStrings.gperf"
       {"-//microsoft//dtd internet explorer 2.0 html//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 76 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 76 "html/DocTypeStrings.gperf"
       {"-//w3c//dtd html 4.01 frameset//en", PubIDInfo::eQuirks, PubIDInfo::eAlmostStandards},
-#line 53 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 53 "html/DocTypeStrings.gperf"
       {"-//microsoft//dtd internet explorer 2.0 tables//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
-#line 61 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 61 "html/DocTypeStrings.gperf"
       {"-//o'reilly and associates//dtd html extended relaxed 1.0//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 77 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 77 "html/DocTypeStrings.gperf"
       {"-//w3c//dtd html 4.01 transitional//en", PubIDInfo::eQuirks, PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 51 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 51 "html/DocTypeStrings.gperf"
       {"-//microsoft//dtd internet explorer 2.0 html strict//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
@@ -378,25 +373,25 @@ findDoctypeEntry (register const char *str, register unsigned int len)
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 14 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 14 "html/DocTypeStrings.gperf"
       {"-//advasoft ltd//dtd html 3.0 aswedit + extensions//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 81 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 81 "html/DocTypeStrings.gperf"
       {"-//w3c//dtd xhtml 1.0 frameset//en", PubIDInfo::eAlmostStandards, PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 75 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 75 "html/DocTypeStrings.gperf"
       {"-//w3c//dtd html 4.0 transitional//en", PubIDInfo::eQuirks, PubIDInfo::eQuirks},
-#line 82 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 82 "html/DocTypeStrings.gperf"
       {"-//w3c//dtd xhtml 1.0 transitional//en", PubIDInfo::eAlmostStandards, PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 79 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 79 "html/DocTypeStrings.gperf"
       {"-//w3c//dtd html experimental 970421//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 50 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 50 "html/DocTypeStrings.gperf"
       {"-//metrius//dtd metrius presentational//en", PubIDInfo::eQuirks, PubIDInfo::eQuirks},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
@@ -411,14 +406,14 @@ findDoctypeEntry (register const char *str, register unsigned int len)
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 63 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 63 "html/DocTypeStrings.gperf"
       {"-//softquad//dtd hotmetal pro 4.0::19971010::extensions to html 4.0//en", PubIDInfo::eQuirks, PubIDInfo::eQuirks},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 66 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 66 "html/DocTypeStrings.gperf"
       {"-//sun microsystems corp.//dtd hotjava html//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
@@ -426,13 +421,13 @@ findDoctypeEntry (register const char *str, register unsigned int len)
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 67 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 67 "html/DocTypeStrings.gperf"
       {"-//sun microsystems corp.//dtd hotjava strict html//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 15 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 15 "html/DocTypeStrings.gperf"
       {"-//as//dtd html 3.0 aswedit + extensions//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
@@ -446,15 +441,15 @@ findDoctypeEntry (register const char *str, register unsigned int len)
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
       {"",PubIDInfo::eAlmostStandards,PubIDInfo::eAlmostStandards},
-#line 78 "/home/zhangjipeng/macross-browser/source/webcore/html/DocTypeStrings.gperf"
+#line 78 "html/DocTypeStrings.gperf"
       {"-//w3c//dtd html experimental 19960712//en", PubIDInfo::eQuirks3, PubIDInfo::eQuirks3}
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register int key = hash (str, len);
+      register unsigned int key = hash (str, len);
 
-      if (key <= MAX_HASH_VALUE && key >= 0)
+      if (key <= MAX_HASH_VALUE)
         {
           register const char *s = wordlist[key].name;
 

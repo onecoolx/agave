@@ -15,6 +15,10 @@
     #include "timer_gtk2.h"
 #endif
 
+#ifdef QT4
+    #include "timer_qt4.h"
+#endif
+
 Timer::Timer()
     : m_impl(0)
 {

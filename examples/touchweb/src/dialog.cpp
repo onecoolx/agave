@@ -18,6 +18,11 @@
     #include "dialog_gtk2.h"
 #endif
 
+#ifdef QT4
+    #include "dialog_qt4.h"
+#endif
+
+
 Dialog::Dialog(Widget* parent, MainWindow* main)
     : Widget(parent)
     , m_impl(0)
