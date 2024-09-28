@@ -123,7 +123,7 @@ bool MainWindow::Create(void* hInst)
 
 bool MainWindow::Destroy(void)
 {
-    if (Dialog::ConfirmBox(this, U("È·¶¨ÒªÍË³öÂð£¿"), U("ÏûÏ¢"))) {
+    if (Dialog::ConfirmBox(this, U("Are you sure you want to exit?"), U("Information"))) {
         m_impl->Destroy();
         return true;
     }

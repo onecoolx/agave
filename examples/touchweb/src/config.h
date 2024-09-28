@@ -28,11 +28,11 @@
     #define GLOBAL_SCALE  1
 #endif
 
-#define TOOLBAR_HEIGHT  (SETUI(30)*GLOBAL_SCALE)
+#define TOOLBAR_HEIGHT  (SETUI(48)*GLOBAL_SCALE)
 
-#define TITLE_HEIGHT    (SETUI(22)*GLOBAL_SCALE)
+#define TITLE_HEIGHT    (SETUI(36)*GLOBAL_SCALE)
 
-#define DASH_TITLE_HEIGHT   (SETUI(30)*GLOBAL_SCALE)
+#define DASH_TITLE_HEIGHT   (SETUI(48)*GLOBAL_SCALE)
 
 #define BUTTON_HEIGHT (TITLE_HEIGHT*1.4)
 
@@ -69,7 +69,7 @@
     #define LINUX 1
     typedef unsigned short uchar_t;
     typedef std::basic_string<uchar_t> ustring;
-    #define U(text) ((uchar_t*)(L##text))
+    #define U(text) ((uchar_t*)(u##text))
     #define DATA_PATH(path) path
     #define FILENAME_UNICODE 0
 #endif

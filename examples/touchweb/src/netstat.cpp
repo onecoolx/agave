@@ -18,7 +18,7 @@ NetStatPanel::NetStatPanel(Widget* parent)
     , m_count(0)
     , m_flat(0)
 {
-    setTitle(U("ÍøÂçÁ¬½Ó"));
+    setTitle(U("Network connection"));
 }
 
 NetStatPanel::~NetStatPanel()
@@ -52,13 +52,13 @@ void NetStatPanel::OnPaint(ps_context* gc, const Rect* r)
 #endif
 
     if (m_flat == 1) {
-        ps_wide_text_out_length(gc, b * 50, b * 35 + titleHeight(), P16(U("ÕýÔÚÁ¬½ÓÍøÂç.")), 7);
+        ps_wide_text_out_length(gc, b * 50, b * 35 + titleHeight(), P16(U("Connecting.")), 11);
     } else if (m_flat == 2) {
-        ps_wide_text_out_length(gc, b * 50, b * 35 + titleHeight(), P16(U("ÕýÔÚÁ¬½ÓÍøÂç..")), 8);
+        ps_wide_text_out_length(gc, b * 50, b * 35 + titleHeight(), P16(U("Connecting..")), 12);
     } else if (m_flat == 3) {
-        ps_wide_text_out_length(gc, b * 50, b * 35 + titleHeight(), P16(U("ÕýÔÚÁ¬½ÓÍøÂç...")), 9);
+        ps_wide_text_out_length(gc, b * 50, b * 35 + titleHeight(), P16(U("Connecting...")), 13);
     } else {
-        ps_wide_text_out_length(gc, b * 50, b * 35 + titleHeight(), P16(U("ÕýÔÚÁ¬½ÓÍøÂç")), 6);
+        ps_wide_text_out_length(gc, b * 50, b * 35 + titleHeight(), P16(U("Connecting")), 10);
     }
 
     ps_set_font(gc, of);
@@ -76,7 +76,7 @@ void NetStatPanel::OnTimer(void* data)
     if (m_count > 80) {
         stop();
         Hide();
-        Dialog::AlertBox(m_main, U("ÎÞ·¨Á¬½ÓÍøÂç,Çë¼ì²éÍøÂçÉèÖÃ"), U("ÌáÊ¾"));
+        Dialog::AlertBox(m_main, U("Unable to connect to the network, please check the network settings"), U("Tips"));
         return;
     }
 

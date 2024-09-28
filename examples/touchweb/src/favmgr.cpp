@@ -53,10 +53,10 @@ void FavoritesPanel::OnCreate(uint32_t flags, int x, int y, int w, int h)
     m_title->OnCreate(WF_VISIBLE | WF_ENABLED | WF_FOCUSABLE | WF_EDITABLE, b * 5, b * 4, width() - b * 10, hc);
     m_addr->OnCreate(WF_VISIBLE | WF_ENABLED | WF_FOCUSABLE | WF_EDITABLE, b * 5, b * 5 + hc, width() - b * 10, hc);
     m_tags->OnCreate(WF_VISIBLE | WF_ENABLED | WF_FOCUSABLE | WF_EDITABLE, b * 5, b * 6 + hc * 2, width() - b * 10, hc);
-    m_tags->setTipText(U("Ê¹ÓÃ¶ººÅ·Ö¸ô±êÇ©"));
+    m_tags->setTipText(U("Use commas to separate tags"));
 
-    m_commit = Rect(b * 20, hc * 3 + b * 10, b * 60, bc);
-    m_cancel = Rect(width() - b * 80, hc * 3 + b * 10, b * 60, bc);
+    m_commit = Rect(b * 50, hc * 3 + b * 20, b * 100, bc);
+    m_cancel = Rect(width() - b * 150, hc * 3 + b * 20, b * 100, bc);
 
     addChild(m_title);
     addChild(m_addr);
@@ -86,8 +86,8 @@ void FavoritesPanel::OnPaint(ps_context* gc, const Rect* d)
     }
 #endif
 
-    draw_button(gc, m_cancel, U("È¡Ïû"), true, (m_btn == 1) ? true : false);
-    draw_button(gc, m_commit, U("È·¶¨"), true, (m_btn == 2) ? true : false);
+    draw_button(gc, m_cancel, U("Cancel"), true, (m_btn == 1) ? true : false);
+    draw_button(gc, m_commit, U("Ok"), true, (m_btn == 2) ? true : false);
 
     ps_set_font(gc, of);
     ps_restore(gc);
@@ -414,7 +414,7 @@ void FavoritesView::OnPaint(ps_context* gc, const Rect* r)
             Rect brc = m_pageup;
             brc.x -= scrollX();
             brc.y -= scrollY();
-            draw_pagebtn(gc, U("<<ÉÏÒ»Ò³"), brc, m_enableup, (m_pagebtn == 1) ? true : false);
+            draw_pagebtn(gc, U("<<Previous"), brc, m_enableup, (m_pagebtn == 1) ? true : false);
         }
 
         tr = m_pagedown;
@@ -422,7 +422,7 @@ void FavoritesView::OnPaint(ps_context* gc, const Rect* r)
             Rect brc = m_pagedown;
             brc.x -= scrollX();
             brc.y -= scrollY();
-            draw_pagebtn(gc, U("ÏÂÒ»Ò³>>"), brc, m_enabledown, (m_pagebtn == 2) ? true : false);
+            draw_pagebtn(gc, U("Next>>"), brc, m_enabledown, (m_pagebtn == 2) ? true : false);
         }
         ps_set_font(gc, of);
     }
@@ -515,12 +515,12 @@ void FavoritesView::OnPaintContents(ps_context* gc, const Rect* r)
 
     tr = m_pageup;
     if (tr.intersect(*r)) {
-        draw_pagebtn(gc, U("<<ÉÏÒ»Ò³"), m_pageup, m_enableup, (m_pagebtn == 1) ? true : false);
+        draw_pagebtn(gc, U("<<Previous"), m_pageup, m_enableup, (m_pagebtn == 1) ? true : false);
     }
 
     tr = m_pagedown;
     if (tr.intersect(*r)) {
-        draw_pagebtn(gc, U("ÏÂÒ»Ò³>>"), m_pagedown, m_enabledown, (m_pagebtn == 2) ? true : false);
+        draw_pagebtn(gc, U("Next>>"), m_pagedown, m_enabledown, (m_pagebtn == 2) ? true : false);
     }
 
     ps_set_font(gc, of);
@@ -581,7 +581,9 @@ void FavoritesView::draw_pagebtn(ps_context* gc, const ustring& text, const Rect
     ps_color cc = {0, 0, 0, 1};
     ps_set_text_color(gc, &cc);
 
-    ps_wide_text_out_length(gc, r.x + r.w / 2 - b * 25, r.y + r.h / 2 - b * 6, (ps_uchar16*)text.c_str(), text.length());
+    size_t len = text.length();
+
+    ps_wide_text_out_length(gc, r.x + r.w / 2 - b * len * 5, r.y + r.h / 2 - b * 6, (ps_uchar16*)text.c_str(), len);
 
     ps_rect lrc = {r.x + b, r.y + b, r.w - 2 * b, r.h / 2 - 2 * b};
     ps_rounded_rect(gc, &lrc, rds, rds, rds, rds, 0, 0, 0, 0);
@@ -806,7 +808,7 @@ void FavoritesView::OnMouseEvent(const MouseEvent* e)
                 m_cbtn = 0;
                 m_event = Rect(0, 0, 0, 0);
 
-                if (Dialog::ConfirmBox(m_main, U("È·¶¨ÒªÉ¾³ýÂð?"), U("ÌáÊ¾"))) {
+                if (Dialog::ConfirmBox(m_main, U("Are you sure you want to delete?"), U("Tips"))) {
                     Application::getInstance()->getFavorites()->deleteFavortesByID(sid);
                     build(m_page);
                     Update(NULL);
@@ -849,8 +851,8 @@ FavoritesManager::FavoritesManager(Widget* parent)
     , m_event(0, 0, 0, 0)
     , m_btn(0)
 {
-    setTitle(U("ÊÕ²Ø"));
-    setCommitText(U("·µ»Ø"));
+    setTitle(U("Favorites"));
+    setCommitText(U("Back"));
     setCancel(false);
 
     m_fltbox = new LineEdit(this);
@@ -881,13 +883,13 @@ void FavoritesManager::OnCreate(uint32_t flags, int x, int y, int w, int h)
     int b = DASH_TITLE_HEIGHT / 30;
 
     m_fltbox->OnCreate(WF_ENABLED | WF_VISIBLE | WF_FOCUSABLE | WF_EDITABLE, b * 5, DASH_TITLE_HEIGHT + (cell_height - hc) / 2 + b * 2, width() / 3 * 2 - 30 * b, hc - b * 5);
-    m_fltbox->setTipText(U("ËÑË÷ÊéÇ©"));
+    m_fltbox->setTipText(U("Search Bookmarks"));
 
     m_listbtn = Rect(m_fltbox->width() + 10 * b, DASH_TITLE_HEIGHT + (cell_height - hc) / 2, (width() - m_fltbox->width()) / 2 - 10 * b, hc);
     m_addbtn = Rect(m_listbtn.x + m_listbtn.w + 5 * b, DASH_TITLE_HEIGHT + (cell_height - hc) / 2, (width() - m_fltbox->width()) / 2 - 10 * b, hc);
 
     m_view->OnCreate(WF_VISIBLE | WF_ENABLED, 0, DASH_TITLE_HEIGHT + cell_height, w, h - DASH_TITLE_HEIGHT * 2 - cell_height);
-    m_panel->OnCreate(WF_ENABLED, 0, DASH_TITLE_HEIGHT + cell_height, w, cell_height * 3);
+    m_panel->OnCreate(WF_ENABLED, 0, DASH_TITLE_HEIGHT + cell_height, w, cell_height * 3.5f);
 
     addChild(m_fltbox);
     addChild(m_view);
@@ -996,7 +998,7 @@ void FavoritesManager::OnPaint(ps_context* gc, const Rect* r)
 
     tr = m_listbtn;
     if (tr.intersect(*r)) {
-        draw_button(gc, m_listbtn, U("²éÕÒ"), true, (m_btn == 1) ? true : false);
+        draw_button(gc, m_listbtn, U("Search"), true, (m_btn == 1) ? true : false);
     }
 
     tr = m_addbtn;
@@ -1005,7 +1007,7 @@ void FavoritesManager::OnPaint(ps_context* gc, const Rect* r)
         if (m_panel->isVisible()) {
             click = true;
         }
-        draw_button(gc, m_addbtn, U("Ìí¼Ó"), true, click);
+        draw_button(gc, m_addbtn, U("Add"), true, click);
     }
     ps_set_font(gc, of);
     ps_restore(gc);
@@ -1034,7 +1036,7 @@ static void draw_button(ps_context* gc, const Rect& r, const ustring& text, bool
     ps_rounded_rect(gc, &rc, rds, rds, rds, rds, rds, rds, rds, rds);
     ps_fill(gc);
 
-    ps_wide_text_out_length(gc, r.x + r.w / 2 - b * 12, r.y + r.h / 2 - b * 6, (ps_uchar16*)text.c_str(), text.length());
+    ps_wide_text_out_length(gc, r.x + r.w / 2 - b * 4 * text.size(), r.y + r.h / 2 - b * 12, (ps_uchar16*)text.c_str(), text.length());
 
     ps_rect lrc = {r.x + b, r.y + b, r.w - 2 * b, r.h / 2 - 2 * b};
     ps_rounded_rect(gc, &lrc, rds, rds, rds, rds, 0, 0, 0, 0);

@@ -58,7 +58,7 @@ PageManager::PageManager(Widget* parent)
     , m_impl(new PageMgrImpl)
     , m_main(0)
 {
-    setTitle(U("Ò³Ãæ¹ÜÀí"));
+    setTitle(U("Page Manager"));
 }
 
 PageManager::~PageManager()

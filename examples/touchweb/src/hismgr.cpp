@@ -230,7 +230,7 @@ void HistoryView::OnPaint(ps_context* gc, const Rect* r)
                     ps_set_text_color(gc, &uc);
 
                     ps_set_font(gc, of);
-                    ps_font* of = ps_set_font(gc, uf);
+                    ps_font* sf = ps_set_font(gc, uf);
 
                     ps_get_text_extent(gc, m_items[i].url.c_str(), m_items[i].url.length(), &sz);
                     if (sz.w <= (rc.w - 40 * b)) {
@@ -241,6 +241,7 @@ void HistoryView::OnPaint(ps_context* gc, const Rect* r)
                         ustring s = m_items[i].url.substr(0, len) + ustring(U("..."));
                         ps_wide_text_out_length(gc, b * 20, rc.y + b * 8 + b * 12, (ps_uchar16*)s.c_str(), s.length());
                     }
+                    ps_set_font(gc, sf);
 
                     draw_icon(gc, &rc);
                 }
@@ -255,7 +256,7 @@ void HistoryView::OnPaint(ps_context* gc, const Rect* r)
             Rect brc = m_pageup;
             brc.x -= scrollX();
             brc.y -= scrollY();
-            draw_button(gc, U("<<ÉÏÒ»Ò³"), brc, m_enableup, (m_pagebtn == 1) ? true : false);
+            draw_button(gc, U("<<Previous"), brc, m_enableup, (m_pagebtn == 1) ? true : false);
         }
 
         tr = m_pagedown;
@@ -263,7 +264,7 @@ void HistoryView::OnPaint(ps_context* gc, const Rect* r)
             Rect brc = m_pagedown;
             brc.x -= scrollX();
             brc.y -= scrollY();
-            draw_button(gc, U("ÏÂÒ»Ò³>>"), brc, m_enabledown, (m_pagebtn == 2) ? true : false);
+            draw_button(gc, U("Next>>"), brc, m_enabledown, (m_pagebtn == 2) ? true : false);
         }
 
         ps_set_font(gc, of);
@@ -318,7 +319,7 @@ void HistoryView::OnPaintContents(ps_context* gc, const Rect* r)
             ps_set_text_color(gc, &uc);
 
             ps_set_font(gc, of);
-            ps_font* of = ps_set_font(gc, uf);
+            ps_font* sf = ps_set_font(gc, uf);
 
             ps_get_text_extent(gc, m_items[i].url.c_str(), m_items[i].url.length(), &sz);
             if (sz.w <= (rc.w - 40 * b)) {
@@ -329,6 +330,7 @@ void HistoryView::OnPaintContents(ps_context* gc, const Rect* r)
                 ustring s = m_items[i].url.substr(0, len) + ustring(U("..."));
                 ps_wide_text_out_length(gc, b * 20, rc.y + b * 8 + b * 12, (ps_uchar16*)s.c_str(), s.length());
             }
+            ps_set_font(gc, sf);
 
             draw_icon(gc, &rc);
         }
@@ -339,12 +341,12 @@ void HistoryView::OnPaintContents(ps_context* gc, const Rect* r)
 
     tr = m_pageup;
     if (tr.intersect(*r)) {
-        draw_button(gc, U("<<ÉÏÒ»Ò³"), m_pageup, m_enableup, (m_pagebtn == 1) ? true : false);
+        draw_button(gc, U("<<Previous"), m_pageup, m_enableup, (m_pagebtn == 1) ? true : false);
     }
 
     tr = m_pagedown;
     if (tr.intersect(*r)) {
-        draw_button(gc, U("ÏÂÒ»Ò³>>"), m_pagedown, m_enabledown, (m_pagebtn == 2) ? true : false);
+        draw_button(gc, U("Next>>"), m_pagedown, m_enabledown, (m_pagebtn == 2) ? true : false);
     }
 
     ps_set_font(gc, of);
@@ -373,7 +375,9 @@ void HistoryView::draw_button(ps_context* gc, const ustring& text, const Rect& r
     ps_color cc = {0, 0, 0, 1};
     ps_set_text_color(gc, &cc);
 
-    ps_wide_text_out_length(gc, r.x + r.w / 2 - b * 25, r.y + r.h / 2 - b * 6, (ps_uchar16*)text.c_str(), text.length());
+    size_t len = text.length();
+
+    ps_wide_text_out_length(gc, r.x + r.w / 2 - b * len * 5, r.y + r.h / 2 - b * 6, (ps_uchar16*)text.c_str(), len);
 
     ps_rect lrc = {r.x + b, r.y + b, r.w - 2 * b, r.h / 2 - 2 * b};
     ps_rounded_rect(gc, &lrc, rds, rds, rds, rds, 0, 0, 0, 0);
@@ -601,8 +605,8 @@ HistoryManager::HistoryManager(Widget* parent)
     , m_enable(false)
     , m_btn(0)
 {
-    setTitle(U("ÀúÊ·"));
-    setCommitText(U("·µ»Ø"));
+    setTitle(U("History"));
+    setCommitText(U("Back"));
     setCancel(false);
 
     m_view = new HistoryView(this);
@@ -666,7 +670,7 @@ void HistoryManager::OnMouseEvent(const MouseEvent* e)
         if (m_btn) {
             m_btn = 0;
 
-            if (Dialog::ConfirmBox(m_main, U("È·¶¨ÒªÉ¾³ýÂð?"), U("ÌáÊ¾"))) {
+            if (Dialog::ConfirmBox(m_main, U("Are you sure you want to delete?"), U("Tips"))) {
                 Application::getInstance()->getHistory()->clearAllHistory();
                 m_enable = false;
                 Widget::postEvent(m_view, EVENT_FUNC(HistoryView, reset), 0);
@@ -735,7 +739,7 @@ void HistoryManager::draw_button(ps_context* gc, const Rect& r, bool enable, boo
     ps_rounded_rect(gc, &rc, rds, rds, rds, rds, rds, rds, rds, rds);
     ps_fill(gc);
 
-    ps_wide_text_out_length(gc, r.x + r.w / 2 - b * 12, r.y + r.h / 2 - b * 6, (ps_uchar16*)U("Çå³ý"), 2);
+    ps_wide_text_out_length(gc, r.x + r.w / 2 - b * 20, r.y + r.h / 2 - b * 8, (ps_uchar16*)U("Clear"), 5);
 
     ps_color tc = {1, 1, 1, 0.8};
     ps_color tc2 = {1, 1, 1, 0.2};

@@ -22,21 +22,21 @@ SecirtyData::SecirtyData(Widget* parent)
     , m_clearCache(0)
     , m_clearPasswd(0)
 {
-    setTitle(U("ÒþË½"));
-    setCommitText(U("·µ»Ø"));
+    setTitle(U("Privacy"));
+    setCommitText(U("Back"));
     setCancel(false);
 
     m_clearCookie = new ColorButton(this, Color(0, 0.5, 1));
     m_clearCookie->setClickHandle(EVENT_OBJECT(this), EVENT_OBJECT_FUNC(SecirtyData, clear_cookies));
-    m_clearCookie->setText(U("Çå³ý"));
+    m_clearCookie->setText(U("Clear"));
 
     m_clearCache = new ColorButton(this, Color(0, 0.5, 1));
     m_clearCache->setClickHandle(EVENT_OBJECT(this), EVENT_OBJECT_FUNC(SecirtyData, clear_cache));
-    m_clearCache->setText(U("Çå³ý"));
+    m_clearCache->setText(U("Clear"));
 
     m_clearPasswd = new ColorButton(this, Color(0, 0.5, 1));
     m_clearPasswd->setClickHandle(EVENT_OBJECT(this), EVENT_OBJECT_FUNC(SecirtyData, clear_passwd));
-    m_clearPasswd->setText(U("Çå³ý"));
+    m_clearPasswd->setText(U("Clear"));
 }
 
 SecirtyData::~SecirtyData()
@@ -49,19 +49,19 @@ SecirtyData::~SecirtyData()
 void SecirtyData::clear_cookies(void)
 {
     macross_clear_cookies();
-    Dialog::AlertBox(m_main, U("Çå³ý³É¹¦£¡"), U("ÐÅÏ¢"));
+    Dialog::AlertBox(m_main, U("Clear success!"), U("Tips"));
 }
 
 void SecirtyData::clear_cache(void)
 {
     macross_clear_disk_cache();
-    Dialog::AlertBox(m_main, U("Çå³ý³É¹¦£¡"), U("ÐÅÏ¢"));
+    Dialog::AlertBox(m_main, U("Clear success!"), U("Tips"));
 }
 
 void SecirtyData::clear_passwd(void)
 {
     Application::getInstance()->getAutofill()->clearAllFormData();
-    Dialog::AlertBox(m_main, U("Çå³ý³É¹¦£¡"), U("ÐÅÏ¢"));
+    Dialog::AlertBox(m_main, U("Clear success!"), U("Tips"));
 }
 
 void SecirtyData::setMainWindow(MainWindow* main)
@@ -126,13 +126,13 @@ void SecirtyData::OnPaint(ps_context* gc, const Rect* r)
     int border = DASH_TITLE_HEIGHT / 30;
 
     ps_wide_text_out_length(gc, border * 8, DASH_TITLE_HEIGHT
-                            + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("Çå³ýCookie"), 8);
+                            + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("Clear Cookie"), 12);
 
     ps_wide_text_out_length(gc, border * 8, DASH_TITLE_HEIGHT
-                            + cell_height + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("Çå³ý»º´æ"), 4);
+                            + cell_height + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("Clear Cache"), 11);
 
     ps_wide_text_out_length(gc, border * 8, DASH_TITLE_HEIGHT
-                            + cell_height * 2 + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("Çå³ýÒÑ±£´æÃÜÂë"), 7);
+                            + cell_height * 2 + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("Clear saved passwords"), 21);
 
     ps_set_font(gc, of);
 

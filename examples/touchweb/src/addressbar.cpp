@@ -197,7 +197,7 @@ AddressBar::AddressBar(Widget* parent)
     , m_sy(0)
 {
     m_btn = new NavButton(this);
-    m_tip = ustring(U("ÊäÈëÍøÖ·»òËÑË÷¹Ø¼ü×Ö"));
+    m_tip = ustring(U("Enter url or search keyword"));
 }
 
 AddressBar::~AddressBar()

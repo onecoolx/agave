@@ -25,8 +25,7 @@ public:
 private:
     void link_click(void* p);
     MainWindow* m_main;
-    Rect m_url;
-    Rect m_conn;
+    Rect m_email;
     int m_click;
 };
 

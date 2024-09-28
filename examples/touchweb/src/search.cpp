@@ -25,8 +25,8 @@ Search::Search(Widget* parent)
     , m_btn(0)
     , m_ebtn(0)
 {
-    setTitle(U("ËÑË÷"));
-    setCommitText(U("·µ»Ø"));
+    setTitle(U("Search"));
+    setCommitText(U("Back"));
     setCancel(false);
 
     m_words = new LineEdit(this);
@@ -54,7 +54,7 @@ void Search::OnCreate(uint32_t flags, int x, int y, int w, int h)
         SeItem item;
         item.id = items[i].id;
         item.name = items[i].name;
-        item.rect = Rect(m + i * width() / n, DASH_TITLE_HEIGHT * 2 + 30 * b, 45 * b, 45 * b);
+        item.rect = Rect(m + i * width() / n - b * 20, DASH_TITLE_HEIGHT * 2 + 30 * b, 90 * b, 45 * b);
         item.icon = items[i].img;
         item.w = items[i].w;
         item.h = items[i].h;
@@ -64,9 +64,9 @@ void Search::OnCreate(uint32_t flags, int x, int y, int w, int h)
         m_items.push_back(item);
     }
 
-    m_sebtn = Rect(width() - 50 * b, DASH_TITLE_HEIGHT + b * 20, 45 * b, DASH_TITLE_HEIGHT - b * 4);
+    m_sebtn = Rect(width() - 95 * b, DASH_TITLE_HEIGHT + b * 20, 90 * b, DASH_TITLE_HEIGHT - b * 4);
     m_words->OnCreate(WF_VISIBLE | WF_ENABLED | WF_FOCUSABLE | WF_EDITABLE, b * 5,
-                      DASH_TITLE_HEIGHT + b * 20, width() - b * 12 - m_sebtn.w, DASH_TITLE_HEIGHT - b * 4);
+                      DASH_TITLE_HEIGHT + b * 20, width() - b * 15 - m_sebtn.w, DASH_TITLE_HEIGHT - b * 4);
 
     m_words->setHasBorder(true);
 
@@ -104,7 +104,7 @@ void Search::draw_engine_btns(ps_context* gc)
 
         ps_size sz = {0};
         ps_get_text_extent(gc, m_items[i].name.c_str(), m_items[i].name.length(), &sz);
-        ps_wide_text_out_length(gc, r.x + r.w / 2 - sz.w / 2, r.y + r.h - b * 18,
+        ps_wide_text_out_length(gc, r.x + r.w / 2 - sz.w / 2, r.y + r.h - b * 25,
                                 (ps_uchar16*)m_items[i].name.c_str(), m_items[i].name.length());
 
         ps_color tc = {1, 1, 1, 0.8};
@@ -141,7 +141,7 @@ void Search::OnPaint(ps_context* gc, const Rect* d)
 
     ps_font* of = ps_set_font(gc, f);
 
-    draw_sebtn(gc, U("ËÑË÷"), m_sebtn, true, m_btn ? true : false);
+    draw_sebtn(gc, U("Search"), m_sebtn, true, m_btn ? true : false);
 
     draw_engine_btns(gc);
 
@@ -172,7 +172,7 @@ void Search::draw_sebtn(ps_context* gc, const ustring& text, const Rect& r, bool
     ps_color cc = {0, 0, 0, 1};
     ps_set_text_color(gc, &cc);
 
-    ps_wide_text_out_length(gc, r.x + r.w / 2 - b * 12, r.y + r.h / 2 - b * 6, (ps_uchar16*)text.c_str(), text.length());
+    ps_wide_text_out_length(gc, r.x + r.w / 2 - b * 30, r.y + r.h / 2 - b * 10, (ps_uchar16*)text.c_str(), text.length());
 
     ps_color tc = {1, 1, 1, 0.8};
     ps_color tc2 = {1, 1, 1, 0.2};

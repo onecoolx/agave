@@ -244,7 +244,7 @@ MC_POPUP_MENU* CreatePopMenu(const MC_RECT* r)
     WebView* web = Application::getInstance()->getMainWindow()->getTabs()->getActiveView();
     menu->setMainWindow(Application::getInstance()->getMainWindow());
     menu->OnCreate(WF_ENABLED | WF_FOCUSABLE, r->x - web->virtualOffsetX(),
-                   r->y + Application::getInstance()->getMainWindow()->getTabs()->y() + 1 - web->virtualOffsetY(), r->w, r->h);
+                   r->y + Application::getInstance()->getMainWindow()->getTabs()->y() + 1 - web->virtualOffsetY(), r->w + 80, r->h);
 
     return menu->getPopMenu();
 }

@@ -363,9 +363,9 @@ static void error_report(int e, const char* url)
 {
     MainWindow* m = Application::getInstance()->getMainWindow();
     if ((e > 400000) && (e < 400005)) {
-        Dialog::AlertBox(m, U("ÎÞ·¨·ÃÎÊ¸ÃµØÖ·"), U("¾¯¸æ"));
+        Dialog::AlertBox(m, U("Unable to access the address"), U("Warning"));
     } else if ((e > 401000) && (e < 402000 )) {
-        Dialog::AlertBox(m, U("ÍøÂç´íÎó"), U("¾¯¸æ"));
+        Dialog::AlertBox(m, U("Network Error"), U("Warning"));
     }
 }
 
@@ -378,13 +378,13 @@ static void loading_progress(MaCrossView* view, unsigned int prog, MC_BOOL finis
 static void alert_box(MaCrossView* view, const char* msg)
 {
     MainWindow* m = Application::getInstance()->getMainWindow();
-    Dialog::AlertBox(m, Unicode::ConvertUTF8ToUTF16(msg), U("¾¯¸æ"));
+    Dialog::AlertBox(m, Unicode::ConvertUTF8ToUTF16(msg), U("Warning"));
 }
 
 static MC_BOOL confirm_box(MaCrossView* view, const char* msg)
 {
     MainWindow* m = Application::getInstance()->getMainWindow();
-    if (Dialog::ConfirmBox(m, Unicode::ConvertUTF8ToUTF16(msg), U("ÐÅÏ¢"))) {
+    if (Dialog::ConfirmBox(m, Unicode::ConvertUTF8ToUTF16(msg), U("Information"))) {
         return True;
     } else {
         return False;
@@ -397,7 +397,7 @@ static char* prompt_box(MaCrossView* view, const char* msg, const char* def)
 
     MainWindow* m = Application::getInstance()->getMainWindow();
     ret = Unicode::ConvertUTF16ToUTF8(Dialog::PromptBox(m, Unicode::ConvertUTF8ToUTF16(msg),
-                                                        Unicode::ConvertUTF8ToUTF16(def), U("ÐÅÏ¢")));
+                                                        Unicode::ConvertUTF8ToUTF16(def), U("Information")));
     if (ret.empty()) {
         return 0;
     } else {

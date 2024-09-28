@@ -11,11 +11,7 @@
 ImClient::ImClient(Widget* parent)
     : DashLayer(parent)
 {
-#ifdef WINCE
-    DashLayer::setCancelText(U("ƴ^"));
-#else
     DashLayer::setCancel(false);
-#endif
 }
 
 ImClient::~ImClient()

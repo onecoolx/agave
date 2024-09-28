@@ -1387,9 +1387,6 @@ void Frame::paint(GraphicsContext* p, const IntRect& rect)
         s_currentPaintTimeStamp = currentTime();
     
     if (renderer()) {
-        ASSERT(d->m_view && !d->m_view->needsLayout());
-        ASSERT(!d->m_isPainting);
-        
         d->m_isPainting = true;
         
         // d->m_elementToDraw is used to draw only one element

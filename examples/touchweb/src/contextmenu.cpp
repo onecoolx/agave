@@ -117,18 +117,18 @@ void ContextMenu::OnPaint(ps_context* gc, const Rect* r)
 #endif
 
     if (!m_link.empty()) {
-        ps_wide_text_out_length(gc, m_open.x + 2 * b, m_open.y + (TOOLBAR_HEIGHT - s) / 2, (ps_uchar16*)U("´ò¿ªÁ¬½Ó"), 4);
+        ps_wide_text_out_length(gc, m_open.x + 2 * b, m_open.y + (TOOLBAR_HEIGHT - s) / 2, (ps_uchar16*)U("Open Link"), 9);
         if (!m_easy) {
-            ps_wide_text_out_length(gc, m_nwin.x + 2 * b, m_nwin.y + (TOOLBAR_HEIGHT - s) / 2, (ps_uchar16*)U("ÔÚÐÂ´°¿Ú´ò¿ª"), 6);
-            ps_wide_text_out_length(gc, m_bopen.x + 2 * b, m_bopen.y + (TOOLBAR_HEIGHT - s) / 2, (ps_uchar16*)U("ÔÚºóÌ¨´ò¿ª"), 5);
+            ps_wide_text_out_length(gc, m_nwin.x + 2 * b, m_nwin.y + (TOOLBAR_HEIGHT - s) / 2, (ps_uchar16*)U("Open in new window"), 18);
+            ps_wide_text_out_length(gc, m_bopen.x + 2 * b, m_bopen.y + (TOOLBAR_HEIGHT - s) / 2, (ps_uchar16*)U("Open in background"), 18);
         }
     }
 
     if (!m_imglink.empty()) {
-        ps_wide_text_out_length(gc, m_imgopen.x + 2 * b, m_imgopen.y + (TOOLBAR_HEIGHT - s) / 2, (ps_uchar16*)U("´ò¿ªÍ¼Æ¬"), 4);
+        ps_wide_text_out_length(gc, m_imgopen.x + 2 * b, m_imgopen.y + (TOOLBAR_HEIGHT - s) / 2, (ps_uchar16*)U("Open Link"), 9);
         if (!m_easy) {
-            ps_wide_text_out_length(gc, m_imgwin.x + 2 * b, m_imgwin.y + (TOOLBAR_HEIGHT - s) / 2, (ps_uchar16*)U("ÔÚÐÂ´°¿Ú´ò¿ªÍ¼Æ¬"), 8);
-            ps_wide_text_out_length(gc, m_imgbopen.x + 2 * b, m_imgbopen.y + (TOOLBAR_HEIGHT - s) / 2, (ps_uchar16*)U("ÔÚºóÌ¨´ò¿ªÍ¼Æ¬"), 7);
+            ps_wide_text_out_length(gc, m_imgwin.x + 2 * b, m_imgwin.y + (TOOLBAR_HEIGHT - s) / 2, (ps_uchar16*)U("Open in new window"), 18);
+            ps_wide_text_out_length(gc, m_imgbopen.x + 2 * b, m_imgbopen.y + (TOOLBAR_HEIGHT - s) / 2, (ps_uchar16*)U("Open in background"), 18);
         }
     }
 

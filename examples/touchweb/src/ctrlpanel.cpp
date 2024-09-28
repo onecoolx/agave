@@ -63,7 +63,7 @@ CtrlPanel::CtrlPanel(Widget* parent)
     , m_main(0)
     , m_btn(0)
 {
-    setTitle(U("¹¦ÄÜÃæ°å"));
+    setTitle(U("Panel"));
 }
 
 CtrlPanel::~CtrlPanel()
@@ -102,8 +102,8 @@ static void draw_history_btn(ps_context* gc, const ps_rect& r)
 
     ps_set_text_color(gc, &c);
     ps_set_line_width(gc, br / 2);
-    ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 2,
-                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("ÀúÊ·"), 2);
+    ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 3.5f,
+                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("History"), 7);
 }
 
 static void draw_favorite_btn(ps_context* gc, const ps_rect& r)
@@ -138,8 +138,8 @@ static void draw_favorite_btn(ps_context* gc, const ps_rect& r)
     ps_set_gamma(gc, gamma);
 
     ps_set_text_color(gc, &c);
-    ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 2,
-                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("ÊÕ²Ø"), 2);
+    ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 4,
+                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("Favorite"), 8);
 }
 
 static void draw_full_btn(ps_context* gc, const ps_rect& r)
@@ -164,8 +164,8 @@ static void draw_full_btn(ps_context* gc, const ps_rect& r)
     ps_fill(gc);
 
     ps_set_text_color(gc, &c);
-    ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 2,
-                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("È«ÆÁ"), 2);
+    ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 5,
+                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("FullScreen"), 10);
 }
 
 static void draw_newpage_btn(ps_context* gc, const ps_rect& r)
@@ -194,8 +194,8 @@ static void draw_newpage_btn(ps_context* gc, const ps_rect& r)
 
     ps_set_line_width(gc, 1);
     ps_set_text_color(gc, &c);
-    ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 3,
-                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("ÐÂÒ³Ãæ"), 3);
+    ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 4.5f,
+                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("NewPage"), 7);
 }
 
 static void draw_exit_btn(ps_context* gc, const ps_rect& r)
@@ -223,7 +223,7 @@ static void draw_exit_btn(ps_context* gc, const ps_rect& r)
     ps_set_line_width(gc, 1);
     ps_set_text_color(gc, &c);
     ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 2,
-                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("ÍË³ö"), 2);
+                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("Exit"), 4);
 }
 
 static void draw_config_btn(ps_context* gc, const ps_rect& r)
@@ -270,8 +270,8 @@ static void draw_config_btn(ps_context* gc, const ps_rect& r)
     ps_fill(gc);
 
     ps_set_text_color(gc, &c);
-    ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 2,
-                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("ÉèÖÃ"), 2);
+    ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 3.5f,
+                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("Setting"), 7);
 }
 
 static void draw_mode_btn(ps_context* gc, const ps_rect& r)
@@ -331,8 +331,8 @@ static void draw_mode_btn(ps_context* gc, const ps_rect& r)
     ps_set_line_width(gc, 1);
 
     ps_set_text_color(gc, &c);
-    ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 2,
-                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("Ä£Ê½"), 2);
+    ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 5,
+                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("ViewMode"), 8);
 }
 
 static void draw_search_btn(ps_context* gc, const ps_rect& r)
@@ -359,8 +359,8 @@ static void draw_search_btn(ps_context* gc, const ps_rect& r)
     ps_stroke(gc);
 
     ps_set_text_color(gc, &c);
-    ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 2,
-                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("ËÑË÷"), 2);
+    ps_wide_text_out_length(gc, r.x + r.w / 2 - DASH_TITLE_HEIGHT / 5 * 3,
+                            r.y + r.h - DASH_TITLE_HEIGHT / 2, (ps_uchar16*)U("Search"), 6);
 }
 
 void CtrlPanel::draw_buttons(ps_context* gc, const Rect& r)

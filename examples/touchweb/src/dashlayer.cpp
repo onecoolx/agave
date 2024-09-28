@@ -29,8 +29,8 @@ DashLayer::DashLayer(Widget* parent)
     , m_scanbtn(true)
     , m_btn(0)
 {
-    setCommitText(U("È·¶¨"));
-    setCancelText(U("È¡Ïû"));
+    setCommitText(U("Ok"));
+    setCancelText(U("Cancel"));
 }
 
 DashLayer::~DashLayer()

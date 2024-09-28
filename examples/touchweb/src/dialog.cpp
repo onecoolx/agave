@@ -250,7 +250,7 @@ void MsgDialog::draw_btns(ps_context* gc)
             ps_gradient_unref(g);
         }
 
-        draw_btnText(gc, U("È·¶¨"), m_commit);
+        draw_btnText(gc, U("Ok"), m_commit);
         draw_light(gc, m_commit);
     }
 
@@ -282,7 +282,7 @@ void MsgDialog::draw_btns(ps_context* gc)
             ps_gradient_unref(g);
         }
 
-        draw_btnText(gc, U("È¡Ïû"), m_cancel);
+        draw_btnText(gc, U("Cancel"), m_cancel);
         draw_light(gc, m_cancel);
     }
 }
@@ -513,7 +513,7 @@ void InputDialog::draw_btns(ps_context* gc)
             ps_gradient_unref(g);
         }
 
-        draw_btnText(gc, U("È·¶¨"), m_commit);
+        draw_btnText(gc, U("Ok"), m_commit);
         draw_light(gc, m_commit);
     }
 
@@ -545,7 +545,7 @@ void InputDialog::draw_btns(ps_context* gc)
             ps_gradient_unref(g);
         }
 
-        draw_btnText(gc, U("È¡Ïû"), m_cancel);
+        draw_btnText(gc, U("Cancel"), m_cancel);
         draw_light(gc, m_cancel);
     }
 }
@@ -745,7 +745,7 @@ void LoginDialog::draw_btns(ps_context* gc)
             ps_gradient_unref(g);
         }
 
-        draw_btnText(gc, U("È·¶¨"), m_commit);
+        draw_btnText(gc, U("Ok"), m_commit);
         draw_light(gc, m_commit);
     }
 
@@ -777,7 +777,7 @@ void LoginDialog::draw_btns(ps_context* gc)
             ps_gradient_unref(g);
         }
 
-        draw_btnText(gc, U("È¡Ïû"), m_cancel);
+        draw_btnText(gc, U("Cancel"), m_cancel);
         draw_light(gc, m_cancel);
     }
 }
@@ -803,8 +803,8 @@ void LoginDialog::OnPaint(ps_context* gc, const Rect* d)
 #endif
 
     int b = TITLE_HEIGHT / 22;
-    ps_wide_text_out_length(gc, b * 5, titleHeight() + b * 8, (ps_uchar16*)U("ÓÃ»§Ãû:"), 4);
-    ps_wide_text_out_length(gc, b * 5, titleHeight() + b * 16 + TOOLBAR_HEIGHT / 3 * 2, (ps_uchar16*)U("ÃÜ  Âë:"), 5);
+    ps_wide_text_out_length(gc, b * 5, titleHeight() + b * 8, (ps_uchar16*)U("UserName:"), 9);
+    ps_wide_text_out_length(gc, b * 5, titleHeight() + b * 16 + TOOLBAR_HEIGHT / 3 * 2, (ps_uchar16*)U("PassWord:"), 9);
 
     draw_btns(gc);
 

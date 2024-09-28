@@ -549,7 +549,7 @@ void ImToolBar::OnPaint(ps_context* gc, const Rect* r)
             ps_gradient_unref(g);
         }
 
-        draw_btnText(gc, U("ƴ^"), m_imbtn);
+        draw_btnText(gc, U("Spell^"), m_imbtn);
         draw_lights(gc, m_imbtn);
     }
     ps_restore(gc);

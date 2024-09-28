@@ -32,9 +32,9 @@ Setting::Setting(Widget* parent)
     , m_config(0)
     , m_refresh(false)
 {
-    setTitle(U("ÉèÖÃ"));
-    setCommitText(U("±£´æ"));
-    setCancelText(U("È¡Ïû"));
+    setTitle(U("Setting"));
+    setCommitText(U("Save"));
+    setCancelText(U("Cancel"));
 
     m_config = (MC_CONFIG*)malloc(sizeof(MC_CONFIG));
     memset(m_config, 0, sizeof(MC_CONFIG));
@@ -93,9 +93,9 @@ void Setting::draw_button(ps_context* gc, const Rect& r, bool enable, bool highl
     ps_fill(gc);
 
     if (enable) {
-        ps_wide_text_out_length(gc, r.x + r.w / 2 - b * 12, r.y + r.h / 2 - b * 6, (ps_uchar16*)U("ÆôÓÃ"), 2);
+        ps_wide_text_out_length(gc, r.x + r.w / 2 - b * 24, r.y + r.h / 2 - b * 6, (ps_uchar16*)U("Enable"), 6);
     } else {
-        ps_wide_text_out_length(gc, r.x + r.w / 2 - b * 12, r.y + r.h / 2 - b * 6, (ps_uchar16*)U("½ûÓÃ"), 2);
+        ps_wide_text_out_length(gc, r.x + r.w / 2 - b * 24, r.y + r.h / 2 - b * 6, (ps_uchar16*)U("Disable"), 7);
     }
 
     ps_color tc = {1, 1, 1, 0.8};
@@ -127,7 +127,7 @@ void Setting::draw_about_button(ps_context* gc, const Rect& r, bool highlight)
     ps_rounded_rect(gc, &rc, rds, rds, rds, rds, rds, rds, rds, rds);
     ps_fill(gc);
 
-    ps_wide_text_out_length(gc, r.x + r.w / 2 - b * 12, r.y + r.h / 2 - b * 6, (ps_uchar16*)U("¹ØÓÚ"), 2);
+    ps_wide_text_out_length(gc, r.x + r.w / 2 - b * 24, r.y + r.h / 2 - b * 6, (ps_uchar16*)U("About"), 5);
 
     ps_color tc = {1, 1, 1, 0.8};
     ps_color tc2 = {1, 1, 1, 0.2};
@@ -246,19 +246,19 @@ void Setting::OnPaint(ps_context* gc, const Rect* r)
     int border = DASH_TITLE_HEIGHT / 30;
 
     ps_wide_text_out_length(gc, border * 8, DASH_TITLE_HEIGHT
-                            + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("ÏÔÊ¾Í¼Æ¬"), 4);
+                            + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("Show Image"), 10);
 
     ps_wide_text_out_length(gc, border * 8, DASH_TITLE_HEIGHT
-                            + cell_height + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("JavaScriptÖ§³Ö"), 12);
+                            + cell_height + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("JavaScript"), 10);
 
     ps_wide_text_out_length(gc, border * 8, DASH_TITLE_HEIGHT
-                            + cell_height * 2 + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("CookiesÖ§³Ö"), 9);
+                            + cell_height * 2 + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("Cookies"), 7);
 
     ps_wide_text_out_length(gc, border * 8, DASH_TITLE_HEIGHT
-                            + cell_height * 3 + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("×ÖÌåÆ½»¬"), 4);
+                            + cell_height * 3 + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("Font Smoothing"), 14);
 
     ps_wide_text_out_length(gc, border * 8, DASH_TITLE_HEIGHT
-                            + cell_height * 4 + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("ÓÃ»§ÒþË½"), 4);
+                            + cell_height * 4 + cell_height / 2 - cell_height / 4, (ps_uchar16*)U("Privacy"), 7);
 
     draw_buttons(gc, *r);
 

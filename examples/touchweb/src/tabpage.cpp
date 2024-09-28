@@ -126,12 +126,12 @@ bool TabPage::newView(const std::string& url)
     WebView::init();
 
     if (m_tabs.size() == MAX_TABS) {
-        Dialog::AlertBox(m_main, U("ÎÞ·¨´ò¿ª¸ü¶àÒ³Ãæ"), U("¾¯¸æ"));
+        Dialog::AlertBox(m_main, U("Unable to open more pages!"), U("Warning"));
         return false;
     }
 
     if (!WebView::haveMemory()) {
-        Dialog::AlertBox(m_main, U("ÄÚ´æ²»×ã,ÎÞ·¨´ò¿ª¸ü¶àÒ³Ãæ"), U("¾¯¸æ"));
+        Dialog::AlertBox(m_main, U("No more memory!"), U("Warning"));
         return false;
     }
 
@@ -162,12 +162,12 @@ bool TabPage::newViewBack(const std::string& url)
     WebView::init();
 
     if (m_tabs.size() == MAX_TABS) {
-        Dialog::AlertBox(m_main, U("ÎÞ·¨´ò¿ª¸ü¶àÒ³Ãæ"), U("¾¯¸æ"));
+        Dialog::AlertBox(m_main, U("Unable to open more pages!"), U("Warning"));
         return false;
     }
 
     if (!WebView::haveMemory()) {
-        Dialog::AlertBox(m_main, U("ÄÚ´æ²»×ã,ÎÞ·¨´ò¿ª¸ü¶àÒ³Ãæ"), U("¾¯¸æ"));
+        Dialog::AlertBox(m_main, U("No more memory!"), U("Warning"));
         return false;
     }
 
