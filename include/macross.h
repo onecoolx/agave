@@ -23,7 +23,7 @@
 
 #ifdef _EXPORT_API_
     #if defined(WIN32)
-        #ifdef EXPORT
+        #ifdef _EXPORT_
             #define MACROSS_API __declspec(dllexport)
         #else
             #define MACROSS_API __declspec(dllimport)

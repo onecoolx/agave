@@ -41,6 +41,7 @@ install(TARGETS ${APP_NAME} RUNTIME DESTINATION bin)
 target_include_directories(${APP_NAME} PRIVATE 
                     ${PROJ_ROOT}/include
                     ${PROJ_ROOT}/test
+                    ${PROJ_OUT}/
                     SYSTEM PUBLIC
                     ${SYSTEM_INCLUDE}
 )

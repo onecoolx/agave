@@ -1,4 +1,4 @@
-/* config.h - Agave application
+﻿/* config.h - Agave application
  *
  * Copyright (C) 2024 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -19,11 +19,9 @@
     #define DEFAULT_HEIGHT  SETUI(480)
 #endif
 
-#if defined(WINCE) && !defined(MOBILE_PHONE)
+#if defined(MOBILE_PHONE)
     extern int global_scale;
     #define GLOBAL_SCALE  global_scale
-#elif defined(MOBILE_PHONE)
-    #define GLOBAL_SCALE  2
 #else
     #define GLOBAL_SCALE  1
 #endif
@@ -46,15 +44,14 @@
 
 #define PAGE_ITEMS 20
 
-#if (defined(WIN32) || defined(WINCE)) && defined(_MSC_VER)
+#if defined(WIN32) && defined(_MSC_VER)
     #pragma warning (disable : 4786)
-    #define snprintf _snprintf
     #define strncasecmp _strnicmp
     #include <string>
     typedef unsigned int  uint32_t;
     #define PATHMAX     512
     typedef wchar_t uchar_t;
-    typedef std::wstring ustring;
+    typedef std::basic_string<uchar_t> ustring;
     #define U(text) ((uchar_t*)(L##text))
     #include "files.h"
     #define DATA_PATH(path) CreatePath(ustring(U(path))).c_str()

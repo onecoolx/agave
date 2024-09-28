@@ -1,4 +1,4 @@
-/* netstat.cpp - MaCross application
+/* netstat.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com

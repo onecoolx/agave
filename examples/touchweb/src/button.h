@@ -1,4 +1,4 @@
-/* vbutton.h - MaCross application
+/* vbutton.h - Agave application
  *
  * Vector Graphic Component button.
  *

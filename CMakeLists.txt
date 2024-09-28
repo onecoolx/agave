@@ -6,7 +6,7 @@ set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(BUILD_SHARED_LIBS OFF) # build shared library, OFF for static
+set(BUILD_SHARED_LIBS ON) # build shared library, OFF for static
 
 set(PROJ_ROOT ${CMAKE_CURRENT_LIST_DIR})
 set(PROJ_OUT ${CMAKE_CURRENT_BINARY_DIR})

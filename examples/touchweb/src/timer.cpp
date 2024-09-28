@@ -1,4 +1,4 @@
-/* timer.cpp - Agave application
+﻿/* timer.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -9,10 +9,6 @@
 
 #if defined(WIN32)
     #include "timer_win32.h"
-#endif
-
-#ifdef GTK2
-    #include "timer_gtk2.h"
 #endif
 
 #ifdef QT5

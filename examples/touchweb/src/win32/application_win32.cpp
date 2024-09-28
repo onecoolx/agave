@@ -1,4 +1,4 @@
-/* application_win32.cpp - MaCross application
+﻿/* application_win32.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -7,23 +7,14 @@
 #include <windows.h>
 #if defined(WIN32) && (_MSC_VER >= 1400)
     #include <iphlpapi.h>
+    #pragma comment(lib, "iphlpapi.lib")
 #endif
 #include "macross.h"
 #include "application.h"
 #include "application_win32.h"
 
-#ifdef WINCE
-    #include <objbase.h>
-    #include <aygshell.h>
-    #include <GetDeviceUniqueId.h>
-#endif
-
 //{45F419A3-1089-4a14-80B7-4CDD72D7AB2E}
 static const GUID g_guid = {0x45F419A3, 0x1089, 0x4A14, {0x80, 0xB7, 0x4C, 0xDD, 0x72, 0xD7, 0xAB, 0x2E}};
-
-#ifdef WINCE
-    int global_scale = 1;
-#endif
 
 ApplicationImpl::ApplicationImpl(Application* app)
     : m_data(app)
@@ -65,6 +56,10 @@ int ApplicationImpl::screen_height(void) const
     int height = GetDeviceCaps(hdc, VERTRES);
     ReleaseDC(NULL, hdc);
     return height;
+}
+
+void ApplicationImpl::init(void)
+{
 }
 
 int ApplicationImpl::run_loop(void)
@@ -109,34 +104,7 @@ unsigned long ApplicationImpl::tickCount(void)
 
 bool ApplicationImpl::macAddress(std::string& retstr)
 {
-#if defined(WINCE)
-    GUID guid = {0};
-    if (S_OK != CoCreateGuid(&guid)) {
-        return false;
-    }
-
-    BYTE equid[GETDEVICEUNIQUEID_V1_OUTPUT + 1] = {0};
-    DWORD esize = GETDEVICEUNIQUEID_V1_OUTPUT;
-
-    HRESULT hr = GetDeviceUniqueID(reinterpret_cast<LPBYTE>(const_cast<LPGUID>(&guid)),
-                                   sizeof(guid),
-                                   GETDEVICEUNIQUEID_V1,
-                                   equid,
-                                   &esize);
-    if (SUCCEEDED (hr)) {
-        char inmac[GETDEVICEUNIQUEID_V1_OUTPUT * 2 + 1] = {0};
-        sprintf(inmac, "%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",
-                equid[0], equid[1], equid[2], equid[3],
-                equid[4], equid[5], equid[6], equid[7],
-                equid[8], equid[9], equid[10], equid[11],
-                equid[12], equid[13], equid[14], equid[15],
-                equid[16], equid[17], equid[18], equid[19]);
-        retstr = std::string(inmac);
-        return true;
-    } else {
-        return false;
-    }
-#elif defined(WIN32) && (_MSC_VER >= 1400)
+#if defined(WIN32) && (_MSC_VER >= 1400)
     unsigned long len = 0;
     if (ERROR_BUFFER_OVERFLOW != GetAdaptersInfo(0, &len)) {
         return false;
@@ -163,39 +131,13 @@ bool ApplicationImpl::macAddress(std::string& retstr)
 
 void SetImeStatus_platform(bool b)
 {
-#ifdef WINCE
-    if (b) {
-        SipShowIM(SIPF_ON);
-    } else {
-        SipShowIM(SIPF_OFF);
-    }
-#endif
 }
 
 bool ImeIsShow_platform(void)
 {
-#ifdef WINCE
-    SIPINFO info = {sizeof(SIPINFO), SPI_GETSIPINFO, {0, 0, 0, 0}, {0, 0, 0, 0}, 0, 0};
-    if (SipGetInfo(&info)) {
-        if (info.fdwFlags & SIPF_ON) {
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-#else
     return false;
-#endif
 }
 
 void System_init(void)
 {
-#ifdef WINCE
-    HDC hdc = GetDC(0);
-    int dpi = GetDeviceCaps(hdc, LOGPIXELSX);
-    global_scale = (dpi / 96) ? (dpi / 96) : 1;
-    ReleaseDC(0, hdc);
-#endif
 }

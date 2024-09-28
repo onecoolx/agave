@@ -1,4 +1,4 @@
-/*
+﻿/*
  * VGCL - Vector graphic component library.
  *
  * Copyright (c) 2010, Zhang Ji Peng (onecoolx@gmail.com)
@@ -27,7 +27,7 @@
  */
 
 #include "vgconfig.h"
-#include "vplatform.h"
+#include "vplatform_thread.h"
 
 namespace vgcl {
 

@@ -1,4 +1,4 @@
-/* application_win32.h - MaCross application
+/* application_win32.h - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -17,6 +17,7 @@ public:
     int screen_width(void) const;
     int screen_height(void) const;
 
+    void init(void);
     int run_loop(void);
 
     ps_color_format color_format(void) const { return m_format; }

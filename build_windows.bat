@@ -1,3 +1,3 @@
 mkdir vcproj
 cd vcproj
-cmake ../ -A Win32
+cmake ../ -DOPT_EXAMPLES=ON -A Win32

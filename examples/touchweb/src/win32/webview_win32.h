@@ -1,4 +1,4 @@
-/* webview_win32.h - MaCross application
+/* webview_win32.h - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com

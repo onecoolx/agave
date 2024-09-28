@@ -1,4 +1,4 @@
-/*
+﻿/*
  * VGCL - Vector graphic component library.
  *
  * Copyright (c) 2010, Zhang Ji Peng (onecoolx@gmail.com)
@@ -36,7 +36,7 @@ namespace vgcl {
 /* Thread functions. */
 #define InvalidThreadHandle NULL
 
-#define CALL_TYPE WINAPI
+#define CALLBACK_TYPE WINAPI
 
 typedef HANDLE PlatformThreadHandle;
 

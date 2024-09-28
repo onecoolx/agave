@@ -1,11 +1,12 @@
-/* webview_win32.cpp - MaCross application
+﻿/* webview_win32.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "webview.h"
 #include "mainwindow.h"
 #include "mainwindow_win32.h"
@@ -55,7 +56,7 @@ bool WebViewPlat::CreateStoreBuffer(int w, int h)
     memset(m_bmp->bmBits, 0xFF, w * h * byte);
 
     m_canvas = ps_canvas_create_with_data((ps_byte*)m_bmp->bmBits, fmt, w, h, w * byte);
-    m_context = ps_context_create(m_canvas);
+    m_context = ps_context_create(m_canvas, 0);
     return true;
 }
 

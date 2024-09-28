@@ -14,10 +14,6 @@
     #include "dialog_win32.h"
 #endif
 
-#ifdef GTK2
-    #include "dialog_gtk2.h"
-#endif
-
 #ifdef QT5
     #include "dialog_qt5.h"
 #endif

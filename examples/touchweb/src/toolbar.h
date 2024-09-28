@@ -1,4 +1,4 @@
-/* toolbar.h - MaCross application
+/* toolbar.h - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com

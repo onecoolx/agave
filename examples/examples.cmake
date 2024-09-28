@@ -56,10 +56,15 @@ set(APP_MOBILE touchweb)
 
 if (WIN32)
     set(APP_MOBILE_SRCS ${APP_MOBILE_SRCS}
-        ${PROJ_ROOT}/test/win32/functions.cpp
-        ${PROJ_ROOT}/test/win32/main.cpp
-        ${PROJ_ROOT}/test/win32/popmenu.cpp
+        ${APP_MOBILE_DIR}/src/win32/mainwindow_win32.cpp
+        ${APP_MOBILE_DIR}/src/win32/application_win32.cpp
+        ${APP_MOBILE_DIR}/src/win32/main.cpp
+        ${APP_MOBILE_DIR}/src/win32/timer_win32.cpp
+        ${APP_MOBILE_DIR}/src/win32/network_win32.cpp
+        ${APP_MOBILE_DIR}/src/win32/dialog_win32.cpp
+        ${APP_MOBILE_DIR}/src/win32/webview_win32.cpp
     )
+    include_directories(${APP_MOBILE_DIR}/src/win32)
     set(APP_TYPE WIN32)
 else()
     set(APP_MOBILE_SRCS ${APP_MOBILE_SRCS}
@@ -91,9 +96,12 @@ set(APP_MOBILE_SRCS ${APP_MOBILE_SRCS}
 )
 
 if (WIN32)
-else()
-include_directories(${APP_MOBILE_DIR}/vgcl/src/posix
+include_directories(${APP_MOBILE_DIR}/vgcl/src/win32)
+set(APP_MOBILE_SRCS ${APP_MOBILE_SRCS}
+    ${APP_MOBILE_DIR}/vgcl/src/win32/vplatform_thread.cpp
 )
+else()
+include_directories(${APP_MOBILE_DIR}/vgcl/src/posix)
 set(APP_MOBILE_SRCS ${APP_MOBILE_SRCS}
     ${APP_MOBILE_DIR}/vgcl/src/posix/vplatform_thread.cpp
 )
@@ -130,6 +138,7 @@ install(TARGETS ${APP_MOBILE} RUNTIME DESTINATION bin)
 
 target_include_directories(${APP_MOBILE} PRIVATE 
                     ${PROJ_ROOT}/include
+                    ${PROJ_OUT}/
                     SYSTEM PUBLIC
                     ${SYSTEM_INCLUDE}
 )

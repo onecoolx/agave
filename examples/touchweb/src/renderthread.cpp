@@ -1,4 +1,4 @@
-/* RenderThread.cpp - MaCross application
+/* RenderThread.cpp - Agave application
  *
  * Vector Graphic Component button.
  *

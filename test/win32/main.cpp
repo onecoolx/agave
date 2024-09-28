@@ -228,7 +228,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	hInst = hInstance;
 	hmWnd = CreateWindow(L"Agave", L"Agave Browser", WS_VISIBLE|WS_SYSMENU,
-		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInstance, NULL);
+		CW_USEDEFAULT, CW_USEDEFAULT, width, height, NULL, NULL, hInstance, NULL);
 
 	if (!hmWnd) {
 		return FALSE;

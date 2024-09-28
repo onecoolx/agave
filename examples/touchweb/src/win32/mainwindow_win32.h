@@ -1,4 +1,4 @@
-/* mainwindow_win32.h - MaCross application
+/* mainwindow_win32.h - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -8,7 +8,6 @@
 #define _MAINWINDOW_WIN32_H_
 
 #include <windows.h>
-#include "picasso.h"
 
 class MainWindowImplPrive;
 

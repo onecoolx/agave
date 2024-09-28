@@ -24,7 +24,12 @@ list(REMOVE_ITEM SOURCES
     ${PROJ_ROOT}/src/webcore/platform/unicode/word_break_data.cpp
 )
 
-include_directories(${PROJ_ROOT}/include
+set(LIB_NAME agave)
+
+add_library(${LIB_NAME} ${SOURCES})
+
+target_include_directories(${LIB_NAME} PRIVATE
+                    ${PROJ_ROOT}/include
                     ${PROJ_ROOT}/src
                     ${PROJ_ROOT}/src/wtf
                     ${PROJ_ROOT}/src/javascript
@@ -62,8 +67,6 @@ include_directories(${PROJ_ROOT}/include
                     ${PROJ_OUT}/
 )
 
-set(LIB_NAME agave)
-
 if (MSVC)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4838 /wd4305 /wd4291 /wd4065 /wd4146 /wd4756")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4838 /wd4305 /wd4291 /wd4065 /wd4146 /wd4756")
@@ -72,15 +75,18 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-misleading-indentation -Wno-narrowing")
 endif()
 
-add_library(${LIB_NAME} ${SOURCES})
-
 target_link_libraries(${LIB_NAME} PRIVATE ${LIB_DEPS})
 
 target_compile_definitions(${LIB_NAME} PRIVATE CURL_STATICLIB)
 
+if (MSVC)
+    target_compile_definitions(${LIB_NAME} PRIVATE _EXPORT_)
+    target_link_libraries(${LIB_NAME} PRIVATE picasso2_sw)
+endif()
+
 set_target_properties(${LIB_NAME} PROPERTIES VERSION ${VERSION_INFO} SOVERSION 1)
 
-add_dependencies(${LIB_NAME} ${PICASSO_NAME})
+add_dependencies(${LIB_NAME} ${LIB_DEPS} ${PICASSO_NAME})
 
 install(TARGETS ${LIB_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 

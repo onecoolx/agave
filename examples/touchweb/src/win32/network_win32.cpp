@@ -1,4 +1,4 @@
-/* network_win32.cpp - MaCross application
+﻿/* network_win32.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -123,6 +123,8 @@ bool NetServiceImpl::establishConnectionSync(ConnType type)
         return false;
     }
     return true;
+#else
+    return false;
 #endif
 }
 
@@ -210,8 +212,8 @@ void NetServiceImpl::checkConnectType(void)
 
 bool NetServiceImpl::isConnected(void)
 {
-    DWORD dwStatus = 0;
 #if defined(WINCE)
+    DWORD dwStatus = 0;
     if (SUCCEEDED(ConnMgrConnectionStatus(m_hConn, &dwStatus))) {
         if (dwStatus == CONNMGR_STATUS_CONNECTED) {
             checkConnectType();

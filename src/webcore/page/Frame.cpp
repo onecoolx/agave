@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 1998, 1999 Torben Weis <weis@kde.org>
  *                     1999 Lars Knoll <knoll@kde.org>
  *                     1999 Antti Koivisto <koivisto@kde.org>
@@ -1363,7 +1363,7 @@ void Frame::revealCaret(const RenderLayer::ScrollAlignment& alignment) const
 // FIXME: why is this here instead of on the FrameView?
 void Frame::paint(GraphicsContext* p, const IntRect& rect)
 {
-#ifndef NDEBUG
+#ifdef DEBUG_DRAW
     bool fillWithRed;
     if (!document() || document()->printing())
         fillWithRed = false; // Printing, don't fill with red (can't remember why).

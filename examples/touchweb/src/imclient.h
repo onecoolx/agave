@@ -1,4 +1,4 @@
-/* imclient.h - MaCross application
+/* imclient.h - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com

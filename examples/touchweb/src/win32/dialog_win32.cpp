@@ -1,20 +1,17 @@
-/* dialog_win32.cpp - MaCross application
+﻿/* dialog_win32.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "dialog.h"
 #include "dialog_win32.h"
 #include "mainwindow_win32.h"
 #include "application.h"
 #include "application_win32.h"
-
-#ifdef WINCE
-    #include <aygshell.h>
-#endif
 
 class DialogImplPrive
 {
@@ -105,7 +102,7 @@ void DialogImpl::Create(const MainWindowImpl* main, int x, int y, int w, int h)
     m_data->m_h = h;
     m_data->m_hParent = main->getHandle();
 
-    ps_color_format fmt;
+    ps_color_format fmt = COLOR_FORMAT_BGRA;
     int bit = Application::getInstance()->bits_pixel();
     int byte = Application::getInstance()->bytes_pixel();
 
@@ -123,10 +120,10 @@ void DialogImpl::Create(const MainWindowImpl* main, int x, int y, int w, int h)
     m_data->m_bmp->bmPlanes = 1;
     m_data->m_bmp->bmBitsPixel = bit;
     m_data->m_bmp->bmBits = malloc(w * h * byte);
-    memset(m_data->m_bmp->bmBits, 0xFF, w * h * byte);
+    memset(m_data->m_bmp->bmBits, (char)0xFF, w * h * byte);
 
     m_data->m_canvas = ps_canvas_create_with_data((ps_byte*)m_data->m_bmp->bmBits, fmt, w, h, w * byte);
-    m_data->m_gc = ps_context_create(m_data->m_canvas);
+    m_data->m_gc = ps_context_create(m_data->m_canvas, 0);
 }
 
 struct DLG_BOX {
@@ -174,18 +171,9 @@ static BOOL CALLBACK DlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
                 dlg->m_data->m_hWnd = hWnd;
                 SetWindowLong(hWnd, GWL_USERDATA, (LONG)dlg);
                 dlg->OnCreate(r.left, r.top, r.right - r.left, r.bottom - r.top);
-#ifdef WINCE
-                SHFullScreen(hWnd, SHFS_HIDETASKBAR | SHFS_HIDESIPBUTTON | SHFS_HIDESTARTICON);
-#endif
                 SetFocus(hWnd);
             }
             return FALSE;
-#ifdef WINCE
-        case WM_ACTIVATE: {
-                SHFullScreen(hWnd, SHFS_HIDETASKBAR | SHFS_HIDESIPBUTTON | SHFS_HIDESTARTICON);
-            }
-            return TRUE;
-#endif
         case WM_LBUTTONDOWN: {
                 unsigned b = 0;
                 if (wParam & MK_LBUTTON) {

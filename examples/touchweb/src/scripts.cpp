@@ -1,4 +1,4 @@
-/* scripts.cpp - MaCross application
+/* scripts.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com

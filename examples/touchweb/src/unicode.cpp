@@ -1,4 +1,4 @@
-/* unicode.cpp - MaCross application
+/* unicode.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com

@@ -1,4 +1,4 @@
-/* widget.h - MaCross application
+/* widget.h - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com

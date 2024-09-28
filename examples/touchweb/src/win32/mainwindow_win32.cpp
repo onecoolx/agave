@@ -1,63 +1,38 @@
-/* mainwindow_win32.cpp - Agave application
+﻿/* mainwindow_win32.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
+
 #include <stdio.h>
 #include "config.h"
-#include "picasso.h"
+#include <picasso/picasso.h>
+
 #include "event.h"
 #include "mainwindow.h"
 #include "mainwindow_win32.h"
 #include "application.h"
 #include "application_win32.h"
 
-#ifdef WINCE
-    #include <aygshell.h>
-#endif
-
 HWND g_MainWnd = 0;
 
-#ifdef WINCE
-static ATOM RegisterClass(HINSTANCE hInstance)
+static ATOM MyRegisterClass(HINSTANCE hInstance)
 {
     WNDCLASS wc;
 
-    wc.style = CS_HREDRAW | CS_VREDRAW;
-    wc.lpfnWndProc = (WNDPROC)WndProc;
-    wc.cbClsExtra = 0;
-    wc.cbWndExtra = 0;
-    wc.hInstance = hInstance;
-    wc.hIcon = 0;
-    wc.hCursor = 0;
-    wc.hbrBackground = (HBRUSH) GetStockObject(WHITE_BRUSH);
-    wc.lpszMenuName = 0;
-    wc.lpszClassName = _T("MaCross");
+    wc.style            = CS_HREDRAW | CS_VREDRAW;
+    wc.lpfnWndProc      = (WNDPROC)WndProc;
+    wc.cbClsExtra       = 0;
+    wc.cbWndExtra       = 0;
+    wc.hInstance        = hInstance;
+    wc.hIcon            = 0;
+    wc.hCursor          = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground	= (HBRUSH) GetStockObject(WHITE_BRUSH);
+    wc.lpszMenuName     = 0;
+    wc.lpszClassName    = L"Agave";
 
     return RegisterClass(&wc);
 }
-#else
-static ATOM RegisterClass(HINSTANCE hInstance)
-{
-    WNDCLASSEX wcex;
-
-    wcex.cbSize = sizeof(WNDCLASSEX);
-
-    wcex.style = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc = (WNDPROC)WndProc;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = hInstance;
-    wcex.hIcon = 0;
-    wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.lpszMenuName = 0;
-    wcex.lpszClassName = L"MaCross";
-    wcex.hIconSm = 0;
-
-    return RegisterClassEx(&wcex);
-}
-#endif
 
 class MainWindowImplPrive
 {
@@ -145,38 +120,19 @@ HWND MainWindowImpl::getHandle(void) const
 
 bool MainWindowImpl::Create(void* hInstance, const char* title, int x, int y, int w, int h)
 {
-#if defined(WINCE)
-    HWND hWnd = FindWindow(_T("MaCross"), _T("MaCross"));
-    if (hWnd) { //already execute.
-
-        SetForegroundWindow((HWND)((ULONG)hWnd | 0x00000001));
-        return false;
-    }
-#endif
-
     static bool initialize = false;
     if (!initialize) {
-        RegisterClass((HINSTANCE)hInstance);
+        MyRegisterClass((HINSTANCE)hInstance);
         initialize = true;
     }
 
     m_data->m_hInst = hInstance;
-#if defined(WINCE)
-    g_MainWnd = m_data->m_hWnd = CreateWindow(_T("Agave"), _T("Agave"), WS_VISIBLE, x, y, w, h,
-                                              NULL, NULL, (HINSTANCE)hInstance, this);
-#else
-    g_MainWnd = m_data->m_hWnd = CreateWindowA("Agave", title, WS_VISIBLE, x, y, w, h + GetSystemMetrics(SM_CYCAPTION),
+    g_MainWnd = m_data->m_hWnd = CreateWindowA("Agave", title, WS_VISIBLE|WS_SYSMENU, x, y, w, h + GetSystemMetrics(SM_CYCAPTION),
                                                NULL, NULL, (HINSTANCE)hInstance, this);
-#endif
 
     if (!m_data->m_hWnd) {
         return false;
     }
-
-#if defined(WINCE)
-    SetForegroundWindow(m_data->m_hWnd);
-    SHFullScreen(m_data->m_hWnd, SHFS_HIDETASKBAR | SHFS_HIDESIPBUTTON | SHFS_HIDESTARTICON);
-#endif
 
     ps_color_format fmt;
     int bit = Application::getInstance()->bits_pixel();
@@ -198,14 +154,14 @@ bool MainWindowImpl::Create(void* hInstance, const char* title, int x, int y, in
     m_data->m_bmp->bmPlanes = 1;
     m_data->m_bmp->bmBitsPixel = bit;
     m_data->m_bmp->bmBits = malloc(w * h * byte);
-    memset(m_data->m_bmp->bmBits, 0xFF, w * h * byte);
+    memset(m_data->m_bmp->bmBits, (char)0xFF, w * h * byte);
 
     HDC hdc = GetDC(m_data->m_hWnd);
     m_data->m_back = CreateCompatibleBitmap(hdc, w, h);
     ReleaseDC(m_data->m_hWnd, hdc);
 
     m_data->m_canvas = ps_canvas_create_with_data((ps_byte*)m_data->m_bmp->bmBits, fmt, w, h, w * byte);
-    m_data->m_gc = ps_context_create(m_data->m_canvas);
+    m_data->m_gc = ps_context_create(m_data->m_canvas, 0);
 
     ShowWindow(m_data->m_hWnd, SW_SHOW);
     UpdateWindow(m_data->m_hWnd);
@@ -355,9 +311,6 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
     HDC hdc;
     MainWindowImpl* window;
 
-#if defined(WINCE)
-    static SHACTIVATEINFO s_sai;
-#endif
     switch (message) {
         case WM_CREATE: {
                 RECT r;
@@ -366,28 +319,8 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
                 SetWindowLong(hWnd, GWL_USERDATA, (LONG)cs->lpCreateParams);
                 window = (MainWindowImpl*)cs->lpCreateParams;
                 window->OnCreate(r.left, r.top, r.right - r.left, r.bottom - r.top);
-#if defined(WINCE)
-                memset(&s_sai, 0, sizeof (s_sai));
-                s_sai.cbSize = sizeof (s_sai);
-#endif
             }
             break;
-#if defined(WINCE)
-        case WM_WINDOWPOSCHANGED: {
-                LPWINDOWPOS lps = (LPWINDOWPOS)lParam;
-                if (lps->hwndInsertAfter == HWND_TOP) {
-                    SHFullScreen(hWnd, SHFS_HIDETASKBAR | SHFS_HIDESIPBUTTON | SHFS_HIDESTARTICON);
-                }
-            }
-            break;
-        case WM_ACTIVATE: {
-                SHHandleWMActivate(hWnd, wParam, lParam, &s_sai, FALSE);
-                if ((LOWORD(wParam) == WA_ACTIVE) || (LOWORD(wParam) == WA_CLICKACTIVE)) {
-                    SHFullScreen(hWnd, SHFS_HIDETASKBAR | SHFS_HIDESIPBUTTON | SHFS_HIDESTARTICON);
-                }
-            }
-            break;
-#endif
         case WM_LBUTTONDOWN: {
                 window = (MainWindowImpl*)GetWindowLong(hWnd, GWL_USERDATA);
                 window->OnMouse(1, 1, LOWORD(lParam), HIWORD(lParam));
@@ -470,7 +403,6 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 
 bool MainWindowImpl::getChooseFile(uchar_t* name, unsigned int len)
 {
-#if (defined(WIN32) || defined(WINCE))
     OPENFILENAME ofn;
     ZeroMemory(&ofn, sizeof(ofn));
 
@@ -492,23 +424,14 @@ bool MainWindowImpl::getChooseFile(uchar_t* name, unsigned int len)
         return false;
     }
     return false;
-#endif
 }
 
 int MainWindowImpl::SysWidth(void)
 {
-#if defined(WINCE)
-    return GetSystemMetrics(SM_CXSCREEN);
-#else
     return DEFAULT_WIDTH;
-#endif
 }
 
 int MainWindowImpl::SysHeight(void)
 {
-#if defined(WINCE)
-    return GetSystemMetrics(SM_CYSCREEN);
-#else
     return DEFAULT_HEIGHT;
-#endif
 }

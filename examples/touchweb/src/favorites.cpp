@@ -1,4 +1,4 @@
-/* favorites.cpp - MaCross application
+/* favorites.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com

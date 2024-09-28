@@ -1,4 +1,4 @@
-/* autofill.cpp - Agave application
+﻿/* autofill.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -138,7 +138,7 @@ bool AutoFill::updateFormData(const FormData& data, int presid)
     // update form data
 
     std::stringstream isql;
-    isql << "update "INDEX_TABLE_NAME << " "
+    isql << "update "<< INDEX_TABLE_NAME << " "
          << "set url=\'" << data.url.c_str() << "\'"
          << ", formid=\'" << data.formid.c_str() << "\'"
          << ", action=\'" << data.action.c_str() << "\'"

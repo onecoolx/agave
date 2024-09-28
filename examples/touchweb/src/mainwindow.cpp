@@ -1,4 +1,4 @@
-/* mainwindow.cpp - Agave application
+﻿/* mainwindow.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -32,10 +32,6 @@
 
 #if defined(WIN32)
     #include "mainwindow_win32.h"
-#endif
-
-#ifdef GTK2
-    #include "mainwindow_gtk2.h"
 #endif
 
 #ifdef QT5
@@ -270,7 +266,7 @@ void MainWindow::Paint(ps_context* gc, const Rect* rc)
 ps_font* MainWindow::getUIFont(void)
 {
     if (!m_uifont) {
-        m_uifont = ps_font_create("ËÎÌå", CHARSET_UNICODE, DASH_TITLE_HEIGHT / 5 * 2, FONT_WEIGHT_REGULAR, False);
+        m_uifont = ps_font_create("sans-serif", CHARSET_UNICODE, DASH_TITLE_HEIGHT / 5 * 2, FONT_WEIGHT_REGULAR, False);
     }
     return m_uifont;
 }
@@ -278,7 +274,7 @@ ps_font* MainWindow::getUIFont(void)
 ps_font* MainWindow::getUIBoldFont(void)
 {
     if (!m_uibfont) {
-        m_uibfont = ps_font_create("ËÎÌå", CHARSET_UNICODE, DASH_TITLE_HEIGHT / 5 * 2, FONT_WEIGHT_BOLD, False);
+        m_uibfont = ps_font_create("sans-serif", CHARSET_UNICODE, DASH_TITLE_HEIGHT / 5 * 2, FONT_WEIGHT_BOLD, False);
     }
     return m_uibfont;
 }

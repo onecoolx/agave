@@ -26,10 +26,6 @@
     #include "application_win32.h"
 #endif
 
-#ifdef GTK2
-    #include "application_gtk2.h"
-#endif
-
 #ifdef QT5
     #include "application_qt5.h"
 #endif

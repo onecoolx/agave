@@ -13,10 +13,6 @@
     #include "network_win32.h"
 #endif
 
-#ifdef GTK2
-    #include "network_gtk2.h"
-#endif
-
 #ifdef QT5
     #include "network_qt5.h"
 #endif

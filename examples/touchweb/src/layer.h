@@ -1,4 +1,4 @@
-/* layer.h - MaCross application
+/* layer.h - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
