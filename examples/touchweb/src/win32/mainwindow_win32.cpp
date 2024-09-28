@@ -18,20 +18,23 @@ HWND g_MainWnd = 0;
 
 static ATOM MyRegisterClass(HINSTANCE hInstance)
 {
-    WNDCLASS wc;
+    WNDCLASSEX wcex;
 
-    wc.style            = CS_HREDRAW | CS_VREDRAW;
-    wc.lpfnWndProc      = (WNDPROC)WndProc;
-    wc.cbClsExtra       = 0;
-    wc.cbWndExtra       = 0;
-    wc.hInstance        = hInstance;
-    wc.hIcon            = 0;
-    wc.hCursor          = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground	= (HBRUSH) GetStockObject(WHITE_BRUSH);
-    wc.lpszMenuName     = 0;
-    wc.lpszClassName    = L"Agave";
+    wcex.cbSize = sizeof(WNDCLASSEX);
 
-    return RegisterClass(&wc);
+    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc = (WNDPROC)WndProc;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = hInstance;
+    wcex.hIcon = 0;
+    wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.lpszMenuName = 0;
+    wcex.lpszClassName = L"Agave";
+    wcex.hIconSm = 0;
+
+    return RegisterClassEx(&wcex);
 }
 
 class MainWindowImplPrive
@@ -126,8 +129,12 @@ bool MainWindowImpl::Create(void* hInstance, const char* title, int x, int y, in
         initialize = true;
     }
 
+    if (!ps_initialize()) {
+        return false;
+    }
+
     m_data->m_hInst = hInstance;
-    g_MainWnd = m_data->m_hWnd = CreateWindowA("Agave", title, WS_VISIBLE|WS_SYSMENU, x, y, w, h + GetSystemMetrics(SM_CYCAPTION),
+    g_MainWnd = m_data->m_hWnd = CreateWindowExA(WS_EX_APPWINDOW, "Agave", title, WS_OVERLAPPEDWINDOW, x, y, w, h + GetSystemMetrics(SM_CYCAPTION),
                                                NULL, NULL, (HINSTANCE)hInstance, this);
 
     if (!m_data->m_hWnd) {
@@ -316,33 +323,33 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
                 RECT r;
                 GetClientRect(hWnd, &r);
                 LPCREATESTRUCT cs = (LPCREATESTRUCT)lParam;
-                SetWindowLong(hWnd, GWL_USERDATA, (LONG)cs->lpCreateParams);
+                SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(cs->lpCreateParams));
                 window = (MainWindowImpl*)cs->lpCreateParams;
                 window->OnCreate(r.left, r.top, r.right - r.left, r.bottom - r.top);
             }
             break;
         case WM_LBUTTONDOWN: {
-                window = (MainWindowImpl*)GetWindowLong(hWnd, GWL_USERDATA);
+                window = (MainWindowImpl*)GetWindowLongPtr(hWnd, GWL_USERDATA);
                 window->OnMouse(1, 1, LOWORD(lParam), HIWORD(lParam));
             }
             break;
         case WM_LBUTTONUP: {
-                window = (MainWindowImpl*)GetWindowLong(hWnd, GWL_USERDATA);
+                window = (MainWindowImpl*)GetWindowLongPtr(hWnd, GWL_USERDATA);
                 window->OnMouse(0, 1, LOWORD(lParam), HIWORD(lParam));
             }
             break;
         case WM_MOUSEMOVE: {
-                window = (MainWindowImpl*)GetWindowLong(hWnd, GWL_USERDATA);
+                window = (MainWindowImpl*)GetWindowLongPtr(hWnd, GWL_USERDATA);
                 window->OnMouse(2, 0, LOWORD(lParam), HIWORD(lParam));
             }
             break;
         case WM_KEYDOWN: {
-                window = (MainWindowImpl*)GetWindowLong(hWnd, GWL_USERDATA);
+                window = (MainWindowImpl*)GetWindowLongPtr(hWnd, GWL_USERDATA);
                 window->OnKey(1, wParam);
             }
             break;
         case WM_KEYUP: {
-                window = (MainWindowImpl*)GetWindowLong(hWnd, GWL_USERDATA);
+                window = (MainWindowImpl*)GetWindowLongPtr(hWnd, GWL_USERDATA);
                 window->OnKey(0, wParam);
             }
             break;
@@ -355,7 +362,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
                 wParam = uc;
             }
         case WM_CHAR: {
-                window = (MainWindowImpl*)GetWindowLong(hWnd, GWL_USERDATA);
+                window = (MainWindowImpl*)GetWindowLongPtr(hWnd, GWL_USERDATA);
                 window->OnChar(wParam);
             }
             break;
@@ -367,7 +374,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
                 HBITMAP hbmp;
                 BITMAP* pm;
                 RECT crc;
-                window = (MainWindowImpl*)GetWindowLong(hWnd, GWL_USERDATA);
+                window = (MainWindowImpl*)GetWindowLongPtr(hWnd, GWL_USERDATA);
                 if (GetUpdateRect(hWnd, &crc, FALSE)) {
                     window->OnPaint(crc.left, crc.top, crc.right - crc.left, crc.bottom - crc.top);
                     hdc = BeginPaint(hWnd, &ps);
@@ -384,12 +391,12 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
             }
             break;
         case WM_CLOSE: {
-                window = (MainWindowImpl*)GetWindowLong(hWnd, GWL_USERDATA);
+                window = (MainWindowImpl*)GetWindowLongPtr(hWnd, GWL_USERDATA);
                 window->m_data->m_window->Destroy();
             }
             break;
         case WM_DESTROY: {
-                window = (MainWindowImpl*)GetWindowLong(hWnd, GWL_USERDATA);
+                window = (MainWindowImpl*)GetWindowLongPtr(hWnd, GWL_USERDATA);
                 PostQuitMessage(0);
                 window->OnDestroy();
             }
