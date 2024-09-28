@@ -1,18 +1,18 @@
-/* network_gtk2.h - Agave application
+/* network_qt5.h - Agave application
  *
- * Copyright (C) 2024 Zhang Ji Peng
+ * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
-#ifndef _NETWORK_GTK2_H_
-#define _NETWORK_GTK2_H_
+#ifndef _NETWORK_QT4_H_
+#define _NETWORK_QT4_H_
 
 class NetService;
 
 class NetServiceImpl
 {
 public:
-    NetServiceImpl(NetService* service);
+    NetServiceImpl(NetService*);
     ~NetServiceImpl();
 
     bool isAvaliable(void);
@@ -20,9 +20,9 @@ public:
     bool establishConnectionSync(void);
     bool isConnected(void);
 
-    void readNetConfigs(void);
+    void readNetConfigs();
 private:
     void releaseConnection(void);
 };
 
-#endif /*_NETWORK_GTK2_H_*/
+#endif /*_NETWORK_QT4_H_*/

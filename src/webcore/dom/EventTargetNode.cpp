@@ -389,8 +389,6 @@ bool EventTargetNode::dispatchMouseEvent(const PlatformMouseEvent& event, const 
 
     short button = event.button();
 
-    ASSERT(event.eventType() == MouseEventMoved || button != NoButton);
-    
     return dispatchMouseEvent(eventType, button, detail,
         contentsPos.x(), contentsPos.y(), event.globalX(), event.globalY(),
         event.ctrlKey(), event.altKey(), event.shiftKey(), event.metaKey(),

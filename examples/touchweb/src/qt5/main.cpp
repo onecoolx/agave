@@ -8,7 +8,7 @@
 #include "application.h"
 
 int __argc;
-char ** __argv;
+char** __argv;
 
 int main(int argc, char* argv[])
 {

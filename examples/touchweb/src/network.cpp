@@ -17,8 +17,8 @@
     #include "network_gtk2.h"
 #endif
 
-#ifdef QT4
-    #include "network_qt4.h"
+#ifdef QT5
+    #include "network_qt5.h"
 #endif
 
 NetService::NetService()

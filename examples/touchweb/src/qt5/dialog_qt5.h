@@ -1,4 +1,4 @@
-/* dialog_qt4.h - Agave application
+/* dialog_qt5.h - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com

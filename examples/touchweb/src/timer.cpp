@@ -15,8 +15,8 @@
     #include "timer_gtk2.h"
 #endif
 
-#ifdef QT4
-    #include "timer_qt4.h"
+#ifdef QT5
+    #include "timer_qt5.h"
 #endif
 
 Timer::Timer()

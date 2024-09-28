@@ -1,4 +1,4 @@
-/* mainwindow_qt4.cpp - Agave application
+/* mainwindow_qt5.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -13,8 +13,8 @@
 #include "config.h"
 #include "event.h"
 #include "mainwindow.h"
-#include "mainwindow_qt4.h"
-#include "application_qt4.h"
+#include "mainwindow_qt5.h"
+#include "application_qt5.h"
 
 class MainWindowImplPrive
 {

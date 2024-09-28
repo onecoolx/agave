@@ -1,11 +1,11 @@
-/* network_qt4.cpp - Agave application
+/* network_qt5.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "config.h"
-#include "network_qt4.h"
+#include "network_qt5.h"
 
 NetServiceImpl::NetServiceImpl(NetService*)
 {

@@ -38,8 +38,8 @@
     #include "mainwindow_gtk2.h"
 #endif
 
-#ifdef QT4
-    #include "mainwindow_qt4.h"
+#ifdef QT5
+    #include "mainwindow_qt5.h"
 #endif
 
 ps_font* MainWindow::m_uifont = 0;

@@ -1,11 +1,11 @@
-/* timer_qt4.cpp - Agave application
+/* timer_qt5.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
 #include "timer.h"
-#include "timer_qt4.h"
+#include "timer_qt5.h"
 
 TimerImpl::TimerImpl(Timer* t)
     : timer(t)

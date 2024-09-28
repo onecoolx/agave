@@ -30,10 +30,9 @@
     #include "application_gtk2.h"
 #endif
 
-#ifdef QT4
-    #include "application_qt4.h"
+#ifdef QT5
+    #include "application_qt5.h"
 #endif
-
 
 Application* Application::g_instance = 0;
 

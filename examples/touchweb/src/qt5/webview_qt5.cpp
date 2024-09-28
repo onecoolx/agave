@@ -1,4 +1,4 @@
-/* webview_qt4.cpp - Agave application
+/* webview_qt5.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -9,8 +9,8 @@
 #include "config.h"
 #include "webview.h"
 #include "mainwindow.h"
-#include "mainwindow_qt4.h"
-#include "webview_qt4.h"
+#include "mainwindow_qt5.h"
+#include "webview_qt5.h"
 
 WebViewPlat::WebViewPlat(WebView* view)
     : m_view(view)

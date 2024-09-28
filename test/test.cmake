@@ -19,16 +19,17 @@ if (WIN32)
     set(APP_TYPE WIN32)
 else()
     set(APP_SRCS ${APP_SRCS}
-        ${PROJ_ROOT}/test/gtk2/functions.cpp
-        ${PROJ_ROOT}/test/gtk2/main.cpp
-        ${PROJ_ROOT}/test/gtk2/popmenu.cpp
+        ${PROJ_ROOT}/test/qt5/functions.cpp
+        ${PROJ_ROOT}/test/qt5/main.cpp
+        ${PROJ_ROOT}/test/qt5/popmenu.cpp
     )
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wdeprecated-declarations")
 
     include(FindPkgConfig)
-    pkg_search_module(GTK2 REQUIRED gtk+-2.0)
-    set(SYSTEM_INCLUDE ${GTK2_INCLUDE_DIRS})
-    set(SYSTEM_LIBS ${GTK2_LIBRARIES} pthread m z stdc++)
+    pkg_search_module(QTCore REQUIRED Qt5Core)
+    pkg_search_module(QTGui REQUIRED Qt5Gui)
+    pkg_search_module(QTWidgets REQUIRED Qt5Widgets)
+    set(SYSTEM_INCLUDE ${QTCore_INCLUDE_DIRS} ${QTGui_INCLUDE_DIRS} ${QTWidgets_INCLUDE_DIRS})
+    set(SYSTEM_LIBS ${QTCore_LIBRARIES} ${QTGui_LIBRARIES} ${QTWidgets_LIBRARIES} freetype fontconfig pthread m z stdc++)
 endif()
 
 add_executable(${APP_NAME} ${APP_TYPE} ${APP_SRCS})

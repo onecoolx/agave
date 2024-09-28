@@ -1,4 +1,4 @@
-/* dialog_qt4.cpp - Agave application
+/* dialog_qt5.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -11,8 +11,8 @@
 
 #include "config.h"
 #include "dialog.h"
-#include "dialog_qt4.h"
-#include "mainwindow_qt4.h"
+#include "dialog_qt5.h"
+#include "mainwindow_qt5.h"
 
 class DialogImplPrive
 {

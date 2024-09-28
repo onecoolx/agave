@@ -1,4 +1,4 @@
-/* timer_qt4.h - Agave application
+/* timer_qt5.h - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com

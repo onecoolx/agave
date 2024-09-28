@@ -37,11 +37,10 @@
     #include "webview_gtk2.h"
 #endif
 
-#ifdef QT4
-    #include "application_qt4.h"
-    #include "webview_qt4.h"
+#ifdef QT5
+    #include "application_qt5.h"
+    #include "webview_qt5.h"
 #endif
-
 
 #define BUFFER_RAISE 1  //define buffer raise mode.
 

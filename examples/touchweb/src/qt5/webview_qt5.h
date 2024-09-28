@@ -1,16 +1,16 @@
-/* webview_gtk2.h - Agave application
+/* webview_qt5.h - Agave application
  *
- * Copyright (C) 2024 Zhang Ji Peng
+ * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
  */
 
-#ifndef _WEBVIEW_GTK2_H_
-#define _WEBVIEW_GTK2_H_
-
-#include <gtk/gtk.h>
+#ifndef _WEBVIEW_QT4_H_
+#define _WEBVIEW_QT4_H_
 
 class WebView;
 class MainWindowImpl;
+
+class QImage;
 
 class WebViewPlat
 {
@@ -29,7 +29,7 @@ public:
     static bool haveMemory(void);
 private:
     WebView* m_view;
-    GdkPixbuf* m_buf;
+    QImage* m_img;
     ps_context* m_context;
     ps_canvas* m_canvas;
 };

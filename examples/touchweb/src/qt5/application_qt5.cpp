@@ -1,4 +1,4 @@
-/* application_qt4.cpp - Agave application
+/* application_qt5.cpp - Agave application
  *
  * Copyright (C) 2010 Zhang Ji Peng
  * Contact : onecoolx@gmail.com
@@ -13,7 +13,7 @@
 
 #include "macross.h"
 #include "application.h"
-#include "application_qt4.h"
+#include "application_qt5.h"
 
 static void init_key_map(void);
 
