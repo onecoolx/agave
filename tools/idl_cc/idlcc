@@ -1,0 +1,5 @@
+#!/bin/sh
+
+export IDL_INC_DIR=./inc
+
+python ./idlcc.py $@

@@ -39,258 +39,6 @@ VPATH = \
 
 .PHONY : all
 
-ifeq ($(OS),MACOS)
-all : \
-    CharsetData.cpp \
-    DOMAbstractView.h \
-    DOMAttr.h \
-    DOMCDATASection.h \
-    DOMCSSCharsetRule.h \
-    DOMCSSFontFaceRule.h \
-    DOMCSSImportRule.h \
-    DOMCSSMediaRule.h \
-    DOMCSSPageRule.h \
-    DOMCSSPrimitiveValue.h \
-    DOMCSSRule.h \
-    DOMCSSRuleList.h \
-    DOMCSSStyleDeclaration.h \
-    DOMCSSStyleRule.h \
-    DOMCSSStyleSheet.h \
-    DOMCSSUnknownRule.h \
-    DOMCSSValue.h \
-    DOMCSSValueList.h \
-    DOMCharacterData.h \
-    DOMComment.h \
-    DOMCounter.h \
-    DOMDOMImplementation.h \
-    DOMDocument.h \
-    DOMDocumentFragment.h \
-    DOMDocumentType.h \
-    DOMElement.h \
-    DOMEntity.h \
-    DOMEntityReference.h \
-    DOMEvent.h \
-    DOMEventListener.h \
-    DOMEventTarget.h \
-    DOMHTMLAnchorElement.h \
-    DOMHTMLAppletElement.h \
-    DOMHTMLAreaElement.h \
-    DOMHTMLBRElement.h \
-    DOMHTMLBaseElement.h \
-    DOMHTMLBaseFontElement.h \
-    DOMHTMLBodyElement.h \
-    DOMHTMLButtonElement.h \
-    DOMHTMLCanvasElement.h \
-    DOMHTMLCollection.h \
-    DOMHTMLDListElement.h \
-    DOMHTMLDirectoryElement.h \
-    DOMHTMLDivElement.h \
-    DOMHTMLDocument.h \
-    DOMHTMLElement.h \
-    DOMHTMLEmbedElement.h \
-    DOMHTMLFieldSetElement.h \
-    DOMHTMLFontElement.h \
-    DOMHTMLFormElement.h \
-    DOMHTMLFrameElement.h \
-    DOMHTMLFrameSetElement.h \
-    DOMHTMLHRElement.h \
-    DOMHTMLHeadElement.h \
-    DOMHTMLHeadingElement.h \
-    DOMHTMLHtmlElement.h \
-    DOMHTMLIFrameElement.h \
-    DOMHTMLImageElement.h \
-    DOMHTMLInputElement.h \
-    DOMHTMLIsIndexElement.h \
-    DOMHTMLLIElement.h \
-    DOMHTMLLabelElement.h \
-    DOMHTMLLegendElement.h \
-    DOMHTMLLinkElement.h \
-    DOMHTMLMapElement.h \
-    DOMHTMLMarqueeElement.h \
-    DOMHTMLMenuElement.h \
-    DOMHTMLMetaElement.h \
-    DOMHTMLModElement.h \
-    DOMHTMLOListElement.h \
-    DOMHTMLObjectElement.h \
-    DOMHTMLOptGroupElement.h \
-    DOMHTMLOptionElement.h \
-    DOMHTMLOptionsCollection.h \
-    DOMHTMLParagraphElement.h \
-    DOMHTMLParamElement.h \
-    DOMHTMLPreElement.h \
-    DOMHTMLQuoteElement.h \
-    DOMHTMLScriptElement.h \
-    DOMHTMLSelectElement.h \
-    DOMHTMLStyleElement.h \
-    DOMHTMLTableCaptionElement.h \
-    DOMHTMLTableCellElement.h \
-    DOMHTMLTableColElement.h \
-    DOMHTMLTableElement.h \
-    DOMHTMLTableRowElement.h \
-    DOMHTMLTableSectionElement.h \
-    DOMHTMLTextAreaElement.h \
-    DOMHTMLTitleElement.h \
-    DOMHTMLUListElement.h \
-    DOMKeyboardEvent.h \
-    DOMMediaList.h \
-    DOMMouseEvent.h \
-    DOMMutationEvent.h \
-    DOMNamedNodeMap.h \
-    DOMNode.h \
-    DOMNodeFilter.h \
-    DOMNodeIterator.h \
-    DOMNodeList.h \
-    DOMNotation.h \
-    DOMOverflowEvent.h \
-    DOMProcessingInstruction.h \
-    DOMRGBColor.h \
-    DOMRange.h \
-    DOMRect.h \
-    DOMSVGAElement.h \
-    DOMSVGAngle.h \
-    DOMSVGAnimateColorElement.h \
-    DOMSVGAnimateElement.h \
-    DOMSVGAnimateTransformElement.h \
-    DOMSVGAnimatedAngle.h \
-    DOMSVGAnimatedBoolean.h \
-    DOMSVGAnimatedEnumeration.h \
-    DOMSVGAnimatedInteger.h \
-    DOMSVGAnimatedLength.h \
-    DOMSVGAnimatedLengthList.h \
-    DOMSVGAnimatedNumber.h \
-    DOMSVGAnimatedNumberList.h \
-    DOMSVGAnimatedPathData.h \
-    DOMSVGAnimatedPoints.h \
-    DOMSVGAnimatedPreserveAspectRatio.h \
-    DOMSVGAnimatedRect.h \
-    DOMSVGAnimatedString.h \
-    DOMSVGAnimatedTransformList.h \
-    DOMSVGAnimationElement.h \
-    DOMSVGCircleElement.h \
-    DOMSVGClipPathElement.h \
-    DOMSVGColor.h \
-    DOMSVGComponentTransferFunctionElement.h \
-    DOMSVGCursorElement.h \
-    DOMSVGDefsElement.h \
-    DOMSVGDescElement.h \
-    DOMSVGDocument.h \
-    DOMSVGElement.h \
-    DOMSVGElementInstance.h \
-    DOMSVGElementInstanceList.h \
-    DOMSVGEllipseElement.h \
-    DOMSVGExternalResourcesRequired.h \
-    DOMSVGFEBlendElement.h \
-    DOMSVGFEColorMatrixElement.h \
-    DOMSVGFEComponentTransferElement.h \
-    DOMSVGFECompositeElement.h \
-    DOMSVGFEDiffuseLightingElement.h \
-    DOMSVGFEDisplacementMapElement.h \
-    DOMSVGFEDistantLightElement.h \
-    DOMSVGFEFloodElement.h \
-    DOMSVGFEFuncAElement.h \
-    DOMSVGFEFuncBElement.h \
-    DOMSVGFEFuncGElement.h \
-    DOMSVGFEFuncRElement.h \
-    DOMSVGFEGaussianBlurElement.h \
-    DOMSVGFEImageElement.h \
-    DOMSVGFEMergeElement.h \
-    DOMSVGFEMergeNodeElement.h \
-    DOMSVGFEOffsetElement.h \
-    DOMSVGFEPointLightElement.h \
-    DOMSVGFESpecularLightingElement.h \
-    DOMSVGFESpotLightElement.h \
-    DOMSVGFETileElement.h \
-    DOMSVGFETurbulenceElement.h \
-    DOMSVGFilterElement.h \
-    DOMSVGFilterPrimitiveStandardAttributes.h \
-    DOMSVGFitToViewBox.h \
-    DOMSVGForeignObjectElement.h \
-    DOMSVGGElement.h \
-    DOMSVGGradientElement.h \
-    DOMSVGImageElement.h \
-    DOMSVGLangSpace.h \
-    DOMSVGLength.h \
-    DOMSVGLengthList.h \
-    DOMSVGLineElement.h \
-    DOMSVGLinearGradientElement.h \
-    DOMSVGLocatable.h \
-    DOMSVGMarkerElement.h \
-    DOMSVGMaskElement.h \
-    DOMSVGMatrix.h \
-    DOMSVGMetadataElement.h \
-    DOMSVGNumber.h \
-    DOMSVGNumberList.h \
-    DOMSVGPaint.h \
-    DOMSVGPathElement.h \
-    DOMSVGPathSeg.h \
-    DOMSVGPathSegArcAbs.h \
-    DOMSVGPathSegArcRel.h \
-    DOMSVGPathSegClosePath.h \
-    DOMSVGPathSegCurvetoCubicAbs.h \
-    DOMSVGPathSegCurvetoCubicRel.h \
-    DOMSVGPathSegCurvetoCubicSmoothAbs.h \
-    DOMSVGPathSegCurvetoCubicSmoothRel.h \
-    DOMSVGPathSegCurvetoQuadraticAbs.h \
-    DOMSVGPathSegCurvetoQuadraticRel.h \
-    DOMSVGPathSegCurvetoQuadraticSmoothAbs.h \
-    DOMSVGPathSegCurvetoQuadraticSmoothRel.h \
-    DOMSVGPathSegLinetoAbs.h \
-    DOMSVGPathSegLinetoHorizontalAbs.h \
-    DOMSVGPathSegLinetoHorizontalRel.h \
-    DOMSVGPathSegLinetoRel.h \
-    DOMSVGPathSegLinetoVerticalAbs.h \
-    DOMSVGPathSegLinetoVerticalRel.h \
-    DOMSVGPathSegList.h \
-    DOMSVGPathSegMovetoAbs.h \
-    DOMSVGPathSegMovetoRel.h \
-    DOMSVGPatternElement.h \
-    DOMSVGPoint.h \
-    DOMSVGPointList.h \
-    DOMSVGPolygonElement.h \
-    DOMSVGPolylineElement.h \
-    DOMSVGPreserveAspectRatio.h \
-    DOMSVGRadialGradientElement.h \
-    DOMSVGRect.h \
-    DOMSVGRectElement.h \
-    DOMSVGRenderingIntent.h \
-    DOMSVGSVGElement.h \
-    DOMSVGScriptElement.h \
-    DOMSVGSetElement.h \
-    DOMSVGStopElement.h \
-    DOMSVGStringList.h \
-    DOMSVGStylable.h \
-    DOMSVGStyleElement.h \
-    DOMSVGSwitchElement.h \
-    DOMSVGSymbolElement.h \
-    DOMSVGTRefElement.h \
-    DOMSVGTSpanElement.h \
-    DOMSVGTests.h \
-    DOMSVGTextContentElement.h \
-    DOMSVGTextElement.h \
-    DOMSVGTextPathElement.h \
-    DOMSVGTextPositioningElement.h \
-    DOMSVGTitleElement.h \
-    DOMSVGTransform.h \
-    DOMSVGTransformList.h \
-    DOMSVGTransformable.h \
-    DOMSVGURIReference.h \
-    DOMSVGUnitTypes.h \
-    DOMSVGUseElement.h \
-    DOMSVGViewElement.h \
-    DOMSVGZoomAndPan.h \
-    DOMSVGZoomEvent.h \
-    DOMStyleSheet.h \
-    DOMStyleSheetList.h \
-    DOMText.h \
-    DOMTextEvent.h \
-    DOMTreeWalker.h \
-    DOMUIEvent.h \
-    DOMWheelEvent.h \
-    DOMXPathExpression.h \
-    DOMXPathNSResolver.h \
-    DOMXPathResult.h
-endif
-
 all : \
     CSSGrammar.cpp \
     CSSPropertyNames.h \
@@ -298,6 +46,7 @@ all : \
     ColorData.c \
     DocTypeStrings.cpp \
     HTMLEntityNames.c \
+    \
     JSAttr.h \
     JSBarInfo.h \
     JSCDATASection.h \
@@ -550,6 +299,7 @@ all : \
     JSXMLHttpRequest.lut.h \
     JSXMLSerializer.h \
     JSXSLTProcessor.lut.h \
+    \
     SVGElementFactory.cpp \
     SVGNames.cpp \
     HTMLNames.cpp \
@@ -710,19 +460,6 @@ XLinkNames.cpp :
 
 
 endif
-
-# new-style Objective-C bindings
-
-OBJC_BINDINGS_SCRIPTS = \
-    bindings/scripts/CodeGenerator.pm \
-    bindings/scripts/CodeGeneratorObjC.pm \
-    bindings/scripts/IDLParser.pm \
-    bindings/scripts/IDLStructure.pm \
-    bindings/scripts/generate-bindings.pl \
-#
-
-DOM%.h : %.idl $(OBJC_BINDINGS_SCRIPTS) bindings/objc/PublicDOMInterfaces.h
-	perl -I $(WebCore)/bindings/scripts $(WebCore)/bindings/scripts/generate-bindings.pl --defines "$(FEATURE_DEFINES) LANGUAGE_OBJECTIVE_C" --generator ObjC --include dom --include html --include css --include page --include xml --include ksvg2/svg --include ksvg2/events --outputdir . $<
 
 # new-style JavaScript bindings
 
