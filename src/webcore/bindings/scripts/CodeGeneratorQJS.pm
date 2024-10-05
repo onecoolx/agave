@@ -540,29 +540,29 @@ sub GenerateHeader
     push(@headerContent, "\n");
 
     # Add prototype declaration -- code adopted from the KJS_DEFINE_PROTOTYPE and KJS_DEFINE_PROTOTYPE_WITH_PROTOTYPE macros
-    push(@headerContent, "class ${className}Prototype : public KJS::JSObject {\n");
+    push(@headerContent, "class ${className}Prototype {\n");
     push(@headerContent, "public:\n");
     if ($dataNode->extendedAttributes->{"DoNotCache"}) {
-        push(@headerContent, "    static KJS::JSObject* self();\n");
+        push(@headerContent, "    static JSValue self();\n");
     } else {
-        push(@headerContent, "    static KJS::JSObject* self(KJS::ExecState* exec);\n");
+        push(@headerContent, "    static JSValue self(JSContext * ctx);\n");
     }
-    push(@headerContent, "    virtual const KJS::ClassInfo* classInfo() const { return &info; }\n");
-    push(@headerContent, "    static const KJS::ClassInfo info;\n");
+    #<Debug>#push(@headerContent, "    virtual const KJS::ClassInfo* classInfo() const { return &info; }\n");
+    #<Debug>#push(@headerContent, "    static const KJS::ClassInfo info;\n");
     if ($numFunctions > 0 || $numConstants > 0) {
-        push(@headerContent, "    bool getOwnPropertySlot(KJS::ExecState*, const KJS::Identifier&, KJS::PropertySlot&);\n");
+        #<Debug>#push(@headerContent, "    bool getOwnPropertySlot(KJS::ExecState*, const KJS::Identifier&, KJS::PropertySlot&);\n");
     }
     if ($numConstants ne 0) {
         push(@headerContent, "    static JSValue getValueProperty(JSContext *ctx, JSValueConst this_val, int token);\n");
     }
     if ($dataNode->extendedAttributes->{"DoNotCache"}) {
-        push(@headerContent, "    ${className}Prototype() { }\n");
+        #<Debug>#push(@headerContent, "    ${className}Prototype() { }\n");
     } else {
-        push(@headerContent, "    ${className}Prototype(KJS::ExecState* exec)\n");
+        #<Debug>#push(@headerContent, "    ${className}Prototype(KJS::ExecState* exec)\n");
         if ($hasParent && $parentClassName ne "KJS::DOMNodeFilter") {
-            push(@headerContent, "        : KJS::JSObject(${parentClassName}Prototype::self(exec)) { }\n");
+            #<Debug>#push(@headerContent, "        : KJS::JSObject(${parentClassName}Prototype::self(exec)) { }\n");
         } else {
-            push(@headerContent, "        : KJS::JSObject(exec->lexicalInterpreter()->builtinObjectPrototype()) { }\n");
+            #<Debug>#push(@headerContent, "        : KJS::JSObject(exec->lexicalInterpreter()->builtinObjectPrototype()) { }\n");
         }
     }
 
@@ -1802,18 +1802,9 @@ sub prototypeFunctionFor
     my $className = shift;
 
 my $implContent = << "EOF";
-class ${className}PrototypeFunction : public KJS::InternalFunctionImp {
+class ${className}PrototypeFunction {
 public:
-    ${className}PrototypeFunction(KJS::ExecState* exec, int i, int len, const KJS::Identifier& name)
-        : KJS::InternalFunctionImp(static_cast<KJS::FunctionPrototype*>(exec->lexicalInterpreter()->builtinFunctionPrototype()), name)
-        , id(i)
-    {
-        put(exec, exec->propertyNames().length, KJS::jsNumber(len), KJS::DontDelete|KJS::ReadOnly|KJS::DontEnum);
-    }
-    virtual KJS::JSValue* callAsFunction(KJS::ExecState*, KJS::JSObject*, const KJS::List&);
-
-private:
-    int id;
+    static JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token);
 };
 
 EOF
