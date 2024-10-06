@@ -111,7 +111,6 @@ all : \
     JSHTMLIFrameElement.h \
     JSHTMLImageElement.h \
     JSHTMLInputElement.h \
-    JSHTMLInputElementBaseTable.cpp \
     JSHTMLIsIndexElement.h \
     JSHTMLLIElement.h \
     JSHTMLLabelElement.h \
@@ -299,6 +298,8 @@ all : \
     JSXMLHttpRequest.lut.h \
     JSXMLSerializer.h \
     JSXSLTProcessor.lut.h \
+    \
+    JSHTMLInputElementBaseTable.cpp \
     \
     SVGElementFactory.cpp \
     SVGNames.cpp \
