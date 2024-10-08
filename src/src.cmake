@@ -9,11 +9,11 @@ list(REMOVE_ITEM SOURCES
     ${PROJ_ROOT}/src/javascript/pcre/chartables.c
     ${PROJ_ROOT}/src/javascript/pcre/ucptable.c
     ${PROJ_ROOT}/src/javascript/pcre/dftables.c
-    ${PROJ_ROOT}/src/webcore/buildsrc/CSSPropertyNames.c
-    ${PROJ_ROOT}/src/webcore/buildsrc/CSSValueKeywords.c
-    ${PROJ_ROOT}/src/webcore/buildsrc/DocTypeStrings.cpp
-    ${PROJ_ROOT}/src/webcore/buildsrc/tokenizer.cpp
-    ${PROJ_ROOT}/src/webcore/buildsrc/JSHTMLInputElementBaseTable.cpp
+    ${PROJ_ROOT}/src/webcore/buildKJS/CSSPropertyNames.c
+    ${PROJ_ROOT}/src/webcore/buildKJS/CSSValueKeywords.c
+    ${PROJ_ROOT}/src/webcore/buildKJS/DocTypeStrings.cpp
+    ${PROJ_ROOT}/src/webcore/buildKJS/tokenizer.cpp
+    ${PROJ_ROOT}/src/webcore/buildKJS/JSHTMLInputElementBaseTable.cpp
     ${PROJ_ROOT}/src/webcore/platform/unicode/UnicodeIDNA_data.cpp
     ${PROJ_ROOT}/src/webcore/platform/unicode/char_break_data.cpp
     ${PROJ_ROOT}/src/webcore/platform/unicode/line_break_data.cpp
@@ -47,7 +47,7 @@ target_include_directories(${LIB_NAME} PRIVATE
                     ${PROJ_ROOT}/src/webcore/loader
                     ${PROJ_ROOT}/src/webcore/page
                     ${PROJ_ROOT}/src/webcore/rendering
-                    ${PROJ_ROOT}/src/webcore/buildsrc
+                    ${PROJ_ROOT}/src/webcore/buildKJS
                     ${PROJ_ROOT}/src/webcore/bindings/js
                     ${PROJ_ROOT}/src/webcore/platform
                     ${PROJ_ROOT}/src/webcore/platform/graphics

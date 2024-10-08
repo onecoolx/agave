@@ -36,6 +36,10 @@ add_executable(${APP_NAME} ${APP_TYPE} ${APP_SRCS})
 
 set_property(TARGET ${APP_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
+if (NOT WIN32)
+    target_compile_options(${APP_NAME} PRIVATE -std=c++11)
+endif()
+
 install(TARGETS ${APP_NAME} RUNTIME DESTINATION bin)
 
 target_include_directories(${APP_NAME} PRIVATE 

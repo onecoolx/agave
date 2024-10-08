@@ -127,9 +127,9 @@ add_executable(${APP_MOBILE} ${APP_TYPE} ${APP_MOBILE_SRCS})
 
 target_compile_definitions(${APP_MOBILE} PRIVATE SQLITE_HAS_CODEC)
 
-if (WIN32)
-else()
-target_compile_definitions(${APP_MOBILE} PRIVATE QT5)
+if (NOT WIN32)
+    target_compile_definitions(${APP_MOBILE} PRIVATE QT5)
+    target_compile_options(${APP_MOBILE} PRIVATE -std=c++11)
 endif()
 
 set_property(TARGET ${APP_MOBILE} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)

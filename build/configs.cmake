@@ -15,10 +15,10 @@ if (WIN32)
 else ()
     set(CMAKE_C_FLAGS_DEBUG "-D_DEBUG -O0 -Wall -fPIC -g -fno-strict-aliasing -pipe")
     set(CMAKE_CXX_FLAGS_DEBUG
-        "-D_DEBUG -O0 -Wall -fPIC -g -fno-strict-aliasing -pipe -std=c++11 -fno-exceptions -fno-rtti")
+        "-D_DEBUG -O0 -Wall -fPIC -g -fno-strict-aliasing -pipe -std=c++98 -fno-exceptions -fno-rtti")
     set(CMAKE_C_FLAGS_MINSIZEREL "-DNDEBUG -Os -Wall -fPIC -fno-strict-aliasing -pipe")
     set(CMAKE_CXX_FLAGS_MINSIZEREL
-        "-DNDEBUG -Os -Wall -fPIC -fno-strict-aliasing -pipe -std=c++11 -fno-exceptions -fno-rtti")
+        "-DNDEBUG -Os -Wall -fPIC -fno-strict-aliasing -pipe -std=c++98 -fno-exceptions -fno-rtti")
     set(CMAKE_C_FLAGS_RELEASE ${CMAKE_C_FLAGS_MINSIZEREL})
     set(CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_MINSIZEREL})
     set(CMAKE_C_FLAGS_RELWITHDEBINFO ${CMAKE_C_FLAGS_MINSIZEREL})
