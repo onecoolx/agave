@@ -363,6 +363,7 @@ sub GenerateHeader
     # Class info
     push(@headerContent, "    virtual JSClassID classId() const { return js_class_id; }\n");
     push(@headerContent, "    static JSClassID js_class_id;\n\n");
+    push(@headerContent, "    static void finalizer(JSRuntime *rt, JSValue val);\n");
 
     # Custom mark function
     if ($dataNode->extendedAttributes->{"CustomMarkFunction"}) {
@@ -748,7 +749,7 @@ sub GenerateImplementation
         push(@implContent, "    JSValue globalObj = JS_GetGlobalObject(ctx);\n");
         push(@implContent, "    JSValue obj = JS_GetPropertyStr(ctx, globalObj, \"[[${className}.prototype]]\")\n");
         push(@implContent, "    if (JS_IsException(obj)) {\n");
-        push(@implContent, "        obj = JS_NewObject(ctx);\n");
+        push(@implContent, "        obj = JS_NewObjectProto(ctx, ${parentClassName}Prototype::self(ctx));\n");
         push(@implContent, "        ${className}Prototype::initPrototype(ctx, obj);\n");
         push(@implContent, "        JS_SetPropertyStr(ctx, globalObj, \"[[${className}.prototype]]\", obj);\n");
         push(@implContent, "    }\n");
@@ -797,6 +798,14 @@ sub GenerateImplementation
     #    push(@implContent, "0, ")
     #}
     #push(@implContent, "0 };\n\n");
+
+
+    push(@implContent, "static JSClassDef ${className}ClassDefine = \n\{\n");
+    push(@implContent, "    \"${interfaceName}\",\n");
+    push(@implContent, "    .finalizer = ${className}::finalizer,\n");
+    push(@implContent, "};\n\n");
+
+    push(@implContent, "JSClassID ${className}::js_class_id = 0;\n\n");
 
     # Get correct pass/store types respecting PODType flag
     my $podType = $dataNode->extendedAttributes->{"PODType"};
