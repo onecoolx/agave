@@ -209,7 +209,7 @@ sub AddIncludesForType
     }
 
     if ($type eq "CanvasGradient" or $type eq "XPathNSResolver") {
-        $implIncludes{"String.h"} = 1;
+        $implIncludes{"text/String.h"} = 1;
     }
 }
 
@@ -221,7 +221,7 @@ sub AddIncludesForSVGAnimatedType
     if ($type eq "Point" or $type eq "Rect") {
         $implIncludes{"Float$type.h"} = 1;
     } elsif ($type eq "String") {
-        $implIncludes{"String.h"} = 1;
+        $implIncludes{"text/String.h"} = 1;
     }
 }
 
@@ -339,7 +339,7 @@ sub GenerateHeader
 
     # Getters
     if ($numAttributes > 0 || $dataNode->extendedAttributes->{"GenerateConstructor"}) {
-        push(@headerContent, "    static JSValue getValueProperty(JSContext *ctx, JSValueConst this_val, int token);\n");
+        push(@headerContent, "    static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);\n");
         if ($dataNode->extendedAttributes->{"CustomGetOwnPropertySlot"}) {
             #<Debug> #push(@headerContent, "    bool customGetOwnPropertySlot(KJS::ExecState*, const KJS::Identifier&, KJS::PropertySlot&);\n");
         }
@@ -383,7 +383,8 @@ sub GenerateHeader
 
     # Constructor object getter
     if ($dataNode->extendedAttributes->{"GenerateConstructor"}) {
-        push(@headerContent, "    static JSValue getConstructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv);\n");
+        #<Debug>#push(@headerContent, "    static JSValue getConstructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv);\n");
+        push(@headerContent, "    static JSValue getConstructor(JSContext *ctx);\n");
         push(@headerContent, "\n");
         #<Debug>#push(@headerContent, "    virtual void put(KJS::ExecState*, const KJS::Identifier&, KJS::JSValue*, int attr = KJS::None);\n");
     }
@@ -627,6 +628,7 @@ sub GenerateImplementation
     if ($numAttributes > 0) {
         my $hashSize = $numAttributes;
         my $hashName = $className;
+        my $hashType = "Attributes";
 
         my @hashKeys = ();      # ie. 'insertBefore'
         my @hashValues = ();    # ie. 'JSNode::InsertBefore'
@@ -656,7 +658,7 @@ sub GenerateImplementation
             push(@hashReadonly, "1"); 
         }
 
-        $object->GenerateAttributesTable($hashName, $hashSize,
+        $object->GenerateAttributesTable($hashName, $hashSize, $hashType,
                                    \@hashKeys, \@hashValues,
                                    \@hashReadonly);
     }
@@ -666,12 +668,18 @@ sub GenerateImplementation
 
     # - Add all constants
     if ($dataNode->extendedAttributes->{"GenerateConstructor"}) {
+        my $protoClassName;
+        $protoClassName = "${className}Prototype";
+
+        push(@implContent, constructorFor($className, $protoClassName, $interfaceName, $dataNode->extendedAttributes->{"CanBeConstructed"}));
+
+        # create constructor table
+
         $hashSize = $numConstants;
         $hashName = $className . "Constructor";
 
         @hashKeys = ();
         @hashValues = ();
-        @hashSpecials = ();
         @hashParameters = ();
         @hashReadonly = ();
 
@@ -682,9 +690,6 @@ sub GenerateImplementation
             my $value = HashValueForClassAndName($implClassName, $name);
             push(@hashValues, $value);
 
-            my $special = "DontDelete|ReadOnly";
-            push(@hashSpecials, $special);
-
             my $numParameters = 0;
             push(@hashParameters, $numParameters);
             push(@hashReadonly, "1");
@@ -692,23 +697,18 @@ sub GenerateImplementation
 
         $object->GenerateHashTable($hashName, $hashSize,
                                    \@hashKeys, \@hashValues,
-                                   \@hashSpecials, \@hashParameters, \@hashReadonly);
-
-        my $protoClassName;
-        $protoClassName = "${className}Prototype";
-
-        push(@implContent, constructorFor($className, $protoClassName, $interfaceName, $dataNode->extendedAttributes->{"CanBeConstructed"}));
+                                   \@hashParameters, \@hashReadonly);
     }
 
-
-    if ($numFunctions > 0) {
-        # - Add functions and constants to a hashtable definition
-        $hashSize = $numFunctions + $numConstants;
+    if ($numConstants > 0) {
+        # - Add constants
+        $hashSize = $numConstants;
         $hashName = $className . "Prototype";
+        $hashType = "Constants";
 
         @hashKeys = ();
         @hashValues = ();
-        @hashParameters = ();
+        @hashReadonly = ();
 
         foreach my $constant (@{$dataNode->constants}) {
             my $name = $constant->name;
@@ -717,9 +717,22 @@ sub GenerateImplementation
             my $value = HashValueForClassAndName($implClassName, $name);
             push(@hashValues, $value);
 
-            my $numParameters = 0;
-            push(@hashParameters, $numParameters);
+            push(@hashReadonly, "1");
         }
+
+        $object->GenerateAttributesTable($hashName, $hashSize, $hashType,
+                                   \@hashKeys, \@hashValues,
+                                   \@hashReadonly);
+    }
+
+    if ($numFunctions > 0) {
+        # - Add functions 
+        $hashSize = $numFunctions;
+        $hashName = $className . "Prototype";
+
+        @hashKeys = ();
+        @hashValues = ();
+        @hashParameters = ();
 
         foreach my $function (@{$dataNode->functions}) {
             my $name = $function->signature->name;
@@ -772,14 +785,17 @@ sub GenerateImplementation
     }
     push(@implContent, "void ${className}Prototype::initPrototype(JSContext * ctx, JSValue this_obj)\n{\n");
     if ($numAttributes > 0) {
-        push(@implContent, "    JS_SetPropertyFunctionList(ctx, this_obj, ${className}Functions, countof(${className}Functions));\n");
+        push(@implContent, "    JS_SetPropertyFunctionList(ctx, this_obj, ${className}AttributesFunctions, countof(${className}AttributesFunctions));\n");
+    }
+    if ($numConstants > 0) {
+        push(@implContent, "    JS_SetPropertyFunctionList(ctx, this_obj, ${className}PrototypeConstantsFunctions, countof(${className}PrototypeConstantsFunctions));\n");
     }
     if ($numFunctions > 0) {
         push(@implContent, "    JS_SetPropertyFunctionList(ctx, this_obj, ${className}PrototypeFunctions, countof(${className}PrototypeFunctions));\n");
     }
     push(@implContent, "}\n\n");
     if ($numConstants ne 0) {
-        push(@implContent, "JSValue ${className}Prototype::getValueProperty(JSContext * ctx, int token) const\n{\n");
+        push(@implContent, "JSValue ${className}Prototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)\n{\n");
         push(@implContent, "    // The token is the numeric value of its associated constant\n");
         push(@implContent, "    return JS_NewInt32(ctx, token);\n}\n\n");
     }
@@ -973,7 +989,7 @@ sub GenerateImplementation
             } elsif ($attribute->signature->type =~ /Constructor$/) {
                 my $constructorType = $codeGenerator->StripModule($attribute->signature->type);
                 $constructorType =~ s/Constructor$//;
-                push(@implContent, "        return JS" . $constructorType . "::getConstructor(exec);\n");
+                push(@implContent, "        return JS" . $constructorType . "::getConstructor(ctx);\n");
             } elsif (!@{$attribute->getterExceptions}) {
                 if ($podType) {
                     push(@implContent, "        $podType imp(*impl());\n\n");
@@ -1013,7 +1029,7 @@ sub GenerateImplementation
 
         if ($dataNode->extendedAttributes->{"GenerateConstructor"}) {
             push(@implContent, "    case ConstructorAttrNum:\n");
-            push(@implContent, "        return getConstructor(exec);\n");
+            push(@implContent, "        return getConstructor(ctx);\n");
         }
 
         push(@implContent, "    }\n");
@@ -1105,8 +1121,9 @@ sub GenerateImplementation
     }
 
     if ($dataNode->extendedAttributes->{"GenerateConstructor"}) {
-        push(@implContent, "JSValue ${className}::getConstructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv)\n{\n");
-        push(@implContent, "    return KJS::cacheGlobalObject<${className}Constructor>(exec, \"[[${interfaceName}.constructor]]\");\n");
+        #<Debug>push(@implContent, "JSValue ${className}::getConstructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv)\n{\n");
+        push(@implContent, "JSValue ${className}::getConstructor(JSContext *ctx)\n{\n");
+        push(@implContent, "    return KJS::cacheGlobalObject<${className}Constructor>(ctx, \"[[${interfaceName}.constructor]]\");\n");
         push(@implContent, "}\n");
     }
 
@@ -1220,7 +1237,7 @@ sub GenerateImplementation
         push(@implContent, "{\n");
         push(@implContent, "    ${className}* thisObj = static_cast<$className*>(slot.slotBase());\n");
         if (IndexGetterReturnsStrings($implClassName)) {
-            $implIncludes{"String.h"} = 1;
+            $implIncludes{"text/String.h"} = 1;
             push(@implContent, "    return jsStringOrNull(thisObj->impl()->item(slot.index()));\n");
         } else {
             push(@implContent, "    return toJS(exec, static_cast<$implClassName*>(thisObj->impl())->item(slot.index()));\n");
@@ -1468,7 +1485,7 @@ sub NativeToJSValue
     return "jsNumber($value)" if $codeGenerator->IsPrimitiveType($type) or $type eq "SVGPaintType" or $type eq "DOMTimeStamp";
 
     if ($codeGenerator->IsStringType($type)) {
-        $implIncludes{"String.h"} = 1;
+        $implIncludes{"text/String.h"} = 1;
         my $conv = $signature->extendedAttributes->{"ConvertNullStringTo"};
         if (defined $conv) {
             return "jsStringOrNull($value)" if $conv eq "Null";
@@ -1574,6 +1591,7 @@ sub GenerateAttributesTable
 
     my $name = shift;
     my $size = shift;
+    my $type = shift;
     my $keys = shift;
     my $values = shift;
     my $readonly = shift;
@@ -1616,7 +1634,7 @@ sub GenerateAttributesTable
     }
 
     # Start outputing the hashtables
-    my $nameEntries = "${name}Functions";
+    my $nameEntries = "". ${name}.${type}."Functions";
     $nameEntries =~ s/:/_/g;
 
     push(@implContent, "/* Functions table */\n");
@@ -1731,7 +1749,6 @@ sub GenerateHashTable
     my $size = shift;
     my $keys = shift;
     my $values = shift;
-    my $specials = shift;
     my $parameters = shift;
     my $readonly = shift;
 
@@ -1923,7 +1940,7 @@ public:
         setPrototype(exec->lexicalInterpreter()->builtinObjectPrototype());
         putDirect(exec->propertyNames().prototype, ${protoClassName}::self(exec), None);
     }
-    static JSValue getValueProperty(JSContext*, int token) const;
+    static JSValue getValueProperty(JSContext*, int token);
 
 EOF
 
