@@ -318,24 +318,31 @@ sub GenerateHeader
     AddClassForwardIfNeeded($implClassName) unless $podType;
 
     # Class declaration
-    push(@headerContent, "class $className : public $parentClassName {\n");
+    #<Debug>#push(@headerContent, "class $className : public $parentClassName {\n");
+    push(@headerContent, "class $className {\n");
+    push(@headerContent, "private:\n");
+    push(@headerContent, "      $className();\n");
     push(@headerContent, "public:\n");
 
+    push(@headerContent, "    static void init(JSContext*);\n");
     # Constructor
     if ($dataNode->extendedAttributes->{"DoNotCache"}) {
-        push(@headerContent, "    $className($passType);\n");
+        push(@headerContent, "    static JSValue create(JSContext*, $passType);\n");
     } else {
         if (IsSVGTypeNeedingContextParameter($implClassName)) {
-            push(@headerContent, "    $className(JSContext*, $passType, SVGElement* context);\n");
+            push(@headerContent, "    static JSValue create(JSContext*, $passType, SVGElement* context);\n");
         } else {
-            push(@headerContent, "    $className(JSContext*, $passType);\n");
+            push(@headerContent, "    static JSValue create(JSContext*, $passType);\n");
         }
     }
 
     # Destructor
     if (!$hasParent or $interfaceName eq "Document") {
-        push(@headerContent, "    virtual ~$className();\n");
+        #<Debug>#push(@headerContent, "    virtual ~$className();\n");
     }
+
+    push(@headerContent, "    static void finalizer(JSRuntime *rt, JSValue val);\n");
+    push(@headerContent, "\n");
 
     # Getters
     if ($numAttributes > 0 || $dataNode->extendedAttributes->{"GenerateConstructor"}) {
@@ -361,13 +368,13 @@ sub GenerateHeader
     }
 
     # Class info
-    push(@headerContent, "    virtual JSClassID classId() const { return js_class_id; }\n");
+    #<Debug>#push(@headerContent, "    virtual JSClassID classId() const { return js_class_id; }\n");
+    push(@headerContent, "\n");
     push(@headerContent, "    static JSClassID js_class_id;\n\n");
-    push(@headerContent, "    static void finalizer(JSRuntime *rt, JSValue val);\n");
 
     # Custom mark function
     if ($dataNode->extendedAttributes->{"CustomMarkFunction"}) {
-        push(@headerContent, "    virtual void mark();\n\n");
+        push(@headerContent, "    virtual void mark(exec);\n\n");
     }
 
     # Custom pushEventHandlerScope function
@@ -378,7 +385,7 @@ sub GenerateHeader
     # Custom call functions
     if ($dataNode->extendedAttributes->{"CustomCall"}) {
         push(@headerContent, "    virtual JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv);\n");
-        push(@headerContent, "    virtual bool implementsCall() const;\n\n");
+        #<Debug>#push(@headerContent, "    virtual bool implementsCall() const;\n\n");
     }
 
     # Constructor object getter
@@ -494,9 +501,9 @@ sub GenerateHeader
             push(@headerContent, "    RefPtr<SVGElement> m_context;\n");
             push(@headerContent, "    RefPtr<$implClassName > m_impl;\n");
         } else {
-            push(@headerContent, "    $implClassName* impl() const { return m_impl.get(); }\n\n");
-            push(@headerContent, "private:\n");
-            push(@headerContent, "    RefPtr<$implClassName> m_impl;\n");
+            #<Debug>#push(@headerContent, "    $implClassName* impl() const { return m_impl.get(); }\n\n");
+            #<Debug>#push(@headerContent, "private:\n");
+            #<Debug>#push(@headerContent, "    RefPtr<$implClassName> m_impl;\n");
         }
     } elsif ($dataNode->extendedAttributes->{"GenerateNativeConverter"}) {
         push(@headerContent, "    $implClassName* impl() const;\n");
@@ -1455,7 +1462,7 @@ sub JSValueToNative
     }
 
     if ($type eq "Attr") {
-        $implIncludes{"kjs_dom.h"} = 1;
+        $implIncludes{"qjs_dom.h"} = 1;
         return "toAttr($value${maybeOkParam})";
     }
 
@@ -1482,7 +1489,7 @@ sub NativeToJSValue
 
     my $type = $codeGenerator->StripModule($signature->type);
 
-    return "jsBoolean($value)" if $type eq "boolean";
+    return "JS_NewBool(ctx, $value ? JS_TRUE : JS_FALSE)" if $type eq "boolean";
     return "jsNumber($value)" if $codeGenerator->IsPrimitiveType($type) or $type eq "SVGPaintType" or $type eq "DOMTimeStamp";
 
     if ($codeGenerator->IsStringType($type)) {
@@ -1495,7 +1502,7 @@ sub NativeToJSValue
 
             die "Unknown value for ConvertNullStringTo extended attribute";
         }
-        return "jsString($value)";
+        return "JS_NewString(ctx, $value)";
     }
 
     if ($type eq "RGBColor") {
@@ -1803,11 +1810,11 @@ sub GenerateHashTable
         if ($name =~ /Prototype/) {
             $type =~ s/Prototype.*//;
             $implClass = $type; $implClass =~ s/Wrapper$//;
-            push(@implContent, "/* Hash table for prototype */\n");
+            push(@implContent, "/* Functions table for prototype */\n");
         } else {
             $type =~ s/Constructor.*//;
             $implClass = $type; $implClass =~ s/Constructor$//;
-            push(@implContent, "/* Hash table for constructor */\n");
+            push(@implContent, "/* Functions table for constructor */\n");
         }
     } else {
         push(@implContent, "/* Functions table */\n");
