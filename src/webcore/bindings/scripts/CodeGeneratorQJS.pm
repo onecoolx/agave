@@ -680,31 +680,33 @@ sub GenerateImplementation
 
         push(@implContent, constructorFor($className, $protoClassName, $interfaceName, $dataNode->extendedAttributes->{"CanBeConstructed"}));
 
-        # create constructor table
+        if ($numConstants > 0) {
+            # create constructor table
 
-        $hashSize = $numConstants;
-        $hashName = $className . "Constructor";
+            $hashSize = $numConstants;
+            $hashName = $className . "Constructor";
 
-        @hashKeys = ();
-        @hashValues = ();
-        @hashParameters = ();
-        @hashReadonly = ();
+            @hashKeys = ();
+            @hashValues = ();
+            @hashParameters = ();
+            @hashReadonly = ();
 
-        foreach my $constant (@{$dataNode->constants}) {
-            my $name = $constant->name;
-            push(@hashKeys, $name);
+            foreach my $constant (@{$dataNode->constants}) {
+                my $name = $constant->name;
+                push(@hashKeys, $name);
 
-            my $value = HashValueForClassAndName($implClassName, $name);
-            push(@hashValues, $value);
+                my $value = HashValueForClassAndName($implClassName, $name);
+                push(@hashValues, $value);
 
-            my $numParameters = 0;
-            push(@hashParameters, $numParameters);
-            push(@hashReadonly, "1");
+                my $numParameters = 0;
+                push(@hashParameters, $numParameters);
+                push(@hashReadonly, "1");
+            }
+
+            $object->GenerateHashTable($hashName, $hashSize,
+                                       \@hashKeys, \@hashValues,
+                                       \@hashParameters, \@hashReadonly);
         }
-
-        $object->GenerateHashTable($hashName, $hashSize,
-                                   \@hashKeys, \@hashValues,
-                                   \@hashParameters, \@hashReadonly);
     }
 
     if ($numConstants > 0) {
@@ -836,29 +838,13 @@ sub GenerateImplementation
 
     # Constructor
     if ($dataNode->extendedAttributes->{"DoNotCache"}) {
-        push(@implContent, "${className}::$className($passType impl)\n");
-        push(@implContent, "    : $parentClassName(impl)\n");
+        push(@implContent, "JSValue ${className}::create(JSContext* ctx, $passType impl)\n");
     } else {
         my $needsSVGContext = IsSVGTypeNeedingContextParameter($implClassName);
         if ($needsSVGContext) {
-            push(@implContent, "${className}::$className(JSContext* ctx, $passType impl, SVGElement* context)\n");
+            push(@implContent, "JSValue ${className}::create(JSContext* ctx, $passType impl, SVGElement* context)\n");
         } else {
-            push(@implContent, "${className}::$className(JSContext* ctx, $passType impl)\n");
-        }
-
-        if ($hasParent) {
-            if ($needsSVGContext and $parentClassName =~ /SVG/) {
-                push(@implContent, "    : $parentClassName(ctx, impl, context)\n");
-            } else {
-                push(@implContent, "    : $parentClassName(ctx, impl)\n");
-            }
-        } else {
-            if ($needsSVGContext) {
-                push(@implContent, "    : m_context(context)\n");
-                push(@implContent, "    , m_impl(impl)\n");
-            } else {
-                push(@implContent, "    : m_impl(impl)\n");
-            }            
+            push(@implContent, "JSValue ${className}::create(JSContext* ctx, $passType impl)\n");
         }
     }
 
@@ -870,7 +856,7 @@ sub GenerateImplementation
 
     # Destructor
     if (!$hasParent) {
-        push(@implContent, "${className}::~$className()\n");
+        push(@implContent, "void ${className}::finalizer(JSRuntime* rt, JSValue val)\n");
         push(@implContent, "{\n");
 
         if ($interfaceName eq "Node") {
@@ -894,7 +880,7 @@ sub GenerateImplementation
     # Document needs a special destructor because it's a special case for caching. It needs
     # its own special handling rather than relying on the caching that Node normally does.
     if ($interfaceName eq "Document") {
-        push(@implContent, "${className}::~$className()\n");
+        push(@implContent, "void ${className}::finalizer(JSRuntime* rt, JSValue val)\n");
         push(@implContent, "{\n    ScriptInterpreter::forgetDOMObject(static_cast<${implClassName}*>(impl()));\n}\n\n");
     }
 
@@ -1141,14 +1127,13 @@ sub GenerateImplementation
         push(@implContent, "    if (!thisObj->inherits(&${className}::info))\n");
         push(@implContent, "        return throwError(exec, TypeError);\n\n");
 
-        push(@implContent, "    $className* castedThisObj = JS_GetOpaque2(ctx, this_val, ${className}::js_class_id);\n");
-        push(@implContent, "    if (!castedThisObj)\n");
+        push(@implContent, "    $implClassName* imp = JS_GetOpaque2(ctx, this_val, ${className}::js_class_id);\n");
+        push(@implContent, "    if (!imp)\n");
         push(@implContent, "        return JS_EXCEPTION;\n\n");
         if ($podType) {
-            push(@implContent, "    JSSVGPODTypeWrapper<$podType>* wrapper = castedThisObj->impl();\n");
-            push(@implContent, "    $podType imp(*wrapper);\n\n");
+            #<Debug>#push(@implContent, "    JSSVGPODTypeWrapper<$podType>* wrapper = castedThisObj->impl();\n");
+            #<Debug>#push(@implContent, "    $podType imp(*wrapper);\n\n");
         } else {
-            push(@implContent, "    $implClassName* imp = static_cast<$implClassName*>(castedThisObj->impl());\n\n");
         }
 
         push(@implContent, "    switch (token) {\n");
@@ -1211,7 +1196,7 @@ sub GenerateImplementation
                     if (TypeCanFailConversion($parameter)) {
                         push(@implContent, "            if (!${name}Ok) {\n");
                         push(@implContent, "                setDOMException(exec, TYPE_MISMATCH_ERR);\n");
-                        push(@implContent, "                return jsUndefined();\n        }\n");
+                        push(@implContent, "                return JS_UNDEFINED;\n            }\n");
                     }
 
                     # If a parameter is "an index", it should throw an INDEX_SIZE_ERR
@@ -1220,7 +1205,7 @@ sub GenerateImplementation
                         $implIncludes{"ExceptionCode.h"} = 1;
                         push(@implContent, "            if ($name < 0) {\n");
                         push(@implContent, "                setDOMException(exec, INDEX_SIZE_ERR);\n");
-                        push(@implContent, "                return jsUndefined();\n        }\n");
+                        push(@implContent, "                return JS_UNDEFINED;\n            }\n");
                     }
                 }
 
