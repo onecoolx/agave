@@ -707,6 +707,22 @@ sub GenerateImplementation
                                        \@hashKeys, \@hashValues,
                                        \@hashParameters, \@hashReadonly);
         }
+
+        push(@implContent, "JSValue ${className}Constructor::self(JSContext * ctx)\n{\n");
+        if ($canConstruct) {
+            push(@implContent, "// construct !!\n");
+        } else {
+            push(@implContent, "    setPrototype(exec->lexicalInterpreter()->builtinObjectPrototype()); \n");
+            push(@implContent, "    putDirect(exec->propertyNames().prototype, ${protoClassName}::self(exec), None);\n");
+            push(@implContent, "    KJS::cacheGlobalObject<${className}Constructor>(ctx, \"[[${interfaceName}.constructor]]\");\n");
+        }
+        push(@implContent, "}\n\n");
+
+        push(@implContent, "void ${className}Constructor::initConstructor(JSContext * ctx, JSValue this_obj)\n{\n");
+        if ($numConstants > 0) {
+            push(@implContent, "    JS_SetPropertyFunctionList(ctx, this_obj, ${className}ConstructorFunctions, countof(${className}ConstructorFunctions));\n");
+        }
+        push(@implContent, "}\n\n");
     }
 
     if ($numConstants > 0) {
@@ -832,6 +848,13 @@ sub GenerateImplementation
 
     push(@implContent, "JSClassID ${className}::js_class_id = 0;\n\n");
 
+    push(@implContent, "void ${className}::init(JSContext* ctx)\n{\n");
+    push(@implContent, "    JS_NewClassID(&${className}::js_class_id);\n");
+    push(@implContent, "    JS_NewClass(JS_GetRuntime(ctx), ${className}::js_class_id, &${className}ClassDefine);\n");
+    push(@implContent, "    JS_SetConstructor(ctx, ${className}Constructor::self(ctx), ${className}Prototype::self(ctx));\n");
+    push(@implContent, "    JS_SetClassProto(ctx, ${className}::js_class_id, ${className}Prototype::self(ctx));\n");
+    push(@implContent, "}\n\n");
+
     # Get correct pass/store types respecting PODType flag
     my $podType = $dataNode->extendedAttributes->{"PODType"};
     my $passType = $podType ? "JSSVGPODTypeWrapper<$podType>*" : "$implClassName*";
@@ -854,28 +877,27 @@ sub GenerateImplementation
         push(@implContent, "{\n    setPrototype(${className}Prototype::self(ctx));\n}\n\n");
     }
 
-    # Destructor
-    if (!$hasParent) {
-        push(@implContent, "void ${className}::finalizer(JSRuntime* rt, JSValue val)\n");
-        push(@implContent, "{\n");
+    push(@implContent, "void ${className}::finalizer(JSRuntime* rt, JSValue val)\n");
+    push(@implContent, "{\n");
+    push(@implContent, "    ${implClassName}* impl = JS_GetOpaque(val, ${className}::js_class_id);\n");
 
-        if ($interfaceName eq "Node") {
-            push(@implContent, "    ScriptInterpreter::forgetDOMNodeForDocument(m_impl->document(), m_impl.get());\n");
-        } else {
-            if ($podType) {
-                my $animatedType = $implClassName;
-                $animatedType =~ s/SVG/SVGAnimated/;
+    if ($interfaceName eq "Node") {
+        push(@implContent, "    ScriptInterpreter::forgetDOMNodeForDocument(impl->document(), impl);\n");
+    } else {
+        if ($podType) {
+            my $animatedType = $implClassName;
+            $animatedType =~ s/SVG/SVGAnimated/;
 
-                # Special case for JSSVGNumber
-                if ($codeGenerator->IsSVGAnimatedType($animatedType) and $podType ne "float") {
-                    push(@implContent, "    JSSVGPODTypeWrapperCache<$podType, $animatedType>::forgetWrapper(m_impl.get());\n");
-                }
+            # Special case for JSSVGNumber
+            if ($codeGenerator->IsSVGAnimatedType($animatedType) and $podType ne "float") {
+                push(@implContent, "    JSSVGPODTypeWrapperCache<$podType, $animatedType>::forgetWrapper(impl);\n");
             }
-            push(@implContent, "    ScriptInterpreter::forgetDOMObject(m_impl.get());\n");
         }
-
-        push(@implContent, "\n}\n\n");
+        push(@implContent, "    ScriptInterpreter::forgetDOMObject(impl);\n");
     }
+
+    push(@implContent, "    impl->deref();\n");
+    push(@implContent, "}\n\n");
 
     # Document needs a special destructor because it's a special case for caching. It needs
     # its own special handling rather than relying on the caching that Node normally does.
@@ -1116,11 +1138,10 @@ sub GenerateImplementation
     if ($dataNode->extendedAttributes->{"GenerateConstructor"}) {
         #<Debug>push(@implContent, "JSValue ${className}::getConstructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv)\n{\n");
         push(@implContent, "JSValue ${className}::getConstructor(JSContext *ctx)\n{\n");
-        push(@implContent, "    return KJS::cacheGlobalObject<${className}Constructor>(ctx, \"[[${interfaceName}.constructor]]\");\n");
+        push(@implContent, "    return ${className}Constructor::self(ctx);\n");
         push(@implContent, "}\n");
     }
 
-    push(@implContent, "\n");
     # Functions
     if ($numFunctions ne 0) {
         push(@implContent, "JSValue ${className}PrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)\n{\n");
@@ -1928,13 +1949,9 @@ sub constructorFor
 my $implContent = << "EOF";
 class ${className}Constructor {
 public:
-    ${className}Constructor(JSContext* ctx)
-    {
-        setPrototype(exec->lexicalInterpreter()->builtinObjectPrototype());
-        putDirect(exec->propertyNames().prototype, ${protoClassName}::self(exec), None);
-    }
+    static JSValue self(JSContext* ctx);
+    static void initConstructor(JSContext * ctx, JSValue this_obj);
     static JSValue getValueProperty(JSContext*, int token);
-
 EOF
 
     if ($canConstruct) {
