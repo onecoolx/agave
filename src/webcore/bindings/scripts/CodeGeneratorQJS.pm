@@ -295,7 +295,7 @@ sub GenerateHeader
         push(@headerContent, GetLegacyHeaderIncludes($dataNode->extendedAttributes->{"LegacyParent"}));
     } else {
         if ($hasParent) {
-            push(@headerContent, "#include \"$parentClassName.h\"\n");
+            push(@headerContent, "#include \"Q$parentClassName.h\"\n");
         } else {
             push(@headerContent, "#include \"qjs_binding.h\"\n");
         }
@@ -373,8 +373,8 @@ sub GenerateHeader
     push(@headerContent, "    static JSClassID js_class_id;\n\n");
 
     # Custom mark function
-    if ($dataNode->extendedAttributes->{"CustomMarkFunction"}) {
-        push(@headerContent, "    virtual void mark(exec);\n\n");
+    if ($dataNode->extendedAttributes->{"CustomMarkFunction"} || $hasRealParent) {
+        push(@headerContent, "    static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);\n\n");
     }
 
     # Custom pushEventHandlerScope function
@@ -624,8 +624,7 @@ sub GenerateImplementation
 
     @implContent = ();
 
-    push(@implContent, "\nusing namespace QJS;\n\n");
-    push(@implContent, "namespace WebCore {\n\n");
+    push(@implContent, "\nnamespace WebCore {\n\n");
 
     push(@implContent, "#define countof(x) (sizeof(x) / sizeof((x)[0]))\n");
     # - Add all attributes in a hashtable definition
@@ -709,13 +708,21 @@ sub GenerateImplementation
         }
 
         push(@implContent, "JSValue ${className}Constructor::self(JSContext * ctx)\n{\n");
-        if ($canConstruct) {
-            push(@implContent, "// construct !!\n");
+        push(@implContent, "    JSValue globalObj = JS_GetGlobalObject(ctx);\n");
+        push(@implContent, "    JSValue obj = JS_GetPropertyStr(ctx, globalObj, \"[[${interfaceName}.constructor]]\")\n");
+        push(@implContent, "    if (JS_IsException(obj)) {\n");
+        if ($dataNode->extendedAttributes->{"CanBeConstructed"}) {
+            push(@implContent, "        obj = JS_NewCFunction2(ctx, ${className}Constructor::construct, \"${interfaceName}\", 0, JS_CFUNC_constructor, 0);\n");
         } else {
-            push(@implContent, "    setPrototype(exec->lexicalInterpreter()->builtinObjectPrototype()); \n");
-            push(@implContent, "    putDirect(exec->propertyNames().prototype, ${protoClassName}::self(exec), None);\n");
-            push(@implContent, "    KJS::cacheGlobalObject<${className}Constructor>(ctx, \"[[${interfaceName}.constructor]]\");\n");
+            push(@implContent, "        obj = JS_NewObject(ctx);\n");
         }
+        push(@implContent, "        ${className}Constructor::initConstructor(ctx, obj);\n");
+        push(@implContent, "        JS_SetPropertyStr(ctx, globalObj, \"[[${interfaceName}.constructor]]\", obj);\n");
+        push(@implContent, "        obj = JS_DupValue(ctx, obj);\n");
+        push(@implContent, "    }\n");
+        push(@implContent, "    JS_FreeValue(ctx, globalObj)\n");
+        push(@implContent, "    JS_FreeValue(ctx, obj)\n");
+        push(@implContent, "    return obj;\n");
         push(@implContent, "}\n\n");
 
         push(@implContent, "void ${className}Constructor::initConstructor(JSContext * ctx, JSValue this_obj)\n{\n");
@@ -723,6 +730,12 @@ sub GenerateImplementation
             push(@implContent, "    JS_SetPropertyFunctionList(ctx, this_obj, ${className}ConstructorFunctions, countof(${className}ConstructorFunctions));\n");
         }
         push(@implContent, "}\n\n");
+
+        if ($dataNode->extendedAttributes->{"CanBeConstructed"}) {
+            push(@implContent, "JSValue ${className}Constructor::construct(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv)\n{\n");
+            push(@implContent, "    return toJS(ctx, new $interfaceName);\n");
+            push(@implContent, "}\n\n");
+        }
     }
 
     if ($numConstants > 0) {
@@ -787,9 +800,14 @@ sub GenerateImplementation
         push(@implContent, "    JSValue globalObj = JS_GetGlobalObject(ctx);\n");
         push(@implContent, "    JSValue obj = JS_GetPropertyStr(ctx, globalObj, \"[[${className}.prototype]]\")\n");
         push(@implContent, "    if (JS_IsException(obj)) {\n");
-        push(@implContent, "        obj = JS_NewObjectProto(ctx, ${parentClassName}Prototype::self(ctx));\n");
+        if ($hasParent) {
+            push(@implContent, "        obj = JS_NewObjectProto(ctx, ${parentClassName}Prototype::self(ctx));\n");
+        } else {
+            push(@implContent, "        obj = JS_NewObject(ctx);\n");
+        }
         push(@implContent, "        ${className}Prototype::initPrototype(ctx, obj);\n");
         push(@implContent, "        JS_SetPropertyStr(ctx, globalObj, \"[[${className}.prototype]]\", obj);\n");
+        push(@implContent, "        obj = JS_DupValue(ctx, obj);\n");
         push(@implContent, "    }\n");
         push(@implContent, "    JS_FreeValue(ctx, globalObj)\n");
         push(@implContent, "    JS_FreeValue(ctx, obj)\n");
@@ -844,6 +862,9 @@ sub GenerateImplementation
     push(@implContent, "static JSClassDef ${className}ClassDefine = \n\{\n");
     push(@implContent, "    \"${interfaceName}\",\n");
     push(@implContent, "    .finalizer = ${className}::finalizer,\n");
+    if ($dataNode->extendedAttributes->{"CustomMarkFunction"} || $hasRealParent) {
+        push(@implContent, "    .gc_mark = ${className}::mark,\n");
+    }
     push(@implContent, "};\n\n");
 
     push(@implContent, "JSClassID ${className}::js_class_id = 0;\n\n");
@@ -905,6 +926,13 @@ sub GenerateImplementation
         push(@implContent, "void ${className}::finalizer(JSRuntime* rt, JSValue val)\n");
         push(@implContent, "{\n    ScriptInterpreter::forgetDOMObject(static_cast<${implClassName}*>(impl()));\n}\n\n");
     }
+
+    if (!$dataNode->extendedAttributes->{"CustomMarkFunction"} and $hasRealParent) {
+        push(@implContent, "void ${className}::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func)\n{\n");
+        push(@implContent, "     ${parentClassName}::mark(rt, val, mark_func);\n");
+        push(@implContent, "}\n\n");
+    }
+    
 
     # Attributes
     if ($numAttributes ne 0) {
@@ -1139,21 +1167,18 @@ sub GenerateImplementation
         #<Debug>push(@implContent, "JSValue ${className}::getConstructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv)\n{\n");
         push(@implContent, "JSValue ${className}::getConstructor(JSContext *ctx)\n{\n");
         push(@implContent, "    return ${className}Constructor::self(ctx);\n");
-        push(@implContent, "}\n");
+        push(@implContent, "}\n\n");
     }
 
     # Functions
     if ($numFunctions ne 0) {
         push(@implContent, "JSValue ${className}PrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)\n{\n");
-        push(@implContent, "    if (!thisObj->inherits(&${className}::info))\n");
-        push(@implContent, "        return throwError(exec, TypeError);\n\n");
-
         push(@implContent, "    $implClassName* imp = JS_GetOpaque2(ctx, this_val, ${className}::js_class_id);\n");
         push(@implContent, "    if (!imp)\n");
-        push(@implContent, "        return JS_EXCEPTION;\n\n");
+        push(@implContent, "        return throwError(ctx, TypeError);\n\n");
         if ($podType) {
-            #<Debug>#push(@implContent, "    JSSVGPODTypeWrapper<$podType>* wrapper = castedThisObj->impl();\n");
-            #<Debug>#push(@implContent, "    $podType imp(*wrapper);\n\n");
+            push(@implContent, "    JSSVGPODTypeWrapper<$podType>* wrapper = castedThisObj->impl();\n");
+            push(@implContent, "    $podType imp(*wrapper);\n\n");
         } else {
         }
 
@@ -1243,10 +1268,10 @@ sub GenerateImplementation
         push(@implContent, "    }\n"); # end switch
         push(@implContent, "    (void)imp;\n") if $hasCustomFunctionsOnly;
         push(@implContent, "    return 0;\n");
-        push(@implContent, "}\n");
+        push(@implContent, "}\n\n");
     }
-    push(@implContent, "\n");
     if ($dataNode->extendedAttributes->{"HasIndexGetter"}) {
+        push(@implContent, "\n");
         push(@implContent, "\nJSValue ${className}::indexGetter(JSContext *ctx, JSValueConst this_obj, uint32_t idx)\n");
         push(@implContent, "{\n");
         push(@implContent, "    ${className}* thisObj = static_cast<$className*>(slot.slotBase());\n");
@@ -1283,9 +1308,8 @@ sub GenerateImplementation
         push(@implContent, "}\n");
     }
 
-    push(@implContent, "\n");
-
     if ((!$hasParent or $dataNode->extendedAttributes->{"GenerateNativeConverter"}) and !$dataNode->extendedAttributes->{"CustomNativeConverter"}) {
+        push(@implContent, "\n");
         if ($podType) {
             push(@implContent, "$podType to${interfaceName}(JSValue val)\n");
         } else {
@@ -1463,7 +1487,7 @@ sub JSValueToNative
     }
 
     if ($type eq "EventTarget") {
-        $implIncludes{"JSEventTargetNode.h"} = 1;
+        $implIncludes{"QJSEventTargetNode.h"} = 1;
         return "toEventTargetNode($value)";
     }
 
@@ -1561,12 +1585,12 @@ sub NativeToJSValue
 
     if ($type eq "EventTarget") {
         $implIncludes{"EventTargetNode.h"} = 1;
-        $implIncludes{"JSEventTargetNode.h"} = 1;
+        $implIncludes{"QJSEventTargetNode.h"} = 1;
         $implIncludes{"qjs_dom.h"} = 1;
     } elsif ($type eq "DOMWindow") {
         $implIncludes{"qjs_window.h"} = 1;
     } elsif ($type eq "DOMObject") {
-        $implIncludes{"JSCanvasRenderingContext2D.h"} = 1;
+        $implIncludes{"QJSCanvasRenderingContext2D.h"} = 1;
     } elsif ($type eq "Clipboard") {
         $implIncludes{"qjs_events.h"} = 1;
         $implIncludes{"Clipboard.h"} = 1;
@@ -1956,8 +1980,7 @@ EOF
 
     if ($canConstruct) {
 $implContent .= << "EOF";
-    virtual bool implementsConstruct() const { return true; }
-    virtual JSObject* construct(ExecState* exec, const List& args) { return static_cast<JSObject*>(toJS(exec, new $interfaceName)); }
+    static JSValue construct(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv);
 EOF
     }
 
