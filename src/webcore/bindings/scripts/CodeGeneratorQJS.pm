@@ -137,7 +137,7 @@ sub GetLegacyHeaderIncludes
     my $legacyParent = shift;
 
     return "#include \"JSHTMLInputElementBase.h\"\n\n" if $legacyParent eq "JSHTMLInputElementBase";
-    return "#include \"qjs_window.h\"\n\n" if $legacyParent eq "KJS::Window"; #<Debug> QJS::Window #
+    return "#include \"qjs_window.h\"\n\n" if $legacyParent eq "Window"; #<Debug> QJS::Window #
     return "#include \"qjs_events.h\"\n\n" if $module eq "events";
     return "#include \"qjs_css.h\"\n\n" if $module eq "css";
     return "#include \"qjs_html.h\"\n\n" if $module eq "html";
@@ -368,14 +368,10 @@ sub GenerateHeader
     }
 
     # Class info
-    #<Debug>#push(@headerContent, "    virtual JSClassID classId() const { return js_class_id; }\n");
     push(@headerContent, "\n");
     push(@headerContent, "    static JSClassID js_class_id;\n\n");
 
-    # Custom mark function
-    if ($dataNode->extendedAttributes->{"CustomMarkFunction"} || $hasRealParent) {
-        push(@headerContent, "    static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);\n\n");
-    }
+    push(@headerContent, "    static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);\n\n");
 
     # Custom pushEventHandlerScope function
     if ($dataNode->extendedAttributes->{"CustomPushEventHandlerScope"}) {
@@ -385,15 +381,12 @@ sub GenerateHeader
     # Custom call functions
     if ($dataNode->extendedAttributes->{"CustomCall"}) {
         push(@headerContent, "    virtual JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv);\n");
-        #<Debug>#push(@headerContent, "    virtual bool implementsCall() const;\n\n");
     }
 
     # Constructor object getter
     if ($dataNode->extendedAttributes->{"GenerateConstructor"}) {
-        #<Debug>#push(@headerContent, "    static JSValue getConstructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv);\n");
         push(@headerContent, "    static JSValue getConstructor(JSContext *ctx);\n");
         push(@headerContent, "\n");
-        #<Debug>#push(@headerContent, "    virtual void put(KJS::ExecState*, const KJS::Identifier&, KJS::JSValue*, int attr = KJS::None);\n");
     }
 
     my $numCustomFunctions = 0;
@@ -459,15 +452,15 @@ sub GenerateHeader
 
         foreach my $attribute (@{$dataNode->attributes}) {
             if ($attribute->signature->extendedAttributes->{"Custom"}) {
-                push(@headerContent, "    JSValue " . $attribute->signature->name . "(JSContext *ctx) const;\n");
+                push(@headerContent, "    static JSValue " . $attribute->signature->name . "(JSContext *ctx) const;\n");
                 if ($attribute->type !~ /^readonly/) {
                     push(@headerContent, "    void set" . WK_ucfirst($attribute->signature->name) . "(JSContext *ctx, JSValue);\n");
                 }
             } elsif ($attribute->signature->extendedAttributes->{"CustomGetter"}) {
-                push(@headerContent, "    JSValue " . $attribute->signature->name . "(JSContext *ctx) const;\n");
+                push(@headerContent, "    static JSValue " . $attribute->signature->name . "(JSContext *ctx) const;\n");
             } elsif ($attribute->signature->extendedAttributes->{"CustomSetter"}) {
                 if ($attribute->type !~ /^readonly/) {
-                    push(@headerContent, "    void set" . WK_ucfirst($attribute->signature->name) . "(JSContext *ctx, JSValue);\n");
+                    push(@headerContent, "    static void set" . WK_ucfirst($attribute->signature->name) . "(JSContext *ctx, JSValue);\n");
                 }
             }
         }
@@ -506,7 +499,7 @@ sub GenerateHeader
             #<Debug>#push(@headerContent, "    RefPtr<$implClassName> m_impl;\n");
         }
     } elsif ($dataNode->extendedAttributes->{"GenerateNativeConverter"}) {
-        push(@headerContent, "    $implClassName* impl() const;\n");
+        #<Debug>#push(@headerContent, "    $implClassName* impl() const;\n");
     }
 
     # Index getter
@@ -624,6 +617,7 @@ sub GenerateImplementation
 
     @implContent = ();
 
+    push(@implContent, "\nusing namespace QJS;\n\n");
     push(@implContent, "\nnamespace WebCore {\n\n");
 
     push(@implContent, "#define countof(x) (sizeof(x) / sizeof((x)[0]))\n");
@@ -709,7 +703,7 @@ sub GenerateImplementation
 
         push(@implContent, "JSValue ${className}Constructor::self(JSContext * ctx)\n{\n");
         push(@implContent, "    JSValue globalObj = JS_GetGlobalObject(ctx);\n");
-        push(@implContent, "    JSValue obj = JS_GetPropertyStr(ctx, globalObj, \"[[${interfaceName}.constructor]]\")\n");
+        push(@implContent, "    JSValue obj = JS_GetPropertyStr(ctx, globalObj, \"[[${interfaceName}.constructor]]\");\n");
         push(@implContent, "    if (JS_IsException(obj)) {\n");
         if ($dataNode->extendedAttributes->{"CanBeConstructed"}) {
             push(@implContent, "        obj = JS_NewCFunction2(ctx, ${className}Constructor::construct, \"${interfaceName}\", 0, JS_CFUNC_constructor, 0);\n");
@@ -720,8 +714,8 @@ sub GenerateImplementation
         push(@implContent, "        JS_SetPropertyStr(ctx, globalObj, \"[[${interfaceName}.constructor]]\", obj);\n");
         push(@implContent, "        obj = JS_DupValue(ctx, obj);\n");
         push(@implContent, "    }\n");
-        push(@implContent, "    JS_FreeValue(ctx, globalObj)\n");
-        push(@implContent, "    JS_FreeValue(ctx, obj)\n");
+        push(@implContent, "    JS_FreeValue(ctx, globalObj);\n");
+        push(@implContent, "    JS_FreeValue(ctx, obj);\n");
         push(@implContent, "    return obj;\n");
         push(@implContent, "}\n\n");
 
@@ -733,7 +727,7 @@ sub GenerateImplementation
 
         if ($dataNode->extendedAttributes->{"CanBeConstructed"}) {
             push(@implContent, "JSValue ${className}Constructor::construct(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv)\n{\n");
-            push(@implContent, "    return toJS(ctx, new $interfaceName);\n");
+            push(@implContent, "    return toJS(ctx, adoptRef(new $interfaceName).get());\n");
             push(@implContent, "}\n\n");
         }
     }
@@ -798,7 +792,7 @@ sub GenerateImplementation
         push(@implContent, "JSValue ${className}Prototype::self(JSContext * ctx)\n");
         push(@implContent, "{\n");
         push(@implContent, "    JSValue globalObj = JS_GetGlobalObject(ctx);\n");
-        push(@implContent, "    JSValue obj = JS_GetPropertyStr(ctx, globalObj, \"[[${className}.prototype]]\")\n");
+        push(@implContent, "    JSValue obj = JS_GetPropertyStr(ctx, globalObj, \"[[${className}.prototype]]\");\n");
         push(@implContent, "    if (JS_IsException(obj)) {\n");
         if ($hasParent) {
             push(@implContent, "        obj = JS_NewObjectProto(ctx, ${parentClassName}Prototype::self(ctx));\n");
@@ -809,8 +803,8 @@ sub GenerateImplementation
         push(@implContent, "        JS_SetPropertyStr(ctx, globalObj, \"[[${className}.prototype]]\", obj);\n");
         push(@implContent, "        obj = JS_DupValue(ctx, obj);\n");
         push(@implContent, "    }\n");
-        push(@implContent, "    JS_FreeValue(ctx, globalObj)\n");
-        push(@implContent, "    JS_FreeValue(ctx, obj)\n");
+        push(@implContent, "    JS_FreeValue(ctx, globalObj);\n");
+        push(@implContent, "    JS_FreeValue(ctx, obj);\n");
         push(@implContent, "    return obj;\n");
         push(@implContent, "}\n\n");
     }
@@ -862,9 +856,7 @@ sub GenerateImplementation
     push(@implContent, "static JSClassDef ${className}ClassDefine = \n\{\n");
     push(@implContent, "    \"${interfaceName}\",\n");
     push(@implContent, "    .finalizer = ${className}::finalizer,\n");
-    if ($dataNode->extendedAttributes->{"CustomMarkFunction"} || $hasRealParent) {
-        push(@implContent, "    .gc_mark = ${className}::mark,\n");
-    }
+    push(@implContent, "    .gc_mark = ${className}::mark,\n");
     push(@implContent, "};\n\n");
 
     push(@implContent, "JSClassID ${className}::js_class_id = 0;\n\n");
@@ -872,7 +864,9 @@ sub GenerateImplementation
     push(@implContent, "void ${className}::init(JSContext* ctx)\n{\n");
     push(@implContent, "    JS_NewClassID(&${className}::js_class_id);\n");
     push(@implContent, "    JS_NewClass(JS_GetRuntime(ctx), ${className}::js_class_id, &${className}ClassDefine);\n");
-    push(@implContent, "    JS_SetConstructor(ctx, ${className}Constructor::self(ctx), ${className}Prototype::self(ctx));\n");
+    if ($dataNode->extendedAttributes->{"GenerateConstructor"}) {
+        push(@implContent, "    JS_SetConstructor(ctx, ${className}Constructor::self(ctx), ${className}Prototype::self(ctx));\n");
+    }
     push(@implContent, "    JS_SetClassProto(ctx, ${className}::js_class_id, ${className}Prototype::self(ctx));\n");
     push(@implContent, "}\n\n");
 
@@ -892,15 +886,19 @@ sub GenerateImplementation
         }
     }
 
-    if ($dataNode->extendedAttributes->{"DoNotCache"}) {
-        push(@implContent, "{\n    setPrototype(${className}Prototype::self());\n}\n\n");
-    } else {
-        push(@implContent, "{\n    setPrototype(${className}Prototype::self(ctx));\n}\n\n");
-    }
+    push(@implContent, "{\n");
+    push(@implContent, "    JSValue obj = JS_NewObjectProtoClass(ctx, ${className}Prototype::self(ctx), ${className}::js_class_id);\n");
+    push(@implContent, "    if (JS_IsException(obj)) {\n");
+    push(@implContent, "        return JS_EXCEPTION;\n");
+    push(@implContent, "    }\n");
+    push(@implContent, "    JS_SetOpaque(obj, impl);\n");
+    push(@implContent, "    impl->ref();\n");
+    push(@implContent, "    return obj;\n");
+    push(@implContent, "}\n\n");
 
     push(@implContent, "void ${className}::finalizer(JSRuntime* rt, JSValue val)\n");
     push(@implContent, "{\n");
-    push(@implContent, "    ${implClassName}* impl = JS_GetOpaque(val, ${className}::js_class_id);\n");
+    push(@implContent, "    ${implClassName}* impl = (${implClassName}*)JS_GetOpaque(val, ${className}::js_class_id);\n");
 
     if ($interfaceName eq "Node") {
         push(@implContent, "    ScriptInterpreter::forgetDOMNodeForDocument(impl->document(), impl);\n");
@@ -927,9 +925,13 @@ sub GenerateImplementation
         push(@implContent, "{\n    ScriptInterpreter::forgetDOMObject(static_cast<${implClassName}*>(impl()));\n}\n\n");
     }
 
-    if (!$dataNode->extendedAttributes->{"CustomMarkFunction"} and $hasRealParent) {
+    if (!$dataNode->extendedAttributes->{"CustomMarkFunction"}) {
         push(@implContent, "void ${className}::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func)\n{\n");
-        push(@implContent, "     ${parentClassName}::mark(rt, val, mark_func);\n");
+        if ($hasRealParent) {
+            push(@implContent, "     ${parentClassName}::mark(rt, val, mark_func);\n");
+        } else {
+            push(@implContent, "     JS_MarkValue(rt, val, mark_func);\n");
+        }
         push(@implContent, "}\n\n");
     }
     
@@ -1008,75 +1010,75 @@ sub GenerateImplementation
             }
 
             if ($attribute->signature->type =~ /Constructor$/) {
-                push(@implContent, "    case " . $name . "ConstructorAttrNum: {\n");
+                push(@implContent, "        case " . $name . "ConstructorAttrNum: {\n");
             } else {
-                push(@implContent, "    case " . WK_ucfirst($name) . "AttrNum: {\n");
+                push(@implContent, "        case " . WK_ucfirst($name) . "AttrNum: {\n");
             }
 
             if ($dataNode->extendedAttributes->{"CheckDomainSecurity"} && !$attribute->signature->extendedAttributes->{"DoNotCheckDomainSecurity"}) {
-                push(@implContent, "        if (!isSafeScript(exec))\n");
-                push(@implContent, "            return jsUndefined();\n");
+                push(@implContent, "            if (!isSafeScript(exec))\n");
+                push(@implContent, "                return JS_UNDEFINED;\n");
             }
 
             if ($attribute->signature->extendedAttributes->{"Custom"} || $attribute->signature->extendedAttributes->{"CustomGetter"}) {
-                push(@implContent, "        return $name(exec);\n");
+                push(@implContent, "            return $name(exec);\n");
             } elsif ($attribute->signature->extendedAttributes->{"CheckNodeSecurity"}) {
                 $implIncludes{"qjs_dom.h"} = 1;
-                push(@implContent, "        $implClassName* imp = static_cast<$implClassName*>(impl());\n\n");
-                push(@implContent, "        return checkNodeSecurity(exec, imp->$name()) ? " . NativeToJSValue($attribute->signature, 0, $implClassName, $implClassNameForValueConversion, "imp->$name()") . " : jsUndefined();\n");
+                push(@implContent, "            $implClassName* imp = ($implClassName*)JS_GetOpaque2(ctx, this_val, ${className}::js_class_id);\n");
+                push(@implContent, "            return checkNodeSecurity(exec, imp->$name()) ? " . NativeToJSValue($attribute->signature, 0, $implClassName, $implClassNameForValueConversion, "imp->$name()") . " : JS_UNDEFINED;\n");
             } elsif ($attribute->signature->extendedAttributes->{"CheckFrameSecurity"}) {
                 $implIncludes{"Document.h"} = 1;
                 $implIncludes{"qjs_dom.h"} = 1;
-                push(@implContent, "        $implClassName* imp = static_cast<$implClassName*>(impl());\n\n");
-                push(@implContent, "        return checkNodeSecurity(exec, imp->contentDocument()) ? " . NativeToJSValue($attribute->signature,  0, $implClassName, $implClassNameForValueConversion, "imp->$name()") . " : jsUndefined();\n");
+                push(@implContent, "            $implClassName* imp = ($implClassName*)JS_GetOpaque2(ctx, this_val, ${className}::js_class_id);\n");
+                push(@implContent, "            return checkNodeSecurity(exec, imp->contentDocument()) ? " . NativeToJSValue($attribute->signature,  0, $implClassName, $implClassNameForValueConversion, "imp->$name()") . " : JS_UNDEFINED;\n");
             } elsif ($attribute->signature->type =~ /Constructor$/) {
                 my $constructorType = $codeGenerator->StripModule($attribute->signature->type);
                 $constructorType =~ s/Constructor$//;
-                push(@implContent, "        return JS" . $constructorType . "::getConstructor(ctx);\n");
+                push(@implContent, "            return JS" . $constructorType . "::getConstructor(ctx);\n");
             } elsif (!@{$attribute->getterExceptions}) {
                 if ($podType) {
-                    push(@implContent, "        $podType imp(*impl());\n\n");
+                    push(@implContent, "            $podType imp(*impl());\n\n");
                     if ($podType eq "float") { # Special case for JSSVGNumber
-                        push(@implContent, "        return " . NativeToJSValue($attribute->signature, 0, $implClassName, "", "imp") . ";\n");
+                        push(@implContent, "            return " . NativeToJSValue($attribute->signature, 0, $implClassName, "", "imp") . ";\n");
                     } else {
-                        push(@implContent, "        return " . NativeToJSValue($attribute->signature, 0, $implClassName, "", "imp.$name()") . ";\n");
+                        push(@implContent, "            return " . NativeToJSValue($attribute->signature, 0, $implClassName, "", "imp.$name()") . ";\n");
                     }
                 } else {
-                    push(@implContent, "        $implClassName* imp = static_cast<$implClassName*>(impl());\n\n");
+                    push(@implContent, "            $implClassName* imp = ($implClassName*)JS_GetOpaque2(ctx, this_val, ${className}::js_class_id);\n");
                     my $type = $codeGenerator->StripModule($attribute->signature->type);
                     my $jsType = NativeToJSValue($attribute->signature, 0, $implClassName, $implClassNameForValueConversion, "imp->$name()");
 
                     if ($codeGenerator->IsSVGAnimatedType($type)) {
-                        push(@implContent, "        RefPtr<$type> obj = $jsType;\n");
-                        push(@implContent, "        return toJS(exec, obj.get(), imp);\n");
+                        push(@implContent, "            RefPtr<$type> obj = $jsType;\n");
+                        push(@implContent, "            return toJS(ctx, obj.get(), imp);\n");
                     } else {
-                        push(@implContent, "        return $jsType;\n");
+                        push(@implContent, "            return $jsType;\n");
                     }
                 }
             } else {
-                push(@implContent, "        ExceptionCode ec = 0;\n");
+                push(@implContent, "            ExceptionCode ec = 0;\n");
 
                 if ($podType) {
-                    push(@implContent, "        $podType imp(*impl());\n\n");
-                    push(@implContent, "        KJS::JSValue* result = " . NativeToJSValue($attribute->signature, 0, $implClassName, "", "imp.$name(ec)") . ";\n");
+                    push(@implContent, "            $podType imp(*impl());\n\n");
+                    push(@implContent, "            KJS::JSValue* result = " . NativeToJSValue($attribute->signature, 0, $implClassName, "", "imp.$name(ec)") . ";\n");
                 } else {
-                    push(@implContent, "        $implClassName* imp = static_cast<$implClassName*>(impl());\n\n");
-                    push(@implContent, "        KJS::JSValue* result = " . NativeToJSValue($attribute->signature, 0, $implClassName, $implClassNameForValueConversion, "imp->$name(ec)") . ";\n");
+                    push(@implContent, "            $implClassName* imp = ($implClassName*)JS_GetOpaque2(ctx, this_val, ${className}::js_class_id);\n");
+                    push(@implContent, "            KJS::JSValue* result = " . NativeToJSValue($attribute->signature, 0, $implClassName, $implClassNameForValueConversion, "imp->$name(ec)") . ";\n");
                 }
 
-                push(@implContent, "        setDOMException(exec, ec);\n");
-                push(@implContent, "        return result;\n");
+                push(@implContent, "            setDOMException(exec, ec);\n");
+                push(@implContent, "            return result;\n");
             }
-            push(@implContent, "    }\n");
+            push(@implContent, "        }\n");
         }
 
         if ($dataNode->extendedAttributes->{"GenerateConstructor"}) {
-            push(@implContent, "    case ConstructorAttrNum:\n");
-            push(@implContent, "        return getConstructor(ctx);\n");
+            push(@implContent, "        case ConstructorAttrNum:\n");
+            push(@implContent, "            return getConstructor(ctx);\n");
         }
 
         push(@implContent, "    }\n");
-        push(@implContent, "    return 0;\n}\n\n");
+        push(@implContent, "    return JS_NULL;\n}\n\n");
 
         # Check if we have any writable attributes
         my $hasReadWriteProperties = 0;
@@ -1112,47 +1114,48 @@ sub GenerateImplementation
                     my $name = $attribute->signature->name;
 
                     if ($attribute->signature->type =~ /Constructor$/) {
-                        push(@implContent, "    case " . $name ."ConstructorAttrNum: {\n");
+                        push(@implContent, "        case " . $name ."ConstructorAttrNum: {\n");
                     } else {
-                        push(@implContent, "    case " . WK_ucfirst($name) . "AttrNum: {\n");
+                        push(@implContent, "        case " . WK_ucfirst($name) . "AttrNum: {\n");
                     }
 
                     if ($dataNode->extendedAttributes->{"CheckDomainSecurity"} && !$attribute->signature->extendedAttributes->{"DoNotCheckDomainSecurity"}) {
-                        push(@implContent, "        if (!isSafeScript(exec))\n");
-                        push(@implContent, "            return;\n");
+                        push(@implContent, "            if (!isSafeScript(ctx))\n");
+                        push(@implContent, "                return;\n");
                     }
 
                     if ($attribute->signature->extendedAttributes->{"Custom"} || $attribute->signature->extendedAttributes->{"CustomSetter"}) {
-                        push(@implContent, "        set" . WK_ucfirst($name) . "(exec, value);\n");
+                        push(@implContent, "            ${className}::set" . WK_ucfirst($name) . "(ctx, value);\n");
                     } elsif ($attribute->signature->type =~ /Constructor$/) {
                         my $constructorType = $attribute->signature->type;
                         $constructorType =~ s/Constructor$//;
                         $implIncludes{"JS" . $constructorType . ".h"} = 1;
-                        push(@implContent, "        // Shadowing a built-in constructor\n");
-                        push(@implContent, "        JSObject::put(exec, \"$name\", value);\n");
+                        push(@implContent, "            // Shadowing a built-in constructor\n");
+                        push(@implContent, "            JSObject::put(ctx, \"$name\", value);\n");
                     } else {
                         if ($podType) {
-                            push(@implContent, "        $podType imp(*impl());\n\n");
+                            push(@implContent, "            $podType imp(*impl());\n\n");
                             if ($podType eq "float") { # Special case for JSSVGNumber
-                                push(@implContent, "        imp = " . JSValueToNative($attribute->signature, "value") . ";\n");
+                                push(@implContent, "            imp = " . JSValueToNative($attribute->signature, "value") . ";\n");
                             } else {
-                                push(@implContent, "        imp.set" . WK_ucfirst($name) . "(" . JSValueToNative($attribute->signature, "value") . ");\n");
+                                push(@implContent, "            imp.set" . WK_ucfirst($name) . "(" . JSValueToNative($attribute->signature, "value") . ");\n");
                             }
-                            push(@implContent, "        m_impl->commitChange(exec, imp);\n");
+                            push(@implContent, "            m_impl->commitChange(ctx, imp);\n");
                         } else {
-                            push(@implContent, "        $implClassName* imp = static_cast<$implClassName*>(impl());\n\n");
-                            push(@implContent, "        ExceptionCode ec = 0;\n") if @{$attribute->setterExceptions};
-                            push(@implContent, "        imp->set" . WK_ucfirst($name) . "(" . JSValueToNative($attribute->signature, "value"));
+                            push(@implContent, "            $implClassName* imp = ($implClassName*)JS_GetOpaque2(ctx, this_val, ${className}::js_class_id);\n");
+                            push(@implContent, "            ExceptionCode ec = 0;\n") if @{$attribute->setterExceptions};
+                            push(@implContent, "            imp->set" . WK_ucfirst($name) . "(" . JSValueToNative($attribute->signature, "value"));
                             push(@implContent, ", ec") if @{$attribute->setterExceptions};
                             push(@implContent, ");\n");
-                            push(@implContent, "        setDOMException(exec, ec);\n") if @{$attribute->setterExceptions};
+                            push(@implContent, "            setDOMException(ctx, ec);\n") if @{$attribute->setterExceptions};
                         }
                     }
-                    push(@implContent, "        break;\n");
-                    push(@implContent, "    }\n");
+                    push(@implContent, "            break;\n");
+                    push(@implContent, "        }\n");
                 }
             }
             push(@implContent, "    }\n"); # end switch
+            push(@implContent, "    return JS_UNDEFINED;\n");
 
             if (IsSVGTypeNeedingContextParameter($implClassName)) {
                 push(@implContent, "    if (context())\n");
@@ -1173,7 +1176,7 @@ sub GenerateImplementation
     # Functions
     if ($numFunctions ne 0) {
         push(@implContent, "JSValue ${className}PrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)\n{\n");
-        push(@implContent, "    $implClassName* imp = JS_GetOpaque2(ctx, this_val, ${className}::js_class_id);\n");
+        push(@implContent, "    $implClassName* imp = ($implClassName*)JS_GetOpaque2(ctx, this_val, ${className}::js_class_id);\n");
         push(@implContent, "    if (!imp)\n");
         push(@implContent, "        return throwError(ctx, TypeError);\n\n");
         if ($podType) {
@@ -1279,7 +1282,7 @@ sub GenerateImplementation
             $implIncludes{"text/String.h"} = 1;
             push(@implContent, "    return jsStringOrNull(thisObj->impl()->item(slot.index()));\n");
         } else {
-            push(@implContent, "    return toJS(exec, static_cast<$implClassName*>(thisObj->impl())->item(slot.index()));\n");
+            push(@implContent, "    return toJS(ctx, static_cast<$implClassName*>(thisObj->impl())->item(slot.index()));\n");
         }
         push(@implContent, "}\n");
         if ($interfaceName eq "HTMLCollection") {
@@ -1299,11 +1302,11 @@ sub GenerateImplementation
 
         push(@implContent, "{\n");
         if ($podType) {
-            push(@implContent, "    return KJS::cacheSVGDOMObject<JSSVGPODTypeWrapper<$podType>, $className>(exec, obj, context);\n");
+            push(@implContent, "    return QJS::cacheSVGDOMObject<JSSVGPODTypeWrapper<$podType>, $className>(ctx, obj, context);\n");
         } elsif (IsSVGTypeNeedingContextParameter($implClassName)) {
-            push(@implContent, "    return KJS::cacheSVGDOMObject<$implClassName, $className>(exec, obj, context);\n");
+            push(@implContent, "    return QJS::cacheSVGDOMObject<$implClassName, $className>(ctx, obj, context);\n");
         } else {
-            push(@implContent, "    return KJS::cacheDOMObject<$implClassName, $className>(exec, obj);\n");
+            push(@implContent, "    return QJS::cacheDOMObject<$implClassName, $className>(ctx, obj);\n");
         }
         push(@implContent, "}\n");
     }
@@ -1318,12 +1321,22 @@ sub GenerateImplementation
 
         push(@implContent, "{\n");
 
-        push(@implContent, "    return val->isObject(&${className}::info) ? " . ($podType ? "($podType) *" : "") . "static_cast<$className*>(val)->impl() : ");
+        push(@implContent, "    if (JS_IsObject(val)) {\n");
+        push(@implContent, "        ${implClassName}* impl = (${implClassName}*)JS_GetOpaque(val, ${className}::js_class_id);\n");
+        push(@implContent, "        if (impl) {\n");
+        push(@implContent, "            return " .($podType ? "($podType) *" : "") ."impl;\n");
+        push(@implContent, "        } else {\n");
+        push(@implContent, "            return NULL;\n");
+        push(@implContent, "        }\n");
+        push(@implContent, "    } else {\n");
+        push(@implContent, "        return ");
         if ($podType and $podType ne "float") {
-            push(@implContent, "$podType();\n}\n");
+            push(@implContent, "$podType();\n");
         } else {
-            push(@implContent, "0;\n}\n");
+            push(@implContent, "0;\n");
+            push(@implContent, "    }\n");
         }
+        push(@implContent, "}\n");
     }
 
     if ($dataNode->extendedAttributes->{"GenerateNativeConverter"} && $hasParent) {
@@ -1481,8 +1494,8 @@ sub JSValueToNative
 
     return "$value->toString(exec)" if $type eq "AtomicString";
     if ($type eq "DOMString") {
-        return "valueToStringWithNullCheck(exec, $value)" if $signature->extendedAttributes->{"ConvertNullToNullString"};
-        return "valueToStringWithUndefinedOrNullCheck(exec, $value)" if $signature->extendedAttributes->{"ConvertUndefinedOrNullToNullString"};
+        return "valueToStringWithNullCheck(ctx, $value)" if $signature->extendedAttributes->{"ConvertNullToNullString"};
+        return "valueToStringWithUndefinedOrNullCheck(ctx, $value)" if $signature->extendedAttributes->{"ConvertUndefinedOrNullToNullString"};
         return "$value->toString(exec)";
     }
 
@@ -1519,8 +1532,8 @@ sub NativeToJSValue
 
     my $type = $codeGenerator->StripModule($signature->type);
 
-    return "JS_NewBool(ctx, $value ? JS_TRUE : JS_FALSE)" if $type eq "boolean";
-    return "jsNumber($value)" if $codeGenerator->IsPrimitiveType($type) or $type eq "SVGPaintType" or $type eq "DOMTimeStamp";
+    return "JS_NewBool(ctx, $value ? 1 : 0)" if $type eq "boolean";
+    return "JS_NewBigUint64(ctx, $value)" if $codeGenerator->IsPrimitiveType($type) or $type eq "SVGPaintType" or $type eq "DOMTimeStamp";
 
     if ($codeGenerator->IsStringType($type)) {
         $implIncludes{"text/String.h"} = 1;
@@ -1553,16 +1566,16 @@ sub NativeToJSValue
 
         if ($implClassNameForValueConversion eq "") {
             if (IsSVGTypeNeedingContextParameter($implClassName)) {
-                return "toJS(exec, new JSSVGPODTypeWrapperCreatorReadOnly<$nativeType>($value), castedThisObj->context())" if $inFunctionCall eq 1;
+                return "toJS(ctx, new JSSVGPODTypeWrapperCreatorReadOnly<$nativeType>($value), castedThisObj->context())" if $inFunctionCall eq 1;
 
                 # Special case: SVGZoomEvent - it doesn't have a context, but it's no problem, as there are no readwrite props
-                return "toJS(exec, new JSSVGPODTypeWrapperCreatorReadOnly<$nativeType>($value), 0)" if $implClassName eq "SVGZoomEvent";
-                return "toJS(exec, new JSSVGPODTypeWrapperCreatorReadOnly<$nativeType>($value), context())";
+                return "toJS(ctx, new JSSVGPODTypeWrapperCreatorReadOnly<$nativeType>($value), 0)" if $implClassName eq "SVGZoomEvent";
+                return "toJS(ctx, new JSSVGPODTypeWrapperCreatorReadOnly<$nativeType>($value), context())";
             } else {
-                return "toJS(exec, new JSSVGPODTypeWrapperCreatorReadOnly<$nativeType>($value), imp)";
+                return "toJS(ctx, new JSSVGPODTypeWrapperCreatorReadOnly<$nativeType>($value), imp)";
             }
         } else { # These classes, always have a m_context pointer!
-            return "toJS(exec, JSSVGPODTypeWrapperCache<$nativeType, $implClassNameForValueConversion>::lookupOrCreateWrapper(imp, &${implClassNameForValueConversion}::$getter, &${implClassNameForValueConversion}::$setter), context())";
+            return "toJS(ctx, JSSVGPODTypeWrapperCache<$nativeType, $implClassNameForValueConversion>::lookupOrCreateWrapper(imp, &${implClassNameForValueConversion}::$getter, &${implClassNameForValueConversion}::$setter), context())";
         }
     }
 
@@ -1610,16 +1623,16 @@ sub NativeToJSValue
     if (IsSVGTypeNeedingContextParameter($type)) {
         if (IsSVGTypeNeedingContextParameter($implClassName)) {
             if ($inFunctionCall eq 1) {
-                return "toJS(exec, WTF::getPtr($value), castedThisObj->context())";
+                return "toJS(ctx, $value, castedThisObj->context())";
             } else {
-                return "toJS(exec, WTF::getPtr($value), context())";
+                return "toJS(ctx, $value, context())";
             }
         } else {
-            return "toJS(exec, WTF::getPtr($value), imp)";
+            return "toJS(ctx, $value, imp)";
         }
     }
 
-    return "toJS(exec, WTF::getPtr($value))";
+    return "toJS(ctx, $value)";
 }
 
 # Internal Helper
@@ -1987,7 +2000,7 @@ EOF
 $implContent .= << "EOF";
 };
 
-JSValue ${className}Constructor::getValueProperty(JSContext * ctx, int token) const
+JSValue ${className}Constructor::getValueProperty(JSContext * ctx, int token)
 {
     // The token is the numeric value of its associated constant
     return JS_NewInt32(ctx, token);

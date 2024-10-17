@@ -1,26 +1,27 @@
 /*
- * Copyright (C) 2007 Apple Inc. All rights reserved.
+ * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
+ * modification, are permitted provided that the following conditions are met:
  *
- * THIS SOFTWARE IS PROVIDED BY APPLE COMPUTER, INC. ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL APPLE COMPUTER, INC. OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
- * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #ifndef JSEventTargetNode_h
@@ -33,18 +34,22 @@ namespace WebCore {
     class EventTargetNode;
     class Node;
 
-    class JSEventTargetNode : public JSNode {
+    class JSEventTargetNode {
     public:
-        JSEventTargetNode(KJS::ExecState*, Node* n);
+        static void init(JSContext* ctx);
+        static JSValue create(JSContext* ctx, Node* n);
+        static void finalizer(JSRuntime *rt, JSValue val);
 
-        void setListener(KJS::ExecState*, const AtomicString& eventType, KJS::JSValue* func) const;
-        KJS::JSValue* getListener(const AtomicString& eventType) const;
-        virtual void pushEventHandlerScope(KJS::ExecState*, KJS::ScopeChain&) const;
+        //void setListener(KJS::ExecState*, const AtomicString& eventType, KJS::JSValue* func) const;
+        //KJS::JSValue* getListener(const AtomicString& eventType) const;
+        //virtual void pushEventHandlerScope(KJS::ExecState*, KJS::ScopeChain&) const;
 
-        bool getOwnPropertySlot(KJS::ExecState*, const KJS::Identifier&, KJS::PropertySlot&);
-        KJS::JSValue* getValueProperty(KJS::ExecState*, int token) const;
-        virtual void put(KJS::ExecState*, const KJS::Identifier&, KJS::JSValue* value, int attr);
-        void putValueProperty(KJS::ExecState*, int token, KJS::JSValue* value, int attr);
+        static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);
+        static JSValue putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue val, int token);
+
+        static JSClassID js_class_id;
+
+        static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);
 
         enum {  
             AddEventListener, RemoveEventListener, DispatchEvent,
@@ -57,9 +62,13 @@ namespace WebCore {
         };
     };
 
-    EventTargetNode* toEventTargetNode(KJS::JSValue*);
+    EventTargetNode* toEventTargetNode(JSValue val);
 
-    KJS_DEFINE_PROTOTYPE_WITH_PROTOTYPE(JSEventTargetNodePrototype, JSNodePrototype)
+    class JSEventTargetNodePrototype {
+    public:
+        static JSValue self(JSContext * ctx);
+        static void initPrototype(JSContext * ctx, JSValue this_obj);
+    };
 
 } // namespace WebCore
 

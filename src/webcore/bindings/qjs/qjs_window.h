@@ -36,7 +36,7 @@ namespace WebCore {
     class Node;
 }
 
-namespace KJS {
+namespace QJS {
 
     class Location;
     class PausedTimeout;
