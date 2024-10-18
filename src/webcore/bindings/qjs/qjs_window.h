@@ -103,9 +103,11 @@ namespace QJS {
 
     void timerFired(DOMWindowTimer*);
     
+#if 0
     KJS::ScriptInterpreter *interpreter() const;
+#endif
         
-    bool isSafeScript(ExecState*) const;
+    bool isSafeScript(JSContext*) const;
     static bool isSafeScript(const ScriptInterpreter *origin, const ScriptInterpreter *target);
 
     Location* location() const;

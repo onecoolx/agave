@@ -17,25 +17,25 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef kjs_dom_h
-#define kjs_dom_h
+#ifndef qkjs_dom_h
+#define qkjs_dom_h
 
-#include "JSNode.h"
 #include "Node.h"
-#include "kjs_binding.h"
+#include "QJSNode.h"
+#include "qjs_binding.h"
 
 namespace WebCore {
 
     class Attr;
     class EventTarget;
 
-    Attr* toAttr(KJS::JSValue*, bool& ok);
+    Attr* toAttr(JSValue, bool& ok);
 
-    bool checkNodeSecurity(KJS::ExecState*, Node*);
-    KJS::JSValue* getRuntimeObject(KJS::ExecState*, Node*);
-    KJS::JSValue* toJS(KJS::ExecState*, EventTarget*);
-    KJS::JSObject* getNodeConstructor(KJS::ExecState*);
+    bool checkNodeSecurity(JSContext*, Node*);
+    JSValue getRuntimeObject(JSContext*, Node*);
+    JSValue toJS(JSContext*, EventTarget*);
+    JSValue getNodeConstructor(JSContext*);
 
 } // namespace WebCore
 
-#endif // kjs_dom_h
+#endif // qjs_dom_h

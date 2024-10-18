@@ -1131,7 +1131,7 @@ sub GenerateImplementation
                     } elsif ($attribute->signature->type =~ /Constructor$/) {
                         my $constructorType = $attribute->signature->type;
                         $constructorType =~ s/Constructor$//;
-                        $implIncludes{"JS" . $constructorType . ".h"} = 1;
+                        $implIncludes{"QJS" . $constructorType . ".h"} = 1;
                         push(@implContent, "            // Shadowing a built-in constructor\n");
                         push(@implContent, "            JSObject::put(ctx, \"$name\", value);\n");
                     } else {
@@ -1286,7 +1286,7 @@ sub GenerateImplementation
         }
         push(@implContent, "}\n\n");
         if ($interfaceName eq "HTMLCollection") {
-            $implIncludes{"JSNode.h"} = 1;
+            $implIncludes{"QJSNode.h"} = 1;
             $implIncludes{"Node.h"} = 1;
         }
     }
