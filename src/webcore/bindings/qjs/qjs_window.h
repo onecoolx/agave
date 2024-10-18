@@ -17,11 +17,11 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef kjs_window_h
-#define kjs_window_h
+#ifndef qjs_window_h
+#define qjs_window_h
 
-#include "PlatformString.h"
-#include "kjs_binding.h"
+#include "qjs_binding.h"
+#include <text/String.h>
 #include <wtf/HashMap.h>
 #include <wtf/OwnPtr.h>
 
@@ -226,7 +226,7 @@ namespace QJS {
 } // namespace
 
 namespace WebCore {
-    KJS::JSValue* toJS(KJS::ExecState*, DOMWindow*);
+    JSValue toJS(JSContext*, DOMWindow*);
 } // namespace WebCore
 
 #endif

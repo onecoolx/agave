@@ -159,9 +159,9 @@ namespace QJS {
     };
 #endif
 
-    JSValue jsStringOrNull(const WebCore::String&); // null if the string is null
-    JSValue jsStringOrUndefined(const WebCore::String&); // undefined if the string is null
-    JSValue jsStringOrFalse(const WebCore::String&); // boolean false if the string is null
+    JSValue jsStringOrNull(JSContext*, const WebCore::String&); // null if the string is null
+    JSValue jsStringOrUndefined(JSContext*, const WebCore::String&); // undefined if the string is null
+    JSValue jsStringOrFalse(JSContext*, const WebCore::String&); // boolean false if the string is null
 
     // see JavaScriptCore for explanation should be used for UString that is already owned
     // by another object, so that collecting the JSString wrapper is unlikely to save memory.
@@ -170,9 +170,24 @@ namespace QJS {
 
     WebCore::String valueToStringWithNullCheck(JSContext*, JSValue); // null String if the value is null
     WebCore::String valueToStringWithUndefinedOrNullCheck(JSContext*, JSValue); // null String if the value is null or undefined
+    WebCore::String valueToString(JSContext*, JSValue);
+    int32_t valueToInt32(JSContext*, JSValue, bool& ok);
+    int32_t valueToInt32(JSContext*, JSValue);
+    float valueToFloat(JSContext*, JSValue);
+    double valueToDouble(JSContext*, JSValue);
+    bool valueToBoolean(JSContext*, JSValue);
 
     template <typename T> inline JSValue toJS(JSContext* ctx, PassRefPtr<T> ptr) { return toJS(ctx, ptr.get()); }
 
-} // namespace
 
+    template <typename T> inline T* getPtr(const PassRefPtr<T>& p)
+    {
+        return p.get();
+    }
+
+    template <typename T> inline T* getPtr(T* p)
+    {
+        return p;
+    }
+} // namespace
 #endif

@@ -24,31 +24,23 @@
 #define kjs_css_h
 
 #include "Color.h"
-#include "kjs_binding.h"
+#include "qjs_binding.h"
 
 namespace WebCore {
 
-    class JSRGBColor : public KJS::DOMObject {
+    class JSRGBColor {
     public:
-        JSRGBColor(KJS::ExecState*, unsigned color);
-        ~JSRGBColor();
+        static void init(JSContext*);
+        static JSValue create(JSContext*, uint32_t color);
 
-        virtual bool getOwnPropertySlot(KJS::ExecState*, const KJS::Identifier&, KJS::PropertySlot&);
-        KJS::JSValue* getValueProperty(KJS::ExecState*, int token) const;
-        // no put - all read-only
+        static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);
 
-        virtual const KJS::ClassInfo* classInfo() const { return &info; }
-        static const KJS::ClassInfo info;
+        static JSClassID js_class_id;
 
         enum { Red, Green, Blue };
-
-        unsigned impl() const { return m_color; }
-
-    private:
-        unsigned m_color;
     };
 
-    KJS::JSValue* getJSRGBColor(KJS::ExecState*, unsigned color);
+    JSValue getJSRGBColor(JSContext*, uint32_t color);
 
 } // namespace WebCore
 
