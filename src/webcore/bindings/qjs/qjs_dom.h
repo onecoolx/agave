@@ -17,8 +17,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef qkjs_dom_h
-#define qkjs_dom_h
+#ifndef qjs_dom_h
+#define qjs_dom_h
 
 #include "Node.h"
 #include "QJSNode.h"

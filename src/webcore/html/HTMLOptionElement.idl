@@ -20,7 +20,7 @@
 
 module html {
 
-    interface [GenerateNativeConverter] HTMLOptionElement : HTMLElement {
+    interface [GenerateNativeConverter, GenerateExtendConstructor] HTMLOptionElement : HTMLElement {
         readonly attribute  HTMLFormElement      form;
                  attribute  boolean              defaultSelected;
 #if defined(LANGUAGE_JAVASCRIPT)

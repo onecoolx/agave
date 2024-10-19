@@ -1,4 +1,4 @@
-﻿/*
+/*
  * QuickJS Javascript Engine
  * 
  * Copyright (c) 2017-2021 Fabrice Bellard
@@ -28,11 +28,7 @@
 #include <inttypes.h>
 #include <string.h>
 #include <assert.h>
-#ifndef _WIN32
 #include <sys/time.h>
-#else
-#define _UCRT_NOISY_NAN 1
-#endif
 #include <time.h>
 #include <fenv.h>
 #include <math.h>
@@ -42,9 +38,6 @@
 #include <malloc.h>
 #elif defined(__FreeBSD__)
 #include <malloc_np.h>
-#elif defined(_WIN32)
-#include <malloc.h>
-#include <windows.h>
 #endif
 
 #include "cutils.h"
@@ -74,38 +67,15 @@
 
 /* define to include Atomics.* operations which depend on the OS
    threads */
-#if !defined(EMSCRIPTEN) && !defined(_MSC_VER)
+#if !defined(EMSCRIPTEN)
 #define CONFIG_ATOMICS
 #endif
 
-#if !defined(EMSCRIPTEN) && !defined(_MSC_VER)
+#if !defined(EMSCRIPTEN)
 /* enable stack limitation */
 #define CONFIG_STACK_CHECK
 #endif
 
-#if defined(_MSC_VER)
-typedef size_t ssize_t;
-
-// From: https://stackoverflow.com/a/26085827
-int gettimeofday(struct timeval* tp, struct timezone* tzp)
-{
-    static const uint64_t EPOCH = ((uint64_t)116444736000000000ULL);
-
-    SYSTEMTIME  system_time;
-    FILETIME    file_time;
-    uint64_t    time;
-
-    GetSystemTime(&system_time);
-    SystemTimeToFileTime(&system_time, &file_time);
-    time = ((uint64_t)file_time.dwLowDateTime);
-    time += ((uint64_t)file_time.dwHighDateTime) << 32;
-
-    tp->tv_sec = (long)((time - EPOCH) / 10000000L);
-    tp->tv_usec = (long)(system_time.wMilliseconds * 1000);
-
-    return 0;
-}
-#endif
 
 /* dump object free */
 //#define DUMP_FREE
@@ -139,9 +109,7 @@ int gettimeofday(struct timeval* tp, struct timezone* tzp)
 //#define FORCE_GC_AT_MALLOC
 
 #ifdef CONFIG_ATOMICS
-#ifndef WIN32
 #include <pthread.h>
-#endif
 #include <stdatomic.h>
 #include <errno.h>
 #endif
@@ -233,17 +201,7 @@ typedef enum JSErrorEnum {
 #define JS_STACK_SIZE_MAX 65534
 #define JS_STRING_LEN_MAX ((1 << 30) - 1)
 
-#if defined(_MSC_VER) 
-#if (_MSC_VER >= 1700)
-#define __exception _Check_return_
-#else
-#define __exception
-#endif
-#else
 #define __exception __attribute__((warn_unused_result))
-#endif
-
-
 
 typedef struct JSShape JSShape;
 typedef struct JSString JSString;
@@ -1082,7 +1040,7 @@ static __exception int JS_ToArrayLengthFree(JSContext *ctx, uint32_t *plen,
                                             JSValue val, BOOL is_array_ctor);
 static JSValue JS_EvalObject(JSContext *ctx, JSValueConst this_obj,
                              JSValueConst val, int flags, int scope_idx);
-JSValue FOLLY_FORMAT_ATTR(printf, 2, 3) JS_ThrowInternalError(JSContext *ctx, const char *fmt, ...);
+JSValue __attribute__((format(printf, 2, 3))) JS_ThrowInternalError(JSContext *ctx, const char *fmt, ...);
 static __maybe_unused void JS_DumpAtoms(JSRuntime *rt);
 static __maybe_unused void JS_DumpString(JSRuntime *rt,
                                                   const JSString *p);
@@ -6690,7 +6648,7 @@ static JSValue JS_ThrowError(JSContext *ctx, JSErrorEnum error_num,
     return JS_ThrowError2(ctx, error_num, fmt, ap, add_backtrace);
 }
 
-JSValue FOLLY_FORMAT_ATTR(printf, 2, 3) JS_ThrowSyntaxError(JSContext *ctx, const char *fmt, ...)
+JSValue __attribute__((format(printf, 2, 3))) JS_ThrowSyntaxError(JSContext *ctx, const char *fmt, ...)
 {
     JSValue val;
     va_list ap;
@@ -6701,7 +6659,7 @@ JSValue FOLLY_FORMAT_ATTR(printf, 2, 3) JS_ThrowSyntaxError(JSContext *ctx, cons
     return val;
 }
 
-JSValue FOLLY_FORMAT_ATTR(printf, 2, 3) JS_ThrowTypeError(JSContext *ctx, const char *fmt, ...)
+JSValue __attribute__((format(printf, 2, 3))) JS_ThrowTypeError(JSContext *ctx, const char *fmt, ...)
 {
     JSValue val;
     va_list ap;
@@ -6712,7 +6670,7 @@ JSValue FOLLY_FORMAT_ATTR(printf, 2, 3) JS_ThrowTypeError(JSContext *ctx, const 
     return val;
 }
 
-static int FOLLY_FORMAT_ATTR(printf, 3, 4) JS_ThrowTypeErrorOrFalse(JSContext *ctx, int flags, const char *fmt, ...)
+static int __attribute__((format(printf, 3, 4))) JS_ThrowTypeErrorOrFalse(JSContext *ctx, int flags, const char *fmt, ...)
 {
     va_list ap;
 
@@ -6728,7 +6686,7 @@ static int FOLLY_FORMAT_ATTR(printf, 3, 4) JS_ThrowTypeErrorOrFalse(JSContext *c
 }
 
 /* never use it directly */
-static JSValue FOLLY_FORMAT_ATTR(printf, 3, 4) __JS_ThrowTypeErrorAtom(JSContext *ctx, JSAtom atom, const char *fmt, ...)
+static JSValue __attribute__((format(printf, 3, 4))) __JS_ThrowTypeErrorAtom(JSContext *ctx, JSAtom atom, const char *fmt, ...)
 {
     char buf[ATOM_GET_STR_BUF_SIZE];
     return JS_ThrowTypeError(ctx, fmt,
@@ -6736,7 +6694,7 @@ static JSValue FOLLY_FORMAT_ATTR(printf, 3, 4) __JS_ThrowTypeErrorAtom(JSContext
 }
 
 /* never use it directly */
-static JSValue FOLLY_FORMAT_ATTR(printf, 3, 4) __JS_ThrowSyntaxErrorAtom(JSContext *ctx, JSAtom atom, const char *fmt, ...)
+static JSValue __attribute__((format(printf, 3, 4))) __JS_ThrowSyntaxErrorAtom(JSContext *ctx, JSAtom atom, const char *fmt, ...)
 {
     char buf[ATOM_GET_STR_BUF_SIZE];
     return JS_ThrowSyntaxError(ctx, fmt,
@@ -6759,7 +6717,7 @@ static int JS_ThrowTypeErrorReadOnly(JSContext *ctx, int flags, JSAtom atom)
     }
 }
 
-JSValue FOLLY_FORMAT_ATTR(printf, 2, 3) JS_ThrowReferenceError(JSContext *ctx, const char *fmt, ...)
+JSValue __attribute__((format(printf, 2, 3))) JS_ThrowReferenceError(JSContext *ctx, const char *fmt, ...)
 {
     JSValue val;
     va_list ap;
@@ -6770,7 +6728,7 @@ JSValue FOLLY_FORMAT_ATTR(printf, 2, 3) JS_ThrowReferenceError(JSContext *ctx, c
     return val;
 }
 
-JSValue FOLLY_FORMAT_ATTR(printf, 2, 3) JS_ThrowRangeError(JSContext *ctx, const char *fmt, ...)
+JSValue __attribute__((format(printf, 2, 3))) JS_ThrowRangeError(JSContext *ctx, const char *fmt, ...)
 {
     JSValue val;
     va_list ap;
@@ -6781,7 +6739,7 @@ JSValue FOLLY_FORMAT_ATTR(printf, 2, 3) JS_ThrowRangeError(JSContext *ctx, const
     return val;
 }
 
-JSValue FOLLY_FORMAT_ATTR(printf, 2, 3) JS_ThrowInternalError(JSContext *ctx, const char *fmt, ...)
+JSValue __attribute__((format(printf, 2, 3))) JS_ThrowInternalError(JSContext *ctx, const char *fmt, ...)
 {
     JSValue val;
     va_list ap;
@@ -10318,11 +10276,7 @@ static JSValue js_atof(JSContext *ctx, const char *str, const char **pp,
             } else
 #endif
             {
-#ifdef _MSC_VER
-                double d = INFINITY;
-#else
                 double d = 1.0 / 0.0;
-#endif
                 if (is_neg)
                     d = -d;
                 val = JS_NewFloat64(ctx, d);
@@ -16105,45 +16059,6 @@ static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
 #define DEFAULT         default
 #define BREAK           break
 #else
-#if defined(_MSC_VER)
-    int _inited = 0;
-    static const void* dispatch_table[256] = { 0 };
-    if (!_inited) {
-        int idx = 0;
-#define DEF(id, size, n_pop, n_push, f) do{ \
-        const void * p = NULL; \
-        __asm { mov [p], offset case_OP_##id } \
-        dispatch_table[idx++] = p; \
-    } while(0);
-
-#if SHORT_OPCODES
-#define def(id, size, n_pop, n_push, f)
-#else                                                     
-#define def(id, size, n_pop, n_push, f) do{ \
-            const void* p = NULL; \
-            __asm { mov[p], offset case_default } \
-        dispatch_table[idx++] = p; \
-    } while (0);
-#endif
-#include "quickjs-opcode.h"
-
-        for (int i = OP_COUNT; i < 256; i++) {
-            const void* p = NULL;
-            __asm { mov[p], offset case_default }
-            dispatch_table[i] = p;
-        }
-        _inited = 1;
-    }
-#define SWITCH(pc) do { \
-        const void* p1 = dispatch_table[opcode = *pc++]; \
-        __asm { \
-            mov eax,[p1] \
-        };\
-        __asm { \
-            jmp eax \
-        };\
-    } while(0);
-#else
     static const void * const dispatch_table[256] = {
 #define DEF(id, size, n_pop, n_push, f) && case_OP_ ## id,
 #if SHORT_OPCODES
@@ -16155,8 +16070,6 @@ static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
         [ OP_COUNT ... 255 ] = &&case_default
     };
 #define SWITCH(pc)      goto *dispatch_table[opcode = *pc++];
-
-#endif
 #define CASE(op)        case_ ## op
 #define DEFAULT         case_default
 #define BREAK           SWITCH(pc)
@@ -20130,7 +20043,7 @@ static void free_token(JSParseState *s, JSToken *token)
     }
 }
 
-static void __maybe_unused dump_token(JSParseState *s,
+static void __attribute((unused)) dump_token(JSParseState *s,
                                              const JSToken *token)
 {
     switch(token->val) {
@@ -20191,7 +20104,7 @@ static void __maybe_unused dump_token(JSParseState *s,
     }
 }
 
-int FOLLY_FORMAT_ATTR(printf, 2, 3) js_parse_error(JSParseState *s, const char *fmt, ...)
+int __attribute__((format(printf, 2, 3))) js_parse_error(JSParseState *s, const char *fmt, ...)
 {
     JSContext *ctx = s->ctx;
     va_list ap;
@@ -43031,7 +42944,7 @@ static JSValue js_math_min_max(JSContext *ctx, JSValueConst this_val,
     uint32_t tag;
 
     if (unlikely(argc == 0)) {
-        return __JS_NewFloat64(ctx, is_max ? -INFINITY : INFINITY);
+        return __JS_NewFloat64(ctx, is_max ? -1.0 / 0.0 : 1.0 / 0.0);
     }
 
     tag = JS_VALUE_GET_TAG(argv[0]);
@@ -43112,18 +43025,6 @@ static double js_math_round(double a)
     /* otherwise: abs(a) >= 2^52, or NaN, +/-Infinity: no change */
     return u.d;
 }
-
-#if defined(_MSC_VER)
-static double js_math_floor(double a)
-{
-    return floor(a);
-}
-
-static double js_math_ceil(double a)
-{
-    return ceil(a);
-}
-#endif
 
 static JSValue js_math_hypot(JSContext *ctx, JSValueConst this_val,
                              int argc, JSValueConst *argv)
@@ -43219,14 +43120,8 @@ static const JSCFunctionListEntry js_math_funcs[] = {
     JS_CFUNC_MAGIC_DEF("min", 2, js_math_min_max, 0 ),
     JS_CFUNC_MAGIC_DEF("max", 2, js_math_min_max, 1 ),
     JS_CFUNC_SPECIAL_DEF("abs", 1, f_f, fabs ),
-#if defined(_MSC_VER)
-    JS_CFUNC_SPECIAL_DEF("floor", 1, f_f, js_math_floor ),
-    JS_CFUNC_SPECIAL_DEF("ceil", 1, f_f, js_math_ceil ),
-#else
     JS_CFUNC_SPECIAL_DEF("floor", 1, f_f, floor ),
     JS_CFUNC_SPECIAL_DEF("ceil", 1, f_f, ceil ),
-#endif
-
     JS_CFUNC_SPECIAL_DEF("round", 1, f_f, js_math_round ),
     JS_CFUNC_SPECIAL_DEF("sqrt", 1, f_f, sqrt ),
 
@@ -49099,7 +48994,7 @@ static int isURIReserved(int c) {
     return c < 0x100 && memchr(";/?:@&=+$,#", c, sizeof(";/?:@&=+$,#") - 1) != NULL;
 }
 
-static int FOLLY_FORMAT_ATTR(printf, 2, 3) js_throw_URIError(JSContext *ctx, const char *fmt, ...)
+static int __attribute__((format(printf, 2, 3))) js_throw_URIError(JSContext *ctx, const char *fmt, ...)
 {
     va_list ap;
 
@@ -49372,7 +49267,7 @@ static const JSCFunctionListEntry js_global_funcs[] = {
     JS_CFUNC_MAGIC_DEF("encodeURIComponent", 1, js_global_encodeURI, 1 ),
     JS_CFUNC_DEF("escape", 1, js_global_escape ),
     JS_CFUNC_DEF("unescape", 1, js_global_unescape ),
-    JS_PROP_DOUBLE_DEF("Infinity", INFINITY, 0 ),
+    JS_PROP_DOUBLE_DEF("Infinity", 1.0 / 0.0, 0 ),
     JS_PROP_DOUBLE_DEF("NaN", NAN, 0 ),
     JS_PROP_UNDEFINED_DEF("undefined", 0 ),
 };

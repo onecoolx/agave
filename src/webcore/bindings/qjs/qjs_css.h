@@ -20,8 +20,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef kjs_css_h
-#define kjs_css_h
+#ifndef qjs_css_h
+#define qjs_css_h
 
 #include "Color.h"
 #include "qjs_binding.h"

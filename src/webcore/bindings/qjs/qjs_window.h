@@ -89,14 +89,16 @@ namespace QJS {
      * returns a pointer to the Window object this javascript interpreting instance
      * was called from.
      */
-    static Window* retrieveActive(ExecState*);
+    static Window* retrieveActive(JSContext*);
+
+#if 0
     virtual void mark();
-    virtual bool getOwnPropertySlot(ExecState*, const Identifier&, PropertySlot&);
     JSValue *getValueProperty(ExecState *exec, int token) const;
     virtual void put(ExecState *exec, const Identifier &propertyName, JSValue *value, int attr = None);
 
     int installTimeout(const UString& handler, int t, bool singleShot);
     int installTimeout(JSValue* function, const List& args, int t, bool singleShot);
+#endif
     void clearTimeout(int timerId, bool delAction = true);
     PausedTimeouts* pauseTimeouts();
     void resumeTimeouts(PausedTimeouts*);
@@ -107,7 +109,6 @@ namespace QJS {
     KJS::ScriptInterpreter *interpreter() const;
 #endif
         
-    bool isSafeScript(JSContext*) const;
     static bool isSafeScript(const ScriptInterpreter *origin, const ScriptInterpreter *target);
 
     Location* location() const;
@@ -129,6 +130,7 @@ namespace QJS {
     // Set the current "event" object
     void setCurrentEvent(WebCore::Event*);
 
+#if 0
     // Set a place to put a dialog return value when the window is cleared.
     void setReturnValueSlot(JSValue** slot);
 
@@ -140,8 +142,9 @@ namespace QJS {
     UnprotectedListenersMap& jsUnprotectedEventListeners();
     UnprotectedListenersMap& jsUnprotectedHTMLEventListeners();
     
-    virtual const ClassInfo* classInfo() const { return &info; }
-    static const ClassInfo info;
+    //virtual const ClassInfo* classInfo() const { return &info; }
+    //static const ClassInfo info;
+#endif
 
     enum {
         // Functions
@@ -170,6 +173,7 @@ namespace QJS {
     };
 
   private:
+#if 0
     JSValue* getListener(ExecState*, const WebCore::AtomicString& eventType) const;
     void setListener(ExecState*, const WebCore::AtomicString& eventType, JSValue* func);
 
@@ -177,6 +181,7 @@ namespace QJS {
     static JSValue *namedFrameGetter(ExecState *exec, JSObject *, const Identifier&, const PropertySlot& slot);
     static JSValue *indexGetter(ExecState *exec, JSObject *, const Identifier&, const PropertySlot& slot);
     static JSValue *namedItemGetter(ExecState *exec, JSObject *, const Identifier&, const PropertySlot& slot);
+#endif
 
     void updateLayout() const;
 
@@ -188,7 +193,9 @@ namespace QJS {
     OwnPtr<WindowPrivate> d;
   };
 
+#if 0
   KJS_IMPLEMENT_PROTOTYPE_FUNCTION(WindowFunc)
+#endif
 
   /**
    * An action (either function or string) to be executed after a specified
@@ -197,37 +204,50 @@ namespace QJS {
    */
     class ScheduledAction {
     public:
+#if 0
         ScheduledAction(JSValue *func, const List& args)
             : m_func(func), m_args(args) { }
+#endif
         ScheduledAction(const WebCore::String& code)
             : m_code(code) { }
         void execute(Window *);
 
     private:
+#if 0
+        ScheduledAction(JSValue *func, const List& args)
         ProtectedPtr<JSValue> m_func;
         List m_args;
+#endif
         WebCore::String m_code;
     };
 
-  class Location : public DOMObject {
+  class Location {
   public:
-    virtual bool getOwnPropertySlot(ExecState *, const Identifier&, PropertySlot&);
-    JSValue *getValueProperty(ExecState *exec, int token) const;
-    virtual void put(ExecState *exec, const Identifier &propertyName, JSValue *value, int attr = None);
+    static void init(JSContext*);
+    static JSValue create(JSContext*, WebCore::Frame*);
+    static void finalizer(JSRuntime *rt, JSValue val);
+
+    static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);
+    static JSValue putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue val, int token);
+
+    static JSClassID js_class_id;
+
+    static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);
+
     enum { Hash, Href, Hostname, Host, Pathname, Port, Protocol, Search, 
            Replace, Reload, ToString, Assign };
-    WebCore::Frame* frame() const { return m_frame; }
-    virtual const ClassInfo* classInfo() const { return &info; }
-    static const ClassInfo info;
-  private:
-    friend class Window;
-    Location(WebCore::Frame*);
-    WebCore::Frame* m_frame;
+
+#if 0
+    static WebCore::Frame* frame(JSContext *ctx, JSValue);
+#endif
   };
 
 } // namespace
 
 namespace WebCore {
+
+    bool isSafeScript(JSContext*, JSValue);
+
     JSValue toJS(JSContext*, DOMWindow*);
 } // namespace WebCore
 

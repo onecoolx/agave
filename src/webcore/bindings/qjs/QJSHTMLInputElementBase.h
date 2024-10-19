@@ -24,25 +24,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _JSEventTargetNode_H_
-#define _JSEventTargetNode_H_
+#ifndef _JSHTMLInputElementBase_H_
+#define _JSHTMLInputElementBase_H_
 
-#include "QJSNode.h"
+#include "QJSHTMLElement.h"
+#include "qjs_binding.h"
+#include "qjs_html.h"
 
 namespace WebCore {
 
-    class EventTargetNode;
-    class Node;
+    class HTMLInputElement;
 
-    class JSEventTargetNode {
+    class JSHTMLInputElementBase {
     public:
         static void init(JSContext* ctx);
-        static JSValue create(JSContext* ctx, Node* n);
+        static JSValue create(JSContext* ctx, HTMLInputElement* n);
         static void finalizer(JSRuntime *rt, JSValue val);
-
-        //void setListener(KJS::ExecState*, const AtomicString& eventType, KJS::JSValue* func) const;
-        //KJS::JSValue* getListener(const AtomicString& eventType) const;
-        //virtual void pushEventHandlerScope(KJS::ExecState*, KJS::ScopeChain&) const;
 
         static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);
         static JSValue putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue val, int token);
@@ -51,25 +48,15 @@ namespace WebCore {
 
         static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);
 
-        enum {  
-            AddEventListener, RemoveEventListener, DispatchEvent,
-            OnAbort, OnBlur, OnChange, OnClick, OnContextMenu, OnDblClick, OnError,
-            OnDragEnter, OnDragOver, OnDragLeave, OnDrop, OnDragStart, OnDrag, OnDragEnd,
-            OnBeforeCut, OnCut, OnBeforeCopy, OnCopy, OnBeforePaste, OnPaste, OnSelectStart,
-            OnFocus, OnInput, OnKeyDown, OnKeyPress, OnKeyUp, OnLoad, OnMouseDown,
-            OnMouseMove, OnMouseOut, OnMouseOver, OnMouseUp, OnMouseWheel, OnReset,
-            OnResize, OnScroll, OnSearch, OnSelect, OnSubmit, OnUnload
-        };
+        enum { SetSelectionRange, SelectionStart, SelectionEnd };
     };
 
-    EventTargetNode* toEventTargetNode(JSValue val);
-
-    class JSEventTargetNodePrototype {
+    //KJS_DEFINE_PROTOTYPE_WITH_PROTOTYPE(JSHTMLInputElementBasePrototype, JSHTMLElementPrototype)
+    class JSHTMLInputElementBasePrototype {
     public:
         static JSValue self(JSContext * ctx);
         static void initPrototype(JSContext * ctx, JSValue this_obj);
     };
-
 } // namespace WebCore
 
-#endif // _JSEventTargetNode_H_
+#endif // _JSHTMLInputElementBase_H_

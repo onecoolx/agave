@@ -34,6 +34,8 @@ ExternalProject_Add(
   && ${CMAKE_COMMAND} -E copy
     "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/qjsc.c" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/qjsc.c"
   && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/quickjs.h" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/quickjs.h"
+  && ${CMAKE_COMMAND} -E copy
     "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/quickjs.c" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/quickjs.c"
   && ${CMAKE_COMMAND} -E copy
     "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/quickjs-libc.c" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/quickjs-libc.c"
@@ -49,6 +51,10 @@ ExternalProject_Add(
   PATCH_COMMAND
      ${CMAKE_COMMAND} -E copy
     "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/CMakeLists.txt" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/CMakeLists.txt"
+  && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/quickjs.h" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/quickjs.h"
+  && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${QJS_NAME}-${QJS_VERSION}/quickjs_posix.c" "${PROJ_OUT}/${QJS_NAME}/src/${QJS_NAME}/quickjs.c"
   BUILD_IN_SOURCE
   CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX=${PROJ_OUT}
 )
