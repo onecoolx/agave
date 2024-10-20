@@ -40,7 +40,14 @@
 #include "TextStream.h"
 #include "XMLNames.h"
 #include "htmlediting.h"
+
+#if ENABLE(KJS)
 #include "kjs_binding.h"
+#endif
+
+#if ENABLE(QJS)
+#include "qjs_binding.h"
+#endif
 
 namespace WebCore {
 
@@ -171,10 +178,17 @@ void Node::setDocument(Document* doc)
 
     willMoveToNewOwnerDocument();
 
+#if ENABLE(KJS)
     {
         KJS::JSLock lock;
         KJS::ScriptInterpreter::updateDOMNodeDocument(this, m_document.get(), doc);
     }    
+#endif
+#if ENABLE(QJS)
+    {
+        QJS::ScriptInterpreter::updateDOMNodeDocument(this, m_document.get(), doc);
+    }
+#endif
     m_document = doc;
 
     didMoveToNewOwnerDocument();

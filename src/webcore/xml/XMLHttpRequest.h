@@ -31,7 +31,11 @@
 #include "ResourceResponse.h"
 #include "StringHash.h"
 #include "SubresourceLoaderClient.h"
+#if ENABLE(KJS)
 #include <kjs/ustring.h>
+#else
+#include <text/String.h>
+#endif
 
 #include <wtf/HashMap.h>
 #include <wtf/Vector.h>
@@ -156,7 +160,11 @@ private:
     // to be able to share the buffer with JavaScript versions of the whole or partial string.
     // In contrast, this string doesn't interact much with the rest of the engine so it's not that
     // big a cost that it isn't a String.
+#if ENABLE(KJS)
     KJS::UString m_responseText;
+#else
+    String m_responseText;
+#endif
     mutable bool m_createdDocument;
     mutable RefPtr<Document> m_responseXML;
 

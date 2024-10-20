@@ -35,8 +35,10 @@ public:
     AtomicString() { }
     AtomicString(const char* s) : m_string(add(s)) { }
     AtomicString(const UChar* s, int length) : m_string(add(s, length)) { }
+#if ENABLE(KJS)
     AtomicString(const KJS::UString& s) : m_string(add(s)) { }
     AtomicString(const KJS::Identifier& s) : m_string(add(s)) { }
+#endif
     AtomicString(StringImpl* imp) : m_string(add(imp)) { }
     AtomicString(AtomicStringImpl* imp) : m_string(imp) { }
     AtomicString(const String& s) : m_string(add(s.impl())) { }
@@ -44,8 +46,10 @@ public:
     operator const String&() const { return m_string; }
     const String& domString() const { return m_string; };
 
+#if ENABLE(KJS)
     operator KJS::Identifier() const;
     operator KJS::UString() const;
+#endif
 
     AtomicStringImpl* impl() const { return static_cast<AtomicStringImpl *>(m_string.impl()); }
     
@@ -88,8 +92,10 @@ private:
     static StringImpl* add(const char*);
     static StringImpl* add(const UChar*, int length);
     static StringImpl* add(StringImpl*);
+#if ENABLE(KJS)
     static StringImpl* add(const KJS::UString&);
     static StringImpl* add(const KJS::Identifier&);
+#endif
 };
 
 inline bool operator==(const AtomicString& a, const AtomicString& b) { return a.impl() == b.impl(); }

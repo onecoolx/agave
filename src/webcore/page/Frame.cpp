@@ -249,6 +249,7 @@ void Frame::setView(FrameView* view)
     loader()->resetMultipleFormSubmissionProtection();
 }
 
+#if ENABLE(KJS)
 KJSProxy *Frame::scriptProxy()
 {
     Settings* settings = this->settings();
@@ -260,6 +261,21 @@ KJSProxy *Frame::scriptProxy()
 
     return d->m_jscript;
 }
+#endif
+
+#if ENABLE(QJS)
+ScriptController* Frame::script(void)
+{
+    Settings* settings = this->settings();
+    if (!settings || !settings->isJavaScriptEnabled())
+        return 0;
+
+    if (!d->m_jscript)
+        d->m_jscript = new ScriptController(this);
+
+    return d->m_jscript;
+}
+#endif
 
 Document *Frame::document() const
 {

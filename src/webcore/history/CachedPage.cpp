@@ -33,7 +33,6 @@
 #include "Frame.h"
 #include "FrameLoader.h"
 #include "FrameView.h"
-#include "GCController.h"
 #include "Logging.h"
 #include "Page.h"
 #include "SystemTime.h"
@@ -41,6 +40,7 @@
 #include "SVGDocumentExtensions.h"
 #endif
 
+#include "GCController.h"
 #include "kjs_proxy.h"
 #include "kjs_window.h"
 #include "kjs_window.h"

@@ -29,6 +29,7 @@
 #include "AtomicString.h"
 #include "Shared.h"
 #include <wtf/RefPtr.h>
+#include <wtf/PassRefPtr.h>
 
 namespace WebCore {
 

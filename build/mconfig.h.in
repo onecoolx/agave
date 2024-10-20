@@ -3,6 +3,10 @@
 
 #define VERSION "@VERSION_INFO@"
 
+#cmakedefine ENABLE_KJS @ENABLE_KJS@
+
+#cmakedefine ENABLE_QJS @ENABLE_QJS@
+
 #cmakedefine ENABLE_XPATH @ENABLE_XPATH@
 
 #cmakedefine ENABLE_XSLT @ENABLE_XSLT@

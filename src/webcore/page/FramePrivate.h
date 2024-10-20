@@ -65,7 +65,13 @@ namespace WebCore {
         RefPtr<FrameView> m_view;
         RefPtr<Document> m_doc;
 
+#if ENABLE(KJS)
         KJSProxy* m_jscript;
+#endif
+
+#if ENABLE(QJS)
+        ScriptController* m_jscript;
+#endif
 
         String m_kjsStatusBarText;
         String m_kjsDefaultStatusBarText;

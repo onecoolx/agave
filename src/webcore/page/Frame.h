@@ -70,7 +70,6 @@ class FrameView;
 class GraphicsContext;
 class HTMLFormElement;
 class IntRect;
-class KJSProxy;
 class KURL;
 class Node;
 class Page;
@@ -80,6 +79,14 @@ class Selection;
 class SelectionController;
 class Settings;
 class Widget;
+
+#if ENABLE(KJS)
+class KJSProxy;
+#endif
+
+#if ENABLE(QJS)
+class ScriptController;
+#endif
 
 struct FrameLoadRequest;
 
@@ -150,7 +157,13 @@ public:
     
     void setDocument(PassRefPtr<Document>);
 
+#if ENABLE(KJS)
     KJSProxy* scriptProxy();
+#endif
+
+#if ENABLE(QJS)
+    ScriptController* script(void);
+#endif
 
     void clearTimers();
     static void clearTimers(FrameView*);

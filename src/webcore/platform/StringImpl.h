@@ -26,10 +26,14 @@
 
 #include "Shared.h"
 #include <wtf/unicode/Unicode.h>
-#include <kjs/identifier.h>
 #include <wtf/Forward.h>
 #include <wtf/Vector.h>
+#include <wtf/PassRefPtr.h>
 #include <limits.h>
+
+#if ENABLE(KJS)
+#include <kjs/identifier.h>
+#endif
 
 namespace WebCore {
 
@@ -52,8 +56,10 @@ public:
     StringImpl(const UChar*, unsigned len);
     StringImpl(const char*, unsigned len);
     StringImpl(const char*);
+#if ENABLE(KJS)
     StringImpl(const KJS::Identifier&);
     StringImpl(const KJS::UString&);
+#endif
     ~StringImpl();
 
     static PassRefPtr<StringImpl> createStrippingNull(const UChar*, unsigned len);

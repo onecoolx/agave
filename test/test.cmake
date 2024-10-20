@@ -50,6 +50,6 @@ target_include_directories(${APP_NAME} PRIVATE
                     ${SYSTEM_INCLUDE}
 )
 
-target_link_libraries(${APP_NAME} PRIVATE ${LIB_NAME} ${LIB_DEPS} picasso2_sw ${SYSTEM_LIBS} 
+target_link_libraries(${APP_NAME} PRIVATE ${LIB_NAME} ${LIB_DEPS} picasso2_sw PUBLIC ${SYSTEM_LIBS}
 )
 

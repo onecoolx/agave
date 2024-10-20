@@ -320,8 +320,6 @@ sub GenerateHeader
     # Class declaration
     #<Debug>#push(@headerContent, "class $className : public $parentClassName {\n");
     push(@headerContent, "class $className {\n");
-    push(@headerContent, "private:\n");
-    push(@headerContent, "      $className();\n");
     push(@headerContent, "public:\n");
 
     push(@headerContent, "    static void init(JSContext*);\n");
@@ -846,14 +844,16 @@ sub GenerateImplementation
     push(@implContent, "JSClassID ${className}::js_class_id = 0;\n\n");
 
     push(@implContent, "void ${className}::init(JSContext* ctx)\n{\n");
-    push(@implContent, "    JS_NewClassID(&${className}::js_class_id);\n");
-    push(@implContent, "    JS_NewClass(JS_GetRuntime(ctx), ${className}::js_class_id, &${className}ClassDefine);\n");
+    push(@implContent, "    if (${className}::js_class_id == 0) {\n");
+    push(@implContent, "        JS_NewClassID(&${className}::js_class_id);\n");
+    push(@implContent, "        JS_NewClass(JS_GetRuntime(ctx), ${className}::js_class_id, &${className}ClassDefine);\n");
     if (!$dataNode->extendedAttributes->{"DoNotCache"}) {
         if ($dataNode->extendedAttributes->{"GenerateConstructor"}) {
-            push(@implContent, "    JS_SetConstructor(ctx, ${className}Constructor::self(ctx), ${className}Prototype::self(ctx));\n");
+            push(@implContent, "        JS_SetConstructor(ctx, ${className}Constructor::self(ctx), ${className}Prototype::self(ctx));\n");
         }
-        push(@implContent, "    JS_SetClassProto(ctx, ${className}::js_class_id, ${className}Prototype::self(ctx));\n");
+        push(@implContent, "        JS_SetClassProto(ctx, ${className}::js_class_id, ${className}Prototype::self(ctx));\n");
     }
+    push(@implContent, "    }\n");
     push(@implContent, "}\n\n");
 
     # Get correct pass/store types respecting PODType flag
@@ -864,6 +864,7 @@ sub GenerateImplementation
     if ($dataNode->extendedAttributes->{"DoNotCache"}) {
         push(@implContent, "JSValue ${className}::create(JSContext* ctx, JSValue obj, $passType impl)\n");
         push(@implContent, "{\n");
+        push(@implContent, "    ${className}::init(ctx);\n");
         push(@implContent, "    JS_SetPrototype(ctx, obj, ${className}Prototype::self(ctx));\n");
         push(@implContent, "    JS_SetOpaque(obj, impl);\n");
         push(@implContent, "    impl->ref();\n");
@@ -879,6 +880,7 @@ sub GenerateImplementation
         }
 
         push(@implContent, "{\n");
+        push(@implContent, "    ${className}::init(ctx);\n");
         push(@implContent, "    JSValue obj = JS_NewObjectProtoClass(ctx, ${className}Prototype::self(ctx), ${className}::js_class_id);\n");
         push(@implContent, "    if (JS_IsException(obj)) {\n");
         push(@implContent, "        return JS_EXCEPTION;\n");
