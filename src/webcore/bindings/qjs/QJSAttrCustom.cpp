@@ -26,6 +26,9 @@
 
 
 #include "config.h"
+
+#if ENABLE(QJS)
+
 #include "QJSAttr.h"
 
 #include "Attr.h"
@@ -63,3 +66,4 @@ void JSAttr::setValue(JSContext *ctx, JSValue value, Attr *imp)
 }
 
 } // namespace WebCore
+#endif

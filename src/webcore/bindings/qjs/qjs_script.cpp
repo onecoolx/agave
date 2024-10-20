@@ -19,7 +19,10 @@
  */
 
 #include "config.h"
-#include "kjs_proxy.h"
+
+#if ENABLE(QJS)
+
+#include "qjs_script.h"
 
 #include "Chrome.h"
 #include "Document.h"
@@ -43,13 +46,13 @@ using namespace KJS;
 
 namespace WebCore {
 
-KJSProxy::KJSProxy(Frame* frame)
+ScriptController::ScriptController(Frame* frame)
 {
     m_frame = frame;
     m_handlerLineno = 0;
 }
 
-KJSProxy::~KJSProxy()
+ScriptController::~ScriptController()
 {
     // Check for <rdar://problem/4876466>. In theory, no JS should be executing
     // in our interpreter. 
@@ -63,7 +66,7 @@ KJSProxy::~KJSProxy()
     }
 }
 
-JSValue* KJSProxy::evaluate(const String& filename, int baseLine, const String& str) 
+JSValue* ScriptController::evaluate(const String& filename, int baseLine, const String& str) 
 {
     // evaluate code. Returns the JS return value or 0
     // if there was none, an error occured or the type couldn't be converted.
@@ -103,7 +106,7 @@ JSValue* KJSProxy::evaluate(const String& filename, int baseLine, const String& 
     return 0;
 }
 
-void KJSProxy::clear() {
+void ScriptController::clear() {
   // clear resources allocated by the interpreter, and make it ready to be used by another page
   // We have to keep it, so that the Window object for the frame remains the same.
   // (we used to delete and re-create it, previously)
@@ -118,7 +121,7 @@ void KJSProxy::clear() {
     }
 }
 
-EventListener* KJSProxy::createHTMLEventHandler(const String& functionName, const String& code, Node* node)
+EventListener* ScriptController::createHTMLEventHandler(const String& functionName, const String& code, Node* node)
 {
     initScriptIfNeeded();
     JSLock lock;
@@ -126,7 +129,7 @@ EventListener* KJSProxy::createHTMLEventHandler(const String& functionName, cons
 }
 
 #if ENABLE(SVG)
-EventListener* KJSProxy::createSVGEventHandler(const String& functionName, const String& code, Node* node)
+EventListener* ScriptController::createSVGEventHandler(const String& functionName, const String& code, Node* node)
 {
     initScriptIfNeeded();
     JSLock lock;
@@ -134,7 +137,7 @@ EventListener* KJSProxy::createSVGEventHandler(const String& functionName, const
 }
 #endif
 
-void KJSProxy::finishedWithEvent(Event* event)
+void ScriptController::finishedWithEvent(Event* event)
 {
   // This is called when the DOM implementation has finished with a particular event. This
   // is the case in sitations where an event has been created just for temporary usage,
@@ -143,14 +146,14 @@ void KJSProxy::finishedWithEvent(Event* event)
   m_script->forgetDOMObject(event);
 }
 
-ScriptInterpreter* KJSProxy::interpreter()
+ScriptInterpreter* ScriptController::interpreter()
 {
   initScriptIfNeeded();
   ASSERT(m_script);
   return m_script.get();
 }
 
-void KJSProxy::initScriptIfNeeded()
+void ScriptController::initScriptIfNeeded()
 {
     if (m_script)
         return;
@@ -179,7 +182,7 @@ void KJSProxy::initScriptIfNeeded()
 #endif
 }
     
-void KJSProxy::clearDocumentWrapper() 
+void ScriptController::clearDocumentWrapper() 
 {
     if (!m_script)
         return;
@@ -189,3 +192,4 @@ void KJSProxy::clearDocumentWrapper()
 }
 
 }
+#endif
