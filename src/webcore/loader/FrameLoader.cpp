@@ -76,11 +76,20 @@
 #include "WindowFeatures.h"
 #include "XMLHttpRequest.h"
 #include "XMLTokenizer.h"
+
+#if ENABLE(KJS)
 #include "kjs_binding.h"
 #include "kjs_proxy.h"
 #include "kjs_window.h"
 #include <kjs/JSLock.h>
 #include <kjs/object.h>
+#endif
+
+#if ENABLE(QJS)
+#include "qjs_binding.h"
+#include "qjs_script.h"
+#include "qjs_window.h"
+#endif
 
 #if ENABLE(SVG)
 #include "SVGDocument.h"
@@ -95,9 +104,11 @@
 #include "SchemeExtension.h"
 #include "Debug.h"
 
+#if ENABLE(KJS)
 using KJS::UString;
 using KJS::JSLock;
 using KJS::JSValue;
+#endif
 
 namespace WebCore {
 

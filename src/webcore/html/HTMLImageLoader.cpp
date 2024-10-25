@@ -28,10 +28,20 @@
 #include "Document.h"
 #include "Element.h"
 #include "EventNames.h"
-#include "kjs_binding.h"
-#include "JSNode.h"
 #include "HTMLNames.h"
 #include "RenderImage.h"
+
+#if ENABLE(KJS)
+#include "JSNode.h"
+#include "kjs_binding.h"
+#endif
+
+#if ENABLE(QJS)
+#include "Frame.h"
+#include "Page.h"
+#include "qjs_binding.h"
+#include "qjs_script.h"
+#endif
 
 using namespace std;
 
@@ -160,11 +170,25 @@ void HTMLImageLoader::protectElement()
     if (m_elementIsProtected)
         return;
     
+#if ENABLE(KJS)
     KJS::JSLock lock;
     if (JSNode* node = KJS::ScriptInterpreter::getDOMNodeForDocument(m_element->document(), m_element)) {
         KJS::gcProtect(node);
         m_elementIsProtected = true;
-    }    
+    }
+#endif
+
+#if ENABLE(QJS)
+    JSValue jsnode = QJS::ScriptInterpreter::getDOMNodeForDocument(m_element->document(), m_element);
+    if (!JS_IsNull(jsnode)) {
+        Page* page = m_element->document()->page();
+        if (page) {
+            ScriptController* script = page->mainFrame()->script();
+            jsnode = JS_DupValue(script->interpreter(), jsnode); 
+            m_elementIsProtected = true;
+        }
+    }
+#endif
 }
     
 void HTMLImageLoader::unprotectElement()
@@ -172,11 +196,24 @@ void HTMLImageLoader::unprotectElement()
     if (!m_elementIsProtected)
         return;
     
+#if ENABLE(KJS)
     KJS::JSLock lock;
     JSNode* node = KJS::ScriptInterpreter::getDOMNodeForDocument(m_element->document(), m_element);
     ASSERT(node);
     KJS::gcUnprotect(node);
     m_elementIsProtected = false;
+#endif
+
+#if ENABLE(QJS)
+    JSValue jsnode = QJS::ScriptInterpreter::getDOMNodeForDocument(m_element->document(), m_element);
+    ASSERT(!JS_IsNull(jsnode));
+    Page* page = m_element->document()->page();
+    if (page) {
+        ScriptController* script = page->mainFrame()->script();
+        JS_FreeValue(script->interpreter(), jsnode);
+        m_elementIsProtected = false;
+    }
+#endif
 }
     
 

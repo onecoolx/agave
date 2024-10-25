@@ -7,6 +7,7 @@
               (C) 2001 Dirk Mueller (mueller@kde.org)
     Copyright (C) 2004, 2005, 2006, 2007 Apple Inc. All rights reserved.
     Copyright (C) 2005, 2006 Alexey Proskuryakov (ap@nypop.com)
+    Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Library General Public
@@ -43,10 +44,17 @@
 #include "HTMLViewSourceDocument.h"
 #include "Settings.h"
 #include "SystemTime.h"
-#include "kjs_proxy.h"
 #include <wtf/ASCIICType.h>
 
 #include "HTMLEntityNames.c"
+
+#if ENABLE(KJS)
+#include "kjs_proxy.h"
+#endif
+
+#if ENABLE(QJS)
+#include "qjs_script.h"
+#endif
 
 #if MOBILE
 // The mobile device needs to be responsive, as such the tokenizer chunk size is reduced.
@@ -1595,9 +1603,18 @@ void HTMLTokenizer::finish()
 
 PassRefPtr<Node> HTMLTokenizer::processToken()
 {
+#if ENABLE(KJS)
     KJSProxy* jsProxy = (!m_fragment && m_doc->frame()) ? m_doc->frame()->scriptProxy() : 0;
     if (jsProxy)
         jsProxy->setEventHandlerLineno(tagStartLineno);
+#endif
+
+#if ENABLE(QJS)
+    ScriptController* script = (!m_fragment && m_doc->frame()) ? m_doc->frame()->script() : 0;
+    if (script)
+        script->setEventHandlerLineno(tagStartLineno);
+#endif
+
     if (dest > buffer) {
 #ifdef TOKEN_DEBUG
         if(currToken.tagName.length()) {
@@ -1611,8 +1628,15 @@ PassRefPtr<Node> HTMLTokenizer::processToken()
             currToken.tagName = textAtom;
     } else if (currToken.tagName == nullAtom) {
         currToken.reset();
+#if ENABLE(KJS)
         if (jsProxy)
             jsProxy->setEventHandlerLineno(lineno);
+#endif
+
+#if ENABLE(QJS)
+        if (script)
+            script->setEventHandlerLineno(lineno);
+#endif
         return 0;
     }
 
@@ -1651,9 +1675,15 @@ PassRefPtr<Node> HTMLTokenizer::processToken()
             n = parser->parseToken(&currToken);
     }
     currToken.reset();
+#if ENABLE(KJS)
     if (jsProxy)
         jsProxy->setEventHandlerLineno(0);
+#endif
 
+#if ENABLE(QJS)
+    if (script)
+        script->setEventHandlerLineno(0);
+#endif
     return n.release();
 }
 

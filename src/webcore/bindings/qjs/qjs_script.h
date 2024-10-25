@@ -18,8 +18,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef qjs_proxy_h
-#define qjs_proxy_h
+#ifndef qjs_script_h
+#define qjs_script_h
 
 #include <wtf/RefPtr.h>
 
@@ -45,17 +45,19 @@ public:
     EventListener* createSVGEventHandler(const String& functionName, const String& code, Node*);
 #endif
     void finishedWithEvent(Event*);
-    //KJS::ScriptInterpreter *interpreter();
+
+    JSContext *interpreter();
+
     void setEventHandlerLineno(int lineno) { m_handlerLineno = lineno; }
 
     void initScriptIfNeeded();
 
-    //bool haveInterpreter() const { return m_script; }
+    bool haveInterpreter() const { return m_script; }
     
     void clearDocumentWrapper();
 
 private:
-    //RefPtr<KJS::ScriptInterpreter> m_script;
+    JSContext* m_script;
     Frame* m_frame;
     int m_handlerLineno;
 };

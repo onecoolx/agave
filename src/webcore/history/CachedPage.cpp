@@ -41,14 +41,22 @@
 #endif
 
 #include "GCController.h"
+#if ENABLE(KJS)
 #include "kjs_proxy.h"
-#include "kjs_window.h"
 #include "kjs_window.h"
 #include <kjs/JSLock.h>
 #include <kjs/SavedBuiltins.h>
 #include <kjs/property_map.h>
-
 using namespace KJS;
+#endif
+
+#if ENABLE(QJS)
+#include "qjs_script.h"
+#include "qjs_window.h"
+using namespace QJS;
+#endif
+
+#include "Debug.h"
 
 namespace WebCore {
 
@@ -78,15 +86,19 @@ CachedPage::CachedPage(Page* page)
     , m_view(page->mainFrame()->view())
     , m_mousePressNode(page->mainFrame()->eventHandler()->mousePressNode())
     , m_URL(page->mainFrame()->loader()->url())
+#if ENABLE(KJS)
     , m_windowProperties(new SavedProperties)
     , m_locationProperties(new SavedProperties)
     , m_interpreterBuiltins(new SavedBuiltins)
+#endif
 {
 #ifndef NDEBUG
     ++CachedPageCounter::count;
 #endif
     
     Frame* mainFrame = page->mainFrame();
+
+#if ENABLE(KJS)
     KJSProxy* proxy = mainFrame->scriptProxy();
     Window* window = Window::retrieveWindow(mainFrame);
 
@@ -100,6 +112,16 @@ CachedPage::CachedPage(Page* page)
         window->location()->saveProperties(*m_locationProperties.get());
         m_pausedTimeouts.set(window->pauseTimeouts());
     }
+#endif
+
+#if ENABLE(QJS)
+    ScriptController* script = mainFrame->script();
+    Window* window = Window::retrieveWindow(mainFrame);
+
+    mainFrame->clearTimers();
+    //FIXME: TODO: implement cache page
+    notImplemented();
+#endif
 
     m_document->setInPageCache(true);
 
@@ -122,6 +144,7 @@ void CachedPage::restore(Page* page)
 {
     ASSERT(m_document->view() == m_view);
 
+#if ENABLE(KJS)
     Frame* mainFrame = page->mainFrame();
     KJSProxy* proxy = mainFrame->scriptProxy();
     Window* window = Window::retrieveWindow(mainFrame);
@@ -134,6 +157,14 @@ void CachedPage::restore(Page* page)
         window->location()->restoreProperties(*m_locationProperties.get());
         window->resumeTimeouts(m_pausedTimeouts.get());
     }
+#endif
+
+#if ENABLE(QJS)
+    Frame* mainFrame = page->mainFrame();
+    ScriptController* script = mainFrame->script();
+    Window* window = Window::retrieveWindow(mainFrame);
+    notImplemented();
+#endif
 
 #if ENABLE(SVG)
     if (m_document && m_document->svgExtensions())
@@ -177,12 +208,14 @@ void CachedPage::clear()
     m_mousePressNode = 0;
     m_URL = KURL();
 
+#if ENABLE(KJS)
     JSLock lock;
 
     m_windowProperties.clear();
     m_locationProperties.clear();
     m_interpreterBuiltins.clear();
     m_pausedTimeouts.clear();
+#endif
 
     gcController().garbageCollectSoon();
 }

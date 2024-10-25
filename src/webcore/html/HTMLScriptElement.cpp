@@ -30,8 +30,15 @@
 #include "EventNames.h"
 #include "Frame.h"
 #include "HTMLNames.h"
-#include "kjs_proxy.h"
 #include "Text.h"
+
+#if ENABLE(KJS)
+#include "kjs_proxy.h"
+#endif
+
+#if ENABLE(QJS)
+#include "qjs_script.h"
+#endif
 
 namespace WebCore {
 
@@ -249,12 +256,23 @@ void HTMLScriptElement::evaluateScript(const String& URL, const String& script)
     
     Frame* frame = document()->frame();
     if (frame) {
+#if ENABLE(KJS)
         KJSProxy* proxy = frame->scriptProxy();
         if (proxy) {
             m_evaluated = true;
             proxy->evaluate(URL, 0, script);
             Document::updateDocumentsRendering();
         }
+#endif
+
+#if ENABLE(QJS)
+        ScriptController* controller = frame->script();
+        if (controller) {
+            m_evaluated = true;
+            controller->evaluate(URL, 0, script);
+            Document::updateDocumentsRendering();
+        }
+#endif
     }
 }
 

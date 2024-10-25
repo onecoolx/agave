@@ -32,12 +32,14 @@
 #include <wtf/RefPtr.h>
 #include <wtf/OwnPtr.h>
 
+#if ENABLE(KJS)
 namespace KJS {
     
     class PausedTimeouts;
     class SavedBuiltins;
     class SavedProperties;
 }
+#endif
 
 namespace WebCore {
 
@@ -75,10 +77,15 @@ private:
     RefPtr<FrameView> m_view;
     RefPtr<Node> m_mousePressNode;
     KURL m_URL;
+#if ENABLE(KJS)
     OwnPtr<KJS::SavedProperties> m_windowProperties;
     OwnPtr<KJS::SavedProperties> m_locationProperties;
     OwnPtr<KJS::SavedBuiltins> m_interpreterBuiltins;
     OwnPtr<KJS::PausedTimeouts> m_pausedTimeouts;
+#endif
+#if ENABLE(QJS)
+    //FIXME: <Debug>TODO:USE cache JSContxt , JSDOMWondowObj , DOMWindow ref !!!!
+#endif
         
 }; // class CachedPage
 

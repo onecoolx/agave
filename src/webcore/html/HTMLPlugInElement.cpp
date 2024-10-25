@@ -34,8 +34,11 @@
 #include "RenderWidget.h"
 #include "Settings.h"
 #include "Widget.h"
+
+#if ENABLE(KJS)
 #include "kjs_dom.h"
 #include "kjs_proxy.h"
+#endif
 
 #if USE(NPOBJECT)
 #include "NP_jsobject.h"
@@ -44,9 +47,11 @@
 using KJS::Bindings::RootObject;
 #endif
 
+#if ENABLE(KJS)
 using KJS::ExecState;
 using KJS::JSLock;
 using KJS::JSValue;
+#endif
 
 namespace WebCore {
 

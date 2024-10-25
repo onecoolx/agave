@@ -72,8 +72,8 @@ namespace QJS {
         static void putDOMObject(ScriptInterpreter*, void* objectHandle, JSValue);
         static void forgetDOMObject(void* objectHandle);
 
-        static WebCore::JSNode* getDOMNodeForDocument(WebCore::Document*, WebCore::Node*);
-        static void putDOMNodeForDocument(WebCore::Document*, WebCore::Node*, WebCore::JSNode* nodeWrapper);
+        static JSValue getDOMNodeForDocument(WebCore::Document*, WebCore::Node*);
+        static void putDOMNodeForDocument(WebCore::Document*, WebCore::Node*, JSValue);
         static void forgetDOMNodeForDocument(WebCore::Document*, WebCore::Node*);
         static void forgetAllDOMNodesForDocument(WebCore::Document*);
         static void updateDOMNodeDocument(WebCore::Node*, WebCore::Document* oldDoc, WebCore::Document* newDoc);
