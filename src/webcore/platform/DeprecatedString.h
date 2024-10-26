@@ -38,10 +38,12 @@
 #define PACK_STRUCT
 #endif
 
+#if ENABLE(KJS)
 namespace KJS {
     class Identifier;
     class UString;
 }
+#endif
 
 namespace WebCore {
 
@@ -247,16 +249,20 @@ public:
     DeprecatedString(const DeprecatedChar *, unsigned);
     DeprecatedString(const char *);
     DeprecatedString(const char *, int len);
+#if ENABLE(KJS)
     DeprecatedString(const KJS::Identifier&);
     DeprecatedString(const KJS::UString&);
+#endif
     
     DeprecatedString(const DeprecatedString &);
     DeprecatedString &operator=(const DeprecatedString &);
 
     ~DeprecatedString();
 
+#if ENABLE(KJS)
     operator KJS::Identifier() const;
     operator KJS::UString() const;
+#endif
 
     static DeprecatedString fromLatin1(const char *);
     static DeprecatedString fromLatin1(const char *, int len);

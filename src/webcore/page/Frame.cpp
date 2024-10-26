@@ -8,6 +8,7 @@
  * Copyright (C) 2004, 2005, 2006, 2007 Apple Inc. All rights reserved.
  * Copyright (C) 2005 Alexey Proskuryakov <ap@nypop.com>
  * Copyright (C) 2007 Trolltech ASA
+ * Copyright (C) 2024 Zhang Ji Peng <onecoolx@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -67,6 +68,7 @@
 #include "TextIterator.h"
 #include "TextResourceDecoder.h"
 #include "XMLNames.h"
+#include "visible_units.h"
 
 #if USE(NPOBJECT)
 #include "bindings/NP_jsobject.h"
@@ -74,9 +76,15 @@
 #include "bindings/runtime_root.h"
 #endif
 
+#if ENABLE(KJS)
 #include "kjs_proxy.h"
 #include "kjs_window.h"
-#include "visible_units.h"
+#endif
+
+#if ENABLE(QJS)
+#include "qjs_script.h"
+#include "qjs_window.h"
+#endif
 
 #if ENABLE(SVG)
 #include "SVGDocument.h"
@@ -87,8 +95,14 @@
 
 using namespace std;
 
+#if ENABLE(KJS)
 using KJS::JSLock;
 using KJS::Window;
+#endif
+
+#if ENABLE(QJS)
+using QJS::Window;
+#endif
 
 namespace WebCore {
 
@@ -193,8 +207,15 @@ Frame::~Frame()
     --FrameCounter::count;
 #endif
 
+#if ENABLE(KJS)
     if (d->m_jscript && d->m_jscript->haveInterpreter())
         static_cast<Window*>(d->m_jscript->interpreter()->globalObject())->disconnectFrame();
+#endif
+
+#if ENABLE(QJS)
+    if (d->m_jscript && d->m_jscript->haveInterpreter())
+        static_cast<Window*>(d->m_jscript->interpreter()->globalObjectData())->disconnectFrame();
+#endif
 
     disconnectOwnerElement();
     

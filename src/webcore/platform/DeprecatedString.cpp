@@ -32,15 +32,19 @@
 #include "PlatformString.h"
 #include "RegularExpression.h"
 #include "TextEncoding.h"
+#if ENABLE(KJS)
 #include <kjs/dtoa.h>
 #include <kjs/identifier.h>
+#endif
 #include <stdarg.h>
 #include <stdio.h>
 #include <wtf/Platform.h>
 #include <wtf/StringExtras.h>
 
 using namespace std;
+#if ENABLE(KJS)
 using namespace KJS;
+#endif
 using namespace WTF;
 
 namespace WebCore {
@@ -1461,7 +1465,7 @@ double DeprecatedString::toDouble(bool *ok) const
     }
     const char *s = latin1();
     char *end;
-    double val = kjs_strtod(s, &end);
+    double val = strtod(s, &end);
     if (ok)
         *ok = end == 0 || *end == '\0';
     return val;
@@ -2581,6 +2585,7 @@ CString DeprecatedString::utf8(int& length) const
     return result;
 }
 
+#if ENABLE(KJS)
 DeprecatedString::DeprecatedString(const Identifier& str)
 {
     if (str.isNull()) {
@@ -2620,6 +2625,7 @@ DeprecatedString::operator UString() const
         return UString();
     return UString(reinterpret_cast<const KJS::UChar*>(unicode()), length());
 }
+#endif
 
 bool equalIgnoringCase(const DeprecatedString& a, const DeprecatedString& b)
 {

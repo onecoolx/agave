@@ -25,6 +25,10 @@
 
 #include <quickjs.h>
 
+namespace QJS {
+    class ScriptInterpreter;
+}
+
 namespace WebCore {
 
 class Event;
@@ -46,7 +50,9 @@ public:
 #endif
     void finishedWithEvent(Event*);
 
-    JSContext *interpreter();
+    JSContext *context();
+
+    QJS::ScriptInterpreter* interpreter();
 
     void setEventHandlerLineno(int lineno) { m_handlerLineno = lineno; }
 

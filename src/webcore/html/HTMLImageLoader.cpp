@@ -184,7 +184,7 @@ void HTMLImageLoader::protectElement()
         Page* page = m_element->document()->page();
         if (page) {
             ScriptController* script = page->mainFrame()->script();
-            jsnode = JS_DupValue(script->interpreter(), jsnode); 
+            jsnode = JS_DupValue(script->context(), jsnode); 
             m_elementIsProtected = true;
         }
     }
@@ -210,7 +210,7 @@ void HTMLImageLoader::unprotectElement()
     Page* page = m_element->document()->page();
     if (page) {
         ScriptController* script = page->mainFrame()->script();
-        JS_FreeValue(script->interpreter(), jsnode);
+        JS_FreeValue(script->context(), jsnode);
         m_elementIsProtected = false;
     }
 #endif

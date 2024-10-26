@@ -66,7 +66,7 @@ namespace QJS {
      */
     class ScriptInterpreter {
     public:
-        ScriptInterpreter(WebCore::Frame*);
+        ScriptInterpreter(JSValue global, WebCore::Frame*);
 
         static JSValue getDOMObject(ScriptInterpreter*, void* objectHandle);
         static void putDOMObject(ScriptInterpreter*, void* objectHandle, JSValue);
@@ -81,6 +81,9 @@ namespace QJS {
 
         WebCore::Frame* frame() const { return m_frame; }
 
+        JSValue globalObject() const;
+
+        void* globalObjectData() const;
         /**
          * Set the event that is triggering the execution of a script, if any
          */

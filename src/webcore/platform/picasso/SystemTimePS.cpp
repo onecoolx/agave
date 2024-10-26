@@ -9,7 +9,9 @@
 #if HAVE(SYS_TIME_H)
 #include <sys/time.h>
 #endif
+#if COMPILER(MSVC)
 #include "DateMath.h"
+#endif
 #include "SystemTime.h"
 
 #if !HAVE(GETTIMEOFDAY) && COMPILER(GCC)

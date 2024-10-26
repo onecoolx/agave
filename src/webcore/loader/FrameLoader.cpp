@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2006, 2007 Apple Inc. All rights reserved.
  * Copyright (C) 2007 Trolltech ASA
+ * Copyright (C) 2024 Zhang Ji Peng (onecoolx@gmail.com)
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -190,6 +191,7 @@ struct ScheduledRedirection {
 static double storedTimeOfLastCompletedLoad;
 static bool m_restrictAccessToLocal = false;
 
+#if ENABLE(KJS)
 static bool getString(JSValue* result, String& string)
 {
     if (!result)
@@ -201,6 +203,23 @@ static bool getString(JSValue* result, String& string)
     string = ustring;
     return true;
 }
+#endif
+
+#if ENABLE(QJS)
+static bool getString(JSContext* ctx, JSValue result, String& string)
+{
+    if (JS_IsNull(result))
+        return false;
+
+    const char * str = JS_ToCString(ctx, result);
+    if (!str)
+        return false;
+
+    string = String(str);
+    JS_FreeCString(ctx, str);
+    return true;
+}
+#endif
 
 bool isBackForwardLoadType(FrameLoadType type)
 {
@@ -358,6 +377,7 @@ void FrameLoader::changeLocation(const KURL& URL, const String& referrer, bool l
 {
     if (URL.url().find("javascript:", 0, false) == 0) {
         String script = KURL::decode_string(URL.url().mid(strlen("javascript:")));
+#if ENABLE(KJS)
         JSValue* result = executeScript(script, userGesture);
         String scriptResult;
         if (getString(result, scriptResult)) {
@@ -366,6 +386,18 @@ void FrameLoader::changeLocation(const KURL& URL, const String& referrer, bool l
             end();
         }
         return;
+#endif
+#if ENABLE(QJS)
+        ScriptController * controller = m_frame->script();
+        JSValue result = executeScript(script, userGesture);
+        String scriptResult;
+        if (getString(controller->context(), result, scriptResult)) {
+            begin(m_URL);
+            write(scriptResult);
+            end();
+        }
+        return;
+#endif
     }
 
     ResourceRequestCachePolicy policy = (m_cachePolicy == CachePolicyReload) || (m_cachePolicy == CachePolicyRefresh)
@@ -714,15 +746,25 @@ void FrameLoader::didExplicitOpen()
 
 void FrameLoader::replaceContentsWithScriptResult(const KURL& url)
 {
+#if ENABLE(KJS)
     JSValue* result = executeScript(KURL::decode_string(url.url().mid(strlen("javascript:"))));
     String scriptResult;
     if (!getString(result, scriptResult))
         return;
+#endif
+#if ENABLE(QJS)
+    ScriptController * controller = m_frame->script();
+    JSValue result = executeScript(KURL::decode_string(url.url().mid(strlen("javascript:"))));
+    String scriptResult;
+    if (!getString(controller->context(), result, scriptResult))
+        return;
+#endif
     begin();
     write(scriptResult);
     end();
 }
 
+#if ENABLE(KJS)
 JSValue* FrameLoader::executeScript(const String& script, bool forceUserGesture)
 {
     return executeScript(forceUserGesture ? String() : String(m_URL.url()), 0, script);
@@ -747,6 +789,34 @@ JSValue* FrameLoader::executeScript(const String& URL, int baseLine, const Strin
 
     return result;
 }
+#endif
+
+#if ENABLE(QJS)
+JSValue FrameLoader::executeScript(const String& script, bool forceUserGesture)
+{
+    return executeScript(forceUserGesture ? String() : String(m_URL.url()), 0, script);
+}
+
+JSValue FrameLoader::executeScript(const String& URL, int baseLine, const String& script)
+{
+    ScriptController * controller = m_frame->script();
+    if (!controller)
+        return JS_NULL;
+
+    bool wasRunningScript = m_isRunningScript;
+    m_isRunningScript = true;
+
+    JSValue result = controller->evaluate(URL, baseLine, script);
+
+    if (!wasRunningScript) {
+        m_isRunningScript = false;
+        submitFormAgain();
+        Document::updateDocumentsRendering();
+    }
+
+    return result;
+}
+#endif
 
 void FrameLoader::cancelAndClear()
 {
@@ -1641,8 +1711,14 @@ bool FrameLoader::userGestureHint()
     while (rootFrame->tree()->parent())
         rootFrame = rootFrame->tree()->parent();
 
+#if ENABLE(KJS)
     if (rootFrame->scriptProxy())
         return rootFrame->scriptProxy()->interpreter()->wasRunByUserGesture();
+#endif
+#if ENABLE(QJS)
+    if (rootFrame->script())
+        return rootFrame->script()->interpreter()->wasRunByUserGesture();
+#endif
 
     return true; // If JavaScript is disabled, a user gesture must have initiated the navigation
 }
@@ -4471,8 +4547,14 @@ String FrameLoader::referrer() const
 void FrameLoader::dispatchWindowObjectAvailable()
 {
     Settings* settings = m_frame->settings();
+#if ENABLE(KJS)
     if (!settings || !settings->isJavaScriptEnabled() || !m_frame->scriptProxy()->haveInterpreter())
         return;
+#endif
+#if ENABLE(QJS)
+    if (!settings || !settings->isJavaScriptEnabled() || !m_frame->script()->haveInterpreter())
+        return;
+#endif
 
     m_client->windowObjectCleared();
     if (Page* page = m_frame->page())

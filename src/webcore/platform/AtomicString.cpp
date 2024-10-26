@@ -29,11 +29,13 @@
 #include "DeprecatedString.h"
 #include "StaticConstructors.h"
 #include "StringHash.h"
-#include <kjs/identifier.h>
 #include <wtf/HashSet.h>
+#if ENABLE(KJS)
+#include <kjs/identifier.h>
 
 using KJS::Identifier;
 using KJS::UString;
+#endif
 
 namespace WebCore {
 
@@ -173,6 +175,7 @@ void AtomicString::remove(StringImpl* r)
     stringTable->remove(r);
 }
 
+#if ENABLE(KJS)
 StringImpl* AtomicString::add(const KJS::Identifier& str)
 {
     return add(reinterpret_cast<const UChar*>(str.data()), str.size());
@@ -192,6 +195,7 @@ AtomicString::operator UString() const
 {
     return m_string;
 }
+#endif
 
 AtomicString::AtomicString(const DeprecatedString& s)
     : m_string(add(reinterpret_cast<const UChar*>(s.unicode()), s.length()))

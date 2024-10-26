@@ -517,6 +517,7 @@ bool operator==(const String& a, const DeprecatedString& b)
     return false;
 }
 
+#if ENABLE(KJS)
 String::String(const Identifier& str)
 {
     if (str.isNull())
@@ -552,6 +553,7 @@ String::operator UString() const
         return UString();
     return UString(reinterpret_cast<const KJS::UChar*>(m_impl->characters()), m_impl->length());
 }
+#endif
 
 String String::newUninitialized(size_t length, UChar*& characterBuffer)
 {

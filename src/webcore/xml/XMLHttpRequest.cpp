@@ -42,8 +42,13 @@
 #include "Settings.h"
 #include "SubresourceLoader.h"
 #include "TextEncoding.h"
+#if ENABLE(KJS)
 #include "kjs_binding.h"
 #include <kjs/protect.h>
+#endif
+#if ENABLE(QJS)
+#include "qjs_binding.h"
+#endif
 #include <wtf/Vector.h>
 
 namespace WebCore {
@@ -148,10 +153,19 @@ XMLHttpRequestState XMLHttpRequest::getReadyState() const
     return m_state;
 }
 
+#if ENABLE(KJS)
 const KJS::UString& XMLHttpRequest::getResponseText() const
 {
     return m_responseText;
 }
+#endif
+
+#if ENABLE(QJS)
+const String& XMLHttpRequest::getResponseText() const
+{
+    return m_responseText;
+}
+#endif
 
 Document* XMLHttpRequest::getResponseXML() const
 {
@@ -331,7 +345,9 @@ void XMLHttpRequest::open(const String& method, const KURL& url, bool async, Exc
     m_requestHeaders.clear();
     m_response = ResourceResponse();
     {
+#if ENABLE(KJS)
         KJS::JSLock lock;
+#endif
         m_responseText = "";
     }
     m_createdDocument = false;
@@ -433,8 +449,10 @@ void XMLHttpRequest::send(const String& body, ExceptionCode& ec)
         ResourceResponse response;
 
         {
+#if ENABLE(KJS)
             // avoid deadlock in case the loader wants to use JS on a background thread
             KJS::JSLock::DropAllLocks dropLocks;
+#endif
             if (m_doc->frame()) 
                 m_doc->frame()->loader()->loadResourceSynchronously(request, error, response, data);
         }
@@ -456,8 +474,13 @@ void XMLHttpRequest::send(const String& body, ExceptionCode& ec)
     // and they are referenced by the JavaScript wrapper.
     ref();
     {
+#if ENABLE(KJS)
         KJS::JSLock lock;
         gcProtectNullTolerant(KJS::ScriptInterpreter::getDOMObject(this));
+#endif
+#if ENABLE(QJS)
+        gcProtectNullTolerant(QJS::ScriptInterpreter::getDOMObject(this));
+#endif
     }
   
     // create can return null here, for example if we're no longer attached to a page.
@@ -485,6 +508,7 @@ void XMLHttpRequest::abort()
 
 void XMLHttpRequest::dropProtection()        
 {
+#if ENABLE(KJS)
     {
         KJS::JSLock lock;
         KJS::JSValue* wrapper = KJS::ScriptInterpreter::getDOMObject(this);
@@ -500,6 +524,24 @@ void XMLHttpRequest::dropProtection()
         if (wrapper)
             KJS::Collector::reportExtraMemoryCost(m_responseText.size() * 2);
     }
+#endif
+
+#if ENABLE(QJS)
+    {
+        JSValue wrapper = QJS::ScriptInterpreter::getDOMObject(this);
+        QJS::gcUnprotectNullTolerant(wrapper);
+    
+        // the XHR object itself holds on to the responseText, and
+        // thus has extra cost even independent of any
+        // responseText or responseXML objects it has handed
+        // out. But it is protected from GC while loading, so this
+        // can't be recouped until the load is done, so only
+        // report the extra cost at that point.
+    
+        if (!JS_IsNull(wrapper))
+            QJS::Collector::reportExtraMemoryCost(m_responseText.length() * 2);
+    }
+#endif
 
     deref();
 }
@@ -655,7 +697,9 @@ void XMLHttpRequest::didFinishLoading(SubresourceLoader* loader)
         changeState(Sent);
 
     {
+#if ENABLE(KJS)
         KJS::JSLock lock;
+#endif
         if (m_decoder)
             m_responseText += m_decoder->flush();
     }
@@ -715,7 +759,9 @@ void XMLHttpRequest::didReceiveData(SubresourceLoader*, const char* data, int le
     String decoded = m_decoder->decode(data, len);
 
     {
+#if ENABLE(KJS)
         KJS::JSLock lock;
+#endif
         m_responseText += decoded;
     }
 

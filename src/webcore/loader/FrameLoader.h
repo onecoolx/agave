@@ -47,9 +47,15 @@
 #include "CachedResourceClient.h"
 #endif
 
+#if ENABLE(QJS)
+#include "qjs_binding.h"
+#endif
+
+#if ENABLE(KJS)
 namespace KJS {
     class JSValue;
 }
+#endif
 
 namespace WebCore {
 
@@ -315,8 +321,14 @@ namespace WebCore {
         void setEncoding(const String& encoding, bool userChosen);
         String encoding() const;
 
+#if ENABLE(KJS)
         KJS::JSValue* executeScript(const String& URL, int baseLine, const String& script);
         KJS::JSValue* executeScript(const String& script, bool forceUserGesture = false);
+#endif
+#if ENABLE(QJS)
+        JSValue executeScript(const String& URL, int baseLine, const String& script);
+        JSValue executeScript(const String& script, bool forceUserGesture = false);
+#endif
 
         void gotoAnchor();
         bool gotoAnchor(const String& name); // returns true if the anchor was found

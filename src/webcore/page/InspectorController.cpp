@@ -41,7 +41,6 @@
 #include "FrameTree.h"
 #include "HTMLFrameOwnerElement.h"
 #include "InspectorClient.h"
-#include "JSRange.h"
 #include "Page.h"
 #include "Range.h"
 #include "ResourceRequest.h"
@@ -52,12 +51,22 @@
 #include "SystemTime.h"
 #include "TextEncoding.h"
 #include "TextIterator.h"
+
+#if ENABLE(KJS)
+#include "JSRange.h"
 #include "kjs_dom.h"
 #include "kjs_proxy.h"
 #include "kjs_window.h"
 #include "JSLock.h"
-
 #include "API/APICast.h"
+#endif
+
+#if ENABLE(QJS)
+#include "QJSRange.h"
+#include "qjs_dom.h"
+#include "qjs_script.h"
+#include "qjs_window.h"
+#endif
 #include "JSStringRef.h"
 
 namespace WebCore {

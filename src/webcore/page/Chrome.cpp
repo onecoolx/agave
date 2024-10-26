@@ -36,15 +36,27 @@
 #include "Page.h"
 #include "ResourceHandle.h"
 #include "Settings.h"
-#include "kjs_window.h"
 #include <wtf/PassRefPtr.h>
 #include <wtf/RefPtr.h>
 #include <wtf/Vector.h>
 
+#if ENABLE(KJS)
+#include "kjs_window.h"
+#endif
+
+#if ENABLE(QJS)
+#include "qjs_window.h"
+#endif
+
 namespace WebCore {
 
 using namespace HTMLNames;
+#if ENABLE(KJS)
 using namespace KJS;
+#endif
+#if ENABLE(QJS)
+using namespace QJS;
+#endif
 using namespace std;
 
 class PageGroupLoadDeferrer : Noncopyable {

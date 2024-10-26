@@ -41,11 +41,18 @@
 #include "Settings.h"
 #include "StringHash.h"
 #include "Widget.h"
-#include <kjs/collector.h>
-#include <kjs/JSLock.h>
 #include <wtf/HashMap.h>
 
+#if ENABLE(KJS)
+#include <kjs/collector.h>
+#include <kjs/JSLock.h>
+
 using namespace KJS;
+#endif
+
+#if ENABLE(QJS)
+using namespace QJS;
+#endif
 
 namespace WebCore {
 

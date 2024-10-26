@@ -26,6 +26,7 @@ list(REMOVE_ITEM SOURCES
     ${PROJ_ROOT}/src/webcore/platform/unicode/uchar_props_data.cpp
     ${PROJ_ROOT}/src/webcore/platform/unicode/unorm_props_data.cpp
     ${PROJ_ROOT}/src/webcore/platform/unicode/word_break_data.cpp
+    ${PROJ_ROOT}/src/webcore/page/InspectorController.cpp
 )
 
 if (OPT_USE_KJS)
@@ -116,6 +117,7 @@ elseif (OPT_USE_QJS)
 set(QJS_HEADERS ${PROJ_ROOT}/src/wtf
                 ${PROJ_ROOT}/src/webcore/buildQJS
                 ${PROJ_ROOT}/src/webcore/bindings/qjs
+                ${PROJ_ROOT}/src/javascript # tmp include
 )
 
 set(HEADERS ${HEADERS} ${QJS_HEADERS})
