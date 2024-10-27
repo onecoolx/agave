@@ -26,7 +26,6 @@ list(REMOVE_ITEM SOURCES
     ${PROJ_ROOT}/src/webcore/platform/unicode/uchar_props_data.cpp
     ${PROJ_ROOT}/src/webcore/platform/unicode/unorm_props_data.cpp
     ${PROJ_ROOT}/src/webcore/platform/unicode/word_break_data.cpp
-    ${PROJ_ROOT}/src/webcore/page/InspectorController.cpp
 )
 
 if (OPT_USE_KJS)
@@ -38,7 +37,9 @@ file(GLOB_RECURSE KJS_SOURCES ${PROJ_ROOT}/src/javascript/*.cpp
                               ${PROJ_ROOT}/src/wtf/*.cpp
 )
 
-list(REMOVE_ITEM KJS_SOURCES 
+set(SOURCES ${SOURCES} ${KJS_SOURCES})
+
+list(REMOVE_ITEM SOURCES 
     ${PROJ_ROOT}/src/javascript/pcre/chartables.c
     ${PROJ_ROOT}/src/javascript/pcre/ucptable.c
     ${PROJ_ROOT}/src/javascript/pcre/dftables.c
@@ -49,7 +50,6 @@ list(REMOVE_ITEM KJS_SOURCES
     ${PROJ_ROOT}/src/webcore/buildKJS/JSHTMLInputElementBaseTable.cpp
 )
 
-set(SOURCES ${SOURCES} ${KJS_SOURCES})
 elseif (OPT_USE_QJS)
 file(GLOB_RECURSE QJS_SOURCES ${PROJ_ROOT}/src/webcore/buildQJS/*.cpp
                               ${PROJ_ROOT}/src/webcore/buildQJS/*.c
@@ -57,14 +57,15 @@ file(GLOB_RECURSE QJS_SOURCES ${PROJ_ROOT}/src/webcore/buildQJS/*.cpp
                               ${PROJ_ROOT}/src/wtf/*.cpp
 )
 
-list(REMOVE_ITEM QJS_SOURCES 
+set(SOURCES ${SOURCES} ${QJS_SOURCES})
+
+list(REMOVE_ITEM SOURCES 
     ${PROJ_ROOT}/src/webcore/buildQJS/CSSPropertyNames.c
     ${PROJ_ROOT}/src/webcore/buildQJS/CSSValueKeywords.c
     ${PROJ_ROOT}/src/webcore/buildQJS/DocTypeStrings.cpp
     ${PROJ_ROOT}/src/webcore/buildQJS/tokenizer.cpp
+    ${PROJ_ROOT}/src/webcore/page/InspectorController.cpp
 )
-
-set(SOURCES ${SOURCES} ${QJS_SOURCES})
 endif()
 
 set(LIB_NAME agave)
