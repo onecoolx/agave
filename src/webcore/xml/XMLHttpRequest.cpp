@@ -530,16 +530,6 @@ void XMLHttpRequest::dropProtection()
     {
         JSValue wrapper = QJS::ScriptInterpreter::getDOMObject(this);
         QJS::gcUnprotectNullTolerant(wrapper);
-    
-        // the XHR object itself holds on to the responseText, and
-        // thus has extra cost even independent of any
-        // responseText or responseXML objects it has handed
-        // out. But it is protected from GC while loading, so this
-        // can't be recouped until the load is done, so only
-        // report the extra cost at that point.
-    
-        if (!JS_IsNull(wrapper))
-            QJS::Collector::reportExtraMemoryCost(m_responseText.length() * 2);
     }
 #endif
 

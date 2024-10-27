@@ -184,7 +184,7 @@ void HTMLImageLoader::protectElement()
         Page* page = m_element->document()->page();
         if (page) {
             ScriptController* script = page->mainFrame()->script();
-            jsnode = JS_DupValue(script->context(), jsnode); 
+            QJS::gcProtect(script->context(), jsnode);
             m_elementIsProtected = true;
         }
     }
@@ -210,7 +210,7 @@ void HTMLImageLoader::unprotectElement()
     Page* page = m_element->document()->page();
     if (page) {
         ScriptController* script = page->mainFrame()->script();
-        JS_FreeValue(script->context(), jsnode);
+        QJS::gcUnprotect(script->context(), jsnode);
         m_elementIsProtected = false;
     }
 #endif

@@ -80,7 +80,7 @@ namespace QJS {
      * for the specified frame p this will be returned in order to have unique
      * bindings.
      */
-    static JSValue* retrieve(WebCore::Frame*);
+    static JSValue retrieve(WebCore::Frame*);
     /**
      * Returns the Window object for a given HTML frame
      */

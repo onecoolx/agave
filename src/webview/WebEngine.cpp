@@ -30,7 +30,9 @@
 #include "WebCallback.h"
 #include "Language.h"
 #include "SchemeExtension.h"
+#if ENABLE(JSNATIVEBINDING)
 #include "NativeBinding.h"
+#endif
 #include "CertificateMC.h"
 #include "GCController.h"
 #include "Cache.h"

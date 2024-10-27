@@ -4,6 +4,7 @@
  *  Copyright (C) 1999-2001 Harri Porten (porten@kde.org)
  *  Copyright (C) 2003, 2004, 2005, 2006 Apple Computer, Inc.
  *  Copyright (C) 2007 Samuel Weinig <sam@webkit.org>
+ *  Copyright (C) 2024 Zhang Ji Peng <onecoolx@gmail.com>
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -25,6 +26,8 @@
 
 #include <wtf/PassRefPtr.h>
 #include <wtf/RefPtr.h>
+
+#include <text/String.h>
 
 #include <quickjs.h>
 
@@ -91,6 +94,9 @@ namespace QJS {
         void setInlineCode(bool inlineCode) { m_inlineCode = inlineCode; }
         void setProcessingTimerCallback(bool timerCallback) { m_timerCallback = timerCallback; }
 
+
+        JSValue evaluate(const WebCore::String& sourceURL, int startingLineNumber, const UChar* code, int codeLength, JSValue thisV);
+        JSValue evaluate(const WebCore::String& sourceURL, int startingLineNumber, const WebCore::String& code, JSValue thisV);
         /**
          * "Smart" window.open policy
          */
@@ -182,6 +188,28 @@ namespace QJS {
 
     template <typename T> inline JSValue toJS(JSContext* ctx, PassRefPtr<T> ptr) { return toJS(ctx, ptr.get()); }
 
+
+    static inline void gcProtect(JSContext* ctx, JSValue val) 
+    { 
+        val = JS_DupValue(ctx, val); 
+    }
+
+    static inline void gcUnprotect(JSContext* ctx, JSValue val)
+    { 
+        JS_FreeValue(ctx, val);
+    }
+
+    static inline void gcProtectNullTolerant(JSContext* ctx, JSValue val) 
+    {
+        if (!JS_IsNull(val)) 
+            gcProtect(ctx, val);
+    }
+
+    static inline void gcUnprotectNullTolerant(JSContext* ctx, JSValue val) 
+    {
+        if (!JS_IsNull(val)) 
+            gcUnprotect(ctx, val);
+    }
 
     template <typename T> inline T* getPtr(const PassRefPtr<T>& p)
     {

@@ -29,18 +29,25 @@
 
 #include <quickjs.h>
 
-using namespace QJS;
-
 namespace WebCore {
 
-GCController& gcController()
+static GCController * staticGCController = NULL;
+
+GCController& gcController(JSRuntime* runtime)
 {
-    static GCController staticGCController;
-    return staticGCController;
+    return *staticGCController;
 }
 
-GCController::GCController()
+void GCController::init(JSRuntime* runtime)
+{
+    if (!staticGCController) {
+        staticGCController = new GCController(runtime);
+    }
+}
+
+GCController::GCController(JSRuntime* runtime)
     : m_GCTimer(this, &GCController::gcTimerFired)
+    , m_runtime(runtime)
 {
 }
 
@@ -52,8 +59,7 @@ void GCController::garbageCollectSoon()
 
 void GCController::gcTimerFired(Timer<GCController>*)
 {
-    JSLock lock;
-    Collector::collect();
+    JS_RunGC(m_runtime);
 }
     
 } // namespace WebCore

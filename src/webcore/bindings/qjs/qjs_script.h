@@ -63,7 +63,8 @@ public:
     void clearDocumentWrapper();
 
 private:
-    JSContext* m_script;
+    RefPtr<QJS::ScriptInterpreter> m_script;
+    JSContext* m_context;
     Frame* m_frame;
     int m_handlerLineno;
 };

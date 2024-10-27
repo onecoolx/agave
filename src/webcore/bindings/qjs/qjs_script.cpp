@@ -29,20 +29,24 @@
 #include "Frame.h"
 #include "FrameLoader.h"
 #include "GCController.h"
-#include "JSDocument.h"
-#include "JSDOMWindow.h"
+#include "QJSDocument.h"
+#include "QJSDOMWindow.h"
 #include "Page.h"
 #include "Settings.h"
-#include "kjs_events.h"
-#include "kjs_window.h"
+#include "qjs_events.h"
+#include "qjs_window.h"
+
+#include "GCController.h"
 
 #if ENABLE(SVG)
 #include "JSSVGLazyEventListener.h"
 #endif
 
+#if ENABLE(JSNATIVEBINDING)
 #include "NativeBinding.h"
+#endif
 
-using namespace KJS;
+using namespace QJS;
 
 namespace WebCore {
 
@@ -56,7 +60,7 @@ ScriptController::~ScriptController()
 {
     // Check for <rdar://problem/4876466>. In theory, no JS should be executing
     // in our interpreter. 
-    ASSERT(!m_script || !m_script->context());
+    ASSERT(!m_script || !context());
     
     if (m_script) {
         m_script = 0;
@@ -66,7 +70,7 @@ ScriptController::~ScriptController()
     }
 }
 
-JSValue* ScriptController::evaluate(const String& filename, int baseLine, const String& str) 
+JSValue ScriptController::evaluate(const String& filename, int baseLine, const String& str) 
 {
     // evaluate code. Returns the JS return value or 0
     // if there was none, an error occured or the type couldn't be converted.
@@ -80,22 +84,20 @@ JSValue* ScriptController::evaluate(const String& filename, int baseLine, const 
 
     m_script->setInlineCode(inlineCode);
 
-    JSLock lock;
-
     // Evaluating the JavaScript could cause the frame to be deallocated
     // so we start the keep alive timer here.
     m_frame->keepAlive();
     
-    JSValue* thisNode = Window::retrieve(m_frame);
+    JSValue thisNode = Window::retrieve(m_frame);
   
-    m_script->startTimeoutCheck();
-    Completion comp = m_script->evaluate(filename, baseLine, reinterpret_cast<const KJS::UChar*>(str.characters()), str.length(), thisNode);
-    m_script->stopTimeoutCheck();
+    //<Debug> FIXME:time checkout
+    //m_script->startTimeoutCheck();
+    JSValue comp = m_script->evaluate(filename, baseLine, str.characters(), str.length(), thisNode);
+    //m_script->stopTimeoutCheck();
   
-    if (comp.complType() == Normal || comp.complType() == ReturnValue)
-        return comp.value();
-
-    if (comp.complType() == Throw) {
+    if (!JS_IsException(comp)) {
+        return comp;
+    } else {
         UString errorMessage = comp.value()->toString(m_script->globalExec());
         int lineNumber = comp.value()->toObject(m_script->globalExec())->get(m_script->globalExec(), "line")->toInt32(m_script->globalExec());
         UString sourceURL = comp.value()->toObject(m_script->globalExec())->get(m_script->globalExec(), "sourceURL")->toString(m_script->globalExec());
@@ -103,7 +105,7 @@ JSValue* ScriptController::evaluate(const String& filename, int baseLine, const 
             page->chrome()->addMessageToConsole(JSMessageSource, ErrorMessageLevel, errorMessage, lineNumber, sourceURL);
     }
 
-    return 0;
+    return JS_NULL;
 }
 
 void ScriptController::clear() {
@@ -124,7 +126,6 @@ void ScriptController::clear() {
 EventListener* ScriptController::createHTMLEventHandler(const String& functionName, const String& code, Node* node)
 {
     initScriptIfNeeded();
-    JSLock lock;
     return new JSLazyEventListener(functionName, code, Window::retrieveWindow(m_frame), node, m_handlerLineno);
 }
 
@@ -132,7 +133,6 @@ EventListener* ScriptController::createHTMLEventHandler(const String& functionNa
 EventListener* ScriptController::createSVGEventHandler(const String& functionName, const String& code, Node* node)
 {
     initScriptIfNeeded();
-    JSLock lock;
     return new JSSVGLazyEventListener(functionName, code, Window::retrieveWindow(m_frame), node, m_handlerLineno);
 }
 #endif
@@ -148,9 +148,9 @@ void ScriptController::finishedWithEvent(Event* event)
 
 ScriptInterpreter* ScriptController::interpreter()
 {
-  initScriptIfNeeded();
-  ASSERT(m_script);
-  return m_script.get();
+    initScriptIfNeeded();
+    ASSERT(m_script);
+    return m_script.get();
 }
 
 void ScriptController::initScriptIfNeeded()
@@ -159,11 +159,12 @@ void ScriptController::initScriptIfNeeded()
         return;
 
     // Build the global object - which is a Window instance
-    JSLock lock;
     JSObject* globalObject = new JSDOMWindow(m_frame->domWindow());
 
     // Create a KJS interpreter for this frame
     m_script = new ScriptInterpreter(globalObject, m_frame);
+
+    GCController::init(JS_GetRuntime(m_script->context()));
 
     //init dom object all Quickjs !!! <Debug>
 
@@ -187,7 +188,6 @@ void ScriptController::clearDocumentWrapper()
     if (!m_script)
         return;
 
-    JSLock lock;
     m_script->globalObject()->removeDirect("document");
 }
 

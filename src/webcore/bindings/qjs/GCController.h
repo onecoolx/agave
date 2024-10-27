@@ -29,6 +29,8 @@
 #include <wtf/Noncopyable.h>
 #include "Timer.h"
 
+#include <quickjs.h>
+
 namespace WebCore {
 
     class GCController : Noncopyable {
@@ -37,11 +39,13 @@ namespace WebCore {
     public:
         void garbageCollectSoon();
         
+        static void init(JSRuntime*);
     private:
-        GCController(); // Use gcController() instead
+        GCController(JSRuntime*); // Use gcController() instead
         void gcTimerFired(Timer<GCController>*);
         
         Timer<GCController> m_GCTimer;
+        JSRuntime* m_runtime;
     };
 
     // Function to obtain the global GC controller.

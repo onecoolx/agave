@@ -146,6 +146,10 @@ set_target_properties(${LIB_NAME} PROPERTIES VERSION ${VERSION_INFO} SOVERSION 1
 
 add_dependencies(${LIB_NAME} ${LIB_DEPS} ${PICASSO_NAME})
 
+if (OPT_USE_QJS)
+add_dependencies(${LIB_NAME} ${QJS_NAME})
+endif()
+
 install(TARGETS ${LIB_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 
