@@ -98,11 +98,28 @@ JSValue ScriptController::evaluate(const String& filename, int baseLine, const S
     if (!JS_IsException(comp)) {
         return comp;
     } else {
-        UString errorMessage = comp.value()->toString(m_script->globalExec());
-        int lineNumber = comp.value()->toObject(m_script->globalExec())->get(m_script->globalExec(), "line")->toInt32(m_script->globalExec());
-        UString sourceURL = comp.value()->toObject(m_script->globalExec())->get(m_script->globalExec(), "sourceURL")->toString(m_script->globalExec());
-        if (Page* page = m_frame->page())
+        JSContext * ctx = context();
+        JSValue strObj = JS_ToString(ctx, comp);
+        const char * str = JS_ToCString(ctx, strObj);
+        String errorMessage(str);
+
+        JSValue line = JS_GetPropertyStr(ctx, comp, "line");
+        int32_t lineNumber;
+        JS_ToInt32(ctx, &lineNumber, line);
+
+        JSValue url = JS_GetPropertyStr(ctx, comp, "sourceURL");
+        const char * urlStr = JS_ToCString(ctx, url);
+        String sourceURL(urlStr);
+
+        if (Page* page = m_frame->page()) {
             page->chrome()->addMessageToConsole(JSMessageSource, ErrorMessageLevel, errorMessage, lineNumber, sourceURL);
+        }
+
+        JS_FreeCString(ctx, urlStr);
+        JS_FreeValue(ctx, url);
+        JS_FreeValue(ctx, line);
+        JS_FreeCString(ctx, str);
+        JS_FreeValue(ctx, strObj);
     }
 
     return JS_NULL;

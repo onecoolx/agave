@@ -48,6 +48,7 @@
 #endif
 #if ENABLE(QJS)
 #include "qjs_binding.h"
+#include "qjs_script.h"
 #endif
 #include <wtf/Vector.h>
 
@@ -479,7 +480,9 @@ void XMLHttpRequest::send(const String& body, ExceptionCode& ec)
         gcProtectNullTolerant(KJS::ScriptInterpreter::getDOMObject(this));
 #endif
 #if ENABLE(QJS)
-        gcProtectNullTolerant(QJS::ScriptInterpreter::getDOMObject(this));
+        Frame * mainFrame = m_doc->frame()->page()->mainFrame();
+        ScriptController* script = mainFrame->script();
+        QJS::gcProtectNullTolerant(script->context(), QJS::ScriptInterpreter::getDOMObject(script->interpreter(), this));
 #endif
     }
   
@@ -528,8 +531,10 @@ void XMLHttpRequest::dropProtection()
 
 #if ENABLE(QJS)
     {
-        JSValue wrapper = QJS::ScriptInterpreter::getDOMObject(this);
-        QJS::gcUnprotectNullTolerant(wrapper);
+        Frame * mainFrame = m_doc->frame()->page()->mainFrame();
+        ScriptController* script = mainFrame->script();
+        JSValue wrapper = QJS::ScriptInterpreter::getDOMObject(script->interpreter(), this);
+        QJS::gcUnprotectNullTolerant(script->context(), wrapper);
     }
 #endif
 
