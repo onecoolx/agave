@@ -55,6 +55,7 @@ file(GLOB_RECURSE QJS_SOURCES ${PROJ_ROOT}/src/webcore/buildQJS/*.cpp
                               ${PROJ_ROOT}/src/webcore/buildQJS/*.c
                               ${PROJ_ROOT}/src/webcore/bindings/qjs/*.cpp
                               ${PROJ_ROOT}/src/wtf/*.cpp
+                              ${PROJ_ROOT}/src/core/*.cpp
 )
 
 set(SOURCES ${SOURCES} ${QJS_SOURCES})
@@ -118,6 +119,7 @@ elseif (OPT_USE_QJS)
 set(QJS_HEADERS ${PROJ_ROOT}/src/wtf
                 ${PROJ_ROOT}/src/webcore/buildQJS
                 ${PROJ_ROOT}/src/webcore/bindings/qjs
+                ${PROJ_ROOT}/src/core
                 ${PROJ_ROOT}/src/javascript # tmp include
 )
 

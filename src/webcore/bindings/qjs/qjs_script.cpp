@@ -64,6 +64,8 @@ ScriptController::~ScriptController()
     
     if (m_script) {
         m_script = 0;
+
+        JS_FreeContext(m_context);
     
         // It's likely that destroying the interpreter has created a lot of garbage.
         gcController().garbageCollectSoon();
@@ -76,13 +78,6 @@ JSValue ScriptController::evaluate(const String& filename, int baseLine, const S
     // if there was none, an error occured or the type couldn't be converted.
 
     initScriptIfNeeded();
-    // inlineCode is true for <a href="javascript:doSomething()">
-    // and false for <script>doSomething()</script>. Check if it has the
-    // expected value in all cases.
-    // See smart window.open policy for where this is used.
-    bool inlineCode = filename.isNull();
-
-    m_script->setInlineCode(inlineCode);
 
     // Evaluating the JavaScript could cause the frame to be deallocated
     // so we start the keep alive timer here.
@@ -175,23 +170,19 @@ void ScriptController::initScriptIfNeeded()
     if (m_script)
         return;
 
+    m_context = JS_NewContext(GLOBAL()->runtime);
+
     // Build the global object - which is a Window instance
-    JSObject* globalObject = new JSDOMWindow(m_frame->domWindow());
+    JSDOMWindow::init(m_context);
+    JSValue contextObj = JS_GetGlobalObject(m_context);
+    JSValue globalObject = JSDOMWindow::create(m_context, contextObj, m_frame->domWindow());
+    JS_FreeValue(m_context, contextObj);
 
     // Create a KJS interpreter for this frame
     m_script = new ScriptInterpreter(globalObject, m_frame);
 
-    GCController::init(JS_GetRuntime(m_script->context()));
-
     //init dom object all Quickjs !!! <Debug>
 
-    String userAgent = m_frame->loader()->userAgent(m_frame->document() ? m_frame->document()->URL() : KURL());
-    if (userAgent.find("Microsoft") >= 0 || userAgent.find("MSIE") >= 0)
-        m_script->setCompatMode(Interpreter::IECompat);
-    else
-        // If we find "Mozilla" but not "(compatible, ...)" we are a real Netscape
-        if (userAgent.find("Mozilla") >= 0 && userAgent.find("compatible") == -1)
-            m_script->setCompatMode(Interpreter::NetscapeCompat);
 
     m_frame->loader()->dispatchWindowObjectAvailable();
 

@@ -65,7 +65,7 @@ namespace QJS {
 
   struct WindowPrivate;
 
-  class Window : public DOMObject {
+  class Window {
     friend class Location;
     friend class WindowFunc;
     friend class ScheduledAction;

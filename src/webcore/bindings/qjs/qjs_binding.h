@@ -27,9 +27,12 @@
 #include <wtf/PassRefPtr.h>
 #include <wtf/RefPtr.h>
 
+#include <Shared.h>
 #include <text/String.h>
 
 #include <quickjs.h>
+
+#include "global.h"
 
 namespace WebCore {
     class AtomicString;
@@ -48,28 +51,14 @@ namespace WebCore {
 }
 
 namespace QJS {
-
-    /**
-     * Base class for all objects in this binding.
-     */
-    class DOMObject {
-    protected:
-        DOMObject()
-        {
-        }
-#ifndef NDEBUG
-        virtual ~DOMObject();
-#endif
-    };
-
     /**
      * We inherit from Interpreter, to save a pointer to the HTML part
      * that the interpreter runs for.
-     * The interpreter also stores the DOM object -> KJS::DOMObject cache.
      */
-    class ScriptInterpreter {
+    class ScriptInterpreter : public WebCore::Shared<ScriptInterpreter> {
     public:
         ScriptInterpreter(JSValue global, WebCore::Frame*);
+        virtual ~ScriptInterpreter() { }
 
         static JSValue getDOMObject(ScriptInterpreter*, void* objectHandle);
         static void putDOMObject(ScriptInterpreter*, void* objectHandle, JSValue);
@@ -91,7 +80,6 @@ namespace QJS {
          * Set the event that is triggering the execution of a script, if any
          */
         void setCurrentEvent(WebCore::Event* event) { m_currentEvent = event; }
-        void setInlineCode(bool inlineCode) { m_inlineCode = inlineCode; }
         void setProcessingTimerCallback(bool timerCallback) { m_timerCallback = timerCallback; }
 
 
@@ -109,11 +97,8 @@ namespace QJS {
         virtual bool shouldInterruptScript() const;
 
     private:
-        virtual ~ScriptInterpreter() { } // only deref on the base class should delete us
-    
         WebCore::Frame* m_frame;
         WebCore::Event* m_currentEvent;
-        bool m_inlineCode;
         bool m_timerCallback;
     };
 

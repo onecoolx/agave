@@ -37,6 +37,10 @@
 #include "GCController.h"
 #include "Cache.h"
 
+#if ENABLE(QJS)
+#include "global.h"
+#endif
+
 namespace WebCore {
 extern void setPixelFormat(_mc_format format);
 extern void setScreenSize(int w, int h);
@@ -878,6 +882,11 @@ MC_STATUS macross_initialize(MC_PIXEL_FORMAT format, int w, int h)
 		if (!ps_initialize())
 			return MC_STATUS_FAILED;
 
+#if ENABLE(QJS)
+        mescal::_global_initialize();
+        GCController::init(GLOBAL()->runtime);
+#endif
+
 		WebCore::setPixelFormat(format);	
 		WebCore::setScreenSize(w, h);
 		WebCore::eventInitialize();
@@ -893,6 +902,9 @@ void macross_shutdown(void)
 	if (g_initialize) {
 		WebCore::eventShatdown();
 		globalDataSave();
+#if ENABLE(QJS)
+        mescal::_global_shutdown();
+#endif
 		ps_shutdown();
 		g_initialize = false;
 	}
