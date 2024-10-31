@@ -190,9 +190,11 @@ void ContextMenu::addInspectElementItem()
     if (!page)
         return;
 
+#if ENABLE(INSPECTOR)
     if (!page->inspectorController())
         return;
 	//FIXME: not support inspector now.
+#endif
 }
 
 

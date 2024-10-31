@@ -178,7 +178,7 @@ void ScriptController::initScriptIfNeeded()
     JSValue globalObject = JSDOMWindow::create(m_context, contextObj, m_frame->domWindow());
     JS_FreeValue(m_context, contextObj);
 
-    // Create a KJS interpreter for this frame
+    // Create a QJS interpreter for this frame
     m_script = new ScriptInterpreter(globalObject, m_frame);
 
     //init dom object all Quickjs !!! <Debug>
@@ -196,7 +196,9 @@ void ScriptController::clearDocumentWrapper()
     if (!m_script)
         return;
 
-    m_script->globalObject()->removeDirect("document");
+    JSAtom atom = JS_NewAtom(m_context, "document");
+    JS_DeleteProperty(m_context, m_script->globalObject(), atom, 0);
+    JS_FreeAtom(m_context, atom);
 }
 
 }

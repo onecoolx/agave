@@ -11,7 +11,7 @@ option(BUILD_EXAMPLES "Build examples" OFF)
 
 set(QJS_DIR ${CMAKE_CURRENT_LIST_DIR}/)
 
-set(LIB_QUICKJS quickjs)
+set(LIB_QUICKJS qjslib)
 
 set(QJS_SOURCES
     ${QJS_DIR}/quickjs.c
@@ -24,6 +24,8 @@ set(QJS_SOURCES
 
 set(QJS_HEADERS
     ${QJS_DIR}/quickjs.h
+    ${QJS_DIR}/libregexp.h
+    ${QJS_DIR}/libunicode.h
 )
 
 add_library(${LIB_QUICKJS} STATIC ${QJS_SOURCES})

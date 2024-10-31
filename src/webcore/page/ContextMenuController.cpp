@@ -42,7 +42,6 @@
 #include "FrameLoadRequest.h"
 #include "HitTestRequest.h"
 #include "HitTestResult.h"
-#include "InspectorController.h"
 #include "KURL.h"
 #include "MouseEvent.h"
 #include "Node.h"
@@ -57,6 +56,10 @@
 #include "markup.h"
 #include "WindowFeatures.h"
 #include "FloatRect.h"
+
+#if ENABLE(INSPECTOR)
+#include "InspectorController.h"
+#endif
 
 namespace WebCore {
 
@@ -97,8 +100,10 @@ void ContextMenuController::handleContextMenuEvent(Event* event)
 
     m_contextMenu.set(new ContextMenu(result));
     m_contextMenu->populate();
+#if ENABLE(INSPECTOR)
     if (m_page->inspectorController()->enabled())
         m_contextMenu->addInspectElementItem();
+#endif
 
     m_contextMenu->checkOrEnableIfNeeded();
 
@@ -258,10 +263,12 @@ void ContextMenuController::contextMenuItemSelected(ContextMenuAction type)
             frame->editor()->toggleGrammarChecking();
             break;
 #endif
+#if ENABLE(INSPECTOR)
         case ContextMenuItemTagInspectElement:
             if (Page* page = frame->page())
                 page->inspectorController()->inspect(result.innerNonSharedNode());
             break;
+#endif
         default:
             break;
     }

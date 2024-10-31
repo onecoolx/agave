@@ -66,6 +66,7 @@ list(REMOVE_ITEM SOURCES
     ${PROJ_ROOT}/src/webcore/buildQJS/DocTypeStrings.cpp
     ${PROJ_ROOT}/src/webcore/buildQJS/tokenizer.cpp
     ${PROJ_ROOT}/src/webcore/page/InspectorController.cpp
+    ${PROJ_ROOT}/src/wtf/FastMallocPCRE.cpp
 )
 endif()
 
@@ -120,7 +121,6 @@ set(QJS_HEADERS ${PROJ_ROOT}/src/wtf
                 ${PROJ_ROOT}/src/webcore/buildQJS
                 ${PROJ_ROOT}/src/webcore/bindings/qjs
                 ${PROJ_ROOT}/src/core
-                ${PROJ_ROOT}/src/javascript # tmp include
 )
 
 set(HEADERS ${HEADERS} ${QJS_HEADERS})
@@ -150,7 +150,8 @@ set_target_properties(${LIB_NAME} PROPERTIES VERSION ${VERSION_INFO} SOVERSION 1
 add_dependencies(${LIB_NAME} ${LIB_DEPS} ${PICASSO_NAME})
 
 if (OPT_USE_QJS)
-add_dependencies(${LIB_NAME} ${QJS_NAME})
+    add_dependencies(${LIB_NAME} ${QJS_NAME})
+    target_link_libraries(${LIB_NAME} PRIVATE qjslib)
 endif()
 
 install(TARGETS ${LIB_NAME} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)

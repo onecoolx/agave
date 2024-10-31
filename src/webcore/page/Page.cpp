@@ -33,7 +33,6 @@
 #include "FrameTree.h"
 #include "FrameView.h"
 #include "HistoryItem.h"
-#include "InspectorController.h"
 #include "Logging.h"
 #include "ProgressTracker.h"
 #include "RenderWidget.h"
@@ -42,6 +41,10 @@
 #include "StringHash.h"
 #include "Widget.h"
 #include <wtf/HashMap.h>
+
+#if ENABLE(INSPECTOR)
+#include "InspectorController.h"
+#endif
 
 #if ENABLE(KJS)
 #include <kjs/collector.h>
@@ -74,13 +77,19 @@ int PageCounter::count = 0;
 static PageCounter pageCounter;
 #endif
 
+#if ENABLE(INSPECTOR)
 Page::Page(ChromeClient* chromeClient, ContextMenuClient* contextMenuClient, EditorClient* editorClient, DragClient* dragClient, InspectorClient* inspectorClient)
+#else
+Page::Page(ChromeClient* chromeClient, ContextMenuClient* contextMenuClient, EditorClient* editorClient, DragClient* dragClient)
+#endif
     : m_chrome(new Chrome(this, chromeClient))
     , m_dragCaretController(new SelectionController(0, true))
     , m_dragController(new DragController(this, dragClient))
     , m_focusController(new FocusController(this))
     , m_contextMenuController(new ContextMenuController(this, contextMenuClient))
+#if ENABLE(INSPECTOR)
     , m_inspectorController(new InspectorController(this, inspectorClient))
+#endif
     , m_settings(new Settings(this))
     , m_progress(new ProgressTracker)
     , m_backForwardList(new BackForwardList(this))
@@ -89,7 +98,9 @@ Page::Page(ChromeClient* chromeClient, ContextMenuClient* contextMenuClient, Edi
     , m_tabKeyCyclesThroughElements(true)
     , m_defersLoading(false)
     , m_inLowQualityInterpolationMode(false)
+#if ENABLE(INSPECTOR)
     , m_parentInspectorController(0)
+#endif
     , m_inSmallView(false)
     , m_smallViewWidth(240) //FIXME: this is a suitable value ?
 {
@@ -118,7 +129,9 @@ Page::~Page()
     for (Frame* frame = mainFrame(); frame; frame = frame->tree()->traverseNext())
         frame->pageDestroyed();
     m_editorClient->pageDestroyed();
+#if ENABLE(INSPECTOR)
     m_inspectorController->pageDestroyed();
+#endif
 
     m_backForwardList->close();
 
