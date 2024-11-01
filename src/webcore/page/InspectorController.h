@@ -29,6 +29,7 @@
 #ifndef InspectorController_h
 #define InspectorController_h
 
+#if ENABLE(INSPECTOR)
 #include "Chrome.h"
 #include "JSContextRef.h"
 #include <wtf/HashMap.h>
@@ -137,5 +138,7 @@ private:
 };
 
 } // namespace WebCore
+
+#endif
 
 #endif // !defined(InspectorController_h)

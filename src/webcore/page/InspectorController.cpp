@@ -29,6 +29,8 @@
 #include "config.h"
 #include "InspectorController.h"
 
+#if ENABLE(INSPECTOR)
+
 #include "CString.h"
 #include "CachedResource.h"
 #include "DocLoader.h"
@@ -1319,3 +1321,4 @@ void InspectorController::didFailLoading(DocumentLoader* loader, unsigned long i
 }
 
 } // namespace WebCore
+#endif

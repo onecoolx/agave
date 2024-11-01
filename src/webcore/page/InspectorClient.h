@@ -26,6 +26,8 @@
 #ifndef InspectorClient_h
 #define InspectorClient_h
 
+#if ENABLE(INSPECTOR)
+
 namespace WebCore {
 
 class Node;
@@ -53,5 +55,7 @@ public:
 };
 
 } // namespace WebCore
+
+#endif
 
 #endif // !defined(InspectorClient_h)

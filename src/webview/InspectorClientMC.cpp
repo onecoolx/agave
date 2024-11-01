@@ -6,6 +6,7 @@
 */
 
 #include "config.h"
+#if ENABLE(INSPECTOR)
 #include "InspectorClientMC.h"
 
 #include "Debug.h"
@@ -63,4 +64,4 @@ void InspectorClientMC::inspectedURLChanged(const String& newURL)
 }
 
 }
-
+#endif

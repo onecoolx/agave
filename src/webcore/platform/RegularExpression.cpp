@@ -28,9 +28,23 @@
 
 #include "Logging.h"
 #include "Shared.h"
-#include <pcre/pcre.h>
 #if HAVE(SYS_TYPES_H)
 #include <sys/types.h>
+#endif
+#if ENABLE(KJS)
+#include <pcre/pcre.h>
+#endif
+
+#if ENABLE(QJS)
+#ifndef BOOL
+#define BOOL int
+#define FALSE 0
+#define TRUE 1
+#endif
+#include <vector>
+extern "C" {
+#include <libregexp.h>
+}
 #endif
 
 namespace WebCore {
@@ -48,10 +62,13 @@ public:
     void compile(bool caseSensitive, bool glob);
 
     DeprecatedString pattern;
-    pcre *regex;
-
     DeprecatedString lastMatchString;
+#if ENABLE(KJS)
+    pcre *regex;
     int lastMatchOffsets[maxOffsets];
+#elif ENABLE(QJS)
+    std::vector<uint8_t> regexBuf; // RegExp bytecode buffer.
+#endif
     int lastMatchCount;
     int lastMatchPos;
     int lastMatchLength;
@@ -104,8 +121,28 @@ void RegularExpression::Private::compile(bool caseSensitive, bool glob)
     // on the regex syntax (see FrameMac.mm for a couple examples).
     
     const char *errorMessage;
+#if ENABLE(KJS)
     int errorOffset;
     regex = pcre_compile(reinterpret_cast<const uint16_t *>(p.unicode()), p.length(), caseSensitive ? 0 : PCRE_CASELESS, &errorMessage, &errorOffset, NULL);
+#endif
+
+#if ENABLE(QJS)
+    char errorMsg[64];
+    int relen;
+    int flags = LRE_FLAG_UTF16;
+    if(!caseSensitive) {
+        flags |= LRE_FLAG_IGNORECASE;
+    }
+    errorMessage = errorMsg;
+    uint8_t * regex = lre_compile(&relen, errorMsg, sizeof(errorMsg), reinterpret_cast<const char *>(p.unicode()), p.length() * 2, flags, 0);
+    if (regex) {
+        regexBuf.resize(relen + 1);
+        memcpy(regexBuf.data(), regex, relen);
+        regexBuf[relen] = '\0';
+        free(regex);
+    }
+#endif
+
     if (regex == NULL) {
         LOG_ERROR("RegularExpression: pcre_compile failed with '%s'", errorMessage);
     }
@@ -113,7 +150,9 @@ void RegularExpression::Private::compile(bool caseSensitive, bool glob)
 
 RegularExpression::Private::~Private()
 {
+#if ENABLE(KJS)
     pcre_free(regex);
+#endif
 }
 
 
@@ -157,6 +196,7 @@ DeprecatedString RegularExpression::pattern() const
 int RegularExpression::match(const DeprecatedString &str, int startFrom, int *matchLength) const
 {
     d->lastMatchString = str;
+#if ENABLE(KJS)
     // First 2 offsets are start and end offsets; 3rd entry is used internally by pcre
     d->lastMatchCount = pcre_exec(d->regex, NULL, reinterpret_cast<const uint16_t *>(d->lastMatchString.unicode()), d->lastMatchString.length(), startFrom, startFrom == 0 ? 0 : PCRE_NOTBOL, d->lastMatchOffsets, maxOffsets);
     if (d->lastMatchCount < 0) {
@@ -167,7 +207,6 @@ int RegularExpression::match(const DeprecatedString &str, int startFrom, int *ma
         d->lastMatchString = DeprecatedString();
         return -1;
     }
-    
     // 1 means 1 match; 0 means more than one match. First match is recorded in offsets.
     //ASSERT(d->lastMatchCount < 2);
     d->lastMatchPos = d->lastMatchOffsets[0];
@@ -176,6 +215,30 @@ int RegularExpression::match(const DeprecatedString &str, int startFrom, int *ma
         *matchLength = d->lastMatchLength;
     }
     return d->lastMatchPos;
+#endif
+
+#if ENABLE(QJS)
+    std::vector<uint8_t*> capture;
+    int capture_count = lre_get_capture_count(d->regexBuf.data());
+    capture.resize(capture_count * 2);
+    const uint8_t * str_buf = reinterpret_cast<const uint8_t*>(d->lastMatchString.unicode());
+    int rc = lre_exec(capture.data(), d->regexBuf.data(), str_buf, startFrom, d->lastMatchString.length(), 1, 0);
+    if (rc != 1) {
+        d->lastMatchCount = -1;
+        d->lastMatchPos = -1;
+        d->lastMatchLength = -1;
+        d->lastMatchString = DeprecatedString();
+        return -1;
+    }
+
+    d->lastMatchCount = 1;
+    d->lastMatchPos = (capture[0] - str_buf) >> 1;
+    d->lastMatchLength = (capture[1] - capture[0]) >> 1;
+    if (matchLength != NULL) {
+        *matchLength = d->lastMatchLength;
+    }
+    return d->lastMatchPos;
+#endif
 }
 
 int RegularExpression::search(const DeprecatedString &str, int startFrom) const
@@ -223,6 +286,7 @@ int RegularExpression::matchedLength() const
 
 DeprecatedString RegularExpression::cap(int n) const
 {
+#if ENABLE(KJS)
     const pcre_char *substring = NULL;
     int substringLength = pcre_get_substring(reinterpret_cast<const uint16_t *>(d->lastMatchString.unicode()), d->lastMatchOffsets, d->lastMatchCount, n, &substring);
     if (substringLength > 0) {
@@ -231,6 +295,27 @@ DeprecatedString RegularExpression::cap(int n) const
        return capture;
     }
     return DeprecatedString();
+#endif
+
+#if ENABLE(QJS)
+    std::vector<uint8_t*> capture;
+    int capture_count = lre_get_capture_count(d->regexBuf.data());
+    capture.resize(capture_count * 2);
+    const uint8_t * str_buf = reinterpret_cast<const uint8_t*>(d->lastMatchString.unicode());
+    int sidx = 0;
+    while (sidx < n) {
+        int rc = lre_exec(capture.data(), d->regexBuf.data(), str_buf, 0, d->lastMatchString.length(), 1, 0);
+        if (rc != 1) {
+            return DeprecatedString();
+        }
+        sidx++;
+    }
+
+    int startPos = (capture[0] - str_buf) >> 1;
+    int len = (capture[1] - capture[0]) >> 1;
+    DeprecatedString subString(reinterpret_cast<const DeprecatedChar *>(str_buf) + startPos, len);
+    return subString;
+#endif
 }
 
 }

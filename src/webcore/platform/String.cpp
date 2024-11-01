@@ -26,13 +26,15 @@
 #include "CString.h"
 #include "DeprecatedString.h"
 #include "TextEncoding.h"
-#include <kjs/identifier.h>
 #include <wtf/StringExtras.h>
 #include <wtf/Vector.h>
 #include <stdarg.h>
 
+#if ENABLE(KJS)
+#include <kjs/identifier.h>
 using KJS::Identifier;
 using KJS::UString;
+#endif
 
 namespace WebCore {
 

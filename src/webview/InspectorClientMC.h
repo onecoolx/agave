@@ -8,6 +8,8 @@
 #ifndef InspectorClientMC_H
 #define InspectorClientMC_H
 
+#if ENABLE(INSPECTOR)
+
 #include "InspectorClient.h"
 
 namespace WebCore {
@@ -35,4 +37,5 @@ public:
 };
 
 }
+#endif
 #endif
