@@ -33,7 +33,7 @@ namespace WebCore {
 
 static GCController * staticGCController = NULL;
 
-GCController& gcController(JSRuntime* runtime)
+GCController& gcController()
 {
     return *staticGCController;
 }

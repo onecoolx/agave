@@ -27,6 +27,8 @@
 #ifndef _JSHTMLInputElementBase_H_
 #define _JSHTMLInputElementBase_H_
 
+#if ENABLE(QJS)
+
 #include "QJSHTMLElement.h"
 #include "qjs_binding.h"
 #include "qjs_html.h"
@@ -51,12 +53,14 @@ namespace WebCore {
         enum { SetSelectionRange, SelectionStart, SelectionEnd };
     };
 
-    //KJS_DEFINE_PROTOTYPE_WITH_PROTOTYPE(JSHTMLInputElementBasePrototype, JSHTMLElementPrototype)
     class JSHTMLInputElementBasePrototype {
     public:
         static JSValue self(JSContext * ctx);
         static void initPrototype(JSContext * ctx, JSValue this_obj);
     };
+
 } // namespace WebCore
+
+#endif
 
 #endif // _JSHTMLInputElementBase_H_

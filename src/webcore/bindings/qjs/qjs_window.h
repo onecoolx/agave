@@ -109,6 +109,7 @@ namespace QJS {
     QJS::ScriptInterpreter *interpreter() const;
 #endif
         
+    bool isSafeScript(JSContext*) const;
     static bool isSafeScript(const ScriptInterpreter *origin, const ScriptInterpreter *target);
 
     Location* location() const;

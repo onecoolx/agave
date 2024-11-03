@@ -27,7 +27,7 @@
 
 #include <text/String.h>
 
-namespace KJS {
+namespace QJS {
     class Window;
 }
 

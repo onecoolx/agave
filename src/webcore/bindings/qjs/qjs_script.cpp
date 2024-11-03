@@ -63,6 +63,8 @@ ScriptController::~ScriptController()
     ASSERT(!m_script || !context());
     
     if (m_script) {
+        JS_SetContextOpaque(m_context, 0);
+
         m_script = 0;
 
         JS_FreeContext(m_context);
@@ -180,6 +182,8 @@ void ScriptController::initScriptIfNeeded()
 
     // Create a QJS interpreter for this frame
     m_script = new ScriptInterpreter(globalObject, m_frame);
+    JS_SetContextOpaque(m_context, m_script.get());
+
 
     //init dom object all Quickjs !!! <Debug>
 

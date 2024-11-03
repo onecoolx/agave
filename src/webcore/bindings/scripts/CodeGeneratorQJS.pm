@@ -378,7 +378,7 @@ sub GenerateHeader
 
     # Custom call functions
     if ($dataNode->extendedAttributes->{"CustomCall"}) {
-        push(@headerContent, "    virtual JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv);\n");
+        push(@headerContent, "    static JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv);\n");
     }
 
     # Constructor object getter
