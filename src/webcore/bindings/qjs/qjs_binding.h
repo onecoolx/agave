@@ -60,8 +60,8 @@ namespace QJS {
         ScriptInterpreter(JSValue global, WebCore::Frame*);
         virtual ~ScriptInterpreter() { }
 
-        static JSValue getDOMObject(ScriptInterpreter*, void* objectHandle);
-        static void putDOMObject(ScriptInterpreter*, void* objectHandle, JSValue);
+        static JSValue getDOMObject(void* objectHandle);
+        static void putDOMObject(void* objectHandle, JSValue);
         static void forgetDOMObject(void* objectHandle);
 
         static JSValue getDOMNodeForDocument(WebCore::Document*, WebCore::Node*);
@@ -74,7 +74,6 @@ namespace QJS {
         WebCore::Frame* frame() const { return m_frame; }
 
         JSValue globalObject() const;
-
         void* globalObjectData() const;
         /**
          * Set the event that is triggering the execution of a script, if any
@@ -90,13 +89,12 @@ namespace QJS {
          */
         bool wasRunByUserGesture() const;
 
-        //virtual ExecState* globalExec();
-
         WebCore::Event* getCurrentEvent() const { return m_currentEvent; }
 
-        virtual bool shouldInterruptScript() const;
+        bool shouldInterruptScript() const;
 
     private:
+        JSValue m_globalObject;
         WebCore::Frame* m_frame;
         WebCore::Event* m_currentEvent;
         bool m_timerCallback;
@@ -110,57 +108,54 @@ namespace QJS {
         if (!domObj)
             return JS_NULL;
 
-        ScriptInterpreter* interp = static_cast<ScriptInterpreter*>(JS_GetContextOpaque(ctx));
-        JSValue ret = ScriptInterpreter::getDOMObject(interp, domObj);
+        JSValue ret = ScriptInterpreter::getDOMObject(domObj);
         if (!JS_IsNull(ret)) {
             return ret;
         }
         ret = QJSDOMObj::create(ctx, domObj);
-        ScriptInterpreter::putDOMObject(interp, domObj, ret);
+        ScriptInterpreter::putDOMObject(domObj, ret);
         return ret;
     }
 
 #if ENABLE(SVG)
     /**
-     * Retrieve from cache, or create, a KJS object around a SVG DOM object
+     * Retrieve from cache, or create, a QJS object around a SVG DOM object
      */
-    template<class DOMObj, class KJSDOMObj> inline JSValue* cacheSVGDOMObject(ExecState* exec, DOMObj* domObj, WebCore::SVGElement* context)
+    template<class DOMObj, class QJSDOMObj> inline JSValue cacheSVGDOMObject(JSContext* ctx, DOMObj* domObj, WebCore::SVGElement* context)
     {
         if (!domObj)
-            return jsNull();
-        ScriptInterpreter* interp = static_cast<ScriptInterpreter*>(exec->dynamicInterpreter());
-        if (DOMObject* ret = interp->getDOMObject(domObj))
+            return JS_NULL;
+
+        JSValue ret = ScriptInterpreter::getDOMObject(domObj);
+        if (!JS_IsNull(ret)) {
             return ret;
-        DOMObject* ret = new KJSDOMObj(exec, domObj, context);
-        interp->putDOMObject(domObj, ret);
+        }
+        ret = new QJSDOMObj(ctx, domObj, context);
+        ScriptInterpreter::putDOMObject(domObj, ret);
         return ret;
     }
 #endif
 
     // Convert a DOM implementation exception code into a JavaScript exception in the execution state.
     void setDOMException(JSContext*, WebCore::ExceptionCode);
-#if 0
 
     // Helper class to call setDOMException on exit without adding lots of separate calls to that function.
     class DOMExceptionTranslator : Noncopyable {
     public:
-        explicit DOMExceptionTranslator(ExecState* exec) : m_exec(exec), m_code(0) { }
-        ~DOMExceptionTranslator() { setDOMException(m_exec, m_code); }
+        explicit DOMExceptionTranslator(JSContext* ctx) : m_ctx(ctx), m_code(0) { }
+        ~DOMExceptionTranslator() { setDOMException(m_ctx, m_code); }
         operator WebCore::ExceptionCode&() { return m_code; }
     private:
-        ExecState* m_exec;
+        JSContext* m_ctx;
         WebCore::ExceptionCode m_code;
     };
-#endif
+
 
     JSValue jsStringOrNull(JSContext*, const WebCore::String&); // null if the string is null
     JSValue jsStringOrUndefined(JSContext*, const WebCore::String&); // undefined if the string is null
     JSValue jsStringOrFalse(JSContext*, const WebCore::String&); // boolean false if the string is null
 
-    // see JavaScriptCore for explanation should be used for UString that is already owned
     // by another object, so that collecting the JSString wrapper is unlikely to save memory.
-
-    //JSValue* jsOwnedStringOrNull(const KJS::UString&); 
 
     WebCore::String valueToStringWithNullCheck(JSContext*, JSValue); // null String if the value is null
     WebCore::String valueToStringWithUndefinedOrNullCheck(JSContext*, JSValue); // null String if the value is null or undefined

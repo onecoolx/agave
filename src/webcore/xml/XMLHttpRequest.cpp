@@ -482,7 +482,7 @@ void XMLHttpRequest::send(const String& body, ExceptionCode& ec)
 #if ENABLE(QJS)
         Frame * mainFrame = m_doc->frame()->page()->mainFrame();
         ScriptController* script = mainFrame->script();
-        QJS::gcProtectNullTolerant(script->context(), QJS::ScriptInterpreter::getDOMObject(script->interpreter(), this));
+        QJS::gcProtectNullTolerant(script->context(), QJS::ScriptInterpreter::getDOMObject(this));
 #endif
     }
   
@@ -533,7 +533,7 @@ void XMLHttpRequest::dropProtection()
     {
         Frame * mainFrame = m_doc->frame()->page()->mainFrame();
         ScriptController* script = mainFrame->script();
-        JSValue wrapper = QJS::ScriptInterpreter::getDOMObject(script->interpreter(), this);
+        JSValue wrapper = QJS::ScriptInterpreter::getDOMObject(this);
         QJS::gcUnprotectNullTolerant(script->context(), wrapper);
     }
 #endif

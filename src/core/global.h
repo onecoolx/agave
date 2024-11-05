@@ -29,8 +29,9 @@
 
 #include <stdint.h>
 #include <stddef.h>
-
 #include <quickjs.h>
+
+#include "qjs_dom_map.h"
 
 namespace mescal {
 
@@ -40,6 +41,8 @@ namespace mescal {
 typedef struct {
     // quick javascript runtime
     JSRuntime* runtime;
+    DOMObjectMap* domObjects;
+    NodePerDocMap* domNodesPerDoc;
 } GlobalData;
 
 const GlobalData* const _global(void);

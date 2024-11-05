@@ -24,32 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "config.h"
-#include "global.h"
+#ifndef _JSHTMLElementWrapperFactory_H_
+#define _JSHTMLElementWrapperFactory_H_
 
-namespace mescal {
+#if ENABLE(QJS)
+#include <wtf/Forward.h>
+#include <quickjs.h>
 
-static GlobalData _globalData;
+namespace WebCore {
+    class HTMLElement;
 
-const GlobalData* const _global(void)
-{
-    return &_globalData;
+    JSValue createJSHTMLWrapper(JSContext*, PassRefPtr<HTMLElement>);
 }
 
-bool _global_initialize(void)
-{
-    //FIXME: add setup parameters
-    _globalData.runtime = JS_NewRuntime();
-    _globalData.domObjects = new DOMObjectMap;
-    _globalData.domNodesPerDoc = new NodePerDocMap;
-    return true;
-}
-
-void _global_shutdown(void)
-{
-    JS_FreeRuntime(_globalData.runtime);
-    delete _globalData.domNodesPerDoc;
-    delete _globalData.domObjects;
-}
-
-}
+#endif
+#endif

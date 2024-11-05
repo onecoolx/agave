@@ -127,8 +127,7 @@ JSValue toJS(JSContext* ctx, HTMLCollection* collection)
     if (!collection)
         return JS_NULL;
 
-    QJS::ScriptInterpreter* interp = static_cast<QJS::ScriptInterpreter*>(JS_GetContextOpaque(ctx));
-    JSValue ret = QJS::ScriptInterpreter::getDOMObject(interp, collection);
+    JSValue ret = QJS::ScriptInterpreter::getDOMObject(collection);
 
     if (!JS_IsNull(ret)) {
         return ret;
@@ -146,7 +145,7 @@ JSValue toJS(JSContext* ctx, HTMLCollection* collection)
             break;
     }
 
-    QJS::ScriptInterpreter::putDOMObject(interp, collection, ret);
+    QJS::ScriptInterpreter::putDOMObject(collection, ret);
     return ret;
 }
 

@@ -24,32 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "config.h"
-#include "global.h"
+#ifndef _JS_GLOBAL_DOM_MAP_H_
+#define _JS_GLOBAL_DOM_MAP_H_
 
-namespace mescal {
+#include <quickjs.h>
+#include <wtf/HashMap.h>
 
-static GlobalData _globalData;
+#include "Node.h"
+#include "Document.h"
 
-const GlobalData* const _global(void)
-{
-    return &_globalData;
-}
+typedef HashMap<void*, JSValue> DOMObjectMap;
+typedef HashMap<WebCore::Node*, JSValue> NodeMap;
+typedef HashMap<WebCore::Document*, NodeMap*> NodePerDocMap;
 
-bool _global_initialize(void)
-{
-    //FIXME: add setup parameters
-    _globalData.runtime = JS_NewRuntime();
-    _globalData.domObjects = new DOMObjectMap;
-    _globalData.domNodesPerDoc = new NodePerDocMap;
-    return true;
-}
-
-void _global_shutdown(void)
-{
-    JS_FreeRuntime(_globalData.runtime);
-    delete _globalData.domNodesPerDoc;
-    delete _globalData.domObjects;
-}
-
-}
+#endif /*_JS_GLOBAL_DOM_MAP_H_*/
