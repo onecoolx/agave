@@ -40,7 +40,6 @@
 
 namespace WebCore {
 
-    class AXObjectCache;
     class Attr;
     class Attribute;
     class CDATASection;
@@ -346,7 +345,6 @@ public:
 
     RenderArena* renderArena() { return m_renderArena; }
 
-    AXObjectCache* axObjectCache() const;
     
     // to get visually ordered hebrew and arabic pages right
     void setVisuallyOrdered();
@@ -781,8 +779,6 @@ private:
     typedef HashMap<RefPtr<Node>, MarkerMapVectorPair*> MarkerMap;
     MarkerMap m_markers;
 
-    mutable AXObjectCache* m_axObjectCache;
-    
     DeprecatedPtrList<HTMLImageLoader> m_imageLoadEventDispatchSoonList;
     DeprecatedPtrList<HTMLImageLoader> m_imageLoadEventDispatchingList;
     Timer<Document> m_imageLoadEventTimer;

@@ -347,6 +347,7 @@ void *JS_GetRuntimeOpaque(JSRuntime *rt);
 void JS_SetRuntimeOpaque(JSRuntime *rt, void *opaque);
 typedef void JS_MarkFunc(JSRuntime *rt, JSGCObjectHeader *gp);
 void JS_MarkValue(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);
+void JS_MarkValueDefault(JSRuntime *rt, JSValueConst val);
 void JS_RunGC(JSRuntime *rt);
 JS_BOOL JS_IsLiveObject(JSRuntime *rt, JSValueConst obj);
 
@@ -630,6 +631,7 @@ static inline JS_BOOL JS_IsObject(JSValueConst v)
     return JS_VALUE_GET_TAG(v) == JS_TAG_OBJECT;
 }
 
+JS_BOOL JS_IsMarked(JSContext *ctx, JSValueConst v);
 JSValue JS_Throw(JSContext *ctx, JSValue obj);
 JSValue JS_GetException(JSContext *ctx);
 int JS_HasException(JSContext *ctx);

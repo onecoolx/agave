@@ -57,7 +57,7 @@ namespace QJS {
      */
     class ScriptInterpreter : public WebCore::Shared<ScriptInterpreter> {
     public:
-        ScriptInterpreter(JSValue global, WebCore::Frame*);
+        ScriptInterpreter(JSContext* ctx, JSValue global, WebCore::Frame*);
         virtual ~ScriptInterpreter() { }
 
         static JSValue getDOMObject(void* objectHandle);
@@ -94,6 +94,7 @@ namespace QJS {
         bool shouldInterruptScript() const;
 
     private:
+        JSContext* m_context;
         JSValue m_globalObject;
         WebCore::Frame* m_frame;
         WebCore::Event* m_currentEvent;

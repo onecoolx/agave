@@ -591,7 +591,7 @@ JSValue JSDocumentPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst
                 setDOMException(ctx, TYPE_MISMATCH_ERR);
                 return JS_UNDEFINED;
             }
-            NodeFilter* filter = toNodeFilter(argv[2]);
+            NodeFilter* filter = toNodeFilter(ctx, argv[2]);
             bool entityReferenceExpansion = valueToBoolean(ctx, argv[3]);
 
             JSValue result = toJS(ctx, QJS::getPtr(imp->createNodeIterator(root, whatToShow, filter, entityReferenceExpansion, ec)));
@@ -607,7 +607,7 @@ JSValue JSDocumentPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst
                 setDOMException(ctx, TYPE_MISMATCH_ERR);
                 return JS_UNDEFINED;
             }
-            NodeFilter* filter = toNodeFilter(argv[2]);
+            NodeFilter* filter = toNodeFilter(ctx, argv[2]);
             bool entityReferenceExpansion = valueToBoolean(ctx, argv[3]);
 
             JSValue result = toJS(ctx, QJS::getPtr(imp->createTreeWalker(root, whatToShow, filter, entityReferenceExpansion, ec)));

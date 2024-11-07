@@ -24,53 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _JSNodeFilter_H_
-#define _JSNodeFilter_H_
+#include "config.h"
 
+#if ENABLE(QJS)
+#include "QJSNodeFilter.h"
+
+#include "QJSNodeFilterCondition.h"
+#include "NodeFilter.h"
 #include "qjs_binding.h"
 
 namespace WebCore {
 
-class NodeFilter;
+void JSNodeFilter::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func)
+{
+    NodeFilter* filter = (NodeFilter*)JS_GetOpaque(val, JSNodeFilter::js_class_id);
+    filter->mark();
+    JS_MarkValue(rt, val, mark_func);
+}
 
-class JSNodeFilter {
-public:
-    static void init(JSContext*);
-    static JSValue create(JSContext*, NodeFilter*);
-    static void finalizer(JSRuntime *rt, JSValue val);
+NodeFilter* toNodeFilter(JSContext* ctx, JSValue val)
+{
+    if (JS_IsNull(val) || !JS_IsObject(val))
+        return 0;
 
-    static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);
+    NodeFilter* filter = (NodeFilter*)JS_GetOpaque(val, JSNodeFilter::js_class_id);
+    if (filter)
+        return filter;
 
-    static JSClassID js_class_id;
-
-    static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);
-
-    static JSValue getConstructor(JSContext *ctx);
-
-    enum {
-        // The Constructor Attribute
-        ConstructorAttrNum, 
-
-        // Functions
-        AcceptNodeFuncNum
-    };
-};
-
-JSValue toJS(JSContext *ctx, NodeFilter*);
-NodeFilter* toNodeFilter(JSContext*, JSValue);
-
-class JSNodeFilterPrototype {
-public:
-    static JSValue self(JSContext * ctx);
-    static void initPrototype(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext *ctx, JSValueConst this_val, int token);
-};
-
-class JSNodeFilterPrototypeFunction {
-public:
-    static JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token);
-};
+    return new NodeFilter(new JSNodeFilterCondition(ctx, val));
+}
 
 } // namespace WebCore
-
 #endif

@@ -5590,6 +5590,16 @@ static void remove_gc_object(JSGCObjectHeader *h)
     list_del(&h->link);
 }
 
+JS_BOOL JS_IsMarked(JSContext *ctx, JSValueConst v)
+{
+    if (JS_IsObject(v)) {
+        JSGCObjectHeader *p = JS_VALUE_GET_PTR(v);
+        return p->mark == 1;
+    } else {
+        return FALSE;
+    }
+}
+
 void JS_MarkValue(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func)
 {
     if (JS_VALUE_HAS_REF_COUNT(val)) {
@@ -5857,6 +5867,30 @@ BOOL JS_IsLiveObject(JSRuntime *rt, JSValueConst obj)
     p = JS_VALUE_GET_OBJ(obj);
     return !p->free_mark;
 }
+
+void JS_MarkValueDefault(JSRuntime *rt, JSValueConst val)
+{
+    if (JS_VALUE_HAS_REF_COUNT(val)) {
+        switch(JS_VALUE_GET_TAG(val)) {
+        case JS_TAG_OBJECT:
+        case JS_TAG_FUNCTION_BYTECODE:
+            {
+                JSGCObjectHeader *p = JS_VALUE_GET_PTR(val);
+                assert(p->mark == 0);
+                mark_children(rt, p, gc_decref_child);
+                p->mark = 1;
+                if (p->ref_count == 0) {
+                    list_del(&p->link);
+                    list_add_tail(&p->link, &rt->tmp_obj_list);
+                }
+            }
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 
 /* Compute memory used by various object types */
 /* XXX: poor man's approach to handling multiply referenced objects */

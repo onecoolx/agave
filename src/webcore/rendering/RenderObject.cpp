@@ -2515,9 +2515,6 @@ void RenderObject::destroy()
     if (m_hasCounterNodeMap)
         RenderCounter::destroyCounterNodes(this);
 
-    if (AXObjectCache::accessibilityEnabled())
-        document()->axObjectCache()->remove(this);
-
     // By default no ref-counting. RenderWidget::destroy() doesn't call
     // this function because it needs to do ref-counting. If anything
     // in this function changes, be sure to fix RenderWidget::destroy() as well.

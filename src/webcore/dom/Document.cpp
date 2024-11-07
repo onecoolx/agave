@@ -307,8 +307,6 @@ Document::Document(DOMImplementation* impl, Frame* frame, bool isXHTML)
     m_frame = frame;
     m_renderArena = 0;
 
-    m_axObjectCache = 0;
-    
     // FIXME: DocLoader probably no longer needs the frame argument
     m_docLoader = new DocLoader(frame, this);
 
@@ -442,10 +440,6 @@ Document::~Document()
 
     deleteAllValues(m_markers);
 
-    if (m_axObjectCache) {
-        delete m_axObjectCache;
-        m_axObjectCache = 0;
-    }
     m_decoder = 0;
     
     if (m_jsEditor) {
@@ -1243,35 +1237,6 @@ void Document::removeAllDisconnectedNodeEventListeners()
     for (HashSet<Node*>::iterator i = m_disconnectedNodesWithEventListeners.begin(); i != end; ++i)
         EventTargetNodeCast(*i)->removeAllEventListeners();
     m_disconnectedNodesWithEventListeners.clear();
-}
-
-AXObjectCache* Document::axObjectCache() const
-{
-    // The only document that actually has a AXObjectCache is the top-level
-    // document.  This is because we need to be able to get from any WebCoreAXObject
-    // to any other WebCoreAXObject on the same page.  Using a single cache allows
-    // lookups across nested webareas (i.e. multiple documents).
-    
-    if (m_axObjectCache) {
-        // return already known top-level cache
-        if (!ownerElement())
-            return m_axObjectCache;
-        
-        // In some pages with frames, the cache is created before the sub-webarea is
-        // inserted into the tree.  Here, we catch that case and just toss the old
-        // cache and start over.
-        delete m_axObjectCache;
-        m_axObjectCache = 0;
-    }
-
-    // ask the top-level document for its cache
-    Document* doc = topDocument();
-    if (doc != this)
-        return doc->axObjectCache();
-    
-    // this is the top-level document, so install a new cache
-    m_axObjectCache = new AXObjectCache;
-    return m_axObjectCache;
 }
 
 void Document::setVisuallyOrdered()

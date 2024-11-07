@@ -75,8 +75,6 @@ void RenderWidget::destroy()
     if (RenderView* v = view())
         v->removeWidget(this);
 
-    document()->axObjectCache()->remove(this);
-
     remove();
 
     if (m_widget) {

@@ -35,6 +35,7 @@
 #include <text/String.h>
 #include "qjs_dom.h"
 #include "qjs_window.h"
+#include "qjs_script.h"
 
 #if ENABLE(SVG)
 #include "SVGException.h"
@@ -59,8 +60,9 @@ static NodePerDocMap* domNodesPerDocument()
     return GLOBAL()->domNodesPerDoc;
 }
 
-ScriptInterpreter::ScriptInterpreter(JSValue global, Frame* frame)
-    : m_globalObject(global)
+ScriptInterpreter::ScriptInterpreter(JSContext* ctx, JSValue global, Frame* frame)
+    : m_context(ctx)
+    , m_globalObject(global)
     , m_frame(frame)
     , m_currentEvent(0)
     , m_timerCallback(false)
@@ -140,11 +142,11 @@ void ScriptInterpreter::markDOMNodesForDocument(Document* doc)
             // don't mark wrappers for nodes that are no longer in the
             // document - they should not be saved if the node is not
             // otherwise reachable from JS.
-#if 0
             Node* impl = (Node*)JS_GetOpaque(node, JSNode::js_class_id);
-            if (impl->inDocument() && JS_IsLiveObject(node))
-                JS_MarkValue(rt, node, mark_func);
-#endif
+            Frame * mainFrame = doc->frame()->page()->mainFrame();
+            ScriptController* script = mainFrame->script();
+            if (impl->inDocument() && !JS_IsMarked(script->context(), node))
+                JS_MarkValueDefault(JS_GetRuntime(script->context()), node);
         }
     }
 }

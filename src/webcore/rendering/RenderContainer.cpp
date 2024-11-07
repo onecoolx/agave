@@ -192,9 +192,6 @@ RenderObject* RenderContainer::removeChildNode(RenderObject* oldChild, bool full
     oldChild->setNextSibling(0);
     oldChild->setParent(0);
 
-    if (AXObjectCache::accessibilityEnabled())
-        document()->axObjectCache()->childrenChanged(this);
-
     return oldChild;
 }
 
@@ -424,9 +421,6 @@ void RenderContainer::appendChildNode(RenderObject* newChild, bool fullAppend)
     newChild->setNeedsLayoutAndPrefWidthsRecalc(); // Goes up the containing block hierarchy.
     if (!normalChildNeedsLayout())
         setChildNeedsLayout(true); // We may supply the static position for an absolute positioned child.
-    
-    if (AXObjectCache::accessibilityEnabled())
-        document()->axObjectCache()->childrenChanged(this);
 }
 
 void RenderContainer::insertChildNode(RenderObject* child, RenderObject* beforeChild, bool fullInsert)
@@ -480,9 +474,6 @@ void RenderContainer::insertChildNode(RenderObject* child, RenderObject* beforeC
     child->setNeedsLayoutAndPrefWidthsRecalc();
     if (!normalChildNeedsLayout())
         setChildNeedsLayout(true); // We may supply the static position for an absolute positioned child.
-    
-    if (AXObjectCache::accessibilityEnabled())
-        document()->axObjectCache()->childrenChanged(this);
 }
 
 void RenderContainer::layout()
