@@ -31,6 +31,7 @@
 #include "RangeException.h"
 #include "XMLHttpRequest.h"
 #include "QJSNode.h"
+#include "QJSDOMWindow.h"
 
 #include <text/String.h>
 #include "qjs_dom.h"
@@ -131,32 +132,17 @@ void ScriptInterpreter::forgetAllDOMNodesForDocument(Document* document)
     }
 }
 
-void ScriptInterpreter::markDOMNodesForDocument(Document* doc)
-{
-    NodePerDocMap::iterator dictIt = domNodesPerDocument()->find(doc);
-    if (dictIt != domNodesPerDocument()->end()) {
-        NodeMap* nodeDict = dictIt->second;
-        NodeMap::iterator nodeEnd = nodeDict->end();
-        for (NodeMap::iterator nodeIt = nodeDict->begin(); nodeIt != nodeEnd; ++nodeIt) {
-            JSValue node = nodeIt->second;
-            // don't mark wrappers for nodes that are no longer in the
-            // document - they should not be saved if the node is not
-            // otherwise reachable from JS.
-            Node* impl = (Node*)JS_GetOpaque(node, JSNode::js_class_id);
-            Frame * mainFrame = doc->frame()->page()->mainFrame();
-            ScriptController* script = mainFrame->script();
-            if (impl->inDocument() && !JS_IsMarked(script->context(), node))
-                JS_MarkValueDefault(JS_GetRuntime(script->context()), node);
-        }
-    }
-}
-
 JSValue ScriptInterpreter::globalObject() const
 {
     // we need to make sure that any script execution happening in this
     // frame does not destroy it
     m_frame->keepAlive();
     return m_globalObject;
+}
+
+void* ScriptInterpreter::globalObjectData() const
+{
+    return JS_GetOpaque(globalObject(), JSDOMWindow::js_class_id);
 }
 
 void ScriptInterpreter::updateDOMNodeDocument(Node* node, Document* oldDoc, Document* newDoc)

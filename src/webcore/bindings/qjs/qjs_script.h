@@ -50,7 +50,7 @@ public:
 #endif
     void finishedWithEvent(Event*);
 
-    JSContext *context();
+    JSContext *context(void) const { return m_context; }
 
     QJS::ScriptInterpreter* interpreter();
 
