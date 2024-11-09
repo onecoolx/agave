@@ -62,7 +62,7 @@ public:
     };
 
     // Custom attributes
-    static JSValue clipboardData(JSContext *ctx, Event *impl);
+    static JSValue clipboardData(JSContext *ctx, JSValueConst this_val, Event *impl);
 };
 
 JSValue toJS(JSContext *ctx, Event*);

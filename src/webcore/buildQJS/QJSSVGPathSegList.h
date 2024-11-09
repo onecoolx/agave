@@ -58,13 +58,13 @@ public:
     };
 
     // Custom functions
-    static JSValue clear(JSContext *ctx, int argc, JSValueConst *argv, SVGPathSegList *impl);
-    static JSValue initialize(JSContext *ctx, int argc, JSValueConst *argv, SVGPathSegList *impl);
-    static JSValue getItem(JSContext *ctx, int argc, JSValueConst *argv, SVGPathSegList *impl);
-    static JSValue insertItemBefore(JSContext *ctx, int argc, JSValueConst *argv, SVGPathSegList *impl);
-    static JSValue replaceItem(JSContext *ctx, int argc, JSValueConst *argv, SVGPathSegList *impl);
-    static JSValue removeItem(JSContext *ctx, int argc, JSValueConst *argv, SVGPathSegList *impl);
-    static JSValue appendItem(JSContext *ctx, int argc, JSValueConst *argv, SVGPathSegList *impl);
+    static JSValue clear(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGPathSegList *impl);
+    static JSValue initialize(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGPathSegList *impl);
+    static JSValue getItem(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGPathSegList *impl);
+    static JSValue insertItemBefore(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGPathSegList *impl);
+    static JSValue replaceItem(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGPathSegList *impl);
+    static JSValue removeItem(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGPathSegList *impl);
+    static JSValue appendItem(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGPathSegList *impl);
     SVGPathSegList* impl() const { return m_impl.get(); }
     SVGElement* context() const { return m_context.get(); }
 

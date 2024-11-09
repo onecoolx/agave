@@ -67,7 +67,7 @@ public:
     pcre *regex;
     int lastMatchOffsets[maxOffsets];
 #elif ENABLE(QJS)
-    std::vector<uint8_t> regexBuf; // RegExp bytecode buffer.
+    WTF::Vector<uint8_t> regexBuf; // RegExp bytecode buffer.
 #endif
     int lastMatchCount;
     int lastMatchPos;
@@ -218,7 +218,7 @@ int RegularExpression::match(const DeprecatedString &str, int startFrom, int *ma
 #endif
 
 #if ENABLE(QJS)
-    std::vector<uint8_t*> capture;
+    WTF::Vector<uint8_t*> capture;
     int capture_count = lre_get_capture_count(d->regexBuf.data());
     capture.resize(capture_count * 2);
     const uint8_t * str_buf = reinterpret_cast<const uint8_t*>(d->lastMatchString.unicode());
@@ -298,7 +298,7 @@ DeprecatedString RegularExpression::cap(int n) const
 #endif
 
 #if ENABLE(QJS)
-    std::vector<uint8_t*> capture;
+    WTF::Vector<uint8_t*> capture;
     int capture_count = lre_get_capture_count(d->regexBuf.data());
     capture.resize(capture_count * 2);
     const uint8_t * str_buf = reinterpret_cast<const uint8_t*>(d->lastMatchString.unicode());

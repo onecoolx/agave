@@ -56,7 +56,7 @@ static inline bool allowSettingSrcToJavascriptURL(JSContext* ctx, Element* eleme
     return true;
 } 
 
-JSValue JSElement::setAttribute(JSContext *ctx, int argc, JSValueConst *argv, Element *imp)
+JSValue JSElement::setAttribute(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Element *imp)
 {
     ExceptionCode ec = 0;
     String name = valueToString(ctx, argv[0]);
@@ -70,7 +70,7 @@ JSValue JSElement::setAttribute(JSContext *ctx, int argc, JSValueConst *argv, El
     return JS_UNDEFINED;
 }
 
-JSValue JSElement::setAttributeNode(JSContext *ctx, int argc, JSValueConst *argv, Element *imp)
+JSValue JSElement::setAttributeNode(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Element *imp)
 {
     ExceptionCode ec = 0;
     bool newAttrOk;
@@ -88,7 +88,7 @@ JSValue JSElement::setAttributeNode(JSContext *ctx, int argc, JSValueConst *argv
     return result;
 }
 
-JSValue JSElement::setAttributeNS(JSContext *ctx, int argc, JSValueConst *argv, Element *imp)
+JSValue JSElement::setAttributeNS(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Element *imp)
 {
     ExceptionCode ec = 0;
     String namespaceURI = valueToStringWithNullCheck(ctx, argv[0]);
@@ -103,7 +103,7 @@ JSValue JSElement::setAttributeNS(JSContext *ctx, int argc, JSValueConst *argv, 
     return JS_UNDEFINED;
 }
 
-JSValue JSElement::setAttributeNodeNS(JSContext *ctx, int argc, JSValueConst *argv, Element *imp)
+JSValue JSElement::setAttributeNodeNS(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Element *imp)
 {
     ExceptionCode ec = 0;
     bool newAttrOk;

@@ -55,8 +55,8 @@ public:
     };
 
     // Custom attributes
-    static JSValue length(JSContext *ctx, HTMLOptionsCollection *impl);
-    static void setLength(JSContext *ctx, JSValue, HTMLOptionsCollection *impl);
+    static JSValue length(JSContext *ctx, JSValueConst this_val, HTMLOptionsCollection *impl);
+    static void setLength(JSContext *ctx, JSValueConst this_val, JSValue value, HTMLOptionsCollection *impl);
     void indexSetter(JSContext* ctx, unsigned index, JSValue value, int attr);
 };
 

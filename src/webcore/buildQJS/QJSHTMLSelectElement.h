@@ -63,7 +63,7 @@ public:
     };
 
     // Custom functions
-    static JSValue remove(JSContext *ctx, int argc, JSValueConst *argv, HTMLSelectElement *impl);
+    static JSValue remove(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, HTMLSelectElement *impl);
     void indexSetter(JSContext* ctx, unsigned index, JSValue value, int attr);
 private:
     static JSValue indexGetter(JSContext *ctx, JSValueConst this_obj, uint32_t idx);

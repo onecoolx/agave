@@ -74,8 +74,8 @@ public:
     };
 
     // Custom attributes
-    static JSValue location(JSContext *ctx, Document *impl);
-    static void setLocation(JSContext *ctx, JSValue, Document *impl);
+    static JSValue location(JSContext *ctx, JSValueConst this_val, Document *impl);
+    static void setLocation(JSContext *ctx, JSValueConst this_val, JSValue value, Document *impl);
 };
 
 JSValue toJS(JSContext *ctx, Document*);

@@ -315,7 +315,7 @@ static const JSCFunctionListEntry JSDOMWindowPrototypeFunctions[] =
 
 JSValue JSDOMWindowPrototype::self(JSContext * ctx)
 {
-    JSValue obj = JS_NewObject(ctx);
+    JSValue obj = JS_NewObjectProto(ctx, WindowPrototype::self(ctx));
     JSDOMWindowPrototype::initPrototype(ctx, obj);
     return obj;
 }
@@ -361,7 +361,7 @@ void JSDOMWindow::finalizer(JSRuntime* rt, JSValue val)
 
 void JSDOMWindow::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func)
 {
-    JS_MarkValue(rt, val, mark_func);
+    Window::mark(rt, val, mark_func);
 }
 
 JSValue JSDOMWindow::getValueProperty(JSContext *ctx, JSValueConst this_val, int token)

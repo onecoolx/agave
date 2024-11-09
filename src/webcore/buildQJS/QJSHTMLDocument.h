@@ -64,14 +64,14 @@ public:
     };
 
     // Custom attributes
-    static JSValue all(JSContext *ctx, HTMLDocument *impl);
-    static void setAll(JSContext *ctx, JSValue, HTMLDocument *impl);
+    static JSValue all(JSContext *ctx, JSValueConst this_val, HTMLDocument *impl);
+    static void setAll(JSContext *ctx, JSValueConst this_val, JSValue value, HTMLDocument *impl);
 
     // Custom functions
-    static JSValue open(JSContext *ctx, int argc, JSValueConst *argv, HTMLDocument *impl);
-    static JSValue write(JSContext *ctx, int argc, JSValueConst *argv, HTMLDocument *impl);
-    static JSValue writeln(JSContext *ctx, int argc, JSValueConst *argv, HTMLDocument *impl);
-    static JSValue clear(JSContext *ctx, int argc, JSValueConst *argv, HTMLDocument *impl);
+    static JSValue open(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, HTMLDocument *impl);
+    static JSValue write(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, HTMLDocument *impl);
+    static JSValue writeln(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, HTMLDocument *impl);
+    static JSValue clear(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, HTMLDocument *impl);
 private:
     static JSValue nameGetter(JSContext *ctx, JSValueConst this_obj, const char* prop);
 };

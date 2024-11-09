@@ -61,17 +61,17 @@ public:
     };
 
     // Custom functions
-    static JSValue multiply(JSContext *ctx, int argc, JSValueConst *argv, SVGMatrix *impl);
-    static JSValue inverse(JSContext *ctx, int argc, JSValueConst *argv, SVGMatrix *impl);
-    static JSValue translate(JSContext *ctx, int argc, JSValueConst *argv, SVGMatrix *impl);
-    static JSValue scale(JSContext *ctx, int argc, JSValueConst *argv, SVGMatrix *impl);
-    static JSValue scaleNonUniform(JSContext *ctx, int argc, JSValueConst *argv, SVGMatrix *impl);
-    static JSValue rotate(JSContext *ctx, int argc, JSValueConst *argv, SVGMatrix *impl);
-    static JSValue rotateFromVector(JSContext *ctx, int argc, JSValueConst *argv, SVGMatrix *impl);
-    static JSValue flipX(JSContext *ctx, int argc, JSValueConst *argv, SVGMatrix *impl);
-    static JSValue flipY(JSContext *ctx, int argc, JSValueConst *argv, SVGMatrix *impl);
-    static JSValue skewX(JSContext *ctx, int argc, JSValueConst *argv, SVGMatrix *impl);
-    static JSValue skewY(JSContext *ctx, int argc, JSValueConst *argv, SVGMatrix *impl);
+    static JSValue multiply(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGMatrix *impl);
+    static JSValue inverse(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGMatrix *impl);
+    static JSValue translate(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGMatrix *impl);
+    static JSValue scale(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGMatrix *impl);
+    static JSValue scaleNonUniform(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGMatrix *impl);
+    static JSValue rotate(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGMatrix *impl);
+    static JSValue rotateFromVector(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGMatrix *impl);
+    static JSValue flipX(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGMatrix *impl);
+    static JSValue flipY(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGMatrix *impl);
+    static JSValue skewX(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGMatrix *impl);
+    static JSValue skewY(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, SVGMatrix *impl);
     JSSVGPODTypeWrapper<AffineTransform>* impl() const { return m_impl.get(); }
     SVGElement* context() const { return m_context.get(); }
 

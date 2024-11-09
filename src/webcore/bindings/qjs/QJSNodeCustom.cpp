@@ -67,7 +67,7 @@ namespace WebCore {
 
 typedef int ExpectionCode;
 
-JSValue JSNode::insertBefore(JSContext *ctx, int argc, JSValueConst *argv, Node *impl)
+JSValue JSNode::insertBefore(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl)
 {
     ExceptionCode ec = 0;
     bool ok = impl->insertBefore(toNode(argv[0]), toNode(argv[1]), ec);
@@ -77,7 +77,7 @@ JSValue JSNode::insertBefore(JSContext *ctx, int argc, JSValueConst *argv, Node 
     return JS_NULL;
 }
 
-JSValue JSNode::replaceChild(JSContext *ctx, int argc, JSValueConst *argv, Node *impl)
+JSValue JSNode::replaceChild(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl)
 {
     ExceptionCode ec = 0;
     bool ok = impl->replaceChild(toNode(argv[0]), toNode(argv[1]), ec);
@@ -87,7 +87,7 @@ JSValue JSNode::replaceChild(JSContext *ctx, int argc, JSValueConst *argv, Node 
     return JS_NULL;
 }
 
-JSValue JSNode::removeChild(JSContext *ctx, int argc, JSValueConst *argv, Node *impl)
+JSValue JSNode::removeChild(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl)
 {
     ExceptionCode ec = 0;
     bool ok = impl->removeChild(toNode(argv[0]), ec);
@@ -97,7 +97,7 @@ JSValue JSNode::removeChild(JSContext *ctx, int argc, JSValueConst *argv, Node *
     return JS_NULL;
 }
 
-JSValue JSNode::appendChild(JSContext *ctx, int argc, JSValueConst *argv, Node *impl)
+JSValue JSNode::appendChild(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl)
 {
     ExceptionCode ec = 0;
     bool ok = impl->appendChild(toNode(argv[0]), ec);

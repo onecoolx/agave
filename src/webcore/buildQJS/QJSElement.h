@@ -68,10 +68,10 @@ public:
     };
 
     // Custom functions
-    static JSValue setAttribute(JSContext *ctx, int argc, JSValueConst *argv, Element *impl);
-    static JSValue setAttributeNode(JSContext *ctx, int argc, JSValueConst *argv, Element *impl);
-    static JSValue setAttributeNS(JSContext *ctx, int argc, JSValueConst *argv, Element *impl);
-    static JSValue setAttributeNodeNS(JSContext *ctx, int argc, JSValueConst *argv, Element *impl);
+    static JSValue setAttribute(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Element *impl);
+    static JSValue setAttributeNode(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Element *impl);
+    static JSValue setAttributeNS(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Element *impl);
+    static JSValue setAttributeNodeNS(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Element *impl);
 };
 
 Element* toElement(JSValue);

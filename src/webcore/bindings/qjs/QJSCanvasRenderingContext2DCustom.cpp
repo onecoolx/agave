@@ -78,27 +78,27 @@ static PassRefPtr<CanvasStyle> toHTMLCanvasStyle(JSContext *ctx, JSValue value)
     return 0;
 }
 
-JSValue JSCanvasRenderingContext2D::strokeStyle(JSContext *ctx, CanvasRenderingContext2D *impl)
+JSValue JSCanvasRenderingContext2D::strokeStyle(JSContext *ctx, JSValueConst this_val, CanvasRenderingContext2D *impl)
 {
     return toJS(ctx, impl->strokeStyle());        
 }
 
-void JSCanvasRenderingContext2D::setStrokeStyle(JSContext *ctx, JSValue value, CanvasRenderingContext2D *impl)
+void JSCanvasRenderingContext2D::setStrokeStyle(JSContext *ctx, JSValueConst this_val, JSValue value, CanvasRenderingContext2D *impl)
 {
     impl->setStrokeStyle(toHTMLCanvasStyle(ctx, value));
 }
 
-JSValue JSCanvasRenderingContext2D::fillStyle(JSContext *ctx, CanvasRenderingContext2D *impl)
+JSValue JSCanvasRenderingContext2D::fillStyle(JSContext *ctx, JSValueConst this_val, CanvasRenderingContext2D *impl)
 {
     return toJS(ctx, impl->fillStyle());
 }
 
-void JSCanvasRenderingContext2D::setFillStyle(JSContext *ctx, JSValue value, CanvasRenderingContext2D *impl)
+void JSCanvasRenderingContext2D::setFillStyle(JSContext *ctx, JSValueConst this_val, JSValue value, CanvasRenderingContext2D *impl)
 {
     impl->setFillStyle(toHTMLCanvasStyle(ctx, value));
 }
 
-JSValue JSCanvasRenderingContext2D::setFillColor(JSContext *ctx, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl)
+JSValue JSCanvasRenderingContext2D::setFillColor(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl)
 {
     CanvasRenderingContext2D* context = impl;
 
@@ -140,7 +140,7 @@ JSValue JSCanvasRenderingContext2D::setFillColor(JSContext *ctx, int argc, JSVal
     return JS_UNDEFINED;
 }    
 
-JSValue JSCanvasRenderingContext2D::setStrokeColor(JSContext *ctx, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl)
+JSValue JSCanvasRenderingContext2D::setStrokeColor(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl)
 { 
     CanvasRenderingContext2D* context = impl;
 
@@ -182,7 +182,7 @@ JSValue JSCanvasRenderingContext2D::setStrokeColor(JSContext *ctx, int argc, JSV
     return JS_UNDEFINED;
 }
 
-JSValue JSCanvasRenderingContext2D::strokeRect(JSContext *ctx, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl)
+JSValue JSCanvasRenderingContext2D::strokeRect(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl)
 { 
     CanvasRenderingContext2D* context = impl;    
     ExceptionCode ec;
@@ -204,7 +204,7 @@ JSValue JSCanvasRenderingContext2D::strokeRect(JSContext *ctx, int argc, JSValue
     return JS_UNDEFINED;
 }
 
-JSValue JSCanvasRenderingContext2D::drawImage(JSContext *ctx, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl)
+JSValue JSCanvasRenderingContext2D::drawImage(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl)
 { 
     CanvasRenderingContext2D* context = impl;
 
@@ -270,7 +270,7 @@ JSValue JSCanvasRenderingContext2D::drawImage(JSContext *ctx, int argc, JSValueC
     return JS_UNDEFINED;
 }
 
-JSValue JSCanvasRenderingContext2D::drawImageFromRect(JSContext *ctx, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl)
+JSValue JSCanvasRenderingContext2D::drawImageFromRect(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl)
 { 
     CanvasRenderingContext2D* context = impl;
     
@@ -291,7 +291,7 @@ JSValue JSCanvasRenderingContext2D::drawImageFromRect(JSContext *ctx, int argc, 
     return JS_UNDEFINED;
 }
 
-JSValue JSCanvasRenderingContext2D::setShadow(JSContext *ctx, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl)
+JSValue JSCanvasRenderingContext2D::setShadow(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl)
 { 
     CanvasRenderingContext2D* context = impl;
 
@@ -338,7 +338,7 @@ JSValue JSCanvasRenderingContext2D::setShadow(JSContext *ctx, int argc, JSValueC
     return JS_UNDEFINED;
 }
 
-JSValue JSCanvasRenderingContext2D::createPattern(JSContext *ctx, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl)
+JSValue JSCanvasRenderingContext2D::createPattern(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl)
 { 
     CanvasRenderingContext2D* context = impl;
 

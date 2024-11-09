@@ -107,7 +107,7 @@ JSValue JSHTMLCollection::nameGetter(JSContext *ctx, JSValueConst this_val, cons
     return getNamedItems(ctx, impl, propertyName);
 }
 
-JSValue JSHTMLCollection::item(JSContext *ctx, int argc, JSValueConst *argv, HTMLCollection *impl)
+JSValue JSHTMLCollection::item(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, HTMLCollection *impl)
 {
     bool ok;
     String string = valueToString(ctx, argv[0]);
@@ -117,7 +117,7 @@ JSValue JSHTMLCollection::item(JSContext *ctx, int argc, JSValueConst *argv, HTM
     return getNamedItems(ctx, impl, string);
 }
 
-JSValue JSHTMLCollection::namedItem(JSContext* ctx, int argc, JSValueConst *argv, HTMLCollection *impl)
+JSValue JSHTMLCollection::namedItem(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, HTMLCollection *impl)
 {
     return getNamedItems(ctx, impl, valueToString(ctx, argv[0]));
 }

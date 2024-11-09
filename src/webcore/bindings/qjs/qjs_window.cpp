@@ -21,7 +21,7 @@
  */
 
 #include "config.h"
-#include "kjs_window.h"
+#include "qjs_window.h"
 
 #include "Base64.h"
 #include "CString.h"
@@ -39,18 +39,18 @@
 #include "FrameView.h"
 #include "GCController.h"
 #include "HTMLDocument.h"
-#include "JSCSSRule.h"
-#include "JSCSSValue.h"
-#include "JSDOMExceptionConstructor.h"
-#include "JSDOMWindow.h"
-#include "JSEvent.h"
-#include "JSHTMLCollection.h"
-#include "JSHTMLOptionElementConstructor.h"
-#include "JSMutationEvent.h"
-#include "JSNode.h"
-#include "JSNodeFilter.h"
-#include "JSRange.h"
-#include "JSXMLHttpRequest.h"
+#include "QJSCSSRule.h"
+#include "QJSCSSValue.h"
+#include "QJSDOMExceptionConstructor.h"
+#include "QJSDOMWindow.h"
+#include "QJSEvent.h"
+#include "QJSHTMLCollection.h"
+#include "QJSHTMLOptionElementConstructor.h"
+#include "QJSMutationEvent.h"
+#include "QJSNode.h"
+#include "QJSNodeFilter.h"
+#include "QJSRange.h"
+#include "QJSXMLHttpRequest.h"
 #include "Logging.h"
 #include "Page.h"
 #include "PlatformScreen.h"
@@ -58,11 +58,13 @@
 #include "Settings.h"
 #include "WindowFeatures.h"
 #include "htmlediting.h"
-#include "kjs_css.h"
-#include "kjs_events.h"
-#include "kjs_navigator.h"
-#include "kjs_proxy.h"
+#include "qjs_css.h"
+#include "qjs_events.h"
+#include "qjs_navigator.h"
+#include "qjs_script.h"
 #include <wtf/MathExtras.h>
+
+#include "global.h"
 
 #if ENABLE(XSLT)
 #include "JSXSLTProcessor.h"
@@ -71,7 +73,9 @@
 using namespace WebCore;
 using namespace EventNames;
 
-namespace KJS {
+namespace QJS {
+
+#define countof(x) (sizeof(x) / sizeof((x)[0]))
 
 static int lastUsedTimeoutId;
 
@@ -98,13 +102,13 @@ struct WindowPrivate {
     TimeoutsMap m_timeouts;
 };
 
+
 class DOMWindowTimer : public TimerBase {
 public:
     DOMWindowTimer(int timeoutId, int nestingLevel, Window* o, ScheduledAction* a)
         : m_timeoutId(timeoutId), m_nestingLevel(nestingLevel), m_object(o), m_action(a) { }
     virtual ~DOMWindowTimer() 
     { 
-        JSLock lock;
         delete m_action; 
     }
 
@@ -1456,28 +1460,30 @@ void Window::setReturnValueSlot(JSValue** slot)
 
 ////////////////////// ScheduledAction ////////////////////////
 
-void ScheduledAction::execute(Window* window)
+void ScheduledAction::execute(JSValue window)
 {
     RefPtr<Frame> frame = window->impl()->frame();
     if (!frame)
         return;
 
-    KJSProxy* scriptProxy = frame->scriptProxy();
-    if (!scriptProxy)
+    ScriptController* script = frame->script();
+    if (!script)
         return;
 
     RefPtr<ScriptInterpreter> interpreter = scriptProxy->interpreter();
+    JSContext* ctx = interpreter->context();
 
     interpreter->setProcessingTimerCallback(true);
 
-    if (JSValue* func = m_func.get()) {
-        JSLock lock;
-        if (func->isObject() && static_cast<JSObject*>(func)->implementsCall()) {
-            ExecState* exec = interpreter->globalExec();
-            ASSERT(window == interpreter->globalObject());
+    if (JSValue func = m_func.get()) {
+        if (JS_IsFunction(ctx, func)) {
+
             interpreter->startTimeoutCheck();
-            static_cast<JSObject*>(func)->call(exec, window, m_args);
+
+            JS_Call(ctx, func, window, m_args.size(), m_args.data());
+
             interpreter->stopTimeoutCheck();
+
             if (exec->hadException()) {
                 JSObject* exception = exec->exception()->toObject(exec);
                 exec->clearException();
@@ -1531,7 +1537,7 @@ int Window::installTimeout(ScheduledAction* a, int t, bool singleShot)
     return timeoutId;
 }
 
-int Window::installTimeout(const UString& handler, int t, bool singleShot)
+int Window::installTimeout(const String& handler, int t, bool singleShot)
 {
     return installTimeout(new ScheduledAction(handler), t, singleShot);
 }
@@ -1647,7 +1653,6 @@ Window::UnprotectedListenersMap& Window::jsUnprotectedHTMLEventListeners()
 
 ////////////////////// Location Object ////////////////////////
 
-const ClassInfo Location::info = { "Location", 0, &LocationTable, 0 };
 /*
 @begin LocationTable 12
   assign        Location::Assign        DontDelete|Function 1
@@ -1665,196 +1670,245 @@ const ClassInfo Location::info = { "Location", 0, &LocationTable, 0 };
 @end
 */
 KJS_IMPLEMENT_PROTOTYPE_FUNCTION(LocationFunc)
-Location::Location(Frame *p) : m_frame(p)
+
+static JSClassDef LocationClassDefine = 
 {
+    "Location",
+};
+
+JSClassID Location::js_class_id = 0;
+
+void Location::init(JSContext* ctx)
+{
+    if (Location::js_class_id == 0) {
+        JS_NewClassID(&Location::js_class_id);
+        JS_NewClass(JS_GetRuntime(ctx), Location::js_class_id, &LocationClassDefine);
+
+        JSValue proto = JS_NewObject(ctx);
+        JS_SetPropertyFunctionList(ctx, proto, LocationAttributesFunctions, countof(LocationAttributesFunctions));
+
+        JS_SetClassProto(ctx, Location::js_class_id, proto);
+    }
 }
 
-JSValue *Location::getValueProperty(ExecState *exec, int token) const
+JSValue Location::create(JSContext* ctx, Frame *p)
 {
-  KURL url = m_frame->loader()->url();
-  switch (token) {
-  case Hash:
-    return jsString(url.ref().isNull() ? "" : "#" + url.ref());
-  case Host: {
-    // Note: this is the IE spec. The NS spec swaps the two, it says
-    // "The hostname property is the concatenation of the host and port properties, separated by a colon."
-    // Bleh.
-    UString str = url.host();
-    if (url.port())
-        str += ":" + String::number((int)url.port());
-    return jsString(str);
-  }
-  case Hostname:
-    return jsString(url.host());
-  case Href:
-    if (!url.hasPath())
-      return jsString(url.prettyURL() + "/");
-    return jsString(url.prettyURL());
-  case Pathname:
-    return jsString(url.path().isEmpty() ? "/" : url.path());
-  case Port:
-    return jsString(url.port() ? String::number((int)url.port()) : "");
-  case Protocol:
-    return jsString(url.protocol() + ":");
-  case Search:
-    return jsString(url.query());
-  default:
-    ASSERT(0);
-    return jsUndefined();
-  }
-}
+    Location::init(ctx);
 
-bool Location::getOwnPropertySlot(ExecState *exec, const Identifier& propertyName, PropertySlot& slot) 
-{
-  if (!m_frame)
-    return false;
-  
-  const Window* window = Window::retrieveWindow(m_frame);
-  
-  const HashEntry *entry = Lookup::findEntry(&LocationTable, propertyName);
-  if (!entry || (entry->value != Replace && entry->value != Reload && entry->value != Assign))
-    if (!window || !window->isSafeScript(exec)) {
-      slot.setUndefined(this);
-      return true;
+    JSValue obj = JS_NewObjectClass(ctx, Location::js_class_id);
+    if (JS_IsException(obj)) {
+        return JS_EXCEPTION;
     }
 
-  return getStaticPropertySlot<LocationFunc, Location, JSObject>(exec, &LocationTable, this, propertyName, slot);
+    JS_SetOpaque(obj, p);
+    return obj;
 }
 
-void Location::put(ExecState *exec, const Identifier &p, JSValue *v, int attr)
+Frame* Location::frame(JSValue val)
 {
-  if (!m_frame)
-    return;
-
-  DeprecatedString str = v->toString(exec);
-  KURL url = m_frame->loader()->url();
-  const Window* window = Window::retrieveWindow(m_frame);
-  bool sameDomainAccess = window && window->isSafeScript(exec);
-
-  const HashEntry *entry = Lookup::findEntry(&LocationTable, p);
-
-  if (entry) {
-      // cross-domain access to the location is allowed when assigning the whole location,
-      // but not when assigning the individual pieces, since that might inadvertently
-      // disclose other parts of the original location.
-      if (entry->value != Href && !sameDomainAccess)
-          return;
-
-      switch (entry->value) {
-      case Href: {
-          Frame* frame = Window::retrieveActive(exec)->impl()->frame();
-          if (frame)
-              url = frame->loader()->completeURL(str).url();
-          else
-              url = str;
-          break;
-      } 
-      case Hash: {
-          if (str.startsWith("#"))
-              str = str.mid(1);
-          
-          if (url.ref() == str)
-              return;
-
-          url.setRef(str);
-          break;
-      }
-      case Host: {
-          url.setHostAndPort(str);
-          break;
-      }
-      case Hostname:
-          url.setHost(str);
-          break;
-      case Pathname:
-          url.setPath(str);
-          break;
-      case Port:
-          url.setPort(str.toUInt());
-          break;
-      case Protocol:
-          url.setProtocol(str);
-          break;
-      case Search:
-          url.setQuery(str);
-          break;
-      default:
-          // Disallow changing other properties in LocationTable. e.g., "window.location.toString = ...".
-          // <http://bugs.webkit.org/show_bug.cgi?id=12720>
-          return;
-      }
-  } else {
-      if (sameDomainAccess)
-          JSObject::put(exec, p, v, attr);
-      return;
-  }
-
-  Frame* activeFrame = Window::retrieveActive(exec)->impl()->frame();
-  if (!url.url().startsWith("javascript:", false) || sameDomainAccess) {
-    bool userGesture = static_cast<ScriptInterpreter *>(exec->dynamicInterpreter())->wasRunByUserGesture();
-    m_frame->loader()->scheduleLocationChange(url.url(), activeFrame->loader()->outgoingReferrer(), !userGesture, userGesture);
-  }
+    return (Frame*)JS_SetOpaque(val, Location::js_class_id);
 }
 
-JSValue *LocationFunc::callAsFunction(ExecState *exec, JSObject *thisObj, const List &args)
+JSValue Location::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
 {
-  if (!thisObj->inherits(&Location::info))
-    return throwError(exec, TypeError);
-  Location *location = static_cast<Location *>(thisObj);
-  Frame *frame = location->frame();
-  if (frame) {
-      
-    Window* window = Window::retrieveWindow(frame);
-    if (id != Location::Replace && !window->isSafeScript(exec))
-        return jsUndefined();
-      
-    switch (id) {
-    case Location::Replace:
-    {
-      DeprecatedString str = args[0]->toString(exec);
-      Frame* p = Window::retrieveActive(exec)->impl()->frame();
-      if ( p ) {
-        const Window* window = Window::retrieveWindow(frame);
-        if (!str.startsWith("javascript:", false) || (window && window->isSafeScript(exec))) {
-          bool userGesture = static_cast<ScriptInterpreter *>(exec->dynamicInterpreter())->wasRunByUserGesture();
-          frame->loader()->scheduleLocationChange(p->loader()->completeURL(str).url(), p->loader()->outgoingReferrer(), true, userGesture);
-        }
-      }
-      break;
-    }
-    case Location::Reload:
-    {
-      const Window* window = Window::retrieveWindow(frame);
-      if (!frame->loader()->url().url().startsWith("javascript:", false) || (window && window->isSafeScript(exec))) {
-        bool userGesture = static_cast<ScriptInterpreter *>(exec->dynamicInterpreter())->wasRunByUserGesture();
-        frame->loader()->scheduleRefresh(userGesture);
-      }
-      break;
-    }
-    case Location::Assign:
-    {
-        Frame *p = Window::retrieveActive(exec)->impl()->frame();
-        if (p) {
-            const Window *window = Window::retrieveWindow(frame);
-            DeprecatedString dstUrl = p->loader()->completeURL(DeprecatedString(args[0]->toString(exec))).url();
-            if (!dstUrl.startsWith("javascript:", false) || (window && window->isSafeScript(exec))) {
-                bool userGesture = static_cast<ScriptInterpreter *>(exec->dynamicInterpreter())->wasRunByUserGesture();
-                // We want a new history item if this JS was called via a user gesture
-                frame->loader()->scheduleLocationChange(dstUrl, p->loader()->outgoingReferrer(), !userGesture, userGesture);
+    KURL url = Location::frame(this_val)->loader()->url();
+
+    switch (token) {
+        case Hash:
+            {
+                DeprecatedString str;
+                if (url.ref().isNull()) {
+                    str = "";
+                } else {
+                    str = "#" + url.ref();
+                }
+                return JS_NewString(ctx, str.utf8().data());
             }
-        }
-        break;
+        case Host:
+            {
+                // Note: this is the IE spec. The NS spec swaps the two, it says
+                // "The hostname property is the concatenation of the host and port properties, separated by a colon."
+                // Bleh.
+                String str = url.host();
+                if (url.port())
+                    str += ":" + String::number((int)url.port());
+                return JS_NewString(ctx, str.utf8().data());
+            }
+        case Hostname:
+            return JS_NewString(ctx, url.host().utf8().data());
+        case Href:
+            {
+                DeprecatedString str = url.prettyURL();
+                if (!url.hasPath()) {
+                    str += "/";
+                }
+                return JS_NewString(ctx, str.utf8().data());
+            }
+        case Pathname:
+            {
+                DeprecatedString str;
+                if (url.path().isEmpty()) {
+                    str = "/";
+                } else {
+                    str = url.path();
+                }
+                return JS_NewString(ctx, str.utf8().data());
+            }
+        case Port:
+            {
+                String str;
+                if (url.port()) {
+                    str = String::number((int)url.port());
+                } else {
+                    str = "";
+                }
+                return JS_NewString(ctx, str.utf8().data());
+            }
+        case Protocol:
+            {
+                DeprecatedString str = url.protocol() + ":";
+                return JS_NewString(ctx, str.utf8().data());
+            }
+        case Search:
+            return JS_NewString(ctx, url.query().utf8().data());
+        default:
+            return JS_UNDEFINED;
     }
-    case Location::ToString:
-        if (!frame || !Window::retrieveWindow(frame)->isSafeScript(exec))
-            return jsString();
+}
 
-        if (!frame->loader()->url().hasPath())
-            return jsString(frame->loader()->url().prettyURL() + "/");
-        return jsString(frame->loader()->url().prettyURL());
+JSValue Location::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue val, int token)
+{
+    Frame* frame = Location::frame(this_val);
+    if (!frame)
+        return JS_NULL;
+
+    String str = valueToString(ctx, val);
+    KURL url = frame->loader()->url();
+
+    const Window* window = Window::retrieveWindow(frame);
+    bool sameDomainAccess = window && window->isSafeScript(ctx);
+
+    // cross-domain access to the location is allowed when assigning the whole location,
+    // but not when assigning the individual pieces, since that might inadvertently
+    // disclose other parts of the original location.
+    if (token != Href && !sameDomainAccess)
+        return;
+
+    switch (token) {
+        case Href:
+            {
+                Frame* activeFrame = Window::retrieveActive(ctx)->impl()->frame();
+                if (activeFrame)
+                    url = activeFrame->loader()->completeURL(str).url();
+                else
+                    url = str;
+                break;
+            } 
+        case Hash:
+            {
+                if (str.startsWith("#"))
+                    str = str.mid(1);
+
+                if (url.ref() == str)
+                    return;
+
+                url.setRef(str);
+                break;
+            }
+        case Host:
+            {
+                url.setHostAndPort(str);
+                break;
+            }
+        case Hostname:
+            url.setHost(str);
+            break;
+        case Pathname:
+            url.setPath(str);
+            break;
+        case Port:
+            url.setPort(str.toUInt());
+            break;
+        case Protocol:
+            url.setProtocol(str);
+            break;
+        case Search:
+            url.setQuery(str);
+            break;
+        default:
+            // Disallow changing other properties in LocationTable. e.g., "window.location.toString = ...".
+            // <http://bugs.webkit.org/show_bug.cgi?id=12720>
+            return;
     }
-  }
-  return jsUndefined();
+
+    Frame* activeFrame = Window::retrieveActive(ctx)->impl()->frame();
+    if (!url.url().startsWith("javascript:", false) || sameDomainAccess) {
+        bool userGesture = static_cast<ScriptInterpreter *>(JS_GetContextOpaque(ctx))->wasRunByUserGesture();
+        frame->loader()->scheduleLocationChange(url.url(), activeFrame->loader()->outgoingReferrer(), !userGesture, userGesture);
+    }
+}
+
+JSValue LocationFunc::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
+{
+    Location* imp = (Location*)JS_GetOpaque2(ctx, this_val, Location::js_class_id);
+    if (!imp)
+        return JS_ThrowTypeError(ctx, "Type error"); 
+
+    Frame *frame = imp->frame();
+    if (frame) {
+      
+        Window* window = Window::retrieveWindow(frame);
+        if (token != Location::Replace && !window->isSafeScript(ctx))
+            return JS_UNDEFINED;
+      
+        switch (token) {
+            case Location::Replace:
+            {
+                String str = valueToString(ctx, argv[0]);
+                Frame* p = Window::retrieveActive(ctx)->impl()->frame();
+                if (p) {
+                    const Window* window = Window::retrieveWindow(frame);
+                    if (!str.startsWith("javascript:", false) || (window && window->isSafeScript(ctx))) {
+                        bool userGesture = static_cast<ScriptInterpreter *>(JS_GetContextOpaque(ctx))->wasRunByUserGesture();
+                        frame->loader()->scheduleLocationChange(p->loader()->completeURL(str).url(),
+                                                                p->loader()->outgoingReferrer(), true, userGesture);
+                    }
+                }
+                break;
+            }
+            case Location::Reload:
+            {
+                const Window* window = Window::retrieveWindow(frame);
+                if (!frame->loader()->url().url().startsWith("javascript:", false) || (window && window->isSafeScript(ctx))) {
+                    bool userGesture = static_cast<ScriptInterpreter *>(JS_GetContextOpaque(ctx))->wasRunByUserGesture();
+                    frame->loader()->scheduleRefresh(userGesture);
+                }
+                break;
+            }
+            case Location::Assign:
+            {
+                Frame *p = Window::retrieveActive(ctx)->impl()->frame();
+                if (p) {
+                    const Window *window = Window::retrieveWindow(frame);
+                    DeprecatedString dstUrl = p->loader()->completeURL(DeprecatedString(valueToString(ctx, argv[0]))).url();
+                    if (!dstUrl.startsWith("javascript:", false) || (window && window->isSafeScript(exec))) {
+                        bool userGesture = static_cast<ScriptInterpreter *>(JS_GetContextOpaque(ctx))->wasRunByUserGesture();
+                        // We want a new history item if this JS was called via a user gesture
+                        frame->loader()->scheduleLocationChange(dstUrl, p->loader()->outgoingReferrer(), !userGesture, userGesture);
+                    }
+                }
+                break;
+            }
+            case Location::ToString:
+            if (!frame || !Window::retrieveWindow(frame)->isSafeScript(ctx))
+                return JS_NewString(ctx, "");
+
+            if (!frame->loader()->url().hasPath())
+                return JS_NewString(ctx, DeprecatedString(frame->loader()->url().prettyURL() + "/").utf8().data());
+            return JS_NewString(ctx, frame->loader()->url().prettyURL().utf8().data());
+        }
+    }
+    return JS_UNDEFINED;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1877,19 +1931,19 @@ void DOMWindowTimer::fired()
     timerNestingLevel = 0;
 }
 
-} // namespace KJS
+} // namespace QJS
 
-using namespace KJS;
+using namespace QJS;
 
 namespace WebCore {
 
-JSValue* toJS(ExecState*, DOMWindow* domWindow)
+JSValue toJS(JSContext* ctx, DOMWindow* domWindow)
 {
     if (!domWindow)
-        return jsNull();
+        return JS_NULL;
     Frame* frame = domWindow->frame();
     if (!frame)
-        return jsNull();
+        return JS_NULL;
     return Window::retrieve(frame);
 }
     

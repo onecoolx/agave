@@ -60,8 +60,8 @@ public:
     };
 
     // Custom functions
-    static JSValue item(JSContext *ctx, int argc, JSValueConst *argv, HTMLCollection *impl);
-    static JSValue namedItem(JSContext *ctx, int argc, JSValueConst *argv, HTMLCollection *impl);
+    static JSValue item(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, HTMLCollection *impl);
+    static JSValue namedItem(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, HTMLCollection *impl);
 private:
     static JSValue indexGetter(JSContext *ctx, JSValueConst this_obj, uint32_t idx);
 private:

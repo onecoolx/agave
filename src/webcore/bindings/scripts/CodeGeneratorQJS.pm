@@ -450,9 +450,9 @@ sub GenerateHeader
 
         foreach my $attribute (@{$dataNode->attributes}) {
             if ($attribute->signature->extendedAttributes->{"Custom"}) {
-                push(@headerContent, "    static JSValue " . $attribute->signature->name . "(JSContext *ctx, $implClassName *impl);\n");
+                push(@headerContent, "    static JSValue " . $attribute->signature->name . "(JSContext *ctx, JSValueConst this_val, $implClassName *impl);\n");
                 if ($attribute->type !~ /^readonly/) {
-                    push(@headerContent, "    static void set" . WK_ucfirst($attribute->signature->name) . "(JSContext *ctx, JSValue, $implClassName *impl);\n");
+                    push(@headerContent, "    static void set" . WK_ucfirst($attribute->signature->name) . "(JSContext *ctx, JSValueConst this_val, JSValue value, $implClassName *impl);\n");
                 }
             } elsif ($attribute->signature->extendedAttributes->{"CustomGetter"}) {
                 push(@headerContent, "    static JSValue " . $attribute->signature->name . "(JSContext *ctx, $implClassName *impl);\n");
@@ -468,7 +468,7 @@ sub GenerateHeader
         push(@headerContent, "\n    // Custom functions\n");
         foreach my $function (@{$dataNode->functions}) {
             if ($function->signature->extendedAttributes->{"Custom"}) {
-                push(@headerContent, "    static JSValue " . $function->signature->name . "(JSContext *ctx, int argc, JSValueConst *argv, $implClassName *impl);\n");
+                push(@headerContent, "    static JSValue " . $function->signature->name . "(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, $implClassName *impl);\n");
             }
         }
     }
@@ -764,7 +764,11 @@ sub GenerateImplementation
     if ($dataNode->extendedAttributes->{"DoNotCache"}) {
         push(@implContent, "JSValue ${className}Prototype::self(JSContext * ctx)\n");
         push(@implContent, "{\n");
-        push(@implContent, "    JSValue obj = JS_NewObject(ctx);\n");
+        if ($hasParent) {
+            push(@implContent, "    JSValue obj = JS_NewObjectProto(ctx, ${parentClassName}Prototype::self(ctx));\n");
+        } else {
+            push(@implContent, "    JSValue obj = JS_NewObject(ctx);\n");
+        }
         push(@implContent, "    ${className}Prototype::initPrototype(ctx, obj);\n");
         push(@implContent, "    return obj;\n");
         push(@implContent, "}\n\n");
@@ -916,7 +920,7 @@ sub GenerateImplementation
 
     if (!$dataNode->extendedAttributes->{"CustomMarkFunction"}) {
         push(@implContent, "void ${className}::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func)\n{\n");
-        if ($hasRealParent) {
+        if ($hasParent) {
             push(@implContent, "    ${parentClassName}::mark(rt, val, mark_func);\n");
         } else {
             push(@implContent, "    JS_MarkValue(rt, val, mark_func);\n");

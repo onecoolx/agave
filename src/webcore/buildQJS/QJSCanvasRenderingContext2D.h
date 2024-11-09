@@ -66,19 +66,19 @@ public:
     };
 
     // Custom attributes
-    static JSValue strokeStyle(JSContext *ctx, CanvasRenderingContext2D *impl);
-    static void setStrokeStyle(JSContext *ctx, JSValue, CanvasRenderingContext2D *impl);
-    static JSValue fillStyle(JSContext *ctx, CanvasRenderingContext2D *impl);
-    static void setFillStyle(JSContext *ctx, JSValue, CanvasRenderingContext2D *impl);
+    static JSValue strokeStyle(JSContext *ctx, JSValueConst this_val, CanvasRenderingContext2D *impl);
+    static void setStrokeStyle(JSContext *ctx, JSValueConst this_val, JSValue value, CanvasRenderingContext2D *impl);
+    static JSValue fillStyle(JSContext *ctx, JSValueConst this_val, CanvasRenderingContext2D *impl);
+    static void setFillStyle(JSContext *ctx, JSValueConst this_val, JSValue value, CanvasRenderingContext2D *impl);
 
     // Custom functions
-    static JSValue setStrokeColor(JSContext *ctx, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl);
-    static JSValue setFillColor(JSContext *ctx, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl);
-    static JSValue strokeRect(JSContext *ctx, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl);
-    static JSValue drawImage(JSContext *ctx, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl);
-    static JSValue drawImageFromRect(JSContext *ctx, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl);
-    static JSValue setShadow(JSContext *ctx, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl);
-    static JSValue createPattern(JSContext *ctx, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl);
+    static JSValue setStrokeColor(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl);
+    static JSValue setFillColor(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl);
+    static JSValue strokeRect(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl);
+    static JSValue drawImage(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl);
+    static JSValue drawImageFromRect(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl);
+    static JSValue setShadow(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl);
+    static JSValue createPattern(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, CanvasRenderingContext2D *impl);
 };
 
 JSValue toJS(JSContext *ctx, CanvasRenderingContext2D*);

@@ -67,10 +67,10 @@ public:
     };
 
     // Custom functions
-    static JSValue insertBefore(JSContext *ctx, int argc, JSValueConst *argv, Node *impl);
-    static JSValue replaceChild(JSContext *ctx, int argc, JSValueConst *argv, Node *impl);
-    static JSValue removeChild(JSContext *ctx, int argc, JSValueConst *argv, Node *impl);
-    static JSValue appendChild(JSContext *ctx, int argc, JSValueConst *argv, Node *impl);
+    static JSValue insertBefore(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl);
+    static JSValue replaceChild(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl);
+    static JSValue removeChild(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl);
+    static JSValue appendChild(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl);
 };
 
 JSValue toJS(JSContext *ctx, PassRefPtr<Node>);
