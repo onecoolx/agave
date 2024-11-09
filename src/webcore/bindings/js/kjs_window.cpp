@@ -138,7 +138,7 @@ public:
 
 #include "kjs_window.lut.h"
 
-namespace QJS {
+namespace KJS {
 
 ////////////////////// Window Object ////////////////////////
 
