@@ -24,52 +24,58 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _JSDOMParser_H_
-#define _JSDOMParser_H_
+#ifndef _JSXSLTProcessor_H_
+#define _JSXSLTProcessor_H_
+
+#if ENABLE(XSLT)
 
 #include "qjs_binding.h"
 
 namespace WebCore {
+    class XSLTProcessor;
+}
 
-    class DOMParser;
+// Eventually we should implement XSLTException:
+// http://lxr.mozilla.org/seamonkey/source/content/xsl/public/nsIXSLTException.idl
+// http://bugs.webkit.org/show_bug.cgi?id=5446
 
-    class JSDOMParser {
+namespace QJS {
+
+    class JSXSLTProcessor {
     public:
-        static void init(JSContext*);
-        static JSValue create(JSContext*, DOMParser*);
+        static void init(JSContext* ctx);
+        static JSValue create(JSContext* ctx);
         static void finalizer(JSRuntime *rt, JSValue val);
-
-        static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);
 
         static JSClassID js_class_id;
 
-        static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);
-
-        static JSValue getConstructor(JSContext *ctx);
-
         enum {
-            // The Constructor Attribute
-            ConstructorAttrNum,
-
-            // Functions
-            ParseFromStringFuncNum
+            ImportStylesheet,
+            TransformToFragment,
+            TransformToDocument,
+            SetParameter,
+            GetParameter,
+            RemoveParameter,
+            ClearParameters,
+            Reset
         };
+
+        static WebCore::XSLTProcessor *impl(JSContext* ctx, JSValue val);
     };
 
-    JSValue toJS(JSContext *ctx, DOMParser*);
-    DOMParser* toDOMParser(JSValue);
-
-    class JSDOMParserPrototype {
+    class JSXSLTProcessorConstructor {
     public:
-        static JSValue self(JSContext * ctx);
-        static void initPrototype(JSContext * ctx, JSValue this_obj);
+        static JSValue self(JSContext* ctx);
+        static JSValue construct(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv);
     };
 
-    class JSDOMParserPrototypeFunction {
+    class JSXSLTProcessorPrototypeFunction {
     public:
         static JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token);
     };
 
-} // namespace WebCore
+} // namespace QJS
 
-#endif
+#endif // ENABLE(XSLT)
+
+#endif // _JSXSLTProcessor_H_

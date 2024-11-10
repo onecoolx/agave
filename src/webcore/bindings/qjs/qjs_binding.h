@@ -151,6 +151,7 @@ namespace QJS {
     };
 
 
+    JSValue jsString(JSContext*, const WebCore::String&);
     JSValue jsStringOrNull(JSContext*, const WebCore::String&); // null if the string is null
     JSValue jsStringOrUndefined(JSContext*, const WebCore::String&); // undefined if the string is null
     JSValue jsStringOrFalse(JSContext*, const WebCore::String&); // boolean false if the string is null

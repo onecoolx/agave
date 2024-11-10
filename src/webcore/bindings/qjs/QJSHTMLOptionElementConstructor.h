@@ -24,52 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _JSDOMParser_H_
-#define _JSDOMParser_H_
+#ifndef _JSHTMLOptionElementConstructor_H_
+#define _JSHTMLOptionElementConstructor_H_
 
 #include "qjs_binding.h"
+#include <wtf/RefPtr.h>
 
 namespace WebCore {
 
-    class DOMParser;
-
-    class JSDOMParser {
+    class JSHTMLOptionElementConstructor {
     public:
-        static void init(JSContext*);
-        static JSValue create(JSContext*, DOMParser*);
-        static void finalizer(JSRuntime *rt, JSValue val);
-
-        static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);
-
-        static JSClassID js_class_id;
-
-        static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);
-
-        static JSValue getConstructor(JSContext *ctx);
-
-        enum {
-            // The Constructor Attribute
-            ConstructorAttrNum,
-
-            // Functions
-            ParseFromStringFuncNum
-        };
+        static JSValue self(JSContext* ctx, Document*);
+        static JSValue construct(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv);
+    private:
+        RefPtr<Document> m_doc;
     };
-
-    JSValue toJS(JSContext *ctx, DOMParser*);
-    DOMParser* toDOMParser(JSValue);
-
-    class JSDOMParserPrototype {
-    public:
-        static JSValue self(JSContext * ctx);
-        static void initPrototype(JSContext * ctx, JSValue this_obj);
-    };
-
-    class JSDOMParserPrototypeFunction {
-    public:
-        static JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token);
-    };
-
-} // namespace WebCore
+}
 
 #endif

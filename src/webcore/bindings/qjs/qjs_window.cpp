@@ -67,7 +67,7 @@
 #include "global.h"
 
 #if ENABLE(XSLT)
-#include "JSXSLTProcessor.h"
+#include "QJSXSLTProcessor.h"
 #endif
 
 using namespace WebCore;
@@ -140,7 +140,7 @@ public:
 
 } // namespace KJS
 
-#include "kjs_window.lut.h"
+//#include "kjs_window.lut.h"
 
 namespace QJS {
 

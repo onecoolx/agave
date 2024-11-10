@@ -24,52 +24,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _JSDOMParser_H_
-#define _JSDOMParser_H_
+#ifndef _qjs_navigator_H_
+#define _qjs_navigator_H_
 
 #include "qjs_binding.h"
 
 namespace WebCore {
+    class Frame;
+}
 
-    class DOMParser;
+namespace QJS {
 
-    class JSDOMParser {
+    class Navigator {
     public:
-        static void init(JSContext*);
-        static JSValue create(JSContext*, DOMParser*);
-        static void finalizer(JSRuntime *rt, JSValue val);
+        static void init(JSContext* ctx);
+        static JSValue create(JSContext* ctx, WebCore::Frame *p);
 
         static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);
 
         static JSClassID js_class_id;
 
-        static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);
-
-        static JSValue getConstructor(JSContext *ctx);
-
         enum {
-            // The Constructor Attribute
-            ConstructorAttrNum,
-
-            // Functions
-            ParseFromStringFuncNum
+            AppCodeName,
+            AppName,
+            AppVersion,
+            Language,
+            UserAgent,
+            Platform,
+            Plugins,
+            MimeTypes,
+            Product,
+            ProductSub,
+            Vendor,
+            VendorSub,
+            CookieEnabled,
+            JavaEnabled
         };
+
+        static WebCore::Frame *frame(JSContext* ctx, JSValueConst val);
     };
 
-    JSValue toJS(JSContext *ctx, DOMParser*);
-    DOMParser* toDOMParser(JSValue);
-
-    class JSDOMParserPrototype {
-    public:
-        static JSValue self(JSContext * ctx);
-        static void initPrototype(JSContext * ctx, JSValue this_obj);
-    };
-
-    class JSDOMParserPrototypeFunction {
-    public:
-        static JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token);
-    };
-
-} // namespace WebCore
-
+} // namespace
 #endif

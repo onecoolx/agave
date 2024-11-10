@@ -24,52 +24,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _JSDOMParser_H_
-#define _JSDOMParser_H_
+#ifndef _JSXMLHttpRequest_H_
+#define _JSXMLHttpRequest_H_
 
 #include "qjs_binding.h"
 
 namespace WebCore {
+class XMLHttpRequest;
+class Document;
+}
 
-    class DOMParser;
+namespace QJS {
 
-    class JSDOMParser {
+    class JSXMLHttpRequest {
     public:
-        static void init(JSContext*);
-        static JSValue create(JSContext*, DOMParser*);
+        static void init(JSContext* ctx);
+        static JSValue create(JSContext* ctx, WebCore::Document*);
         static void finalizer(JSRuntime *rt, JSValue val);
-
-        static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);
 
         static JSClassID js_class_id;
 
+        static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);
+        static JSValue putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue val, int token);
         static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);
 
-        static JSValue getConstructor(JSContext *ctx);
-
-        enum {
-            // The Constructor Attribute
-            ConstructorAttrNum,
-
-            // Functions
-            ParseFromStringFuncNum
-        };
+        enum { Onload, Onreadystatechange, ReadyState, ResponseText, ResponseXML, Status,
+            StatusText, Abort, GetAllResponseHeaders, GetResponseHeader, Open, Send, SetRequestHeader, OverrideMIMEType,
+            AddEventListener, RemoveEventListener, DispatchEvent };
     };
 
-    JSValue toJS(JSContext *ctx, DOMParser*);
-    DOMParser* toDOMParser(JSValue);
-
-    class JSDOMParserPrototype {
+    class JSXMLHttpRequestConstructor {
     public:
-        static JSValue self(JSContext * ctx);
-        static void initPrototype(JSContext * ctx, JSValue this_obj);
+        static JSValue self(JSContext* ctx);
+        static JSValue construct(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv);
     };
 
-    class JSDOMParserPrototypeFunction {
+    class JSXMLHttpRequestPrototypeFunction {
     public:
         static JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token);
     };
 
-} // namespace WebCore
+} // namespace
 
 #endif
