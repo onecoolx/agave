@@ -586,7 +586,11 @@ void FrameLoader::submitForm(const char* action, const String& url, PassRefPtr<F
         String query = u.query();
         if (!query.isEmpty())
             query.append('&');
+#if ENABLE(KJS)
         u.setQuery((query + "body=" + KURL::encode_string(body.deprecatedString())).deprecatedString());
+#else
+        u.setQuery((DeprecatedString(query + "body=") + KURL::encode_string(body.deprecatedString())));
+#endif
     }
 
     if (strcmp(action, "GET") == 0) {

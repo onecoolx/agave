@@ -80,6 +80,17 @@ public:
     void setQuery(const DeprecatedString &);
     void setRef(const DeprecatedString &);
 
+#if USE(QJS)
+    void setProtocol(const String &);
+    void setHost(const String &);
+    void setHostAndPort(const String&);
+    void setUser(const String &);
+    void setPass(const String &);
+    void setPath(const String &);
+    void setQuery(const String &);
+    void setRef(const String &);
+#endif
+
     DeprecatedString prettyURL() const;
 
     bool isLocalFile() const;

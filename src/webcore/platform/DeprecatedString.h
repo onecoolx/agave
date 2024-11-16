@@ -45,6 +45,10 @@ namespace KJS {
 }
 #endif
 
+#if ENABLE(QJS)
+#include "PlatformString.h"
+#endif
+
 namespace WebCore {
 
 class RegularExpression;
@@ -252,6 +256,10 @@ public:
 #if ENABLE(KJS)
     DeprecatedString(const KJS::Identifier&);
     DeprecatedString(const KJS::UString&);
+#endif
+
+#if ENABLE(QJS)
+    DeprecatedString(const WebCore::String&);
 #endif
     
     DeprecatedString(const DeprecatedString &);

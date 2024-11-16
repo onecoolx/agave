@@ -439,7 +439,7 @@ String HTMLAnchorElement::hostname() const
     if (url.port()==0)
         return url.host();
     else
-        return url.host() + ":" + String::number(url.port());
+        return String(url.host() + ":") + String::number(url.port());
 }
 
 String HTMLAnchorElement::pathname() const

@@ -85,7 +85,7 @@ const double cMinimumTimerInterval = 0.010;
 
 struct WindowPrivate {
     WindowPrivate() 
-        : loc(0)
+        : loc(JS_NULL)
         , m_evt(0)
         , m_returnValueSlot(0)
     {
@@ -95,13 +95,12 @@ struct WindowPrivate {
     Window::ListenersMap jsHTMLEventListeners;
     Window::UnprotectedListenersMap jsUnprotectedEventListeners;
     Window::UnprotectedListenersMap jsUnprotectedHTMLEventListeners;
-    mutable Location* loc;
+    mutable JSValue loc;
     WebCore::Event *m_evt;
     JSValue** m_returnValueSlot;
     typedef HashMap<int, DOMWindowTimer*> TimeoutsMap;
     TimeoutsMap m_timeouts;
 };
-
 
 class DOMWindowTimer : public TimerBase {
 public:
@@ -138,7 +137,7 @@ public:
     ScheduledAction *action;
 };
 
-} // namespace KJS
+} // namespace QJS
 
 //#include "kjs_window.lut.h"
 
@@ -146,7 +145,7 @@ namespace QJS {
 
 ////////////////////// Window Object ////////////////////////
 
-const ClassInfo Window::info = { "Window", 0, &WindowTable, 0 };
+//const ClassInfo Window::info = { "Window", 0, &WindowTable, 0 };
 
 /*
 @begin WindowTable 118
@@ -249,38 +248,39 @@ ScriptInterpreter* Window::interpreter() const
     if (!frame)
         return 0;
 
-    return frame->scriptProxy()->interpreter();
+    return frame->script()->interpreter();
 }
 
 Window *Window::retrieveWindow(Frame *f)
 {
-    JSObject *o = retrieve(f)->getObject();
+    JSValue o = Window::retrieve(f);
 
-    ASSERT(o || !f->settings() || !f->settings()->isJavaScriptEnabled());
+    ASSERT(!f->settings() || !f->settings()->isJavaScriptEnabled());
     return static_cast<Window *>(o);
 }
 
-Window *Window::retrieveActive(ExecState *exec)
+Window *Window::retrieveActive(JSContext *ctx)
 {
-    JSValue *imp = exec->dynamicInterpreter()->globalObject();
-    ASSERT(imp);
+    JSValue globalObject = ((ScriptInterpreter*)JS_GetContextOpaque(ctx))->globalObject();
+
     return static_cast<Window*>(imp);
 }
 
-JSValue *Window::retrieve(Frame *p)
+JSValue Window::retrieve(Frame *p)
 {
     ASSERT(p);
-    if (KJSProxy *proxy = p->scriptProxy())
-        return proxy->interpreter()->globalObject(); // the Global object is the "window"
+    if (ScriptController *script = p->script())
+        return script->interpreter()->globalObject(); // the Global object is the "window"
   
-    return jsUndefined(); // This can happen with JS disabled on the domain of that window
+    return JS_UNDEFINED; // This can happen with JS disabled on the domain of that window
 }
 
-Location *Window::location() const
+JSValue Window::location(JSContext* ctx) const
 {
-  if (!d->loc)
-    d->loc = new Location(impl()->frame());
-  return d->loc;
+    if (JS_IsNull(d->loc)) {
+        d->loc = Location::create(ctx, impl()->frame());
+    }
+    return d->loc;
 }
 
 // reference our special objects during garbage collection
@@ -291,22 +291,25 @@ void Window::mark()
     d->loc->mark();
 }
 
-static bool allowPopUp(ExecState *exec, Window *window)
+static bool allowPopUp(JSContext *ctx, Window *window)
 {
     Frame* frame = window->impl()->frame();
     if (!frame)
         return false;
-    if (static_cast<ScriptInterpreter*>(exec->dynamicInterpreter())->wasRunByUserGesture())
+
+    bool userGesture = static_cast<ScriptInterpreter *>(JS_GetContextOpaque(ctx))->wasRunByUserGesture();
+    if (userGesture)
         return true;
+
     Settings* settings = frame->settings();
     return settings && settings->JavaScriptCanOpenWindowsAutomatically();
 }
 
-static HashMap<String, String> parseModalDialogFeatures(ExecState *exec, JSValue *featuresArg)
+static HashMap<String, String> parseModalDialogFeatures(JSContext* ctx, JSValue *featuresArg)
 {
     HashMap<String, String> map;
 
-    Vector<String> features = valueToStringWithUndefinedOrNullCheck(exec, featuresArg).split(';');
+    Vector<String> features = valueToStringWithUndefinedOrNullCheck(ctx, featuresArg).split(';');
     Vector<String>::const_iterator end = features.end();
     for (Vector<String>::const_iterator it = features.begin(); it != end; ++it) {
         String s = *it;
@@ -360,10 +363,10 @@ static float floatFeature(const HashMap<String, String> &features, const char *k
     return static_cast<float>(d);
 }
 
-static Frame* createWindow(ExecState* exec, Frame* openerFrame, const String& url,
+static Frame* createWindow(JSContext* ctx, Frame* openerFrame, const String& url,
     const String& frameName, const WindowFeatures& windowFeatures, JSValue* dialogArgs)
 {
-    Frame* activeFrame = Window::retrieveActive(exec)->impl()->frame();
+    Frame* activeFrame = Window::retrieveActive(ctx)->impl()->frame();
     
     ResourceRequest request;
     if (activeFrame)
@@ -390,9 +393,9 @@ static Frame* createWindow(ExecState* exec, Frame* openerFrame, const String& ur
     if (dialogArgs)
         newWindow->putDirect("dialogArguments", dialogArgs);
 
-    if (!url.startsWith("javascript:", false) || newWindow->isSafeScript(exec)) {
+    if (!url.startsWith("javascript:", false) || newWindow->isSafeScript(ctx)) {
         String completedURL = url.isEmpty() ? url : activeFrame->document()->completeURL(url);
-        bool userGesture = static_cast<ScriptInterpreter *>(exec->dynamicInterpreter())->wasRunByUserGesture();
+        bool userGesture = static_cast<ScriptInterpreter *>(JS_GetContextOpaque(ctx))->wasRunByUserGesture();
         
         if (created) {
             newFrame->loader()->changeLocation(KURL(completedURL.deprecatedString()), activeFrame->loader()->outgoingReferrer(), false, userGesture);
@@ -425,12 +428,12 @@ static bool canShowModalDialogNow(const Window *window)
     return frame->page()->chrome()->canRunModalNow();
 }
 
-static JSValue* showModalDialog(ExecState* exec, Window* openerWindow, const List& args)
+static JSValue showModalDialog(JSContext* ctx, Window* openerWindow, const List& args)
 {
-    if (!canShowModalDialogNow(openerWindow) || !allowPopUp(exec, openerWindow))
-        return jsUndefined();
+    if (!canShowModalDialogNow(openerWindow) || !allowPopUp(ctx, openerWindow))
+        return JS_UNDEFINED;
 
-    const HashMap<String, String> features = parseModalDialogFeatures(exec, args[2]);
+    const HashMap<String, String> features = parseModalDialogFeatures(ctx, args[2]);
 
     bool trusted = false;
 
@@ -445,7 +448,7 @@ static JSValue* showModalDialog(ExecState* exec, Window* openerWindow, const Lis
     // - unadorned: trusted && boolFeature(features, "unadorned");
     Frame* frame = openerWindow->impl()->frame();
     if (!frame)
-        return jsUndefined();
+        return JS_UNDEFINED;
 
     FloatRect screenRect = screenAvailableRect(frame->view());
 
@@ -481,13 +484,13 @@ static JSValue* showModalDialog(ExecState* exec, Window* openerWindow, const Lis
     
     Frame* dialogFrame = createWindow(exec, frame, valueToStringWithUndefinedOrNullCheck(exec, args[0]), "", wargs, args[1]);
     if (!dialogFrame)
-        return jsUndefined();
+        return JS_UNDEFINED;
 
     Window* dialogWindow = Window::retrieveWindow(dialogFrame);
 
     // Get the return value either just before clearing the dialog window's
     // properties (in Window::clear), or when on return from runModal.
-    JSValue* returnValue = 0;
+    JSValue returnValue = JS_NULL;
     dialogWindow->setReturnValueSlot(&returnValue);
     dialogFrame->page()->chrome()->runModal();
     dialogWindow->setReturnValueSlot(0);
@@ -495,37 +498,40 @@ static JSValue* showModalDialog(ExecState* exec, Window* openerWindow, const Lis
     // If we don't have a return value, get it now.
     // Either Window::clear was not called yet, or there was no return value,
     // and in that case, there's no harm in trying again (no benefit either).
-    if (!returnValue)
+    if (JS_IsNull(returnValue))
         returnValue = dialogWindow->getDirect("returnValue");
 
-    return returnValue ? returnValue : jsUndefined();
+    if (!JS_IsNull(returnValue) && !JS_IsUndefined(returnValue))
+        return returnValue;
+    else
+        return JS_UNDEFINED;
 }
 
-JSValue *Window::getValueProperty(ExecState *exec, int token) const
+JSValue Window::getValueProperty(JSContext* ctx, JSValueConst this_val, int token)
 {
    ASSERT(impl()->frame());
 
    switch (token) {
    case Crypto:
       if (!isSafeScript(exec))
-        return jsUndefined();
-      return jsUndefined(); // FIXME: implement this
+        return JS_UNDEFINED;
+      return jsUndefined();
    case DOMException:
       if (!isSafeScript(exec))
-        return jsUndefined();
+        return JS_UNDEFINED;
       return getDOMExceptionConstructor(exec);
     case Event_:
       if (!isSafeScript(exec))
-        return jsUndefined();
+        return JS_UNDEFINED;
       if (!d->m_evt)
-        return jsUndefined();
+        return JS_UNDEFINED;
       return toJS(exec, d->m_evt);
     case Location_:
-      return location();
+      return location(ctx);
     case Navigator_:
     case ClientInformation: {
       if (!isSafeScript(exec))
-        return jsUndefined();
+        return JS_UNDEFINED;
       // Store the navigator in the object so we get the same one each time.
       Navigator *n = new Navigator(exec, impl()->frame());
       // FIXME: this will make the "navigator" object accessible from windows that fail
@@ -536,36 +542,36 @@ JSValue *Window::getValueProperty(ExecState *exec, int token) const
     }
     case Image:
       if (!isSafeScript(exec))
-        return jsUndefined();
+        return JS_UNDEFINED;
       // FIXME: this property (and the few below) probably shouldn't create a new object every
       // time
       return new ImageConstructorImp(exec, impl()->frame()->document());
     case Option:
       if (!isSafeScript(exec))
-        return jsUndefined();
+        return JS_UNDEFINED;
       return new JSHTMLOptionElementConstructor(exec, impl()->frame()->document());
 #if ENABLE(AJAX)
     case XMLHttpRequest:
       if (!isSafeScript(exec))
-        return jsUndefined();
+        return JS_UNDEFINED;
       return new JSXMLHttpRequestConstructorImp(exec, impl()->frame()->document());
 #else
     case XMLHttpRequest:
-      return jsUndefined();
+      return JS_UNDEFINED;
 #endif
 #if ENABLE(XSLT)
     case XSLTProcessor_:
       if (!isSafeScript(exec))
-        return jsUndefined();
+        return JS_UNDEFINED;
       return new XSLTProcessorConstructorImp(exec);
 #else
     case XSLTProcessor_:
-      return jsUndefined();
+      return JS_UNDEFINED;
 #endif
    }
 
    if (!isSafeScript(exec))
-     return jsUndefined();
+     return JS_UNDEFINED;
 
    switch (token) {
    case Onabort:
@@ -620,7 +626,7 @@ JSValue *Window::getValueProperty(ExecState *exec, int token) const
      return getListener(exec, unloadEvent);
    }
    ASSERT(0);
-   return jsUndefined();
+   return JS_UNDEFINED;
 }
 
 JSValue* Window::childFrameGetter(ExecState*, JSObject*, const Identifier& propertyName, const PropertySlot& slot)
@@ -646,6 +652,7 @@ JSValue *Window::namedItemGetter(ExecState *exec, JSObject *originalObject, cons
   return toJS(exec, collection.get());
 }
 
+#if 0
 bool Window::getOwnPropertySlot(ExecState *exec, const Identifier& propertyName, PropertySlot& slot)
 {
   // Check for child frames by name before built-in properties to
@@ -710,22 +717,13 @@ bool Window::getOwnPropertySlot(ExecState *exec, const Identifier& propertyName,
 
   return JSObject::getOwnPropertySlot(exec, propertyName, slot);
 }
+#endif
 
-void Window::put(ExecState* exec, const Identifier& propertyName, JSValue* value, int attr)
+JSValue Window::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue val, int token)
 {
-  const HashEntry* entry = Lookup::findEntry(&WindowTable, propertyName);
-  if (entry) {
-     if (entry->attr & Function) {
-       if (isSafeScript(exec))
-         JSObject::put(exec, propertyName, value, attr);
-       return;
-    }
-    if (entry->attr & ReadOnly)
-      return;
-
-    switch (entry->value) {
+    switch (token) {
     case Location_: {
-      Frame* p = Window::retrieveActive(exec)->impl()->frame();
+      Frame* p = Window::retrieveActive(ctx)->impl()->frame();
       if (p) {
         DeprecatedString dstUrl = p->loader()->completeURL(DeprecatedString(value->toString(exec))).url();
         if (!dstUrl.startsWith("javascript:", false) || isSafeScript(exec)) {
@@ -840,8 +838,7 @@ void Window::put(ExecState* exec, const Identifier& propertyName, JSValue* value
       break;
     }
   }
-  if (isSafeScript(exec))
-    JSObject::put(exec, propertyName, value, attr);
+
 }
 
 static bool shouldLoadAsEmptyDocument(const KURL &url)
@@ -904,7 +901,7 @@ bool Window::isSafeScript(const ScriptInterpreter *origin, const ScriptInterpret
     return false;
 }
 
-bool Window::isSafeScript(ExecState *exec) const
+bool Window::isSafeScript(JSContext *ctx) const
 {
   Frame* frame = impl()->frame();
   if (!frame)
@@ -1035,14 +1032,12 @@ JSUnprotectedEventListener *Window::findOrCreateJSUnprotectedEventListener(JSVal
 
 void Window::clearHelperObjectProperties()
 {
-  d->loc = 0;
+  d->loc = JS_NULL;
   d->m_evt = 0;
 }
 
 void Window::clear()
 {
-  JSLock lock;
-
   if (d->m_returnValueSlot && !*d->m_returnValueSlot)
     *d->m_returnValueSlot = getDirect("returnValue");
 
@@ -1054,7 +1049,7 @@ void Window::clear()
   // Now recreate a working global object for the next URL that will use us; but only if we haven't been
   // disconnected yet
   if (Frame* frame = impl()->frame())
-    frame->scriptProxy()->interpreter()->initGlobalObject();
+    frame->script()->interpreter()->initGlobalObject();
 
   // there's likely to be lots of garbage now
   gcController().garbageCollectSoon();
@@ -1470,7 +1465,7 @@ void ScheduledAction::execute(JSValue window)
     if (!script)
         return;
 
-    RefPtr<ScriptInterpreter> interpreter = scriptProxy->interpreter();
+    RefPtr<ScriptInterpreter> interpreter = script->interpreter();
     JSContext* ctx = interpreter->context();
 
     interpreter->setProcessingTimerCallback(true);
@@ -1620,15 +1615,15 @@ void Window::timerFired(DOMWindowTimer* timer)
     delete timer;
     action->execute(this);
     
-    JSLock lock;
     delete action;
 }
 
 void Window::disconnectFrame()
 {
     clearAllTimeouts();
-    if (d->loc)
-        d->loc->m_frame = 0;
+    if (!JS_IsNull(d->loc)) {
+        JS_SetOpaque(d->loc, 0);
+    }
 }
 
 Window::ListenersMap& Window::jsEventListeners()
@@ -1653,23 +1648,26 @@ Window::UnprotectedListenersMap& Window::jsUnprotectedHTMLEventListeners()
 
 ////////////////////// Location Object ////////////////////////
 
-/*
-@begin LocationTable 12
-  assign        Location::Assign        DontDelete|Function 1
-  hash          Location::Hash          DontDelete
-  host          Location::Host          DontDelete
-  hostname      Location::Hostname      DontDelete
-  href          Location::Href          DontDelete
-  pathname      Location::Pathname      DontDelete
-  port          Location::Port          DontDelete
-  protocol      Location::Protocol      DontDelete
-  search        Location::Search        DontDelete
-  toString      Location::ToString      DontEnum|DontDelete|Function 0
-  replace       Location::Replace       DontDelete|Function 1
-  reload        Location::Reload        DontDelete|Function 0
-@end
-*/
-KJS_IMPLEMENT_PROTOTYPE_FUNCTION(LocationFunc)
+class LocationFunc {
+public:
+    static JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token);
+};
+
+static const JSCFunctionListEntry LocationAttributesFunctions[] =
+{
+    JS_CGETSET_MAGIC_DEF("hash", Location::getValueProperty, Location::putValueProperty, Location::Hash),
+    JS_CGETSET_MAGIC_DEF("host", Location::getValueProperty, Location::putValueProperty, Location::Host),
+    JS_CGETSET_MAGIC_DEF("hostname", Location::getValueProperty, Location::putValueProperty, Location::Hostname),
+    JS_CGETSET_MAGIC_DEF("href", Location::getValueProperty, Location::putValueProperty, Location::Href),
+    JS_CGETSET_MAGIC_DEF("pathname", Location::getValueProperty, Location::putValueProperty, Location::Pathname),
+    JS_CGETSET_MAGIC_DEF("port", Location::getValueProperty, Location::putValueProperty, Location::Port),
+    JS_CGETSET_MAGIC_DEF("protocol", Location::getValueProperty, Location::putValueProperty, Location::Protocol),
+    JS_CGETSET_MAGIC_DEF("search", Location::getValueProperty, Location::putValueProperty, Location::Search),
+    JS_CFUNC_MAGIC_DEF("replace", 1, LocationFunc::callAsFunction, Location::Replace),
+    JS_CFUNC_MAGIC_DEF("reload", 0, LocationFunc::callAsFunction, Location::Reload),
+    JS_CFUNC_MAGIC_DEF("assign", 1, LocationFunc::callAsFunction, Location::Assign),
+    JS_CFUNC_MAGIC_DEF("toString", 0, LocationFunc::callAsFunction, Location::ToString),
+};
 
 static JSClassDef LocationClassDefine = 
 {
@@ -1706,7 +1704,7 @@ JSValue Location::create(JSContext* ctx, Frame *p)
 
 Frame* Location::frame(JSValue val)
 {
-    return (Frame*)JS_SetOpaque(val, Location::js_class_id);
+    return (Frame*)JS_GetOpaque(val, Location::js_class_id);
 }
 
 JSValue Location::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
@@ -1780,7 +1778,7 @@ JSValue Location::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValu
 {
     Frame* frame = Location::frame(this_val);
     if (!frame)
-        return JS_NULL;
+        return JS_UNDEFINED;
 
     String str = valueToString(ctx, val);
     KURL url = frame->loader()->url();
@@ -1792,7 +1790,7 @@ JSValue Location::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValu
     // but not when assigning the individual pieces, since that might inadvertently
     // disclose other parts of the original location.
     if (token != Href && !sameDomainAccess)
-        return;
+        return JS_UNDEFINED;
 
     switch (token) {
         case Href:
@@ -1838,7 +1836,7 @@ JSValue Location::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValu
         default:
             // Disallow changing other properties in LocationTable. e.g., "window.location.toString = ...".
             // <http://bugs.webkit.org/show_bug.cgi?id=12720>
-            return;
+            return JS_UNDEFINED;
     }
 
     Frame* activeFrame = Window::retrieveActive(ctx)->impl()->frame();
@@ -1846,67 +1844,64 @@ JSValue Location::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValu
         bool userGesture = static_cast<ScriptInterpreter *>(JS_GetContextOpaque(ctx))->wasRunByUserGesture();
         frame->loader()->scheduleLocationChange(url.url(), activeFrame->loader()->outgoingReferrer(), !userGesture, userGesture);
     }
+    return JS_UNDEFINED;
 }
 
 JSValue LocationFunc::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    Location* imp = (Location*)JS_GetOpaque2(ctx, this_val, Location::js_class_id);
-    if (!imp)
+    Frame* frame = (Frame*)JS_GetOpaque2(ctx, this_val, Location::js_class_id);
+    if (!frame)
         return JS_ThrowTypeError(ctx, "Type error"); 
 
-    Frame *frame = imp->frame();
-    if (frame) {
-      
-        Window* window = Window::retrieveWindow(frame);
-        if (token != Location::Replace && !window->isSafeScript(ctx))
-            return JS_UNDEFINED;
-      
-        switch (token) {
-            case Location::Replace:
-            {
-                String str = valueToString(ctx, argv[0]);
-                Frame* p = Window::retrieveActive(ctx)->impl()->frame();
-                if (p) {
-                    const Window* window = Window::retrieveWindow(frame);
-                    if (!str.startsWith("javascript:", false) || (window && window->isSafeScript(ctx))) {
-                        bool userGesture = static_cast<ScriptInterpreter *>(JS_GetContextOpaque(ctx))->wasRunByUserGesture();
-                        frame->loader()->scheduleLocationChange(p->loader()->completeURL(str).url(),
-                                                                p->loader()->outgoingReferrer(), true, userGesture);
-                    }
-                }
-                break;
-            }
-            case Location::Reload:
-            {
+    Window* window = Window::retrieveWindow(frame);
+    if (token != Location::Replace && !window->isSafeScript(ctx))
+        return JS_UNDEFINED;
+  
+    switch (token) {
+        case Location::Replace:
+        {
+            String str = valueToString(ctx, argv[0]);
+            Frame* p = Window::retrieveActive(ctx)->impl()->frame();
+            if (p) {
                 const Window* window = Window::retrieveWindow(frame);
-                if (!frame->loader()->url().url().startsWith("javascript:", false) || (window && window->isSafeScript(ctx))) {
+                if (!str.startsWith("javascript:", false) || (window && window->isSafeScript(ctx))) {
                     bool userGesture = static_cast<ScriptInterpreter *>(JS_GetContextOpaque(ctx))->wasRunByUserGesture();
-                    frame->loader()->scheduleRefresh(userGesture);
+                    frame->loader()->scheduleLocationChange(p->loader()->completeURL(str).url(),
+                                                            p->loader()->outgoingReferrer(), true, userGesture);
                 }
-                break;
             }
-            case Location::Assign:
-            {
-                Frame *p = Window::retrieveActive(ctx)->impl()->frame();
-                if (p) {
-                    const Window *window = Window::retrieveWindow(frame);
-                    DeprecatedString dstUrl = p->loader()->completeURL(DeprecatedString(valueToString(ctx, argv[0]))).url();
-                    if (!dstUrl.startsWith("javascript:", false) || (window && window->isSafeScript(exec))) {
-                        bool userGesture = static_cast<ScriptInterpreter *>(JS_GetContextOpaque(ctx))->wasRunByUserGesture();
-                        // We want a new history item if this JS was called via a user gesture
-                        frame->loader()->scheduleLocationChange(dstUrl, p->loader()->outgoingReferrer(), !userGesture, userGesture);
-                    }
-                }
-                break;
-            }
-            case Location::ToString:
-            if (!frame || !Window::retrieveWindow(frame)->isSafeScript(ctx))
-                return JS_NewString(ctx, "");
-
-            if (!frame->loader()->url().hasPath())
-                return JS_NewString(ctx, DeprecatedString(frame->loader()->url().prettyURL() + "/").utf8().data());
-            return JS_NewString(ctx, frame->loader()->url().prettyURL().utf8().data());
+            break;
         }
+        case Location::Reload:
+        {
+            const Window* window = Window::retrieveWindow(frame);
+            if (!frame->loader()->url().url().startsWith("javascript:", false) || (window && window->isSafeScript(ctx))) {
+                bool userGesture = static_cast<ScriptInterpreter *>(JS_GetContextOpaque(ctx))->wasRunByUserGesture();
+                frame->loader()->scheduleRefresh(userGesture);
+            }
+            break;
+        }
+        case Location::Assign:
+        {
+            Frame *p = Window::retrieveActive(ctx)->impl()->frame();
+            if (p) {
+                const Window *window = Window::retrieveWindow(frame);
+                DeprecatedString dstUrl = p->loader()->completeURL(DeprecatedString(valueToString(ctx, argv[0]))).url();
+                if (!dstUrl.startsWith("javascript:", false) || (window && window->isSafeScript(ctx))) {
+                    bool userGesture = static_cast<ScriptInterpreter *>(JS_GetContextOpaque(ctx))->wasRunByUserGesture();
+                    // We want a new history item if this JS was called via a user gesture
+                    frame->loader()->scheduleLocationChange(dstUrl, p->loader()->outgoingReferrer(), !userGesture, userGesture);
+                }
+            }
+            break;
+        }
+        case Location::ToString:
+        if (!frame || !Window::retrieveWindow(frame)->isSafeScript(ctx))
+            return JS_NewString(ctx, "");
+
+        if (!frame->loader()->url().hasPath())
+            return JS_NewString(ctx, DeprecatedString(frame->loader()->url().prettyURL() + "/").utf8().data());
+        return JS_NewString(ctx, frame->loader()->url().prettyURL().utf8().data());
     }
     return JS_UNDEFINED;
 }

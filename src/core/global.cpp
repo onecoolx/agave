@@ -42,14 +42,16 @@ bool _global_initialize(void)
     _globalData.runtime = JS_NewRuntime();
     _globalData.domObjects = new DOMObjectMap;
     _globalData.domNodesPerDoc = new NodePerDocMap;
+    _globalData.jsValWindows = new JSValueWindowMap;
     return true;
 }
 
 void _global_shutdown(void)
 {
     JS_FreeRuntime(_globalData.runtime);
-    delete _globalData.domNodesPerDoc;
     delete _globalData.domObjects;
+    delete _globalData.domNodesPerDoc;
+    delete _globalData.jsValWindows;
 }
 
 }

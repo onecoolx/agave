@@ -37,12 +37,12 @@ namespace mescal {
 
 #define GLOBAL() mescal::_global()
 
-
 typedef struct {
     // quick javascript runtime
     JSRuntime* runtime;
     DOMObjectMap* domObjects;
     NodePerDocMap* domNodesPerDoc;
+    JSValueWindowMap* jsValWindows;
 } GlobalData;
 
 const GlobalData* const _global(void);

@@ -95,8 +95,6 @@ namespace QJS {
          */
         static Window* retrieveActive(JSContext*);
 
-
-
         static void init(JSContext*);
         static JSValue create(JSContext*, WebCore::DOMWindow*);
         static void finalizer(JSRuntime *rt, JSValue val);
@@ -117,24 +115,24 @@ namespace QJS {
 
         void timerFired(DOMWindowTimer*);
 
-        QJS::ScriptInterpreter *interpreter() const;
+        ScriptInterpreter *interpreter() const;
 
         bool isSafeScript(JSContext*) const;
-        static bool isSafeScript(const ScriptInterpreter *origin, const ScriptInterpreter *target);
+        //static bool isSafeScript(const ScriptInterpreter *origin, const ScriptInterpreter *target);
 
-        Location* location() const;
+        JSValue location(JSContext*) const;
 
         // Finds a wrapper of a JS EventListener, returns 0 if no existing one.
-        WebCore::JSEventListener* findJSEventListener(JSValue*, bool html = false);
+        WebCore::JSEventListener* findJSEventListener(JSValue, bool html = false);
 
         // Finds or creates a wrapper of a JS EventListener. JS EventListener object is GC-protected.
-        WebCore::JSEventListener *findOrCreateJSEventListener(JSValue*, bool html = false);
+        WebCore::JSEventListener *findOrCreateJSEventListener(JSValue, bool html = false);
 
         // Finds a wrapper of a GC-unprotected JS EventListener, returns 0 if no existing one.
-        WebCore::JSUnprotectedEventListener* findJSUnprotectedEventListener(JSValue*, bool html = false);
+        WebCore::JSUnprotectedEventListener* findJSUnprotectedEventListener(JSValue, bool html = false);
 
         // Finds or creates a wrapper of a JS EventListener. JS EventListener object is *NOT* GC-protected.
-        WebCore::JSUnprotectedEventListener *findOrCreateJSUnprotectedEventListener(JSValue*, bool html = false);
+        WebCore::JSUnprotectedEventListener *findOrCreateJSUnprotectedEventListener(JSValue, bool html = false);
 
         void clear();
 
@@ -199,9 +197,16 @@ namespace QJS {
         OwnPtr<WindowPrivate> d;
     };
 
-#if 0
-    KJS_IMPLEMENT_PROTOTYPE_FUNCTION(WindowFunc)
-#endif
+    class WindowPrototype {
+    public:
+        static JSValue self(JSContext * ctx);
+        static void initPrototype(JSContext * ctx, JSValue this_obj);
+    };
+
+    class WindowFunction {
+    public:
+        static JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token);
+    };
 
   /**
    * An action (either function or string) to be executed after a specified

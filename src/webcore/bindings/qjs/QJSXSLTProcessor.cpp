@@ -85,7 +85,7 @@ JSValue JSXSLTProcessor::create(JSContext* ctx)
     }
 
     RefPtr<XSLTProcessor> imp = new XSLTProcessor();
-    imp.get()->ref()
+    imp.get()->ref();
     JS_SetOpaque(obj, imp.get());
     return obj;
 }
@@ -104,7 +104,7 @@ WebCore::XSLTProcessor* JSXSLTProcessor::impl(JSContext* ctx, JSValue val)
 }
 
 JSValue JSXSLTProcessorConstructor::self(JSContext* ctx) {
-    return JS_NewCFunction2(ctx, XSLTProcessorConstructorImp::construct, "XSLTProcessor", 0, JS_CFUNC_constructor, 0);
+    return JS_NewCFunction2(ctx, JSXSLTProcessorConstructor::construct, "XSLTProcessor", 0, JS_CFUNC_constructor, 0);
 }
 
 JSValue JSXSLTProcessorConstructor::construct(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv)
@@ -133,7 +133,7 @@ JSValue JSXSLTProcessorPrototypeFunction::callAsFunction(JSContext* ctx, JSValue
             Node* node = (Node*)JS_GetOpaque(argv[0], JSNode::js_class_id);
             Document* doc = (Document*)JS_GetOpaque(argv[1], JSDocument::js_class_id);
             if (node && doc) {
-                return toJS(exec, imp->transformToFragment(node, doc).get());
+                return toJS(ctx, imp->transformToFragment(node, doc).get());
             }
             break;
         }
@@ -143,7 +143,7 @@ JSValue JSXSLTProcessorPrototypeFunction::callAsFunction(JSContext* ctx, JSValue
             if (node) {
                 RefPtr<Document> resultDocument = imp->transformToDocument(node);
                 if (resultDocument)
-                    return toJS(exec, resultDocument.get());
+                    return toJS(ctx, resultDocument.get());
                 return JS_UNDEFINED;
             }
             break;

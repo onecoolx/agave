@@ -118,7 +118,7 @@ JSValue JSXMLHttpRequest::create(JSContext* ctx, Document* d)
 
     RefPtr<XMLHttpRequest> imp = new XMLHttpRequest(d);
     ScriptInterpreter::putDOMObject(imp.get(), obj);
-    imp.get()->ref()
+    imp.get()->ref();
     JS_SetOpaque(obj, imp.get());
     return obj;
 }
@@ -147,16 +147,16 @@ JSValue JSXMLHttpRequest::getValueProperty(JSContext * ctx, JSValueConst this_va
             return jsStringOrNull(ctx, imp->getResponseText());
         case JSXMLHttpRequest::ResponseXML:
             if (Document* responseXML = imp->getResponseXML())
-                return toJS(exec, responseXML);
+                return toJS(ctx, responseXML);
             return JS_NULL;
         case JSXMLHttpRequest::Status: {
             JSValue result = JS_NewInt32(ctx, imp->getStatus(ec));
-            setDOMException(exec, ec);
+            setDOMException(ctx, ec);
             return result;
         }
         case JSXMLHttpRequest::StatusText: {
             JSValue result = jsString(ctx, imp->getStatusText(ec));
-            setDOMException(exec, ec);
+            setDOMException(ctx, ec);
             return result;
         }
         case JSXMLHttpRequest::Onreadystatechange:
@@ -236,131 +236,131 @@ JSValue JSXMLHttpRequestConstructor::self(JSContext* ctx, Document* d)
 
 JSValue JSXMLHttpRequestConstructor::construct(JSContext* ctx, JSValueConst new_target, int argc, JSValueConst* argv)
 { 
-    Document* doc = JS_GetOpaque(new_target, JS_CLASS_C_FUNCTION);
+    Document* doc = (Document*)JS_GetOpaque(new_target, 12/*JS_CLASS_C_FUNCTION*/);
     return JSXMLHttpRequest::create(ctx, doc);
 }
 
 JSValue JSXMLHttpRequestPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    if (!thisObj->inherits(&JSXMLHttpRequest::info))
-        return throwError(exec, TypeError);
-
-    JSXMLHttpRequest* request = static_cast<JSXMLHttpRequest*>(thisObj);
+    XMLHttpRequest* request = (XMLHttpRequest*)JS_GetOpaque(this_val, JSXMLHttpRequest::js_class_id);
+    if (!request)
+        return JS_ThrowTypeError(ctx, "Type error");
 
     ExceptionCode ec = 0;
 
-    switch (id) {
+    switch (token) {
         case JSXMLHttpRequest::Abort:
-            request->m_impl->abort();
-            return jsUndefined();
+            request->abort();
+            return JS_UNDEFINED;
 
         case JSXMLHttpRequest::GetAllResponseHeaders:
-            return jsStringOrUndefined(request->m_impl->getAllResponseHeaders());
+            return jsStringOrUndefined(ctx, request->getAllResponseHeaders());
 
         case JSXMLHttpRequest::GetResponseHeader:
-            if (args.size() < 1)
-                return throwError(exec, SyntaxError, "Not enough arguments");
+            if (argc < 1)
+                return JS_ThrowSyntaxError(ctx, "Not enough arguments");
 
-            return jsStringOrNull(request->m_impl->getResponseHeader(args[0]->toString(exec)));
+            return jsStringOrNull(ctx, request->getResponseHeader(valueToString(ctx, argv[0])));
 
         case JSXMLHttpRequest::Open: {
-            if (args.size() < 2)
-                return throwError(exec, SyntaxError, "Not enough arguments");
+            if (argc < 2)
+                return JS_ThrowSyntaxError(ctx, "Not enough arguments");
 
-            String method = args[0]->toString(exec);
-            Frame* frame = Window::retrieveActive(exec)->impl()->frame();
+            String method = valueToString(ctx, argv[0]);
+            Frame* frame = Window::retrieveActive(ctx)->impl()->frame();
             if (!frame)
-                return jsUndefined();
-            KURL url = frame->loader()->completeURL(DeprecatedString(args[1]->toString(exec)));
+                return JS_UNDEFINED;
+            KURL url = frame->loader()->completeURL(valueToString(ctx, argv[1]));
 
             bool async = true;
-            if (args.size() >= 3)
-                async = args[2]->toBoolean(exec);
+            if (argc >= 3)
+                async = valueToBoolean(ctx, argv[2]);
 
-            if (args.size() >= 4 && !args[3]->isUndefined()) {
-                String user = valueToStringWithNullCheck(exec, args[3]);
+            if (argc >= 4 && !JS_IsUndefined(argv[3])) {
+                String user = valueToStringWithNullCheck(ctx, argv[3]);
 
-                if (args.size() >= 5 && !args[4]->isUndefined()) {
-                    String password = valueToStringWithNullCheck(exec, args[4]);
-                    request->m_impl->open(method, url, async, user, password, ec);
+                if (argc >= 5 && !JS_IsUndefined(argv[4])) {
+                    String password = valueToStringWithNullCheck(ctx, argv[4]);
+                    request->open(method, url, async, user, password, ec);
                 } else
-                    request->m_impl->open(method, url, async, user, ec);
+                    request->open(method, url, async, user, ec);
             } else
-                request->m_impl->open(method, url, async, ec);
+                request->open(method, url, async, ec);
 
-            setDOMException(exec, ec);
-            return jsUndefined();
+            setDOMException(ctx, ec);
+            return JS_UNDEFINED;
         }
         case JSXMLHttpRequest::Send: {
             String body;
 
-            if (args.size() >= 1) {
-                if (args[0]->toObject(exec)->inherits(&JSDocument::info)) {
-                    Document* doc = static_cast<Document*>(static_cast<JSDocument*>(args[0]->toObject(exec))->impl());
+            if (argc >= 1) {
+                Document* doc = (Document*)JS_GetOpaque(argv[0], JSDocument::js_class_id);
+                if (doc) {
                     body = doc->toString().deprecatedString();
                 } else {
                     // converting certain values (like null) to object can set an exception
-                    if (exec->hadException())
-                        exec->clearException();
-                    else
-                        body = args[0]->toString(exec);
+                    if (JS_HasException(ctx)) {
+                        JSValue e = JS_GetException(ctx);
+                        JS_FreeValue(ctx, e);
+                    } else
+                        body = valueToString(ctx, argv[0]);
                 }
             }
 
-            request->m_impl->send(body, ec);
-            setDOMException(exec, ec);
+            request->send(body, ec);
+            setDOMException(ctx, ec);
 
-            return jsUndefined();
+            return JS_UNDEFINED;
         }
         case JSXMLHttpRequest::SetRequestHeader:
-            if (args.size() < 2)
-                return throwError(exec, SyntaxError, "Not enough arguments");
+            if (argc < 2)
+                return JS_ThrowSyntaxError(ctx, "Not enough arguments");
 
-            request->m_impl->setRequestHeader(args[0]->toString(exec), args[1]->toString(exec), ec);
-            setDOMException(exec, ec);
-            return jsUndefined();
+            request->setRequestHeader(valueToString(ctx, argv[0]), valueToString(ctx, argv[1]), ec);
+            setDOMException(ctx, ec);
+            return JS_UNDEFINED;
 
         case JSXMLHttpRequest::OverrideMIMEType:
-            if (args.size() < 1)
-                return throwError(exec, SyntaxError, "Not enough arguments");
+            if (argc < 1)
+                return JS_ThrowSyntaxError(ctx, "Not enough arguments");
 
-            request->m_impl->overrideMIMEType(args[0]->toString(exec));
-            return jsUndefined();
+            request->overrideMIMEType(valueToString(ctx, argv[0]));
+            return JS_UNDEFINED;
         
         case JSXMLHttpRequest::AddEventListener: {
-            Document* doc = request->m_impl->document();
+            Document* doc = request->document();
             if (!doc)
-                return jsUndefined();
+                return JS_UNDEFINED;
             Frame* frame = doc->frame();
             if (!frame)
-                return jsUndefined();
-            JSUnprotectedEventListener* listener = KJS::Window::retrieveWindow(frame)->findOrCreateJSUnprotectedEventListener(args[1], true);
+                return JS_UNDEFINED;
+            JSUnprotectedEventListener* listener = QJS::Window::retrieveWindow(frame)->findOrCreateJSUnprotectedEventListener(argv[1], true);
             if (!listener)
-                return jsUndefined();
-            request->m_impl->addEventListener(args[0]->toString(exec), listener, args[2]->toBoolean(exec));
-            return jsUndefined();
+                return JS_UNDEFINED;
+            request->addEventListener(valueToString(ctx, argv[0]), listener, valueToBoolean(ctx, argv[2]));
+            return JS_UNDEFINED;
         }
         case JSXMLHttpRequest::RemoveEventListener: {
-            Document* doc = request->m_impl->document();
+            Document* doc = request->document();
             if (!doc)
-                return jsUndefined();
+                return JS_UNDEFINED;
             Frame* frame = doc->frame();
             if (!frame)
-                return jsUndefined();
-            JSUnprotectedEventListener* listener = KJS::Window::retrieveWindow(frame)->findOrCreateJSUnprotectedEventListener(args[1], true);
+                return JS_UNDEFINED;
+            JSUnprotectedEventListener* listener = QJS::Window::retrieveWindow(frame)->findOrCreateJSUnprotectedEventListener(argv[1], true);
             if (!listener)
-                return jsUndefined();
-            request->m_impl->removeEventListener(args[0]->toString(exec), listener, args[2]->toBoolean(exec));
-            return jsUndefined();
+                return JS_UNDEFINED;
+            request->removeEventListener(valueToString(ctx, argv[0]), listener, valueToBoolean(ctx, argv[2]));
+            return JS_UNDEFINED;
         }
         case JSXMLHttpRequest::DispatchEvent: {
-            bool result = request->m_impl->dispatchEvent(toEvent(args[0]), ec);
-            setDOMException(exec, ec);
-            return jsBoolean(result);
+            bool result = request->dispatchEvent(toEvent(argv[0]), ec);
+            setDOMException(ctx, ec);
+            return JS_NewBool(ctx, result);
         }
     }
 
-    return jsUndefined();
+    return JS_UNDEFINED;
 }
 #endif // ENABLE(AJAX)
 

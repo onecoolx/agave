@@ -38,7 +38,7 @@ namespace QJS {
 
     class JSXMLHttpRequest {
     public:
-        static void init(JSContext* ctx);
+        static void init(JSContext* ctx, WebCore::Document*);
         static JSValue create(JSContext* ctx, WebCore::Document*);
         static void finalizer(JSRuntime *rt, JSValue val);
 
@@ -55,7 +55,7 @@ namespace QJS {
 
     class JSXMLHttpRequestConstructor {
     public:
-        static JSValue self(JSContext* ctx);
+        static JSValue self(JSContext* ctx, WebCore::Document*);
         static JSValue construct(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv);
     };
 
