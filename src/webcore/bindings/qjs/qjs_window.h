@@ -95,17 +95,6 @@ namespace QJS {
          */
         static Window* retrieveActive(JSContext*);
 
-        static void init(JSContext*);
-        static JSValue create(JSContext*, WebCore::DOMWindow*);
-        static void finalizer(JSRuntime *rt, JSValue val);
-
-        static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);
-        static JSValue putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue val, int token);
-        static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);
-
-        static JSClassID js_class_id;
-
-
         int installTimeout(const WebCore::String& handler, int t, bool singleShot);
         int installTimeout(JSValue* function, const WTF::Vector<JSValue>& args, int t, bool singleShot);
 
@@ -140,7 +129,7 @@ namespace QJS {
         void setCurrentEvent(WebCore::Event*);
 
         // Set a place to put a dialog return value when the window is cleared.
-        void setReturnValueSlot(JSValue** slot);
+        void setReturnValueSlot(JSValue* slot);
 
         typedef HashMap<JSObject*, WebCore::JSEventListener*> ListenersMap;
         typedef HashMap<JSObject*, WebCore::JSUnprotectedEventListener*> UnprotectedListenersMap;
@@ -149,6 +138,18 @@ namespace QJS {
         ListenersMap& jsHTMLEventListeners();
         UnprotectedListenersMap& jsUnprotectedEventListeners();
         UnprotectedListenersMap& jsUnprotectedHTMLEventListeners();
+
+
+        // js object methods
+        static void init(JSContext*);
+        static JSValue create(JSContext*, WebCore::DOMWindow*);
+        static void finalizer(JSRuntime *rt, JSValue val);
+
+        static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);
+        static JSValue putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue val, int token);
+        static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);
+
+        static JSClassID js_class_id;
 
         enum {
             // Functions
@@ -186,6 +187,7 @@ namespace QJS {
         static JSValue *indexGetter(ExecState *exec, JSObject *, const Identifier&, const PropertySlot& slot);
         static JSValue *namedItemGetter(ExecState *exec, JSObject *, const Identifier&, const PropertySlot& slot);
 #endif
+        void mark(JSRuntime *rt);
 
         void updateLayout() const;
 
@@ -203,7 +205,7 @@ namespace QJS {
         static void initPrototype(JSContext * ctx, JSValue this_obj);
     };
 
-    class WindowFunction {
+    class WindowFunc {
     public:
         static JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token);
     };
