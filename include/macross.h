@@ -2178,66 +2178,6 @@ MACROSS_API MC_BOOL macross_register_scheme(const char * scheme, cb_scheme_callb
 MACROSS_API MC_BOOL macross_unregister_scheme(const char* scheme);
 #endif
 
-#ifdef ENABLE_JSNATIVEBINDING
-/**
- * \fn MC_BOOL macross_js_define_class(JSNativeClass *jclass)
- * \brief Define a javascript native binding class.
- *
- * \param jclass The description of the javascript class.
- *
- * \return TRUE on success, FALSE on error.
- *
- * \sa macross_js_undefine_class
- */
-MACROSS_API MC_BOOL macross_js_define_class(JSNativeClass* jclass);
-
-/**
- * \fn MC_BOOL macross_js_undefine_class(JSNativeClass* jclass)
- * \brief Undefine a javascript native binding class.
- *
- * \param jclass The description of the javascript class.
- *
- * \return TRUE on success, FALSE on error.
- *
- * \sa macross_js_define_class
- */
-MACROSS_API MC_BOOL macross_js_undefine_class(JSNativeClass* jclass);
-
-/**
- * \fn const JSClassRef macross_js_lookup_class(const char* utf8_name)
- * \brief search a javascript native binding with the class name.
- *
- * \param utf8_name The name of the native class.
- *
- * \return JSClassRef on success, NULL on error.
- */
-MACROSS_API const JSClassRef macross_js_lookup_class(const char* utf8_name);
-
-/**
- * \fn MC_BOOL macross_js_define_function(JSNativeFunction *func)
- * \brief Define a javascript native binding function.
- *
- * \param func The description of the Native Function 
- *
- * \return TRUE on success, FALSE on error.
- *
- * \sa macross_js_undefine_function
- */
-MACROSS_API MC_BOOL macross_js_define_function(JSNativeFunction *func);
-
-/**
- * \fn MC_BOOL macross_js_undefine_function(JSNativeFunction *func)
- * \brief Undefine a javascript native binding function.
- *
- * \param func The description of the Native Function 
- *
- * \return TRUE on success, FALSE on error.
- *
- * \sa macross_js_define_function
- */
-MACROSS_API MC_BOOL macross_js_undefine_function(JSNativeFunction *func);
-#endif
-
 /**
  * \brief Http method for request.
  */

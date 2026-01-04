@@ -138,6 +138,9 @@ install(TARGETS ${APP_MOBILE} RUNTIME DESTINATION bin)
 
 target_include_directories(${APP_MOBILE} PRIVATE 
                     ${PROJ_ROOT}/include
+                    ${PROJ_ROOT}/include/kjs
+                    ${PROJ_ROOT}/include/npapi
+                    ${PROJ_ROOT}/include
                     ${PROJ_OUT}/
                     SYSTEM PUBLIC
                     ${SYSTEM_INCLUDE}

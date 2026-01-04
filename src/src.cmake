@@ -75,6 +75,8 @@ set(LIB_NAME agave)
 add_library(${LIB_NAME} ${SOURCES})
 
 set(HEADERS ${PROJ_ROOT}/include
+            ${PROJ_ROOT}/include/kjs
+            ${PROJ_ROOT}/include/npapi
             ${PROJ_ROOT}/src
             ${PROJ_ROOT}/src/webcore
             ${PROJ_ROOT}/src/webcore/css
