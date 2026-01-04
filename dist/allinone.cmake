@@ -15,7 +15,7 @@ if (MSVC)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4267 /wd4244 /wd4311 /wd4312 /wd4996")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4267 /wd4244 /wd4311 /wd4312 /wd4996")
 else()
-target_compile_options(${LIB_DEPS} PRIVATE -Wno-incompatible-function-pointer-types)
+target_compile_options(${LIB_DEPS} PRIVATE -Wno-incompatible-function-pointer-types -Wno-implicit-function-declaration -Wno-int-conversion)
 endif()
 
 install(TARGETS ${LIB_DEPS} LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
