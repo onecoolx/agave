@@ -4,6 +4,7 @@ project(Agave LANGUAGES C CXX ASM HOMEPAGE_URL https://github.com/onecoolx/agave
 
 set (CMAKE_CXX_STANDARD 98)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(BUILD_SHARED_LIBS ON) # build shared library, OFF for static
 
