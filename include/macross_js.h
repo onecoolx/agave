@@ -69,25 +69,25 @@ MACROSS_API const JSClassRef macross_js_lookup_class(const char* utf8_name);
  * \fn MC_BOOL macross_js_define_function(JSNativeFunction *func)
  * \brief Define a javascript native binding function.
  *
- * \param func The description of the Native Function 
+ * \param func The description of the Native Function
  *
  * \return TRUE on success, FALSE on error.
  *
  * \sa macross_js_undefine_function
  */
-MACROSS_API MC_BOOL macross_js_define_function(JSNativeFunction *func);
+MACROSS_API MC_BOOL macross_js_define_function(JSNativeFunction* func);
 
 /**
  * \fn MC_BOOL macross_js_undefine_function(JSNativeFunction *func)
  * \brief Undefine a javascript native binding function.
  *
- * \param func The description of the Native Function 
+ * \param func The description of the Native Function
  *
  * \return TRUE on success, FALSE on error.
  *
  * \sa macross_js_define_function
  */
-MACROSS_API MC_BOOL macross_js_undefine_function(JSNativeFunction *func);
+MACROSS_API MC_BOOL macross_js_undefine_function(JSNativeFunction* func);
 #endif
 
 /** @} end of extension*/
@@ -97,4 +97,3 @@ MACROSS_API MC_BOOL macross_js_undefine_function(JSNativeFunction *func);
 #endif /* __cplusplus */
 
 #endif /*_MACROSS_JAVASCRIPT_H_*/
-

@@ -6,13 +6,13 @@
 
 #if defined(ENABLE_PLUGIN) && !defined(HAVE_STDINT_H)
 
-typedef int int32_t;
-typedef unsigned int uint32_t;
-typedef short int16_t;
-typedef unsigned short uint16_t;
-#if !defined(__cplusplus)
-typedef int bool;
-#endif
+    typedef int int32_t;
+    typedef unsigned int uint32_t;
+    typedef short int16_t;
+    typedef unsigned short uint16_t;
+    #if !defined(__cplusplus)
+        typedef int bool;
+    #endif
 
 #endif
 

@@ -21,7 +21,7 @@
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #ifndef JSContextRef_h
@@ -39,7 +39,7 @@ extern "C" {
 @abstract Creates a global JavaScript execution context.
 @discussion JSGlobalContextCreate allocates a global object and populates it with all the
  built-in JavaScript objects, such as Object, Function, String, and Array.
-@param globalObjectClass The class to use when creating the global object. Pass 
+@param globalObjectClass The class to use when creating the global object. Pass
  NULL to use the default object class.
 @result A JSGlobalContext with a global object of class globalObjectClass.
 */

@@ -253,7 +253,7 @@ JSObjectRef JSValueToObject(JSContextRef ctx, JSValueRef value, JSValueRef* exce
 @param ctx The execution context to use.
 @param value The JSValue to protect.
 @discussion Use this method when you want to store a JSValue in a global or on the heap, where the garbage collector will not be able to discover your reference to it.
- 
+
 A value may be protected multiple times and must be unprotected an equal number of times before becoming eligible for garbage collection.
 */
 void JSValueProtect(JSContextRef ctx, JSValueRef value);
@@ -263,7 +263,7 @@ void JSValueProtect(JSContextRef ctx, JSValueRef value);
 @abstract       Unprotects a JavaScript value from garbage collection.
 @param ctx      The execution context to use.
 @param value    The JSValue to unprotect.
-@discussion     A value may be protected multiple times and must be unprotected an 
+@discussion     A value may be protected multiple times and must be unprotected an
  equal number of times before becoming eligible for garbage collection.
 */
 void JSValueUnprotect(JSContextRef ctx, JSValueRef value);

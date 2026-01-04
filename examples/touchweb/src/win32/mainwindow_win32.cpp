@@ -135,7 +135,7 @@ bool MainWindowImpl::Create(void* hInstance, const char* title, int x, int y, in
 
     m_data->m_hInst = hInstance;
     g_MainWnd = m_data->m_hWnd = CreateWindowExA(WS_EX_APPWINDOW, "Agave", title, WS_OVERLAPPEDWINDOW, x, y, w, h + GetSystemMetrics(SM_CYCAPTION),
-                                               NULL, NULL, (HINSTANCE)hInstance, this);
+                                                 NULL, NULL, (HINSTANCE)hInstance, this);
 
     if (!m_data->m_hWnd) {
         return false;

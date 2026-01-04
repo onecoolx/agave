@@ -138,7 +138,7 @@ bool AutoFill::updateFormData(const FormData& data, int presid)
     // update form data
 
     std::stringstream isql;
-    isql << "update "<< INDEX_TABLE_NAME << " "
+    isql << "update " << INDEX_TABLE_NAME << " "
          << "set url=\'" << data.url.c_str() << "\'"
          << ", formid=\'" << data.formid.c_str() << "\'"
          << ", action=\'" << data.action.c_str() << "\'"

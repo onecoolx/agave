@@ -3,7 +3,7 @@
 #define _JSBinging_H_
 
 #ifdef __cplusplus
-extern "C"{
+extern "C" {
 #endif
 
 /**
@@ -46,17 +46,17 @@ typedef struct _JSNativeClass JSNativeClass;
 
 struct _JSNativeClass {
     /** Class name */
-    const char    *name;
+    const char* name;
     /** JavaScript native binding version: default 0 */
-    int           version;
+    int version;
     /** Pointer to the constructor for the object that represents this class */
     JSConstructor ctor;
     /** Pointer to the destructor for the object that represents this class */
-    JSDestructor  dtor;
+    JSDestructor dtor;
     /** Pointer to the methods for the object that represents this class */
-    JSMethod      *method;
+    JSMethod* method;
     /** Pointer to the properties for the object that represents this class */
-    JSProperty    *property; 
+    JSProperty* property;
 };
 
 #ifdef __cplusplus

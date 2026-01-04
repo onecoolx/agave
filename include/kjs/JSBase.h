@@ -21,20 +21,20 @@
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #ifndef JSBase_h
 #define JSBase_h
 
 #ifndef __cplusplus
-#if WIN32 || WINCE
-typedef unsigned char bool;
-#define true 1
-#define false 0
-#else
-#include <stdbool.h>
-#endif
+    #if WIN32 || WINCE
+        typedef unsigned char bool;
+        #define true 1
+        #define false 0
+    #else
+        #include <stdbool.h>
+    #endif
 #endif
 
 /* JavaScript engine interface */
@@ -56,7 +56,6 @@ typedef struct OpaqueJSPropertyNameArray* JSPropertyNameArrayRef;
 
 /*! @typedef JSPropertyNameAccumulatorRef An ordered set used to collect the names of a JavaScript object's properties. */
 typedef struct OpaqueJSPropertyNameAccumulator* JSPropertyNameAccumulatorRef;
-
 
 /* JavaScript data types */
 
@@ -99,16 +98,16 @@ bool JSCheckScriptSyntax(JSContextRef ctx, JSStringRef script, JSStringRef sourc
 
 /*!
 @function
-@abstract Performs a JavaScript garbage collection. 
+@abstract Performs a JavaScript garbage collection.
 @param ctx This parameter is currently unused. Pass NULL.
-@discussion JavaScript values that are on the machine stack, in a register, 
- protected by JSValueProtect, set as the global object of an execution context, 
- or reachable from any such value will not be collected. 
- 
- During JavaScript execution, you are not required to call this function; the 
- JavaScript engine will garbage collect as needed. One place you may want to call 
- this function, however, is after releasing the last reference to a JSGlobalContextRef. 
- At that point, a garbage collection can free the objects still referenced by the 
+@discussion JavaScript values that are on the machine stack, in a register,
+ protected by JSValueProtect, set as the global object of an execution context,
+ or reachable from any such value will not be collected.
+
+ During JavaScript execution, you are not required to call this function; the
+ JavaScript engine will garbage collect as needed. One place you may want to call
+ this function, however, is after releasing the last reference to a JSGlobalContextRef.
+ At that point, a garbage collection can free the objects still referenced by the
  JSGlobalContextRef's global object, along with the global object itself.
 */
 void JSGarbageCollect(JSContextRef ctx);
