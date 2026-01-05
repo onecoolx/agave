@@ -7,6 +7,8 @@
 #define APP_VERSION "105000"  /* version 1.5.0 */
 #define VERSION_STRING "1.5.0"
 
+#define MOBILE_PHONE 0
+
 #define THREAD_RENDER 1
 
 #define SETUI(x)  (x)
@@ -20,8 +22,7 @@
 #endif
 
 #if defined(MOBILE_PHONE)
-    extern int global_scale;
-    #define GLOBAL_SCALE  global_scale
+    #define GLOBAL_SCALE  1
 #else
     #define GLOBAL_SCALE  1
 #endif
