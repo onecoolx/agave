@@ -1,7 +1,7 @@
 /*
- * VGCL - Vector Graphics Component Library
+ * %project%
  *
- * Copyright (c) 2018, Zhang Ji Peng
+ * Copyright (c) %year%, Zhang Ji Peng
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,3 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-#ifndef _VGCL_LIB_H_
-#define _VGCL_LIB_H_
-
-#include <vgconfig.h>
-
-#include <vgcl/vobject.h>
-#include <vgcl/vevent.h>
-#include <vgcl/vthread.h>
-
-#endif /* _VGCL_LIB_H_ */
