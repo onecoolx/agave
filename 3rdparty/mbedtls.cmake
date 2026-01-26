@@ -24,4 +24,29 @@ ExternalProject_Add(
 include_directories(${PROJ_OUT}/include)
 link_directories(${PROJ_OUT}/lib)
 
+add_library(mbedtls-static STATIC IMPORTED)
+set_target_properties(mbedtls-static PROPERTIES
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}mbedtls-static${CMAKE_STATIC_LIBRARY_SUFFIX}
+)
+
+add_library(mbedcrypto STATIC IMPORTED)
+set_target_properties(mbedcrypto PROPERTIES
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}mbedcrypto${CMAKE_STATIC_LIBRARY_SUFFIX}
+)
+
+add_library(p256m STATIC IMPORTED)
+set_target_properties(p256m PROPERTIES
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}p256m${CMAKE_STATIC_LIBRARY_SUFFIX}
+)
+
+add_library(mbedx509 STATIC IMPORTED)
+set_target_properties(mbedx509 PROPERTIES
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}mbedx509${CMAKE_STATIC_LIBRARY_SUFFIX}
+)
+
+add_library(everest STATIC IMPORTED)
+set_target_properties(everest PROPERTIES
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}everest${CMAKE_STATIC_LIBRARY_SUFFIX}
+)
+
 set(LIB_DEPS ${LIB_DEPS} mbedtls-static mbedcrypto p256m mbedx509 everest)

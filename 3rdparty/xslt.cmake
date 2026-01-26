@@ -25,4 +25,14 @@ link_directories(${PROJ_OUT}/lib)
 
 add_dependencies(${XSLT_NAME} ${XML2_NAME})
 
+add_library(xslt STATIC IMPORTED)
+set_target_properties(xslt PROPERTIES
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}xslt${CMAKE_STATIC_LIBRARY_SUFFIX}
+)
+
+add_library(exslt STATIC IMPORTED)
+set_target_properties(exslt PROPERTIES
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}exslt${CMAKE_STATIC_LIBRARY_SUFFIX}
+)
+
 set(LIB_DEPS ${LIB_DEPS} xslt exslt)

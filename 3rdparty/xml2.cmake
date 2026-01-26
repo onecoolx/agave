@@ -23,4 +23,9 @@ link_directories(${PROJ_OUT}/lib)
 
 add_dependencies(${XML2_NAME} ${ZLIB_NAME})
 
+add_library(xml2 STATIC IMPORTED)
+set_target_properties(xml2 PROPERTIES
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}xml2${CMAKE_STATIC_LIBRARY_SUFFIX}
+)
+
 set(LIB_DEPS ${LIB_DEPS} xml2)
