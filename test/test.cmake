@@ -42,6 +42,8 @@ endif()
 
 if (NOT WIN32)
     target_compile_options(${APP_NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-std=c++11>)
+    configure_file(${PROJ_ROOT}/packages/fonts/ZCOOLXiaoWei-Regular.ttf ${CMAKE_CURRENT_BINARY_DIR}/ZCOOLXiaoWei-Regular.ttf COPYONLY)
+    configure_file(${PROJ_ROOT}/packages/fonts/font_config.cfg ${CMAKE_CURRENT_BINARY_DIR}/font_config.cfg COPYONLY)
 endif()
 
 install(TARGETS ${APP_NAME} RUNTIME DESTINATION bin)
@@ -54,6 +56,5 @@ target_include_directories(${APP_NAME} PRIVATE
                     ${SYSTEM_INCLUDE}
 )
 
-target_link_libraries(${APP_NAME} PRIVATE ${LIB_NAME} ${LIB_DEPS} picasso2_sw PUBLIC ${SYSTEM_LIBS}
-)
+target_link_libraries(${APP_NAME} PRIVATE ${LIB_NAME} ${LIB_DEPS} picasso2_sw PUBLIC ${SYSTEM_LIBS})
 

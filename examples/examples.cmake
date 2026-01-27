@@ -130,6 +130,8 @@ target_compile_definitions(${APP_MOBILE} PRIVATE SQLITE_HAS_CODEC)
 if (NOT WIN32)
     target_compile_definitions(${APP_MOBILE} PRIVATE QT5)
     target_compile_options(${APP_MOBILE} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-std=c++11>)
+    configure_file(${PROJ_ROOT}/packages/fonts/ZCOOLXiaoWei-Regular.ttf ${CMAKE_CURRENT_BINARY_DIR}/ZCOOLXiaoWei-Regular.ttf COPYONLY)
+    configure_file(${PROJ_ROOT}/packages/fonts/font_config.cfg ${CMAKE_CURRENT_BINARY_DIR}/font_config.cfg COPYONLY)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")      # GCC

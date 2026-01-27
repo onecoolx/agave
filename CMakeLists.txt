@@ -28,14 +28,10 @@ if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build Type" FORCE)
 endif()
 
-option(OPT_USE_INTERNAL_LIBS "Build internal libs" ON)
 
 include (${CMAKE_CURRENT_LIST_DIR}/build/configs.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/build/defines.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/3rdparty/3rdparty.cmake)
-if (OPT_USE_INTERNAL_LIBS)
-include (${CMAKE_CURRENT_LIST_DIR}/dist/allinone.cmake)
-endif()
 
 OPTION_MACRO_DEFINE(OPT_PNG_SUPPORT PNG_SUPPORT "Build support PNG image format." ON)
 OPTION_MACRO_DEFINE(OPT_JPEG_SUPPORT JPEG_SUPPORT "Build support JPEG image format." ON)
