@@ -43,8 +43,6 @@
 #include "MIMETypeRegistry.h"
 #include "RenderTextControl.h"
 
-#include "DeprecatedCString.h"
-
 namespace WebCore {
 
 using namespace EventNames;
@@ -151,15 +149,15 @@ void HTMLFormElement::submitClick(Event* event)
         prepareSubmit(event);
 }
 
-static DeprecatedCString encodeCString(const CString& cstr)
+static CString encodeCString(const CString& cstr)
 {
-    DeprecatedCString e(cstr.data(), cstr.length());
+    CString e(cstr.data(), cstr.length());
 
     // http://www.w3.org/TR/html4/interact/forms.html#h-17.13.4.1
     // same safe characters as Netscape for compatibility
     static const char *safe = "-._*";
     int elen = e.length();
-    DeprecatedCString encoded((elen + e.contains('\n')) * 3 + 1);
+    CString encoded((elen + e.contains('\n')) * 3 + 1);
     int enclen = 0;
 
     for (int pos = 0; pos < elen; pos++) {
@@ -214,7 +212,7 @@ static String pathGetFilename(String path)
 
 PassRefPtr<FormData> HTMLFormElement::formData(const char* boundary) const
 {
-    DeprecatedCString enc_string = "";
+    CString enc_string = "";
 
     String str = m_acceptcharset;
     str.replace(',', ' ');
@@ -260,7 +258,7 @@ PassRefPtr<FormData> HTMLFormElement::formData(const char* boundary) const
                 }
                 else
                 {
-                    DeprecatedCString hstr("--");
+                    CString hstr("--");
                     hstr += boundary;
                     hstr += "\r\n";
                     hstr += "Content-Disposition: form-data; name=\"";

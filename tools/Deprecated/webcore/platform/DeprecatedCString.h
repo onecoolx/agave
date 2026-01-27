@@ -26,10 +26,16 @@
 #ifndef DeprecatedCString_h
 #define DeprecatedCString_h
 
-#include "DeprecatedArray.h"
+//#include "DeprecatedArray.h"
 #include <string.h>
 
+#include "CString.h"
+
 namespace WebCore {
+
+#define DeprecatedCString CString
+
+#if 0
 
 class DeprecatedCString : public DeprecatedByteArray {
 public:
@@ -68,6 +74,8 @@ bool operator==(const DeprecatedCString &s1, const char *s2);
 inline bool operator==(const char *s1, const DeprecatedCString &s2) { return s2 == s1; }
 inline bool operator!=(const DeprecatedCString &s1, const char *s2) { return !(s1 == s2); }
 inline bool operator!=(const char *s1, const DeprecatedCString &s2) { return !(s1 == s2); }
+
+#endif
 
 }
 

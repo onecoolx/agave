@@ -29,6 +29,8 @@
 #include "Shared.h"
 #include <wtf/Vector.h>
 
+#include <wtf/ASCIICType.h>
+
 using std::min;
 
 namespace WebCore {
@@ -55,9 +57,90 @@ namespace WebCore {
 
         const char* data() const;
         char* mutableData();
-        unsigned length() const;
+        uint32_t length() const;
 
         bool isNull() const { return !m_buffer; }
+
+// DEBUG: tmp  DeprecatedCString compatable
+
+    bool truncate(unsigned len)
+    {
+       RefPtr<CStringBuffer> newBuf = new CStringBuffer(len + 1);
+       memcpy(newBuf->data(), data(), len); 
+       newBuf->data()[len] = '\0';
+       m_buffer = newBuf;
+       return true;
+    }
+
+    operator const char *() const { return data(); }
+
+    CString(int size)
+    {
+        m_buffer = new CStringBuffer(size);
+
+        if( size>0 && mutableData() )
+        {
+            mutableData()[0] = 0;          // first null
+            mutableData()[size-1] = 0;     // last byte
+        }
+    }
+
+    bool isEmpty() const { return length()==0; }
+
+    int contains(char c, bool cs=true) const
+    {
+        unsigned found = 0;
+        unsigned len = length();
+
+        if (len) {
+            const char *str = data();
+
+            if (cs) {
+                for (unsigned i = 0; i != len; ++i) {
+                    found += str[i] == c;
+                }
+            } else {
+                c = WTF::toASCIILower(c);
+
+                for (unsigned i = 0; i != len; ++i) {
+                    char chr = str[i];
+                    chr = WTF::toASCIILower(chr);
+                    found += chr == c;
+                }
+            }
+        }
+
+        return found;
+    }
+
+    char &operator[](int i) { return mutableData()[i]; } 
+    CString &operator+=(const char* s) { return append(s); }
+    CString &operator+=(char c) { return append(c); }
+
+    CString &append(char c)
+    {
+        char s[2] = {c};
+        return append(s);
+    }
+
+    CString &append(const char* s)
+    {
+        if (s) {
+            unsigned len2 = strlen(s);
+            if (len2) {
+                unsigned len1 = length();
+                
+                RefPtr<CStringBuffer> newBuf = new CStringBuffer(len1 + len2 + 1);
+                memcpy(newBuf->data(), data(), len1); 
+                memcpy(newBuf->data() + len1, s, len2 + 1);
+                newBuf->data()[len1+len2] = '\0';
+                
+                m_buffer = newBuf;
+            }
+        }
+        return *this;
+    }
+// DEBUG
 
     private:
         void copyBufferIfNeeded();
@@ -65,9 +148,20 @@ namespace WebCore {
         RefPtr<CStringBuffer> m_buffer;
     };
 
+
+// DEBUG: tmp  DeprecatedCString compatable
+    inline bool operator==(const CString &s1, const char *s2) { 
+        size_t sl = strlen(s2);
+        if (sl != s1.length()) {
+            return false;
+        }
+        return !strncmp(s1.data(), s2, sl);
+    }
+// DEBUG
+
+
     bool operator==(const CString& a, const CString& b);
     inline bool operator!=(const CString& a, const CString& b) { return !(a == b); }
-
 }
 
 #endif // CString_h

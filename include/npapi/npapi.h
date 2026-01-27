@@ -434,54 +434,54 @@ const char* NPP_GetMIMEDescription(void);
 NPError NPP_Initialize(void);
 void NPP_Shutdown(void);
 NPError NPP_New(NPMIMEType pluginType, NPP instance,
-                    uint16 mode, int16 argc, char* argn[],
-                    char* argv[], NPSavedData* saved);
+                uint16 mode, int16 argc, char* argn[],
+                char* argv[], NPSavedData* saved);
 NPError NPP_Destroy(NPP instance, NPSavedData** save);
 NPError NPP_SetWindow(NPP instance, NPWindow* window);
 NPError NPP_NewStream(NPP instance, NPMIMEType type,
-                          NPStream* stream, NPBool seekable,
-                          uint16* stype);
+                      NPStream* stream, NPBool seekable,
+                      uint16* stype);
 NPError NPP_DestroyStream(NPP instance, NPStream* stream,
-                              NPReason reason);
+                          NPReason reason);
 int32 NPP_WriteReady(NPP instance, NPStream* stream);
 int32 NPP_Write(NPP instance, NPStream* stream, int32 offset,
-                      int32 len, void* buffer);
+                int32 len, void* buffer);
 void NPP_StreamAsFile(NPP instance, NPStream* stream,
-                             const char* fname);
+                      const char* fname);
 void NPP_Print(NPP instance, NPPrint* platformPrint);
 int16 NPP_HandleEvent(NPP instance, NPEvent* event);
 void NPP_URLNotify(NPP instance, const char* url,
-                          NPReason reason, void* notifyData);
+                   NPReason reason, void* notifyData);
 jref NPP_GetJavaClass(void);
 NPError NPP_GetValue(NPP instance, NPPVariable variable,
-                         void* value);
+                     void* value);
 NPError NPP_SetValue(NPP instance, NPNVariable variable,
-                         void* value);
+                     void* value);
 
 /*
  * NPN_* functions are provided by the navigator and called by the plugin.
  */
 
 void NPN_Version(int* plugin_major, int* plugin_minor,
-                        int* netscape_major, int* netscape_minor);
+                 int* netscape_major, int* netscape_minor);
 NPError NPN_GetURLNotify(NPP instance, const char* url,
-                             const char* target, void* notifyData);
+                         const char* target, void* notifyData);
 NPError NPN_GetURL(NPP instance, const char* url,
-                       const char* target);
+                   const char* target);
 NPError NPN_PostURLNotify(NPP instance, const char* url,
-                              const char* target, uint32 len,
-                              const char* buf, NPBool file,
-                              void* notifyData);
+                          const char* target, uint32 len,
+                          const char* buf, NPBool file,
+                          void* notifyData);
 NPError NPN_PostURL(NPP instance, const char* url,
-                        const char* target, uint32 len,
-                        const char* buf, NPBool file);
+                    const char* target, uint32 len,
+                    const char* buf, NPBool file);
 NPError NPN_RequestRead(NPStream* stream, NPByteRange* rangeList);
 NPError NPN_NewStream(NPP instance, NPMIMEType type,
-                          const char* target, NPStream** stream);
+                      const char* target, NPStream** stream);
 int32 NPN_Write(NPP instance, NPStream* stream, int32 len,
-                       void* buffer);
+                void* buffer);
 NPError NPN_DestroyStream(NPP instance, NPStream* stream,
-                              NPReason reason);
+                          NPReason reason);
 void NPN_Status(NPP instance, const char* message);
 const char* NPN_UserAgent(NPP instance);
 void* NPN_MemAlloc(uint32 size);
@@ -491,9 +491,9 @@ void NPN_ReloadPlugins(NPBool reloadPages);
 JRIEnv* NPN_GetJavaEnv(void);
 jref NPN_GetJavaPeer(NPP instance);
 NPError NPN_GetValue(NPP instance, NPNVariable variable,
-                         void* value);
+                     void* value);
 NPError NPN_SetValue(NPP instance, NPPVariable variable,
-                         void* value);
+                     void* value);
 void NPN_InvalidateRect(NPP instance, NPRect* invalidRect);
 void NPN_InvalidateRegion(NPP instance, NPRegion invalidRegion);
 void NPN_ForceRedraw(NPP instance);

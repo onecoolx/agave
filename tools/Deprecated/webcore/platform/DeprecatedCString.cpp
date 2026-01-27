@@ -24,6 +24,8 @@
  */
 
 #include "config.h"
+
+#if 0
 #include "DeprecatedCString.h"
 
 #include <wtf/ASCIICType.h>
@@ -303,4 +305,6 @@ bool operator==(const DeprecatedCString &s1, const char *s2)
     return strcmp(s1, s2) == 0;
 }
 
+
 }
+#endif
