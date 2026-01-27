@@ -26,8 +26,11 @@ add_dependencies(${PNG_NAME} ${ZLIB_NAME})
 add_library(png STATIC IMPORTED)
 
 if(WIN32)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(PNG_STATIC_LIB_TYPE "d")
+endif()
 set_target_properties(png PROPERTIES
-  IMPORTED_LOCATION ${PROJ_OUT}/lib/libpng16_static${CMAKE_STATIC_LIBRARY_SUFFIX}
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/libpng16_static${PNG_STATIC_LIB_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX}
 )
 else()
 set_target_properties(png PROPERTIES
