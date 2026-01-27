@@ -24,8 +24,15 @@ link_directories(${PROJ_OUT}/lib)
 add_dependencies(${PNG_NAME} ${ZLIB_NAME})
 
 add_library(png STATIC IMPORTED)
+
+if(WIN32)
+set_target_properties(png PROPERTIES
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/libpng16_static${CMAKE_STATIC_LIBRARY_SUFFIX}
+)
+else()
 set_target_properties(png PROPERTIES
   IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}png${CMAKE_STATIC_LIBRARY_SUFFIX}
 )
+endif()
 
 set(LIB_DEPS ${LIB_DEPS} png)

@@ -20,8 +20,14 @@ ExternalProject_Add(
 )
 
 add_library(z STATIC IMPORTED)
+if(WIN32)
+set_target_properties(z PROPERTIES
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${ZLIB_NAME}static${CMAKE_STATIC_LIBRARY_SUFFIX}
+)
+else()
 set_target_properties(z PROPERTIES
   IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}z${CMAKE_STATIC_LIBRARY_SUFFIX}
 )
+endif()
 
 set(LIB_DEPS ${LIB_DEPS} z)
