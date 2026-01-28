@@ -26,20 +26,22 @@
 #ifndef UChar_h
 #define UChar_h
 
-typedef unsigned short UChar;
-typedef unsigned short UChar16;
-typedef int UChar32;
-typedef signed int USChar32; 
+#include <stdint.h>
+
+typedef uint16_t UChar;
+typedef uint16_t UChar16;
+typedef uint32_t UChar32;
+typedef int32_t USChar32;
 
 /** Number of bytes in a UChar. @stable ICU 2.0 */
-#define U_SIZEOF_UCHAR 2
+#define U_SIZEOF_UCHAR sizeof(UChar)
 
 #define U_MAX_VERSION_LENGTH 4
 
 /** The binary form of a version on ICU APIs is an array of 4 uint8_t.
  *  @stable ICU 2.4
  */
-typedef unsigned char UVersionInfo[U_MAX_VERSION_LENGTH];
+typedef uint8_t UVersionInfo[U_MAX_VERSION_LENGTH];
 
 /**
  * This specifies the language directional property of a character set.

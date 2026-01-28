@@ -30,7 +30,6 @@
 
 namespace WebCore {
 
-class DeprecatedChar;
 class DeprecatedString;
 class String;
 class TextStream;
@@ -44,7 +43,6 @@ public:
     TextStream(DeprecatedString*);
 
     TextStream& operator<<(char);
-    TextStream& operator<<(const DeprecatedChar&);
     TextStream& operator<<(short);
     TextStream& operator<<(unsigned short);
     TextStream& operator<<(int);

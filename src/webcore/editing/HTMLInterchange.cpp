@@ -42,7 +42,7 @@ DeprecatedString convertedSpaceString()
         convertedSpaceString = "<span class=\"";
         convertedSpaceString += AppleConvertedSpace;
         convertedSpaceString += "\">";
-        convertedSpaceString += DeprecatedChar(noBreakSpace);
+        convertedSpaceString += noBreakSpace;
         convertedSpaceString += "</span>";
     }
     return convertedSpaceString;
@@ -62,10 +62,10 @@ DeprecatedString convertHTMLTextToInterchangeFormat(const DeprecatedString& in, 
     unsigned int consumed = 0;
     while (i < in.length()) {
         consumed = 1;
-        if (isCollapsibleWhitespace(in[i].unicode())) {
+        if (isCollapsibleWhitespace(in[i])) {
             // count number of adjoining spaces
             unsigned int j = i + 1;
-            while (j < in.length() && isCollapsibleWhitespace(in[j].unicode()))
+            while (j < in.length() && isCollapsibleWhitespace(in[j]))
                 j++;
             unsigned int count = j - i;
             consumed = count;

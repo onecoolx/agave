@@ -648,9 +648,9 @@ void RenderBlock::computeHorizontalPositionsForLine(RootInlineBox* lineBox, bool
             int effectiveWidth = textWidth;
             int rtLength = rt->textLength();
             if (rtLength != 0) {
-                if (!r->m_start && needsWordSpacing && DeprecatedChar(rt->characters()[r->m_start]).isSpace())
+                if (!r->m_start && needsWordSpacing && Unicode::isSpace(rt->characters()[r->m_start]))
                     effectiveWidth += rt->style(m_firstLine)->font().wordSpacing();
-                needsWordSpacing = !DeprecatedChar(rt->characters()[r->m_stop - 1]).isSpace() && r->m_stop == rtLength;          
+                needsWordSpacing = !Unicode::isSpace(rt->characters()[r->m_stop - 1]) && r->m_stop == rtLength;          
             }
             r->box->setWidth(textWidth);
         } else if (!r->obj->isInlineFlow()) {

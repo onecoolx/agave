@@ -35,7 +35,7 @@ namespace WebCore {
 class DeprecatedStringList : public DeprecatedValueList<DeprecatedString> {
 public:
     static DeprecatedStringList split(const DeprecatedString &, const DeprecatedString &, bool allowEmptyEntries = false);
-    static DeprecatedStringList split(const DeprecatedChar &, const DeprecatedString &, bool allowEmptyEntries = false);
+    static DeprecatedStringList split(const UChar &, const DeprecatedString &, bool allowEmptyEntries = false);
 
     DeprecatedString join(const DeprecatedString &) const;
     

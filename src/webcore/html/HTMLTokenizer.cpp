@@ -431,7 +431,7 @@ HTMLTokenizer::State HTMLTokenizer::scriptHandler(State state)
     }
 
     state = processListing(SegmentedString(scriptCode, scriptCodeSize), state);
-    DeprecatedString exScript(reinterpret_cast<DeprecatedChar*>(buffer), dest - buffer);
+    DeprecatedString exScript(buffer, dest - buffer);
     processToken();
     currToken.tagName = scriptTag.localName();
     currToken.beginTag = false;
@@ -1583,7 +1583,7 @@ void HTMLTokenizer::finish()
             food = "<";
             food.append(String(scriptCode, scriptCodeSize));
         } else {
-            pos = DeprecatedConstString(reinterpret_cast<DeprecatedChar*>(scriptCode), scriptCodeSize).string().find('>');
+            pos = DeprecatedConstString(scriptCode, scriptCodeSize).string().find('>');
             food = String(scriptCode + pos + 1, scriptCodeSize - pos - 1);
         }
         fastFree(scriptCode);

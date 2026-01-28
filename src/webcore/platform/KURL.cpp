@@ -36,6 +36,7 @@
 
 using namespace std;
 using namespace WTF;
+using namespace WTF::Unicode;
 
 namespace WebCore {
 
@@ -787,8 +788,8 @@ DeprecatedString KURL::decode_string(const DeprecatedString& urlString, const Te
         int encodedRunEnd = encodedRunPosition;
         while (length - encodedRunEnd >= 3
                 && urlString[encodedRunEnd] == '%'
-                && isHexDigit(urlString[encodedRunEnd + 1].latin1())
-                && isHexDigit(urlString[encodedRunEnd + 2].latin1()))
+                && isHexDigit( toLatin1(urlString[encodedRunEnd + 1]) )
+                && isHexDigit( toLatin1(urlString[encodedRunEnd + 2]) ))
             encodedRunEnd += 3;
         if (encodedRunEnd == encodedRunPosition) {
             ++searchPosition;
@@ -817,7 +818,7 @@ DeprecatedString KURL::decode_string(const DeprecatedString& urlString, const Te
 
         // Build up the string with what we just skipped and what we just decoded.
         result.append(urlString.mid(decodedPosition, encodedRunPosition - decodedPosition));
-        result.append(reinterpret_cast<const DeprecatedChar*>(decoded.characters()), decoded.length());
+        result.append(decoded.characters(), decoded.length());
         decodedPosition = encodedRunEnd;
     }
 
@@ -1332,7 +1333,7 @@ static DeprecatedString encodeHostname(const DeprecatedString &s)
     if (error != U_ZERO_ERROR) {
         return s;
     }
-    return DeprecatedString(reinterpret_cast<DeprecatedChar *>(buffer), numCharactersConverted);
+    return DeprecatedString(buffer, numCharactersConverted);
 }
 
 static Vector<pair<int, int> > findHostnamesInMailToURL(const DeprecatedString &s)
@@ -1350,7 +1351,7 @@ static Vector<pair<int, int> > findHostnamesInMailToURL(const DeprecatedString &
         if (hostnameOrStringStart == -1) {
             return a;
         }
-        DeprecatedChar c = s[hostnameOrStringStart];
+        UChar c = s[hostnameOrStringStart];
         p = hostnameOrStringStart + 1;
 
         if (c == '?') {
@@ -1412,11 +1413,11 @@ static bool findHostnameInHierarchicalURL(const DeprecatedString &s, int &startO
     }
 
     // Check that all characters before the :// are valid scheme characters.
-    if (!isSchemeFirstChar(s[0].latin1())) {
+    if (!isSchemeFirstChar(Unicode::toLatin1(s[0]))) {
         return false;
     }
     for (int i = 1; i < separator; ++i) {
-        if (!isSchemeChar(s[i].latin1())) {
+        if (!isSchemeChar(Unicode::toLatin1(s[i]))) {
             return false;
         }
     }
@@ -1428,7 +1429,7 @@ static bool findHostnameInHierarchicalURL(const DeprecatedString &s, int &startO
     int length = s.length();
     int hostnameEnd = length;
     for (int i = authorityStart; i < length; ++i) {
-        char c = s[i].latin1();
+        char c = Unicode::toLatin1(s[i]);
         if (c == ':' || (isPathSegmentEndChar(c) && c != '\0')) {
             hostnameEnd = i;
             break;

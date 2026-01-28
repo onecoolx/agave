@@ -612,7 +612,7 @@ static void checkPseudoState(Element *e, bool checkVisited = true)
         return;
     }
     
-    DeprecatedConstString cu(reinterpret_cast<const DeprecatedChar*>(attr.characters()), attr.length());
+    DeprecatedConstString cu(attr.characters(), attr.length());
     DeprecatedString u = cu.string();
     if (!u.contains("://")) {
         if (u[0] == '/')

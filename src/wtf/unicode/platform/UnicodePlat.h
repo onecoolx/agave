@@ -3,6 +3,7 @@
 #define KJS_UNICODE_PLATFORM_H
 
 #include <wtf/FastMalloc.h>
+#include <wtf/ASCIICType.h>
 #include "UChar.h"
 #include "UnicodeGlobal.h"
 #include "StringCase.h"
@@ -230,8 +231,8 @@ namespace WTF {
 
     inline bool isUpper(UChar32 c)
     {
-      return !!u_isUUppercase(c);
-      }
+        return !!u_isUUppercase(c);
+    }
 
     inline int digitValue(UChar32 c)
     {
@@ -252,6 +253,30 @@ namespace WTF {
     {
       return u_memcasecmp(a, b, len, U_FOLD_CASE_DEFAULT);
     }
+
+    inline bool isSpace(UChar c)
+    {
+        // Use isspace() for basic Latin-1.
+        // This will include newlines, which aren't included in unicode DirWS.
+        return c <= 0x7F ? WTF::isASCIISpace(c) : (u_charDirection(c) == U_WHITE_SPACE_NEUTRAL);
+    }
+
+// DEBUG Deprecated compatable
+    inline char toLatin1(UChar c)
+    {
+        return c > 0xff ? 0 : c;
+    }
+
+    inline UChar toLower(UChar c)
+    {
+        return c <= 0x7F ? WTF::toASCIILower(c) : u_tolower(c);
+    }
+
+    inline UChar toUpper(UChar c)
+    {
+        return c <= 0x7F ? WTF::toASCIIUpper(c) : u_toupper(c);
+    }
+// DEBUG
 
   }
 }

@@ -48,7 +48,7 @@ static String cssPropertyName(const Identifier& propertyName, bool* hadPixelOrPo
         return prop;
 
     while (--i) {
-        ::UChar c = prop[i].unicode();
+        ::UChar c = prop[i];
         if (c >= 'A' && c <= 'Z')
             prop.insert(i, '-');
     }

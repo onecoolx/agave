@@ -288,9 +288,9 @@ DeprecatedString RegularExpression::cap(int n) const
 {
 #if ENABLE(KJS)
     const pcre_char *substring = NULL;
-    int substringLength = pcre_get_substring(reinterpret_cast<const uint16_t *>(d->lastMatchString.unicode()), d->lastMatchOffsets, d->lastMatchCount, n, &substring);
+    int substringLength = pcre_get_substring(reinterpret_cast<const UChar16 *>(d->lastMatchString.unicode()), d->lastMatchOffsets, d->lastMatchCount, n, &substring);
     if (substringLength > 0) {
-       DeprecatedString capture(reinterpret_cast<const DeprecatedChar *>(substring), substringLength);
+       DeprecatedString capture(substring, substringLength);
        pcre_free_substring(substring);
        return capture;
     }
@@ -313,7 +313,7 @@ DeprecatedString RegularExpression::cap(int n) const
 
     int startPos = (capture[0] - str_buf) >> 1;
     int len = (capture[1] - capture[0]) >> 1;
-    DeprecatedString subString(reinterpret_cast<const DeprecatedChar *>(str_buf) + startPos, len);
+    DeprecatedString subString(str_buf + startPos, len);
     return subString;
 #endif
 }

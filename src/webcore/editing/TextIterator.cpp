@@ -40,7 +40,8 @@
 #include "visible_units.h"
 
 using namespace std;
-using namespace WTF::Unicode;
+using namespace WTF;
+using namespace Unicode;
 
 namespace WebCore {
 
@@ -968,7 +969,7 @@ DeprecatedString CharacterIterator::string(int numChars)
     result.reserve(numChars);
     while (numChars > 0 && !atEnd()) {
         int runSize = min(numChars, length());
-        result.append(reinterpret_cast<const DeprecatedChar*>(characters()), runSize);
+        result.append(characters(), runSize);
         numChars -= runSize;
         advance(runSize);
     }
@@ -1020,7 +1021,7 @@ void WordAwareIterator::advance()
     
     while (1) {
         // If this chunk ends in whitespace we can just use it as our chunk.
-        if (DeprecatedChar(m_textIterator.characters()[m_textIterator.length() - 1]).isSpace())
+        if (Unicode::isSpace(m_textIterator.characters()[m_textIterator.length() - 1]))
             return;
 
         // If this is the first chunk that failed, save it in previousText before look ahead
@@ -1031,17 +1032,17 @@ void WordAwareIterator::advance()
 
         // Look ahead to next chunk.  If it is whitespace or a break, we can use the previous stuff
         m_textIterator.advance();
-        if (m_textIterator.atEnd() || m_textIterator.length() == 0 || DeprecatedChar(m_textIterator.characters()[0]).isSpace()) {
+        if (m_textIterator.atEnd() || m_textIterator.length() == 0 || Unicode::isSpace(m_textIterator.characters()[0])) {
             m_didLookAhead = true;
             return;
         }
 
         if (m_buffer.isEmpty()) {
             // Start gobbling chunks until we get to a suitable stopping point
-            m_buffer.append(reinterpret_cast<const DeprecatedChar*>(m_previousText), m_previousLength);
+            m_buffer.append(m_previousText, m_previousLength);
             m_previousText = 0;
         }
-        m_buffer.append(reinterpret_cast<const DeprecatedChar*>(m_textIterator.characters()), m_textIterator.length());
+        m_buffer.append(m_textIterator.characters(), m_textIterator.length());
         int exception = 0;
         m_range->setEnd(m_textIterator.range()->endContainer(exception), m_textIterator.range()->endOffset(exception), exception);
     }
@@ -1323,7 +1324,7 @@ DeprecatedString plainText(const Range* r)
     UChar* buf = plainTextToMallocAllocatedBuffer(r, length);
     if (!buf)
         return DeprecatedString("");
-    DeprecatedString result(reinterpret_cast<const DeprecatedChar*>(buf), length);
+    DeprecatedString result(buf, length);
     free(buf);
     return result;
 }

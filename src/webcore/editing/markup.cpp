@@ -132,12 +132,11 @@ static DeprecatedString escapeContentText(const String& in)
     unsigned lastCopiedFrom = 0;
 
     const UChar* uchars = in.characters();
-    const DeprecatedChar* dchars = reinterpret_cast<const DeprecatedChar*>(uchars);
 
     for (unsigned i = 0; i < len; ++i) {
         UChar c = uchars[i];
         if ((c == '&') | (c == '<')) {
-            s.append(dchars + lastCopiedFrom, i - lastCopiedFrom);
+            s.append(uchars + lastCopiedFrom, i - lastCopiedFrom);
             if (c == '&')
                 s += "&amp;";
             else 
@@ -146,7 +145,7 @@ static DeprecatedString escapeContentText(const String& in)
         }
     }
 
-    s.append(dchars + lastCopiedFrom, len - lastCopiedFrom);
+    s.append(uchars + lastCopiedFrom, len - lastCopiedFrom);
 
     return s;
 }

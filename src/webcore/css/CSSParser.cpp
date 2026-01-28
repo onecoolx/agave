@@ -3262,7 +3262,7 @@ int CSSParser::lex(void* yylvalWithoutType)
         length--;
     case FLOATTOKEN:
     case INTEGER:
-        yylval->val = DeprecatedString((DeprecatedChar*)t, length).toFloat();
+        yylval->val = DeprecatedString(t, length).toFloat();
         break;
 
     default:
@@ -3583,7 +3583,7 @@ CSSRule* CSSParser::createFontFaceRule()
 
 DeprecatedString deprecatedString(const ParseString& ps)
 {
-    return DeprecatedString(reinterpret_cast<const DeprecatedChar*>(ps.characters), ps.length);
+    return DeprecatedString(ps.characters, ps.length);
 }
 
 #define YY_DECL int CSSParser::lex()

@@ -668,6 +668,21 @@ DeprecatedString::DeprecatedString(DeprecatedChar qc)
     }
 }
 
+DeprecatedString::DeprecatedString(const ::UChar *unicode, unsigned length)
+{
+    if (!unicode || !length) {
+        internalData.deref();
+        dataHandle = makeSharedNullHandle();
+        dataHandle[0]->ref();
+    } else {
+        dataHandle = allocateHandle();
+
+        // Copy the DeprecatedChar *
+        *dataHandle = &internalData;
+        internalData.initialize(reinterpret_cast<const DeprecatedChar*>(unicode), length);
+    }
+}
+
 DeprecatedString::DeprecatedString(const DeprecatedChar *unicode, unsigned length)
 {
     if (!unicode || !length) {
@@ -1842,6 +1857,12 @@ DeprecatedString &DeprecatedString::append(const DeprecatedChar *characters, uns
     return insert(dataHandle[0]->_length, characters, length);
 }
 
+DeprecatedString &DeprecatedString::append(const ::UChar *characters, unsigned length)
+{
+    return insert(dataHandle[0]->_length, (DeprecatedChar*)characters, length);
+}
+
+
 DeprecatedString &DeprecatedString::insert(unsigned index, const char *insertChars, unsigned insertLength)
 {
     if (insertLength == 0)
@@ -2402,6 +2423,12 @@ DeprecatedConstString::DeprecatedConstString(const DeprecatedChar* unicode, unsi
     DeprecatedString(new DeprecatedStringData((DeprecatedChar *)unicode, length, length), true)
 {
 }
+
+DeprecatedConstString::DeprecatedConstString(const ::UChar* unicode, unsigned length) :
+    DeprecatedString(new DeprecatedStringData((DeprecatedChar *)unicode, length, length), true)
+{
+}
+
 
 DeprecatedConstString::~DeprecatedConstString()
 {

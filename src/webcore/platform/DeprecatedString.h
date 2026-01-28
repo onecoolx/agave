@@ -251,6 +251,7 @@ public:
     DeprecatedString();
     DeprecatedString(DeprecatedChar);
     DeprecatedString(const DeprecatedChar *, unsigned);
+    DeprecatedString(const UChar *, unsigned);
     DeprecatedString(const char *);
     DeprecatedString(const char *, int len);
 #if ENABLE(KJS)
@@ -385,6 +386,7 @@ public:
     DeprecatedString &replace(DeprecatedChar, DeprecatedChar);
 
     DeprecatedString &append(const DeprecatedChar *, unsigned length);
+    DeprecatedString &append(const UChar *, unsigned length);
     DeprecatedString &append(const char *, unsigned length);
     DeprecatedString &insert(unsigned position, const DeprecatedChar *, unsigned length);
     DeprecatedString &prepend(const DeprecatedChar *, unsigned length);
@@ -579,6 +581,7 @@ inline bool operator>=(const char *chs, const DeprecatedString &qs)
 class DeprecatedConstString : private DeprecatedString {
 public:
     DeprecatedConstString(const DeprecatedChar *, unsigned);
+    DeprecatedConstString(const UChar *, unsigned);
     ~DeprecatedConstString();
     const DeprecatedString &string() const { return *this; }
 };

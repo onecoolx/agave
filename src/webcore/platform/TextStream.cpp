@@ -51,7 +51,7 @@ TextStream& TextStream::operator<<(char c)
         m_byteArray.append(c);
 
     if (m_string)
-        m_string->append(DeprecatedChar(c));
+        m_string->append(c);
     return *this;
 }
 

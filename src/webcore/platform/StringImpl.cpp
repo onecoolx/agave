@@ -289,14 +289,14 @@ static Length parseLength(const UChar* m_data, unsigned int m_length)
         ++i;
 
     bool ok;
-    int r = DeprecatedConstString(reinterpret_cast<const DeprecatedChar*>(m_data), i).string().toInt(&ok);
+    int r = DeprecatedConstString(m_data, i).string().toInt(&ok);
 
     /* Skip over any remaining digits, we are not that accurate (5.5% => 5%) */
     while (i < m_length && (Unicode::isDigit(m_data[i]) || m_data[i] == '.'))
         ++i;
 
     /* IE Quirk: Skip any whitespace (20 % => 20%) */
-    while (i < m_length && DeprecatedChar(m_data[i]).isSpace())
+    while (i < m_length && isSpace(m_data[i]))
         ++i;
 
     if (ok) {
@@ -335,7 +335,7 @@ Length* StringImpl::toCoordsArray(int& len) const
         else
             spacified[i] = cc;
     }
-    DeprecatedString str(reinterpret_cast<const DeprecatedChar*>(spacified), m_length);
+    DeprecatedString str(spacified, m_length);
     deleteUCharVector(spacified);
 
     str = str.simplifyWhiteSpace();
@@ -358,7 +358,7 @@ Length* StringImpl::toCoordsArray(int& len) const
 
 Length* StringImpl::toLengthArray(int& len) const
 {
-    DeprecatedString str(reinterpret_cast<const DeprecatedChar*>(m_data), m_length);
+    DeprecatedString str(m_data, m_length);
     str = str.simplifyWhiteSpace();
     if (!str.length()) {
         len = 1;
@@ -623,7 +623,7 @@ int StringImpl::toInt(bool* ok) const
         if (!Unicode::isDigit(m_data[i]))
             break;
     
-    return DeprecatedConstString(reinterpret_cast<const DeprecatedChar*>(m_data), i).string().toInt(ok);
+    return DeprecatedConstString(m_data, i).string().toInt(ok);
 }
 
 int64_t StringImpl::toInt64(bool* ok) const
@@ -644,7 +644,7 @@ int64_t StringImpl::toInt64(bool* ok) const
         if (!Unicode::isDigit(m_data[i]))
             break;
     
-    return DeprecatedConstString(reinterpret_cast<const DeprecatedChar*>(m_data), i).string().toInt64(ok);
+    return DeprecatedConstString(m_data, i).string().toInt64(ok);
 }
 
 uint64_t StringImpl::toUInt64(bool* ok) const
@@ -661,7 +661,7 @@ uint64_t StringImpl::toUInt64(bool* ok) const
         if (!Unicode::isDigit(m_data[i]))
             break;
     
-    return DeprecatedConstString(reinterpret_cast<const DeprecatedChar*>(m_data), i).string().toUInt64(ok);
+    return DeprecatedConstString(m_data, i).string().toUInt64(ok);
 }
 
 double StringImpl::toDouble(bool* ok) const
