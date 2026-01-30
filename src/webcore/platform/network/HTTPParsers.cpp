@@ -186,4 +186,50 @@ String extractCharsetFromMediaType(const String& mediaType)
     return String();
 }
 
+ContentDispositionType contentDispositionType(const String& contentDisposition)
+{
+    if (contentDisposition.isEmpty())
+        return ContentDispositionNone;
+
+    Vector<String> parameters = contentDisposition.split(';');
+
+    String dispositionType = parameters[0];
+    dispositionType.stripWhiteSpace();
+
+    if (equalIgnoringCase(dispositionType, "inline"))
+        return ContentDispositionInline;
+
+    // Some broken sites just send bogus headers like
+    //
+    //   Content-Disposition: ; filename="file"
+    //   Content-Disposition: filename="file"
+    //   Content-Disposition: name="file"
+    //
+    // without a disposition token... screen those out.
+    if (!isRFC2616Token(dispositionType))
+        return ContentDispositionNone;
+
+    // We have a content-disposition of "attachment" or unknown.
+    // RFC 2183, section 2.8 says that an unknown disposition
+    // value should be treated as "attachment"
+    return ContentDispositionAttachment;
+}
+
+// See RFC 2616, Section 2.2.
+bool isRFC2616Token(const String& characters)
+{
+    if (characters.isEmpty())
+        return false;
+    for (unsigned i = 0; i < characters.length(); ++i) {
+        UChar c = characters[i];
+        if (c >= 0x80 || c <= 0x1F || c == 0x7F
+                || c == '(' || c == ')' || c == '<' || c == '>' || c == '@'
+                || c == ',' || c == ';' || c == ':' || c == '\\' || c == '"'
+                || c == '/' || c == '[' || c == ']' || c == '?' || c == '='
+                || c == '{' || c == '}' || c == ' ' || c == '\t')
+            return false;
+    }
+    return true;
+}
+
 } /* namespace WebCore */

@@ -34,6 +34,16 @@ namespace WebCore {
     class String;
     class KURL;
 
+    typedef enum {
+        ContentDispositionNone,
+        ContentDispositionInline,
+        ContentDispositionAttachment,
+        ContentDispositionOther
+    } ContentDispositionType;
+
+    ContentDispositionType contentDispositionType(const String&);
+    bool isRFC2616Token(const String&);
+
     bool parseHTTPRefresh(const String& refresh, bool fromHttpEquivMeta, double& delay, String& url);
     String filenameFromHTTPContentDisposition(const String&); 
     String extractMIMETypeFromMediaType(const String&);
