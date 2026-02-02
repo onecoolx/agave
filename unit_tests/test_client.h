@@ -38,6 +38,7 @@
 #include "Frame.h"
 #include "HTTPParsers.h"
 #include "MIMETypeRegistry.h"
+#include "ProgressTracker.h"
 
 using namespace WebCore;
 using namespace WTF;
@@ -183,7 +184,7 @@ public:
 class FrameLoaderClientTest : public FrameLoaderClient
 {
 public:
-    FrameLoaderClientTest() : m_frame(0), m_firstData(false) {}
+    FrameLoaderClientTest() : m_frame(0), m_firstData(false), m_loadStart(false), m_progress(0) {}
     virtual ~FrameLoaderClientTest() {}
 
     virtual void frameLoaderDestroyed() { delete this; }
@@ -312,9 +313,20 @@ public:
 
     virtual void setMainFrameDocumentReady(bool) {}
 
-    virtual void postProgressStartedNotification() {}
-    virtual void postProgressEstimateChangedNotification() {}
-    virtual void postProgressFinishedNotification() {}
+    virtual void postProgressStartedNotification()
+    {
+        m_loadStart = true;
+        m_progress = 0;
+    }
+
+    virtual void postProgressEstimateChangedNotification()
+    {
+        m_progress = (uint32_t)(m_frame->page()->progress()->estimatedProgress() * 100);
+    }
+
+    virtual void postProgressFinishedNotification()
+    {
+    }
 
     virtual void startDownload(const ResourceRequest&) {}
 
@@ -445,11 +457,15 @@ public:
 
     virtual void registerForIconNotification(bool listen = true) {}
 public:
-    void setFrame (Frame* frame) {m_frame = frame;}
+    void setFrame (Frame* frame) { m_frame = frame; }
+    bool loadStart(void) { return m_loadStart; }
+    uint32_t progress(void) { return m_progress; }
 private:
     Frame* m_frame;
     bool m_firstData;
     ResourceResponse m_response;
+    bool m_loadStart;
+    uint32_t m_progress;
 };
 
 #endif

@@ -36,6 +36,8 @@
 #include "Document.h"
 #include "HTMLNames.h"
 #include "HTMLInputElement.h"
+#include "HTMLSelectElement.h"
+#include "HTMLTextAreaElement.h"
 #include "HTMLFormElement.h"
 #include "Page.h"
 #include "Frame.h"
@@ -70,6 +72,8 @@ public:
     Frame* mainframe(void) const;
     void loadHtml(const char* str, const char* rurl);
     void stop(void);
+
+    static void waitForDocumentComplete(TestWebView* view);
 private:
     OwnPtr<WebViewPrivate> d;
 };

@@ -143,6 +143,16 @@ void TestWebView::scrollRect(int sx, int sy, int x, int y, int width, int height
     updateRect(x, y, width, height);
 }
 
+void TestWebView::waitForDocumentComplete(TestWebView* view)
+{
+    FrameLoader* loader = view->mainframe()->loader();
+    FrameLoaderClientTest* client = (FrameLoaderClientTest*)loader->client();
+    while (client->loadStart() && client->progress() < 100) {
+        Test_EventDispatchOnce();
+        usleep(100);
+    }
+}
+
 void Test_Init()
 {
     ASSERT_EQ(MC_STATUS_SUCCESS, macross_initialize(PIXEL_FORMAT_RGBA32, WIDTH, HEIGHT));

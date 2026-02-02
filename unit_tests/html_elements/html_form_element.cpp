@@ -52,21 +52,18 @@ protected:
         delete view;
     }
 
+    HTMLElement* getElementById(const String& id)
+    {
+        Document* doc = view->mainframe()->document();
+        Element* element = doc->getElementById(id);
+        return element ? (HTMLElement*)element : nullptr;
+    }
+
     HTMLFormElement* getFormById(const String& id)
     {
         Document* doc = view->mainframe()->document();
         Element* element = doc->getElementById(id);
         return element ? (HTMLFormElement*)element : nullptr;
-    }
-
-    void waitForDocumentComplete()
-    {
-        int i = 1000;
-        while (--i) {
-            Test_EventDispatchOnce();
-
-            usleep(100);
-        }
     }
 
     void loadTestData()
@@ -94,9 +91,9 @@ protected:
         </html>
         )";
 
-        view->loadHtml(testHtml, "about:blank");
+        view->loadHtml(testHtml, "http://localhost/test");
 
-        waitForDocumentComplete();
+        TestWebView::waitForDocumentComplete(view);
     }
 
     TestWebView* view;
@@ -112,4 +109,50 @@ TEST_F(HTMLFormElementTest, BasicFormProperties)
     EXPECT_EQ(form->method(), "post");
     EXPECT_EQ(form->name(), "myForm");
     EXPECT_EQ(form->enctype(), "application/x-www-form-urlencoded");
+}
+
+TEST_F(HTMLFormElementTest, FormElementAccess)
+{
+
+    HTMLFormElement* form = getFormById("testForm");
+    ASSERT_NE(form, nullptr);
+
+    RefPtr<HTMLCollection> elements = form->elements();
+    EXPECT_GT(elements->length(), 0);
+
+    HTMLInputElement* username = (HTMLInputElement*)getElementById("username");
+    ASSERT_NE(username, nullptr);
+    EXPECT_EQ(username->name(), "username");
+
+    HTMLInputElement* password = (HTMLInputElement*)getElementById("password");
+    ASSERT_NE(password, nullptr);
+    EXPECT_EQ(password->name(), "password");
+}
+
+TEST_F(HTMLFormElementTest, FormDataHandling)
+{
+
+    HTMLFormElement* form = getFormById("testForm");
+    ASSERT_NE(form, nullptr);
+
+    HTMLInputElement* username = (HTMLInputElement*)getElementById("username");
+    username->setValue("testuser");
+
+    HTMLInputElement* password = (HTMLInputElement*)getElementById("password");
+    password->setValue("testpass");
+
+    HTMLInputElement* email = (HTMLInputElement*)getElementById("email");
+    email->setValue("test@example.com");
+
+    HTMLInputElement* remember = (HTMLInputElement*)getElementById("remember");
+    remember->setChecked(true);
+
+    HTMLInputElement* male = (HTMLInputElement*)getElementById("male");
+    male->setChecked(true);
+
+    HTMLSelectElement* country = (HTMLSelectElement*)getElementById("country");
+    country->setValue("us");
+
+    HTMLTextAreaElement* comments = (HTMLTextAreaElement*)getElementById("comments");
+    comments->setValue("This is a test comment");
 }
