@@ -148,6 +148,15 @@ static void global_context_init(void)
 	context_init = true;
 }
 
+void releaseGlobalContext(void)
+{
+    if (context_init) {
+        ps_context_unref(g_context);
+        ps_canvas_unref(g_canvas);
+        context_init = false;
+    }
+}
+
 ps_context* getGlobalContext(void)
 {
 	if (!context_init)

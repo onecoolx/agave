@@ -12,6 +12,7 @@
 #include "SharedTimer.h"
 #include <wtf/FastMalloc.h>
 
+#include "FontCache.h"
 #include "KURL.h"
 #include "ResourceHandle.h"
 #include "ResourceRequest.h"
@@ -46,6 +47,7 @@ extern void setPixelFormat(_mc_format format);
 extern void setScreenSize(int w, int h);
 extern ps_color_format pixelFormat(void);
 extern void globalDataSave(void);
+extern void releaseGlobalContext(void);
 }
 
 using namespace WTF;
@@ -900,11 +902,13 @@ MC_STATUS macross_initialize(MC_PIXEL_FORMAT format, int w, int h)
 void macross_shutdown(void)
 {
 	if (g_initialize) {
+        FontCache::releaseAllFontCacheData();
 		WebCore::eventShatdown();
 		globalDataSave();
 #if ENABLE(QJS)
         mescal::_global_shutdown();
 #endif
+        releaseGlobalContext(); 
 		ps_shutdown();
 		g_initialize = false;
 	}

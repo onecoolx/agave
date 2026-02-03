@@ -22,6 +22,12 @@ ExternalProject_Add(
     "${PROJ_ROOT}/packages/patchs/${PICASSO_NAME}-${PICASSO_VERSION}/src.cmake" "${PROJ_OUT}/${PICASSO_NAME}/src/${PICASSO_NAME}/src/src.cmake"
   && ${CMAKE_COMMAND} -E copy
     "${PROJ_ROOT}/packages/patchs/${PICASSO_NAME}-${PICASSO_VERSION}/defines.cmake" "${PROJ_OUT}/${PICASSO_NAME}/src/${PICASSO_NAME}/build/defines.cmake"
+  && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${PICASSO_NAME}-${PICASSO_VERSION}/picasso_font_api.cpp" "${PROJ_OUT}/${PICASSO_NAME}/src/${PICASSO_NAME}/src/picasso_font_api.cpp"
+  && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${PICASSO_NAME}-${PICASSO_VERSION}/gfx_font_load_freetype2.cpp" "${PROJ_OUT}/${PICASSO_NAME}/src/${PICASSO_NAME}/src/gfx/gfx_font_load_freetype2.cpp"
+  && ${CMAKE_COMMAND} -E copy
+    "${PROJ_ROOT}/packages/patchs/${PICASSO_NAME}-${PICASSO_VERSION}/gfx_font_adapter_freetype2.cpp" "${PROJ_OUT}/${PICASSO_NAME}/src/${PICASSO_NAME}/src/gfx/gfx_font_adapter_freetype2.cpp"
   BUILD_IN_SOURCE
   CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
    -DOPT_EXTENSIONS=OFF 

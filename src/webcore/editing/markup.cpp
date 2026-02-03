@@ -36,7 +36,6 @@
 #include "CSSValueKeywords.h"
 #include "Comment.h"
 #include "DeleteButtonController.h"
-#include "DeprecatedStringList.h"
 #include "Document.h"
 #include "DocumentFragment.h"
 #include "DocumentType.h"
@@ -919,7 +918,7 @@ String createMarkup(const Node* node, EChildrenOnly includeChildren, Vector<Node
     return String::adopt(result);
 }
 
-static void fillContainerFromString(ContainerNode* paragraph, const DeprecatedString& string)
+static void fillContainerFromString(ContainerNode* paragraph, const String& string)
 {
     Document* document = paragraph->document();
 
@@ -932,34 +931,35 @@ static void fillContainerFromString(ContainerNode* paragraph, const DeprecatedSt
 
     ASSERT(string.find('\n') == -1);
 
-    DeprecatedStringList tabList = DeprecatedStringList::split('\t', string, true);
-    DeprecatedString tabText = "";
+    Vector<String> tabList = string.split('\t', true);
+    String tabText = "";
+
     bool first = true;
-    while (!tabList.isEmpty()) {
-        DeprecatedString s = tabList.first();
-        tabList.pop_front();
+    size_t numEntries = tabList.size();
+    for (size_t i = 0; i < numEntries; ++i) {
+        const String& s = tabList[i];
 
         // append the non-tab textual part
         if (!s.isEmpty()) {
             if (!tabText.isEmpty()) {
                 paragraph->appendChild(createTabSpanElement(document, tabText), ec);
-                ASSERT(ec == 0);
+                ASSERT(!ec);
                 tabText = "";
             }
-            RefPtr<Node> textNode = document->createTextNode(stringWithRebalancedWhitespace(s, first, tabList.isEmpty()));
+            RefPtr<Node> textNode = document->createTextNode(stringWithRebalancedWhitespace(s, first, i + 1 == numEntries));
             paragraph->appendChild(textNode.release(), ec);
-            ASSERT(ec == 0);
+            ASSERT(!ec);
         }
 
         // there is a tab after every entry, except the last entry
         // (if the last character is a tab, the list gets an extra empty entry)
-        if (!tabList.isEmpty())
-            tabText += '\t';
+        if (i + 1 != numEntries)
+            tabText.append('\t');
         else if (!tabText.isEmpty()) {
             paragraph->appendChild(createTabSpanElement(document, tabText), ec);
-            ASSERT(ec == 0);
+            ASSERT(!ec);
         }
-        
+
         first = false;
     }
 }
@@ -982,7 +982,7 @@ PassRefPtr<DocumentFragment> createFragmentFromText(Range* context, const String
     if (text.isEmpty())
         return fragment.release();
 
-    DeprecatedString string = text.deprecatedString();
+    String string = text;
     string.replace("\r\n", "\n");
     string.replace('\r', '\n');
 
@@ -1009,23 +1009,23 @@ PassRefPtr<DocumentFragment> createFragmentFromText(Range* context, const String
     }
 
     // Break string into paragraphs. Extra line breaks turn into empty paragraphs.
-    DeprecatedStringList list = DeprecatedStringList::split('\n', string, true); // true gets us empty strings in the list
-    while (!list.isEmpty()) {
-        DeprecatedString s = list.first();
-        list.pop_front();
+    Vector<String> list = string.split('\n', true); // true gets us empty strings in the list
+    size_t numLines = list.size();
+    for (size_t i = 0; i < numLines; ++i) {
+        const String& s = list[i];
 
         RefPtr<Element> element;
-        if (s.isEmpty() && list.isEmpty()) {
+        if (s.isEmpty() && i + 1 == numLines) {
             // For last line, use the "magic BR" rather than a P.
             element = document->createElementNS(xhtmlNamespaceURI, "br", ec);
             ASSERT(ec == 0);
-            element->setAttribute(classAttr, AppleInterchangeNewline);            
+            element->setAttribute(classAttr, AppleInterchangeNewline);
         } else {
             element = createDefaultParagraphElement(document);
             fillContainerFromString(element.get(), s);
         }
         fragment->appendChild(element.release(), ec);
-        ASSERT(ec == 0);
+        ASSERT(!ec);
     }
     return fragment.release();
 }

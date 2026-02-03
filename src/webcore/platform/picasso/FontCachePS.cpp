@@ -20,6 +20,11 @@ void FontCache::platformInit()
     notImplemented();
 }
 
+void FontCache::platformShutdown()
+{
+    notImplemented();
+}
+
 const FontData* FontCache::getFontDataForCharacters(const Font& font, const UChar* characters, int length)
 {
     notImplemented();

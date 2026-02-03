@@ -50,7 +50,9 @@ public:
     
     // Also implemented by the platform.
     static void platformInit();
+    static void platformShutdown();
 
+    static void releaseAllFontCacheData();
 
     static bool fontExists(const FontDescription&, const AtomicString& family);
 

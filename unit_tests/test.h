@@ -32,7 +32,9 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#include "FontCache.h"
 #include "WidgetView.h"
+#include "NodeList.h"
 #include "Document.h"
 #include "HTMLNames.h"
 #include "HTMLInputElement.h"
@@ -45,10 +47,12 @@
 #include "FrameView.h"
 #include "FrameLoader.h"
 #include "DocumentLoader.h"
+#include "DocumentFragment.h"
 #include "Editor.h"
 #include "EventHandler.h"
 #include "GraphicsContext.h"
 #include "Settings.h"
+#include "markup.h"
 
 #include "macross.h"
 

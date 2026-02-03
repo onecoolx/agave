@@ -101,6 +101,7 @@ struct FontPlatformDataCacheKeyTraits : WTF::GenericHashTraits<FontPlatformDataC
 
 typedef HashMap<FontPlatformDataCacheKey, FontPlatformData*, FontPlatformDataCacheKeyHash, FontPlatformDataCacheKeyTraits> FontPlatformDataCache;
 
+// DEBUG: move to global data!
 static FontPlatformDataCache* gFontPlatformDataCache = 0;
 
 static const AtomicString& alternateFamilyName(const AtomicString& familyName)
@@ -194,6 +195,7 @@ struct FontDataCacheKeyTraits : WTF::GenericHashTraits<FontPlatformData> {
 
 typedef HashMap<FontPlatformData, FontData*, FontDataCacheKeyHash, FontDataCacheKeyTraits> FontDataCache;
 
+// DEBUG: move to global data!
 static FontDataCache* gFontDataCache = 0;
 
 FontData* FontCache::getCachedFontData(const FontPlatformData* platformData)
@@ -211,6 +213,22 @@ FontData* FontCache::getCachedFontData(const FontPlatformData* platformData)
     }
         
     return result;
+}
+
+void FontCache::releaseAllFontCacheData()
+{
+    if (gFontDataCache) {
+        deleteAllValues(*gFontDataCache);
+        delete gFontDataCache;
+        gFontDataCache = NULL;
+    }
+
+    if (gFontPlatformDataCache) {
+        platformShutdown();
+        deleteAllValues(*gFontPlatformDataCache);
+        delete gFontPlatformDataCache;
+        gFontPlatformDataCache = NULL;
+    }
 }
 
 const FontData* FontCache::getFontData(const Font& font, int& familyIndex, FontSelector* fontSelector)
