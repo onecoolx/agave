@@ -90,21 +90,16 @@ void FrameLoaderClientMC::dispatchDecidePolicyForMIMEType(FramePolicyFunction po
     if (!policyFunction || !m_frame)
         return;
 
-    switch (m_response.httpStatusCode()) {
-        case 205:
-            // FIXME: a 205 response requires that the requester reset the document view.
-            // Fallthrough
-        case 204:
-            (m_frame->loader()->*policyFunction)(PolicyIgnore);
-            return;
-    }
-
+    /* Note: not support download
     if (WebCore::contentDispositionType(m_response.httpHeaderField("Content-Disposition")) == WebCore::ContentDispositionAttachment)
         (m_frame->loader()->*policyFunction)(PolicyDownload);
     else if (canShowMIMEType(m_response.mimeType()))
         (m_frame->loader()->*policyFunction)(PolicyUse);
     else
         (m_frame->loader()->*policyFunction)(PolicyDownload);
+    */
+
+    (m_frame->loader()->*policyFunction)(PolicyUse);
 }
 
 void FrameLoaderClientMC::dispatchDecidePolicyForNewWindowAction(FramePolicyFunction policyFunction, const NavigationAction&,
