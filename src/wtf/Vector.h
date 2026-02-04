@@ -765,6 +765,16 @@ namespace WTF {
     }
 
     template<typename T, size_t inlineCapacity>
+    void unrefAllValues(const Vector<T, inlineCapacity>& collection)
+    {
+        typedef typename Vector<T, inlineCapacity>::const_iterator iterator;
+        iterator end = collection.end();
+        for (iterator it = collection.begin(); it != end; ++it)
+            (*it)->deref();
+    }
+
+
+    template<typename T, size_t inlineCapacity>
     inline void swap(Vector<T, inlineCapacity>& a, Vector<T, inlineCapacity>& b)
     {
         a.swap(b);

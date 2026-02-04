@@ -52,6 +52,7 @@
 #include "EventHandler.h"
 #include "GraphicsContext.h"
 #include "Settings.h"
+#include "Text.h"
 #include "markup.h"
 
 #include "macross.h"
