@@ -58,19 +58,23 @@ namespace WTF {
 
         void swap(Deque<T, inlineCapacity>&);
 
+        // DEBUG: Deprecated compatible, remove feature!
+
+        // Get element at position i with bounds checking
         T& at(size_t i) 
         { 
             ASSERT(i < size());
-            return m_buffer.buffer()[m_start + i]; 
+            return m_buffer.buffer()[getPhysicalIndex(i)];
         }
         const T& at(size_t i) const 
         {
             ASSERT(i < size());
-            return m_buffer.buffer()[m_start + i]; 
+            return m_buffer.buffer()[getPhysicalIndex(i)];
         }
 
         T& operator[](size_t i) { return at(i); }
         const T& operator[](size_t i) const { return at(i); }
+        // DEBUG
 
         size_t size() const { return m_start <= m_end ? m_end - m_start : m_end + m_buffer.capacity() - m_start; }
         bool isEmpty() const { return m_start == m_end; }
@@ -94,10 +98,25 @@ namespace WTF {
         template<typename U> void prepend(const U&);
         void removeFirst();
         void remove(iterator&);
-        // DEBUG: for Deprecated compatable only, remove feature!
-        void remove(reverse_iterator&);
-
         void remove(const_iterator&);
+
+        // DEBUG: for Deprecated compatable only, remove feature!
+
+        // Helper function to convert logical index to physical buffer index
+        size_t getPhysicalIndex(size_t logicalIndex) const
+        {
+            ASSERT(logicalIndex < size());
+            size_t capacity = m_buffer.capacity();
+            size_t physicalIndex = m_start + logicalIndex;
+            if (physicalIndex >= capacity) {
+                physicalIndex -= capacity;
+            }
+            return physicalIndex;
+        }
+
+        void remove(reverse_iterator&);
+        void remove(const_reverse_iterator&);
+        // DEBUG:
 
         void clear();
 
@@ -497,7 +516,30 @@ namespace WTF {
     inline void Deque<T, inlineCapacity>::remove(reverse_iterator& it)
     {
         it.checkValidity();
-        remove(it.m_index - 1);
+
+        size_t i = it.m_index;
+        if (i == 0) {
+            i = m_buffer.capacity() - 1;
+        } else {
+            --i;
+        }
+        ASSERT(i < m_buffer.capacity());
+        remove(i);
+    }
+
+    template<typename T, size_t inlineCapacity>
+    inline void Deque<T, inlineCapacity>::remove(const_reverse_iterator& it)
+    {
+        it.checkValidity();
+
+        size_t i = it.m_index;
+        if (i == 0) {
+            i = m_buffer.capacity() - 1;
+        } else {
+            --i;
+        }
+        ASSERT(i < m_buffer.capacity());
+        remove(i);
     }
 
     template<typename T, size_t inlineCapacity>
