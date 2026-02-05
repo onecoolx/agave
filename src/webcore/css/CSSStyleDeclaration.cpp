@@ -25,8 +25,8 @@
 #include "CSSProperty.h"
 #include "CSSPropertyNames.h"
 #include "CSSRule.h"
-#include "DeprecatedValueList.h"
 #include <wtf/ASCIICType.h>
+#include <wtf/Deque.h>
 
 using namespace WTF;
 
@@ -149,8 +149,7 @@ void CSSStyleDeclaration::diff(CSSMutableStyleDeclaration* style) const
         return;
 
     Vector<int> properties;
-    DeprecatedValueListConstIterator<CSSProperty> end;
-    for (DeprecatedValueListConstIterator<CSSProperty> it(style->valuesIterator()); it != end; ++it) {
+    for (Deque<CSSProperty>::const_iterator it = style->valuesIterator(); it != style->valuesEndIterator(); ++it) {
         const CSSProperty& property = *it;
         RefPtr<CSSValue> value = getPropertyCSSValue(property.id());
         if (value && (value->cssText() == property.value()->cssText()))
@@ -163,7 +162,7 @@ void CSSStyleDeclaration::diff(CSSMutableStyleDeclaration* style) const
 
 PassRefPtr<CSSMutableStyleDeclaration> CSSStyleDeclaration::copyPropertiesInSet(const int* set, unsigned length) const
 {
-    DeprecatedValueList<CSSProperty> list;
+    Deque<CSSProperty> list;
     for (unsigned i = 0; i < length; i++) {
         RefPtr<CSSValue> value = getPropertyCSSValue(set[i]);
         if (value)

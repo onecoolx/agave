@@ -725,8 +725,7 @@ bool Editor::selectionStartHasStyle(CSSStyleDeclaration* style) const
     RefPtr<CSSMutableStyleDeclaration> mutableStyle = style->makeMutable();
     
     bool match = true;
-    DeprecatedValueListConstIterator<CSSProperty> end;
-    for (DeprecatedValueListConstIterator<CSSProperty> it = mutableStyle->valuesIterator(); it != end; ++it) {
+    for (Deque<CSSProperty>::const_iterator it = mutableStyle->valuesIterator(); it != mutableStyle->valuesEndIterator(); ++it) {
         int propertyID = (*it).id();
         if (!equalIgnoringCase(mutableStyle->getPropertyValue(propertyID), selectionStyle->getPropertyValue(propertyID))) {
             match = false;

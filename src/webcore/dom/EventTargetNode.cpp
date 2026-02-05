@@ -140,12 +140,12 @@ void EventTargetNode::removeEventListener(const AtomicString &eventType, EventLi
     
     RegisteredEventListener rl(eventType, listener, useCapture);
     
-    RegisteredEventListenerList::Iterator end = m_regdListeners->end();
-    for (RegisteredEventListenerList::Iterator it = m_regdListeners->begin(); it != end; ++it)
+    RegisteredEventListenerList::iterator end = m_regdListeners->end();
+    for (RegisteredEventListenerList::iterator it = m_regdListeners->begin(); it != end; ++it)
         if (*(*it).get() == rl) {
             (*it)->setRemoved(true);
             
-            it = m_regdListeners->remove(it);
+            m_regdListeners->remove(it);
             // removed last
             if (m_regdListeners->isEmpty() && !inDocument())
                 document()->unregisterDisconnectedNodeWithEventListeners(this);
@@ -168,9 +168,9 @@ void EventTargetNode::handleLocalEvents(Event *evt, bool useCapture)
         return;
     
     RegisteredEventListenerList listenersCopy = *m_regdListeners;
-    RegisteredEventListenerList::Iterator end = listenersCopy.end();
+    RegisteredEventListenerList::iterator end = listenersCopy.end();
 
-    for (RegisteredEventListenerList::Iterator it = listenersCopy.begin(); it != end; ++it)
+    for (RegisteredEventListenerList::iterator it = listenersCopy.begin(); it != end; ++it)
         if ((*it)->eventType() == evt->type() && (*it)->useCapture() == useCapture && !(*it)->removed())
             (*it)->listener()->handleEvent(evt, false);
 }
@@ -583,10 +583,10 @@ void EventTargetNode::removeHTMLEventListener(const AtomicString &eventType)
     if (!m_regdListeners) // nothing to remove
         return;
     
-    RegisteredEventListenerList::Iterator end = m_regdListeners->end();
-    for (RegisteredEventListenerList::Iterator it = m_regdListeners->begin(); it != end; ++it)
+    RegisteredEventListenerList::iterator end = m_regdListeners->end();
+    for (RegisteredEventListenerList::iterator it = m_regdListeners->begin(); it != end; ++it)
         if ((*it)->eventType() == eventType && (*it)->listener()->isHTMLEventListener()) {
-            it = m_regdListeners->remove(it);
+            m_regdListeners->remove(it);
             // removed last
             if (m_regdListeners->isEmpty() && !inDocument())
                 document()->unregisterDisconnectedNodeWithEventListeners(this);
@@ -607,8 +607,8 @@ EventListener *EventTargetNode::getHTMLEventListener(const AtomicString &eventTy
     if (!m_regdListeners)
         return 0;
     
-    RegisteredEventListenerList::Iterator end = m_regdListeners->end();
-    for (RegisteredEventListenerList::Iterator it = m_regdListeners->begin(); it != end; ++it)
+    RegisteredEventListenerList::iterator end = m_regdListeners->end();
+    for (RegisteredEventListenerList::iterator it = m_regdListeners->begin(); it != end; ++it)
         if ((*it)->eventType() == eventType && (*it)->listener()->isHTMLEventListener())
             return (*it)->listener();
     return 0;
@@ -647,7 +647,7 @@ void EventTargetNode::defaultEventHandler(Event* event)
 void EventTargetNode::dump(TextStream* stream, DeprecatedString ind) const
 {
     if (m_regdListeners)
-        *stream << " #regdListeners=" << m_regdListeners->count(); // ### more detail
+        *stream << " #regdListeners=" << m_regdListeners->size(); // ### more detail
     
     Node::dump(stream,ind);
 }

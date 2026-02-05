@@ -28,13 +28,13 @@
 #include "Attr.h"
 #include "Color.h"
 #include "DeprecatedPtrList.h"
-#include "DeprecatedValueList.h"
 #include "DocumentMarker.h"
 #include "HTMLCollection.h"
 #include "HTMLFormElement.h"
 #include "KURL.h"
 #include "StringHash.h"
 #include "Timer.h"
+#include <wtf/Deque.h>
 #include <wtf/HashCountedSet.h>
 #include <wtf/ListHashSet.h>
 
@@ -741,7 +741,7 @@ private:
     unsigned short m_listenerTypes;
     RefPtr<StyleSheetList> m_styleSheets;
     
-    typedef DeprecatedValueList<RefPtr<RegisteredEventListener> > RegisteredEventListenerList;
+    typedef Deque<RefPtr<RegisteredEventListener> > RegisteredEventListenerList;
     RegisteredEventListenerList m_windowEventListeners;
 
     typedef HashMap<FormElementKey, Vector<String>, FormElementKeyHash, FormElementKeyHashTraits> FormElementStateMap;

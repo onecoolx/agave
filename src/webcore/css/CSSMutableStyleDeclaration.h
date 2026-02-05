@@ -24,10 +24,12 @@
 #define CSSMutableStyleDeclaration_h
 
 #include "CSSStyleDeclaration.h"
+#include "CSSProperty.h"
 #include "CSSPrimitiveValue.h"
-#include "DeprecatedValueList.h"
 #include "Node.h"
 #include "PlatformString.h"
+
+#include <wtf/Deque.h>
 
 namespace WebCore {
 
@@ -38,7 +40,7 @@ class CSSMutableStyleDeclaration : public CSSStyleDeclaration {
 public:
     CSSMutableStyleDeclaration();
     CSSMutableStyleDeclaration(CSSRule* parentRule);
-    CSSMutableStyleDeclaration(CSSRule* parentRule, const DeprecatedValueList<CSSProperty>&);
+    CSSMutableStyleDeclaration(CSSRule* parentRule, const Deque<CSSProperty>&);
     CSSMutableStyleDeclaration(CSSRule* parentRule, const CSSProperty* const *, int numProperties);
 
     CSSMutableStyleDeclaration& operator=(const CSSMutableStyleDeclaration&);
@@ -63,7 +65,8 @@ public:
     virtual PassRefPtr<CSSMutableStyleDeclaration> copy() const;
     virtual PassRefPtr<CSSMutableStyleDeclaration> makeMutable();
 
-    DeprecatedValueListConstIterator<CSSProperty> valuesIterator() const { return m_values.begin(); }
+    Deque<CSSProperty>::const_iterator valuesIterator() const { return m_values.begin(); }
+    Deque<CSSProperty>::const_iterator valuesEndIterator() const { return m_values.end(); }
 
     bool setProperty(int propertyID, int value, bool important = false, bool notifyChanged = true);
     bool setProperty(int propertyID, const String& value, bool important, bool notifyChanged, ExceptionCode&);
@@ -107,7 +110,7 @@ private:
     String getLayeredShorthandValue(const int* properties, unsigned number) const;
     String get4Values(const int* properties) const;
  
-    DeprecatedValueList<CSSProperty> m_values;
+    Deque<CSSProperty> m_values;
     Node* m_node;
 };
 

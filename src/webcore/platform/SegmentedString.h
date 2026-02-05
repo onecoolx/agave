@@ -22,8 +22,8 @@
 #ifndef SegmentedString_h
 #define SegmentedString_h
 
-#include "DeprecatedValueList.h"
 #include "PlatformString.h"
+#include <wtf/Deque.h>
 
 namespace WebCore {
 
@@ -127,7 +127,7 @@ private:
     UChar m_pushedChar2;
     SegmentedSubstring m_currentString;
     const UChar* m_currentChar;
-    DeprecatedValueList<SegmentedSubstring> m_substrings;
+    Deque<SegmentedSubstring> m_substrings;
     bool m_composite;
 };
 

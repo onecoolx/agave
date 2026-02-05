@@ -48,7 +48,7 @@ CSSMutableStyleDeclaration::CSSMutableStyleDeclaration(CSSRule* parent)
 {
 }
 
-CSSMutableStyleDeclaration::CSSMutableStyleDeclaration(CSSRule* parent, const DeprecatedValueList<CSSProperty>& values)
+CSSMutableStyleDeclaration::CSSMutableStyleDeclaration(CSSRule* parent, const Deque<CSSProperty>& values)
     : CSSStyleDeclaration(parent)
     , m_values(values)
     , m_node(0)
@@ -253,8 +253,7 @@ String CSSMutableStyleDeclaration::getShorthandValue(const int* properties, int 
 
 PassRefPtr<CSSValue> CSSMutableStyleDeclaration::getPropertyCSSValue(int propertyID) const
 {
-    DeprecatedValueListConstIterator<CSSProperty> end;
-    for (DeprecatedValueListConstIterator<CSSProperty> it = m_values.fromLast(); it != end; --it) {
+    for (Deque<CSSProperty>::const_reverse_iterator it = m_values.rbegin(); it != m_values.rend(); ++it) {
         if (propertyID == (*it).m_id)
             return (*it).value();
     }
@@ -431,8 +430,7 @@ String CSSMutableStyleDeclaration::removeProperty(int propertyID, bool notifyCha
 
     String value;
 
-    DeprecatedValueListIterator<CSSProperty> end;
-    for (DeprecatedValueListIterator<CSSProperty> it = m_values.fromLast(); it != end; --it) {
+    for (Deque<CSSProperty>::reverse_iterator it = m_values.rbegin(); it != m_values.rend(); ++it) {
         if (propertyID == (*it).m_id) {
             if (returnText)
                 value = (*it).value()->cssText();
@@ -474,8 +472,7 @@ void CSSMutableStyleDeclaration::setChanged(StyleChangeType changeType)
 
 bool CSSMutableStyleDeclaration::getPropertyPriority(int propertyID) const
 {
-    DeprecatedValueListConstIterator<CSSProperty> end;
-    for (DeprecatedValueListConstIterator<CSSProperty> it = m_values.begin(); it != end; ++it) {
+    for (Deque<CSSProperty>::const_iterator it = m_values.begin(); it != m_values.end(); ++it) {
         if (propertyID == (*it).id())
             return (*it).isImportant();
     }
@@ -484,18 +481,16 @@ bool CSSMutableStyleDeclaration::getPropertyPriority(int propertyID) const
 
 int CSSMutableStyleDeclaration::getPropertyShorthand(int propertyID) const
 {
-    DeprecatedValueListConstIterator<CSSProperty> end;
-    for (DeprecatedValueListConstIterator<CSSProperty> it = m_values.begin(); it != end; ++it) {
+    for (Deque<CSSProperty>::const_iterator it = m_values.begin(); it != m_values.end(); ++it) {
         if (propertyID == (*it).id())
             return (*it).shorthandID();
     }
-    return false;
+    return 0;
 }
 
 bool CSSMutableStyleDeclaration::isPropertyImplicit(int propertyID) const
 {
-    DeprecatedValueListConstIterator<CSSProperty> end;
-    for (DeprecatedValueListConstIterator<CSSProperty> it = m_values.begin(); it != end; ++it) {
+    for (Deque<CSSProperty>::const_iterator it = m_values.begin(); it != m_values.end(); ++it) {
         if (propertyID == (*it).id())
             return (*it).isImplicit();
     }
@@ -590,12 +585,12 @@ void CSSMutableStyleDeclaration::setLengthProperty(int propertyId, const String&
 
 unsigned CSSMutableStyleDeclaration::length() const
 {
-    return m_values.count();
+    return m_values.size();
 }
 
 String CSSMutableStyleDeclaration::item(unsigned i) const
 {
-    if (i >= m_values.count())
+    if (i >= m_values.size())
        return String();
     return getPropertyName(static_cast<CSSPropertyID>(m_values[i].id()));
 }
@@ -607,8 +602,7 @@ String CSSMutableStyleDeclaration::cssText() const
     const CSSProperty* positionXProp = 0;
     const CSSProperty* positionYProp = 0;
 
-    DeprecatedValueListConstIterator<CSSProperty> end;
-    for (DeprecatedValueListConstIterator<CSSProperty> it = m_values.begin(); it != end; ++it) {
+    for (Deque<CSSProperty>::const_iterator it = m_values.begin(); it != m_values.end(); ++it) {
         const CSSProperty& prop = *it;
         if (prop.id() == CSS_PROP_BACKGROUND_POSITION_X)
             positionXProp = &prop;
@@ -652,8 +646,7 @@ void CSSMutableStyleDeclaration::setCssText(const String& text, ExceptionCode& e
 
 void CSSMutableStyleDeclaration::merge(CSSMutableStyleDeclaration* other, bool argOverridesOnConflict)
 {
-    DeprecatedValueListConstIterator<CSSProperty> end;
-    for (DeprecatedValueListConstIterator<CSSProperty> it = other->valuesIterator(); it != end; ++it) {
+    for (Deque<CSSProperty>::const_iterator it = other->valuesIterator(); it != other->valuesEndIterator(); ++it) {
         const CSSProperty& property = *it;
         RefPtr<CSSValue> value = getPropertyCSSValue(property.id());
         if (value) {
@@ -707,7 +700,18 @@ void CSSMutableStyleDeclaration::removePropertiesInSet(const int* set, unsigned 
     for (unsigned i = 0; i < length; i++) {
         RefPtr<CSSValue> value = getPropertyCSSValue(set[i]);
         if (value) {
-            m_values.remove(CSSProperty(set[i], value.release(), false));
+            CSSProperty prop(set[i], value.release(), false);
+            Deque<CSSProperty>::iterator sit = m_values.end();
+            for (Deque<CSSProperty>::iterator it = m_values.begin(); it != m_values.end(); ++it) {
+                if (prop == (*it)) {
+                    sit = it;
+                    break;
+                }
+            }
+            
+            if (sit != m_values.end())
+                m_values.remove(sit);
+
             changed = true;
         }
     }

@@ -912,8 +912,7 @@ void Frame::computeAndSetTypingStyle(CSSStyleDeclaration *style, EditAction edit
 
 static void updateState(CSSMutableStyleDeclaration *desiredStyle, CSSComputedStyleDeclaration *computedStyle, bool& atStart, Frame::TriState& state)
 {
-    DeprecatedValueListConstIterator<CSSProperty> end;
-    for (DeprecatedValueListConstIterator<CSSProperty> it = desiredStyle->valuesIterator(); it != end; ++it) {
+    for (Deque<CSSProperty>::const_iterator it = desiredStyle->valuesIterator(); it != desiredStyle->valuesEndIterator(); ++it) {
         int propertyID = (*it).id();
         String desiredProperty = desiredStyle->getPropertyValue(propertyID);
         String computedProperty = computedStyle->getPropertyValue(propertyID);

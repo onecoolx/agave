@@ -27,9 +27,9 @@
 #include "EventTarget.h"
 #include "Node.h"
 
-namespace WebCore {
+#include <wtf/Deque.h>
 
-template <typename T> class DeprecatedValueList;
+namespace WebCore {
 
 class EventTargetNode : public Node, public EventTarget {
 public:
@@ -100,7 +100,7 @@ private:
     bool dispatchEvent(PassRefPtr<Event>, ExceptionCode&, bool tempEvent, EventTarget* target);
  
 protected:
-    typedef DeprecatedValueList<RefPtr<RegisteredEventListener> > RegisteredEventListenerList;
+    typedef Deque<RefPtr<RegisteredEventListener> > RegisteredEventListenerList;
     RegisteredEventListenerList* m_regdListeners;
 
 private:

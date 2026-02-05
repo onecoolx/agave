@@ -1790,8 +1790,8 @@ void CSSStyleSelector::applyDeclarations(bool applyFirst, bool isImportant,
     if (startIndex == -1) return;
     for (int i = startIndex; i <= endIndex; i++) {
         CSSMutableStyleDeclaration* decl = m_matchedDecls[i];
-        DeprecatedValueListConstIterator<CSSProperty> end;
-        for (DeprecatedValueListConstIterator<CSSProperty> it = decl->valuesIterator(); it != end; ++it) {
+        for (Deque<CSSProperty>::const_iterator it = decl->valuesIterator(); it != decl->valuesEndIterator(); ++it) {
+
             const CSSProperty& current = *it;
             // give special priority to font-xxx, color properties
             if (isImportant == current.isImportant()) {
