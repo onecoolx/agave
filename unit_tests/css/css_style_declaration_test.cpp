@@ -135,6 +135,7 @@ TEST_F(CSSStyleDeclarationTest, Constructors)
     CSSProperty* propArray[] = { new CSSProperty(CSS_PROP_COLOR, new CSSPrimitiveValue(String("blue"), CSSPrimitiveValue::CSS_STRING), false) };
     CSSMutableStyleDeclaration decl4(nullptr, propArray, 1);
     EXPECT_EQ(1u, decl4.length());
+    DELETE_ARRAY_VALUES(propArray, 1);
 }
 
 // Assignment operator test
@@ -306,6 +307,9 @@ TEST_F(CSSStyleDeclarationTest, AddParsedProperties)
 
     decl->addParsedProperties(props, 2);
     EXPECT_EQ(decl->length(), 2u);
+    delete props[0];
+    delete props[1];
+
 }
 
 // Property priority and shorthand ID test

@@ -96,4 +96,11 @@ void Test_Init();
 void Test_Shutdown();
 void Test_EventDispatchOnce();
 
+#define DELETE_ARRAY_VALUES(arr, n) \
+    do {\
+        for (int i = 0; i < (n); i++) { \
+            delete (arr)[i]; \
+        } \
+    } while(0)
+
 #endif

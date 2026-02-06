@@ -12,7 +12,7 @@ set(PROJ_ROOT ${CMAKE_CURRENT_LIST_DIR})
 set(PROJ_OUT ${CMAKE_CURRENT_BINARY_DIR})
 
 set(VERSION_MAJOR 1)
-set(VERSION_MINOR 0)
+set(VERSION_MINOR 2)
 set(VERSION_MICRO 0)
 set(VERSION_INFO ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO})
 
@@ -61,6 +61,7 @@ OPTION_MACRO_DEFINE(OPT_USE_QJS ENABLE_QJS "Build with QuickJS JavaScript engine
 include (${CMAKE_CURRENT_LIST_DIR}/src/src.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/test/test.cmake)
 
+option(OPT_SANITIZE "Build with Sanitizer" OFF)
 option(OPT_UNITTEST "Build unit tests" OFF)
 if (OPT_UNITTEST)
 enable_testing()
