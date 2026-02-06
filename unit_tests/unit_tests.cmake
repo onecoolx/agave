@@ -19,10 +19,6 @@ target_link_libraries(GMock::GMock INTERFACE gmock_main)
 
 file(GLOB_RECURSE TESTS_SOURCES ${PROJ_ROOT}/unit_tests/*.cpp)
 
-#list(REMOVE_ITEM TESTS_SOURCES
-#    ${PROJ_ROOT}/unit_tests/main.cpp
-#)
-
 set(UNIT_TESTS unit_tests)
 
 include_directories(

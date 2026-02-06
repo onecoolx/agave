@@ -56,6 +56,7 @@
 #include "DocumentLoader.h"
 #include "DocumentFragment.h"
 #include "Editor.h"
+#include "EditCommand.h"
 #include "EventHandler.h"
 #include "GraphicsContext.h"
 #include "SegmentedString.h"
