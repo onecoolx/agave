@@ -33,6 +33,12 @@
 #include <gmock/gmock.h>
 
 #include "FontCache.h"
+#include "Font.h"
+#include "FontData.h"
+#include "FontDescription.h"
+#include "FontFamily.h"
+#include "GlyphPageTreeNode.h"
+#include "TextStyle.h"
 #include "WidgetView.h"
 #include "NodeList.h"
 #include "Document.h"
