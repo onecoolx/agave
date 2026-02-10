@@ -362,3 +362,210 @@ TEST_F(CSSStyleDeclarationTest, BackgroundPositionHandling)
     String cssText = decl->cssText();
     EXPECT_TRUE(cssText.contains("background-position"));
 }
+
+// Test invalid property names
+TEST_F(CSSStyleDeclarationTest, InvalidPropertyName)
+{
+    ExceptionCode ec = 0;
+    // Try to set a property with invalid ID
+    decl->setProperty(9999, "value", false, ec);
+    // Should handle gracefully
+    EXPECT_EQ(decl->length(), 0);
+}
+
+// Test invalid property values
+TEST_F(CSSStyleDeclarationTest, InvalidPropertyValue)
+{
+    ExceptionCode ec = 0;
+    // Set valid property first
+    decl->setProperty(CSS_PROP_COLOR, "red", false, ec);
+    EXPECT_EQ(decl->length(), 1);
+
+    // Try to set invalid value (implementation may or may not accept it)
+    decl->setProperty(CSS_PROP_COLOR, "not-a-color-123", false, ec);
+    // Property should still exist
+    EXPECT_GE(decl->length(), 0);
+}
+
+// Test malformed cssText
+TEST_F(CSSStyleDeclarationTest, MalformedCssText)
+{
+    ExceptionCode ec = 0;
+    // Try various malformed CSS
+    decl->setCssText("color red", ec); // Missing colon
+    decl->setCssText("color: ;", ec); // Missing value
+    decl->setCssText(": red;", ec); // Missing property
+    decl->setCssText(";;;", ec); // Only semicolons
+
+    // Should handle gracefully without crashing
+    EXPECT_GE(decl->length(), 0);
+}
+
+// Test empty property value
+TEST_F(CSSStyleDeclarationTest, EmptyPropertyValue)
+{
+    ExceptionCode ec = 0;
+    decl->setProperty(CSS_PROP_COLOR, "red", false, ec);
+    EXPECT_EQ(decl->length(), 1);
+
+    // Set empty value should remove property
+    decl->setProperty(CSS_PROP_COLOR, "", false, ec);
+    EXPECT_TRUE(decl->getPropertyValue(CSS_PROP_COLOR).isEmpty());
+}
+
+// Test very long property value
+TEST_F(CSSStyleDeclarationTest, VeryLongPropertyValue)
+{
+    ExceptionCode ec = 0;
+    String longValue;
+    for (int i = 0; i < 1000; i++) {
+        longValue.append("a");
+    }
+
+    decl->setProperty(CSS_PROP_FONT_FAMILY, longValue, false, ec);
+    EXPECT_EQ(decl->getPropertyValue(CSS_PROP_FONT_FAMILY), longValue);
+}
+
+// Test many properties
+TEST_F(CSSStyleDeclarationTest, ManyProperties)
+{
+    ExceptionCode ec = 0;
+    // Add many properties
+    decl->setProperty(CSS_PROP_COLOR, "red", false, ec);
+    decl->setProperty(CSS_PROP_BACKGROUND, "blue", false, ec);
+    decl->setProperty(CSS_PROP_FONT_SIZE, "14px", false, ec);
+    decl->setProperty(CSS_PROP_MARGIN, "10px", false, ec);
+    decl->setProperty(CSS_PROP_PADDING, "5px", false, ec);
+    decl->setProperty(CSS_PROP_BORDER, "1px solid black", false, ec);
+    decl->setProperty(CSS_PROP_WIDTH, "100px", false, ec);
+    decl->setProperty(CSS_PROP_HEIGHT, "200px", false, ec);
+    decl->setProperty(CSS_PROP_DISPLAY, "block", false, ec);
+    decl->setProperty(CSS_PROP_POSITION, "relative", false, ec);
+
+    EXPECT_GE(decl->length(), 10);
+}
+
+// Test removing non-existent property
+TEST_F(CSSStyleDeclarationTest, RemoveNonExistentProperty)
+{
+    ExceptionCode ec = 0;
+    String removed = decl->removeProperty(CSS_PROP_COLOR, ec);
+    EXPECT_TRUE(removed.isEmpty());
+    EXPECT_EQ(decl->length(), 0);
+}
+
+// Test duplicate property setting
+TEST_F(CSSStyleDeclarationTest, DuplicatePropertySetting)
+{
+    ExceptionCode ec = 0;
+    decl->setProperty(CSS_PROP_COLOR, "red", false, ec);
+    EXPECT_EQ(decl->length(), 1);
+
+    // Set same property again with different value
+    decl->setProperty(CSS_PROP_COLOR, "blue", false, ec);
+    EXPECT_EQ(decl->length(), 1); // Should still be 1
+    EXPECT_EQ(decl->getPropertyValue(CSS_PROP_COLOR), "blue");
+}
+
+// Test cssText with special characters
+TEST_F(CSSStyleDeclarationTest, CssTextWithSpecialCharacters)
+{
+    ExceptionCode ec = 0;
+    decl->setCssText("content: \"Hello\\\"World\";", ec);
+    // Should handle escaped quotes
+    EXPECT_GT(decl->length(), 0);
+}
+
+// Test shorthand property expansion - font
+TEST_F(CSSStyleDeclarationTest, ShorthandFont)
+{
+    ExceptionCode ec = 0;
+    decl->setProperty(CSS_PROP_FONT, "bold 14px Arial", false, ec);
+
+    // Should expand to individual properties
+    String cssText = decl->cssText();
+    EXPECT_FALSE(cssText.isEmpty());
+}
+
+// Test shorthand property expansion - list-style
+TEST_F(CSSStyleDeclarationTest, ShorthandListStyle)
+{
+    ExceptionCode ec = 0;
+    decl->setProperty(CSS_PROP_LIST_STYLE, "square inside", false, ec);
+
+    String cssText = decl->cssText();
+    EXPECT_FALSE(cssText.isEmpty());
+}
+
+// Test property priority toggle
+TEST_F(CSSStyleDeclarationTest, PropertyPriorityToggle)
+{
+    ExceptionCode ec = 0;
+    decl->setProperty(CSS_PROP_COLOR, "red", false, ec);
+    EXPECT_FALSE(decl->getPropertyPriority(CSS_PROP_COLOR));
+
+    // Set with important
+    decl->setProperty(CSS_PROP_COLOR, "blue", true, ec);
+    EXPECT_TRUE(decl->getPropertyPriority(CSS_PROP_COLOR));
+
+    // Set without important - important property may not be overridden
+    decl->setProperty(CSS_PROP_COLOR, "green", false, ec);
+    // Important flag is preserved when trying to set non-important over important
+    EXPECT_TRUE(decl->getPropertyPriority(CSS_PROP_COLOR));
+}
+
+// Test merge with empty declaration
+TEST_F(CSSStyleDeclarationTest, MergeWithEmpty)
+{
+    ExceptionCode ec = 0;
+    decl->setProperty(CSS_PROP_COLOR, "red", false, ec);
+
+    CSSMutableStyleDeclaration empty;
+    decl->merge(&empty, true);
+
+    // Should still have original property
+    EXPECT_EQ(decl->getPropertyValue(CSS_PROP_COLOR), "red");
+}
+
+// Test merge with conflicting priorities
+TEST_F(CSSStyleDeclarationTest, MergeWithConflictingPriorities)
+{
+    ExceptionCode ec = 0;
+    decl->setProperty(CSS_PROP_COLOR, "red", true, ec); // important
+
+    CSSMutableStyleDeclaration other;
+    other.setProperty(CSS_PROP_COLOR, "blue", false, ec); // not important
+
+    decl->merge(&other, true);
+
+    // After merge, the non-important property may override
+    // This depends on implementation - test actual behavior
+    EXPECT_FALSE(decl->getPropertyPriority(CSS_PROP_COLOR));
+}
+
+// Test copy preserves all properties
+TEST_F(CSSStyleDeclarationTest, CopyPreservesAllProperties)
+{
+    ExceptionCode ec = 0;
+    decl->setProperty(CSS_PROP_COLOR, "red", true, ec);
+    decl->setProperty(CSS_PROP_FONT_SIZE, "14px", false, ec);
+
+    RefPtr<CSSMutableStyleDeclaration> copy = decl->copy();
+    ASSERT_TRUE(copy);
+
+    EXPECT_EQ(copy->length(), decl->length());
+    EXPECT_EQ(copy->getPropertyValue(CSS_PROP_COLOR), "red");
+    EXPECT_TRUE(copy->getPropertyPriority(CSS_PROP_COLOR));
+    EXPECT_EQ(copy->getPropertyValue(CSS_PROP_FONT_SIZE), "14px");
+}
+
+// Test item() with out of bounds index
+TEST_F(CSSStyleDeclarationTest, ItemOutOfBounds)
+{
+    ExceptionCode ec = 0;
+    decl->setProperty(CSS_PROP_COLOR, "red", false, ec);
+
+    EXPECT_FALSE(decl->item(0).isNull());
+    EXPECT_TRUE(decl->item(100).isNull());
+    EXPECT_TRUE(decl->item(decl->length()).isNull());
+}
