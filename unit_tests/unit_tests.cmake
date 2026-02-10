@@ -57,7 +57,7 @@ endif()
     ${PROJ_OUT}/
 )
 add_executable(${UNIT_TESTS} ${TESTS_SOURCES})
-target_link_libraries(${UNIT_TESTS} PRIVATE GTest::GTest GMock::GMock ${LIB_NAME} ${LIB_DEPS} picasso2_sw PUBLIC ${SYSTEM_LIBS})
+target_link_libraries(${UNIT_TESTS} PRIVATE ${LIB_NAME} ${LIB_DEPS} picasso2_sw GTest::GTest GMock::GMock PUBLIC ${SYSTEM_LIBS})
 
 if (WIN32)
     add_custom_command(

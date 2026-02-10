@@ -56,8 +56,10 @@ public:
 	MainWindow(QWidget* parent = 0)
 		: QMainWindow(parent, 0)
 		, view(0)
+        , msgTimer(new MsgTimer)
 	{
 		setMouseTracking(true);
+	    msgTimer->start(10);
     	image = QImage(g_width, g_height, QImage::Format_RGB32);
 		image.fill(0xFFFFFFFF);
 		view = on_init(image.bits(), g_width, g_height, g_width*4, this);		
@@ -65,8 +67,7 @@ public:
 
 	virtual ~MainWindow()
 	{
-		on_term(view);
-		macross_shutdown();
+        delete msgTimer;
 	}
 
 	void loadUrl(const char* url)
@@ -94,6 +95,7 @@ protected:
 	void closeEvent(QCloseEvent * event);
 private:
 	MaCrossView* view;
+    MsgTimer* msgTimer;
     QImage image;
 };
 
@@ -101,6 +103,8 @@ inline void MainWindow::closeEvent(QCloseEvent *event)
 {
 	on_term(view);
 	view = 0;
+    delete this;
+    macross_shutdown();
 }
 
 inline void MainWindow::paintEvent(QPaintEvent *event)
@@ -267,8 +271,6 @@ int main(int argc, char* argv[])
 	init_callback();
 
 	QApplication app(argc, argv);
-	MsgTimer * timer = new MsgTimer;
-	timer->start(10);
    	window = new MainWindow;
     window->setWindowTitle("Agave Browser");
 	window->resize(g_width, g_height);

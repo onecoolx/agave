@@ -246,7 +246,7 @@ namespace WTF {
         {
             ASSERT(newCapacity >= m_capacity);
             m_capacity = newCapacity;
-#if PLATFORM(WINCE) || PLATFORM(WIN32)
+#if COMPILER(MSVC)
             if (newCapacity > UINT_MAX / sizeof(T))
 #else
             if (newCapacity > std::numeric_limits<size_t>::max() / sizeof(T))
@@ -456,6 +456,7 @@ namespace WTF {
         void reserveCapacity(size_t newCapacity);
 
         void clear() { shrink(0); }
+        template<typename U> void push_back(const U& u) { append(u); }
 
         template<typename U> void append(const U*, size_t);
         template<typename U> void append(const U&);

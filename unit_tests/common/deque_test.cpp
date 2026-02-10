@@ -28,11 +28,6 @@
 
 #include "test.h"
 
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <random>
-
 using namespace WTF;
 
 // Test basic construction and properties
@@ -761,7 +756,7 @@ TEST(DequeTest, ReverseIteratorRendBehavior)
 
     // rend() points to "one before the first element"
     // We should be able to iterate from rbegin() to rend()
-    std::vector<int> collected;
+    Vector<int> collected;
     for (auto rit = deque.rbegin(); rit != deque.rend(); ++rit) {
         collected.push_back(*rit);
     }

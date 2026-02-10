@@ -106,7 +106,6 @@ struct UCharBufferTranslator {
         if (strLength != bufLength)
             return false;
 
-#if PLATFORM(ARM)
         const UChar* strChars = str->characters();
         const UChar* bufChars = buf.s;
 
@@ -115,23 +114,6 @@ struct UCharBufferTranslator {
                 return false;
         }
         return true;
-#else
-        /* Do it 4-bytes-at-a-time on architectures where it's safe */
-        const uint32_t* strChars = reinterpret_cast<const uint32_t*>(str->characters());
-        const uint32_t* bufChars = reinterpret_cast<const uint32_t*>(buf.s);
-        
-        unsigned halfLength = strLength >> 1;
-        for (unsigned i = 0; i != halfLength; ++i) {
-            if (*strChars++ != *bufChars++)
-                return false;
-        }
-        
-        if (strLength & 1 && 
-            *reinterpret_cast<const uint16_t *>(strChars) != *reinterpret_cast<const uint16_t *>(bufChars))
-            return false;
-        
-        return true;
-#endif
     }
 
     static void translate(StringImpl*& location, const UCharBuffer& buf, unsigned hash)

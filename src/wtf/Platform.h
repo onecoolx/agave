@@ -88,9 +88,6 @@
 /* COMPILER(MSVC) */
 #if defined(_MSC_VER)
 #define WTF_COMPILER_MSVC 1
-#if _MSC_VER < 1400
-#define WTF_COMPILER_MSVC7 1
-#endif
 #endif
 
 #endif /* WTF_Platform_h */

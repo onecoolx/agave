@@ -217,17 +217,17 @@ FontData* FontCache::getCachedFontData(const FontPlatformData* platformData)
 
 void FontCache::releaseAllFontCacheData()
 {
-    if (gFontDataCache) {
-        deleteAllValues(*gFontDataCache);
-        delete gFontDataCache;
-        gFontDataCache = NULL;
-    }
-
     if (gFontPlatformDataCache) {
         platformShutdown();
         deleteAllValues(*gFontPlatformDataCache);
         delete gFontPlatformDataCache;
         gFontPlatformDataCache = NULL;
+    }
+
+    if (gFontDataCache) {
+        deleteAllValues(*gFontDataCache);
+        delete gFontDataCache;
+        gFontDataCache = NULL;
     }
 }
 
