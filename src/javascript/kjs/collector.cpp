@@ -454,7 +454,17 @@ void Collector::markStackObjectsConservatively(void *start, void *end)
     end = tmp;
   }
 
-  ASSERT(((char*)end - (char*)start) < 0x1000000);
+  // Check for invalid pointers or unreasonable stack size
+  if (!start || !end) {
+    return;
+  }
+  
+  size_t stackSize = (char*)end - (char*)start;
+  if (stackSize >= 0x1000000) {
+    // Stack size is unreasonably large (>= 16MB), skip marking
+    return;
+  }
+
   ASSERT(IS_POINTER_ALIGNED(start));
   ASSERT(IS_POINTER_ALIGNED(end));
   

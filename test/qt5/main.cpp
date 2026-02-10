@@ -103,7 +103,6 @@ inline void MainWindow::closeEvent(QCloseEvent *event)
 {
 	on_term(view);
 	view = 0;
-    delete this;
     macross_shutdown();
 }
 

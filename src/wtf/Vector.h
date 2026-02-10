@@ -118,11 +118,15 @@ namespace WTF {
     {
         static void move(const T* src, const T* srcEnd, T* dst) 
         {
-            memcpy((void*)dst, (void*)src, reinterpret_cast<const char*>(srcEnd) - reinterpret_cast<const char*>(src));
+            size_t size = reinterpret_cast<const char*>(srcEnd) - reinterpret_cast<const char*>(src);
+            if (size > 0 && src && dst)
+                memcpy((void*)dst, (void*)src, size);
         }
         static void moveOverlapping(const T* src, const T* srcEnd, T* dst) 
         {
-            memmove((void*)dst, (void*)src, reinterpret_cast<const char*>(srcEnd) - reinterpret_cast<const char*>(src));
+            size_t size = reinterpret_cast<const char*>(srcEnd) - reinterpret_cast<const char*>(src);
+            if (size > 0 && src && dst)
+                memmove((void*)dst, (void*)src, size);
         }
     };
 
@@ -147,7 +151,9 @@ namespace WTF {
     {
         static void uninitializedCopy(const T* src, const T* srcEnd, T* dst) 
         {
-            memcpy((void*)dst, (void*)src, reinterpret_cast<const char*>(srcEnd) - reinterpret_cast<const char*>(src));
+            size_t size = reinterpret_cast<const char*>(srcEnd) - reinterpret_cast<const char*>(src);
+            if (size > 0 && src && dst)
+                memcpy((void*)dst, (void*)src, size);
         }
     };
 

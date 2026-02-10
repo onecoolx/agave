@@ -395,7 +395,8 @@ bool TextResourceDecoder::checkForCSSCharset(const char* data, size_t len, bool&
 
     size_t oldSize = m_buffer.size();
     m_buffer.resize(oldSize + len);
-    memcpy(m_buffer.data() + oldSize, data, len);
+    if (len > 0 && data)
+        memcpy(m_buffer.data() + oldSize, data, len);
 
     movedDataToBuffer = true;
 
@@ -477,7 +478,8 @@ bool TextResourceDecoder::checkForHeadCharset(const char* data, size_t len, bool
 
     size_t oldSize = m_buffer.size();
     m_buffer.resize(oldSize + len);
-    memcpy(m_buffer.data() + oldSize, data, len);
+    if (len > 0 && data)
+        memcpy(m_buffer.data() + oldSize, data, len);
 
     movedDataToBuffer = true;
 
@@ -707,7 +709,8 @@ String TextResourceDecoder::decode(const char* data, size_t len)
     if (!movedDataToBuffer) {
         size_t oldSize = m_buffer.size();
         m_buffer.resize(oldSize + len);
-        memcpy(m_buffer.data() + oldSize, data, len);
+        if (len > 0 && data)
+            memcpy(m_buffer.data() + oldSize, data, len);
     }
 
     String result = m_decoder.decode(m_buffer.data(), m_buffer.size(), m_source==UserChosenEncoding);
