@@ -180,7 +180,7 @@ struct FontDataCacheKeyHash {
 
 struct FontDataCacheKeyTraits : WTF::GenericHashTraits<FontPlatformData> {
     static const bool emptyValueIsZero = true;
-    static const bool needsDestruction = false;
+    static const bool needsDestruction = true;  // FIXED: FontPlatformData has a destructor that needs to be called
     static const FontPlatformData& deletedValue()
     {
         static FontPlatformData key = FontPlatformData::Deleted();
@@ -217,17 +217,22 @@ FontData* FontCache::getCachedFontData(const FontPlatformData* platformData)
 
 void FontCache::releaseAllFontCacheData()
 {
+    // Clear FontDataCache first, as it holds FontPlatformData objects as keys
+    // which reference FontPlatformShared objects
+    if (gFontDataCache) {
+        deleteAllValues(*gFontDataCache);
+        gFontDataCache->clear();  // Explicitly clear the HashMap to ensure keys are destroyed
+        delete gFontDataCache;
+        gFontDataCache = NULL;
+    }
+
+    // Then clear FontPlatformDataCache
     if (gFontPlatformDataCache) {
         platformShutdown();
         deleteAllValues(*gFontPlatformDataCache);
+        gFontPlatformDataCache->clear();  // Explicitly clear the HashMap
         delete gFontPlatformDataCache;
         gFontPlatformDataCache = NULL;
-    }
-
-    if (gFontDataCache) {
-        deleteAllValues(*gFontDataCache);
-        delete gFontDataCache;
-        gFontDataCache = NULL;
     }
 }
 
