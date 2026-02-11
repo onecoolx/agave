@@ -209,7 +209,8 @@ void HTMLTokenizer::reset()
     ASSERT(m_executingScript == 0);
 
     while (!pendingScripts.isEmpty()) {
-      CachedScript *cs = pendingScripts.dequeue();
+      CachedScript *cs = pendingScripts.first();
+      pendingScripts.removeFirst();
       ASSERT(cache()->disabled() || cs->accessCount() > 0);
       cs->deref(this);
     }
@@ -403,7 +404,7 @@ HTMLTokenizer::State HTMLTokenizer::scriptHandler(State state)
                 // The parser might have been stopped by for example a window.close call in an earlier script.
                 // If so, we don't want to load scripts.
                 if (!m_parserStopped && (cs = m_doc->docLoader()->requestScript(scriptSrc, scriptSrcCharset)))
-                    pendingScripts.enqueue(cs);
+                    pendingScripts.append(cs);
                 else
                     scriptNode = 0;
             } else
@@ -1732,16 +1733,17 @@ void HTMLTokenizer::notifyFinished(CachedResource*)
     // file loads were serialized in lower level.
     // FIXME: this should really be done for all script loads or the same effect should be achieved by other
     // means, like javascript suspend/resume
-    m_hasScriptsWaitingForStylesheets = !m_doc->haveStylesheetsLoaded() && pendingScripts.head()->url().startsWith("file:", false);
+    m_hasScriptsWaitingForStylesheets = !m_doc->haveStylesheetsLoaded() && pendingScripts.first()->url().startsWith("file:", false);
     if (m_hasScriptsWaitingForStylesheets)
         return;
 
     bool finished = false;
-    while (!finished && pendingScripts.head()->isLoaded()) {
+    while (!finished && pendingScripts.first()->isLoaded()) {
 #ifdef TOKEN_DEBUG
         kdDebug( 6036 ) << "Finished loading an external script" << endl;
 #endif
-        CachedScript* cs = pendingScripts.dequeue();
+        CachedScript* cs = pendingScripts.first();
+        pendingScripts.removeFirst();
         ASSERT(cache()->disabled() || cs->accessCount() > 0);
 
         String scriptSource = cs->script();

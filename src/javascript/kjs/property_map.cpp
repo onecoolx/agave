@@ -457,7 +457,8 @@ void PropertyMap::rehash(int newTableSize)
     }
     m_u.table->lastIndexUsed = lastIndexUsed;
 
-    fastFree(oldTable);
+    if (oldTable)
+        fastFree(oldTable);
 
     checkConsistency();
 }
