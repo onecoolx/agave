@@ -51,6 +51,7 @@
 #include "JSNodeFilter.h"
 #include "JSRange.h"
 #include "JSXMLHttpRequest.h"
+#include "JSImmediate.h"
 #include "Logging.h"
 #include "Page.h"
 #include "PlatformScreen.h"
@@ -250,7 +251,8 @@ ScriptInterpreter* Window::interpreter() const
 
 Window *Window::retrieveWindow(Frame *f)
 {
-    JSObject *o = retrieve(f)->getObject();
+    JSValue* v = retrieve(f);
+    JSObject *o = (v && !JSImmediate::isImmediate(v)) ? v->getObject() : 0;
 
     ASSERT(o || !f->settings() || !f->settings()->isJavaScriptEnabled());
     return static_cast<Window *>(o);

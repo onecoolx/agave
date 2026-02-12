@@ -25,6 +25,7 @@
 #include "config.h"
 #include "interpreter.h"
 
+#include "JSImmediate.h"
 #include "SavedBuiltins.h"
 #include "array_object.h"
 #include "bool_object.h"
@@ -240,7 +241,7 @@ void Interpreter::initGlobalObject()
 
     // Set global object prototype
     JSObject* o = m_globalObject;
-    while (o->prototype()->isObject())
+    while (o->prototype() && !JSImmediate::isImmediate(o->prototype()) && o->prototype()->isObject())
         o = static_cast<JSObject*>(o->prototype());
     o->setPrototype(m_ObjectPrototype);
 

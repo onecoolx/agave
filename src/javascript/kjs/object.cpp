@@ -27,6 +27,7 @@
 #include "object.h"
 
 #include "error_object.h"
+#include "JSImmediate.h"
 #include "lookup.h"
 #include "nodes.h"
 #include "operations.h"
@@ -238,7 +239,7 @@ void JSObject::put(ExecState* exec, const Identifier &propertyName, JSValue *val
       break;
     }
       
-    if (!obj->_proto->isObject())
+    if (!obj->_proto || JSImmediate::isImmediate(obj->_proto) || !obj->_proto->isObject())
       break;
       
     obj = static_cast<JSObject *>(obj->_proto);
@@ -269,7 +270,7 @@ void JSObject::put(ExecState* exec, const Identifier &propertyName, JSValue *val
         }
       }
      
-      if (!obj->_proto->isObject())
+      if (!obj->_proto || JSImmediate::isImmediate(obj->_proto) || !obj->_proto->isObject())
         break;
         
       obj = static_cast<JSObject *>(obj->_proto);
@@ -516,7 +517,7 @@ void JSObject::getPropertyNames(ExecState* exec, PropertyNameArray& propertyName
     }
     info = info->parentClass;
   }
-  if (_proto->isObject())
+  if (_proto && !JSImmediate::isImmediate(_proto) && _proto->isObject())
      static_cast<JSObject*>(_proto)->getPropertyNames(exec, propertyNames);
 }
 

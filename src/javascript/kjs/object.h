@@ -557,7 +557,7 @@ inline bool JSObject::getPropertySlot(ExecState *exec, const Identifier& propert
             return true;
 
         JSValue *proto = object->_proto;
-        if (!proto->isObject())
+        if (!proto || JSImmediate::isImmediate(proto) || !proto->isObject())
             return false;
 
         object = static_cast<JSObject *>(proto);

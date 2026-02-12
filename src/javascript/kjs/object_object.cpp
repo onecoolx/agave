@@ -22,6 +22,7 @@
 #include "config.h"
 #include "object_object.h"
 
+#include "JSImmediate.h"
 #include "operations.h"
 #include "function_object.h"
 #include <stdio.h>
@@ -134,7 +135,7 @@ JSValue *ObjectProtoFunc::callAsFunction(ExecState *exec, JSObject *thisObj, con
                         return funcObj;
                 }
                 
-                if (!obj->prototype() || !obj->prototype()->isObject())
+                if (!obj->prototype() || JSImmediate::isImmediate(obj->prototype()) || !obj->prototype()->isObject())
                     return jsUndefined();
                 
                 obj = static_cast<JSObject *>(obj->prototype());
