@@ -24,8 +24,9 @@
 #ifndef CSSRuleList_h
 #define CSSRuleList_h
 
-#include "DeprecatedPtrList.h"
 #include "Shared.h"
+#include <wtf/Vector.h>
+#include <wtf/RefPtr.h>
 
 namespace WebCore {
 
@@ -38,8 +39,8 @@ public:
     CSSRuleList(StyleList*, bool omitCharsetRules = false);
     ~CSSRuleList();
 
-    unsigned length() const { return m_lstCSSRules.count(); }
-    CSSRule* item(unsigned index) { return m_lstCSSRules.at(index); }
+    unsigned length() const { return m_lstCSSRules.size(); }
+    CSSRule* item(unsigned index) { return index < m_lstCSSRules.size() ? m_lstCSSRules[index].get() : 0; }
 
     /* not part of the DOM */
     unsigned insertRule(CSSRule*, unsigned index);
@@ -47,7 +48,7 @@ public:
     void append(CSSRule*);
 
 protected:
-    DeprecatedPtrList<CSSRule> m_lstCSSRules;
+    Vector<RefPtr<CSSRule> > m_lstCSSRules;
 };
 
 } // namespace WebCore

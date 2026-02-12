@@ -47,29 +47,27 @@ CSSRuleList::CSSRuleList(StyleList* list, bool omitCharsetRules)
 
 CSSRuleList::~CSSRuleList()
 {
-    CSSRule* rule;
-    while (!m_lstCSSRules.isEmpty() && (rule = m_lstCSSRules.take(0)))
-        rule->deref();
+    // RefPtr will automatically handle reference counting
+    // No manual deref needed
 }
 
 void CSSRuleList::deleteRule(unsigned index)
 {
-    CSSRule* rule = m_lstCSSRules.take(index);
-    if (rule)
-        rule->deref();
+    if (index < m_lstCSSRules.size())
+        m_lstCSSRules.remove(index);
     else
         ; // FIXME: Throw INDEX_SIZE_ERR exception here
 }
 
 void CSSRuleList::append(CSSRule* rule)
 {
-    insertRule(rule, m_lstCSSRules.count()) ;
+    insertRule(rule, m_lstCSSRules.size());
 }
 
 unsigned CSSRuleList::insertRule(CSSRule* rule, unsigned index)
 {
-    if (rule && m_lstCSSRules.insert(index, rule)) {
-        rule->ref();
+    if (rule && index <= m_lstCSSRules.size()) {
+        m_lstCSSRules.insert(index, rule);
         return index;
     }
 

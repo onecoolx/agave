@@ -43,11 +43,16 @@ namespace WebCore {
 
 Loader::Loader()
 {
-    m_requestsPending.setAutoDelete(true);
 }
 
 Loader::~Loader()
 {
+    // Clean up pending requests
+    while (!m_requestsPending.isEmpty()) {
+        delete m_requestsPending.first();
+        m_requestsPending.removeFirst();
+    }
+    
     deleteAllValues(m_requestsLoading);
 }
 
@@ -64,7 +69,8 @@ void Loader::servePendingRequests()
 {
     while (!m_requestsPending.isEmpty()) {
         // get the first pending request
-        Request* req = m_requestsPending.take(0);
+        Request* req = m_requestsPending.first();
+        m_requestsPending.removeFirst();
         DocLoader* dl = req->docLoader();
         dl->decrementRequestCount();
 
@@ -93,7 +99,7 @@ void Loader::servePendingRequests()
         dl->setLoadInProgress(true);
         req->cachedResource()->error();
         dl->setLoadInProgress(false);
-
+        
         delete req;
     }
 }
@@ -210,14 +216,18 @@ void Loader::didReceiveData(SubresourceLoader* loader, const char* data, int siz
 
 void Loader::cancelRequests(DocLoader* dl)
 {
-    DeprecatedPtrListIterator<Request> pIt(m_requestsPending);
-    while (pIt.current()) {
-        if (pIt.current()->docLoader() == dl) {
-            cache()->remove(pIt.current()->cachedResource());
-            m_requestsPending.remove(pIt);
+    typedef Deque<Request*>::iterator Iterator;
+    for (Iterator it = m_requestsPending.begin(); it != m_requestsPending.end(); ) {
+        if ((*it)->docLoader() == dl) {
+            cache()->remove((*it)->cachedResource());
+            delete *it;
+            Iterator toRemove = it;
+            ++it;
+            m_requestsPending.remove(toRemove);
             dl->decrementRequestCount();
-        } else
-            ++pIt;
+        } else {
+            ++it;
+        }
     }
 
     Vector<SubresourceLoader*, 256> loadersToCancel;

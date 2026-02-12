@@ -268,10 +268,12 @@ CSSStyleSelector::CSSStyleSelector(Document* doc, const String& userStyleSheet, 
     // add stylesheets from document
     m_authorStyle = new CSSRuleSet();
 
-    DeprecatedPtrListIterator<StyleSheet> it(styleSheets->styleSheets);
-    for (; it.current(); ++it)
-        if (it.current()->isCSSStyleSheet() && !it.current()->disabled())
-            m_authorStyle->addRulesFromSheet(static_cast<CSSStyleSheet*>(it.current()), m_medium, this);
+    typedef Vector<RefPtr<StyleSheet> >::iterator StyleSheetIterator;
+    for (StyleSheetIterator it = styleSheets->styleSheets.begin(); it != styleSheets->styleSheets.end(); ++it) {
+        StyleSheet* sheet = (*it).get();
+        if (sheet->isCSSStyleSheet() && !sheet->disabled())
+            m_authorStyle->addRulesFromSheet(static_cast<CSSStyleSheet*>(sheet), m_medium, this);
+    }
 
     // Just delete our font selector if we end up with nothing but invalid @font-face rules.
     if (m_fontSelector && m_fontSelector->isEmpty())

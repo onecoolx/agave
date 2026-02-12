@@ -500,7 +500,7 @@ void ApplyStyleCommand::applyRelativeFontStyleChange(CSSMutableStyleDeclaration 
         startingFontSizes.set(node, computedFontSize(node));
 
     // These spans were added by us. If empty after font size changes, they can be removed.
-    DeprecatedPtrList<Node> unstyledSpans;
+    Vector<Node*> unstyledSpans;
     
     Node *lastStyledNode = 0;
     for (Node *node = startNode; node != beyondEnd; node = node->traverseNextNode()) {
@@ -542,8 +542,8 @@ void ApplyStyleCommand::applyRelativeFontStyleChange(CSSMutableStyleDeclaration 
         }
     }
 
-    for (DeprecatedPtrListIterator<Node> it(unstyledSpans); it.current(); ++it)
-        removeNodePreservingChildren(it.current());
+    for (auto* node : unstyledSpans)
+        removeNodePreservingChildren(node);
 }
 
 #undef NoFontDelta

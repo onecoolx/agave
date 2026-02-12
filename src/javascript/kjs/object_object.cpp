@@ -172,7 +172,17 @@ bool ObjectObjectImp::implementsConstruct() const
 // ECMA 15.2.2
 JSObject* ObjectObjectImp::construct(ExecState* exec, const List& args)
 {
+  // Handle empty argument list
+  if (args.isEmpty()) {
+      return new JSObject(exec->lexicalInterpreter()->builtinObjectPrototype());
+  }
+  
   JSValue* arg = args[0];
+  // Additional safety check
+  if (!arg) {
+      return new JSObject(exec->lexicalInterpreter()->builtinObjectPrototype());
+  }
+  
   switch (arg->type()) {
   case StringType:
   case BooleanType:

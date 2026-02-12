@@ -40,8 +40,8 @@ StyleSheetList::StyleSheetList(Document* doc)
 
 StyleSheetList::~StyleSheetList()
 {
-    for (DeprecatedPtrListIterator<StyleSheet> it (styleSheets); it.current(); ++it)
-        it.current()->deref();
+    for (auto& sheet : styleSheets)
+        sheet->deref();
 }
 
 void StyleSheetList::documentDestroyed()
@@ -51,26 +51,34 @@ void StyleSheetList::documentDestroyed()
 
 void StyleSheetList::add(StyleSheet* s)
 {
-    if (!styleSheets.containsRef(s)) {
-        s->ref();
-        styleSheets.append(s);
+    // Check if already exists
+    for (auto& sheet : styleSheets) {
+        if (sheet.get() == s)
+            return;
     }
+    s->ref();
+    styleSheets.append(s);
 }
 
 void StyleSheetList::remove(StyleSheet* s)
 {
-    if (styleSheets.removeRef(s))
-        s->deref();
+    for (size_t i = 0; i < styleSheets.size(); ++i) {
+        if (styleSheets[i].get() == s) {
+            styleSheets.remove(i);
+            s->deref();
+            return;
+        }
+    }
 }
 
 unsigned StyleSheetList::length() const
 {
-    return styleSheets.count();
+    return styleSheets.size();
 }
 
 StyleSheet* StyleSheetList::item(unsigned index)
 {
-    return index < length() ? styleSheets.at(index) : 0;
+    return index < length() ? styleSheets[index].get() : 0;
 }
 
 HTMLStyleElement* StyleSheetList::getNamedItem(const String& name) const

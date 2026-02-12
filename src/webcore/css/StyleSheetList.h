@@ -22,7 +22,8 @@
 #define StyleSheetList_h
 
 #include "Shared.h"
-#include "DeprecatedPtrList.h"
+#include <wtf/Vector.h>
+#include <wtf/RefPtr.h>
 
 namespace WebCore {
 
@@ -46,7 +47,7 @@ public:
 
     HTMLStyleElement* getNamedItem(const String&) const;
 
-    DeprecatedPtrList<StyleSheet> styleSheets;
+    Vector<RefPtr<StyleSheet> > styleSheets;
 
 private:
     Document* m_doc;

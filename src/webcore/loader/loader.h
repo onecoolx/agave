@@ -22,9 +22,9 @@
 #ifndef loader_h
 #define loader_h
 
-#include "DeprecatedPtrList.h"
 #include "SubresourceLoaderClient.h"
 #include <wtf/HashMap.h>
+#include <wtf/Deque.h>
 
 namespace WebCore {
 
@@ -50,7 +50,7 @@ namespace WebCore {
 
         void servePendingRequests();
 
-        DeprecatedPtrList<Request> m_requestsPending;
+        Deque<Request*> m_requestsPending;
         typedef HashMap<RefPtr<SubresourceLoader>, Request*> RequestMap;
         RequestMap m_requestsLoading;
     };
