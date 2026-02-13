@@ -227,7 +227,7 @@ TEST_F(RefPtrPerformanceTest, CSSRuleListPerformance)
 // Test: StyleSheetList performance
 TEST_F(RefPtrPerformanceTest, StyleSheetListPerformance)
 {
-    Document* doc = new Document(0, false, false);
+    Document* doc = new Document(0, nullptr, false);
     doc->ref();
 
     StyleSheetList* list = new StyleSheetList(doc);

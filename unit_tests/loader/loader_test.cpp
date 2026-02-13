@@ -151,15 +151,13 @@ TEST_F(LoaderTest, DequeIteratorRemoval)
     deque.append(val3);
     deque.append(val4);
 
-    // Remove val2 using iterator
+    // Remove val2.
+    // NOTE: Deque iterator stability across removals is not guaranteed.
     typedef Deque<int*>::iterator Iterator;
-    for (Iterator it = deque.begin(); it != deque.end(); ) {
+    for (Iterator it = deque.begin(); it != deque.end(); ++it) {
         if (*(*it) == 2) {
-            Iterator toRemove = it;
-            ++it;
-            deque.remove(toRemove);
-        } else {
-            ++it;
+            deque.remove(it);
+            break;
         }
     }
 
@@ -167,9 +165,12 @@ TEST_F(LoaderTest, DequeIteratorRemoval)
 
     // Verify remaining elements
     Iterator it = deque.begin();
-    EXPECT_EQ(val1, *it++);
-    EXPECT_EQ(val3, *it++);
-    EXPECT_EQ(val4, *it++);
+    EXPECT_EQ(val1, *it);
+    ++it;
+    EXPECT_EQ(val3, *it);
+    ++it;
+    EXPECT_EQ(val4, *it);
+    ++it;
 
     delete val1;
     delete val2;
@@ -180,6 +181,14 @@ TEST_F(LoaderTest, DequeIteratorRemoval)
 // Test: Deque multiple iterator removals
 TEST_F(LoaderTest, DequeMultipleIteratorRemovals)
 {
+    // NOTE: WTF::Deque has strict iterator validity tracking (debug-only), and
+    // removal invalidates iterators. The prior version of this test attempted
+    // to validate "erase-while-iterating" patterns that are not guaranteed to
+    // be safe for WTF::Deque.
+    //
+    // Keep this test focused on correctness: remove items without relying on
+    // iterator stability across removals.
+
     Deque<int*> deque;
 
     const int count = 10;
@@ -190,29 +199,30 @@ TEST_F(LoaderTest, DequeMultipleIteratorRemovals)
         deque.append(values[i]);
     }
 
-    // Remove even numbers
-    typedef Deque<int*>::iterator Iterator;
-    for (Iterator it = deque.begin(); it != deque.end(); ) {
-        if (*(*it) % 2 == 0) {
-            Iterator toRemove = it;
-            ++it;
-            deque.remove(toRemove);
-        } else {
-            ++it;
+    // Remove even numbers by repeatedly searching from begin().
+    // This avoids holding iterators across removals.
+    bool removedAny = true;
+    while (removedAny) {
+        removedAny = false;
+        typedef Deque<int*>::iterator Iterator;
+        for (Iterator it = deque.begin(); it != deque.end(); ++it) {
+            if (*(*it) % 2 == 0) {
+                deque.remove(it);
+                removedAny = true;
+                break;
+            }
         }
     }
 
     EXPECT_EQ(5u, deque.size());
 
     // Verify only odd numbers remain
-    for (Iterator it = deque.begin(); it != deque.end(); ++it) {
-        EXPECT_EQ(1, *(*it) % 2);
-    }
+    for (size_t i = 0; i < deque.size(); ++i)
+        EXPECT_EQ(1, *deque[i] % 2);
 
     // Cleanup
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++)
         delete values[i];
-    }
 }
 
 // Test: Deque clear operation
@@ -297,22 +307,21 @@ TEST_F(LoaderTest, DequeIteratorStability)
         deque.append(new int(i));
     }
 
-    // Remove middle element
+    // Remove middle element.
+    // NOTE: Deque iterator stability across removals is not guaranteed.
+    // Avoid holding iterators across remove() calls.
+    bool removed = false;
     typedef Deque<int*>::iterator Iterator;
-    int removeCount = 0;
-    for (Iterator it = deque.begin(); it != deque.end(); ) {
+    for (Iterator it = deque.begin(); it != deque.end(); ++it) {
         if (*(*it) == 2) {
             delete *it;
-            Iterator toRemove = it;
-            ++it;
-            deque.remove(toRemove);
-            removeCount++;
-        } else {
-            ++it;
+            deque.remove(it);
+            removed = true;
+            break;
         }
     }
 
-    EXPECT_EQ(1, removeCount);
+    EXPECT_TRUE(removed);
     EXPECT_EQ(4u, deque.size());
 
     // Cleanup

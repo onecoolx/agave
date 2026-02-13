@@ -43,7 +43,7 @@ protected:
 
     void SetUp() override
     {
-        doc = new Document(0, false, false);
+           doc = new Document(0, nullptr, false);
         doc->ref();
         list = new StyleSheetList(doc);
         list->ref();
