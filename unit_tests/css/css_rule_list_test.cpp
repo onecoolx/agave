@@ -68,12 +68,12 @@ TEST_F(CSSRuleListTest, AppendSingleRule)
 {
     CSSStyleRule* rule = new CSSStyleRule(nullptr);
     rule->ref();
-    
+
     ruleList->append(rule);
-    
+
     EXPECT_EQ(1u, ruleList->length());
     EXPECT_EQ(rule, ruleList->item(0));
-    
+
     rule->deref();
 }
 
@@ -86,16 +86,16 @@ TEST_F(CSSRuleListTest, AppendMultipleRules)
     rule1->ref();
     rule2->ref();
     rule3->ref();
-    
+
     ruleList->append(rule1);
     ruleList->append(rule2);
     ruleList->append(rule3);
-    
+
     EXPECT_EQ(3u, ruleList->length());
     EXPECT_EQ(rule1, ruleList->item(0));
     EXPECT_EQ(rule2, ruleList->item(1));
     EXPECT_EQ(rule3, ruleList->item(2));
-    
+
     rule1->deref();
     rule2->deref();
     rule3->deref();
@@ -108,15 +108,15 @@ TEST_F(CSSRuleListTest, InsertRuleAtBeginning)
     CSSStyleRule* rule2 = new CSSStyleRule(nullptr);
     rule1->ref();
     rule2->ref();
-    
+
     ruleList->append(rule1);
     unsigned index = ruleList->insertRule(rule2, 0);
-    
+
     EXPECT_EQ(0u, index);
     EXPECT_EQ(2u, ruleList->length());
     EXPECT_EQ(rule2, ruleList->item(0));
     EXPECT_EQ(rule1, ruleList->item(1));
-    
+
     rule1->deref();
     rule2->deref();
 }
@@ -130,17 +130,17 @@ TEST_F(CSSRuleListTest, InsertRuleInMiddle)
     rule1->ref();
     rule2->ref();
     rule3->ref();
-    
+
     ruleList->append(rule1);
     ruleList->append(rule3);
     unsigned index = ruleList->insertRule(rule2, 1);
-    
+
     EXPECT_EQ(1u, index);
     EXPECT_EQ(3u, ruleList->length());
     EXPECT_EQ(rule1, ruleList->item(0));
     EXPECT_EQ(rule2, ruleList->item(1));
     EXPECT_EQ(rule3, ruleList->item(2));
-    
+
     rule1->deref();
     rule2->deref();
     rule3->deref();
@@ -153,14 +153,14 @@ TEST_F(CSSRuleListTest, InsertRuleAtEnd)
     CSSStyleRule* rule2 = new CSSStyleRule(nullptr);
     rule1->ref();
     rule2->ref();
-    
+
     ruleList->append(rule1);
     unsigned index = ruleList->insertRule(rule2, 1);
-    
+
     EXPECT_EQ(1u, index);
     EXPECT_EQ(2u, ruleList->length());
     EXPECT_EQ(rule2, ruleList->item(1));
-    
+
     rule1->deref();
     rule2->deref();
 }
@@ -172,15 +172,15 @@ TEST_F(CSSRuleListTest, DeleteRuleAtBeginning)
     CSSStyleRule* rule2 = new CSSStyleRule(nullptr);
     rule1->ref();
     rule2->ref();
-    
+
     ruleList->append(rule1);
     ruleList->append(rule2);
-    
+
     ruleList->deleteRule(0);
-    
+
     EXPECT_EQ(1u, ruleList->length());
     EXPECT_EQ(rule2, ruleList->item(0));
-    
+
     rule1->deref();
     rule2->deref();
 }
@@ -194,17 +194,17 @@ TEST_F(CSSRuleListTest, DeleteRuleInMiddle)
     rule1->ref();
     rule2->ref();
     rule3->ref();
-    
+
     ruleList->append(rule1);
     ruleList->append(rule2);
     ruleList->append(rule3);
-    
+
     ruleList->deleteRule(1);
-    
+
     EXPECT_EQ(2u, ruleList->length());
     EXPECT_EQ(rule1, ruleList->item(0));
     EXPECT_EQ(rule3, ruleList->item(1));
-    
+
     rule1->deref();
     rule2->deref();
     rule3->deref();
@@ -217,15 +217,15 @@ TEST_F(CSSRuleListTest, DeleteRuleAtEnd)
     CSSStyleRule* rule2 = new CSSStyleRule(nullptr);
     rule1->ref();
     rule2->ref();
-    
+
     ruleList->append(rule1);
     ruleList->append(rule2);
-    
+
     ruleList->deleteRule(1);
-    
+
     EXPECT_EQ(1u, ruleList->length());
     EXPECT_EQ(rule1, ruleList->item(0));
-    
+
     rule1->deref();
     rule2->deref();
 }
@@ -235,15 +235,15 @@ TEST_F(CSSRuleListTest, DeleteRuleInvalidIndex)
 {
     CSSStyleRule* rule = new CSSStyleRule(nullptr);
     rule->ref();
-    
+
     ruleList->append(rule);
-    
+
     // Delete with out-of-bounds index should not crash
     ruleList->deleteRule(10);
-    
+
     // List should remain unchanged
     EXPECT_EQ(1u, ruleList->length());
-    
+
     rule->deref();
 }
 
@@ -252,12 +252,12 @@ TEST_F(CSSRuleListTest, ItemInvalidIndex)
 {
     CSSStyleRule* rule = new CSSStyleRule(nullptr);
     rule->ref();
-    
+
     ruleList->append(rule);
-    
+
     EXPECT_EQ(nullptr, ruleList->item(10));
     EXPECT_EQ(nullptr, ruleList->item(1));
-    
+
     rule->deref();
 }
 
@@ -266,13 +266,13 @@ TEST_F(CSSRuleListTest, InsertRuleInvalidIndex)
 {
     CSSStyleRule* rule = new CSSStyleRule(nullptr);
     rule->ref();
-    
+
     // Insert with out-of-bounds index should fail
     unsigned index = ruleList->insertRule(rule, 10);
-    
-    EXPECT_EQ(0u, index);  // Should return 0 on failure
+
+    EXPECT_EQ(0u, index); // Should return 0 on failure
     EXPECT_EQ(0u, ruleList->length());
-    
+
     rule->deref();
 }
 
@@ -280,8 +280,8 @@ TEST_F(CSSRuleListTest, InsertRuleInvalidIndex)
 TEST_F(CSSRuleListTest, InsertNullRule)
 {
     unsigned index = ruleList->insertRule(nullptr, 0);
-    
-    EXPECT_EQ(0u, index);  // Should return 0 on failure
+
+    EXPECT_EQ(0u, index); // Should return 0 on failure
     EXPECT_EQ(0u, ruleList->length());
 }
 
@@ -290,14 +290,14 @@ TEST_F(CSSRuleListTest, ReferenceCountingOnAppend)
 {
     CSSStyleRule* rule = new CSSStyleRule(nullptr);
     rule->ref();
-    
+
     int initialRefCount = rule->refCount();
-    
+
     ruleList->append(rule);
-    
+
     // RefPtr should have increased ref count
     EXPECT_GT(rule->refCount(), initialRefCount);
-    
+
     rule->deref();
 }
 
@@ -306,15 +306,15 @@ TEST_F(CSSRuleListTest, ReferenceCountingOnDelete)
 {
     CSSStyleRule* rule = new CSSStyleRule(nullptr);
     rule->ref();
-    
+
     ruleList->append(rule);
     int refCountAfterAppend = rule->refCount();
-    
+
     ruleList->deleteRule(0);
-    
+
     // RefPtr should have decreased ref count
     EXPECT_LT(rule->refCount(), refCountAfterAppend);
-    
+
     rule->deref();
 }
 
@@ -329,18 +329,18 @@ TEST_F(CSSRuleListTest, MultipleOperationsSequence)
     rule2->ref();
     rule3->ref();
     rule4->ref();
-    
+
     ruleList->append(rule1);
     ruleList->append(rule2);
     ruleList->insertRule(rule3, 1);
     ruleList->append(rule4);
     ruleList->deleteRule(2);
-    
+
     EXPECT_EQ(3u, ruleList->length());
     EXPECT_EQ(rule1, ruleList->item(0));
     EXPECT_EQ(rule3, ruleList->item(1));
     EXPECT_EQ(rule4, ruleList->item(2));
-    
+
     rule1->deref();
     rule2->deref();
     rule3->deref();
@@ -356,17 +356,17 @@ TEST_F(CSSRuleListTest, ClearAllRules)
     rule1->ref();
     rule2->ref();
     rule3->ref();
-    
+
     ruleList->append(rule1);
     ruleList->append(rule2);
     ruleList->append(rule3);
-    
+
     ruleList->deleteRule(0);
     ruleList->deleteRule(0);
     ruleList->deleteRule(0);
-    
+
     EXPECT_EQ(0u, ruleList->length());
-    
+
     rule1->deref();
     rule2->deref();
     rule3->deref();
@@ -377,19 +377,19 @@ TEST_F(CSSRuleListTest, LargeNumberOfRules)
 {
     const int numRules = 100;
     CSSStyleRule* rules[numRules];
-    
+
     for (int i = 0; i < numRules; i++) {
         rules[i] = new CSSStyleRule(nullptr);
         rules[i]->ref();
         ruleList->append(rules[i]);
     }
-    
+
     EXPECT_EQ(static_cast<unsigned>(numRules), ruleList->length());
-    
+
     for (int i = 0; i < numRules; i++) {
         EXPECT_EQ(rules[i], ruleList->item(i));
     }
-    
+
     for (int i = 0; i < numRules; i++) {
         rules[i]->deref();
     }
@@ -400,17 +400,17 @@ TEST_F(CSSRuleListTest, DestructorCleansUp)
 {
     CSSRuleList* tempList = new CSSRuleList();
     tempList->ref();
-    
+
     CSSStyleRule* rule = new CSSStyleRule(nullptr);
     rule->ref();
-    
+
     tempList->append(rule);
     int refCountAfterAppend = rule->refCount();
-    
-    tempList->deref();  // Should trigger destructor
-    
+
+    tempList->deref(); // Should trigger destructor
+
     // Rule's ref count should have decreased
     EXPECT_LT(rule->refCount(), refCountAfterAppend);
-    
+
     rule->deref();
 }

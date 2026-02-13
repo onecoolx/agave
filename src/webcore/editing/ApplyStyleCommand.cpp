@@ -542,8 +542,8 @@ void ApplyStyleCommand::applyRelativeFontStyleChange(CSSMutableStyleDeclaration 
         }
     }
 
-    for (auto* node : unstyledSpans)
-        removeNodePreservingChildren(node);
+    for (size_t i = 0; i < unstyledSpans.size(); ++i)
+        removeNodePreservingChildren(unstyledSpans[i]);
 }
 
 #undef NoFontDelta

@@ -32,6 +32,12 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+// Common WTF headers
+#include <wtf/Vector.h>
+#include <wtf/Deque.h>
+#include <wtf/RefPtr.h>
+
+// Font related headers
 #include "FontCache.h"
 #include "Font.h"
 #include "FontData.h"
@@ -39,9 +45,15 @@
 #include "FontFamily.h"
 #include "GlyphPageTreeNode.h"
 #include "TextStyle.h"
-#include "WidgetView.h"
+
+// DOM headers
 #include "NodeList.h"
 #include "Document.h"
+#include "DocumentLoader.h"
+#include "DocumentFragment.h"
+#include "Text.h"
+
+// HTML headers
 #include "HTMLNames.h"
 #include "HTMLInputElement.h"
 #include "HTMLSelectElement.h"
@@ -50,28 +62,44 @@
 #include "HTMLTokenizer.h"
 #include "HTMLDocument.h"
 #include "HTMLParser.h"
+
+// CSS headers
 #include "CSSStyleDeclaration.h"
 #include "CSSMutableStyleDeclaration.h"
 #include "CSSComputedStyleDeclaration.h"
 #include "CSSPropertyNames.h"
 #include "CSSStyleSelector.h"
 #include "CSSValueKeywords.h"
-#include "ExceptionCode.h"
+#include "CSSRuleList.h"
+#include "CSSStyleRule.h"
+#include "StyleSheetList.h"
+#include "CSSStyleSheet.h"
+
+// Loader headers
+#include "loader.h"
+#include "Request.h"
+#include "DocLoader.h"
+#include "CachedResource.h"
+
+// Page and Frame headers
 #include "Page.h"
 #include "Frame.h"
 #include "FrameTree.h"
 #include "FrameView.h"
 #include "FrameLoader.h"
-#include "DocumentLoader.h"
-#include "DocumentFragment.h"
+
+// Editor headers
 #include "Editor.h"
 #include "EditCommand.h"
+
+// Other headers
+#include "ExceptionCode.h"
 #include "EventHandler.h"
 #include "GraphicsContext.h"
 #include "SegmentedString.h"
 #include "Settings.h"
-#include "Text.h"
 #include "markup.h"
+#include "WidgetView.h"
 
 #include "macross.h"
 

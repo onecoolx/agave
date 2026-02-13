@@ -47,8 +47,6 @@ CSSRuleList::CSSRuleList(StyleList* list, bool omitCharsetRules)
 
 CSSRuleList::~CSSRuleList()
 {
-    // RefPtr will automatically handle reference counting
-    // No manual deref needed
 }
 
 void CSSRuleList::deleteRule(unsigned index)

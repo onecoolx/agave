@@ -40,10 +40,6 @@ StyleSheetList::StyleSheetList(Document* doc)
 
 StyleSheetList::~StyleSheetList()
 {
-    for (size_t i = 0; i < styleSheets.size(); ++i) {
-        if (styleSheets[i].get())
-            styleSheets[i]->deref();
-    }
 }
 
 void StyleSheetList::documentDestroyed()
@@ -58,7 +54,6 @@ void StyleSheetList::add(StyleSheet* s)
         if (styleSheets[i].get() == s)
             return;
     }
-    s->ref();
     styleSheets.append(s);
 }
 
@@ -67,7 +62,6 @@ void StyleSheetList::remove(StyleSheet* s)
     for (size_t i = 0; i < styleSheets.size(); ++i) {
         if (styleSheets[i].get() == s) {
             styleSheets.remove(i);
-            s->deref();
             return;
         }
     }

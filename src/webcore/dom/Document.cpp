@@ -2139,10 +2139,6 @@ void Document::recalcStyleSelector()
             break;
     }
 
-    // De-reference all the stylesheets in the old list
-    for (auto& sheet : oldStyleSheets)
-        sheet->deref();
-
     // Create a new style selector
     delete m_styleSelector;
     String usersheet = m_usersheet;
