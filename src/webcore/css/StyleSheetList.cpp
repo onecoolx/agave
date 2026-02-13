@@ -40,8 +40,10 @@ StyleSheetList::StyleSheetList(Document* doc)
 
 StyleSheetList::~StyleSheetList()
 {
-    for (auto& sheet : styleSheets)
-        sheet->deref();
+    for (size_t i = 0; i < styleSheets.size(); ++i) {
+        if (styleSheets[i].get())
+            styleSheets[i]->deref();
+    }
 }
 
 void StyleSheetList::documentDestroyed()
@@ -52,8 +54,8 @@ void StyleSheetList::documentDestroyed()
 void StyleSheetList::add(StyleSheet* s)
 {
     // Check if already exists
-    for (auto& sheet : styleSheets) {
-        if (sheet.get() == s)
+    for (size_t i = 0; i < styleSheets.size(); ++i) {
+        if (styleSheets[i].get() == s)
             return;
     }
     s->ref();
