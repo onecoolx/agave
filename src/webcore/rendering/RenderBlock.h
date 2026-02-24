@@ -25,11 +25,11 @@
 #ifndef RenderBlock_h
 #define RenderBlock_h
 
-#include "DeprecatedPtrList.h"
 #include "GapRects.h"
 #include "RenderFlow.h"
 #include "RootInlineBox.h"
 #include <wtf/ListHashSet.h>
+#include <wtf/Vector.h>
 
 namespace WebCore {
 
@@ -446,7 +446,8 @@ protected:
 
 private:
     typedef ListHashSet<RenderObject*>::const_iterator Iterator;
-    DeprecatedPtrList<FloatingObject>* m_floatingObjects;
+    Vector<FloatingObject*>* m_floatingObjects;
+    unsigned m_unpositionedFloatStartIndex;
     ListHashSet<RenderObject*>* m_positionedObjects;
          
      // Allocated only when some of these fields have non-default values

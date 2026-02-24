@@ -101,6 +101,7 @@ RenderBlock::MarginInfo::MarginInfo(RenderBlock* block, int top, int bottom)
 RenderBlock::RenderBlock(Node* node)
       : RenderFlow(node)
       , m_floatingObjects(0)
+    , m_unpositionedFloatStartIndex(0)
       , m_positionedObjects(0)
       , m_maxMargin(0)
       , m_overflowHeight(0)
@@ -112,6 +113,10 @@ RenderBlock::RenderBlock(Node* node)
 
 RenderBlock::~RenderBlock()
 {
+    if (m_floatingObjects) {
+        for (unsigned i = 0; i < m_floatingObjects->size(); ++i)
+            delete m_floatingObjects->at(i);
+    }
     delete m_floatingObjects;
     delete m_positionedObjects;
     delete m_maxMargin;
@@ -1341,12 +1346,12 @@ void RenderBlock::repaintOverhangingFloats(bool paintAllDescendants)
             return;
         
         FloatingObject* r;
-        DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
 
         // FIXME: Avoid disabling LayoutState. At the very least, don't disable it for floats originating
         // in this block. Better yet would be to push extra state for the containers of other floats.
         view()->disableLayoutState();
-        for ( ; (r = it.current()); ++it) {
+        for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+            r = m_floatingObjects->at(i);
             // Only repaint the object if it is overhanging, is not in its own layer, and
             // is our responsibility to paint (noPaint isn't set). When paintAllDescendants is true, the latter
             // condition is replaced with being a descendant of us.
@@ -1613,9 +1618,8 @@ void RenderBlock::paintFloats(PaintInfo& paintInfo, int tx, int ty, bool paintSe
     if (!m_floatingObjects)
         return;
 
-    FloatingObject* r;
-    DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-    for (; (r = it.current()); ++it) {
+    for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+        FloatingObject* r = m_floatingObjects->at(i);
         // Only paint the object if our noPaint flag isn't set.
         if (!r->noPaint && !r->node->hasLayer()) {
             PaintInfo currentPaintInfo(paintInfo);
@@ -2096,16 +2100,14 @@ void RenderBlock::insertFloatingObject(RenderObject *o)
 {
     // Create the list of special objects if we don't aleady have one
     if (!m_floatingObjects) {
-        m_floatingObjects = new DeprecatedPtrList<FloatingObject>;
-        m_floatingObjects->setAutoDelete(true);
+        m_floatingObjects = new Vector<FloatingObject*>;
+        m_unpositionedFloatStartIndex = 0;
     }
     else {
         // Don't insert the object again if it's already in the list
-        DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-        FloatingObject* f;
-        while ( (f = it.current()) ) {
-            if (f->node == o) return;
-            ++it;
+        for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+            if (m_floatingObjects->at(i)->node == o)
+                return;
         }
     }
 
@@ -2140,13 +2142,19 @@ void RenderBlock::insertFloatingObject(RenderObject *o)
 
 void RenderBlock::removeFloatingObject(RenderObject *o)
 {
-    if (m_floatingObjects) {
-        DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-        while (it.current()) {
-            if (it.current()->node == o)
-                m_floatingObjects->removeRef(it.current());
-            ++it;
+    if (!m_floatingObjects)
+        return;
+
+    for (unsigned i = 0; i < m_floatingObjects->size();) {
+        FloatingObject* f = m_floatingObjects->at(i);
+        if (f->node == o) {
+            delete f;
+            m_floatingObjects->remove(i);
+            if (i < m_unpositionedFloatStartIndex && m_unpositionedFloatStartIndex)
+                --m_unpositionedFloatStartIndex;
+            continue;
         }
+        ++i;
     }
 }
 
@@ -2154,20 +2162,16 @@ void RenderBlock::positionNewFloats()
 {
     if (!m_floatingObjects)
         return;
-    
-    FloatingObject* f = m_floatingObjects->last();
 
-    // If all floats have already been positioned, then we have no work to do.
-    if (!f || f->startY != -1)
+    if (m_unpositionedFloatStartIndex >= m_floatingObjects->size())
         return;
 
-    // Move backwards through our floating object list until we find a float that has
-    // already been positioned.  Then we'll be able to move forward, positioning all of
-    // the new floats that need it.
-    FloatingObject* lastFloat = m_floatingObjects->getPrev();
-    while (lastFloat && lastFloat->startY == -1) {
-        f = m_floatingObjects->prev();
-        lastFloat = m_floatingObjects->getPrev();
+    // Determine the last already-positioned float (if any) to compute correct starting y.
+    FloatingObject* lastFloat = 0;
+    if (m_unpositionedFloatStartIndex) {
+        FloatingObject* candidate = m_floatingObjects->at(m_unpositionedFloatStartIndex - 1);
+        if (candidate && candidate->startY != -1)
+            lastFloat = candidate;
     }
 
     int y = m_height;
@@ -2177,11 +2181,11 @@ void RenderBlock::positionNewFloats()
         y = max(lastFloat->startY, y);
 
     // Now walk through the set of unpositioned floats and place them.
-    while (f) {
+    for (unsigned i = m_unpositionedFloatStartIndex; i < m_floatingObjects->size(); ++i) {
+        FloatingObject* f = m_floatingObjects->at(i);
         // The containing block is responsible for positioning floats, so if we have floats in our
         // list that come from somewhere else, do not attempt to position them.
         if (f->node->containingBlock() != this) {
-            f = m_floatingObjects->next();
             continue;
         }
 
@@ -2232,8 +2236,9 @@ void RenderBlock::positionNewFloats()
         if (o->checkForRepaintDuringLayout())
             o->repaintDuringLayoutIfMoved(oldRect);
 
-        f = m_floatingObjects->next();
     }
+
+    m_unpositionedFloatStartIndex = m_floatingObjects->size();
 }
 
 void RenderBlock::newLine()
@@ -2272,10 +2277,8 @@ RenderBlock::leftRelOffset(int y, int fixedOffset, bool applyTextIndent,
     int left = fixedOffset;
     if (m_floatingObjects) {
         if ( heightRemaining ) *heightRemaining = 1;
-        FloatingObject* r;
-        DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-        for ( ; (r = it.current()); ++it )
-        {
+        for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+            FloatingObject* r = m_floatingObjects->at(i);
             //kdDebug( 6040 ) <<(void *)this << " left: sy, ey, x, w " << r->startY << "," << r->endY << "," << r->left << "," << r->width << " " << endl;
             if (r->startY <= y && r->endY > y &&
                 r->type() == FloatingObject::FloatLeft &&
@@ -2311,10 +2314,8 @@ RenderBlock::rightRelOffset(int y, int fixedOffset, bool applyTextIndent,
 
     if (m_floatingObjects) {
         if (heightRemaining) *heightRemaining = 1;
-        FloatingObject* r;
-        DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-        for ( ; (r = it.current()); ++it )
-        {
+        for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+            FloatingObject* r = m_floatingObjects->at(i);
             //kdDebug( 6040 ) << "right: sy, ey, x, w " << r->startY << "," << r->endY << "," << r->left << "," << r->width << " " << endl;
             if (r->startY <= y && r->endY > y &&
                 r->type() == FloatingObject::FloatRight &&
@@ -2349,11 +2350,11 @@ RenderBlock::nearestFloatBottom(int height) const
 {
     if (!m_floatingObjects) return 0;
     int bottom = 0;
-    FloatingObject* r;
-    DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-    for ( ; (r = it.current()); ++it )
-        if (r->endY>height && (r->endY<bottom || bottom==0))
-            bottom=r->endY;
+    for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+        FloatingObject* r = m_floatingObjects->at(i);
+        if (r->endY > height && (r->endY < bottom || bottom == 0))
+            bottom = r->endY;
+    }
     return max(bottom, height);
 }
 
@@ -2362,11 +2363,11 @@ RenderBlock::floatBottom() const
 {
     if (!m_floatingObjects) return 0;
     int bottom=0;
-    FloatingObject* r;
-    DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-    for ( ; (r = it.current()); ++it )
-        if (r->endY>bottom)
-            bottom=r->endY;
+    for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+        FloatingObject* r = m_floatingObjects->at(i);
+        if (r->endY > bottom)
+            bottom = r->endY;
+    }
     return bottom;
 }
 
@@ -2375,9 +2376,8 @@ IntRect RenderBlock::floatRect() const
     IntRect result;
     if (!m_floatingObjects || hasOverflowClip())
         return result;
-    FloatingObject* r;
-    DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-    for (; (r = it.current()); ++it) {
+    for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+        FloatingObject* r = m_floatingObjects->at(i);
         if (!r->noPaint && !r->node->hasLayer()) {
             IntRect childRect = r->node->overflowRect(false);
             childRect.move(r->left + r->node->marginLeft(), r->startY + r->node->marginTop());
@@ -2424,9 +2424,8 @@ int RenderBlock::lowestPosition(bool includeOverflowInterior, bool includeSelf) 
     }
 
     if (m_floatingObjects) {
-        FloatingObject* r;
-        DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-        for ( ; (r = it.current()); ++it ) {
+        for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+            FloatingObject* r = m_floatingObjects->at(i);
             if (!r->noPaint || r->node->hasLayer()) {
                 int lp = r->startY + r->node->marginTop() + r->node->lowestPosition(false);
                 bottom = max(bottom, lp);
@@ -2479,9 +2478,8 @@ int RenderBlock::rightmostPosition(bool includeOverflowInterior, bool includeSel
     }
 
     if (m_floatingObjects) {
-        FloatingObject* r;
-        DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-        for ( ; (r = it.current()); ++it ) {
+        for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+            FloatingObject* r = m_floatingObjects->at(i);
             if (!r->noPaint || r->node->hasLayer()) {
                 int rp = r->left + r->node->marginLeft() + r->node->rightmostPosition(false);
                 right = max(right, rp);
@@ -2539,9 +2537,8 @@ int RenderBlock::leftmostPosition(bool includeOverflowInterior, bool includeSelf
     }
 
     if (m_floatingObjects) {
-        FloatingObject* r;
-        DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-        for ( ; (r = it.current()); ++it ) {
+        for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+            FloatingObject* r = m_floatingObjects->at(i);
             if (!r->noPaint || r->node->hasLayer()) {
                 int lp = r->left + r->node->marginLeft() + r->node->leftmostPosition(false);
                 left = min(left, lp);
@@ -2562,11 +2559,11 @@ RenderBlock::leftBottom()
 {
     if (!m_floatingObjects) return 0;
     int bottom=0;
-    FloatingObject* r;
-    DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-    for ( ; (r = it.current()); ++it )
+    for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+        FloatingObject* r = m_floatingObjects->at(i);
         if (r->endY > bottom && r->type() == FloatingObject::FloatLeft)
-            bottom=r->endY;
+            bottom = r->endY;
+    }
 
     return bottom;
 }
@@ -2576,11 +2573,11 @@ RenderBlock::rightBottom()
 {
     if (!m_floatingObjects) return 0;
     int bottom=0;
-    FloatingObject* r;
-    DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-    for ( ; (r = it.current()); ++it )
-        if (r->endY>bottom && r->type() == FloatingObject::FloatRight)
-            bottom=r->endY;
+    for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+        FloatingObject* r = m_floatingObjects->at(i);
+        if (r->endY > bottom && r->type() == FloatingObject::FloatRight)
+            bottom = r->endY;
+    }
 
     return bottom;
 }
@@ -2588,8 +2585,12 @@ RenderBlock::rightBottom()
 void
 RenderBlock::clearFloats()
 {
-    if (m_floatingObjects)
+    if (m_floatingObjects) {
+        for (unsigned i = 0; i < m_floatingObjects->size(); ++i)
+            delete m_floatingObjects->at(i);
         m_floatingObjects->clear();
+        m_unpositionedFloatStartIndex = 0;
+    }
 
     // Inline blocks are covered by the isReplaced() check in the avoidFloats method.
     if (avoidsFloats() || isRoot() || isRenderView() || isFloatingOrPositioned() || isTableCell())
@@ -2638,8 +2639,8 @@ void RenderBlock::addOverhangingFloats(RenderBlock* child, int xoff, int yoff)
     // Floats that will remain the child's responsiblity to paint should factor into its
     // visual overflow.
     IntRect floatsOverflowRect;
-    DeprecatedPtrListIterator<FloatingObject> it(*child->m_floatingObjects);
-    for (FloatingObject* r; (r = it.current()); ++it) {
+    for (unsigned idx = 0; idx < child->m_floatingObjects->size(); ++idx) {
+        FloatingObject* r = child->m_floatingObjects->at(idx);
         if (child->yPos() + r->endY > height()) {
             // If the object is not in the list, we add it now.
             if (!containsFloat(r->node)) {
@@ -2661,8 +2662,8 @@ void RenderBlock::addOverhangingFloats(RenderBlock* child, int xoff, int yoff)
                 
                 // We create the floating object list lazily.
                 if (!m_floatingObjects) {
-                    m_floatingObjects = new DeprecatedPtrList<FloatingObject>;
-                    m_floatingObjects->setAutoDelete(true);
+                    m_floatingObjects = new Vector<FloatingObject*>;
+                    m_unpositionedFloatStartIndex = 0;
                 }
                 m_floatingObjects->append(floatingObj);
             }
@@ -2682,17 +2683,18 @@ void RenderBlock::addIntrudingFloats(RenderBlock* prev, int xoff, int yoff)
     if (!prev->m_floatingObjects)
         return;
 
-    DeprecatedPtrListIterator<FloatingObject> it(*prev->m_floatingObjects);
-    for (FloatingObject *r; (r = it.current()); ++it) {
+    for (unsigned idx = 0; idx < prev->m_floatingObjects->size(); ++idx) {
+        FloatingObject* r = prev->m_floatingObjects->at(idx);
         if (r->endY > yoff) {
             // The object may already be in our list. Check for it up front to avoid
             // creating duplicate entries.
             FloatingObject* f = 0;
             if (m_floatingObjects) {
-                DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-                while ((f = it.current())) {
-                    if (f->node == r->node) break;
-                    ++it;
+                for (unsigned j = 0; j < m_floatingObjects->size(); ++j) {
+                    if (m_floatingObjects->at(j)->node == r->node) {
+                        f = m_floatingObjects->at(j);
+                        break;
+                    }
                 }
             }
             if (!f) {
@@ -2714,8 +2716,8 @@ void RenderBlock::addIntrudingFloats(RenderBlock* prev, int xoff, int yoff)
                 
                 // We create the floating object list lazily.
                 if (!m_floatingObjects) {
-                    m_floatingObjects = new DeprecatedPtrList<FloatingObject>;
-                    m_floatingObjects->setAutoDelete(true);
+                    m_floatingObjects = new Vector<FloatingObject*>;
+                    m_unpositionedFloatStartIndex = 0;
                 }
                 m_floatingObjects->append(floatingObj);
             }
@@ -2732,11 +2734,9 @@ bool RenderBlock::avoidsFloats() const
 bool RenderBlock::containsFloat(RenderObject* o)
 {
     if (m_floatingObjects) {
-        DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-        while (it.current()) {
-            if (it.current()->node == o)
+        for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+            if (m_floatingObjects->at(i)->node == o)
                 return true;
-            ++it;
         }
     }
     return false;
@@ -2859,9 +2859,8 @@ bool RenderBlock::nodeAtPoint(const HitTestRequest& request, HitTestResult& resu
                 scrolledY += static_cast<RenderView*>(this)->frameView()->contentsY();
             }
             
-            FloatingObject* o;
-            DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-            for (it.toLast(); (o = it.current()); --it) {
+            for (int i = static_cast<int>(m_floatingObjects->size()) - 1; i >= 0; --i) {
+                FloatingObject* o = m_floatingObjects->at(i);
                 if (!o->noPaint && !o->node->hasLayer()) {
                     int xoffset = scrolledX + o->left + o->node->marginLeft() - o->node->xPos();
                     int yoffset =  scrolledY + o->startY + o->node->marginTop() - o->node->yPos();
@@ -4284,9 +4283,8 @@ void RenderBlock::adjustForBorderFit(int x, int& left, int& right) const
         }
         
         if (m_floatingObjects) {
-            FloatingObject* r;
-            DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-            for (; (r = it.current()); ++it) {
+            for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+                FloatingObject* r = m_floatingObjects->at(i);
                 // Only examine the object if our noPaint flag isn't set.
                 if (!r->noPaint) {
                     int floatLeft = r->left - r->node->xPos() + r->node->marginLeft();
@@ -4392,11 +4390,9 @@ void RenderBlock::dump(TextStream *stream, DeprecatedString ind) const
     if (m_floatingObjects && !m_floatingObjects->isEmpty())
     {
         *stream << " special(";
-        DeprecatedPtrListIterator<FloatingObject> it(*m_floatingObjects);
-        FloatingObject *r;
         bool first = true;
-        for ( ; (r = it.current()); ++it )
-        {
+        for (unsigned i = 0; i < m_floatingObjects->size(); ++i) {
+            FloatingObject* r = m_floatingObjects->at(i);
             if (!first)
                 *stream << ",";
             *stream << r->node->renderName();

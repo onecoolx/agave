@@ -183,20 +183,21 @@ bool EventTargetNode::dispatchGenericEvent(PassRefPtr<Event> e, ExceptionCode&, 
     ASSERT(!evt->type().isNull()); // JavaScript code could create an event with an empty name
     
     // work out what nodes to send event to
-    DeprecatedPtrList<Node> nodeChain;
+    Vector<Node*> nodeChain;
     
     if (inDocument()) {
         for (Node* n = this; n; n = n->eventParentNode()) {
             n->ref();
-            nodeChain.prepend(n);
+            nodeChain.insert(0, n);
         } 
     } else {
         // if node is not in the document just send event to itself 
         ref();
-        nodeChain.prepend(this);
+        nodeChain.append(this);
     }
-    
-    DeprecatedPtrListIterator<Node> it(nodeChain);
+
+    unsigned chainSize = nodeChain.size();
+    unsigned index = 0;
     
     // Before we begin dispatching events, give the target node a chance to do some work prior
     // to the DOM event handlers getting a crack.
@@ -204,31 +205,34 @@ bool EventTargetNode::dispatchGenericEvent(PassRefPtr<Event> e, ExceptionCode&, 
     
     // trigger any capturing event handlers on our way down
     evt->setEventPhase(Event::CAPTURING_PHASE);
-    
-    it.toFirst();
+
+    index = 0;
     // Handle window events for capture phase, except load events, this quirk is needed
     // because Mozilla used to never propagate load events to the window object
-    if (evt->type() != loadEvent && it.current()->isDocumentNode() && !evt->propagationStopped())
-        static_cast<Document*>(it.current())->handleWindowEvent(evt.get(), true);
+    if (evt->type() != loadEvent && chainSize && nodeChain[0]->isDocumentNode() && !evt->propagationStopped())
+        static_cast<Document*>(nodeChain[0])->handleWindowEvent(evt.get(), true);
     
-    for (; it.current() && it.current() != this && !evt->propagationStopped(); ++it) {
-        evt->setCurrentTarget(EventTargetNodeCast(it.current()));
-        EventTargetNodeCast(it.current())->handleLocalEvents(evt.get(), true);
+    for (; index < chainSize && nodeChain[index] != this && !evt->propagationStopped(); ++index) {
+        evt->setCurrentTarget(EventTargetNodeCast(nodeChain[index]));
+        EventTargetNodeCast(nodeChain[index])->handleLocalEvents(evt.get(), true);
     }
     
     // dispatch to the actual target node
-    it.toLast();
+    if (chainSize)
+        index = chainSize - 1;
     if (!evt->propagationStopped()) {
         evt->setEventPhase(Event::AT_TARGET);
-        evt->setCurrentTarget(EventTargetNodeCast(it.current()));
+        evt->setCurrentTarget(EventTargetNodeCast(nodeChain[index]));
         
         // We do want capturing event listeners to be invoked here, even though
         // that violates the specification since Mozilla does it.
-        EventTargetNodeCast(it.current())->handleLocalEvents(evt.get(), true);
+        EventTargetNodeCast(nodeChain[index])->handleLocalEvents(evt.get(), true);
         
-        EventTargetNodeCast(it.current())->handleLocalEvents(evt.get(), false);
+        EventTargetNodeCast(nodeChain[index])->handleLocalEvents(evt.get(), false);
     }
-    --it;
+
+    if (index)
+        --index;
     
     // ok, now bubble up again (only non-capturing event handlers will be called)
     // ### recalculate the node chain here? (e.g. if target node moved in document by previous event handlers)
@@ -244,17 +248,21 @@ bool EventTargetNode::dispatchGenericEvent(PassRefPtr<Event> e, ExceptionCode&, 
     
     if (evt->bubbles()) {
         evt->setEventPhase(Event::BUBBLING_PHASE);
-        for (; it.current() && !evt->propagationStopped() && !evt->cancelBubble(); --it) {
-            evt->setCurrentTarget(EventTargetNodeCast(it.current()));
-            EventTargetNodeCast(it.current())->handleLocalEvents(evt.get(), false);
+        for (;; ) {
+            if (!chainSize || evt->propagationStopped() || evt->cancelBubble())
+                break;
+            evt->setCurrentTarget(EventTargetNodeCast(nodeChain[index]));
+            EventTargetNodeCast(nodeChain[index])->handleLocalEvents(evt.get(), false);
+            if (!index)
+                break;
+            --index;
         }
         // Handle window events for bubbling phase, except load events, this quirk is needed
         // because Mozilla used to never propagate load events at all
 
-        it.toFirst();
-        if (evt->type() != loadEvent && it.current()->isDocumentNode() && !evt->propagationStopped() && !evt->cancelBubble()) {
-            evt->setCurrentTarget(EventTargetNodeCast(it.current()));
-            static_cast<Document*>(it.current())->handleWindowEvent(evt.get(), false);
+        if (evt->type() != loadEvent && chainSize && nodeChain[0]->isDocumentNode() && !evt->propagationStopped() && !evt->cancelBubble()) {
+            evt->setCurrentTarget(EventTargetNodeCast(nodeChain[0]));
+            static_cast<Document*>(nodeChain[0])->handleWindowEvent(evt.get(), false);
         } 
     } 
     
@@ -268,17 +276,24 @@ bool EventTargetNode::dispatchGenericEvent(PassRefPtr<Event> e, ExceptionCode&, 
     
     // now we call all default event handlers (this is not part of DOM - it is internal to khtml)
     
-    it.toLast();
-    if (evt->bubbles())
-        for (; it.current() && !evt->defaultPrevented() && !evt->defaultHandled(); --it)
-            EventTargetNodeCast(it.current())->defaultEventHandler(evt.get());
-    else if (!evt->defaultPrevented() && !evt->defaultHandled())
-        EventTargetNodeCast(it.current())->defaultEventHandler(evt.get());
+    if (chainSize) {
+        unsigned defaultIndex = chainSize - 1;
+        if (evt->bubbles()) {
+            for (;; ) {
+                if (evt->defaultPrevented() || evt->defaultHandled())
+                    break;
+                EventTargetNodeCast(nodeChain[defaultIndex])->defaultEventHandler(evt.get());
+                if (!defaultIndex)
+                    break;
+                --defaultIndex;
+            }
+        } else if (!evt->defaultPrevented() && !evt->defaultHandled())
+            EventTargetNodeCast(nodeChain[defaultIndex])->defaultEventHandler(evt.get());
+    }
     
     // deref all nodes in chain
-    it.toFirst();
-    for (; it.current(); ++it)
-        it.current()->deref(); // this may delete us
+    for (unsigned i = 0; i < chainSize; ++i)
+        nodeChain[i]->deref(); // this may delete us
     
     Document::updateDocumentsRendering();
     

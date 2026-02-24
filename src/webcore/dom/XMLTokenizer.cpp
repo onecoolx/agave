@@ -53,6 +53,7 @@
 #include <libxml/parserInternals.h>
 #include <wtf/Platform.h>
 #include <wtf/StringExtras.h>
+#include <wtf/Deque.h>
 #include <wtf/Vector.h>
 
 #if ENABLE(XSLT)
@@ -78,7 +79,11 @@ class PendingCallbacks {
 public:
     PendingCallbacks()
     {
-        m_callbacks.setAutoDelete(true);
+    }
+
+    ~PendingCallbacks()
+    {
+        deleteAllValues(m_callbacks);
     }
     
     void appendStartElementNSCallback(const xmlChar* xmlLocalName, const xmlChar* xmlPrefix, const xmlChar* xmlURI, int nb_namespaces,
@@ -183,7 +188,7 @@ public:
 
     void callAndRemoveFirstCallback(XMLTokenizer* tokenizer)
     {
-        PendingCallback* cb = m_callbacks.getFirst();
+        PendingCallback* cb = m_callbacks.first();
             
         cb->call(tokenizer);
         m_callbacks.removeFirst();
@@ -332,7 +337,7 @@ private:
     };
     
 public:
-    DeprecatedPtrList<PendingCallback> m_callbacks;
+    Deque<PendingCallback*> m_callbacks;
 };
 // --------------------------------
 

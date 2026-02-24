@@ -258,7 +258,7 @@ static bool acceptsEditingFocus(Node *node)
     return frame->editor()->shouldBeginEditing(rangeOfContents(root).get());
 }
 
-DeprecatedPtrList<Document>*  Document::changedDocuments = 0;
+Vector<Document*>* Document::changedDocuments = 0;
 
 // FrameView might be 0
 Document::Document(DOMImplementation* impl, Frame* frame, bool isXHTML)
@@ -418,8 +418,14 @@ Document::~Document()
     }
 #endif
 
-    if (m_docChanged && changedDocuments)
-        changedDocuments->remove(this);
+    if (m_docChanged && changedDocuments) {
+        for (unsigned i = 0; i < changedDocuments->size(); ++i) {
+            if (changedDocuments->at(i) == this) {
+                changedDocuments->remove(i);
+                break;
+            }
+        }
+    }
     delete m_tokenizer;
     m_document.resetSkippingRef(0);
     delete m_styleSelector;
@@ -993,7 +999,7 @@ void Document::setDocumentChanged(bool b)
     if (b) {
         if (!m_docChanged) {
             if (!changedDocuments)
-                changedDocuments = new DeprecatedPtrList<Document>;
+                changedDocuments = new Vector<Document*>;
             changedDocuments->append(this);
         }
         if (m_accessKeyMapValid) {
@@ -1001,8 +1007,14 @@ void Document::setDocumentChanged(bool b)
             m_elementsByAccessKey.clear();
         }
     } else {
-        if (m_docChanged && changedDocuments)
-            changedDocuments->remove(this);
+        if (m_docChanged && changedDocuments) {
+            for (unsigned i = 0; i < changedDocuments->size(); ++i) {
+                if (changedDocuments->at(i) == this) {
+                    changedDocuments->remove(i);
+                    break;
+                }
+            }
+        }
     }
 
     m_docChanged = b;
@@ -1102,7 +1114,10 @@ void Document::updateDocumentsRendering()
     if (!changedDocuments)
         return;
 
-    while (Document* doc = changedDocuments->take()) {
+    // Process and clear in FIFO order.
+    while (!changedDocuments->isEmpty()) {
+        Document* doc = changedDocuments->at(0);
+        changedDocuments->remove(0);
         doc->m_docChanged = false;
         doc->updateRendering();
     }
@@ -2497,8 +2512,18 @@ void Document::removeImage(HTMLImageLoader* image)
 {
     // Remove instances of this image from both lists.
     // Use loops because we allow multiple instances to get into the lists.
-    while (m_imageLoadEventDispatchSoonList.removeRef(image)) { }
-    while (m_imageLoadEventDispatchingList.removeRef(image)) { }
+    for (unsigned i = 0; i < m_imageLoadEventDispatchSoonList.size();) {
+        if (m_imageLoadEventDispatchSoonList[i] == image)
+            m_imageLoadEventDispatchSoonList.remove(i);
+        else
+            ++i;
+    }
+    for (unsigned i = 0; i < m_imageLoadEventDispatchingList.size();) {
+        if (m_imageLoadEventDispatchingList[i] == image)
+            m_imageLoadEventDispatchingList.remove(i);
+        else
+            ++i;
+    }
     if (m_imageLoadEventDispatchSoonList.isEmpty())
         m_imageLoadEventTimer.stop();
 }
@@ -2516,15 +2541,13 @@ void Document::dispatchImageLoadEventsNow()
     
     m_imageLoadEventDispatchingList = m_imageLoadEventDispatchSoonList;
     m_imageLoadEventDispatchSoonList.clear();
-    for (DeprecatedPtrListIterator<HTMLImageLoader> it(m_imageLoadEventDispatchingList); it.current();) {
-        HTMLImageLoader* image = it.current();
-        // Must advance iterator *before* dispatching call.
-        // Otherwise, it might be advanced automatically if dispatching the call had a side effect
-        // of destroying the current HTMLImageLoader, and then we would advance past the *next* item,
-        // missing one altogether.
-        ++it;
-        image->dispatchLoadEvent();
-    }
+
+    // Iterate over a snapshot so that side effects during dispatch (including calling removeImage)
+    // do not cause us to skip items.
+    Vector<HTMLImageLoader*> toDispatch = m_imageLoadEventDispatchingList;
+    for (unsigned i = 0; i < toDispatch.size(); ++i)
+        toDispatch[i]->dispatchLoadEvent();
+
     m_imageLoadEventDispatchingList.clear();
 }
 

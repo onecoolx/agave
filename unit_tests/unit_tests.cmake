@@ -17,7 +17,7 @@ target_link_libraries(GTest::GTest INTERFACE gtest_main)
 add_library(GMock::GMock INTERFACE IMPORTED)
 target_link_libraries(GMock::GMock INTERFACE gmock_main)
 
-file(GLOB_RECURSE TESTS_SOURCES ${PROJ_ROOT}/unit_tests/*.cpp)
+file(GLOB_RECURSE TESTS_SOURCES CONFIGURE_DEPENDS ${PROJ_ROOT}/unit_tests/*.cpp)
 
 set(UNIT_TESTS unit_tests)
 

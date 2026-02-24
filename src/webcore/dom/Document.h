@@ -27,7 +27,6 @@
 
 #include "Attr.h"
 #include "Color.h"
-#include "DeprecatedPtrList.h"
 #include "DocumentMarker.h"
 #include "HTMLCollection.h"
 #include "HTMLFormElement.h"
@@ -37,6 +36,7 @@
 #include <wtf/Deque.h>
 #include <wtf/HashCountedSet.h>
 #include <wtf/ListHashSet.h>
+#include <wtf/Vector.h>
 
 namespace WebCore {
 
@@ -333,7 +333,7 @@ public:
     PassRefPtr<EditingText> createEditingTextNode(const String&);
 
     virtual void recalcStyle( StyleChange = NoChange );
-    static DeprecatedPtrList<Document>* changedDocuments;
+    static Vector<Document*>* changedDocuments;
     virtual void updateRendering();
     void updateLayout();
     void updateLayoutIgnorePendingStylesheets();
@@ -779,8 +779,8 @@ private:
     typedef HashMap<RefPtr<Node>, MarkerMapVectorPair*> MarkerMap;
     MarkerMap m_markers;
 
-    DeprecatedPtrList<HTMLImageLoader> m_imageLoadEventDispatchSoonList;
-    DeprecatedPtrList<HTMLImageLoader> m_imageLoadEventDispatchingList;
+    Vector<HTMLImageLoader*> m_imageLoadEventDispatchSoonList;
+    Vector<HTMLImageLoader*> m_imageLoadEventDispatchingList;
     Timer<Document> m_imageLoadEventTimer;
 
     Timer<Document> m_updateFocusAppearanceTimer;
