@@ -143,7 +143,7 @@ static void dealWithFail(ResourceHandle* job, CURLMsg* msg)
         responseCode = msg->data.result;
     }
 
-    ResourceError error(responseCode, job->request().url().url().ascii(), errorType);
+    ResourceError error(responseCode, job->request().url().url(), errorType);
     if (d->client())
         d->client()->didFail(job, error);
 }

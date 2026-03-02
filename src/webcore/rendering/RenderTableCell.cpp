@@ -855,7 +855,7 @@ void RenderTableCell::paintBoxDecorations(PaintInfo& paintInfo, int tx, int ty)
 }
 
 #ifndef NDEBUG
-void RenderTableCell::dump(TextStream* stream, DeprecatedString ind) const
+void RenderTableCell::dump(TextStream* stream, String ind) const
 {
     *stream << " row=" << row();
     *stream << " col=" << col();

@@ -94,7 +94,7 @@ void RenderTableCol::imageChanged(CachedImage* image)
 }
 
 #ifndef NDEBUG
-void RenderTableCol::dump(TextStream* stream, DeprecatedString ind) const
+void RenderTableCol::dump(TextStream* stream, String ind) const
 {
     *stream << " span=" << m_span;
     RenderContainer::dump(stream, ind);

@@ -414,7 +414,7 @@ static Frame* createWindow(JSContext* ctx, Frame* openerFrame, const String& url
         bool userGesture = static_cast<ScriptInterpreter *>(JS_GetContextOpaque(ctx))->wasRunByUserGesture();
         
         if (created) {
-            newFrame->loader()->changeLocation(KURL(completedURL.deprecatedString()), activeFrame->loader()->outgoingReferrer(), false, userGesture);
+            newFrame->loader()->changeLocation(KURL(completedURL), activeFrame->loader()->outgoingReferrer(), false, userGesture);
             if (Document* oldDoc = openerFrame->document()) {
                 newFrame->document()->setDomainInternal(oldDoc->domain());
                 newFrame->document()->setBaseURL(oldDoc->baseURL());
@@ -748,7 +748,7 @@ JSValue Window::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue 
     case Location_: {
       Frame* p = Window::retrieveActive(ctx)->impl()->frame();
       if (p) {
-        DeprecatedString dstUrl = p->loader()->completeURL(DeprecatedString(value->toString(exec))).url();
+        String dstUrl = p->loader()->completeURL(String(value->toString(exec))).url();
         if (!dstUrl.startsWith("javascript:", false) || isSafeScript(exec)) {
           bool userGesture = static_cast<ScriptInterpreter *>(exec->dynamicInterpreter())->wasRunByUserGesture();
           // We want a new history item if this JS was called via a user gesture
@@ -913,10 +913,10 @@ bool Window::isSafeScript(const ScriptInterpreter *origin, const ScriptInterpret
 
     if (Interpreter::shouldPrintExceptions()) {
         printf("Unsafe JavaScript attempt to access frame with URL %s from frame with URL %s. Domains must match.\n", 
-             targetDocument->URL().latin1(), originDocument->URL().latin1());
+             targetDocument->URL().latin1().data(), originDocument->URL().latin1().data());
     }
     String message = String::format("Unsafe JavaScript attempt to access frame with URL %s from frame with URL %s. Domains must match.\n", 
-                  targetDocument->URL().latin1(), originDocument->URL().latin1());
+                  targetDocument->URL().latin1().data(), originDocument->URL().latin1().data());
     if (Page* page = targetFrame->page())
         page->chrome()->addMessageToConsole(JSMessageSource, ErrorMessageLevel, message, 1, String()); // FIXME: provide a real line number and source URL.
 
@@ -1737,7 +1737,7 @@ JSValue Location::getValueProperty(JSContext * ctx, JSValueConst this_val, int t
     switch (token) {
         case Hash:
             {
-                DeprecatedString str;
+                String str;
                 if (url.ref().isNull()) {
                     str = "";
                 } else {
@@ -1759,7 +1759,7 @@ JSValue Location::getValueProperty(JSContext * ctx, JSValueConst this_val, int t
             return JS_NewString(ctx, url.host().utf8().data());
         case Href:
             {
-                DeprecatedString str = url.prettyURL();
+                String str = url.prettyURL();
                 if (!url.hasPath()) {
                     str += "/";
                 }
@@ -1767,7 +1767,7 @@ JSValue Location::getValueProperty(JSContext * ctx, JSValueConst this_val, int t
             }
         case Pathname:
             {
-                DeprecatedString str;
+                String str;
                 if (url.path().isEmpty()) {
                     str = "/";
                 } else {
@@ -1787,7 +1787,7 @@ JSValue Location::getValueProperty(JSContext * ctx, JSValueConst this_val, int t
             }
         case Protocol:
             {
-                DeprecatedString str = url.protocol() + ":";
+                String str = url.protocol() + ":";
                 return JS_NewString(ctx, str.utf8().data());
             }
         case Search:
@@ -1909,7 +1909,7 @@ JSValue LocationFunc::callAsFunction(JSContext* ctx, JSValueConst this_val, int 
             Frame *p = Window::retrieveActive(ctx)->impl()->frame();
             if (p) {
                 const Window *window = Window::retrieveWindow(frame);
-                DeprecatedString dstUrl = p->loader()->completeURL(DeprecatedString(valueToString(ctx, argv[0]))).url();
+                String dstUrl = p->loader()->completeURL(String(valueToString(ctx, argv[0]))).url();
                 if (!dstUrl.startsWith("javascript:", false) || (window && window->isSafeScript(ctx))) {
                     bool userGesture = static_cast<ScriptInterpreter *>(JS_GetContextOpaque(ctx))->wasRunByUserGesture();
                     // We want a new history item if this JS was called via a user gesture
@@ -1924,7 +1924,7 @@ JSValue LocationFunc::callAsFunction(JSContext* ctx, JSValueConst this_val, int 
                 return JS_NewString(ctx, "");
 
             if (!frame->loader()->url().hasPath())
-                return JS_NewString(ctx, DeprecatedString(frame->loader()->url().prettyURL() + "/").utf8().data());
+                return JS_NewString(ctx, (frame->loader()->url().prettyURL() + "/").utf8().data());
             return JS_NewString(ctx, frame->loader()->url().prettyURL().utf8().data());
         }
     }

@@ -26,13 +26,12 @@
 #ifndef KURL_h
 #define KURL_h
 
-#include "DeprecatedString.h"
+#include "PlatformString.h"
 #include <wtf/Platform.h>
 
 namespace WebCore {
 
     class KURL;
-    class String;
     class TextEncoding;
 
     bool operator==(const KURL&, const KURL&);
@@ -44,71 +43,61 @@ class KURL {
 public:
     KURL();
     KURL(const char*);
-    KURL(const KURL&, const DeprecatedString&);
-    KURL(const KURL&, const DeprecatedString&, const TextEncoding&);
-    KURL(const DeprecatedString&);
+    KURL(const KURL&, const String&);
+    KURL(const KURL&, const String&, const TextEncoding&);
+    KURL(const String&);
+
     bool isEmpty() const { return urlString.isEmpty(); } 
     bool isMalformed() const { return !m_isValid; }
     bool isValid() const { return m_isValid; }
     bool hasPath() const;
 
 	unsigned urlHash() const;
-    DeprecatedString url() const { return urlString; }
+    String url() const { return urlString; }
 
-    DeprecatedString protocol() const;
-    DeprecatedString host() const;
+    String protocol() const;
+    String host() const;
     unsigned short int port() const;
-    DeprecatedString user() const;
-    DeprecatedString pass() const;
-    DeprecatedString path() const;
-    DeprecatedString lastPathComponent() const;
-    DeprecatedString query() const;
-    DeprecatedString ref() const;
-    DeprecatedString localFile() const;
-    DeprecatedString ignoreRefURL() const;
+    String user() const;
+    String pass() const;
+    String path() const;
+    String lastPathComponent() const;
+    String query() const;
+    String ref() const;
+    String localFile() const;
+    String ignoreRefURL() const;
     bool hasRef() const;
 
-    DeprecatedString encodedHtmlRef() const { return ref(); }
+    String encodedHtmlRef() const { return ref(); }
 
-    void setProtocol(const DeprecatedString &);
-    void setHost(const DeprecatedString &);
-    void setPort(unsigned short int);
-    void setHostAndPort(const DeprecatedString&);
-    void setUser(const DeprecatedString &);
-    void setPass(const DeprecatedString &);
-    void setPath(const DeprecatedString &);
-    void setQuery(const DeprecatedString &);
-    void setRef(const DeprecatedString &);
-
-#if USE(QJS)
     void setProtocol(const String &);
     void setHost(const String &);
+    void setPort(unsigned short int);
     void setHostAndPort(const String&);
     void setUser(const String &);
     void setPass(const String &);
     void setPath(const String &);
     void setQuery(const String &);
     void setRef(const String &);
-#endif
 
-    DeprecatedString prettyURL() const;
+    String prettyURL() const;
 
     bool isLocalFile() const;
     bool isHttp() const;
     bool isFtp() const;
 
-    static DeprecatedString decode_string(const DeprecatedString&);
-    static DeprecatedString decode_string(const DeprecatedString&, const TextEncoding&);
-    static DeprecatedString encode_string(const DeprecatedString&);
+    static String decode_string(const String&);
+    static String decode_string(const String&, const TextEncoding&);
+    static String encode_string(const String&);
     
     friend bool operator==(const KURL &, const KURL &);
 
 private:
     bool isHierarchical() const;
-    void init(const KURL&, const DeprecatedString&, const TextEncoding&);
-    void parse(const char *url, const DeprecatedString *originalString);
+    void init(const KURL&, const String&, const TextEncoding&);
+    void parse(const char *url, const String *originalString);
 
-    DeprecatedString urlString;
+    String urlString;
 	mutable unsigned m_hash;
     bool m_isValid;
     int schemeEndPos;

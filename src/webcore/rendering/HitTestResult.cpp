@@ -240,7 +240,7 @@ KURL HitTestResult::absoluteImageURL() const
     else
         return KURL();
     
-    return KURL(m_innerNonSharedNode->document()->completeURL(parseURL(urlString).deprecatedString()));
+    return KURL(m_innerNonSharedNode->document()->completeURL(parseURL(urlString)));
 }
 
 KURL HitTestResult::absoluteLinkURL() const
@@ -258,7 +258,7 @@ KURL HitTestResult::absoluteLinkURL() const
     else
         return KURL();
 
-    return KURL(m_innerURLElement->document()->completeURL(parseURL(urlString).deprecatedString()));
+    return KURL(m_innerURLElement->document()->completeURL(parseURL(urlString)));
 }
 
 bool HitTestResult::isLiveLink() const

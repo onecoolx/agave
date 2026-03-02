@@ -110,7 +110,7 @@ void HTMLEmbedElement::parseMappedAttribute(MappedAttribute* attr)
         if (pos != -1)
             m_serviceType = m_serviceType.left(pos);
     } else if (attr->name() == codeAttr || attr->name() == srcAttr)
-         url = parseURL(val).deprecatedString();
+         url = parseURL(val);
     else if (attr->name() == pluginpageAttr || attr->name() == pluginspageAttr)
         m_pluginPage = val;
     else if (attr->name() == hiddenAttr) {

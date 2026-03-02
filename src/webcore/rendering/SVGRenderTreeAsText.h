@@ -28,7 +28,7 @@
 
 #if ENABLE(SVG)
 
-#include "DeprecatedString.h"
+#include "PlatformString.h"
 #include "TextStream.h"
 
 namespace WebCore {

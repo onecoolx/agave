@@ -452,7 +452,7 @@ void WebView::loadHtml(const char* str, const char* rurl)
 {
     stop();
 	String urlstr = String::fromUTF8(rurl);
-	KURL baseurl(urlstr.deprecatedString());
+	KURL baseurl(urlstr);
     ResourceRequest request(baseurl);
     RefPtr<WebCore::SharedBuffer> data = new SharedBuffer(str, strlen(str));
     SubstituteData substituteData(data, String("text/html"), String("utf-8"), KURL());
@@ -474,7 +474,7 @@ void WebView::loadUrl(const char* url, bool lc)
 
 	KURL Url;
 	if (0 == strncasecmp(url, "file://", 7)) {
-		DeprecatedString UrlStr = KURL::encode_string(DeprecatedString::fromUtf8(url));
+		String UrlStr = KURL::encode_string(String::fromUTF8(url));
 		Url = KURL(UrlStr);
 	} else {
 		Url = KURL(url);
@@ -482,7 +482,7 @@ void WebView::loadUrl(const char* url, bool lc)
 
     if (!Url.isValid()){ 
         //try to guess it is a http url.
-        DeprecatedString urlstr("http://");
+        String urlstr("http://");
         urlstr.append(url);
         Url = KURL(urlstr);
     }

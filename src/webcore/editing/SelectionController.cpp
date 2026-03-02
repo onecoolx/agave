@@ -1012,7 +1012,7 @@ void SelectionController::debugRenderer(RenderObject *r, bool selected) const
 {
     if (r->node()->isElementNode()) {
         Element *element = static_cast<Element *>(r->node());
-        fprintf(stderr, "%s%s\n", selected ? "==> " : "    ", element->localName().deprecatedString().latin1());
+        fprintf(stderr, "%s%s\n", selected ? "==> " : "    ", element->localName().domString().latin1().data());
     }
     else if (r->isText()) {
         RenderText* textRenderer = static_cast<RenderText*>(r);
@@ -1022,7 +1022,7 @@ void SelectionController::debugRenderer(RenderObject *r, bool selected) const
         }
         
         static const int max = 36;
-        DeprecatedString text = String(textRenderer->text()).deprecatedString();
+        String text = textRenderer->text();
         int textLength = text.length();
         if (selected) {
             int offset = 0;
@@ -1033,9 +1033,9 @@ void SelectionController::debugRenderer(RenderObject *r, bool selected) const
                 
             int pos;
             InlineTextBox *box = textRenderer->findNextInlineTextBox(offset, pos);
-            text = text.mid(box->m_start, box->m_len);
+            text = text.substring(box->m_start, box->m_len);
             
-            DeprecatedString show;
+            String show;
             int mid = max / 2;
             int caret = 0;
             
@@ -1053,19 +1053,19 @@ void SelectionController::debugRenderer(RenderObject *r, bool selected) const
             
             // enough characters on each side
             else if (pos - mid >= 0 && pos + mid <= textLength) {
-                show = "..." + text.mid(pos - mid + 3, max - 6) + "...";
+                show = "..." + text.substring(pos - mid + 3, max - 6) + "...";
                 caret = mid;
             }
             
             // too few characters on right
             else {
                 show = "..." + text.right(max - 3);
-                caret = pos - (textLength - show.length());
+                caret = pos - (textLength - (int)show.length());
             }
             
-            show.replace('\n', ' ');
-            show.replace('\r', ' ');
-            fprintf(stderr, "==> #text : \"%s\" at offset %d\n", show.latin1(), pos);
+            show = show.replace('\n', ' ');
+            show = show.replace('\r', ' ');
+            fprintf(stderr, "==> #text : \"%s\" at offset %d\n", show.latin1().data(), pos);
             fprintf(stderr, "           ");
             for (int i = 0; i < caret; i++)
                 fprintf(stderr, " ");
@@ -1076,7 +1076,7 @@ void SelectionController::debugRenderer(RenderObject *r, bool selected) const
                 text = text.left(max - 3) + "...";
             else
                 text = text.left(max);
-            fprintf(stderr, "    #text : \"%s\"\n", text.latin1());
+            fprintf(stderr, "    #text : \"%s\"\n", text.latin1().data());
         }
     }
 }

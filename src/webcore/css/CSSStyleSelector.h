@@ -25,7 +25,7 @@
 #define CSSStyleSelector_h
 
 #include "CSSFontSelector.h"
-#include "DeprecatedString.h"
+#include "PlatformString.h"
 #include "RenderStyle.h"
 #include <wtf/HashSet.h>
 #include <wtf/Vector.h>
@@ -103,9 +103,9 @@ class StyledElement;
         bool strictParsing;
         
         struct Encodedurl {
-            DeprecatedString host; //also contains protocol
-            DeprecatedString path;
-            DeprecatedString file;
+            String host; //also contains protocol
+            String path;
+            String file;
         } encodedurl;
         void setEncodedURL(const KURL& url);
         

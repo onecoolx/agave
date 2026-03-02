@@ -296,7 +296,7 @@ JSValue JSXMLHttpRequestPrototypeFunction::callAsFunction(JSContext* ctx, JSValu
             if (argc >= 1) {
                 Document* doc = (Document*)JS_GetOpaque(argv[0], JSDocument::js_class_id);
                 if (doc) {
-                    body = doc->toString().deprecatedString();
+                    body = doc->toString();
                 } else {
                     // converting certain values (like null) to object can set an exception
                     if (JS_HasException(ctx)) {

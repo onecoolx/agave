@@ -28,7 +28,6 @@
 #include "AtomicString.h"
 #include "CString.h"
 #include "CharacterNames.h"
-#include "DeprecatedString.h"
 #include "FloatConversion.h"
 #include "Length.h"
 #include "StringHash.h"
@@ -73,11 +72,6 @@ StringImpl* StringImpl::empty()
     static WithOneRef w;
     static StringImpl e(w);
     return &e;
-}
-
-StringImpl::StringImpl(const DeprecatedString& str)
-{
-    init(reinterpret_cast<const UChar*>(str.unicode()), str.length());
 }
 
 StringImpl::StringImpl(const UChar* str, unsigned len)
@@ -289,7 +283,16 @@ static Length parseLength(const UChar* m_data, unsigned int m_length)
         ++i;
 
     bool ok;
-    int r = DeprecatedConstString(m_data, i).string().toInt(&ok);
+    // Convert the UChar digits to a char buffer for strtol
+    char numBuf[32];
+    unsigned numLen = i < 31 ? i : 31;
+    for (unsigned j = 0; j < numLen; ++j)
+        numBuf[j] = (char)m_data[j];
+    numBuf[numLen] = '\0';
+    char* endPtr;
+    long lval = strtol(numBuf, &endPtr, 10);
+    int r = (int)lval;
+    ok = (endPtr != numBuf);
 
     /* Skip over any remaining digits, we are not that accurate (5.5% => 5%) */
     while (i < m_length && (Unicode::isDigit(m_data[i]) || m_data[i] == '.'))
@@ -335,53 +338,66 @@ Length* StringImpl::toCoordsArray(int& len) const
         else
             spacified[i] = cc;
     }
-    DeprecatedString str(spacified, m_length);
+    // Use StringImpl::simplifyWhiteSpace() directly on the spacified buffer
+    RefPtr<StringImpl> simplified = StringImpl(spacified, m_length).simplifyWhiteSpace();
     deleteUCharVector(spacified);
 
-    str = str.simplifyWhiteSpace();
+    const UChar* sdata = simplified->characters();
+    unsigned slen = simplified->length();
 
-    len = str.contains(' ') + 1;
+    // Count spaces to determine array length
+    len = 1;
+    for (unsigned i = 0; i < slen; ++i)
+        if (sdata[i] == ' ')
+            ++len;
+
     Length* r = new Length[len];
 
-    int i = 0;
-    int pos = 0;
-    int pos2;
-
-    while((pos2 = str.find(' ', pos)) != -1) {
-        r[i++] = parseLength(reinterpret_cast<const UChar*>(str.unicode()) + pos, pos2 - pos);
-        pos = pos2+1;
+    int idx = 0;
+    unsigned pos = 0;
+    for (unsigned i = 0; i <= slen; ++i) {
+        if (i == slen || sdata[i] == ' ') {
+            r[idx++] = parseLength(sdata + pos, i - pos);
+            pos = i + 1;
+        }
     }
-    r[i] = parseLength(reinterpret_cast<const UChar*>(str.unicode()) + pos, str.length() - pos);
 
     return r;
 }
 
 Length* StringImpl::toLengthArray(int& len) const
 {
-    DeprecatedString str(m_data, m_length);
-    str = str.simplifyWhiteSpace();
-    if (!str.length()) {
+    RefPtr<StringImpl> simplified = simplifyWhiteSpace();
+    if (!simplified->length()) {
         len = 1;
         return 0;
     }
 
-    len = str.contains(',') + 1;
+    const UChar* sdata = simplified->characters();
+    unsigned slen = simplified->length();
+
+    // Count commas
+    len = 1;
+    for (unsigned i = 0; i < slen; ++i)
+        if (sdata[i] == ',')
+            ++len;
+
     Length* r = new Length[len];
 
-    int i = 0;
-    int pos = 0;
-    int pos2;
-
-    while ((pos2 = str.find(',', pos)) != -1) {
-        r[i++] = parseLength(reinterpret_cast<const UChar*>(str.unicode()) + pos, pos2 - pos);
-        pos = pos2+1;
+    int idx = 0;
+    unsigned pos = 0;
+    for (unsigned i = 0; i <= slen; ++i) {
+        if (i == slen) {
+            /* IE Quirk: If the last comma is the last char skip it and reduce len by one */
+            if (i - pos > 0)
+                r[idx] = parseLength(sdata + pos, i - pos);
+            else
+                len--;
+        } else if (sdata[i] == ',') {
+            r[idx++] = parseLength(sdata + pos, i - pos);
+            pos = i + 1;
+        }
     }
-
-    /* IE Quirk: If the last comma is the last char skip it and reduce len by one */
-    if (str.length()-pos > 0)
-        r[i] = parseLength(reinterpret_cast<const UChar*>(str.unicode()) + pos, str.length() - pos);
-    else
-        len--;
 
     return r;
 }
@@ -623,7 +639,17 @@ int StringImpl::toInt(bool* ok) const
         if (!Unicode::isDigit(m_data[i]))
             break;
     
-    return DeprecatedConstString(m_data, i).string().toInt(ok);
+    {
+        char buf[32];
+        unsigned numLen = i < 31 ? i : 31;
+        for (unsigned j = 0; j < numLen; ++j)
+            buf[j] = (char)m_data[j];
+        buf[numLen] = '\0';
+        char* endPtr;
+        long val = strtol(buf, &endPtr, 10);
+        if (ok) *ok = (endPtr != buf && *endPtr == '\0');
+        return (int)val;
+    }
 }
 
 int64_t StringImpl::toInt64(bool* ok) const
@@ -644,7 +670,17 @@ int64_t StringImpl::toInt64(bool* ok) const
         if (!Unicode::isDigit(m_data[i]))
             break;
     
-    return DeprecatedConstString(m_data, i).string().toInt64(ok);
+    {
+        char buf[32];
+        unsigned numLen = i < 31 ? i : 31;
+        for (unsigned j = 0; j < numLen; ++j)
+            buf[j] = (char)m_data[j];
+        buf[numLen] = '\0';
+        char* endPtr;
+        int64_t val = (int64_t)strtoll(buf, &endPtr, 10);
+        if (ok) *ok = (endPtr != buf && *endPtr == '\0');
+        return val;
+    }
 }
 
 uint64_t StringImpl::toUInt64(bool* ok) const
@@ -661,7 +697,17 @@ uint64_t StringImpl::toUInt64(bool* ok) const
         if (!Unicode::isDigit(m_data[i]))
             break;
     
-    return DeprecatedConstString(m_data, i).string().toUInt64(ok);
+    {
+        char buf[32];
+        unsigned numLen = i < 31 ? i : 31;
+        for (unsigned j = 0; j < numLen; ++j)
+            buf[j] = (char)m_data[j];
+        buf[numLen] = '\0';
+        char* endPtr;
+        uint64_t val = (uint64_t)strtoull(buf, &endPtr, 10);
+        if (ok) *ok = (endPtr != buf && *endPtr == '\0');
+        return val;
+    }
 }
 
 double StringImpl::toDouble(bool* ok) const
@@ -841,6 +887,45 @@ int StringImpl::reverseFind(const UChar c, int index) const
             return -1;
         index--;
     }
+}
+
+int StringImpl::reverseFind(const char* chs, int index, bool caseSensitive) const
+{
+    if (!chs || !m_length)
+        return -1;
+
+    int chsLength = strlen(chs);
+    if (!chsLength)
+        return -1;
+
+    if (index < 0)
+        index += m_length;
+
+    // Clamp index to valid range
+    int maxStart = m_length - chsLength;
+    if (maxStart < 0)
+        return -1;
+    if (index > maxStart)
+        index = maxStart;
+
+    const char* chsPlusOne = chs + 1;
+    int chsLengthMinusOne = chsLength - 1;
+
+    if (caseSensitive) {
+        UChar c = *chs;
+        for (int i = index; i >= 0; --i) {
+            if (m_data[i] == c && equal(m_data + i + 1, chsPlusOne, chsLengthMinusOne))
+                return i;
+        }
+    } else {
+        UChar lc = Unicode::foldCase(*chs);
+        for (int i = index; i >= 0; --i) {
+            if (Unicode::foldCase(m_data[i]) == lc && equalIgnoringCase(m_data + i + 1, chsPlusOne, chsLengthMinusOne))
+                return i;
+        }
+    }
+
+    return -1;
 }
 
 int StringImpl::reverseFind(const StringImpl* str, int index, bool caseSensitive) const

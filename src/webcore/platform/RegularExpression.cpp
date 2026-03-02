@@ -27,6 +27,7 @@
 #include "RegularExpression.h"
 
 #include "Logging.h"
+#include "PlatformString.h"
 #include "Shared.h"
 #if HAVE(SYS_TYPES_H)
 #include <sys/types.h>
@@ -56,13 +57,13 @@ class RegularExpression::Private : public Shared<RegularExpression::Private>
 {
 public:
     Private();
-    Private(DeprecatedString pattern, bool caseSensitive, bool glob);
+    Private(String pattern, bool caseSensitive, bool glob);
     ~Private();
 
     void compile(bool caseSensitive, bool glob);
 
-    DeprecatedString pattern;
-    DeprecatedString lastMatchString;
+    String pattern;
+    String lastMatchString;
 #if ENABLE(KJS)
     pcre *regex;
     int lastMatchOffsets[maxOffsets];
@@ -79,27 +80,26 @@ RegularExpression::Private::Private() : pattern("")
     compile(true, false);
 }
 
-RegularExpression::Private::Private(DeprecatedString p, bool caseSensitive, bool glob) : pattern(p), lastMatchPos(-1), lastMatchLength(-1)
+RegularExpression::Private::Private(String p, bool caseSensitive, bool glob) : pattern(p), lastMatchPos(-1), lastMatchLength(-1)
 {
     compile(caseSensitive, glob);
 }
 
-static DeprecatedString RegExpFromGlob(DeprecatedString glob)
+static String RegExpFromGlob(String glob)
 {
-    DeprecatedString result = glob;
+    String result = glob;
 
     // escape regexp metacharacters which are NOT glob metacharacters
-
-    result.replace(RegularExpression("\\\\"), "\\\\");
-    result.replace(RegularExpression("\\."), "\\.");
-    result.replace(RegularExpression("\\+"), "\\+");
-    result.replace(RegularExpression("\\$"), "\\$");
+    result.replace("\\", "\\\\");
+    result.replace(".", "\\.");
+    result.replace("+", "\\+");
+    result.replace("$", "\\$");
     // FIXME: incorrect for ^ inside bracket group
-    result.replace(RegularExpression("\\^"), "\\^");
+    result.replace("^", "\\^");
 
     // translate glob metacharacters into regexp metacharacters
-    result.replace(RegularExpression("\\*"), ".*");
-    result.replace(RegularExpression("\\?"), ".");
+    result.replace("*", ".*");
+    result.replace("?", ".");
    
     // Require the glob to match the whole string
     result = "^" + result + "$";
@@ -109,7 +109,7 @@ static DeprecatedString RegExpFromGlob(DeprecatedString glob)
 
 void RegularExpression::Private::compile(bool caseSensitive, bool glob)
 {
-    DeprecatedString p;
+    String p;
 
     if (glob) {
         p = RegExpFromGlob(pattern);
@@ -123,7 +123,7 @@ void RegularExpression::Private::compile(bool caseSensitive, bool glob)
     const char *errorMessage;
 #if ENABLE(KJS)
     int errorOffset;
-    regex = pcre_compile(reinterpret_cast<const uint16_t *>(p.unicode()), p.length(), caseSensitive ? 0 : PCRE_CASELESS, &errorMessage, &errorOffset, NULL);
+    regex = pcre_compile(reinterpret_cast<const uint16_t *>(p.characters()), p.length(), caseSensitive ? 0 : PCRE_CASELESS, &errorMessage, &errorOffset, NULL);
 #endif
 
 #if ENABLE(QJS)
@@ -134,7 +134,7 @@ void RegularExpression::Private::compile(bool caseSensitive, bool glob)
         flags |= LRE_FLAG_IGNORECASE;
     }
     errorMessage = errorMsg;
-    uint8_t * regex = lre_compile(&relen, errorMsg, sizeof(errorMsg), reinterpret_cast<const char *>(p.unicode()), p.length() * 2, flags, 0);
+    uint8_t * regex = lre_compile(&relen, errorMsg, sizeof(errorMsg), reinterpret_cast<const char *>(p.characters()), p.length() * 2, flags, 0);
     if (regex) {
         regexBuf.resize(relen + 1);
         memcpy(regexBuf.data(), regex, relen);
@@ -160,7 +160,7 @@ RegularExpression::RegularExpression() : d(new RegularExpression::Private())
 {
 }
 
-RegularExpression::RegularExpression(const DeprecatedString &pattern, bool caseSensitive, bool glob) : d(new RegularExpression::Private(pattern, caseSensitive, glob))
+RegularExpression::RegularExpression(const String &pattern, bool caseSensitive, bool glob) : d(new RegularExpression::Private(pattern, caseSensitive, glob))
 {
 }
 
@@ -188,23 +188,23 @@ RegularExpression &RegularExpression::operator=(const RegularExpression &re)
     return *this;
 }
 
-DeprecatedString RegularExpression::pattern() const
+String RegularExpression::pattern() const
 {
     return d->pattern;
 }
 
-int RegularExpression::match(const DeprecatedString &str, int startFrom, int *matchLength) const
+int RegularExpression::match(const String &str, int startFrom, int *matchLength) const
 {
     d->lastMatchString = str;
 #if ENABLE(KJS)
     // First 2 offsets are start and end offsets; 3rd entry is used internally by pcre
-    d->lastMatchCount = pcre_exec(d->regex, NULL, reinterpret_cast<const uint16_t *>(d->lastMatchString.unicode()), d->lastMatchString.length(), startFrom, startFrom == 0 ? 0 : PCRE_NOTBOL, d->lastMatchOffsets, maxOffsets);
+    d->lastMatchCount = pcre_exec(d->regex, NULL, reinterpret_cast<const uint16_t *>(d->lastMatchString.characters()), d->lastMatchString.length(), startFrom, startFrom == 0 ? 0 : PCRE_NOTBOL, d->lastMatchOffsets, maxOffsets);
     if (d->lastMatchCount < 0) {
         if (d->lastMatchCount != PCRE_ERROR_NOMATCH)
             LOG_ERROR("RegularExpression: pcre_exec() failed with result %d", d->lastMatchCount);
         d->lastMatchPos = -1;
         d->lastMatchLength = -1;
-        d->lastMatchString = DeprecatedString();
+        d->lastMatchString = String();
         return -1;
     }
     // 1 means 1 match; 0 means more than one match. First match is recorded in offsets.
@@ -221,13 +221,13 @@ int RegularExpression::match(const DeprecatedString &str, int startFrom, int *ma
     WTF::Vector<uint8_t*> capture;
     int capture_count = lre_get_capture_count(d->regexBuf.data());
     capture.resize(capture_count * 2);
-    const uint8_t * str_buf = reinterpret_cast<const uint8_t*>(d->lastMatchString.unicode());
+    const uint8_t * str_buf = reinterpret_cast<const uint8_t*>(d->lastMatchString.characters());
     int rc = lre_exec(capture.data(), d->regexBuf.data(), str_buf, startFrom, d->lastMatchString.length(), 1, 0);
     if (rc != 1) {
         d->lastMatchCount = -1;
         d->lastMatchPos = -1;
         d->lastMatchLength = -1;
-        d->lastMatchString = DeprecatedString();
+        d->lastMatchString = String();
         return -1;
     }
 
@@ -241,7 +241,7 @@ int RegularExpression::match(const DeprecatedString &str, int startFrom, int *ma
 #endif
 }
 
-int RegularExpression::search(const DeprecatedString &str, int startFrom) const
+int RegularExpression::search(const String &str, int startFrom) const
 {
     if (startFrom < 0) {
         startFrom = str.length() - startFrom;
@@ -249,7 +249,7 @@ int RegularExpression::search(const DeprecatedString &str, int startFrom) const
     return match(str, startFrom, NULL);
 }
 
-int RegularExpression::searchRev(const DeprecatedString &str) const
+int RegularExpression::searchRev(const String &str) const
 {
     // FIXME: Total hack for now.  Search forward, return the last, greedy match
     int start = 0;
@@ -284,36 +284,36 @@ int RegularExpression::matchedLength() const
     return d->lastMatchLength;
 }
 
-DeprecatedString RegularExpression::cap(int n) const
+String RegularExpression::cap(int n) const
 {
 #if ENABLE(KJS)
     const pcre_char *substring = NULL;
-    int substringLength = pcre_get_substring(reinterpret_cast<const UChar16 *>(d->lastMatchString.unicode()), d->lastMatchOffsets, d->lastMatchCount, n, &substring);
+    int substringLength = pcre_get_substring(reinterpret_cast<const UChar16 *>(d->lastMatchString.characters()), d->lastMatchOffsets, d->lastMatchCount, n, &substring);
     if (substringLength > 0) {
-       DeprecatedString capture(substring, substringLength);
+       String capture(substring, substringLength);
        pcre_free_substring(substring);
        return capture;
     }
-    return DeprecatedString();
+    return String();
 #endif
 
 #if ENABLE(QJS)
     WTF::Vector<uint8_t*> capture;
     int capture_count = lre_get_capture_count(d->regexBuf.data());
     capture.resize(capture_count * 2);
-    const uint8_t * str_buf = reinterpret_cast<const uint8_t*>(d->lastMatchString.unicode());
+    const uint8_t * str_buf = reinterpret_cast<const uint8_t*>(d->lastMatchString.characters());
     int sidx = 0;
     while (sidx < n) {
         int rc = lre_exec(capture.data(), d->regexBuf.data(), str_buf, 0, d->lastMatchString.length(), 1, 0);
         if (rc != 1) {
-            return DeprecatedString();
+            return String();
         }
         sidx++;
     }
 
     int startPos = (capture[0] - str_buf) >> 1;
     int len = (capture[1] - capture[0]) >> 1;
-    DeprecatedString subString(str_buf + startPos, len);
+    String subString(d->lastMatchString.characters() + startPos, len);
     return subString;
 #endif
 }

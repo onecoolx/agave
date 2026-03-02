@@ -827,7 +827,7 @@ bool CSSParser::parseValue(int propId, bool important)
 #endif
                 if (!uri.isEmpty()) {
                     list->append(new CSSCursorImageValue(
-                                 String(KURL(styleElement->baseURL().deprecatedString(), uri.deprecatedString()).url()),
+                                 KURL(styleElement->baseURL(), uri).url(),
                                  hotspot, styleElement));
                 }
             }
@@ -890,7 +890,7 @@ bool CSSParser::parseValue(int propId, bool important)
             String uri = parseURL(domString(value->string));
             if (!uri.isEmpty()) {
                 parsedValue = new CSSImageValue(
-                    String(KURL(styleElement->baseURL().deprecatedString(), uri.deprecatedString()).url()),
+                    KURL(styleElement->baseURL(), uri).url(),
                     styleElement);
                 valueList->next();
             }
@@ -1095,7 +1095,7 @@ bool CSSParser::parseValue(int propId, bool important)
                 if (val->unit == CSSPrimitiveValue::CSS_URI) {
                     String value = parseURL(domString(val->string));
                     parsedValue = new CSSPrimitiveValue(
-                                    String(KURL(styleElement->baseURL().deprecatedString(), value.deprecatedString()).url()), 
+                                    KURL(styleElement->baseURL(), value).url(), 
                                     CSSPrimitiveValue::CSS_URI);
                 } 
                 
@@ -1764,7 +1764,7 @@ bool CSSParser::parseContent(int propId, bool important)
             // url
             String value = parseURL(domString(val->string));
             parsedValue = new CSSImageValue(
-                String(KURL(styleElement->baseURL().deprecatedString(), value.deprecatedString()).url()), styleElement);
+                KURL(styleElement->baseURL(), value).url(), styleElement);
         } else if (val->unit == Value::QFunction) {
             // attr(X) | counter(X [,Y]) | counters(X, Y, [,Z])
             ValueList *args = val->function->args;
@@ -1830,7 +1830,7 @@ bool CSSParser::parseBackgroundImage(CSSValue*& value)
     if (valueList->current()->unit == CSSPrimitiveValue::CSS_URI) {
         String uri = parseURL(domString(valueList->current()->string));
         if (!uri.isEmpty())
-            value = new CSSImageValue(String(KURL(styleElement->baseURL().deprecatedString(), uri.deprecatedString()).url()), 
+            value = new CSSImageValue(KURL(styleElement->baseURL(), uri).url(), 
                                          styleElement);
         return true;
     }
@@ -2454,28 +2454,28 @@ CSSValueList* CSSParser::parseFontFamily()
 
         if (value->id >= CSS_VAL_SERIF && value->id <= CSS_VAL__WEBKIT_BODY) {
             if (currFamily) {
-                currFamily->parsedFontName += ' ';
-                currFamily->parsedFontName += deprecatedString(value->string);
+                currFamily->parsedFontName.append(UChar(' '));
+                currFamily->parsedFontName += domString(value->string);
             }
             else if (nextValBreaksFont || !nextValIsFontName)
                 list->append(new CSSPrimitiveValue(value->id));
             else
-                list->append(currFamily = new FontFamilyValue(deprecatedString(value->string)));
+                list->append(currFamily = new FontFamilyValue(domString(value->string)));
         }
         else if (value->unit == CSSPrimitiveValue::CSS_STRING) {
             // Strings never share in a family name.
             currFamily = 0;
-            list->append(new FontFamilyValue(deprecatedString(value->string)));
+            list->append(new FontFamilyValue(domString(value->string)));
         }
         else if (value->unit == CSSPrimitiveValue::CSS_IDENT) {
             if (currFamily) {
-                currFamily->parsedFontName += ' ';
-                currFamily->parsedFontName += deprecatedString(value->string);
+                currFamily->parsedFontName.append(UChar(' '));
+                currFamily->parsedFontName += domString(value->string);
             }
             else if (nextValBreaksFont || !nextValIsFontName)
-                list->append(new FontFamilyValue(deprecatedString(value->string)));
+                list->append(new FontFamilyValue(domString(value->string)));
             else
-                list->append(currFamily = new FontFamilyValue(deprecatedString(value->string)));
+                list->append(currFamily = new FontFamilyValue(domString(value->string)));
         }
         else {
             break;
@@ -2513,7 +2513,7 @@ bool CSSParser::parseFontFaceSrc()
         parsedValue = 0;
         if (val->unit == CSSPrimitiveValue::CSS_URI && !expectComma) {
             String value = parseURL(domString(val->string));
-            parsedValue = new CSSFontFaceSrcValue(String(KURL(styleElement->baseURL().deprecatedString(), value.deprecatedString()).url()), false);
+            parsedValue = new CSSFontFaceSrcValue(KURL(styleElement->baseURL(), value).url(), false);
             uriValue = parsedValue;
             allowFormat = true;
         } else if (val->unit == Value::QFunction) {
@@ -2967,7 +2967,7 @@ bool CSSParser::parseBorderImage(int propId, bool important)
     if (uri.isEmpty())
         return false;
     
-    context.commitImage(new CSSImageValue(String(KURL(styleElement->baseURL().deprecatedString(), uri.deprecatedString()).url()),
+    context.commitImage(new CSSImageValue(KURL(styleElement->baseURL(), uri).url(),
                                                              styleElement));
     while ((val = valueList->next())) {
         if (context.allowNumber() && validUnit(val, FInteger|FNonNeg|FPercent, true)) {
@@ -3262,7 +3262,7 @@ int CSSParser::lex(void* yylvalWithoutType)
         length--;
     case FLOATTOKEN:
     case INTEGER:
-        yylval->val = DeprecatedString(t, length).toFloat();
+        yylval->val = String(t, length).toFloat();
         break;
 
     default:
@@ -3579,11 +3579,6 @@ CSSRule* CSSParser::createFontFaceRule()
     rule->setDeclaration(new CSSMutableStyleDeclaration(rule, parsedProperties, numParsedProperties));
     clearProperties();
     return rule;
-}
-
-DeprecatedString deprecatedString(const ParseString& ps)
-{
-    return DeprecatedString(ps.characters, ps.length);
 }
 
 #define YY_DECL int CSSParser::lex()

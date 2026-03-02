@@ -141,7 +141,7 @@ CachedXBLDocument* DocLoader::requestXBLDocument(const String& url)
 
 CachedResource* DocLoader::requestResource(CachedResource::Type type, const String& url, const String* charset, bool skipCanLoadCheck, bool sendResourceLoadCallbacks)
 {
-    KURL fullURL = m_doc->completeURL(url.deprecatedString());
+    KURL fullURL = m_doc->completeURL(url);
     
     if (cache()->disabled()) {
         HashMap<String, CachedResource*>::iterator it = m_docResources.find(fullURL.url());

@@ -413,7 +413,7 @@ HTMLTokenizer::State HTMLTokenizer::scriptHandler(State state)
         } else {
 #ifdef TOKEN_DEBUG
             kdDebug( 6036 ) << "---START SCRIPT---" << endl;
-            kdDebug( 6036 ) << DeprecatedString(scriptCode, scriptCodeSize) << endl;
+            kdDebug( 6036 ) << String(scriptCode, scriptCodeSize) << endl;
             kdDebug( 6036 ) << "---END SCRIPT---" << endl;
 #endif
             // Parse scriptCode containing <script> info
@@ -432,7 +432,7 @@ HTMLTokenizer::State HTMLTokenizer::scriptHandler(State state)
     }
 
     state = processListing(SegmentedString(scriptCode, scriptCodeSize), state);
-    DeprecatedString exScript(buffer, dest - buffer);
+    String exScript(buffer, dest - buffer);
     processToken();
     currToken.tagName = scriptTag.localName();
     currToken.beginTag = false;
@@ -474,7 +474,7 @@ HTMLTokenizer::State HTMLTokenizer::scriptHandler(State state)
             else
                 prependingSrc = src;
             setSrc(SegmentedString());
-            state = scriptExecution(exScript, state, DeprecatedString::null, scriptStartLineno);
+            state = scriptExecution(exScript, state, String(), scriptStartLineno);
         }
     }
 
@@ -507,12 +507,12 @@ HTMLTokenizer::State HTMLTokenizer::scriptHandler(State state)
     return state;
 }
 
-HTMLTokenizer::State HTMLTokenizer::scriptExecution(const DeprecatedString& str, State state, DeprecatedString scriptURL, int baseLine)
+HTMLTokenizer::State HTMLTokenizer::scriptExecution(const String& str, State state, String scriptURL, int baseLine)
 {
     if (m_fragment || !m_doc->frame())
         return state;
     m_executingScript++;
-    DeprecatedString url = scriptURL.isNull() ? m_doc->frame()->document()->URL() : scriptURL;
+    String url = scriptURL.isNull() ? m_doc->frame()->document()->URL() : scriptURL;
 
     SegmentedString *savedPrependingSrc = currentPrependingSrc;
     SegmentedString prependingSrc;
@@ -1198,7 +1198,7 @@ HTMLTokenizer::State HTMLTokenizer::parseTag(SegmentedString &src, State state)
 
             AtomicString tagName = currToken.tagName;
 #if defined(TOKEN_DEBUG) && TOKEN_DEBUG > 0
-            kdDebug( 6036 ) << "appending Tag: " << tagName.deprecatedString() << endl;
+            kdDebug( 6036 ) << "appending Tag: " << tagName << endl;
 #endif
 
             // Handle <script src="foo"/> like Mozilla/Opera. We have to do this now for Dashboard
@@ -1584,7 +1584,7 @@ void HTMLTokenizer::finish()
             food = "<";
             food.append(String(scriptCode, scriptCodeSize));
         } else {
-            pos = DeprecatedConstString(scriptCode, scriptCodeSize).string().find('>');
+            pos = String(scriptCode, scriptCodeSize).find('>');
             food = String(scriptCode + pos + 1, scriptCodeSize - pos - 1);
         }
         fastFree(scriptCode);
@@ -1619,7 +1619,7 @@ PassRefPtr<Node> HTMLTokenizer::processToken()
     if (dest > buffer) {
 #ifdef TOKEN_DEBUG
         if(currToken.tagName.length()) {
-            qDebug( "unexpected token: %s, str: *%s*", currToken.tagName.deprecatedString().latin1(),DeprecatedConstString( buffer,dest-buffer ).deprecatedString().latin1() );
+            qDebug( "unexpected token: %s, str: *%s*", currToken.tagName.latin1().data(), String(buffer, dest-buffer).latin1().data() );
             ASSERT(0);
         }
 
@@ -1644,10 +1644,10 @@ PassRefPtr<Node> HTMLTokenizer::processToken()
     dest = buffer;
 
 #ifdef TOKEN_DEBUG
-    DeprecatedString name = currToken.tagName.deprecatedString();
-    DeprecatedString text;
+    String name = currToken.tagName;
+    String text;
     if(currToken.text)
-        text = DeprecatedConstString(currToken.text->unicode(), currToken.text->length()).deprecatedString();
+        text = String(currToken.text->characters(), currToken.text->length());
 
     kdDebug( 6036 ) << "Token --> " << name << endl;
     if (currToken.flat)
@@ -1659,8 +1659,8 @@ PassRefPtr<Node> HTMLTokenizer::processToken()
         kdDebug( 6036 ) << "Attributes: " << l << endl;
         for (unsigned i = 0; i < l; ++i) {
             Attribute* c = currToken.attrs->attributeItem(i);
-            kdDebug( 6036 ) << "    " << c->localName().deprecatedString()
-                            << "=\"" << c->value().deprecatedString() << "\"" << endl;
+            kdDebug( 6036 ) << "    " << c->localName()
+                            << "=\"" << c->value() << "\"" << endl;
         }
     }
     kdDebug( 6036 ) << endl;
@@ -1748,13 +1748,13 @@ void HTMLTokenizer::notifyFinished(CachedResource*)
 
         String scriptSource = cs->script();
 #ifdef TOKEN_DEBUG
-        kdDebug( 6036 ) << "External script is:" << endl << scriptSource.deprecatedString() << endl;
+        kdDebug( 6036 ) << "External script is:" << endl << scriptSource << endl;
 #endif
         setSrc(SegmentedString());
 
         // make sure we forget about the script before we execute the new one
         // infinite recursion might happen otherwise
-        DeprecatedString cachedScriptUrl( cs->url().deprecatedString() );
+        String cachedScriptUrl(cs->url());
         bool errorOccurred = cs->errorOccurred();
         cs->deref(this);
         RefPtr<Node> n = scriptNode.release();
@@ -1768,7 +1768,7 @@ void HTMLTokenizer::notifyFinished(CachedResource*)
             EventTargetNodeCast(n.get())->dispatchHTMLEvent(errorEvent, true, false);
         else {
             if (static_cast<HTMLScriptElement*>(n.get())->shouldExecuteAsJavaScript())
-                m_state = scriptExecution(scriptSource.deprecatedString(), m_state, cachedScriptUrl);
+                m_state = scriptExecution(scriptSource, m_state, cachedScriptUrl);
             EventTargetNodeCast(n.get())->dispatchHTMLEvent(loadEvent, false, false);
         }
 

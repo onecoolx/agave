@@ -963,13 +963,12 @@ void CharacterIterator::advance(int count)
     m_runOffset = 0;
 }
 
-DeprecatedString CharacterIterator::string(int numChars)
+String CharacterIterator::string(int numChars)
 {
-    DeprecatedString result;
-    result.reserve(numChars);
+    String result;
     while (numChars > 0 && !atEnd()) {
         int runSize = min(numChars, length());
-        result.append(characters(), runSize);
+        result.append(String(characters(), runSize));
         numChars -= runSize;
         advance(runSize);
     }
@@ -1002,7 +1001,7 @@ WordAwareIterator::WordAwareIterator(const Range *r)
 void WordAwareIterator::advance()
 {
     m_previousText = 0;
-    m_buffer = "";      // toss any old buffer we built up
+    m_buffer = String();      // toss any old buffer we built up
 
     // If last time we did a look-ahead, start with that looked-ahead chunk now
     if (!m_didLookAhead) {
@@ -1039,10 +1038,10 @@ void WordAwareIterator::advance()
 
         if (m_buffer.isEmpty()) {
             // Start gobbling chunks until we get to a suitable stopping point
-            m_buffer.append(m_previousText, m_previousLength);
+            m_buffer.append(String(m_previousText, m_previousLength));
             m_previousText = 0;
         }
-        m_buffer.append(m_textIterator.characters(), m_textIterator.length());
+        m_buffer.append(String(m_textIterator.characters(), m_textIterator.length()));
         int exception = 0;
         m_range->setEnd(m_textIterator.range()->endContainer(exception), m_textIterator.range()->endOffset(exception), exception);
     }
@@ -1060,7 +1059,7 @@ int WordAwareIterator::length() const
 const UChar* WordAwareIterator::characters() const
 {
     if (!m_buffer.isEmpty())
-        return reinterpret_cast<const UChar*>(m_buffer.unicode());
+        return m_buffer.characters();
     if (m_previousText)
         return m_previousText;
     return m_textIterator.characters();
@@ -1318,13 +1317,13 @@ exit:
     return result;
 }
 
-DeprecatedString plainText(const Range* r)
+String plainText(const Range* r)
 {
     unsigned length;
     UChar* buf = plainTextToMallocAllocatedBuffer(r, length);
     if (!buf)
-        return DeprecatedString("");
-    DeprecatedString result(buf, length);
+        return String("");
+    String result(buf, length);
     free(buf);
     return result;
 }

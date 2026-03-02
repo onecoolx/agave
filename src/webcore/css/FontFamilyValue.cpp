@@ -61,7 +61,7 @@ static String quoteStringIfNeeded(const String& string)
     return "'" + quotedString + "'";
 }
 
-FontFamilyValue::FontFamilyValue(const DeprecatedString& string)
+FontFamilyValue::FontFamilyValue(const String& string)
     : CSSPrimitiveValue(String(), CSS_STRING)
 {
     static const RegularExpression parenReg(" \\(.*\\)$");
@@ -69,9 +69,13 @@ FontFamilyValue::FontFamilyValue(const DeprecatedString& string)
 
     parsedFontName = string;
     // a language tag is often added in braces at the end. Remove it.
-    parsedFontName.replace(parenReg, "");
+    int pos = parsedFontName.find(parenReg, 0);
+    if (pos >= 0)
+        parsedFontName = parsedFontName.substring(0, pos);
     // remove [Xft] qualifiers
-    parsedFontName.replace(braceReg, "");
+    pos = parsedFontName.find(braceReg, 0);
+    if (pos >= 0)
+        parsedFontName = parsedFontName.substring(0, pos);
 }
 
 String FontFamilyValue::cssText() const

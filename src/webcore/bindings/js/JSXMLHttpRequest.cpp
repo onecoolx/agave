@@ -238,7 +238,7 @@ JSValue* JSXMLHttpRequestPrototypeFunction::callAsFunction(ExecState* exec, JSOb
             Frame* frame = Window::retrieveActive(exec)->impl()->frame();
             if (!frame)
                 return jsUndefined();
-            KURL url = frame->loader()->completeURL(DeprecatedString(args[1]->toString(exec)));
+            KURL url = frame->loader()->completeURL(String(args[1]->toString(exec)));
 
             bool async = true;
             if (args.size() >= 3)
@@ -264,7 +264,7 @@ JSValue* JSXMLHttpRequestPrototypeFunction::callAsFunction(ExecState* exec, JSOb
             if (args.size() >= 1) {
                 if (args[0]->toObject(exec)->inherits(&JSDocument::info)) {
                     Document* doc = static_cast<Document*>(static_cast<JSDocument*>(args[0]->toObject(exec))->impl());
-                    body = doc->toString().deprecatedString();
+                    body = doc->toString();
                 } else {
                     // converting certain values (like null) to object can set an exception
                     if (exec->hadException())

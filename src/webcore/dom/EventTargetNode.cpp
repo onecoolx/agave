@@ -659,7 +659,7 @@ void EventTargetNode::defaultEventHandler(Event* event)
 
 #ifndef NDEBUG
 
-void EventTargetNode::dump(TextStream* stream, DeprecatedString ind) const
+void EventTargetNode::dump(TextStream* stream, String ind) const
 {
     if (m_regdListeners)
         *stream << " #regdListeners=" << m_regdListeners->size(); // ### more detail

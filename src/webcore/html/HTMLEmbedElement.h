@@ -70,7 +70,7 @@ public:
     SVGDocument* getSVGDocument(ExceptionCode&) const;
 #endif
 
-    DeprecatedString url;
+    String url;
     String m_pluginPage;
     String m_serviceType;
 };

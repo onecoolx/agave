@@ -112,7 +112,7 @@ public:
     virtual int borderBottomExtra() const { return m_bottomExtra; }
 
 #ifndef NDEBUG
-    virtual void dump(TextStream*, DeprecatedString ind = "") const;
+    virtual void dump(TextStream*, String ind = "") const;
 #endif
 
 protected:

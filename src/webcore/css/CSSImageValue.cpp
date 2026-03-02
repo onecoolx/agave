@@ -59,7 +59,7 @@ CachedImage* CSSImageValue::image(DocLoader* loader)
             m_image = loader->requestImage(getStringValue());
         else
             // FIXME: Should find a way to make these images sit in their own memory partition, since they are user agent images.
-            m_image = static_cast<CachedImage*>(cache()->requestResource(0, CachedResource::ImageResource, KURL(getStringValue().deprecatedString()), 0, 0));
+            m_image = static_cast<CachedImage*>(cache()->requestResource(0, CachedResource::ImageResource, KURL(getStringValue()), 0, 0));
 
         if (m_image)
             m_image->ref(this);

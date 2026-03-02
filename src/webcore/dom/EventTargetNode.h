@@ -89,7 +89,7 @@ public:
     virtual bool disabled() const;
     
 #ifndef NDEBUG
-    virtual void dump(TextStream*, DeprecatedString indent = "") const;
+    virtual void dump(TextStream*, String indent = "") const;
 #endif
 
     using Node::ref;

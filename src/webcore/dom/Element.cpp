@@ -587,14 +587,15 @@ void Element::setPrefix(const AtomicString &_prefix, ExceptionCode& ec)
 
 String Element::baseURI() const
 {
-    KURL xmlbase(getAttribute(baseAttr).deprecatedString());
+    const String& baseAttrStr = getAttribute(baseAttr);
+    KURL xmlbase(baseAttrStr);
 
     if (!xmlbase.protocol().isEmpty())
         return xmlbase.url();
 
     Node* parent = parentNode();
     if (parent)
-        return KURL(parent->baseURI().deprecatedString(), xmlbase.url()).url();
+        return KURL(KURL(parent->baseURI()), xmlbase.url()).url();
 
     return xmlbase.url();
 }
@@ -881,14 +882,14 @@ void Element::updateId(const AtomicString& oldId, const AtomicString& newId)
 }
 
 #ifndef NDEBUG
-void Element::dump(TextStream *stream, DeprecatedString ind) const
+void Element::dump(TextStream *stream, String ind) const
 {
     updateStyleAttributeIfNeeded();
     if (namedAttrMap) {
         for (unsigned i = 0; i < namedAttrMap->length(); i++) {
             Attribute *attr = namedAttrMap->attributeItem(i);
-            *stream << " " << attr->name().localName().deprecatedString().ascii()
-                    << "=\"" << attr->value().deprecatedString().ascii() << "\"";
+            *stream << " " << attr->name().localName().domString()
+                    << "=\"" << attr->value().domString() << "\"";
         }
     }
 
@@ -923,7 +924,7 @@ void Element::formatForDebugger(char *buffer, unsigned length) const
         result += s;
     }
           
-    strncpy(buffer, result.deprecatedString().latin1(), length - 1);
+    strncpy(buffer, result.latin1().data(), length - 1);
 }
 #endif
 

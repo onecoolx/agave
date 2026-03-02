@@ -490,9 +490,9 @@ static void writeSelection(TextStream& ts, const RenderObject* o)
            << "selection end:   position " << selection.end().offset() << " of " << nodePosition(selection.end().node()) << "\n";
 }
 
-DeprecatedString externalRepresentation(RenderObject* o)
+String externalRepresentation(RenderObject* o)
 {
-    DeprecatedString s;
+    String s;
     if (o) {
         TextStream ts(&s);
         ts.precision(2);

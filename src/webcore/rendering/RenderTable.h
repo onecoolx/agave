@@ -194,7 +194,7 @@ public:
     }
 
 #ifndef NDEBUG
-    virtual void dump(TextStream*, DeprecatedString ind = "") const;
+    virtual void dump(TextStream*, String ind = "") const;
 #endif
 
 private:

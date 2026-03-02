@@ -12,33 +12,34 @@ namespace WebCore {
 
 void parseDataUrl(ResourceHandle* handle)
 {
-    DeprecatedString data = handle->request().url().url();
+    String data = handle->request().url().url();
 
     ASSERT(data.startsWith("data:", false));
 
-    DeprecatedString header;
+    String header;
     bool base64 = false;
 
     int index = data.find(',');
     if (index != -1) {
-        header = data.mid(5, index - 5).lower();
-        data = data.mid(index + 1);
+        header = data.substring(5, index - 5).lower();
+        data = data.substring(index + 1);
 
         if (header.endsWith(";base64")) {
             base64 = true;
             header = header.left(header.length() - 7);
         }
     } else
-        data = DeprecatedString();
+        data = String();
 
     data = KURL::decode_string(data);
 
     if (base64) {
+        CString latin1Data = data.latin1();
         Vector<char> out;
-        if (base64Decode(data.ascii(), data.length(), out))
-            data = DeprecatedString(out.data(), out.size());
+        if (base64Decode(latin1Data.data(), latin1Data.length(), out))
+            data = String(out.data(), out.size());
         else
-            data = DeprecatedString();
+            data = String();
     }
 
     if (header.isEmpty())
@@ -55,8 +56,10 @@ void parseDataUrl(ResourceHandle* handle)
 
     client->didReceiveResponse(handle, response);
 
-    if (!data.isEmpty())
-        client->didReceiveData(handle, data.ascii(), data.length(), 0);
+    if (!data.isEmpty()) {
+        CString latin1Data = data.latin1();
+        client->didReceiveData(handle, latin1Data.data(), latin1Data.length(), 0);
+    }
 
     client->didFinishLoading(handle);
 }

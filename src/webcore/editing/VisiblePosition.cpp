@@ -253,7 +253,7 @@ void VisiblePosition::debugPosition(const char *msg) const
     if (isNull())
         fprintf(stderr, "Position [%s]: null\n", msg);
     else
-        fprintf(stderr, "Position [%s]: %s [%p] at %d\n", msg, m_deepPosition.node()->nodeName().deprecatedString().latin1(), m_deepPosition.node(), m_deepPosition.offset());
+        fprintf(stderr, "Position [%s]: %s [%p] at %d\n", msg, m_deepPosition.node()->nodeName().latin1().data(), m_deepPosition.node(), m_deepPosition.offset());
 }
 
 #ifndef NDEBUG

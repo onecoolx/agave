@@ -24,20 +24,20 @@
 #define FontFamilyValue_h
 
 #include "CSSPrimitiveValue.h"
-#include "DeprecatedString.h"
+#include "PlatformString.h"
 
 namespace WebCore {
 
 class FontFamilyValue : public CSSPrimitiveValue
 {
 public:
-    FontFamilyValue(const DeprecatedString& string);
-    const DeprecatedString& fontName() const { return parsedFontName; }
+    FontFamilyValue(const String& string);
+    const String& fontName() const { return parsedFontName; }
     int genericFamilyType() const { return m_genericFamilyType; }
 
     virtual String cssText() const;
 
-    DeprecatedString parsedFontName;
+    String parsedFontName;
 private:
     int m_genericFamilyType;
 };

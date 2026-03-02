@@ -26,7 +26,6 @@
 
 #include "DocPtr.h"
 #include "PlatformString.h"
-#include "DeprecatedString.h"
 #include <wtf/Assertions.h>
 #include <wtf/HashSet.h>
 #include <wtf/PassRefPtr.h>
@@ -365,7 +364,7 @@ public:
     virtual bool canStartSelection() const;
 
 #ifndef NDEBUG
-    virtual void dump(TextStream*, DeprecatedString indent = "") const;
+    virtual void dump(TextStream*, String indent = "") const;
 #endif
 
     // -----------------------------------------------------------------------------

@@ -30,7 +30,6 @@
 
 namespace WebCore {
 
-class DeprecatedString;
 class String;
 class TextStream;
 
@@ -40,7 +39,7 @@ TextStream& endl(TextStream&);
 
 class TextStream {
 public:
-    TextStream(DeprecatedString*);
+    TextStream(String*);
 
     TextStream& operator<<(char);
     TextStream& operator<<(short);
@@ -53,7 +52,6 @@ public:
     TextStream& operator<<(double);
     TextStream& operator<<(const char*);
     TextStream& operator<<(const String&);
-    TextStream& operator<<(const DeprecatedString&);
     TextStream& operator<<(void*);
 
     TextStream& operator<<(const TextStreamManipulator&);
@@ -66,7 +64,7 @@ private:
 
     bool m_hasByteArray;
     Vector<char> m_byteArray;
-    DeprecatedString* m_string;
+    String* m_string;
     int m_precision;
 };
 

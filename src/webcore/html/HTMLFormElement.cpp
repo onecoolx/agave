@@ -79,7 +79,7 @@ bool HTMLFormElement::formWouldHaveSecureSubmission(const String &url)
     if (url.isNull()) {
         return false;
     }
-    return document()->completeURL(url.deprecatedString()).startsWith("https:", false);
+    return document()->completeURL(url).startsWith("https:", false);
 }
 
 void HTMLFormElement::attach()
@@ -281,10 +281,10 @@ PassRefPtr<FormData> HTMLFormElement::formData(const char* boundary) const
                         hstr += "\"";
 
                         if (!static_cast<HTMLInputElement*>(current)->value().isEmpty()) {
-                            DeprecatedString mimeType = MIMETypeRegistry::getMIMETypeForPath(filename).deprecatedString();
+                            String mimeType = MIMETypeRegistry::getMIMETypeForPath(filename);
                             if (!mimeType.isEmpty()) {
                                 hstr += "\r\nContent-Type: ";
-                                hstr += mimeType.ascii();
+                                hstr += mimeType.latin1().data();
                             }
                         }
                         else

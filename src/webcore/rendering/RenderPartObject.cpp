@@ -63,8 +63,8 @@ RenderPartObject::~RenderPartObject()
 
 static bool isURLAllowed(Document *doc, const String &url)
 {
-    KURL newURL(doc->completeURL(url.deprecatedString()));
-    newURL.setRef(DeprecatedString::null);
+    KURL newURL(doc->completeURL(url));
+    newURL.setRef(String());
     
     if (doc->frame()->page()->frameCount() >= 200)
         return false;
@@ -74,7 +74,7 @@ static bool isURLAllowed(Document *doc, const String &url)
     bool foundSelfReference = false;
     for (Frame *frame = doc->frame(); frame; frame = frame->tree()->parent()) {
         KURL frameURL = frame->loader()->url();
-        frameURL.setRef(DeprecatedString::null);
+        frameURL.setRef(String());
         if (frameURL == newURL) {
             if (foundSelfReference)
                 return false;

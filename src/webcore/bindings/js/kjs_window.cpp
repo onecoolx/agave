@@ -393,7 +393,7 @@ static Frame* createWindow(ExecState* exec, Frame* openerFrame, const String& ur
         bool userGesture = static_cast<ScriptInterpreter *>(exec->dynamicInterpreter())->wasRunByUserGesture();
         
         if (created) {
-            newFrame->loader()->changeLocation(KURL(completedURL.deprecatedString()), activeFrame->loader()->outgoingReferrer(), false, userGesture);
+            newFrame->loader()->changeLocation(KURL(completedURL), activeFrame->loader()->outgoingReferrer(), false, userGesture);
             if (Document* oldDoc = openerFrame->document()) {
                 newFrame->document()->setDomainInternal(oldDoc->domain());
                 newFrame->document()->setBaseURL(oldDoc->baseURL());
@@ -725,7 +725,7 @@ void Window::put(ExecState* exec, const Identifier& propertyName, JSValue* value
     case Location_: {
       Frame* p = Window::retrieveActive(exec)->impl()->frame();
       if (p) {
-        DeprecatedString dstUrl = p->loader()->completeURL(DeprecatedString(value->toString(exec))).url();
+        String dstUrl = p->loader()->completeURL(String(value->toString(exec))).url();
         if (!dstUrl.startsWith("javascript:", false) || isSafeScript(exec)) {
           bool userGesture = static_cast<ScriptInterpreter *>(exec->dynamicInterpreter())->wasRunByUserGesture();
           // We want a new history item if this JS was called via a user gesture
@@ -892,10 +892,10 @@ bool Window::isSafeScript(const ScriptInterpreter *origin, const ScriptInterpret
 
     if (Interpreter::shouldPrintExceptions()) {
         printf("Unsafe JavaScript attempt to access frame with URL %s from frame with URL %s. Domains must match.\n", 
-             targetDocument->URL().latin1(), originDocument->URL().latin1());
+             targetDocument->URL().latin1().data(), originDocument->URL().latin1().data());
     }
     String message = String::format("Unsafe JavaScript attempt to access frame with URL %s from frame with URL %s. Domains must match.\n", 
-                  targetDocument->URL().latin1(), originDocument->URL().latin1());
+                  targetDocument->URL().latin1().data(), originDocument->URL().latin1().data());
     if (Page* page = targetFrame->page())
         page->chrome()->addMessageToConsole(JSMessageSource, ErrorMessageLevel, message, 1, String()); // FIXME: provide a real line number and source URL.
 
@@ -1728,7 +1728,7 @@ void Location::put(ExecState *exec, const Identifier &p, JSValue *v, int attr)
   if (!m_frame)
     return;
 
-  DeprecatedString str = v->toString(exec);
+  String str = v->toString(exec);
   KURL url = m_frame->loader()->url();
   const Window* window = Window::retrieveWindow(m_frame);
   bool sameDomainAccess = window && window->isSafeScript(exec);
@@ -1753,7 +1753,7 @@ void Location::put(ExecState *exec, const Identifier &p, JSValue *v, int attr)
       } 
       case Hash: {
           if (str.startsWith("#"))
-              str = str.mid(1);
+              str = str.substring(1);
           
           if (url.ref() == str)
               return;
@@ -1813,7 +1813,7 @@ JSValue *LocationFunc::callAsFunction(ExecState *exec, JSObject *thisObj, const 
     switch (id) {
     case Location::Replace:
     {
-      DeprecatedString str = args[0]->toString(exec);
+      String str = args[0]->toString(exec);
       Frame* p = Window::retrieveActive(exec)->impl()->frame();
       if ( p ) {
         const Window* window = Window::retrieveWindow(frame);
@@ -1838,7 +1838,7 @@ JSValue *LocationFunc::callAsFunction(ExecState *exec, JSObject *thisObj, const 
         Frame *p = Window::retrieveActive(exec)->impl()->frame();
         if (p) {
             const Window *window = Window::retrieveWindow(frame);
-            DeprecatedString dstUrl = p->loader()->completeURL(DeprecatedString(args[0]->toString(exec))).url();
+            String dstUrl = p->loader()->completeURL(String(args[0]->toString(exec))).url();
             if (!dstUrl.startsWith("javascript:", false) || (window && window->isSafeScript(exec))) {
                 bool userGesture = static_cast<ScriptInterpreter *>(exec->dynamicInterpreter())->wasRunByUserGesture();
                 // We want a new history item if this JS was called via a user gesture

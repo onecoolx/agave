@@ -38,7 +38,6 @@
 namespace WebCore {
 
 class AtomicString;
-class DeprecatedString;
 struct UCharBufferTranslator;
 struct CStringTranslator;
 struct Length;
@@ -120,6 +119,7 @@ public:
     int find(const StringImpl*, int index, bool caseSensitive = true) const;
 
     int reverseFind(UChar, int index) const;
+    int reverseFind(const char* str, int index, bool caseSensitive = true) const;
     int reverseFind(const StringImpl*, int index, bool caseSensitive = true) const;
     
     bool startsWith(const StringImpl* m_data, bool caseSensitive = true) const { return find(m_data, 0, caseSensitive) == 0; }
@@ -136,8 +136,6 @@ public:
     Vector<char> ascii() const;
 
     WTF::Unicode::Direction defaultWritingDirection() const;
-
-    StringImpl(const DeprecatedString&);
 
 private:
     unsigned m_length;

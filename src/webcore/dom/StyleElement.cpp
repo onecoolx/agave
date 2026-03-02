@@ -74,7 +74,7 @@ void StyleElement::createSheet(Element* e, const String& text)
         m_sheet = 0;
     }
 
-    String typeValue = e->isHTMLElement() ? type().deprecatedString().lower() : type();
+    String typeValue = e->isHTMLElement() ? type().domString().lower() : type().domString();
     if (typeValue.isEmpty() || typeValue == "text/css") { // Type must be empty or CSS
         RefPtr<MediaList> mediaList = new MediaList((CSSStyleSheet*)0, media(), e->isHTMLElement());
         MediaQueryEvaluator screenEval("screen", true);

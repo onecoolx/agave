@@ -379,7 +379,7 @@ void FrameLoader::changeLocation(const String& URL, const String& referrer, bool
 void FrameLoader::changeLocation(const KURL& URL, const String& referrer, bool lockHistory, bool userGesture)
 {
     if (URL.url().find("javascript:", 0, false) == 0) {
-        String script = KURL::decode_string(URL.url().mid(strlen("javascript:")));
+        String script = KURL::decode_string(URL.url().substring(strlen("javascript:")));
 #if ENABLE(KJS)
         JSValue* result = executeScript(script, userGesture);
         String scriptResult;
@@ -418,7 +418,7 @@ void FrameLoader::urlSelected(const ResourceRequest& request, const String& _tar
 
     const KURL& url = request.url();
     if (url.url().startsWith("javascript:", false)) {
-        executeScript(KURL::decode_string(url.url().mid(strlen("javascript:"))), true);
+        executeScript(KURL::decode_string(url.url().substring(strlen("javascript:"))), true);
         return;
     }
 
@@ -449,7 +449,7 @@ bool FrameLoader::requestFrame(HTMLFrameOwnerElement* ownerElement, const String
     KURL scriptURL;
     KURL url;
     if (urlString.startsWith("javascript:", false)) {
-        scriptURL = urlString.deprecatedString();
+        scriptURL = urlString;
         url = "about:blank";
     } else
         url = completeURL(urlString);
@@ -544,10 +544,10 @@ void FrameLoader::submitForm(const char* action, const String& url, PassRefPtr<F
     if (u.isEmpty())
         return;
 
-    DeprecatedString urlString = u.url();
+    String urlString = u.url();
     if (urlString.startsWith("javascript:", false)) {
         m_isExecutingJavaScriptFormAction = true;
-        executeScript(KURL::decode_string(urlString.mid(strlen("javascript:"))));
+        executeScript(KURL::decode_string(urlString.substring(strlen("javascript:"))));
         m_isExecutingJavaScriptFormAction = false;
         return;
     }
@@ -579,7 +579,7 @@ void FrameLoader::submitForm(const char* action, const String& url, PassRefPtr<F
             // Convention seems to be to decode, and s/&/\n/
             body = KURL::decode_string(
                 formData->flattenToString().replace('&', '\n')
-                .replace('+', ' ').deprecatedString()); // Recode for the URL
+                .replace('+', ' ')); // Recode for the URL
         else
             body = formData->flattenToString();
 
@@ -587,15 +587,15 @@ void FrameLoader::submitForm(const char* action, const String& url, PassRefPtr<F
         if (!query.isEmpty())
             query.append('&');
 #if ENABLE(KJS)
-        u.setQuery((query + "body=" + KURL::encode_string(body.deprecatedString())).deprecatedString());
+        u.setQuery(query + "body=" + KURL::encode_string(body));
 #else
-        u.setQuery((DeprecatedString(query + "body=") + KURL::encode_string(body.deprecatedString())));
+        u.setQuery(query + "body=" + KURL::encode_string(body));
 #endif
     }
 
     if (strcmp(action, "GET") == 0) {
         if (!mailtoForm)
-            u.setQuery(formData->flattenToString().deprecatedString());
+            u.setQuery(formData->flattenToString());
     } else {
         frameRequest.resourceRequest().setHTTPBody(formData.get());
         frameRequest.resourceRequest().setHTTPMethod("POST");
@@ -754,14 +754,14 @@ void FrameLoader::didExplicitOpen()
 void FrameLoader::replaceContentsWithScriptResult(const KURL& url)
 {
 #if ENABLE(KJS)
-    JSValue* result = executeScript(KURL::decode_string(url.url().mid(strlen("javascript:"))));
+    JSValue* result = executeScript(KURL::decode_string(url.url().substring(strlen("javascript:"))));
     String scriptResult;
     if (!getString(result, scriptResult))
         return;
 #endif
 #if ENABLE(QJS)
     ScriptController * controller = m_frame->script();
-    JSValue result = executeScript(KURL::decode_string(url.url().mid(strlen("javascript:"))));
+    JSValue result = executeScript(KURL::decode_string(url.url().substring(strlen("javascript:"))));
     String scriptResult;
     if (!getString(controller->context(), result, scriptResult))
         return;
@@ -971,9 +971,9 @@ void FrameLoader::begin(const KURL& url, bool dispatch)
     m_isDisplayingInitialEmptyDocument = m_creatingInitialEmptyDocument;
 
     KURL ref(url);
-    ref.setUser(DeprecatedString());
-    ref.setPass(DeprecatedString());
-    ref.setRef(DeprecatedString());
+    ref.setUser(String());
+    ref.setPass(String());
+    ref.setRef(String());
     m_outgoingReferrer = ref.url();
     m_URL = url;
     KURL baseurl;
@@ -1189,7 +1189,7 @@ void FrameLoader::gotoAnchor()
         !(m_frame->document() && m_frame->document()->getCSSTarget()))
         return;
 
-    DeprecatedString ref = m_URL.encodedHtmlRef();
+    String ref = m_URL.encodedHtmlRef();
     if (!gotoAnchor(ref)) {
         // Can't use htmlRef() here because it doesn't know which encoding to use to decode.
         // Decoding here has to match encoding in completeURL, which means it has to use the
@@ -1333,7 +1333,7 @@ String FrameLoader::baseTarget() const
 KURL FrameLoader::completeURL(const String& url)
 {
     ASSERT(m_frame->document());
-    return m_frame->document()->completeURL(url).deprecatedString();
+    return KURL(m_frame->document()->completeURL(url));
 }
 
 void FrameLoader::scheduleHTTPRedirection(double delay, const String& url)
@@ -1350,7 +1350,7 @@ void FrameLoader::scheduleLocationChange(const String& url, const String& referr
 {    
     // If the URL we're going to navigate to is the same as the current one, except for the
     // fragment part, we don't need to schedule the location change.
-    KURL u(url.deprecatedString());
+    KURL u(url);
     if (u.hasRef() && equalIgnoringRef(m_URL, u)) {
         changeLocation(url, referrer, lockHistory, wasUserGesture);
         return;
@@ -1852,7 +1852,7 @@ void FrameLoader::startRedirectionTimer()
         case ScheduledRedirection::redirection:
         case ScheduledRedirection::locationChange:
         case ScheduledRedirection::locationChangeDuringLoad:
-            clientRedirected(m_scheduledRedirection->URL.deprecatedString(),
+            clientRedirected(KURL(m_scheduledRedirection->URL),
                 m_scheduledRedirection->delay,
                 currentTime() + m_redirectionTimer.nextFireInterval(),
                 m_scheduledRedirection->lockHistory,

@@ -296,16 +296,16 @@ void CSSStyleSelector::setEncodedURL(const KURL& url)
 {
     KURL u = url;
 
-    u.setQuery(DeprecatedString::null);
-    u.setRef(DeprecatedString::null);
+    u.setQuery(String());
+    u.setRef(String());
     encodedurl.file = u.url();
-    int pos = encodedurl.file.findRev('/');
+    int pos = encodedurl.file.reverseFind('/');
     encodedurl.path = encodedurl.file;
     if (pos > 0) {
         encodedurl.path.truncate(pos);
-        encodedurl.path += '/';
+        encodedurl.path += "/";
     }
-    u.setPath(DeprecatedString::null);
+    u.setPath(String());
     encodedurl.host = u.url();
 }
 
@@ -554,15 +554,15 @@ void CSSStyleSelector::initForStyleResolve(Element* e, RenderStyle* defaultParen
 }
 
 // modified version of the one in kurl.cpp
-static void cleanpath(DeprecatedString &path)
+static void cleanpath(String &path)
 {
     int pos;
     while ((pos = path.find("/../")) != -1) {
         int prev = 0;
         if (pos > 0)
-            prev = path.findRev("/", pos -1);
+            prev = path.reverseFind("/", pos -1);
         // don't remove the host, i.e. http://foo.org/../foo.html
-        if (prev < 0 || (prev > 3 && path.findRev("://", prev-1) == prev-2))
+        if (prev < 0 || (prev > 3 && path.reverseFind("://", prev-1) == prev-2))
             path.remove(pos, 3);
         else
             // matching directory found ?
@@ -614,8 +614,7 @@ static void checkPseudoState(Element *e, bool checkVisited = true)
         return;
     }
     
-    DeprecatedConstString cu(attr.characters(), attr.length());
-    DeprecatedString u = cu.string();
+    String u(attr.characters(), attr.length());
     if (!u.contains("://")) {
         if (u[0] == '/')
             u.prepend(currentEncodedURL->host);

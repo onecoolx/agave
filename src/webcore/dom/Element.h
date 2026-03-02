@@ -162,7 +162,7 @@ public:
     void blur();
 
 #ifndef NDEBUG
-    virtual void dump(TextStream* , DeprecatedString ind = "") const;
+    virtual void dump(TextStream* , String ind = "") const;
     virtual void formatForDebugger(char* buffer, unsigned length) const;
 #endif
 

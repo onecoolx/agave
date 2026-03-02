@@ -275,8 +275,8 @@ void FTPDirectoryTokenizer::parseAndAppendOneLine(const String& inputLine)
 {
     ListResult result;
 
-    DeprecatedString depString = inputLine.deprecatedString();
-    const char* line = depString.ascii();
+    CString latin1Line = inputLine.latin1();
+    const char* line = latin1Line.data();
     
     FTPEntryType typeResult = parseOneFTPLine(line, m_listState, result);
     

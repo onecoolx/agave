@@ -61,8 +61,8 @@ bool HTMLFrameElementBase::isURLAllowed(const AtomicString& URLString) const
     if (URLString.isEmpty())
         return true;
 
-    KURL completeURL(document()->completeURL(URLString.deprecatedString()));
-    completeURL.setRef(DeprecatedString::null);
+    KURL completeURL(document()->completeURL(URLString));
+    completeURL.setRef(String());
 
     // Don't allow more than 200 total frames in a set. This seems
     // like a reasonable upper bound, and otherwise mutually recursive
@@ -81,7 +81,7 @@ bool HTMLFrameElementBase::isURLAllowed(const AtomicString& URLString) const
     bool foundSelfReference = false;
     for (Frame* frame = document()->frame(); frame; frame = frame->tree()->parent()) {
         KURL frameURL = frame->loader()->url();
-        frameURL.setRef(DeprecatedString::null);
+        frameURL.setRef(String());
         if (frameURL == completeURL) {
             if (foundSelfReference)
                 return false;

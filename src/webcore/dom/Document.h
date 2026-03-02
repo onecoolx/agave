@@ -358,23 +358,21 @@ public:
     void cancelParsing();
 
     void write(const String& text);
-    void write(const DeprecatedString &text);
     void writeln(const String& text);
     void finishParsing();
     void clear();
 
     bool wellFormed() const { return m_wellFormed; }
 
-    DeprecatedString URL() const { return m_url.isEmpty() ? "about:blank" : m_url; }
-    void setURL(const DeprecatedString& url);
+    String URL() const { return m_url.isEmpty() ? String("about:blank") : m_url; }
+    void setURL(const String& url);
 
-    DeprecatedString baseURL() const { return m_baseURL.isEmpty() ? URL() : m_baseURL; }
-    void setBaseURL(const DeprecatedString& baseURL);
+    String baseURL() const { return m_baseURL.isEmpty() ? URL() : m_baseURL; }
+    void setBaseURL(const String& baseURL);
 
     String baseTarget() const { return m_baseTarget; }
     void setBaseTarget(const String& baseTarget) { m_baseTarget = baseTarget; }
 
-    DeprecatedString completeURL(const DeprecatedString &);
     String completeURL(const String&);
 
     // from cachedObjectClient
@@ -692,8 +690,8 @@ private:
     DocLoader* m_docLoader;
     Tokenizer* m_tokenizer;
     bool m_wellFormed;
-    DeprecatedString m_url;
-    DeprecatedString m_baseURL;
+    String m_url;
+    String m_baseURL;
     String m_baseTarget;
 
     RefPtr<DocumentType> m_docType;

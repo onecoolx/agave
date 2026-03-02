@@ -88,7 +88,7 @@ static xmlDocPtr docLoaderFunc(const xmlChar *uri,
         case XSLT_LOAD_DOCUMENT: {
             xsltTransformContextPtr context = (xsltTransformContextPtr)ctxt;
             xmlChar *base = xmlNodeGetBase(context->document->doc, context->node);
-            KURL url((const char*)base, (const char*)uri);
+            KURL url(KURL((const char*)base), String((const char*)uri));
             xmlFree(base);
             ResourceError error;
             ResourceResponse response;
@@ -125,12 +125,12 @@ static inline void setXSLTLoadCallBack(xsltDocLoaderFunc func, XSLTProcessor *pr
 
 static int writeToQString(void *context, const char *buffer, int len)
 {
-    DeprecatedString &resultOutput = *static_cast<DeprecatedString *>(context);
-    resultOutput += DeprecatedString::fromUtf8(buffer, len);
+    String &resultOutput = *static_cast<String *>(context);
+    resultOutput += String::fromUTF8(buffer, len);
     return len;
 }
 
-static bool saveResultToString(xmlDocPtr resultDoc, xsltStylesheetPtr sheet, DeprecatedString &resultString)
+static bool saveResultToString(xmlDocPtr resultDoc, xsltStylesheetPtr sheet, String &resultString)
 {
     xmlOutputBufferPtr outputBuf = xmlAllocOutputBuffer(0);
     if (!outputBuf)
@@ -191,8 +191,8 @@ static void freeXsltParamArray(const char **params)
 }
 
 
-RefPtr<Document> XSLTProcessor::createDocumentFromSource(const DeprecatedString& sourceString,
-    const DeprecatedString& sourceEncoding, const DeprecatedString& sourceMIMEType, Node* sourceNode, Frame* frame)
+RefPtr<Document> XSLTProcessor::createDocumentFromSource(const String& sourceString,
+    const String& sourceEncoding, const String& sourceMIMEType, Node* sourceNode, Frame* frame)
 {
     RefPtr<Document> ownerDocument = sourceNode->document();
     bool sourceIsDocument = (sourceNode == ownerDocument.get());
@@ -232,7 +232,7 @@ RefPtr<Document> XSLTProcessor::createDocumentFromSource(const DeprecatedString&
     return result;
 }
 
-static inline RefPtr<DocumentFragment> createFragmentFromSource(DeprecatedString sourceString, DeprecatedString sourceMIMEType, Node *sourceNode, Document *outputDoc)
+static inline RefPtr<DocumentFragment> createFragmentFromSource(String sourceString, String sourceMIMEType, Node *sourceNode, Document *outputDoc)
 {
     RefPtr<DocumentFragment> fragment = new DocumentFragment(outputDoc);
     
@@ -273,13 +273,13 @@ static inline xmlDocPtr xmlDocPtrFromNode(Node *sourceNode, bool &shouldDelete)
     if (sourceIsDocument)
         sourceDoc = (xmlDocPtr)ownerDocument->transformSource();
     if (!sourceDoc) {
-        sourceDoc = (xmlDocPtr)xmlDocPtrForString(ownerDocument->docLoader(), createMarkup(sourceNode), sourceIsDocument ? ownerDocument->URL() : DeprecatedString());
+        sourceDoc = (xmlDocPtr)xmlDocPtrForString(ownerDocument->docLoader(), createMarkup(sourceNode), sourceIsDocument ? ownerDocument->URL() : String());
         shouldDelete = (sourceDoc != 0);
     }
     return sourceDoc;
 }
 
-static inline DeprecatedString resultMIMEType(xmlDocPtr resultDoc, xsltStylesheetPtr sheet)
+static inline String resultMIMEType(xmlDocPtr resultDoc, xsltStylesheetPtr sheet)
 {
     // There are three types of output we need to be able to deal with:
     // HTML (create an HTML document), XML (create an XML document),
@@ -291,14 +291,14 @@ static inline DeprecatedString resultMIMEType(xmlDocPtr resultDoc, xsltStyleshee
         resultType = (const xmlChar *)"html";
     
     if (xmlStrEqual(resultType, (const xmlChar *)"html"))
-        return DeprecatedString("text/html");
+        return String("text/html");
     else if (xmlStrEqual(resultType, (const xmlChar *)"text"))
-        return DeprecatedString("text/plain");
+        return String("text/plain");
         
-    return DeprecatedString("application/xml");
+    return String("application/xml");
 }
 
-bool XSLTProcessor::transformToString(Node *sourceNode, DeprecatedString &mimeType, DeprecatedString &resultString, DeprecatedString &resultEncoding)
+bool XSLTProcessor::transformToString(Node *sourceNode, String &mimeType, String &resultString, String &resultEncoding)
 {
     RefPtr<Document> ownerDocument = sourceNode->document();
     
@@ -341,7 +341,7 @@ bool XSLTProcessor::transformToString(Node *sourceNode, DeprecatedString &mimeTy
         
         if (success = saveResultToString(resultDoc, sheet, resultString)) {
             mimeType = resultMIMEType(resultDoc, sheet);
-            resultEncoding = (char *)resultDoc->encoding;
+            resultEncoding = String::fromUTF8((const char *)resultDoc->encoding);
         }
         xmlFreeDoc(resultDoc);
     }
@@ -356,9 +356,9 @@ bool XSLTProcessor::transformToString(Node *sourceNode, DeprecatedString &mimeTy
 
 RefPtr<Document> XSLTProcessor::transformToDocument(Node *sourceNode)
 {
-    DeprecatedString resultMIMEType;
-    DeprecatedString resultString;
-    DeprecatedString resultEncoding;
+    String resultMIMEType;
+    String resultString;
+    String resultEncoding;
     if (!transformToString(sourceNode, resultMIMEType, resultString, resultEncoding))
         return 0;
     return createDocumentFromSource(resultString, resultEncoding, resultMIMEType, sourceNode, 0);
@@ -366,9 +366,9 @@ RefPtr<Document> XSLTProcessor::transformToDocument(Node *sourceNode)
 
 RefPtr<DocumentFragment> XSLTProcessor::transformToFragment(Node* sourceNode, Document* outputDoc)
 {
-    DeprecatedString resultMIMEType;
-    DeprecatedString resultString;
-    DeprecatedString resultEncoding;
+    String resultMIMEType;
+    String resultString;
+    String resultEncoding;
 
     // If the output document is HTML, default to HTML method.
     if (outputDoc->isHTMLDocument())

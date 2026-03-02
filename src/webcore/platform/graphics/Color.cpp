@@ -26,7 +26,6 @@
 #include "config.h"
 #include "Color.h"
 
-#include "DeprecatedString.h"
 #include "PlatformString.h"
 #include <math.h>
 #include <wtf/Assertions.h>
@@ -95,7 +94,10 @@ bool Color::parseHexColor(const String& name, RGBA32& rgb)
     int len = name.length();
     if (len == 3 || len == 6) {
         bool ok;
-        int val = name.deprecatedString().toInt(&ok, 16);
+        CString latin1 = name.latin1();
+        char* end;
+        long val = strtol(latin1.data(), &end, 16);
+        ok = (end == latin1.data() + len);
         if (ok) {
             if (len == 6) {
                 rgb = 0xFF000000 | val;
@@ -149,8 +151,7 @@ String Color::name() const
 
 void Color::setNamedColor(const String& name)
 {
-    DeprecatedString dname = name.deprecatedString();
-    const NamedColor* foundColor = dname.isAllASCII() ? findColor(dname.latin1(), dname.length()) : 0;
+    const NamedColor* foundColor = name.isAllASCII() ? findColor(name.latin1().data(), name.length()) : 0;
     m_color = foundColor ? foundColor->RGBValue : 0;
     m_color |= 0xFF000000;
     m_valid = foundColor;

@@ -108,6 +108,7 @@
 #include "CSSRuleList.h"
 #include "CSSSelector.h"
 #include "CSSStyleSheet.h"
+#include "CString.h"
 #include "Document.h"
 #include "HTMLNames.h"
 #include "MediaList.h"
@@ -135,18 +136,26 @@ namespace WebCore {
 
 int getPropertyID(const char* tagStr, int len)
 {
-    DeprecatedString prop;
+    String prop;
 
     if (len && tagStr[0] == '-') {
-        prop = DeprecatedString(tagStr, len);
+        prop = String(tagStr, len);
         if (prop.startsWith("-apple-")) {
-            prop = "-webkit-" + prop.mid(7);
-            tagStr = prop.ascii();
+            prop = "-webkit-" + prop.substring(7);
+            CString propLatin1 = prop.latin1();
+            tagStr = propLatin1.data();
             len++;
+            const struct props* propsPtr = findProp(tagStr, (size_t)len);
+            if (!propsPtr) return 0;
+            return propsPtr->id;
         } else if (prop.startsWith("-khtml-")) {
-            prop = "-webkit-" + prop.mid(7);
+            prop = "-webkit-" + prop.substring(7);
             len++;
-            tagStr = prop.ascii();
+            CString propLatin1 = prop.latin1();
+            tagStr = propLatin1.data();
+            const struct props* propsPtr = findProp(tagStr, (size_t)len);
+            if (!propsPtr) return 0;
+            return propsPtr->id;
         }
 
         // Honor the use of old-style opacity (for Safari 1.1).
@@ -168,17 +177,25 @@ int getPropertyID(const char* tagStr, int len)
 
 static inline int getValueID(const char* tagStr, int len)
 {
-    DeprecatedString prop;
+    String prop;
     if (len && tagStr[0] == '-') {
-        prop = DeprecatedString(tagStr, len);
+        prop = String(tagStr, len);
         if (prop.startsWith("-apple-")) {
-            prop = "-webkit-" + prop.mid(7);
-            tagStr = prop.ascii();
+            prop = "-webkit-" + prop.substring(7);
+            CString propLatin1 = prop.latin1();
+            tagStr = propLatin1.data();
             len++;
+            const struct css_value* val = findValue(tagStr, (size_t)len);
+            if (!val) return 0;
+            return val->id;
         } else if (prop.startsWith("-khtml-")) {
-            prop = "-webkit-" + prop.mid(7);
+            prop = "-webkit-" + prop.substring(7);
             len++;
-            tagStr = prop.ascii();
+            CString propLatin1 = prop.latin1();
+            tagStr = propLatin1.data();
+            const struct css_value* val = findValue(tagStr, (size_t)len);
+            if (!val) return 0;
+            return val->id;
         }
     }
 
@@ -3145,8 +3162,9 @@ yyreduce:
 #line 996 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
     {
         (yyvsp[(1) - (2)].string).lower();
-        DeprecatedString str = deprecatedString((yyvsp[(1) - (2)].string));
-        const char* s = str.ascii();
+        String str(((yyvsp[(1) - (2)].string)).characters, ((yyvsp[(1) - (2)].string)).length);
+        CString strLatin1 = str.latin1();
+        const char* s = strLatin1.data();
         int l = str.length();
         (yyval.prop_id) = getPropertyID(s, l);
     }
@@ -3259,8 +3277,9 @@ yyreduce:
 /* Line 1806 of yacc.c  */
 #line 1051 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
     {
-      DeprecatedString str = deprecatedString((yyvsp[(1) - (2)].string));
-      (yyval.value).id = getValueID(str.lower().latin1(), str.length());
+      String str(((yyvsp[(1) - (2)].string)).characters, ((yyvsp[(1) - (2)].string)).length);
+      CString strLatin1 = str.lower().latin1();
+      (yyval.value).id = getValueID(strLatin1.data(), str.length());
       (yyval.value).unit = CSSPrimitiveValue::CSS_IDENT;
       (yyval.value).string = (yyvsp[(1) - (2)].string);
   }

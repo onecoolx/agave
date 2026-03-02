@@ -374,9 +374,9 @@ void XMLHttpRequest::open(const String& method, const KURL& url, bool async, Exc
         || methodUpper == "INDEX" || methodUpper == "LOCK" || methodUpper == "M-POST" || methodUpper == "MKCOL" || methodUpper == "MOVE" 
         || methodUpper == "OPTIONS" || methodUpper == "POST" || methodUpper == "PROPFIND" || methodUpper == "PROPPATCH" || methodUpper == "PUT" 
         || methodUpper == "TRACE" || methodUpper == "UNLOCK")
-        m_method = methodUpper.deprecatedString();
+        m_method = methodUpper;
     else
-        m_method = method.deprecatedString();
+        m_method = method;
 
     m_async = async;
 
@@ -386,7 +386,7 @@ void XMLHttpRequest::open(const String& method, const KURL& url, bool async, Exc
 void XMLHttpRequest::open(const String& method, const KURL& url, bool async, const String& user, ExceptionCode& ec)
 {
     KURL urlWithCredentials(url);
-    urlWithCredentials.setUser(user.deprecatedString());
+    urlWithCredentials.setUser(user);
     
     open(method, urlWithCredentials, async, ec);
 }
@@ -394,8 +394,8 @@ void XMLHttpRequest::open(const String& method, const KURL& url, bool async, con
 void XMLHttpRequest::open(const String& method, const KURL& url, bool async, const String& user, const String& password, ExceptionCode& ec)
 {
     KURL urlWithCredentials(url);
-    urlWithCredentials.setUser(user.deprecatedString());
-    urlWithCredentials.setPass(password.deprecatedString());
+    urlWithCredentials.setUser(user);
+    urlWithCredentials.setPass(password);
     
     open(method, urlWithCredentials, async, ec);
 }

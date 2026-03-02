@@ -1672,7 +1672,7 @@ void RenderObject::addPDFURLRect(GraphicsContext* graphicsContext, IntRect rect)
                     href = element->getAttribute(hrefAttr);
 
                 if (!href.isNull()) {
-                    KURL link = element->document()->completeURL(href.deprecatedString());
+                    KURL link(element->document()->completeURL(href));
                     graphicsContext->setURLForRect(link, rect);
                 }
             }
@@ -1943,9 +1943,9 @@ void RenderObject::dirtyLinesFromChangedChild(RenderObject* child)
 
 #ifndef NDEBUG
 
-DeprecatedString RenderObject::information() const
+String RenderObject::information() const
 {
-    DeprecatedString str;
+    String str;
     TextStream ts(&str);
     ts << renderName()
        << "(" << (style() ? style()->refCount() : 0) << ")"
@@ -1973,7 +1973,7 @@ DeprecatedString RenderObject::information() const
             ts << "anchor ";
         if (element()->focused())
             ts << "focus ";
-        ts << " <" << element()->localName().deprecatedString() << ">";
+        ts << " <" << element()->localName().domString() << ">";
         ts << " (" << xPos() << "," << yPos() << "," << width() << "," << height() << ")";
         if (isTableCell()) {
             const RenderTableCell* cell = static_cast<const RenderTableCell*>(this);
@@ -1983,7 +1983,7 @@ DeprecatedString RenderObject::information() const
     return str;
 }
 
-void RenderObject::dump(TextStream* stream, DeprecatedString ind) const
+void RenderObject::dump(TextStream* stream, String ind) const
 {
     if (isAnonymous())
         *stream << " anonymous";

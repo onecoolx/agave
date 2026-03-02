@@ -1304,7 +1304,7 @@ bool XMLTokenizer::isWaitingForScripts() const
 }
 
 #if ENABLE(XSLT)
-void* xmlDocPtrForString(DocLoader* docLoader, const String& source, const DeprecatedString& url)
+void* xmlDocPtrForString(DocLoader* docLoader, const String& source, const String& url)
 {
     if (source.isEmpty())
         return 0;
@@ -1321,9 +1321,10 @@ void* xmlDocPtrForString(DocLoader* docLoader, const String& source, const Depre
     setLoaderForLibXMLCallbacks(docLoader);        
     xmlSetGenericErrorFunc(0, errorFunc);
     
+    CString urlLatin1 = url.latin1();
     xmlDocPtr sourceDoc = xmlReadMemory(reinterpret_cast<const char*>(source.characters()),
                                         source.length() * sizeof(UChar),
-                                        url.ascii(),
+                                        urlLatin1.data(),
                                         BOMHighByte == 0xFF ? "UTF-16LE" : "UTF-16BE", 
                                         XSLT_PARSE_OPTIONS);
     

@@ -72,8 +72,6 @@ namespace WebCore {
         int unit;
     };
 
-    DeprecatedString deprecatedString(const ParseString&);
-
     static inline String domString(const ParseString& ps)
     {
         return String(ps.characters, ps.length);

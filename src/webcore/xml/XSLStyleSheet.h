@@ -51,7 +51,7 @@ public:
     virtual void checkLoaded();
 
     void loadChildSheets();
-    void loadChildSheet(const DeprecatedString& href);
+    void loadChildSheet(const String& href);
 
     xsltStylesheetPtr compileStyleSheet();
 

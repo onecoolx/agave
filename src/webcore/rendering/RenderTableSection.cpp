@@ -1078,7 +1078,7 @@ bool RenderTableSection::nodeAtPoint(const HitTestRequest& request, HitTestResul
 }
 
 #ifndef NDEBUG
-void RenderTableSection::dump(TextStream* stream, DeprecatedString ind) const
+void RenderTableSection::dump(TextStream* stream, String ind) const
 {
     *stream << endl << ind << "grid=(" << m_gridRows << "," << table()->numEffCols() << ")" << endl << ind;
     for (int r = 0; r < m_gridRows; r++) {

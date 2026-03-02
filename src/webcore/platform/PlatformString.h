@@ -28,10 +28,11 @@
 // on systems without case-sensitive file systems.
 
 #include "StringImpl.h"
+#include "CString.h"
 
 namespace WebCore {
 
-class CString;
+class RegularExpression;
     
 /**
  * Currently, strings are explicitly shared (they behave like pointers), meaning
@@ -77,11 +78,13 @@ public:
         { return m_impl ? m_impl->find(str, start, caseSensitive) : -1; }
     int find(const String& str, int start = 0, bool caseSensitive = true) const
         { return m_impl ? m_impl->find(str.impl(), start, caseSensitive) : -1; }
+    int find(const RegularExpression&, int start = 0) const;
 
     int reverseFind(UChar c, int start = -1) const
         { return m_impl ? m_impl->reverseFind(c, start) : -1; }
     int reverseFind(const String& str, int start = -1, bool caseSensitive = true) const
         { return m_impl ? m_impl->reverseFind(str.impl(), start, caseSensitive) : -1; }
+    int reverseFind(const char* str, int start = -1) const;
     
     bool startsWith(const String& s, bool caseSensitive = true) const
         { return m_impl ? m_impl->startsWith(s.impl(), caseSensitive) : s.isEmpty(); }
@@ -91,6 +94,7 @@ public:
     void append(const String&);
     void append(char);
     void append(UChar);
+    void prepend(const String&);
     void insert(const String&, unsigned pos);
     void insert(const UChar*, unsigned length, unsigned pos);
 
@@ -134,6 +138,9 @@ public:
     Vector<String> split(UChar separator, bool allowEmptyEntries = false) const;
 
     int toInt(bool* ok = 0) const;
+    short toShort(bool* ok = 0, int base = 10) const;
+    unsigned short toUShort(bool* ok = 0, int base = 10) const;
+    unsigned toUInt(bool* ok = 0, int base = 10) const;
     int64_t toInt64(bool* ok = 0) const;
     uint64_t toUInt64(bool* ok = 0) const;
     double toDouble(bool* ok = 0) const;
@@ -157,14 +164,15 @@ public:
     CString latin1() const;
     CString utf8() const;
 
+    void copyLatin1(char* buffer, unsigned position = 0, unsigned length = 0xffffffff) const;
+    bool isAllASCII() const;
+    bool hasFastLatin1() const;
+
     static String fromUTF8(const char*, size_t);
     static String fromUTF8(const char*);
 
     // Determines the writing direction using the Unicode Bidi Algorithm rules P2 and P3.
     WTF::Unicode::Direction defaultWritingDirection() const { return m_impl ? m_impl->defaultWritingDirection() : WTF::Unicode::LeftToRight; }
-    
-    String(const DeprecatedString&);
-    DeprecatedString deprecatedString() const;
     
 private:
     RefPtr<StringImpl> m_impl;
@@ -187,11 +195,6 @@ inline bool operator!=(const char* a, const String& b) { return !equal(a, b.impl
 inline bool equalIgnoringCase(const String& a, const String& b) { return equalIgnoringCase(a.impl(), b.impl()); }
 inline bool equalIgnoringCase(const String& a, const char* b) { return equalIgnoringCase(a.impl(), b); }
 inline bool equalIgnoringCase(const char* a, const String& b) { return equalIgnoringCase(a, b.impl()); }
-
-bool operator==(const String& a, const DeprecatedString& b);
-inline bool operator==(const DeprecatedString& b, const String& a) { return a == b; }
-inline bool operator!=(const String& a, const DeprecatedString& b) { return !(a == b); }
-inline bool operator!=(const DeprecatedString& b, const String& a ) { return !(a == b); }
 
 inline bool operator!(const String& str) { return str.isNull(); }
 

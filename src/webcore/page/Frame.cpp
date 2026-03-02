@@ -410,33 +410,33 @@ static RegularExpression *regExpForLabels(const Vector<String>& labels)
     // the same across calls.  We can't do that.
 
     static RegularExpression wordRegExp = RegularExpression("\\w");
-    DeprecatedString pattern("(");
+    String pattern("(");
     unsigned int numLabels = labels.size();
     unsigned int i;
     for (i = 0; i < numLabels; i++) {
-        DeprecatedString label = labels[i].deprecatedString();
+        const String& label = labels[i];
 
         bool startsWithWordChar = false;
         bool endsWithWordChar = false;
         if (label.length() != 0) {
-            startsWithWordChar = wordRegExp.search(label.at(0)) >= 0;
-            endsWithWordChar = wordRegExp.search(label.at(label.length() - 1)) >= 0;
+            UChar firstChar = label[0];
+            UChar lastChar = label[label.length() - 1];
+            startsWithWordChar = wordRegExp.search(String(&firstChar, 1)) >= 0;
+            endsWithWordChar = wordRegExp.search(String(&lastChar, 1)) >= 0;
         }
         
         if (i != 0)
-            pattern.append("|");
+            pattern.append(String("|"));
         // Search for word boundaries only if label starts/ends with "word characters".
         // If we always searched for word boundaries, this wouldn't work for languages
         // such as Japanese.
-        if (startsWithWordChar) {
-            pattern.append("\\b");
-        }
+        if (startsWithWordChar)
+            pattern.append(String("\\b"));
         pattern.append(label);
-        if (endsWithWordChar) {
-            pattern.append("\\b");
-        }
+        if (endsWithWordChar)
+            pattern.append(String("\\b"));
     }
-    pattern.append(")");
+    pattern.append(String(")"));
     return new RegularExpression(pattern, false);
 }
 
@@ -456,10 +456,10 @@ String Frame::searchForLabelsAboveCell(RegularExpression* regExp, HTMLTableCellE
                 for (Node* n = aboveCell->firstChild(); n; n = n->traverseNextNode(aboveCell)) {
                     if (n->isTextNode() && n->renderer() && n->renderer()->style()->visibility() == VISIBLE) {
                         // For each text chunk, run the regexp
-                        DeprecatedString nodeString = n->nodeValue().deprecatedString();
+                        String nodeString = n->nodeValue();
                         int pos = regExp->searchRev(nodeString);
                         if (pos >= 0)
-                            return nodeString.mid(pos, regExp->matchedLength());
+                            return nodeString.substring(pos, regExp->matchedLength());
                     }
                 }
             }
@@ -503,13 +503,13 @@ String Frame::searchForLabelsBeforeElement(const Vector<String>& labels, Element
             searchedCellAbove = true;
         } else if (n->isTextNode() && n->renderer() && n->renderer()->style()->visibility() == VISIBLE) {
             // For each text chunk, run the regexp
-            DeprecatedString nodeString = n->nodeValue().deprecatedString();
+            String nodeString = n->nodeValue();
             // add 100 for slop, to make it more likely that we'll search whole nodes
             if (lengthSearched + nodeString.length() > maxCharsSearched)
                 nodeString = nodeString.right(charsSearchedThreshold - lengthSearched);
             int pos = regExp->searchRev(nodeString);
             if (pos >= 0)
-                return nodeString.mid(pos, regExp->matchedLength());
+                return nodeString.substring(pos, regExp->matchedLength());
             else
                 lengthSearched += nodeString.length();
         }
@@ -525,9 +525,15 @@ String Frame::searchForLabelsBeforeElement(const Vector<String>& labels, Element
 
 String Frame::matchLabelsAgainstElement(const Vector<String>& labels, Element* element)
 {
-    DeprecatedString name = element->getAttribute(nameAttr).deprecatedString();
+    String name = element->getAttribute(nameAttr);
     // Make numbers and _'s in field names behave like word boundaries, e.g., "address2"
-    name.replace(RegularExpression("[[:digit:]]"), " ");
+    // Replace digits with spaces
+    unsigned nameLen = name.length();
+    for (unsigned i = 0; i < nameLen; i++) {
+        UChar c = name[i];
+        if (c >= '0' && c <= '9')
+            name.replace(i, 1, String(" "));
+    }
     name.replace('_', ' ');
     
     RegularExpression* regExp = regExpForLabels(labels);
@@ -550,7 +556,7 @@ String Frame::matchLabelsAgainstElement(const Vector<String>& labels, Element* e
     } while (pos != -1);
 
     if (bestPos != -1)
-        return name.mid(bestPos, bestLength);
+        return name.substring(bestPos, bestLength);
     return String();
 }
 

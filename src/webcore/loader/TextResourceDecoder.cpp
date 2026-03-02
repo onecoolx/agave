@@ -25,10 +25,10 @@
 
 #include "CString.h"
 #include "DOMImplementation.h"
-#include "DeprecatedString.h"
 #include "HTMLNames.h"
 #include "TextCodec.h"
 #include <wtf/ASCIICType.h>
+#include <wtf/Vector.h>
 
 using namespace WTF;
 
@@ -296,42 +296,50 @@ void TextResourceDecoder::setEncoding(const TextEncoding& encoding, EncodingSour
 }
 
 // Returns the position of the encoding string.
-static int findXMLEncoding(const DeprecatedString &str, int &encodingLength)
+// ptr/len refer to a Latin-1 byte buffer (the XML declaration bytes).
+static int findXMLEncoding(const char* ptr, int len, int &encodingLength)
 {
-    int len = str.length();
-
-    int pos = str.find("encoding");
+    // Find "encoding"
+    int pos = -1;
+    for (int i = 0; i <= len - 8; ++i) {
+        if (ptr[i] == 'e' && ptr[i+1] == 'n' && ptr[i+2] == 'c' && ptr[i+3] == 'o' &&
+            ptr[i+4] == 'd' && ptr[i+5] == 'i' && ptr[i+6] == 'n' && ptr[i+7] == 'g') {
+            pos = i + 8;
+            break;
+        }
+    }
     if (pos == -1)
         return -1;
-    pos += 8;
-    
+
     // Skip spaces and stray control characters.
-    while (str[pos] <= ' ' && pos != len)
+    while (pos < len && (unsigned char)ptr[pos] <= ' ')
         ++pos;
 
     // Skip equals sign.
-    if (str[pos] != '=')
+    if (pos >= len || ptr[pos] != '=')
         return -1;
     ++pos;
 
     // Skip spaces and stray control characters.
-    while (str[pos] <= ' ' && pos != len)
+    while (pos < len && (unsigned char)ptr[pos] <= ' ')
         ++pos;
 
     // Skip quotation mark.
-    char quoteMark = str[pos];
+    if (pos >= len)
+        return -1;
+    char quoteMark = ptr[pos];
     if (quoteMark != '"' && quoteMark != '\'')
         return -1;
     ++pos;
 
     // Find the trailing quotation mark.
     int end = pos;
-    while (str[end] != quoteMark)
+    while (end < len && ptr[end] != quoteMark)
         ++end;
 
     if (end == len)
         return -1;
-    
+
     encodingLength = end - pos;
     return pos;
 }
@@ -498,11 +506,12 @@ bool TextResourceDecoder::checkForHeadCharset(const char* data, size_t len, bool
             ++xmlDeclarationEnd;
         if (xmlDeclarationEnd == pEnd)
             return false;
-        DeprecatedString str(ptr, xmlDeclarationEnd - ptr); // No need for +1, because we have an extra "?" to lose at the end of XML declaration.
-        int len = 0;
-        int pos = findXMLEncoding(str, len);
+        // ptr..xmlDeclarationEnd is the XML declaration as Latin-1 bytes
+        int declLen = xmlDeclarationEnd - ptr;
+        int encLen = 0;
+        int pos = findXMLEncoding(ptr, declLen, encLen);
         if (pos != -1)
-            setEncoding(TextEncoding(str.mid(pos, len)), EncodingFromXMLHeader);
+            setEncoding(TextEncoding(String(ptr + pos, encLen)), EncodingFromXMLHeader);
         // continue looking for a charset - it may be specified in an HTTP-Equiv meta
     } else if (ptr[0] == '<' && ptr[1] == 0 && ptr[2] == '?' && ptr[3] == 0 && ptr[4] == 'x' && ptr[5] == 0) {
         setEncoding(UTF16LittleEndianEncoding(), AutoDetectedEncoding);
@@ -612,39 +621,52 @@ bool TextResourceDecoder::checkForHeadCharset(const char* data, size_t len, bool
             }
             
             if (!end && tag == metaTag && !sawNamespace) {
-                DeprecatedString str(tagContentStart, ptr - tagContentStart);
-                str = str.lower();
-                int pos = 0;
-                while (pos < (int)str.length()) {
-                    if ((pos = str.find("charset", pos, false)) == -1)
-                        break;
-                    pos += 7;
-                    // skip whitespace
-                    while (pos < (int)str.length() && str[pos] <= ' ')
-                        pos++;
-                    if (pos == (int)str.length())
-                        break;
-                    if (str[pos++] != '=')
-                        continue;
-                    while (pos < (int)str.length() &&
-                            (str[pos] <= ' ') || str[pos] == '=' || str[pos] == '"' || str[pos] == '\'')
-                        pos++;
+                // Work with the tag content as a plain char buffer (Latin-1)
+                int tagLen = ptr - tagContentStart;
+                // Build a lower-case copy for case-insensitive search
+                Vector<char> lowerBuf(tagLen + 1);
+                for (int li = 0; li < tagLen; ++li)
+                    lowerBuf[li] = (tagContentStart[li] >= 'A' && tagContentStart[li] <= 'Z')
+                                   ? (tagContentStart[li] + ('a' - 'A')) : tagContentStart[li];
+                lowerBuf[tagLen] = '\0';
+                const char* lbuf = lowerBuf.data();
 
-                    // end ?
-                    if (pos == (int)str.length())
+                int pos = 0;
+                while (pos < tagLen) {
+                    // find "charset"
+                    const char* found = 0;
+                    for (int si = pos; si <= tagLen - 7; ++si) {
+                        if (lbuf[si]=='c' && lbuf[si+1]=='h' && lbuf[si+2]=='a' && lbuf[si+3]=='r' &&
+                            lbuf[si+4]=='s' && lbuf[si+5]=='e' && lbuf[si+6]=='t') {
+                            found = lbuf + si;
+                            pos = si + 7;
+                            break;
+                        }
+                    }
+                    if (!found)
                         break;
-                    unsigned endpos = pos;
-                    while (endpos < str.length() &&
-                           str[endpos] != ' ' && str[endpos] != '"' && str[endpos] != '\'' &&
-                           str[endpos] != ';' && str[endpos] != '>')
+                    // skip whitespace
+                    while (pos < tagLen && (unsigned char)lbuf[pos] <= ' ')
+                        pos++;
+                    if (pos >= tagLen)
+                        break;
+                    if (lbuf[pos++] != '=')
+                        continue;
+                    while (pos < tagLen &&
+                            ((unsigned char)lbuf[pos] <= ' ' || lbuf[pos] == '=' || lbuf[pos] == '"' || lbuf[pos] == '\''))
+                        pos++;
+                    if (pos >= tagLen)
+                        break;
+                    int endpos = pos;
+                    while (endpos < tagLen &&
+                           lbuf[endpos] != ' ' && lbuf[endpos] != '"' && lbuf[endpos] != '\'' &&
+                           lbuf[endpos] != ';' && lbuf[endpos] != '>')
                         endpos++;
-                    setEncoding(TextEncoding(str.mid(pos, endpos - pos)), EncodingFromMetaTag);
+                    setEncoding(TextEncoding(String(tagContentStart + pos, endpos - pos)), EncodingFromMetaTag);
                     if (m_source == EncodingFromMetaTag)
                         return true;
-
-                    if (endpos >= str.length() || str[endpos] == '/' || str[endpos] == '>')
+                    if (endpos >= tagLen || lbuf[endpos] == '/' || lbuf[endpos] == '>')
                         break;
-
                     pos = endpos + 1;
                 }
             } else if (tag != scriptTag && tag != noscriptTag && tag != styleTag &&

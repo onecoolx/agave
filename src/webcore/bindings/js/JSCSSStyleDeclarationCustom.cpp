@@ -30,9 +30,9 @@
 #include "CSSPrimitiveValue.h"
 #include "CSSStyleDeclaration.h"
 #include "CSSValue.h"
-#include "DeprecatedString.h"
 #include "PlatformString.h"
 #include <kjs/string_object.h>
+#include <wtf/Vector.h>
 
 namespace WebCore {
 
@@ -40,36 +40,45 @@ using namespace KJS;
 
 static String cssPropertyName(const Identifier& propertyName, bool* hadPixelOrPosPrefix = 0)
 {
-    DeprecatedString prop = propertyName;
+    // CSS property names are ASCII, so we can work with the ascii representation
+    const char* ascii = propertyName.ascii();
+    if (!ascii || !ascii[0])
+        return String();
 
-    int i = prop.length();
-
-    if (!i)
-        return prop;
-
-    while (--i) {
-        ::UChar c = prop[i];
-        if (c >= 'A' && c <= 'Z')
-            prop.insert(i, '-');
+    // Build a modified string: insert '-' before uppercase letters, then lowercase
+    // Use a Vector<char> for efficiency
+    int len = propertyName.size();
+    Vector<char> buf;
+    buf.reserveCapacity(len + 8);
+    for (int i = 0; i < len; ++i) {
+        char c = ascii[i];
+        if (c >= 'A' && c <= 'Z') {
+            buf.append('-');
+            buf.append(c - 'A' + 'a');
+        } else {
+            buf.append(c);
+        }
     }
+    buf.append('\0');
 
-    prop = prop.lower();
+    String prop(buf.data());
 
     if (hadPixelOrPosPrefix)
         *hadPixelOrPosPrefix = false;
 
     if (prop.startsWith("css-"))
-        prop = prop.mid(4);
+        prop = prop.substring(4);
     else if (prop.startsWith("pixel-")) {
-        prop = prop.mid(6);
+        prop = prop.substring(6);
         if (hadPixelOrPosPrefix)
             *hadPixelOrPosPrefix = true;
     } else if (prop.startsWith("pos-")) {
-        prop = prop.mid(4);
+        prop = prop.substring(4);
         if (hadPixelOrPosPrefix)
             *hadPixelOrPosPrefix = true;
-    } else if (prop.startsWith("khtml-") || prop.startsWith("apple-") || prop.startsWith("webkit-"))
-        prop.insert(0, '-');
+    } else if (prop.startsWith("khtml-") || prop.startsWith("apple-") || prop.startsWith("webkit-")) {
+        prop = "-" + prop;
+    }
 
     return prop;
 }

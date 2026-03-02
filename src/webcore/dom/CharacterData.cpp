@@ -295,9 +295,9 @@ bool CharacterData::offsetInCharacters() const
 }
 
 #ifndef NDEBUG
-void CharacterData::dump(TextStream *stream, DeprecatedString ind) const
+void CharacterData::dump(TextStream *stream, String ind) const
 {
-    *stream << " str=\"" << String(str).deprecatedString().ascii() << "\"";
+    *stream << " str=\"" << String(str) << "\"";
 
     EventTargetNode::dump(stream,ind);
 }

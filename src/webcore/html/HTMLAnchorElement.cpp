@@ -199,9 +199,9 @@ void HTMLAnchorElement::defaultEventHandler(Event* evt)
                     int x = e->pageX() - absx;
                     int y = e->pageY() - absy;
                     url += "?";
-                    url += DeprecatedString::number(x);
+                    url += String::number(x);
                     url += ",";
-                    url += DeprecatedString::number(y);
+                    url += String::number(y);
                 } else {
                     evt->setDefaultHandled();
                     HTMLElement::defaultEventHandler(evt);
@@ -425,17 +425,17 @@ void HTMLAnchorElement::setType(const String &value)
 
 String HTMLAnchorElement::hash() const
 {
-    return '#' + KURL(href().deprecatedString()).ref();
+    return "#" + KURL(href()).ref();
 }
 
 String HTMLAnchorElement::host() const
 {
-    return KURL(href().deprecatedString()).host();
+    return KURL(href()).host();
 }
 
 String HTMLAnchorElement::hostname() const
 {
-    KURL url(href().deprecatedString());
+    KURL url(href());
     if (url.port()==0)
         return url.host();
     else
@@ -444,22 +444,22 @@ String HTMLAnchorElement::hostname() const
 
 String HTMLAnchorElement::pathname() const
 {
-    return KURL(href().deprecatedString()).path();
+    return KURL(href()).path();
 }
 
 String HTMLAnchorElement::port() const
 {
-    return DeprecatedString::number(KURL(href().deprecatedString()).port());
+    return String::number(KURL(href()).port());
 }
 
 String HTMLAnchorElement::protocol() const
 {
-    return KURL(href().deprecatedString()).protocol() + ":";
+    return KURL(href()).protocol() + ":";
 }
 
 String HTMLAnchorElement::search() const
 {
-    return KURL(href().deprecatedString()).query();
+    return KURL(href()).query();
 }
 
 String HTMLAnchorElement::text() const

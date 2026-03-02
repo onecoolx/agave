@@ -26,11 +26,11 @@
 #ifndef GlobalHistory_h
 #define GlobalHistory_h
 
+#include "PlatformString.h"
+
 namespace WebCore {
 
-    class DeprecatedString;
-
-    bool historyContains(const DeprecatedString&);
+    bool historyContains(const String&);
 
 } // namespace WebCore
 

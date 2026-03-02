@@ -119,7 +119,7 @@ void TestWebView::loadHtml(const char* str, const char* rurl)
 {
     stop();
     String urlstr = String::fromUTF8(rurl);
-    KURL baseurl(urlstr.deprecatedString());
+    KURL baseurl(urlstr);
     ResourceRequest request(baseurl);
     RefPtr<WebCore::SharedBuffer> data = new SharedBuffer(str, strlen(str));
     SubstituteData substituteData(data, String("text/html"), String("utf-8"), KURL());

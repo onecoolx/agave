@@ -76,8 +76,8 @@ static inline void mapAttributeToCSSProperty(HashMap<AtomicStringImpl*, int>* pr
     if (cssPropertyName)
         propertyId = getPropertyID(cssPropertyName, strlen(cssPropertyName));
     else {
-        DeprecatedString propertyName = attrName.localName().deprecatedString();
-        propertyId = getPropertyID(propertyName.ascii(), propertyName.length());
+        CString propertyName = attrName.localName().latin1();
+        propertyId = getPropertyID(propertyName.data(), propertyName.length());
     }
     ASSERT(propertyId > 0);
     propertyNameToIdMap->set(attrName.localName().impl(), propertyId);

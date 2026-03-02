@@ -53,12 +53,12 @@ static size_t fileWriteCallback(void* ptr, size_t size, size_t nmemb, void* data
 void initFileJob(ResourceHandle* job)
 {
     ResourceHandleInternal* d = job->getInternal();
-    DeprecatedString url = job->request().url().url();
+    String url = job->request().url().url();
 
     ASSERT(!d->m_url);
 	ASSERT(d->client());
 
-    DeprecatedString query = job->request().url().query();
+    String query = job->request().url().query();
     // Remove any query part sent to a local file.
     if (!query.isEmpty())
         url = url.left(url.find(query));

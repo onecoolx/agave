@@ -816,7 +816,7 @@ Node::StyleChange Node::diff( RenderStyle *s1, RenderStyle *s2 ) const
 }
 
 #ifndef NDEBUG
-void Node::dump(TextStream* stream, DeprecatedString ind) const
+void Node::dump(TextStream* stream, String ind) const
 {
     if (m_hasId) { *stream << " hasId"; }
     if (m_hasClass) { *stream << " hasClass"; }

@@ -50,7 +50,7 @@ public:
     virtual void imageChanged(CachedImage*);
 
 #ifndef NDEBUG
-    virtual void dump(TextStream*, DeprecatedString) const;
+    virtual void dump(TextStream*, String) const;
 #endif
 
     int span() const { return m_span; }

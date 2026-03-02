@@ -69,8 +69,8 @@ void HTMLBaseElement::removedFromDocument()
 
     // Since the document doesn't have a base element...
     // (This will break in the case of multiple base elements, but that's not valid anyway (?))
-    document()->setBaseURL(DeprecatedString::null);
-    document()->setBaseTarget(DeprecatedString::null);
+    document()->setBaseURL(String());
+    document()->setBaseTarget(String());
 }
 
 void HTMLBaseElement::process()
@@ -79,7 +79,7 @@ void HTMLBaseElement::process()
         return;
 
     if (!m_href.isEmpty() && document()->frame())
-        document()->setBaseURL(KURL(document()->frame()->loader()->url(), m_href.deprecatedString()).url());
+        document()->setBaseURL(KURL(document()->frame()->loader()->url(), m_href).url());
 
     if (!m_target.isEmpty())
         document()->setBaseTarget(m_target);

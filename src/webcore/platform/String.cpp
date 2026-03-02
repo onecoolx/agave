@@ -24,7 +24,7 @@
 #include "PlatformString.h"
 
 #include "CString.h"
-#include "DeprecatedString.h"
+#include "RegularExpression.h"
 #include "TextEncoding.h"
 #include <wtf/StringExtras.h>
 #include <wtf/Vector.h>
@@ -62,17 +62,6 @@ String::String(const UChar* str)
         m_impl = StringImpl::empty();
     else
         m_impl = new StringImpl(str, len);
-}
-
-String::String(const DeprecatedString& str)
-{
-    if (str.isNull())
-        return;
-    
-    if (str.isEmpty())
-        m_impl = StringImpl::empty();
-    else 
-        m_impl = new StringImpl(reinterpret_cast<const UChar*>(str.unicode()), str.length());
 }
 
 String::String(const char* str)
@@ -244,7 +233,7 @@ bool String::percentage(int& result) const
     if ((*m_impl)[m_impl->length() - 1] != '%')
        return false;
 
-    result = DeprecatedConstString(m_impl->characters(), m_impl->length() - 1).string().toInt();
+    result = substring(0, m_impl->length() - 1).toInt();
     return true;
 }
 
@@ -260,15 +249,6 @@ const UChar* String::charactersWithNullTermination()
     if (!m_impl)
         return 0;
     return m_impl->charactersWithNullTermination();
-}
-
-DeprecatedString String::deprecatedString() const
-{
-    if (!m_impl)
-        return DeprecatedString::null;
-    if (!m_impl->characters())
-        return DeprecatedString("", 0);
-    return DeprecatedString(m_impl->characters(), m_impl->length());
 }
 
 String String::format(const char *format, ...)
@@ -509,14 +489,102 @@ String String::fromUTF8(const char* string)
 }
 
 
-bool operator==(const String& a, const DeprecatedString& b)
+void String::copyLatin1(char* buffer, unsigned position, unsigned length) const
 {
-    unsigned l = a.length();
-    if (l != b.length())
-        return false;
-    if (!memcmp(a.characters(), b.unicode(), l * sizeof(UChar)))
+    CString encoded = latin1();
+    unsigned srcLen = encoded.length();
+    if (position >= srcLen) {
+        buffer[0] = '\0';
+        return;
+    }
+    unsigned copyLen = (length < srcLen - position) ? length : srcLen - position;
+    memcpy(buffer, encoded.data() + position, copyLen);
+    buffer[copyLen] = '\0';
+}
+
+bool String::isAllASCII() const
+{
+    if (!m_impl)
         return true;
-    return false;
+    const UChar* chars = m_impl->characters();
+    unsigned len = m_impl->length();
+    for (unsigned i = 0; i < len; ++i) {
+        if (chars[i] > 0x7F)
+            return false;
+    }
+    return true;
+}
+
+bool String::hasFastLatin1() const
+{
+    if (!m_impl)
+        return true;
+    const UChar* chars = m_impl->characters();
+    unsigned len = m_impl->length();
+    for (unsigned i = 0; i < len; ++i) {
+        if (chars[i] > 0xFF)
+            return false;
+    }
+    return true;
+}
+
+short String::toShort(bool* ok, int base) const
+{
+    int v = toInt(ok);
+    if (ok && *ok) {
+        if (v < -32768 || v > 32767) {
+            *ok = false;
+            return 0;
+        }
+    }
+    return static_cast<short>(v);
+}
+
+unsigned short String::toUShort(bool* ok, int base) const
+{
+    int v = toInt(ok);
+    if (ok && *ok) {
+        if (v < 0 || v > 65535) {
+            *ok = false;
+            return 0;
+        }
+    }
+    return static_cast<unsigned short>(v);
+}
+
+unsigned String::toUInt(bool* ok, int base) const
+{
+    int64_t v = toInt64(ok);
+    if (ok && *ok) {
+        if (v < 0 || v > 4294967295LL) {
+            *ok = false;
+            return 0;
+        }
+    }
+    return static_cast<unsigned>(v);
+}
+
+int String::reverseFind(const char* str, int start) const
+{
+    return m_impl ? m_impl->reverseFind(str, start) : -1;
+}
+
+void String::prepend(const String& str)
+{
+    if (str.m_impl) {
+        if (!m_impl) {
+            m_impl = str.m_impl;
+            return;
+        }
+        insert(str, 0);
+    }
+}
+
+int String::find(const RegularExpression& re, int start) const
+{
+    if (isNull())
+        return -1;
+    return re.match(*this, start);
 }
 
 #if ENABLE(KJS)

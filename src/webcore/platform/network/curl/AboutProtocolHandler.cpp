@@ -12,8 +12,8 @@ namespace WebCore {
 
 void handleAboutUrl(ResourceHandle* handle)
 {
-    DeprecatedString data = handle->request().url().url();
-    DeprecatedString header = "text/plain;charset=US-ASCII";
+    String data = handle->request().url().url();
+    String header = "text/plain;charset=US-ASCII";
 
     ResourceResponse response;
     ResourceHandleClient* client = handle->getInternal()->client();

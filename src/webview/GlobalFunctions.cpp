@@ -67,7 +67,7 @@ void setDefaultLanguage(const String & languaqge)
     g_defaultLanguage = languaqge;
 }
 
-bool historyContains(DeprecatedString const& url) 
+bool historyContains(String const& url) 
 {
     if (cb_url_is_visited) {
         if (cb_url_is_visited(url.utf8().data()))

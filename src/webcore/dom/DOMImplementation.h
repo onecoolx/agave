@@ -28,7 +28,7 @@
 
 #include "Shared.h"
 #include <wtf/Forward.h>
-#include "DeprecatedString.h"
+#include "PlatformString.h"
 
 namespace WebCore {
 
@@ -45,7 +45,7 @@ class DOMImplementation : public Shared<DOMImplementation> {
 public:
     virtual ~DOMImplementation(); 
 
-    void init(const DeprecatedString& baseURL);
+    void init(const String& baseURL);
 
     // DOM methods & attributes for DOMImplementation
     bool hasFeature(const String& feature, const String& version) const;
@@ -74,7 +74,7 @@ public:
 
 private:
 
-    DeprecatedString m_baseURL;
+    String m_baseURL;
 };
 
 } //namespace

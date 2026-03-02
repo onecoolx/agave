@@ -714,7 +714,7 @@ bool RenderFrameSet::isChildAllowed(RenderObject* child, RenderStyle* style) con
 }
 
 #ifndef NDEBUG
-void RenderFrameSet::dump(TextStream* stream, DeprecatedString ind) const
+void RenderFrameSet::dump(TextStream* stream, String ind) const
 {
     *stream << " totalrows=" << frameSet()->totalRows();
     *stream << " totalcols=" << frameSet()->totalCols();

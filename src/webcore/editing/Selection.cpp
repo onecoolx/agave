@@ -522,13 +522,13 @@ void Selection::debugPosition() const
 
     if (m_start == m_end) {
         Position pos = m_start;
-        fprintf(stderr, "pos:        %s %p:%d\n", pos.node()->nodeName().deprecatedString().latin1(), pos.node(), pos.offset());
+        fprintf(stderr, "pos:        %s %p:%d\n", pos.node()->nodeName().latin1().data(), pos.node(), pos.offset());
     } else {
         Position pos = m_start;
-        fprintf(stderr, "start:      %s %p:%d\n", pos.node()->nodeName().deprecatedString().latin1(), pos.node(), pos.offset());
+        fprintf(stderr, "start:      %s %p:%d\n", pos.node()->nodeName().latin1().data(), pos.node(), pos.offset());
         fprintf(stderr, "-----------------------------------\n");
         pos = m_end;
-        fprintf(stderr, "end:        %s %p:%d\n", pos.node()->nodeName().deprecatedString().latin1(), pos.node(), pos.offset());
+        fprintf(stderr, "end:        %s %p:%d\n", pos.node()->nodeName().latin1().data(), pos.node(), pos.offset());
         fprintf(stderr, "-----------------------------------\n");
     }
 
@@ -555,7 +555,7 @@ void Selection::formatForDebugger(char* buffer, unsigned length) const
         result += s;
     }
 
-    strncpy(buffer, result.deprecatedString().latin1(), length - 1);
+    strncpy(buffer, result.latin1().data(), length - 1);
 }
 
 void Selection::showTreeForThis() const

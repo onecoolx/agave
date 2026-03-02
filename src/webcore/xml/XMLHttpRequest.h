@@ -146,7 +146,7 @@ private:
     EventListenersMap m_eventListeners;
 
     KURL m_url;
-    DeprecatedString m_method;
+    String m_method;
     HTTPHeaderMap m_requestHeaders;
     String m_mimeTypeOverride;
     bool m_async;

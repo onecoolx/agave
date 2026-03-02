@@ -25,6 +25,7 @@
 #define HTMLTokenizer_h
 
 #include "NamedMappedAttrMap.h"
+#include "PlatformString.h"
 #include "SegmentedString.h"
 #include "Timer.h"
 #include "Tokenizer.h"
@@ -131,7 +132,7 @@ private:
     State parseEntity(SegmentedString&, UChar*& dest, State, unsigned& _cBufferPos, bool start, bool parsingTag);
     State parseProcessingInstruction(SegmentedString&, State);
     State scriptHandler(State);
-    State scriptExecution(const DeprecatedString& script, State, DeprecatedString scriptURL, int baseLine = 0);
+    State scriptExecution(const String& script, State, String scriptURL, int baseLine = 0);
     void setSrc(const SegmentedString&);
  
     // check if we have enough space in the buffer.

@@ -88,7 +88,7 @@ static size_t ftpHeaderCallback(char* ptr, size_t size, size_t nmemb, void* data
 void initFtpJob(ResourceHandle* job)
 {
     ResourceHandleInternal* d = job->getInternal();
-    DeprecatedString url = job->request().url().url();
+    String url = job->request().url().url();
 
     ASSERT(!d->m_url);
     d->m_url = (char*)fastStrdup(url.utf8().data());

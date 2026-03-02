@@ -30,7 +30,6 @@
 #include "config.h"
 #include "HTTPParsers.h"
 
-#include "DeprecatedString.h"
 #include "PlatformString.h"
 
 using namespace WTF;

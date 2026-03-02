@@ -83,9 +83,6 @@ public:
 
     static void remove(StringImpl*);
     
-    AtomicString(const DeprecatedString&);
-    DeprecatedString deprecatedString() const;
-
 private:
     String m_string;
     

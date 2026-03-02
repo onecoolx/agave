@@ -6,7 +6,6 @@
 */
 
 #include "config.h"
-#include "DeprecatedString.h"
 #include "FontCache.h"
 #include "FontData.h"
 #include "Font.h"
@@ -66,7 +65,7 @@ FontPlatformData* FontCache::createFontPlatformData(const FontDescription& fontD
     else
         blod = FONT_WEIGHT_MEDIUM;
 
-    ps_font* font = ps_font_create ((char*)family.deprecatedString().ascii(), CHARSET_UNICODE,
+    ps_font* font = ps_font_create ((char*)family.domString().latin1().data(), CHARSET_UNICODE,
                                 fontDescription.computedPixelSize(), blod, italic);
 
     return new FontPlatformData(font, fontDescription.computedPixelSize());

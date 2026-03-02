@@ -126,7 +126,7 @@ public:
     virtual bool nodeAtPoint(const HitTestRequest&, HitTestResult&, int x, int y, int tx, int ty, HitTestAction);
 
 #ifndef NDEBUG
-    virtual void dump(TextStream*, DeprecatedString ind = "") const;
+    virtual void dump(TextStream*, String ind = "") const;
 #endif
 
 protected:

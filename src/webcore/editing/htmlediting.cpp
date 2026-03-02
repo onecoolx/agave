@@ -370,25 +370,39 @@ int maxDeepOffset(const Node *node)
 
 String stringWithRebalancedWhitespace(const String& string, bool startIsStartOfParagraph, bool endIsEndOfParagraph)
 {
-    static DeprecatedString twoSpaces("  ");
-    static DeprecatedString nbsp("\xa0");
-    static DeprecatedString pattern(" \xa0");
+    static UChar nbspChar = noBreakSpace;
+    static String nbsp(&nbspChar, 1);
 
-    DeprecatedString rebalancedString = string.copy().deprecatedString();
+    String rebalancedString = string;
 
-    rebalancedString.replace(noBreakSpace, ' ');
-    rebalancedString.replace('\n', ' ');
-    rebalancedString.replace('\t', ' ');
-    
-    rebalancedString.replace(twoSpaces, pattern);
-    
-    if (startIsStartOfParagraph && rebalancedString[0] == ' ')
-        rebalancedString.replace(0, 1, nbsp);
-    int end = rebalancedString.length() - 1;
-    if (endIsEndOfParagraph && rebalancedString[end] == ' ')
-        rebalancedString.replace(end, 1, nbsp);    
+    rebalancedString = rebalancedString.replace(noBreakSpace, ' ');
+    rebalancedString = rebalancedString.replace('\n', ' ');
+    rebalancedString = rebalancedString.replace('\t', ' ');
 
-    return String(rebalancedString);
+    // Replace pairs of spaces with space+nbsp
+    String result;
+    unsigned len = rebalancedString.length();
+    for (unsigned i = 0; i < len; ++i) {
+        UChar c = rebalancedString[i];
+        if (c == ' ' && i + 1 < len && rebalancedString[i + 1] == ' ') {
+            result += String(" ");
+            result += nbsp;
+            ++i;
+        } else {
+            result += String(&c, 1);
+        }
+    }
+    rebalancedString = result;
+
+    if (startIsStartOfParagraph && !rebalancedString.isEmpty() && rebalancedString[0] == ' ')
+        rebalancedString = nbsp + rebalancedString.substring(1);
+    if (!rebalancedString.isEmpty()) {
+        int end = rebalancedString.length() - 1;
+        if (endIsEndOfParagraph && rebalancedString[end] == ' ')
+            rebalancedString = rebalancedString.left(end) + nbsp;
+    }
+
+    return rebalancedString;
 }
 
 bool isTableStructureNode(const Node *node)

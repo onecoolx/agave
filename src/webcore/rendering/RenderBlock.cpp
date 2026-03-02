@@ -4382,7 +4382,7 @@ const char* RenderBlock::renderName() const
 
 #ifndef NDEBUG
 
-void RenderBlock::dump(TextStream *stream, DeprecatedString ind) const
+void RenderBlock::dump(TextStream *stream, String ind) const
 {
     if (m_childrenInline) { *stream << " childrenInline"; }
     if (m_firstLine) { *stream << " firstLine"; }

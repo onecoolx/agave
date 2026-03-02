@@ -26,7 +26,6 @@
 
 #include "AtomicString.h"
 
-#include "DeprecatedString.h"
 #include "StaticConstructors.h"
 #include "StringHash.h"
 #include <wtf/HashSet.h>
@@ -178,16 +177,6 @@ AtomicString::operator UString() const
     return m_string;
 }
 #endif
-
-AtomicString::AtomicString(const DeprecatedString& s)
-    : m_string(add(reinterpret_cast<const UChar*>(s.unicode()), s.length()))
-{
-}
-
-DeprecatedString AtomicString::deprecatedString() const
-{
-    return m_string.deprecatedString();
-}
 
 DEFINE_GLOBAL(AtomicString, nullAtom)
 DEFINE_GLOBAL(AtomicString, emptyAtom, "")

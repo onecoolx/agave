@@ -154,7 +154,7 @@ static bool isSVG11Feature(const String &feature)
 }
 #endif
 
-void DOMImplementation::init(const DeprecatedString& baseURL)
+void DOMImplementation::init(const String& baseURL)
 {
     m_baseURL = baseURL;
 }
@@ -331,8 +331,8 @@ bool DOMImplementation::isXMLMIMEType(const String& mimeType)
     if (mimeType == "text/xml" || mimeType == "application/xml" || mimeType == "text/xsl")
         return true;
     static const char* validChars = "[0-9a-zA-Z_\\-+~!$\\^{}|.%'`#&*]"; // per RFCs: 3023, 2045
-    static RegularExpression xmlTypeRegExp(DeprecatedString("^") + validChars + "+/" + validChars + "+\\+xml$");
-    if (xmlTypeRegExp.match(mimeType.deprecatedString()) > -1)
+    static RegularExpression xmlTypeRegExp(String("^") + validChars + "+/" + validChars + "+\\+xml$");
+    if (xmlTypeRegExp.match(mimeType) > -1)
         return true;
     return false;
 }

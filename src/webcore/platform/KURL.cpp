@@ -202,8 +202,8 @@ static const unsigned char characterClassTable[256] = {
 };
 
 static int copyPathRemovingDots(char* dst, const char* src, int srcStart, int srcEnd);
-static char* encodeRelativeString(const KURL &base, const DeprecatedString& rel, const TextEncoding&);
-static DeprecatedString substituteBackslashes(const DeprecatedString &string);
+static char* encodeRelativeString(const KURL &base, const String& rel, const TextEncoding&);
+static String substituteBackslashes(const String &string);
 
 bool isSchemeFirstChar(unsigned char c) { return characterClassTable[c] & SchemeFirstChar; }
 bool isSchemeChar(unsigned char c) { return (characterClassTable[c] & SchemeChar)?true:false; }
@@ -250,7 +250,7 @@ KURL::KURL(const char *url)
         parse(url, 0);
 }
 
-KURL::KURL(const DeprecatedString &url)
+KURL::KURL(const String &url)
 {
     if (!url.isEmpty() && url[0] == '/') {
         // 5 for "file:", 1 for terminator
@@ -262,21 +262,23 @@ KURL::KURL(const DeprecatedString &url)
         buffer[4] = ':';
         url.copyLatin1(&buffer[5]);
         parse(buffer.data(), 0);
-    } else
-        parse(url.ascii(), &url);
+    } else {
+        CString urlLatin1 = url.latin1();
+        parse(urlLatin1.data(), &url);
+    }
 }
 
-KURL::KURL(const KURL& base, const DeprecatedString& relative)
+KURL::KURL(const KURL& base, const String& relative)
 {
     init(base, relative, UTF8Encoding());
 }
 
-KURL::KURL(const KURL& base, const DeprecatedString& relative, const TextEncoding& encoding)
+KURL::KURL(const KURL& base, const String& relative, const TextEncoding& encoding)
 {
     init(base, relative, encoding);
 }
 
-void KURL::init(const KURL &base, const DeprecatedString &relative, const TextEncoding& encoding)
+void KURL::init(const KURL &base, const String &relative, const TextEncoding& encoding)
 {
     // Allow at least absolute URLs to resolve against an empty URL.
     if (!base.m_isValid && !base.isEmpty()) {
@@ -287,20 +289,22 @@ void KURL::init(const KURL &base, const DeprecatedString &relative, const TextEn
     bool absolute = false;
 
     // for compatibility with Win IE, we must treat backslashes as if they were slashes, as long as we're not dealing with the javascript: schema
-    DeprecatedString substitutedRelative;
+    String substitutedRelative;
     bool shouldSubstituteBackslashes = relative.contains('\\') && !relative.startsWith("javascript:", false);
     if (shouldSubstituteBackslashes) {
         substitutedRelative = substituteBackslashes(relative);
     }
 
-    const DeprecatedString &rel = shouldSubstituteBackslashes ? substitutedRelative : relative;
+    const String &rel = shouldSubstituteBackslashes ? substitutedRelative : relative;
     
     bool allASCII = rel.isAllASCII();
     char *strBuffer;
     const char *str;
+    CString relLatin1;
     if (allASCII) {
         strBuffer = 0;
-        str = rel.ascii();
+        relLatin1 = rel.latin1();
+        str = relLatin1.data();
     } else {
         strBuffer = encodeRelativeString(base, rel, encoding);
         str = strBuffer;
@@ -342,7 +346,7 @@ void KURL::init(const KURL &base, const DeprecatedString &relative, const TextEn
             ++p;
         }
         if (*p == ':') {
-            if (p[1] != '/' && base.protocol().lower() == DeprecatedString(str, p - str).lower() && base.isHierarchical())
+            if (p[1] != '/' && base.protocol().lower() == String(str, p - str).lower() && base.isHierarchical())
                 str = p + 1;
             else
                 absolute = true;
@@ -356,8 +360,9 @@ void KURL::init(const KURL &base, const DeprecatedString &relative, const TextEn
         // unless the relative URL is a single fragment.
         if (!base.isHierarchical()) {
             if (str[0] == '#') {
-                DeprecatedString newURL = base.urlString.left(base.queryEndPos) + str;
-                parse(newURL.ascii(), &newURL);
+                String newURL = base.urlString.left(base.queryEndPos) + str;
+                CString newURLLatin1 = newURL.latin1();
+                parse(newURLLatin1.data(), &newURL);
             } else
                 m_isValid = false;
             
@@ -377,15 +382,17 @@ void KURL::init(const KURL &base, const DeprecatedString &relative, const TextEn
         case '#':
             // must be fragment-only reference
             {
-                DeprecatedString newURL = base.urlString.left(base.queryEndPos) + str;
-                parse(newURL.ascii(), &newURL);
+                String newURL = base.urlString.left(base.queryEndPos) + str;
+                CString newURLLatin1 = newURL.latin1();
+                parse(newURLLatin1.data(), &newURL);
                 break;
             }
         case '?':
             // query-only reference, special case needed for non-URL results
             {
-                DeprecatedString newURL = base.urlString.left(base.pathEndPos) + str;
-                parse(newURL.ascii(), &newURL);
+                String newURL = base.urlString.left(base.pathEndPos) + str;
+                CString newURLLatin1 = newURL.latin1();
+                parse(newURLLatin1.data(), &newURL);
                 break;
             }
         case '/':
@@ -393,12 +400,14 @@ void KURL::init(const KURL &base, const DeprecatedString &relative, const TextEn
             {
                 if (str[1] == '/') {
                     // net-path
-                    DeprecatedString newURL = base.urlString.left(base.schemeEndPos + 1) + str;
-                    parse(newURL.ascii(), &newURL);
+                    String newURL = base.urlString.left(base.schemeEndPos + 1) + str;
+                    CString newURLLatin1 = newURL.latin1();
+                    parse(newURLLatin1.data(), &newURL);
                 } else {
                     // abs-path
-                    DeprecatedString newURL = base.urlString.left(base.portEndPos) + str;
-                    parse(newURL.ascii(), &newURL);
+                    String newURL = base.urlString.left(base.portEndPos) + str;
+                    CString newURLLatin1 = newURL.latin1();
+                    parse(newURLLatin1.data(), &newURL);
                 }
                 break;
             }
@@ -412,7 +421,8 @@ void KURL::init(const KURL &base, const DeprecatedString &relative, const TextEn
                 char *bufferPos = buffer.data();
                 
                 // first copy everything before the path from the base
-                const char *baseString = base.urlString.ascii();
+                CString baseLatin1 = base.urlString.latin1();
+                const char *baseString = baseLatin1.data();
                 const char *baseStringStart = baseString;
                 const char *pathStart = baseStringStart + base.portEndPos;
                 while (baseStringStart < pathStart) {
@@ -495,40 +505,40 @@ bool KURL::hasPath() const
     return m_isValid && pathEndPos != portEndPos;
 }
 
-DeprecatedString KURL::lastPathComponent() const
+String KURL::lastPathComponent() const
 {
     if (!hasPath())
-        return DeprecatedString();
+        return String();
 
     int end = pathEndPos - 1;
     if (urlString[end] == '/')
         --end;
 
-    int start = urlString.findRev('/', end);
+    int start = urlString.reverseFind('/', end);
     if (start < portEndPos)
-        return DeprecatedString();
+        return String();
     ++start;
 
-    return urlString.mid(start, end - start + 1);
+    return urlString.substring(start, end - start + 1);
 }
 
-DeprecatedString KURL::protocol() const
+String KURL::protocol() const
 {
     if (!m_isValid) {
-        return DeprecatedString();
+        return String();
     }
 
     return urlString.left(schemeEndPos);
 }
 
-DeprecatedString KURL::host() const
+String KURL::host() const
 {
     if (!m_isValid) {
-        return DeprecatedString();
+        return String();
     }
 
     int start = (passwordEndPos == userStartPos) ? passwordEndPos : passwordEndPos + 1;
-    return decode_string(urlString.mid(start, hostEndPos - start));
+    return decode_string(urlString.substring(start, hostEndPos - start));
 }
 
 unsigned short int KURL::port() const
@@ -539,7 +549,7 @@ unsigned short int KURL::port() const
 
     if (hostEndPos != portEndPos) {
         bool ok;
-        unsigned short result = urlString.mid(hostEndPos + 1, portEndPos - hostEndPos - 1).toUShort(&ok);
+        unsigned short result = urlString.substring(hostEndPos + 1, portEndPos - hostEndPos - 1).toUShort(&ok);
         if (!ok) {
             result = 0;
         }
@@ -549,44 +559,44 @@ unsigned short int KURL::port() const
     return 0;
 }
 
-DeprecatedString KURL::pass() const
+String KURL::pass() const
 {
     if (!m_isValid) {
-        return DeprecatedString();
+        return String();
     }
 
     if (passwordEndPos == userEndPos) {
-        return DeprecatedString();
+        return String();
     }
 
-    return decode_string(urlString.mid(userEndPos + 1, passwordEndPos - userEndPos - 1)); 
+    return decode_string(urlString.substring(userEndPos + 1, passwordEndPos - userEndPos - 1)); 
 }
 
-DeprecatedString KURL::user() const
+String KURL::user() const
 {
     if (!m_isValid) {
-        return DeprecatedString();
+        return String();
     }
 
-    return decode_string(urlString.mid(userStartPos, userEndPos - userStartPos));
+    return decode_string(urlString.substring(userStartPos, userEndPos - userStartPos));
 }
 
-DeprecatedString KURL::ref() const
+String KURL::ref() const
 {
     if (!m_isValid || fragmentEndPos == queryEndPos) {
-        return DeprecatedString();
+        return String();
     }
 
-    return urlString.mid(queryEndPos + 1, fragmentEndPos - (queryEndPos + 1));
+    return urlString.substring(queryEndPos + 1, fragmentEndPos - (queryEndPos + 1));
 }
 
-DeprecatedString KURL::ignoreRefURL() const
+String KURL::ignoreRefURL() const
 {
     if (!m_isValid || fragmentEndPos == queryEndPos) {
-        return DeprecatedString();
+        return String();
     }
 
-    return urlString.mid(0, queryEndPos);
+    return urlString.substring(0, queryEndPos);
 }
 
 bool KURL::hasRef() const
@@ -594,44 +604,47 @@ bool KURL::hasRef() const
     return m_isValid && fragmentEndPos != queryEndPos;
 }
 
-DeprecatedString KURL::query() const
+String KURL::query() const
 {
     if (!m_isValid) {
-        return DeprecatedString();
+        return String();
     }
 
-    return urlString.mid(pathEndPos, queryEndPos - pathEndPos); 
+    return urlString.substring(pathEndPos, queryEndPos - pathEndPos); 
 }
 
-DeprecatedString KURL::path() const
+String KURL::path() const
 {
     if (!m_isValid) {
-        return DeprecatedString();
+        return String();
     }
 
-    return decode_string(urlString.mid(portEndPos, pathEndPos - portEndPos)); 
+    return decode_string(urlString.substring(portEndPos, pathEndPos - portEndPos)); 
 }
 
-void KURL::setProtocol(const DeprecatedString &s)
+void KURL::setProtocol(const String &s)
 {
     if (!m_isValid) {
-        DeprecatedString newURL = s + ":" + urlString;
-        parse(newURL.ascii(), &newURL);
+        String newURL = s + ":" + urlString;
+        CString newURLLatin1 = newURL.latin1();
+        parse(newURLLatin1.data(), &newURL);
         return;
     }
 
-    DeprecatedString newURL = s + urlString.mid(schemeEndPos);
-    parse(newURL.ascii(), &newURL);
+    String newURL = s + urlString.substring(schemeEndPos);
+    CString newURLLatin1 = newURL.latin1();
+    parse(newURLLatin1.data(), &newURL);
 }
 
-void KURL::setHost(const DeprecatedString &s)
+void KURL::setHost(const String &s)
 {
     if (m_isValid) {
         bool slashSlashNeeded = userStartPos == schemeEndPos + 1;
         int hostStart = (passwordEndPos == userStartPos) ? passwordEndPos : passwordEndPos + 1;
         
-        DeprecatedString newURL = urlString.left(hostStart) + (slashSlashNeeded ? "//" : DeprecatedString()) + s + urlString.mid(hostEndPos);
-        parse(newURL.ascii(), &newURL);
+        String newURL = urlString.left(hostStart) + (slashSlashNeeded ? "//" : String()) + s + urlString.substring(hostEndPos);
+        CString newURLLatin1 = newURL.latin1();
+        parse(newURLLatin1.data(), &newURL);
     }
 }
 
@@ -640,26 +653,28 @@ void KURL::setPort(unsigned short i)
     if (m_isValid) {
         bool colonNeeded = portEndPos == hostEndPos;
         int portStart = (colonNeeded ? hostEndPos : hostEndPos + 1);
-        DeprecatedString newURL = urlString.left(portStart) + (colonNeeded ? ":" : DeprecatedString()) + DeprecatedString::number(i) + urlString.mid(portEndPos);
-        parse(newURL.ascii(), &newURL);
+        String newURL = urlString.left(portStart) + (colonNeeded ? ":" : String()) + String::number(i) + urlString.substring(portEndPos);
+        CString newURLLatin1 = newURL.latin1();
+        parse(newURLLatin1.data(), &newURL);
     }
 }
 
-void KURL::setHostAndPort(const DeprecatedString& hostAndPort)
+void KURL::setHostAndPort(const String& hostAndPort)
 {
     if (m_isValid) {
         bool slashSlashNeeded = userStartPos == schemeEndPos + 1;
         int hostStart = (passwordEndPos == userStartPos) ? passwordEndPos : passwordEndPos + 1;
         
-        DeprecatedString newURL = urlString.left(hostStart) + (slashSlashNeeded ? "//" : DeprecatedString()) + hostAndPort + urlString.mid(portEndPos);
-        parse(newURL.ascii(), &newURL);
+        String newURL = urlString.left(hostStart) + (slashSlashNeeded ? "//" : String()) + hostAndPort + urlString.substring(portEndPos);
+        CString newURLLatin1 = newURL.latin1();
+        parse(newURLLatin1.data(), &newURL);
     }
 }
 
-void KURL::setUser(const DeprecatedString &user)
+void KURL::setUser(const String &user)
 {
     if (m_isValid) {
-        DeprecatedString u;
+        String u;
         int end = userEndPos;
         if (!user.isEmpty()) {
             u = user;
@@ -667,24 +682,25 @@ void KURL::setUser(const DeprecatedString &user)
                 u = "//" + u;
             // Add '@' if we didn't have one before.
             if (end == hostEndPos || (end == passwordEndPos && urlString[end] != '@'))
-                u += '@';
+                u += "@";
         } else {
             // Remove '@' if we now have neither user nor password.
             if (userEndPos == passwordEndPos && end != hostEndPos && urlString[end] == '@')
                 end += 1;
         }
-        const DeprecatedString newURL = urlString.left(userStartPos) + u + urlString.mid(end);
-        parse(newURL.ascii(), &newURL);
+        const String newURL = urlString.left(userStartPos) + u + urlString.substring(end);
+        CString newURLLatin1 = newURL.latin1();
+        parse(newURLLatin1.data(), &newURL);
     }
 }
 
-void KURL::setPass(const DeprecatedString &password)
+void KURL::setPass(const String &password)
 {
     if (m_isValid) {
-        DeprecatedString p;
+        String p;
         int end = passwordEndPos;
         if (!password.isEmpty()) {
-            p = ':' + password + '@';
+            p = ":" + password + "@";
             if (userEndPos == schemeEndPos + 1)
                 p = "//" + p;
             // Eat the existing '@' since we are going to add our own.
@@ -695,51 +711,55 @@ void KURL::setPass(const DeprecatedString &password)
             if (userStartPos == userEndPos && end != hostEndPos && urlString[end] == '@')
                 end += 1;
         }
-        const DeprecatedString newURL = urlString.left(userEndPos) + p + urlString.mid(end);
-        parse(newURL.ascii(), &newURL);
+        const String newURL = urlString.left(userEndPos) + p + urlString.substring(end);
+        CString newURLLatin1 = newURL.latin1();
+        parse(newURLLatin1.data(), &newURL);
     }
 }
 
-void KURL::setRef(const DeprecatedString &s)
+void KURL::setRef(const String &s)
 {
     if (m_isValid) {
-        DeprecatedString newURL = urlString.left(queryEndPos) + (s.isEmpty() ? DeprecatedString() : "#" + s);
-        parse(newURL.ascii(), &newURL);
+        String newURL = urlString.left(queryEndPos) + (s.isEmpty() ? String() : "#" + s);
+        CString newURLLatin1 = newURL.latin1();
+        parse(newURLLatin1.data(), &newURL);
     }
 }
 
-void KURL::setQuery(const DeprecatedString &query)
+void KURL::setQuery(const String &query)
 {
     if (m_isValid) {
-        DeprecatedString q;
+        String q;
         if (!query.isNull() && (query.isEmpty() || query[0] != '?')) {
             q = "?" + query;
         } else {
             q = query;
         }
 
-        DeprecatedString newURL = urlString.left(pathEndPos) + q + urlString.mid(queryEndPos);
-        parse(newURL.ascii(), &newURL);
+        String newURL = urlString.left(pathEndPos) + q + urlString.substring(queryEndPos);
+        CString newURLLatin1 = newURL.latin1();
+        parse(newURLLatin1.data(), &newURL);
     }
 }
 
-void KURL::setPath(const DeprecatedString &s)
+void KURL::setPath(const String &s)
 {
     if (m_isValid) {
-        DeprecatedString newURL = urlString.left(portEndPos) + encode_string(s) + urlString.mid(pathEndPos);
-        parse(newURL.ascii(), &newURL);
+        String newURL = urlString.left(portEndPos) + encode_string(s) + urlString.substring(pathEndPos);
+        CString newURLLatin1 = newURL.latin1();
+        parse(newURLLatin1.data(), &newURL);
     }
 }
 
-DeprecatedString KURL::prettyURL() const
+String KURL::prettyURL() const
 {
     if (!m_isValid) {
         return urlString;
     }
 
-    DeprecatedString result = protocol() + ":";
+    String result = protocol() + ":";
 
-    DeprecatedString authority;
+    String authority;
 
     if (hostEndPos != passwordEndPos) {
         if (userEndPos != userStartPos) {
@@ -749,7 +769,7 @@ DeprecatedString KURL::prettyURL() const
         authority += host();
         if (port() != 0) {
             authority += ":";
-            authority += DeprecatedString::number(port());
+            authority += String::number(port());
         }
     }
 
@@ -768,14 +788,14 @@ DeprecatedString KURL::prettyURL() const
     return result;
 }
 
-DeprecatedString KURL::decode_string(const DeprecatedString& urlString)
+String KURL::decode_string(const String& urlString)
 {
     return decode_string(urlString, UTF8Encoding());
 }
 
-DeprecatedString KURL::decode_string(const DeprecatedString& urlString, const TextEncoding& encoding)
+String KURL::decode_string(const String& urlString, const TextEncoding& encoding)
 {
-    DeprecatedString result("");
+    String result("");
 
     Vector<char, 2048> buffer(0);
 
@@ -817,12 +837,12 @@ DeprecatedString KURL::decode_string(const DeprecatedString& urlString, const Te
             continue;
 
         // Build up the string with what we just skipped and what we just decoded.
-        result.append(urlString.mid(decodedPosition, encodedRunPosition - decodedPosition));
-        result.append(decoded.characters(), decoded.length());
+        result.append(urlString.substring(decodedPosition, encodedRunPosition - decodedPosition));
+        result.append(decoded);
         decodedPosition = encodedRunEnd;
     }
 
-    result.append(urlString.mid(decodedPosition, length - decodedPosition));
+    result.append(urlString.substring(decodedPosition, length - decodedPosition));
     return result;
 }
 
@@ -946,7 +966,7 @@ static inline bool matchLetter(char c, char lowercaseLetter)
     return (c | 0x20) == lowercaseLetter;
 }
 
-void KURL::parse(const char *url, const DeprecatedString *originalString)
+void KURL::parse(const char *url, const String *originalString)
 {
     m_isValid = true;
 	m_hash = 0;
@@ -1268,14 +1288,17 @@ void KURL::parse(const char *url, const DeprecatedString *originalString)
     fragmentEndPos = p - buffer.data();
 
     // If we didn't end up actually changing the original string and
-    // it started as a DeprecatedString, just reuse it, to avoid extra
+    // it started as a String, just reuse it, to avoid extra
     // allocation.
     if (originalString && strncmp(buffer.data(), url, fragmentEndPos) == 0) {
         urlString = *originalString;
     } else
-        urlString = DeprecatedString(buffer.data(), fragmentEndPos);
+        urlString = String(buffer.data(), fragmentEndPos);
 
-	m_hash = urlComputeHash(urlString.latin1());
+	{
+		CString hashLatin1 = urlString.latin1();
+		m_hash = urlComputeHash(hashLatin1.data());
+	}
 
 
     ASSERT(p - buffer.data() <= (int)buffer.size());
@@ -1291,7 +1314,7 @@ bool equalIgnoringRef(const KURL& a, const KURL& b)
     return a.urlString.left(a.queryEndPos) == b.urlString.left(b.queryEndPos);
 }
 
-DeprecatedString KURL::encode_string(const DeprecatedString& notEncodedString)
+String KURL::encode_string(const String& notEncodedString)
 {
     CString asUTF8 = notEncodedString.utf8();
     
@@ -1310,14 +1333,14 @@ DeprecatedString KURL::encode_string(const DeprecatedString& notEncodedString)
             *p++ = c;
     }
     
-    DeprecatedString result(buffer.data(), p - buffer.data());
+    String result(buffer.data(), p - buffer.data());
     
     ASSERT(p - buffer.data() <= (int)buffer.size());
 
     return result;
 }
 
-static DeprecatedString encodeHostname(const DeprecatedString &s)
+static String encodeHostname(const String &s)
 {
     // Needs to be big enough to hold an IDN-encoded name.
     // For host names bigger than this, we won't do IDN encoding, which is almost certainly OK.
@@ -1329,14 +1352,14 @@ static DeprecatedString encodeHostname(const DeprecatedString &s)
     UChar buffer[hostnameBufferLength];    
     UErrorCode error = U_ZERO_ERROR;
     int32_t numCharactersConverted = uidna_IDNToASCII
-        (reinterpret_cast<const UChar *>(s.unicode()), s.length(), buffer, hostnameBufferLength, UIDNA_ALLOW_UNASSIGNED, &error);
+        (reinterpret_cast<const UChar *>(s.characters()), s.length(), buffer, hostnameBufferLength, UIDNA_ALLOW_UNASSIGNED, &error);
     if (error != U_ZERO_ERROR) {
         return s;
     }
-    return DeprecatedString(buffer, numCharactersConverted);
+    return String(buffer, numCharactersConverted);
 }
 
-static Vector<pair<int, int> > findHostnamesInMailToURL(const DeprecatedString &s)
+static Vector<pair<int, int> > findHostnamesInMailToURL(const String &s)
 {
     // In a mailto: URL, host names come after a '@' character and end with a '>' or ',' or '?' or end of string character.
     // Skip quoted strings so that characters in them don't confuse us.
@@ -1401,7 +1424,7 @@ static Vector<pair<int, int> > findHostnamesInMailToURL(const DeprecatedString &
     }
 }
 
-static bool findHostnameInHierarchicalURL(const DeprecatedString &s, int &startOffset, int &endOffset)
+static bool findHostnameInHierarchicalURL(const String &s, int &startOffset, int &endOffset)
 {
     // Find the host name in a hierarchical URL.
     // It comes after a "://" sequence, with scheme characters preceding.
@@ -1450,35 +1473,35 @@ static bool findHostnameInHierarchicalURL(const DeprecatedString &s, int &startO
     return true;
 }
 
-static DeprecatedString encodeHostnames(const DeprecatedString &s)
+static String encodeHostnames(const String &s)
 {
     if (s.startsWith("mailto:", false)) {
         const Vector<pair<int, int> > hostnameRanges = findHostnamesInMailToURL(s);
         int n = hostnameRanges.size();
         if (n != 0) {
-            DeprecatedString result;
+            String result;
             unsigned p = 0;
             for (int i = 0; i < n; ++i) {
                 const pair<int, int> &r = hostnameRanges[i];
-                result += s.mid(p, r.first);
-                result += encodeHostname(s.mid(r.first, r.second - r.first));
+                result += s.substring(p, r.first);
+                result += encodeHostname(s.substring(r.first, r.second - r.first));
                 p = r.second;
             }
-            result += s.mid(p);
+            result += s.substring(p);
             return result;
         }
     } else {
         int hostStart, hostEnd;
         if (findHostnameInHierarchicalURL(s, hostStart, hostEnd)) {
-            return s.left(hostStart) + encodeHostname(s.mid(hostStart, hostEnd - hostStart)) + s.mid(hostEnd); 
+            return s.left(hostStart) + encodeHostname(s.substring(hostStart, hostEnd - hostStart)) + s.substring(hostEnd); 
         }
     }
     return s;
 }
 
-static char *encodeRelativeString(const KURL &base, const DeprecatedString &rel, const TextEncoding& encoding)
+static char *encodeRelativeString(const KURL &base, const String &rel, const TextEncoding& encoding)
 {
-    DeprecatedString s = encodeHostnames(rel);
+    String s = encodeHostnames(rel);
 
     char *strBuffer;
 
@@ -1490,15 +1513,15 @@ static char *encodeRelativeString(const KURL &base, const DeprecatedString &rel,
         pathEnd = s.find(RegularExpression("[?#]"));
     }
     if (pathEnd == -1) {
-        CString decoded = pathEncoding.encode(reinterpret_cast<const UChar*>(s.unicode()), s.length());
+        CString decoded = pathEncoding.encode(reinterpret_cast<const UChar*>(s.characters()), s.length());
         int decodedLength = decoded.length();
         strBuffer = static_cast<char *>(fastMalloc(decodedLength + 1));
         memcpy(strBuffer, decoded.data(), decodedLength);
         strBuffer[decodedLength] = 0;
     } else {
         int length = s.length();
-        CString pathDecoded = pathEncoding.encode(reinterpret_cast<const UChar*>(s.unicode()), pathEnd);
-        CString otherDecoded = otherEncoding.encode(reinterpret_cast<const UChar*>(s.unicode()) + pathEnd, length - pathEnd);
+        CString pathDecoded = pathEncoding.encode(reinterpret_cast<const UChar*>(s.characters()), pathEnd);
+        CString otherDecoded = otherEncoding.encode(reinterpret_cast<const UChar*>(s.characters()) + pathEnd, length - pathEnd);
         int pathDecodedLength = pathDecoded.length();
         int otherDecodedLength = otherDecoded.length();
         strBuffer = static_cast<char *>(fastMalloc(pathDecodedLength + otherDecodedLength + 1));
@@ -1510,7 +1533,7 @@ static char *encodeRelativeString(const KURL &base, const DeprecatedString &rel,
     return strBuffer;
 }
 
-static DeprecatedString substituteBackslashes(const DeprecatedString &string)
+static String substituteBackslashes(const String &string)
 {
     int questionPos = string.find('?');
     int hashPos = string.find('#');
@@ -1524,7 +1547,7 @@ static DeprecatedString substituteBackslashes(const DeprecatedString &string)
         pathEnd = string.length();
     }
 
-    return string.left(pathEnd).replace('\\','/') + string.mid(pathEnd);
+    return string.left(pathEnd).replace('\\','/') + string.substring(pathEnd);
 }
 
 bool KURL::isHierarchical() const
@@ -1538,7 +1561,7 @@ bool KURL::isHierarchical() const
 unsigned KURL::urlHash() const
 {
 	if (m_hash == 0)
-		m_hash = urlComputeHash(urlString.latin1());
+		m_hash = urlComputeHash(urlString.latin1().data());
 
 	return m_hash;
 }

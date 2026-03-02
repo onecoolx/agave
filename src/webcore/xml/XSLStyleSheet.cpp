@@ -123,8 +123,9 @@ bool XSLStyleSheet::parseString(const String& string, bool strict)
     if (!m_stylesheetDocTaken)
         xmlFreeDoc(m_stylesheetDoc);
     m_stylesheetDocTaken = false;
+    CString ownerURLLatin1 = m_ownerDocument->URL().latin1();
     m_stylesheetDoc = xmlReadMemory(reinterpret_cast<const char*>(string.characters()), string.length() * sizeof(UChar),
-        m_ownerDocument->URL().ascii(),
+        ownerURLLatin1.data(),
         BOMHighByte == 0xFF ? "UTF-16LE" : "UTF-16BE", 
         XML_PARSE_NOENT | XML_PARSE_DTDATTR | XML_PARSE_NOERROR | XML_PARSE_NOWARNING | XML_PARSE_NOCDATA);
     loadChildSheets();
@@ -166,7 +167,7 @@ void XSLStyleSheet::loadChildSheets()
             }
             if (IS_XSLT_ELEM(curr) && IS_XSLT_NAME(curr, "import")) {
                 xmlChar* uriRef = xsltGetNsProp(curr, (const xmlChar*)"href", XSLT_NAMESPACE);                
-                loadChildSheet(DeprecatedString::fromUtf8((const char*)uriRef));
+                loadChildSheet(String::fromUTF8((const char*)uriRef));
                 xmlFree(uriRef);
             } else
                 break;
@@ -177,7 +178,7 @@ void XSLStyleSheet::loadChildSheets()
         while (curr) {
             if (curr->type == XML_ELEMENT_NODE && IS_XSLT_ELEM(curr) && IS_XSLT_NAME(curr, "include")) {
                 xmlChar* uriRef = xsltGetNsProp(curr, (const xmlChar*)"href", XSLT_NAMESPACE);
-                loadChildSheet(DeprecatedString::fromUtf8((const char*)uriRef));
+                loadChildSheet(String::fromUTF8((const char*)uriRef));
                 xmlFree(uriRef);
             }
             curr = curr->next;
@@ -185,7 +186,7 @@ void XSLStyleSheet::loadChildSheets()
     }
 }
 
-void XSLStyleSheet::loadChildSheet(const DeprecatedString& href)
+void XSLStyleSheet::loadChildSheet(const String& href)
 {
     RefPtr<XSLImportRule> childRule = new XSLImportRule(this, href);
     append(childRule);

@@ -28,7 +28,6 @@
 #include "config.h"
 #include "TextStream.h"
 
-#include "DeprecatedString.h"
 #include "Logging.h"
 #include "PlatformString.h"
 #include <wtf/Vector.h>
@@ -40,7 +39,7 @@ const char* const precisionFormats[7] = { "%.0f", "%.1f", "%.2f", "%.3f", "%.4f"
 const int maxPrecision = 6; // must match size of precisionFormats
 const int defaultPrecision = 6; // matches qt and sprintf(.., "%f", ...) behaviour
 
-TextStream::TextStream(DeprecatedString* s)
+TextStream::TextStream(String* s)
     : m_hasByteArray(false), m_string(s), m_precision(defaultPrecision)
 {
 }
@@ -124,22 +123,18 @@ TextStream& TextStream::operator<<(const char* s)
     return *this;
 }
 
-TextStream& TextStream::operator<<(const DeprecatedString& s)
+TextStream& TextStream::operator<<(const String& s)
 {
     if (m_hasByteArray) {
-        unsigned length = s.length();
+        CString latin = s.latin1();
+        unsigned length = latin.length();
         unsigned oldSize = m_byteArray.size();
         m_byteArray.resize(oldSize + length);
-        memcpy(m_byteArray.data() + oldSize, s.latin1(), length);
+        memcpy(m_byteArray.data() + oldSize, latin.data(), length);
     }
     if (m_string)
         m_string->append(s);
     return *this;
-}
-
-TextStream& TextStream::operator<<(const String& s)
-{
-    return (*this) << s.deprecatedString();
 }
 
 TextStream& TextStream::operator<<(void* p)

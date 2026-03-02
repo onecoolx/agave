@@ -255,7 +255,7 @@ static size_t httpHeaderCallback(char* ptr, size_t size, size_t nmemb, void* dat
     if (header == String("\r\n") || header == String("\r") || header == String("\n")) {
         CURL* h = d->m_handle;
         CURLcode err;
-        d->m_response.setExpectedContentLength(atoll(d->m_response.httpHeaderField("Content-Length").deprecatedString().latin1()));
+        d->m_response.setExpectedContentLength(atoll(d->m_response.httpHeaderField("Content-Length").latin1().data()));
 
         const char* hdr;
         err = curl_easy_getinfo(h, CURLINFO_EFFECTIVE_URL, &hdr);
@@ -264,7 +264,7 @@ static size_t httpHeaderCallback(char* ptr, size_t size, size_t nmemb, void* dat
         err = curl_easy_getinfo(h, CURLINFO_RESPONSE_CODE, &httpCode);
         d->m_response.setHTTPStatusCode(httpCode);
         if (isServerRedirection(httpCode)) {
-            KURL newURL = KURL(job->request().url(), d->m_response.httpHeaderField("Location").deprecatedString());
+            KURL newURL = KURL(job->request().url(), d->m_response.httpHeaderField("Location"));
             if (cookiesEnabled()) {
                 String strCookie = cookies(newURL);
                 if (strCookie.isEmpty())

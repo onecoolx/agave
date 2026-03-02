@@ -26,7 +26,7 @@
 #ifndef TextIterator_h
 #define TextIterator_h
 
-#include "DeprecatedString.h"
+#include "PlatformString.h"
 #include "InlineTextBox.h"
 #include "Range.h"
 #include <wtf/Vector.h>
@@ -47,7 +47,7 @@ inline bool isCollapsibleWhitespace(UChar c)
     }
 }
 
-DeprecatedString plainText(const Range*);
+String plainText(const Range*);
 UChar* plainTextToMallocAllocatedBuffer(const Range*, unsigned& bufferLength);
 PassRefPtr<Range> findPlainText(const Range*, const String&, bool forward, bool caseSensitive);
 
@@ -202,7 +202,7 @@ public:
     
     int length() const { return m_textIterator.length() - m_runOffset; }
     const UChar* characters() const { return m_textIterator.characters() + m_runOffset; }
-    DeprecatedString string(int numChars);
+    String string(int numChars);
     
     int characterOffset() const { return m_offset; }
     PassRefPtr<Range> range() const;
@@ -237,7 +237,7 @@ private:
     int m_previousLength;
 
     // many chunks from textIterator concatenated
-    DeprecatedString m_buffer;
+    String m_buffer;
     
     // Did we have to look ahead in the textIterator to confirm the current chunk?
     bool m_didLookAhead;

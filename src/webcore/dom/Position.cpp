@@ -646,7 +646,7 @@ void Position::debugPosition(const char *msg) const
     if (isNull())
         fprintf(stderr, "Position [%s]: null\n", msg);
     else
-        fprintf(stderr, "Position [%s]: %s [%p] at %d\n", msg, node()->nodeName().deprecatedString().latin1(), node(), offset());
+        fprintf(stderr, "Position [%s]: %s [%p] at %d\n", msg, node()->nodeName().latin1().data(), node(), offset());
 }
 
 #ifndef NDEBUG
@@ -666,7 +666,7 @@ void Position::formatForDebugger(char *buffer, unsigned length) const
         result += s;
     }
           
-    strncpy(buffer, result.deprecatedString().latin1(), length - 1);
+    strncpy(buffer, result.latin1().data(), length - 1);
 }
 
 void Position::showTreeForThis() const

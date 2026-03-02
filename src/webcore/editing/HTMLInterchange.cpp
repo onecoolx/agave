@@ -35,28 +35,28 @@ namespace WebCore {
 
 namespace {
 
-DeprecatedString convertedSpaceString() 
+String convertedSpaceString() 
 {
-    static DeprecatedString convertedSpaceString;
-    if (convertedSpaceString.length() == 0) {
-        convertedSpaceString = "<span class=\"";
-        convertedSpaceString += AppleConvertedSpace;
-        convertedSpaceString += "\">";
-        convertedSpaceString += noBreakSpace;
-        convertedSpaceString += "</span>";
+    static String s;
+    if (s.isEmpty()) {
+        s = "<span class=\"";
+        s += AppleConvertedSpace;
+        s += "\">";
+        s += String(&noBreakSpace, 1);
+        s += "</span>";
     }
-    return convertedSpaceString;
+    return s;
 }
 
 } // end anonymous namespace
 
-DeprecatedString convertHTMLTextToInterchangeFormat(const DeprecatedString& in, const Text* node)
+String convertHTMLTextToInterchangeFormat(const String& in, const Text* node)
 {
     // Assume all the text comes from node.
     if (node->renderer() && node->renderer()->style()->preserveNewline())
         return in;
         
-    DeprecatedString s;
+    String s;
 
     unsigned int i = 0;
     unsigned int consumed = 0;
@@ -74,7 +74,7 @@ DeprecatedString convertHTMLTextToInterchangeFormat(const DeprecatedString& in, 
                 switch (add) {
                     case 0:
                         s += convertedSpaceString();
-                        s += ' ';
+                        s += String(" ");
                         s += convertedSpaceString();
                         add = 3;
                         break;
@@ -82,13 +82,13 @@ DeprecatedString convertHTMLTextToInterchangeFormat(const DeprecatedString& in, 
                         if (i == 0 || i + 1 == in.length()) // at start or end of string
                             s += convertedSpaceString();
                         else
-                            s += ' ';
+                            s += String(" ");
                         break;
                     case 2:
                         if (i == 0) {
                              // at start of string
                             s += convertedSpaceString();
-                            s += ' ';
+                            s += String(" ");
                         }
                         else if (i + 2 == in.length()) {
                              // at end of string
@@ -97,7 +97,7 @@ DeprecatedString convertHTMLTextToInterchangeFormat(const DeprecatedString& in, 
                         }
                         else {
                             s += convertedSpaceString();
-                            s += ' ';
+                            s += String(" ");
                         }
                         break;
                 }
@@ -105,7 +105,8 @@ DeprecatedString convertHTMLTextToInterchangeFormat(const DeprecatedString& in, 
             }
         }
         else {
-            s += in[i];
+            UChar ch = in[i];
+            s += String(&ch, 1);
         }
         i += consumed;
     }

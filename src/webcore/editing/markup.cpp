@@ -123,9 +123,9 @@ static void appendAttributeValue(Vector<UChar>& result, const String& attr)
     result.append(uchars + lastCopiedFrom, len - lastCopiedFrom);
 }
     
-static DeprecatedString escapeContentText(const String& in)
+static String escapeContentText(const String& in)
 {
-    DeprecatedString s = "";
+    String s;
 
     unsigned len = in.length();
     unsigned lastCopiedFrom = 0;
@@ -135,7 +135,7 @@ static DeprecatedString escapeContentText(const String& in)
     for (unsigned i = 0; i < len; ++i) {
         UChar c = uchars[i];
         if ((c == '&') | (c == '<')) {
-            s.append(uchars + lastCopiedFrom, i - lastCopiedFrom);
+            s.append(String(uchars + lastCopiedFrom, i - lastCopiedFrom));
             if (c == '&')
                 s += "&amp;";
             else 
@@ -144,7 +144,7 @@ static DeprecatedString escapeContentText(const String& in)
         }
     }
 
-    s.append(uchars + lastCopiedFrom, len - lastCopiedFrom);
+    s.append(String(uchars + lastCopiedFrom, len - lastCopiedFrom));
 
     return s;
 }
@@ -174,9 +174,9 @@ static void appendEscapedContent(Vector<UChar>& result, pair<const UChar*, size_
     result.append(uchars + lastCopiedFrom, len - lastCopiedFrom);
 }    
 
-static inline void appendDeprecatedString(Vector<UChar>& result, const DeprecatedString& str)
+static inline void appendStringFromMarkup(Vector<UChar>& result, const String& str)
 {
-    result.append(reinterpret_cast<const UChar*>(str.unicode()), str.length());
+    result.append(str.characters(), str.length());
 }    
     
 static void appendQuotedURLAttributeValue(Vector<UChar>& result, String urlString)
@@ -363,10 +363,10 @@ static void appendStartMarkup(Vector<UChar>& result, const Node *node, const Ran
             }
             
             bool useRenderedText = !enclosingNodeWithTag(const_cast<Node*>(node), selectTag);
-            DeprecatedString markup = escapeContentText(useRenderedText ? renderedText(node, range) : stringValueForRange(node, range));
+            String markup = escapeContentText(useRenderedText ? renderedText(node, range) : stringValueForRange(node, range));
             if (annotate)
                 markup = convertHTMLTextToInterchangeFormat(markup, static_cast<const Text*>(node));
-            appendDeprecatedString(result, markup);
+            appendStringFromMarkup(result, markup);
             break;
         }
         case Node::COMMENT_NODE:
@@ -538,7 +538,7 @@ static void completeURLs(Node* node, const String& baseURL)
 {
     Vector<AttributeChange> changes;
 
-    KURL baseURLAsKURL(baseURL.deprecatedString());
+    KURL baseURLAsKURL(baseURL);
 
     Node* end = node->traverseNextSibling();
     for (Node* n = node; n != end; n = n->traverseNextNode()) {
@@ -549,7 +549,7 @@ static void completeURLs(Node* node, const String& baseURL)
             for (unsigned i = 0; i < length; i++) {
                 Attribute* attr = attrs->attributeItem(i);
                 if (e->isURLAttribute(attr)) {
-                    String completedURL = KURL(baseURLAsKURL, attr->value().deprecatedString()).url();
+                    String completedURL = KURL(baseURLAsKURL, attr->value()).url();
                     changes.append(AttributeChange(e, attr->name(), completedURL));
                 }
             }

@@ -253,8 +253,8 @@ void RenderImage::paint(PaintInfo& paintInfo, int tx, int ty)
             }
 
             if (!m_altText.isEmpty()) {
-                DeprecatedString text = m_altText.deprecatedString();
-                text.replace('\\', backslashAsCurrencySymbol());
+                String text = m_altText;
+                text.replace(UChar('\\'), backslashAsCurrencySymbol());
                 context->setFont(style()->font());
                 context->setFillColor(style()->color());
                 int ax = tx + leftBorder + leftPad;
@@ -264,7 +264,7 @@ void RenderImage::paint(PaintInfo& paintInfo, int tx, int ty)
 
                 // Only draw the alt text if it'll fit within the content box,
                 // and only if it fits above the error image.
-                TextRun textRun(reinterpret_cast<const UChar*>(text.unicode()), text.length());
+                TextRun textRun(reinterpret_cast<const UChar*>(text.characters()), text.length());
                 int textWidth = font.width(textRun);
                 if (errorPictureDrawn) {
                     if (usableWidth >= textWidth && font.height() <= imageY)

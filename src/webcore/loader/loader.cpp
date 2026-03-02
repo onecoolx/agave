@@ -83,9 +83,9 @@ void Loader::servePendingRequests()
         if (r.protocol().startsWith("http") && r.path().isEmpty())
             r.setPath("/");
         request.setHTTPReferrer(r.url());
-        DeprecatedString domain = r.host();
+        String domain = r.host();
         if (dl->doc()->isHTMLDocument())
-            domain = static_cast<HTMLDocument*>(dl->doc())->domain().deprecatedString();
+            domain = static_cast<HTMLDocument*>(dl->doc())->domain();
         
         RefPtr<SubresourceLoader> loader = SubresourceLoader::create(dl->doc()->frame(),
             this, request, req->shouldSkipCanLoadCheck(), req->sendResourceLoadCallbacks());

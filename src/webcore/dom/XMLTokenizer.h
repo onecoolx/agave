@@ -140,7 +140,7 @@ namespace WebCore {
     };
 
 #if ENABLE(XSLT)
-void* xmlDocPtrForString(DocLoader*, const String& source, const DeprecatedString& URL);
+void* xmlDocPtrForString(DocLoader*, const String& source, const String& URL);
 void setLoaderForLibXMLCallbacks(DocLoader*);
 #endif
 

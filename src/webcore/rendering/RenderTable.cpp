@@ -1108,7 +1108,7 @@ IntRect RenderTable::getOverflowClipRect(int tx, int ty)
 }
 
 #ifndef NDEBUG
-void RenderTable::dump(TextStream* stream, DeprecatedString ind) const
+void RenderTable::dump(TextStream* stream, String ind) const
 {
     if (m_caption)
         *stream << " tCaption";

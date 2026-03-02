@@ -42,8 +42,8 @@ class XSLTProcessor : public Shared<XSLTProcessor>
 {
 public:
     void setXSLStylesheet(XSLStyleSheet *styleSheet) { m_stylesheet = styleSheet; }
-    bool transformToString(Node *source, DeprecatedString &resultMIMEType, DeprecatedString &resultString, DeprecatedString &resultEncoding);
-    RefPtr<Document> createDocumentFromSource(const DeprecatedString& source, const DeprecatedString& sourceEncoding, const DeprecatedString& sourceMIMEType, Node* sourceNode, Frame* frame);
+    bool transformToString(Node *source, String &resultMIMEType, String &resultString, String &resultEncoding);
+    RefPtr<Document> createDocumentFromSource(const String& source, const String& sourceEncoding, const String& sourceMIMEType, Node* sourceNode, Frame* frame);
     
     // DOM methods
     void importStylesheet(Node *style) { m_stylesheetRootNode = style; }

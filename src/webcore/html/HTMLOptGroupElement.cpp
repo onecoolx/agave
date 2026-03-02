@@ -156,9 +156,9 @@ void HTMLOptGroupElement::setRenderStyle(RenderStyle* newStyle)
 
 String HTMLOptGroupElement::groupLabelText()
 {
-    DeprecatedString itemText = getAttribute(labelAttr).deprecatedString();
+    String itemText = getAttribute(labelAttr);
     
-    itemText.replace('\\', document()->backslashAsCurrencySymbol());
+    itemText.replace(static_cast<UChar>('\\'), static_cast<UChar>(document()->backslashAsCurrencySymbol()));
     // In WinIE, leading and trailing whitespace is ignored in options and optgroups. We match this behavior.
     itemText = itemText.stripWhiteSpace();
     // We want to collapse our whitespace too.  This will match other browsers.
