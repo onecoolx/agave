@@ -3832,7 +3832,7 @@ PassRefPtr<HistoryItem> FrameLoader::createHistoryItem(bool useOriginal)
             url = docLoader->requestURL();                
     }
 
-    LOG(History, "WebCoreHistory: Creating item for %s", url.url().ascii());
+    LOG(History, "WebCoreHistory: Creating item for %s", url.url().ascii().data());
     
     // Frames that have never successfully loaded any content
     // may have no URL at all. Currently our history code can't
@@ -3876,7 +3876,7 @@ void FrameLoader::addBackForwardItemClippedAtTarget(bool doClip)
             }
 
             RefPtr<HistoryItem> item = frameLoader->createHistoryItemTree(m_frame, doClip);
-            LOG(BackForward, "WebCoreBackForward - Adding backforward item %p for frame %s", item.get(), documentLoader()->URL().url().ascii());
+            LOG(BackForward, "WebCoreBackForward - Adding backforward item %p for frame %s", item.get(), documentLoader()->URL().url().ascii().data());
             page->backForwardList()->addItem(item);
         }
 }
@@ -4051,7 +4051,7 @@ void FrameLoader::loadItem(HistoryItem* item, FrameLoadType loadType)
                 load(cachedPage->documentLoader(), loadType, 0);   
                 inPageCache = true;
             } else {
-                LOG(PageCache, "Not restoring page for %s from back/forward cache because cache entry has expired", m_provisionalHistoryItem->url().url().ascii());
+                LOG(PageCache, "Not restoring page for %s from back/forward cache because cache entry has expired", m_provisionalHistoryItem->url().url().ascii().data());
                 pageCache()->remove(item);
             }
         }
@@ -4242,7 +4242,7 @@ void FrameLoader::addHistoryForCurrentLocation()
 
 void FrameLoader::updateHistoryForStandardLoad()
 {
-    LOG(History, "WebCoreHistory: Updating History for Standard Load in frame %s", documentLoader()->URL().url().ascii());
+    LOG(History, "WebCoreHistory: Updating History for Standard Load in frame %s", documentLoader()->URL().url().ascii().data());
     
     bool frameNavigationOnLoad = false;
     
