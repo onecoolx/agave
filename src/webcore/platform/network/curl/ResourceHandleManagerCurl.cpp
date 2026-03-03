@@ -414,7 +414,7 @@ bool ResourceHandleManager::startAsyncJob(ResourceHandle* job)
     CURLMcode ret = curl_multi_add_handle(m_curlMultiHandle, d->m_handle);
     if (ret && ret != CURLM_CALL_MULTI_PERFORM) {
 #ifndef NDEBUG
-        printf("Error %d starting job %s\n", ret, job->request().url().url().ascii());
+        printf("Error %d starting job %s\n", ret, job->request().url().url().ascii().data());
 #endif
         job->cancel();
         return false;

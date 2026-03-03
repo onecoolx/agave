@@ -943,10 +943,10 @@ bool Window::isSafeScript(ExecState *exec) const
 
   if (Interpreter::shouldPrintExceptions()) {
       printf("Unsafe JavaScript attempt to access frame with URL %s from frame with URL %s. Domains, protocols and ports must match.\n", 
-             thisURL.url().latin1(), actURL.url().latin1());
+             thisURL.url().latin1().data(), actURL.url().latin1().data());
   }
   String message = String::format("Unsafe JavaScript attempt to access frame with URL %s from frame with URL %s. Domains, protocols and ports must match.\n", 
-                                  thisURL.url().latin1(), actURL.url().latin1());
+                                  thisURL.url().latin1().data(), actURL.url().latin1().data());
   if (Page* page = frame->page())
       page->chrome()->addMessageToConsole(JSMessageSource, ErrorMessageLevel, message, 1, String());
   
