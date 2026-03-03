@@ -73,8 +73,9 @@ TEST_F(RenderBlockFloatContainerTest, RemoveDeletesAndCompacts)
     EXPECT_EQ(1, floats[0]->id);
     EXPECT_EQ(3, floats[1]->id);
 
-    for (unsigned i = 0; i < floats.size(); ++i)
+    for (unsigned i = 0; i < floats.size(); ++i) {
         delete floats[i];
+    }
 }
 
 TEST_F(RenderBlockFloatContainerTest, UnpositionedStartIndexProgresses)
@@ -96,14 +97,16 @@ TEST_F(RenderBlockFloatContainerTest, UnpositionedStartIndexProgresses)
     ASSERT_EQ(-1, floats[unpositionedStart - 1]->startY);
 
     // Mark remaining as positioned and advance like RenderBlock::positionNewFloats.
-    for (unsigned i = unpositionedStart; i < floats.size(); ++i)
+    for (unsigned i = unpositionedStart; i < floats.size(); ++i) {
         floats[i]->startY = 42;
+    }
     unpositionedStart = floats.size();
 
     EXPECT_EQ(floats.size(), unpositionedStart);
 
-    for (unsigned i = 0; i < floats.size(); ++i)
+    for (unsigned i = 0; i < floats.size(); ++i) {
         delete floats[i];
+    }
 }
 
 TEST_F(RenderBlockFloatContainerTest, MicroBenchmarkRemoveAndIterate)
@@ -118,8 +121,9 @@ TEST_F(RenderBlockFloatContainerTest, MicroBenchmarkRemoveAndIterate)
     constexpr unsigned N = 50000;
     Vector<DummyFloat*> floats;
     floats.reserveCapacity(N);
-    for (unsigned i = 0; i < N; ++i)
+    for (unsigned i = 0; i < N; ++i) {
         floats.append(new DummyFloat(i));
+    }
 
     auto start = std::chrono::steady_clock::now();
 
@@ -128,14 +132,16 @@ TEST_F(RenderBlockFloatContainerTest, MicroBenchmarkRemoveAndIterate)
         if ((floats[i]->id % 3) == 0) {
             delete floats[i];
             floats.remove(i);
-        } else
+        } else {
             ++i;
+        }
     }
 
     // Iterate and touch data.
     unsigned sum = 0;
-    for (unsigned i = 0; i < floats.size(); ++i)
+    for (unsigned i = 0; i < floats.size(); ++i) {
         sum += floats[i]->id;
+    }
 
     auto end = std::chrono::steady_clock::now();
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
@@ -147,6 +153,7 @@ TEST_F(RenderBlockFloatContainerTest, MicroBenchmarkRemoveAndIterate)
     // Time budget: keep loose to avoid flakes.
     EXPECT_LT(ms, 2000);
 
-    for (unsigned i = 0; i < floats.size(); ++i)
+    for (unsigned i = 0; i < floats.size(); ++i) {
         delete floats[i];
+    }
 }

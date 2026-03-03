@@ -500,9 +500,9 @@ TEST(StringExtensionsPropertyTest, Latin1RoundTrip)
         String reconstructed(latin1.data());
 
         EXPECT_EQ(original.length(), reconstructed.length())
-            << "Round-trip should preserve length";
+                << "Round-trip should preserve length";
         EXPECT_EQ(original, reconstructed)
-            << "Round-trip should preserve content";
+                << "Round-trip should preserve content";
     }
 }
 
@@ -517,10 +517,12 @@ TEST(StringExtensionsPropertyTest, PrependCorrectness)
         int lenB = rand() % 20;
 
         Vector<UChar> charsA, charsB;
-        for (int i = 0; i < lenA; ++i)
+        for (int i = 0; i < lenA; ++i) {
             charsA.append('a' + (rand() % 26));
-        for (int i = 0; i < lenB; ++i)
+        }
+        for (int i = 0; i < lenB; ++i) {
             charsB.append('A' + (rand() % 26));
+        }
 
         String a(charsA.data(), charsA.size());
         String b(charsB.data(), charsB.size());
@@ -532,8 +534,8 @@ TEST(StringExtensionsPropertyTest, PrependCorrectness)
         b.prepend(a);
 
         EXPECT_EQ(b, expected)
-            << "prepend(a) should equal a + original_b";
+                << "prepend(a) should equal a + original_b";
         EXPECT_EQ(b.length(), a.length() + originalB.length())
-            << "Length should be sum of both strings";
+                << "Length should be sum of both strings";
     }
 }

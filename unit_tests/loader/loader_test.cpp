@@ -217,12 +217,14 @@ TEST_F(LoaderTest, DequeMultipleIteratorRemovals)
     EXPECT_EQ(5u, deque.size());
 
     // Verify only odd numbers remain
-    for (size_t i = 0; i < deque.size(); ++i)
+    for (size_t i = 0; i < deque.size(); ++i) {
         EXPECT_EQ(1, *deque[i] % 2);
+    }
 
     // Cleanup
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < count; i++) {
         delete values[i];
+    }
 }
 
 // Test: Deque clear operation

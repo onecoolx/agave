@@ -224,7 +224,7 @@ static inline int hexDigitValue(unsigned char c)
 
 static unsigned urlComputeHash(const char* url)
 {
-	return StringImpl::computeHash(url);
+    return StringImpl::computeHash(url);
 }
 
 // KURL
@@ -969,7 +969,7 @@ static inline bool matchLetter(char c, char lowercaseLetter)
 void KURL::parse(const char *url, const String *originalString)
 {
     m_isValid = true;
-	m_hash = 0;
+    m_hash = 0;
 
     if (!url || url[0] == '\0') {
         // valid URL must be non-empty
@@ -1199,12 +1199,6 @@ void KURL::parse(const char *url, const String *originalString)
     if (isFile ? !degenFilePath
                : (haveNonHostAuthorityPart || hostStart != hostEnd)) {
 
-//if ((isFile && !degenFilePath) || haveNonHostAuthorityPart || hostStart != hostEnd) {
-// still adds // for file://localhost, file://
-
-//if (!(isFile && degenFilePath) && (haveNonHostAuthorityPart || hostStart != hostEnd)) {
-//doesn't add // for things like file:///foo
-
         *p++ = '/';
         *p++ = '/';
 
@@ -1295,11 +1289,10 @@ void KURL::parse(const char *url, const String *originalString)
     } else
         urlString = String(buffer.data(), fragmentEndPos);
 
-	{
-		CString hashLatin1 = urlString.latin1();
-		m_hash = urlComputeHash(hashLatin1.data());
-	}
-
+    {
+        CString hashLatin1 = urlString.latin1();
+        m_hash = urlComputeHash(hashLatin1.data());
+    }
 
     ASSERT(p - buffer.data() <= (int)buffer.size());
 }
@@ -1560,10 +1553,10 @@ bool KURL::isHierarchical() const
 
 unsigned KURL::urlHash() const
 {
-	if (m_hash == 0)
-		m_hash = urlComputeHash(urlString.latin1().data());
+    if (m_hash == 0)
+        m_hash = urlComputeHash(urlString.latin1().data());
 
-	return m_hash;
+    return m_hash;
 }
 
 }

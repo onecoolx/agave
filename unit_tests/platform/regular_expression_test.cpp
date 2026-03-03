@@ -27,7 +27,6 @@
  */
 
 #include "test.h"
-#include "RegularExpression.h"
 
 // ============================================================
 // Basic matching

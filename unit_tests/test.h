@@ -96,12 +96,19 @@
 #include "ExceptionCode.h"
 #include "EventHandler.h"
 #include "GraphicsContext.h"
+#include "RegularExpression.h"
 #include "SegmentedString.h"
 #include "Settings.h"
+#include "TextStream.h"
+#include "KURL.h"
 #include "markup.h"
 #include "WidgetView.h"
 
 #include "macross.h"
+
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
 
 #define WIDTH 800
 #define HEIGHT 600

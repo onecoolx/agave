@@ -89,10 +89,11 @@ TEST_F(DocumentListsTest, ImageLoadDispatchVectorRemoveAllInstances)
 
     auto removeAll = [](Vector<void*>& v, void* target) {
         for (unsigned i = 0; i < v.size();) {
-            if (v[i] == target)
+            if (v[i] == target) {
                 v.remove(i);
-            else
+            } else {
                 ++i;
+            }
         }
     };
 
@@ -112,12 +113,14 @@ TEST_F(DocumentListsTest, MicroBenchmarkVectorFrontPopLikeQueue)
     Vector<Document*> q;
     q.reserveCapacity(N);
 
-    for (unsigned i = 0; i < N; ++i)
+    for (unsigned i = 0; i < N; ++i) {
         q.append(reinterpret_cast<Document*>(static_cast<uintptr_t>(i + 1)));
+    }
 
     auto start = std::chrono::steady_clock::now();
-    while (!q.isEmpty())
+    while (!q.isEmpty()) {
         q.remove(0);
+    }
     auto end = std::chrono::steady_clock::now();
 
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();

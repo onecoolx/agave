@@ -27,10 +27,6 @@
  */
 
 #include "test.h"
-#include "TextStream.h"
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
 
 // ============================================================
 // Character output
@@ -239,6 +235,6 @@ TEST(TextStreamPropertyTest, IntegerFormatCorrectness)
         char expected[32];
         sprintf(expected, "%d", value);
         EXPECT_EQ(result, String(expected))
-            << "TextStream << " << value << " should produce \"" << expected << "\"";
+                << "TextStream << " << value << " should produce \"" << expected << "\"";
     }
 }

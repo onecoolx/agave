@@ -27,8 +27,6 @@
  */
 
 #include "test.h"
-#include "KURL.h"
-#include <cstdlib>
 
 // ============================================================
 // Basic URL parsing
