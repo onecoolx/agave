@@ -27,12 +27,9 @@
  */
 
 #include "test.h"
-#include "RegularExpression.h"
-#include <cstdlib>
-#include <cstring>
 
 // ============================================================
-// latin1() / CString tests (replacing removed latin1Data())
+// latin1() / CString tests
 // ============================================================
 
 TEST(StringExtensionsTest, Latin1NullString)
