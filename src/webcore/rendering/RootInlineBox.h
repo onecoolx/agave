@@ -35,6 +35,8 @@ struct BidiStatus;
 
 class RootInlineBox : public InlineFlowBox {
 public:
+    using InlineFlowBox::canAccommodateEllipsis;
+
     RootInlineBox(RenderObject* obj)
         : InlineFlowBox(obj)
         , m_overflow(0)

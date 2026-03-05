@@ -280,7 +280,6 @@ Document::Document(DOMImplementation* impl, Frame* frame, bool isXHTML)
 #endif
     , m_domainWasSetInDOM(false)
     , m_savedRenderer(0)
-    , m_secureForms(0)
     , m_designMode(inherit)
     , m_selfOnlyRefCount(0)
 #if ENABLE(SVG)

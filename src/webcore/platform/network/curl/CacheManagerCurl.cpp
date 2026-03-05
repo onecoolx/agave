@@ -438,10 +438,10 @@ void CacheManager::load()
 
     HFile fp = openFile(fileName, "r+b");
     if (fp == INVALID_FILE_HANDLE)
-    	return;
+        return;
 
-	unsigned count = 0;
-	CacheIndexFileHeader header;
+    unsigned count = 0;
+    CacheIndexFileHeader header;
 
 	if (!readFile((unsigned char*)&header, sizeof(CacheIndexFileHeader), 1, fp))
 		return;
@@ -481,9 +481,9 @@ void CacheManager::save()
 
     HFile fp = openFile(fileName, "w+b");
     if (fp == INVALID_FILE_HANDLE)
-    	return;
+        return;
 
-	lock();
+    lock();
 	unsigned count = m_data->entrys.size();
 
 	CacheIndexFileHeader header;

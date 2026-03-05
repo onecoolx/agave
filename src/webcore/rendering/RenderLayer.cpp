@@ -888,8 +888,6 @@ void RenderLayer::resize(const PlatformMouseEvent& evt, const IntSize& oldOffset
     IntSize minimumSize = element->minimumSizeForResizing().shrunkTo(currentSize);
     element->setMinimumSizeForResizing(minimumSize);
 
-    IntSize adjustedOldOffset = IntSize(oldOffset.width() / zoomFactor, oldOffset.height() / zoomFactor);
-    
     IntSize difference = (currentSize + newOffset - oldOffset).expandedTo(minimumSize) - currentSize;
 
     CSSStyleDeclaration* style = element->style();

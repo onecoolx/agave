@@ -596,8 +596,8 @@ bool Range::intersectsNode(Node* refNode, ExceptionCode& ec)
         return false;
     }
     
-    if (m_detached && refNode->attached() ||
-        !m_detached && !refNode->attached() ||
+    if ((m_detached && refNode->attached()) ||
+        (!m_detached && !refNode->attached()) ||
         refNode->document() != m_ownerDocument)
         // firefox doesn't throw an exception for these case; it returns false
         return false;

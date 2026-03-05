@@ -346,7 +346,6 @@ private:
     unsigned m_bufferLength;
     int m_bytesToSkip;
     bool m_decodingSizeOnly;
-    bool m_initialized;
 
     jpeg_decompress_struct m_info;
     decoder_error_mgr m_err;

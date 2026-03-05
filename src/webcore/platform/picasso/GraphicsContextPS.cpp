@@ -173,7 +173,7 @@ static void adjustLineToPixelBoundaries(FloatPoint& p1, FloatPoint& p2, float st
 void GraphicsContext::drawLine(const IntPoint& po1, const IntPoint& po2)
 {
     if (paintingDisabled())
-        return;	
+        return;
 
     StrokeStyle penStyle = strokeStyle();
     if (penStyle == NoStroke)
@@ -267,11 +267,11 @@ void GraphicsContext::drawLine(const IntPoint& po1, const IntPoint& po2)
 void GraphicsContext::drawEllipse(const IntRect& r)
 {
     if (paintingDisabled())
-        return;	
+        return;
 
-	bool f = false;
-	bool s = false;
-	ps_rect rect = {r.x(), r.y(), r.width(), r.height()};
+    bool f = false;
+    bool s = false;
+    ps_rect rect = {r.x(), r.y(), r.width(), r.height()};
 
 	ps_ellipse(m_data->context, &rect);
 
@@ -291,7 +291,7 @@ void GraphicsContext::drawEllipse(const IntRect& r)
 void GraphicsContext::strokeArc(const IntRect& r, int startAngle, int angleSpan)
 {
     if (paintingDisabled())
-        return;	
+        return;
 
     if (strokeStyle() != NoStroke) {
 		float w = r.width();
@@ -370,7 +370,7 @@ void GraphicsContext::drawConvexPolygon(size_t numPoints, const FloatPoint* poin
     if (numPoints <= 1)
         return;
 
-	ps_context* gc = m_data->context;
+    ps_context* gc = m_data->context;
 
 	ps_point p = {points[0].x(), points[0].y()};
 	ps_move_to(gc, &p);
@@ -399,8 +399,8 @@ void GraphicsContext::drawConvexPolygon(size_t numPoints, const FloatPoint* poin
 void GraphicsContext::fillRect(const FloatRect& r, const CanvasGradient* g)
 {
     if (paintingDisabled())
-        return;	
-	ps_context* gc = m_data->context;
+        return;
+    ps_context* gc = m_data->context;
 
 	ps_rect rect = {r.x(), r.y(), r.width(), r.height()};
     ps_rectangle(gc, &rect);
@@ -411,23 +411,23 @@ void GraphicsContext::fillRect(const FloatRect& r, const CanvasGradient* g)
 void GraphicsContext::fillRect(const FloatRect& r, const CanvasPattern * p)
 {
     if (paintingDisabled())
-        return;	
+        return;
 //#warning need implement
 }
 
 void GraphicsContext::fillRect(const IntRect& rect, const Color& color)
 {
     if (paintingDisabled())
-        return;	
+        return;
 
-	FloatRect floatrect = rect;
+    FloatRect floatrect = rect;
 	fillRect(floatrect, color);
 }
 
 void GraphicsContext::fillRect(const FloatRect& r, const Color& color)
 {
     if (paintingDisabled())
-        return;	
+        return;
 
     if (color.alpha()) {
         fillRectSourceOver(m_data->context, r, color);
@@ -437,7 +437,7 @@ void GraphicsContext::fillRect(const FloatRect& r, const Color& color)
 void GraphicsContext::clip(const IntRect& r)
 {
     if (paintingDisabled())
-        return;	
+        return;
 
     ps_point p1 = {r.x(), r.y()};
     ps_point p2 = {r.x() + r.width(), r.y() + r.height()};
@@ -517,7 +517,7 @@ void GraphicsContext::translate(int x, int y)
 {
     if (paintingDisabled())
         return;
-	ps_translate(m_data->context, x, y);
+    ps_translate(m_data->context, x, y);
     m_data->matrix.translate((float)x, (float)y);
 }
 
@@ -538,7 +538,7 @@ void GraphicsContext::setPlatformStrokeThickness(float width)
 {
     if (paintingDisabled())
         return;
-	(void)ps_set_line_width(m_data->context, width);
+    (void)ps_set_line_width(m_data->context, width);
 }
 
 void GraphicsContext::setLineCap(LineCap cap) 
@@ -563,9 +563,9 @@ void GraphicsContext::setLineCap(LineCap cap)
 void GraphicsContext::setLineJoin(LineJoin join) 
 {
     if (paintingDisabled())
-        return;	
+        return;
 
-	ps_context* gc = m_data->context;
+    ps_context* gc = m_data->context;
 	switch (join) {
 		case MiterJoin:
 			ps_set_line_join(gc, LINE_JOIN_MITER);
@@ -582,7 +582,7 @@ void GraphicsContext::setLineJoin(LineJoin join)
 void GraphicsContext::setAlpha(float opacity) 
 {
     if (paintingDisabled())
-        return;	
+        return;
 
     ps_set_alpha(m_data->context, opacity);
 }
@@ -590,9 +590,9 @@ void GraphicsContext::setAlpha(float opacity)
 void GraphicsContext::setCompositeOperation(CompositeOperator op) 
 {
     if (paintingDisabled())
-        return;	
+        return;
 
-	ps_context* gc = m_data->context;
+    ps_context* gc = m_data->context;
     switch (op)
     {
         case CompositeClear:
@@ -645,15 +645,15 @@ void GraphicsContext::setCompositeOperation(CompositeOperator op)
 void GraphicsContext::clip(const Path& path)
 {
     if (paintingDisabled())
-        return;	
-	ps_clip_path(m_data->context, path.platformPath(), (ps_fill_rule)path.windingRule());
+        return;
+    ps_clip_path(m_data->context, path.platformPath(), (ps_fill_rule)path.windingRule());
 }
 
 void GraphicsContext::scale(const FloatSize& size) 
 {
     if (paintingDisabled())
         return;
-	ps_scale(m_data->context, size.width(), size.height());
+    ps_scale(m_data->context, size.width(), size.height());
     m_data->matrix.scale (size.width(), size.height());
 }
 
@@ -661,7 +661,7 @@ void GraphicsContext::rotate(float angle)
 {
     if (paintingDisabled())
         return;
-	ps_rotate(m_data->context, angle);
+    ps_rotate(m_data->context, angle);
     m_data->matrix.rotate (angle);
 }
 
@@ -669,7 +669,7 @@ void GraphicsContext::setMiterLimit(float m)
 {
     if (paintingDisabled())
         return;
-	ps_set_miter_limit(m_data->context, m);
+    ps_set_miter_limit(m_data->context, m);
 }
 
 void GraphicsContext::setPlatformFillColor(const Color& fill)
@@ -690,23 +690,23 @@ void GraphicsContext::strokePath(const Path& path)
 {
     if (paintingDisabled())
         return;
-	ps_set_path(m_data->context, path.platformPath());
-	ps_stroke(m_data->context);
+    ps_set_path(m_data->context, path.platformPath());
+    ps_stroke(m_data->context);
 }
 
 void GraphicsContext::fillPath (const Path& path)
 {
     if (paintingDisabled())
         return;
-	ps_set_path(m_data->context, path.platformPath());
-	ps_fill(m_data->context);
+    ps_set_path(m_data->context, path.platformPath());
+    ps_fill(m_data->context);
 }
 
 void GraphicsContext::setPlatformFont(const Font& font)
 {
     if (paintingDisabled())
-        return;	
-	//note: picasso will leak default font in context at here! doesn't metter.
+        return;
+    //note: picasso will leak default font in context at here! doesn't metter.
     (void)ps_set_font(m_data->context, font.primaryFont()->m_font.hfont());
 }
 
@@ -714,9 +714,9 @@ void GraphicsContext::fillRoundedRect(const IntRect& rc, const IntSize& topLeft,
 								const IntSize& bottomLeft, const IntSize& bottomRight, const Color& color)
 {
     if (paintingDisabled())
-        return;	
+        return;
 
-	if (color.alpha()) {
+    if (color.alpha()) {
 		setBrushColor(m_data->context, color);
 		ps_rect r = {rc.x(), rc.y(), rc.width(), rc.height()};
 		ps_rounded_rect(m_data->context, &r, topLeft.width(), topLeft.height(), topRight.width(), 
@@ -729,9 +729,9 @@ void GraphicsContext::fillRoundedRect(const IntRect& rc, const IntSize& topLeft,
 void GraphicsContext::clearRect(const FloatRect& r)
 {
     if (paintingDisabled())
-        return;	
-		
-	ps_save(m_data->context);
+        return;
+
+    ps_save(m_data->context);
 	ps_color c = {0, 0, 0, 0};
 
     ps_point p1 = {r.x(), r.y()};
@@ -749,9 +749,9 @@ void GraphicsContext::clearRect(const FloatRect& r)
 void GraphicsContext::setShadow(IntSize const& size, int blur, Color const& col)
 {
     if (paintingDisabled())
-        return;	
+        return;
 
-	ps_color sc = make_color(col);
+    ps_color sc = make_color(col);
 	ps_set_shadow(m_data->context, size.width(), size.height(), (double)blur/40);
 	ps_set_shadow_color(m_data->context, &sc);
 }
@@ -759,8 +759,8 @@ void GraphicsContext::setShadow(IntSize const& size, int blur, Color const& col)
 void GraphicsContext::clearShadow() 
 {
     if (paintingDisabled())
-        return;	
-	ps_reset_shadow(m_data->context);
+        return;
+    ps_reset_shadow(m_data->context);
 }
 
 const AffineTransform & GraphicsContext::getMatrix(void) const

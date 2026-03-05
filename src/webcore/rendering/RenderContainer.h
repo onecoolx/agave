@@ -28,6 +28,8 @@ namespace WebCore {
 // Base class for rendering objects that can have children.
 class RenderContainer : public RenderBox {
 public:
+    using RenderBox::addLineBoxRects;
+
     RenderContainer(Node*);
     virtual ~RenderContainer();
 

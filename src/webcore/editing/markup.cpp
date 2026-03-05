@@ -860,7 +860,7 @@ String createMarkup(const Range* range, Vector<Node*>* nodes, EAnnotateForInterc
         markups.append(interchangeNewlineString);
 
     bool selectedOneOrMoreParagraphs = startOfParagraph(visibleStart) != startOfParagraph(visibleEnd) ||
-                                       isStartOfParagraph(visibleStart) && isEndOfParagraph(visibleEnd);
+                                       (isStartOfParagraph(visibleStart) && isEndOfParagraph(visibleEnd));
                                       
     // Retain the Mail quote level by including all ancestor mail block quotes.
     if (lastClosed && annotate && selectedOneOrMoreParagraphs) {

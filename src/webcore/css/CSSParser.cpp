@@ -785,7 +785,7 @@ bool CSSParser::parseValue(int propId, bool important)
         if (id == CSS_VAL__WEBKIT_TEXT)
             valid_primitive = true; // Always allow this, even when strict parsing is on,
                                     // since we use this in our UA sheets.
-        else if (id >= CSS_VAL_AQUA && id <= CSS_VAL_WINDOWTEXT || id == CSS_VAL_MENU ||
+        else if ((id >= CSS_VAL_AQUA && id <= CSS_VAL_WINDOWTEXT) || id == CSS_VAL_MENU ||
              (id >= CSS_VAL__WEBKIT_FOCUS_RING_COLOR && id < CSS_VAL__WEBKIT_TEXT && !strict)) {
             valid_primitive = true;
         } else {
@@ -1021,6 +1021,12 @@ bool CSSParser::parseValue(int propId, bool important)
             valid_primitive = true;
         else
             valid_primitive = (!id && validUnit(value, FNumber|FLength|FPercent, strict));
+        break;
+    case CSS_PROP_ZOOM:                 // normal | <number> | <percentage> | inherit
+        if (id == CSS_VAL_NORMAL)
+            valid_primitive = true;
+        else
+            valid_primitive = (!id && validUnit(value, FNumber|FPercent, strict));
         break;
     case CSS_PROP_COUNTER_INCREMENT:    // [ <identifier> <integer>? ]+ | none | inherit
         if (id != CSS_VAL_NONE)
@@ -2797,7 +2803,7 @@ bool CSSParser::parseShadow(int propId, bool important)
         else {
             // The only other type of value that's ok is a color value.
             CSSPrimitiveValue* parsedColor = 0;
-            bool isColor = (val->id >= CSS_VAL_AQUA && val->id <= CSS_VAL_WINDOWTEXT || val->id == CSS_VAL_MENU ||
+            bool isColor = ((val->id >= CSS_VAL_AQUA && val->id <= CSS_VAL_WINDOWTEXT) || val->id == CSS_VAL_MENU ||
                             (val->id >= CSS_VAL__WEBKIT_FOCUS_RING_COLOR && val->id <= CSS_VAL__WEBKIT_TEXT && !strict));
             if (isColor) {
                 if (!context.allowColor)
@@ -3182,20 +3188,6 @@ bool CSSParser::parseTransformOrigin(int propId, int& propId1, int& propId2, CSS
     
     return value?true:false;
 }
-
-#ifdef CSS_DEBUG
-
-static inline int yyerror(const char *str)
-{
-    kdDebug(6080) << "CSS parse error " << str << endl;
-    return 1;
-}
-
-#else
-
-static inline int yyerror(const char*) { return 1; }
-
-#endif
 
 #define END_TOKEN 0
 

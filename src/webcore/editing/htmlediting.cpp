@@ -311,7 +311,7 @@ Position rangeCompliantEquivalent(const Position& pos)
     Node *node = pos.node();
     
     if (pos.offset() <= 0) {
-        if (node->parentNode() && (node->hasTagName(brTag) || editingIgnoresContent(node)) || isTableElement(node))
+        if ((node->parentNode() && (node->hasTagName(brTag) || editingIgnoresContent(node))) || isTableElement(node))
             return positionBeforeNode(node);
         return Position(node, 0);
     }
@@ -870,7 +870,7 @@ Node *nearestMailBlockquote(const Node *node)
 
 bool isMailBlockquote(const Node *node)
 {
-    if (!node || !node->isElementNode() && !node->hasTagName(blockquoteTag))
+    if (!node || (!node->isElementNode() && !node->hasTagName(blockquoteTag)))
         return false;
         
     return static_cast<const Element *>(node)->getAttribute("type") == "cite";
@@ -883,7 +883,7 @@ bool lineBreakExistsAtPosition(const VisiblePosition& visiblePosition)
         
     Position downstream(visiblePosition.deepEquivalent().downstream());
     return downstream.node()->hasTagName(brTag) ||
-           downstream.node()->isTextNode() && downstream.node()->renderer()->style()->preserveNewline() && visiblePosition.characterAfter() == '\n';
+           (downstream.node()->isTextNode() && downstream.node()->renderer()->style()->preserveNewline() && visiblePosition.characterAfter() == '\n');
 }
 
 PassRefPtr<Range> avoidIntersectionWithNode(const Range* range, Node* node)

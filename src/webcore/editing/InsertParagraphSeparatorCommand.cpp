@@ -101,8 +101,8 @@ void InsertParagraphSeparatorCommand::doApply()
     Node* block = enclosingBlock(pos.node());
     Position canonicalPos = VisiblePosition(pos).deepEquivalent();
     if (!block || !block->parentNode() || 
-        block->renderer() && block->renderer()->isTableCell() ||
-        canonicalPos.node()->renderer() && canonicalPos.node()->renderer()->isTable() ||
+        (block->renderer() && block->renderer()->isTableCell()) ||
+        (canonicalPos.node()->renderer() && canonicalPos.node()->renderer()->isTable()) ||
         canonicalPos.node()->hasTagName(hrTag)) {
         applyCommandToComposite(new InsertLineBreakCommand(document()));
         return;

@@ -156,7 +156,7 @@ Position Position::next(EUsingComposedCharacters usingComposedCharacters) const
     ASSERT(o >= 0);
 
     Node* child = n->childNode(o);
-    if (child || !n->hasChildNodes() && o < maxDeepOffset(n)) {
+    if (child || (!n->hasChildNodes() && o < maxDeepOffset(n))) {
         if (child)
             return Position(child, 0);
             

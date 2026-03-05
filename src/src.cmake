@@ -134,8 +134,8 @@ if (MSVC)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4838 /wd4305 /wd4291 /wd4065 /wd4146 /wd4756 /wd4244 /wd4996")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4838 /wd4305 /wd4291 /wd4065 /wd4146 /wd4756 /wd4244 /wd4996")
 else()
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-misleading-indentation -Wno-narrowing")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-misleading-indentation -Wno-narrowing")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-narrowing")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing")
 endif()
 
 target_link_libraries(${LIB_NAME} PRIVATE ${LIB_DEPS})
@@ -149,7 +149,8 @@ endif()
 
 set_target_properties(${LIB_NAME} PROPERTIES VERSION ${VERSION_INFO} SOVERSION 1)
 
-add_dependencies(${LIB_NAME} ${LIB_DEPS} ${PICASSO_NAME})
+add_dependencies(${LIB_NAME} ${PICASSO_NAME}
+    ${ZLIB_NAME} ${PNG_NAME} ${JPEG_NAME} ${MTLS_NAME} ${CURL_LIB} ${XML2_NAME} ${XSLT_NAME})
 
 if (OPT_USE_QJS)
     add_dependencies(${LIB_NAME} ${QJS_NAME})

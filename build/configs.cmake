@@ -26,7 +26,7 @@ else ()
     endif()
     set(CMAKE_C_FLAGS_DEBUG "-D_DEBUG -O0 -Wall -fPIC -g -fno-strict-aliasing -pipe ${SANITIZE} ${UNITTEST}")
     set(CMAKE_CXX_FLAGS_DEBUG
-        "-D_DEBUG -O0 -Wall -fPIC -g -fno-strict-aliasing -pipe -std=c++98 -fno-exceptions -fno-rtti ${SANITIZE} ${UNITTEST}")
+        "-D_DEBUG -O0 -Wall -Woverloaded-virtual -fPIC -g -fno-strict-aliasing -pipe -std=c++98 -fno-exceptions -fno-rtti ${SANITIZE} ${UNITTEST}")
     set(CMAKE_C_FLAGS_MINSIZEREL "-DNDEBUG -Os -Wall -fPIC -fno-strict-aliasing -pipe ${SANITIZE} ${UNITTEST}")
     set(CMAKE_CXX_FLAGS_MINSIZEREL
         "-DNDEBUG -Os -Wall -fPIC -fno-strict-aliasing -pipe -std=c++98 -fno-exceptions -fno-rtti ${SANITIZE} ${UNITTEST}")

@@ -352,7 +352,7 @@ namespace KJS {
     /* Macro user needs to implement the callAsFunction function. */ \
     virtual JSValue* callAsFunction(ExecState* exec, JSObject* thisObj, const List& args); \
   private: \
-    int id; \
+    int id __attribute__((unused)); \
   };
 
 #endif

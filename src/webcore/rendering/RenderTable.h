@@ -212,7 +212,6 @@ private:
 
     const CollapsedBorderValue* m_currentBorder;
     
-    unsigned m_frame : 4; // Frame
     unsigned m_rules : 4; // Rules
 
     mutable bool m_hasColElements : 1;

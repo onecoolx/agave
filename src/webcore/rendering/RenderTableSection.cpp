@@ -214,7 +214,7 @@ void RenderTableSection::addCell(RenderTableCell* cell, RenderObject* row)
                     if (!(cRowHeight.isPercent()) ||
                         (cRowHeight.isPercent() && cRowHeight.rawValue() < height.rawValue()))
                         m_grid[m_cRow].height = height;
-                        break;
+                    break;
                 case Fixed:
                     if (cRowHeight.type() < Percent ||
                         (cRowHeight.isFixed() && cRowHeight.value() < height.value()))

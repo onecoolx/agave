@@ -54,8 +54,6 @@ protected:
 
 private:
     virtual void deleteWidget();
-
-    Frame* m_frame;
 };
 
 }

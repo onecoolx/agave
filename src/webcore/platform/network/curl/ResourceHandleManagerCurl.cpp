@@ -593,7 +593,7 @@ void ResourceHandleManager::doAuth(ResourceHandle* job)
             len = strlen(user) + strlen(pass);
             userPass = (char *)malloc(len+2);
             if (userPass) {
-                memset(userPass, 0, sizeof (userPass));
+                memset(userPass, 0, len + 2);
                 strcpy(userPass, user);
                 strcat(userPass, ":");
                 strcat(userPass, pass);

@@ -72,7 +72,9 @@ namespace KJS {
             ~DropAllLocks();
             
         private:
+#if USE(MULTIPLE_THREADS)
             int m_lockCount;
+#endif
         };
     };
 

@@ -755,7 +755,6 @@ private:
     String m_preferredStylesheetSet;
     String m_selectedStylesheetSet;
 
-    bool m_loadingSheet;
     bool visuallyOrdered;
     bool m_bParsing;
     bool m_docChanged;
@@ -876,7 +875,6 @@ private:
     KURL m_securityPolicyURL;
 
     RenderObject* m_savedRenderer;
-    int m_secureForms;
     
     RefPtr<TextResourceDecoder> m_decoder;
 

@@ -83,46 +83,46 @@ void PopupMenu::scrollRect(int sx, int sy, int x, int y, int width, int height)
 
 void PopupMenu::show(const IntRect& r, FrameView* v, int index)
 {
-	if (cb_create_popup_menu) {
-    	calculatePositionAndSize(r, v);
-    	if (clientRect().isEmpty())
-        	return;
+    if (cb_create_popup_menu) {
+        calculatePositionAndSize(r, v);
+        if (clientRect().isEmpty())
+            return;
 
-		if (!m_popup) {
-			_mc_rect rc = {r.x(), r.y(), r.width(), r.height()};
-			m_popup = cb_create_popup_menu(&rc);
+        if (!m_popup) {
+            _mc_rect rc = {r.x(), r.y(), r.width(), r.height()};
+            m_popup = cb_create_popup_menu(&rc);
 
-			if(!m_popup)
-				return;
+            if(!m_popup)
+                return;
 
-			m_popup->handle = this;
-		}
+            m_popup->handle = this;
+        }
 
-    	if (!m_scrollBar)
-        	if (visibleItems() < client()->listSize()) {
-            // We need a scroll bar
-            	m_scrollBar = new PlatformScrollbar(this, VerticalScrollbar, SmallScrollbar);
-            	m_scrollBar->setContainingView(m_view);
-        	}
-	
-		if (m_popup->move) {
-			_mc_rect mrc = {m_windowRect.x(), m_windowRect.y(), 
-											m_windowRect.width(), m_windowRect.height()};
-			m_popup->move(m_popup, &mrc);
-		}
+        if (!m_scrollBar)
+            if (visibleItems() < client()->listSize()) {
+                // We need a scroll bar
+                m_scrollBar = new PlatformScrollbar(this, VerticalScrollbar, SmallScrollbar);
+                m_scrollBar->setContainingView(m_view);
+            }
 
-		if (m_popup->show)
-   			m_popup->show(m_popup);
+        if (m_popup->move) {
+            _mc_rect mrc = {m_windowRect.x(), m_windowRect.y(), 
+                                            m_windowRect.width(), m_windowRect.height()};
+            m_popup->move(m_popup, &mrc);
+        }
 
-		if (m_popup->capture)
-   			m_popup->capture(m_popup);
+        if (m_popup->show)
+            m_popup->show(m_popup);
 
-		if (client()) {
-			int index = client()->selectedIndex();
-			if (index >= 0)
-				setFocusedIndex(index);
-		}
-	}
+        if (m_popup->capture)
+            m_popup->capture(m_popup);
+
+        if (client()) {
+            int index = client()->selectedIndex();
+            if (index >= 0)
+                setFocusedIndex(index);
+        }
+    }
 }
 
 void PopupMenu::hide()
@@ -186,8 +186,8 @@ bool PopupMenu::setFocusedIndex(int i, bool hotTracking)
     if (!client()->itemIsEnabled(i))
         return false;
 
-	if (!m_popup)
-		return false;
+    if (!m_popup)
+        return false;
 
     invalidateItem(focusedIndex());
     invalidateItem(i);
@@ -295,10 +295,10 @@ void PopupMenu::invalidateItem(int index)
     if (m_scrollBar)
         damageRect.setWidth(damageRect.width() - m_scrollBar->frameGeometry().width());
 
-	if (m_popup->dirty) {
-    	_mc_rect r = {damageRect.x(), damageRect.y(), damageRect.width(), damageRect.height()}; 
-    	m_popup->dirty(m_popup, &r);
-	}
+    if (m_popup->dirty) {
+        _mc_rect r = {damageRect.x(), damageRect.y(), damageRect.width(), damageRect.height()}; 
+        m_popup->dirty(m_popup, &r);
+    }
 }
 
 IntRect PopupMenu::clientRect() const
@@ -349,8 +349,8 @@ void PopupMenu::updateFromElement()
     if (!m_popup)
         return;
 
-	if (m_popup->dirty)
- 		m_popup->dirty(m_popup, 0);
+    if (m_popup->dirty)
+        m_popup->dirty(m_popup, 0);
 
     if (!scrollToRevealSelection() && m_popup->update)
         m_popup->update(m_popup);
@@ -443,12 +443,12 @@ void PopupMenu::valueChanged(Scrollbar* scrollBar)
 
     if (m_scrollBar&&m_popup->dirty) {
         IntRect r = m_scrollBar->frameGeometry();
-		r.unite(listRect);
-		_mc_rect rt = {r.x(), r.y(), r.width(), r.height()};
+        r.unite(listRect);
+        _mc_rect rt = {r.x(), r.y(), r.width(), r.height()};
         m_popup->dirty(m_popup, &rt);
     }
-	if (m_popup->update)
-    	m_popup->update(m_popup);
+    if (m_popup->update)
+        m_popup->update(m_popup);
 }
 
 IntRect PopupMenu::windowClipRect() const

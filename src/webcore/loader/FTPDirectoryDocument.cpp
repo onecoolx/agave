@@ -85,7 +85,6 @@ private:
     RefPtr<HTMLTableElement> m_tableElement;
 
     bool m_skipLF;
-    bool m_parsedTemplate;
     
     int m_size;
     UChar* m_buffer;
@@ -99,7 +98,6 @@ FTPDirectoryTokenizer::FTPDirectoryTokenizer(HTMLDocument* doc)
     : HTMLTokenizer(doc, false)
     , m_doc(doc)
     , m_skipLF(false)
-    , m_parsedTemplate(false)
     , m_size(254)
     , m_buffer(static_cast<UChar*>(fastMalloc(sizeof(UChar) * m_size)))
     , m_dest(m_buffer)
@@ -247,7 +245,7 @@ static String processFileDateString(const FTPTime& fileTime)
                 return "Yesterday" + timeOfDay;
         }
         
-        if (now.tm_mday == 1 && (now.tm_mon == fileTime.tm_mon + 1 || now.tm_mon == 0 && fileTime.tm_mon == 11) &&
+        if (now.tm_mday == 1 && (now.tm_mon == fileTime.tm_mon + 1 || (now.tm_mon == 0 && fileTime.tm_mon == 11)) &&
             wasLastDayOfMonth(fileTime.tm_year, fileTime.tm_mon, fileTime.tm_mday))
                 return "Yesterday" + timeOfDay;
     }

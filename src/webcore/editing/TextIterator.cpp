@@ -197,7 +197,7 @@ void TextIterator::advance()
             if (!next) {
                 bool pastEnd = m_node->traverseNextNode() == m_pastEndNode;
                 while (!next && m_node->parentNode()) {
-                    if (pastEnd && m_node->parentNode() == m_endContainer || m_endContainer->isDescendantOf(m_node->parentNode()))
+                    if ((pastEnd && m_node->parentNode() == m_endContainer) || m_endContainer->isDescendantOf(m_node->parentNode()))
                         return;
                     bool haveRenderer = m_node->renderer();
                     m_node = m_node->parentNode();
@@ -773,7 +773,7 @@ void SimplifiedBackwardsTextIterator::advance()
             if (!m_handledNode &&
                 canHaveChildrenForEditing(m_node) && 
                 m_node->parentNode() && 
-                (!m_node->lastChild() || m_node == m_endNode && m_endOffset == 0)) {
+                (!m_node->lastChild() || (m_node == m_endNode && m_endOffset == 0))) {
                 exitNode();
                 if (m_positionNode) {
                     m_handledNode = true;

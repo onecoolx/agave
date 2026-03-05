@@ -65,8 +65,6 @@ void CanvasPattern::parseRepetitionType(const String& type, bool& repeatX, bool&
 
 CanvasPattern::CanvasPattern(CachedImage* cachedImage, bool repeatX, bool repeatY)
     : m_cachedImage(cachedImage)
-    , m_repeatX(repeatX)
-    , m_repeatY(repeatY)
 {
     if (cachedImage)
         cachedImage->ref(this);

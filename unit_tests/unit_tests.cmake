@@ -71,4 +71,6 @@ else()
     configure_file(${PROJ_ROOT}/packages/fonts/font_config.cfg ${CMAKE_CURRENT_BINARY_DIR}/font_config.cfg COPYONLY)
 endif()
 
+add_dependencies(${UNIT_TESTS} ${LIB_NAME})
+
 add_test(NAME unittest COMMAND ${UNIT_TESTS})

@@ -69,11 +69,6 @@ namespace WebCore {
         float m_red;
         float m_green;
         float m_blue;
-
-        float m_cyan;
-        float m_magenta;
-        float m_yellow;
-        float m_black;
     };
 
 } // namespace WebCore

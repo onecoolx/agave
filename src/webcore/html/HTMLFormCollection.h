@@ -54,7 +54,6 @@ protected:
     virtual Node *nextNamedItemInternal( const String &name ) const;
 private:
     Node* getNamedFormItem(const QualifiedName& attrName, const String& name, int duplicateNumber, bool caseSensitive) const;
-    mutable int currentPos;
 };
 
 } //namespace

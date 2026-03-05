@@ -61,7 +61,6 @@ private:
 
     RefPtr<Document> m_document;
     RefPtr<DocumentFragment> m_fragment;
-    bool m_matchStyle;
     bool m_hasInterchangeNewlineAtStart;
     bool m_hasInterchangeNewlineAtEnd;
 };

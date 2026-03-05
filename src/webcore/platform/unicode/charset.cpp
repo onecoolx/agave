@@ -122,13 +122,13 @@ static int big5_len_first_char (const unsigned char* mstr, int len)
 
 static unsigned short big5_conv_to_uchar (const unsigned char* mchar, int len)
 {
-	int index = 0;
+    int index = 0;
     if (mchar [1] & 0x80)
         index = (mchar [0] - 0xA1) * 94 + mchar [1] - 0xA1;
     else
         index = 94 * 94 + (mchar [0] - 0xa1) * 63 + (mchar [1] - 0x40);
 
-	return (unsigned short)big5_map[index];
+    return (unsigned short)big5_map[index];
 }
 
 static int big5_conv_from_uchar (unsigned short wc, unsigned char* mchar)

@@ -89,7 +89,7 @@ void ContextMenu::populate()
     if (!frame)
         return;
 
-	IntPoint point = frame->view()->contentsToWindow(result.point());
+    IntPoint point = frame->view()->contentsToWindow(result.point());
     if (!result.isContentEditable()) {
         FrameLoader* loader = frame->loader();
         KURL linkURL = result.absoluteLinkURL();

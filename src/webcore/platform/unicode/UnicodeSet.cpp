@@ -537,7 +537,7 @@ UnicodeString::cloneArrayIfNeeded(int32_t newCapacity,
     }
 
     if(allocate(growCapacity) ||
-       newCapacity < growCapacity && allocate(newCapacity)
+       (newCapacity < growCapacity && allocate(newCapacity))
     ) {
       if(doCopyArray) {
         if(fCapacity < fLength) {

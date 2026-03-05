@@ -70,7 +70,6 @@ static bool isInterchangeConvertedSpaceSpan(const Node *node)
 ReplacementFragment::ReplacementFragment(Document* document, DocumentFragment* fragment, bool matchStyle, const Selection& selection)
     : m_document(document),
       m_fragment(fragment),
-      m_matchStyle(matchStyle), 
       m_hasInterchangeNewlineAtStart(false), 
       m_hasInterchangeNewlineAtEnd(false)
 {
@@ -535,9 +534,9 @@ void ReplaceSelectionCommand::doApply()
     
     Node* startBlock = enclosingBlock(visibleStart.deepEquivalent().node());
     
-    if (selectionStartWasStartOfParagraph && selectionEndWasEndOfParagraph ||
+    if ((selectionStartWasStartOfParagraph && selectionEndWasEndOfParagraph) ||
         startBlock == currentRoot ||
-        startBlock && startBlock->renderer() && startBlock->renderer()->isListItem() ||
+        (startBlock && startBlock->renderer() && startBlock->renderer()->isListItem()) ||
         selectionIsPlainText)
         m_preventNesting = false;
     

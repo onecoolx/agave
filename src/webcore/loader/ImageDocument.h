@@ -35,6 +35,8 @@ class HTMLImageElement;
 class ImageDocument : public HTMLDocument
 {
 public:
+    using HTMLDocument::imageChanged;
+
     ImageDocument(DOMImplementation*, Frame*);
 
     virtual bool isImageDocument() const { return true; }

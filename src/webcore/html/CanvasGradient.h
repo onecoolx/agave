@@ -62,9 +62,7 @@ namespace WebCore {
     private:
         int findStop(float value) const;
 
-        bool m_radial;
         FloatPoint m_p0, m_p1;
-        float m_r0, m_r1;
         mutable Vector<ColorStop> m_stops;
         mutable bool m_stopsSorted;
         mutable int m_lastStop;

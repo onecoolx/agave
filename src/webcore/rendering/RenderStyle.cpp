@@ -530,7 +530,7 @@ bool StyleRareNonInheritedData::operator==(const StyleRareNonInheritedData& o) c
 
 bool StyleRareNonInheritedData::shadowDataEquivalent(const StyleRareNonInheritedData& o) const
 {
-    if (!m_boxShadow && o.m_boxShadow || m_boxShadow && !o.m_boxShadow)
+    if ((!m_boxShadow && o.m_boxShadow) || (m_boxShadow && !o.m_boxShadow))
         return false;
     if (m_boxShadow && o.m_boxShadow && (*m_boxShadow != *o.m_boxShadow))
         return false;
@@ -595,7 +595,7 @@ bool StyleRareInheritedData::operator==(const StyleRareInheritedData& o) const
 
 bool StyleRareInheritedData::shadowDataEquivalent(const StyleRareInheritedData& o) const
 {
-    if (!textShadow && o.textShadow || textShadow && !o.textShadow)
+    if ((!textShadow && o.textShadow) || (textShadow && !o.textShadow))
         return false;
     if (textShadow && o.textShadow && (*textShadow != *o.textShadow))
         return false;
@@ -634,7 +634,7 @@ static bool cursorDataEqvuialent(const CursorList* c1, const CursorList* c2)
 {
     if (c1 == c2)
         return true;
-    if (!c1 && c2 || c1 && !c2)
+    if ((!c1 && c2) || (c1 && !c2))
         return false;
     return (*c1 == *c2);
 }
@@ -1014,14 +1014,14 @@ RenderStyle::Diff RenderStyle::diff(const RenderStyle* other) const
         // In the collapsing border model, 'hidden' suppresses other borders, while 'none'
         // does not, so these style differences can be width differences.
         if (inherited_flags._border_collapse &&
-            (borderTopStyle() == BHIDDEN && other->borderTopStyle() == BNONE ||
-             borderTopStyle() == BNONE && other->borderTopStyle() == BHIDDEN ||
-             borderBottomStyle() == BHIDDEN && other->borderBottomStyle() == BNONE ||
-             borderBottomStyle() == BNONE && other->borderBottomStyle() == BHIDDEN ||
-             borderLeftStyle() == BHIDDEN && other->borderLeftStyle() == BNONE ||
-             borderLeftStyle() == BNONE && other->borderLeftStyle() == BHIDDEN ||
-             borderRightStyle() == BHIDDEN && other->borderRightStyle() == BNONE ||
-             borderRightStyle() == BNONE && other->borderRightStyle() == BHIDDEN))
+            ((borderTopStyle() == BHIDDEN && other->borderTopStyle() == BNONE) ||
+             (borderTopStyle() == BNONE && other->borderTopStyle() == BHIDDEN) ||
+             (borderBottomStyle() == BHIDDEN && other->borderBottomStyle() == BNONE) ||
+             (borderBottomStyle() == BNONE && other->borderBottomStyle() == BHIDDEN) ||
+             (borderLeftStyle() == BHIDDEN && other->borderLeftStyle() == BNONE) ||
+             (borderLeftStyle() == BNONE && other->borderLeftStyle() == BHIDDEN) ||
+             (borderRightStyle() == BHIDDEN && other->borderRightStyle() == BNONE) ||
+             (borderRightStyle() == BNONE && other->borderRightStyle() == BHIDDEN)))
             return Layout;
     }
 

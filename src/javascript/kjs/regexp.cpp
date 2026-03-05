@@ -185,9 +185,9 @@ UString RegExp::match(const UString &s, int i, int *pos, int **ovector)
 bool RegExp::isHexDigit(UChar uc)
 {
   int c = uc.unicode();
-  return (c >= '0' && c <= '9' ||
-          c >= 'a' && c <= 'f' ||
-          c >= 'A' && c <= 'F');
+  return ((c >= '0' && c <= '9') ||
+          (c >= 'a' && c <= 'f') ||
+          (c >= 'A' && c <= 'F'));
 }
 
 unsigned char RegExp::convertHex(int c)

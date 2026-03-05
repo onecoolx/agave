@@ -12,7 +12,7 @@ bool isSupportedInternalScheme(const char *scheme)
     if (!scheme)
         return false;
 
-	static const char *builtinSchemes[] = {"http", "ftp", "https", "ftps", "file", "data"};
+    static const char *builtinSchemes[] = {"http", "ftp", "https", "ftps", "file", "data"};
     for (size_t i=0; i<TABLE_SIZE(builtinSchemes); i++) {
         if (!strcasecmp(builtinSchemes[i], scheme))
             return true;

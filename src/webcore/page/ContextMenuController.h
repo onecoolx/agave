@@ -115,7 +115,6 @@ namespace WebCore {
         void contextMenuItemSelected(ContextMenuAction);
 
     private:
-        Page* m_page;
         ContextMenuClient* m_client;
         OwnPtr<ContextMenu> m_contextMenu;
     };

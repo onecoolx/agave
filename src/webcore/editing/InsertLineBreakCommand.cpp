@@ -108,7 +108,7 @@ void InsertLineBreakCommand::doApply()
     if (isTabSpan) {
         insertNodeAtTabSpanPosition(nodeToInsert.get(), pos);
         setEndingSelection(Selection(Position(nodeToInsert->traverseNextNode(), 0), DOWNSTREAM));
-    } else if (canonicalPos.node()->renderer() && canonicalPos.node()->renderer()->isTable() ||
+    } else if ((canonicalPos.node()->renderer() && canonicalPos.node()->renderer()->isTable()) ||
                canonicalPos.node()->hasTagName(hrTag)) {
         if (canonicalPos.offset() == 0) {
             insertNodeBefore(nodeToInsert.get(), canonicalPos.node());

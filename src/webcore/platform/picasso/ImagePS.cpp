@@ -110,7 +110,7 @@ void Image::drawPattern(GraphicsContext* context, const FloatRect& tileRect, con
     if (!imgref)
         return;
 
-	ps_image * img = build_image(imgref);
+    ps_image * img = build_image(imgref);
 	if (img) {
 		ps_context * gc = context->platformContext(); 
 		ps_composite com_op = ps_set_composite_operator(gc, get_com_op(op));

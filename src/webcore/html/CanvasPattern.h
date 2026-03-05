@@ -47,8 +47,6 @@ namespace WebCore {
 
     private:
         CachedImage* const m_cachedImage;
-        const bool m_repeatX;
-        const bool m_repeatY;
     };
 
 } // namespace WebCore

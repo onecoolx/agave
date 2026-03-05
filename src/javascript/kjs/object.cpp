@@ -361,7 +361,7 @@ JSValue* JSObject::defaultValue(ExecState* exec, JSType hint) const
   Identifier firstPropertyName;
   Identifier secondPropertyName;
   /* Prefer String for Date objects */
-  if ((hint == StringType) || (hint != StringType) && (hint != NumberType) && (_proto == exec->lexicalInterpreter()->builtinDatePrototype())) {
+  if ((hint == StringType) || ((hint != StringType) && (hint != NumberType) && (_proto == exec->lexicalInterpreter()->builtinDatePrototype()))) {
     firstPropertyName = exec->propertyNames().toString;
     secondPropertyName = exec->propertyNames().valueOf;
   } else {

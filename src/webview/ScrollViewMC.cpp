@@ -117,13 +117,13 @@ void ScrollView::ScrollViewPrivate::valueChanged(Scrollbar* bar)
         return;
 
 
-  	WebView * view = 0;
-	if (m_view->containingView() && m_view->containingView()->view)
-		view = m_view->containingView()->view;
+    WebView * view = 0;
+    if (m_view->containingView() && m_view->containingView()->view)
+        view = m_view->containingView()->view;
 
-	if (view)
-		view->contentsPosChanged(m_scrollOffset.width(), m_scrollOffset.height(),
-			  								newOffset.width(), newOffset.height());
+    if (view)
+        view->contentsPosChanged(m_scrollOffset.width(), m_scrollOffset.height(),
+                                                newOffset.width(), newOffset.height());
 
     m_scrollOffset = newOffset;
 
@@ -606,8 +606,8 @@ void ScrollView::paint(GraphicsContext* context, const IntRect& rect)
     if (context->paintingDisabled())
         return;
 
-	IntRect documentDirtyRect = rect;
-	documentDirtyRect.intersect(frameGeometry());
+    IntRect documentDirtyRect = rect;
+    documentDirtyRect.intersect(frameGeometry());
 
 	context->save();
 

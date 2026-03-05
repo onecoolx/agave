@@ -683,7 +683,7 @@ bool CSSStyleSelector::canShareStyleWithElement(Node* n)
             bool isControl = s->isControl();
             if (isControl != element->isControl())
                 return false;
-            if (isControl && (s->isEnabled() != element->isEnabled()) ||
+            if ((isControl && (s->isEnabled() != element->isEnabled())) ||
                              (s->isIndeterminate() != element->isIndeterminate()) ||
                              (s->isChecked() != element->isChecked()))
                 return false;
@@ -1512,10 +1512,10 @@ bool CSSStyleSelector::checkOneSelector(CSSSelector* sel, Element* e, bool isAnc
             case CSSSelector::PseudoDrag: {
                 if (element == e && style)
                     style->setAffectedByDragRules(true);
-                    if (element != e && e->renderStyle())
-                        e->renderStyle()->setAffectedByDragRules(true);
-                    if (e->renderer() && e->renderer()->isDragging())
-                        return true;
+                if (element != e && e->renderStyle())
+                    e->renderStyle()->setAffectedByDragRules(true);
+                if (e->renderer() && e->renderer()->isDragging())
+                    return true;
                 break;
             }
             case CSSSelector::PseudoFocus:

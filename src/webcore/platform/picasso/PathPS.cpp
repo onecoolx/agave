@@ -145,7 +145,7 @@ void Path::addEllipse(const FloatRect& r)
     if (r.isEmpty())
         return;
 
-	ps_rect rc = {r.x(), r.y(), r.width(), r.height()};
+    ps_rect rc = {r.x(), r.y(), r.width(), r.height()};
 	ps_path_add_ellipse(m_path, &rc);
 }
 

@@ -123,7 +123,7 @@ void FrameLoaderClientMC::dispatchWillSubmitForm(FramePolicyFunction policyFunct
     if (!policyFunction || !m_frame)
         return;
 
-	if (cb_save_submit_form) {
+    if (cb_save_submit_form) {
 		int passCount = 0;
 		Vector<HTMLGenericFormElement*> items = form->form()->formElements;
 		for (size_t i = 0; i < items.size(); i++) {

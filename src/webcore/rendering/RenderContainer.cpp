@@ -564,7 +564,7 @@ VisiblePosition RenderContainer::positionForCoordinates(int x, int y)
         newY += yPos();
     }
     for (RenderObject* renderer = m_firstChild; renderer; renderer = renderer->nextSibling()) {
-        if (!renderer->firstChild() && !renderer->isInline() && !renderer->isBlockFlow() 
+        if ((!renderer->firstChild() && !renderer->isInline() && !renderer->isBlockFlow()) 
             || renderer->style()->visibility() != VISIBLE)
             continue;
         

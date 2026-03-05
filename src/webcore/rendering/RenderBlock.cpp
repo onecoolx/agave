@@ -589,7 +589,7 @@ void RenderBlock::layoutBlock(bool relayoutChildren)
     // Expand our intrinsic height to encompass floats.
     int toAdd = borderBottom() + paddingBottom() + horizontalScrollbarHeight();
     if (floatBottom() > (m_height - toAdd) && (isInlineBlockOrInlineTable() || isFloatingOrPositioned() || hasOverflowClip() ||
-                                    (parent() && parent()->isFlexibleBox() || m_hasColumns)))
+                                    (parent() && (parent()->isFlexibleBox() || m_hasColumns))))
         m_height = floatBottom() + toAdd;
     
     // Now lay out our columns within this intrinsic height, since they can slightly affect the intrinsic height as
@@ -1355,7 +1355,7 @@ void RenderBlock::repaintOverhangingFloats(bool paintAllDescendants)
             // Only repaint the object if it is overhanging, is not in its own layer, and
             // is our responsibility to paint (noPaint isn't set). When paintAllDescendants is true, the latter
             // condition is replaced with being a descendant of us.
-            if (r->endY > m_height && (paintAllDescendants && r->node->isDescendantOf(this) || !r->noPaint) && !r->node->hasLayer()) {                
+            if (r->endY > m_height && ((paintAllDescendants && r->node->isDescendantOf(this)) || !r->noPaint) && !r->node->hasLayer()) {                
                 r->node->repaint();
                 r->node->repaintOverhangingFloats();
             }
@@ -1853,7 +1853,7 @@ GapRects RenderBlock::fillInlineSelectionGaps(RenderBlock* rootBlock, int blockX
             result.uniteCenter(fillVerticalSelectionGap(lastTop, lastLeft, lastRight, ty + selTop,
                                                         rootBlock, blockX, blockY, paintInfo));
 
-        if (!paintInfo || ty + selTop < paintInfo->rect.bottom() && ty + selTop + selHeight > paintInfo->rect.y())
+        if (!paintInfo || (ty + selTop < paintInfo->rect.bottom() && ty + selTop + selHeight > paintInfo->rect.y()))
             result.unite(curr->fillLineSelectionGap(selTop, selHeight, rootBlock, blockX, blockY, tx, ty, paintInfo));
 
         lastSelectedLine = curr;
@@ -2999,9 +2999,9 @@ VisiblePosition RenderBlock::positionForCoordinates(int x, int y)
     }
 
     if (isReplaced()) {
-        if (y < 0 || y < height() && x < 0)
+        if (y < 0 || (y < height() && x < 0))
             return VisiblePosition(n, caretMinOffset(), DOWNSTREAM);
-        if (y >= height() || y >= 0 && x >= width())
+        if (y >= height() || (y >= 0 && x >= width()))
             return VisiblePosition(n, caretMaxOffset(), DOWNSTREAM);
     } 
 
@@ -3668,14 +3668,14 @@ void RenderBlock::calcInlinePrefWidths()
                 bool clearPreviousFloat;
                 if (child->isFloating()) {
                     clearPreviousFloat = (prevFloat
-                        && (prevFloat->style()->floating() == FLEFT && (child->style()->clear() & CLEFT)
-                            || prevFloat->style()->floating() == FRIGHT && (child->style()->clear() & CRIGHT)));
+                        && ((prevFloat->style()->floating() == FLEFT && (child->style()->clear() & CLEFT))
+                            || (prevFloat->style()->floating() == FRIGHT && (child->style()->clear() & CRIGHT))));
                     prevFloat = child;
                 } else
                     clearPreviousFloat = false;
                 
                 bool growForPrevious = shouldGrowTableCellForImage(this, child, previousLeaf);
-                if (!growForPrevious && (autoWrap || oldAutoWrap) || clearPreviousFloat) {
+                if ((!growForPrevious && (autoWrap || oldAutoWrap)) || clearPreviousFloat) {
                     m_minPrefWidth = max(inlineMin, m_minPrefWidth);
                     inlineMin = 0;
                 }
@@ -3925,8 +3925,8 @@ void RenderBlock::calcBlockPrefWidths()
 
 bool RenderBlock::hasLineIfEmpty() const
 {
-    return element() && (element()->isContentEditable() && element()->rootEditableElement() == element() ||
-                         element()->isShadowNode() && element()->shadowParentNode()->hasTagName(inputTag));
+    return element() && ((element()->isContentEditable() && element()->rootEditableElement() == element()) ||
+                         (element()->isShadowNode() && element()->shadowParentNode()->hasTagName(inputTag)));
 }
 
 short RenderBlock::lineHeight(bool b, bool isRootLineBox) const

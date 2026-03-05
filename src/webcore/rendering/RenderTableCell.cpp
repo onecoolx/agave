@@ -151,13 +151,13 @@ IntRect RenderTableCell::absoluteClippedOverflowRect()
         int right = max(borderHalfRight(true), outlineSize);
         int top = max(borderHalfTop(true), outlineSize);
         int bottom = max(borderHalfBottom(true), outlineSize);
-        if (left && !rtl || right && rtl) {
+        if ((left && !rtl) || (right && rtl)) {
             if (RenderTableCell* before = table()->cellBefore(this)) {
                 top = max(top, before->borderHalfTop(true));
                 bottom = max(bottom, before->borderHalfBottom(true));
             }
         }
-        if (left && rtl || right && !rtl) {
+        if ((left && rtl) || (right && !rtl)) {
             if (RenderTableCell* after = table()->cellAfter(this)) {
                 top = max(top, after->borderHalfTop(true));
                 bottom = max(bottom, after->borderHalfBottom(true));

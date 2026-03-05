@@ -39,7 +39,6 @@ public:
     void paint(GraphicsContext*, const IntRect&);
 
 private:
-    void* m_hIcon;
 };
 
 }
