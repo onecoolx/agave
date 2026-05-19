@@ -27,6 +27,7 @@
 #include "CString.h"
 #include "Chrome.h"
 #include "DOMWindow.h"
+#include "CookieJar.h"
 #include "Element.h"
 #include "EventListener.h"
 #include "EventNames.h"
@@ -36,6 +37,7 @@
 #include "FrameLoadRequest.h"
 #include "FrameLoader.h"
 #include "FrameTree.h"
+#include "Language.h"
 #include "FrameView.h"
 #include "GCController.h"
 #include "HTMLDocument.h"
@@ -1922,12 +1924,88 @@ void DOMWindowTimer::fired()
 
 JSValue WindowPrototype::self(JSContext* ctx)
 {
-    return JS_NULL; // TODO: implement proper prototype
+    static JSValue proto = JS_UNDEFINED;
+    if (JS_IsUndefined(proto)) {
+        proto = JS_NewObject(ctx);
+        WindowPrototype::initPrototype(ctx, proto);
+    }
+    return proto;
 }
+
+void WindowPrototype::initPrototype(JSContext* ctx, JSValue this_obj)
+{
+    // Window function properties will be set up when the Window object is created
+}
+
+JSClassID Navigator::js_class_id = 0;
 
 JSValue Navigator::create(JSContext* ctx, Frame* frame)
 {
-    return JS_NULL; // TODO: implement Navigator object creation
+    if (!frame)
+        return JS_NULL;
+
+    Navigator::init(ctx);
+    JSValue obj = JS_NewObjectClass(ctx, Navigator::js_class_id);
+    if (JS_IsException(obj))
+        return JS_NULL;
+    JS_SetOpaque(obj, frame);
+    return obj;
+}
+
+void Navigator::init(JSContext* ctx)
+{
+    if (Navigator::js_class_id)
+        return;
+
+    JS_NewClassID(&Navigator::js_class_id);
+    JSClassDef classDef = { "Navigator", NULL, NULL, NULL, NULL };
+    JS_NewClass(JS_GetRuntime(ctx), Navigator::js_class_id, &classDef);
+}
+
+Frame* Navigator::frame(JSContext* ctx, JSValueConst val)
+{
+    return static_cast<Frame*>(JS_GetOpaque(val, Navigator::js_class_id));
+}
+
+JSValue Navigator::getValueProperty(JSContext* ctx, JSValueConst this_val, int token)
+{
+    Frame* f = Navigator::frame(ctx, this_val);
+    if (!f)
+        return JS_UNDEFINED;
+
+    switch (token) {
+    case AppCodeName:
+        return jsString(ctx, "Mozilla");
+    case AppName:
+        return jsString(ctx, "Netscape");
+    case AppVersion:
+        return jsString(ctx, f->loader()->userAgent(f->loader()->url()));
+    case Language:
+        return jsString(ctx, defaultLanguage());
+    case UserAgent:
+        return jsString(ctx, f->loader()->userAgent(f->loader()->url()));
+    case Platform:
+#if PLATFORM(WIN32)
+        return jsString(ctx, "Win32");
+#elif PLATFORM(UNIX)
+        return jsString(ctx, "Linux");
+#else
+        return jsString(ctx, "");
+#endif
+    case CookieEnabled:
+        return JS_NewBool(ctx, cookiesEnabled());
+    case JavaEnabled:
+        return JS_NewBool(ctx, false);
+    case Product:
+        return jsString(ctx, "Gecko");
+    case ProductSub:
+        return jsString(ctx, "20030107");
+    case Vendor:
+        return jsString(ctx, "");
+    case VendorSub:
+        return jsString(ctx, "");
+    }
+    return JS_UNDEFINED;
 }
 
 } // namespace QJS

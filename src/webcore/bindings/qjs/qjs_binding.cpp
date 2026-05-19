@@ -29,8 +29,10 @@
 #include "Document.h"
 #include "Event.h"
 #include "EventNames.h"
+#include "EventTargetNode.h"
 #include "Frame.h"
 #include "HTMLElement.h"
+#include "HTMLNames.h"
 #include "Page.h"
 #include "Range.h"
 #include "RangeException.h"
@@ -38,6 +40,110 @@
 #include "XMLHttpRequest.h"
 #include "QJSNode.h"
 #include "QJSDOMWindow.h"
+#include "QJSHTMLElementWrapperFactory.h"
+
+#include "HTMLAnchorElement.h"
+#include "HTMLAppletElement.h"
+#include "HTMLAreaElement.h"
+#include "HTMLBRElement.h"
+#include "HTMLBaseElement.h"
+#include "HTMLBaseFontElement.h"
+#include "HTMLBodyElement.h"
+#include "HTMLButtonElement.h"
+#include "HTMLCanvasElement.h"
+#include "HTMLDListElement.h"
+#include "HTMLDivElement.h"
+#include "HTMLEmbedElement.h"
+#include "HTMLFieldSetElement.h"
+#include "HTMLFontElement.h"
+#include "HTMLFormElement.h"
+#include "HTMLFrameElement.h"
+#include "HTMLFrameSetElement.h"
+#include "HTMLHRElement.h"
+#include "HTMLHeadElement.h"
+#include "HTMLHeadingElement.h"
+#include "HTMLHtmlElement.h"
+#include "HTMLIFrameElement.h"
+#include "HTMLImageElement.h"
+#include "HTMLInputElement.h"
+#include "HTMLLIElement.h"
+#include "HTMLLabelElement.h"
+#include "HTMLLegendElement.h"
+#include "HTMLLinkElement.h"
+#include "HTMLMapElement.h"
+#include "HTMLMarqueeElement.h"
+#include "HTMLMetaElement.h"
+#include "HTMLObjectElement.h"
+#include "HTMLOListElement.h"
+#include "HTMLOptGroupElement.h"
+#include "HTMLOptionElement.h"
+#include "HTMLParagraphElement.h"
+#include "HTMLParamElement.h"
+#include "HTMLPreElement.h"
+#include "HTMLScriptElement.h"
+#include "HTMLSelectElement.h"
+#include "HTMLStyleElement.h"
+#include "HTMLTableCaptionElement.h"
+#include "HTMLTableCellElement.h"
+#include "HTMLTableColElement.h"
+#include "HTMLTableElement.h"
+#include "HTMLTableRowElement.h"
+#include "HTMLTableSectionElement.h"
+#include "HTMLTextAreaElement.h"
+#include "HTMLTitleElement.h"
+#include "HTMLUListElement.h"
+
+#include "QJSHTMLAnchorElement.h"
+#include "QJSHTMLAppletElement.h"
+#include "QJSHTMLAreaElement.h"
+#include "QJSHTMLBRElement.h"
+#include "QJSHTMLBaseElement.h"
+#include "QJSHTMLBaseFontElement.h"
+#include "QJSHTMLBodyElement.h"
+#include "QJSHTMLButtonElement.h"
+#include "QJSHTMLCanvasElement.h"
+#include "QJSHTMLDListElement.h"
+#include "QJSHTMLDivElement.h"
+#include "QJSHTMLElement.h"
+#include "QJSHTMLEmbedElement.h"
+#include "QJSHTMLFieldSetElement.h"
+#include "QJSHTMLFontElement.h"
+#include "QJSHTMLFormElement.h"
+#include "QJSHTMLFrameElement.h"
+#include "QJSHTMLFrameSetElement.h"
+#include "QJSHTMLHRElement.h"
+#include "QJSHTMLHeadElement.h"
+#include "QJSHTMLHeadingElement.h"
+#include "QJSHTMLHtmlElement.h"
+#include "QJSHTMLIFrameElement.h"
+#include "QJSHTMLImageElement.h"
+#include "QJSHTMLInputElement.h"
+#include "QJSHTMLLIElement.h"
+#include "QJSHTMLLabelElement.h"
+#include "QJSHTMLLegendElement.h"
+#include "QJSHTMLLinkElement.h"
+#include "QJSHTMLMapElement.h"
+#include "QJSHTMLMarqueeElement.h"
+#include "QJSHTMLMetaElement.h"
+#include "QJSHTMLObjectElement.h"
+#include "QJSHTMLOListElement.h"
+#include "QJSHTMLOptGroupElement.h"
+#include "QJSHTMLOptionElement.h"
+#include "QJSHTMLParagraphElement.h"
+#include "QJSHTMLParamElement.h"
+#include "QJSHTMLPreElement.h"
+#include "QJSHTMLScriptElement.h"
+#include "QJSHTMLSelectElement.h"
+#include "QJSHTMLStyleElement.h"
+#include "QJSHTMLTableCaptionElement.h"
+#include "QJSHTMLTableCellElement.h"
+#include "QJSHTMLTableColElement.h"
+#include "QJSHTMLTableElement.h"
+#include "QJSHTMLTableRowElement.h"
+#include "QJSHTMLTableSectionElement.h"
+#include "QJSHTMLTextAreaElement.h"
+#include "QJSHTMLTitleElement.h"
+#include "QJSHTMLUListElement.h"
 
 #include <text/String.h>
 #include "qjs_dom.h"
@@ -508,16 +614,22 @@ JSValue toJS(JSContext* ctx, Clipboard* clipboard)
     return JS_NULL; // TODO: implement Clipboard binding
 }
 
-Node* toEventTargetNode(JSValue val)
+EventTargetNode* toEventTargetNode(JSValue val)
 {
-    // TODO: proper implementation
-    return 0;
+    if (!JS_IsObject(val))
+        return 0;
+    Node* node = static_cast<Node*>(JS_GetOpaque(val, JSNode::js_class_id));
+    if (!node || !node->isEventTargetNode())
+        return 0;
+    return static_cast<EventTargetNode*>(node);
 }
 
 bool isSafeScript(JSContext* ctx, JSValue val)
 {
-    // TODO: proper cross-frame security check
-    return true;
+    QJS::Window* window = static_cast<QJS::Window*>(JS_GetOpaque(val, QJS::Window::js_class_id));
+    if (!window)
+        return false;
+    return window->isSafeScript(ctx);
 }
 
 JSValue getDOMExceptionConstructor(JSContext* ctx)
@@ -529,8 +641,70 @@ JSValue createJSHTMLWrapper(JSContext* ctx, PassRefPtr<HTMLElement> element)
 {
     if (!element)
         return JS_NULL;
-    // TODO: create proper wrapper based on element type
-    return JS_NULL;
+
+    HTMLElement* e = element.get();
+    const AtomicString& tag = e->localName();
+
+    if (tag == HTMLNames::aTag) return JSHTMLAnchorElement::create(ctx, static_cast<HTMLAnchorElement*>(e));
+    if (tag == HTMLNames::appletTag) return JSHTMLAppletElement::create(ctx, static_cast<HTMLAppletElement*>(e));
+    if (tag == HTMLNames::areaTag) return JSHTMLAreaElement::create(ctx, static_cast<HTMLAreaElement*>(e));
+    if (tag == HTMLNames::baseTag) return JSHTMLBaseElement::create(ctx, static_cast<HTMLBaseElement*>(e));
+    if (tag == HTMLNames::basefontTag) return JSHTMLBaseFontElement::create(ctx, static_cast<HTMLBaseFontElement*>(e));
+    if (tag == HTMLNames::bodyTag) return JSHTMLBodyElement::create(ctx, static_cast<HTMLBodyElement*>(e));
+    if (tag == HTMLNames::brTag) return JSHTMLBRElement::create(ctx, static_cast<HTMLBRElement*>(e));
+    if (tag == HTMLNames::buttonTag) return JSHTMLButtonElement::create(ctx, static_cast<HTMLButtonElement*>(e));
+    if (tag == HTMLNames::canvasTag) return JSHTMLCanvasElement::create(ctx, static_cast<HTMLCanvasElement*>(e));
+    if (tag == HTMLNames::divTag) return JSHTMLDivElement::create(ctx, static_cast<HTMLDivElement*>(e));
+    if (tag == HTMLNames::dlTag) return JSHTMLDListElement::create(ctx, static_cast<HTMLDListElement*>(e));
+    if (tag == HTMLNames::embedTag) return JSHTMLEmbedElement::create(ctx, static_cast<HTMLEmbedElement*>(e));
+    if (tag == HTMLNames::fieldsetTag) return JSHTMLFieldSetElement::create(ctx, static_cast<HTMLFieldSetElement*>(e));
+    if (tag == HTMLNames::fontTag) return JSHTMLFontElement::create(ctx, static_cast<HTMLFontElement*>(e));
+    if (tag == HTMLNames::formTag) return JSHTMLFormElement::create(ctx, static_cast<HTMLFormElement*>(e));
+    if (tag == HTMLNames::frameTag) return JSHTMLFrameElement::create(ctx, static_cast<HTMLFrameElement*>(e));
+    if (tag == HTMLNames::framesetTag) return JSHTMLFrameSetElement::create(ctx, static_cast<HTMLFrameSetElement*>(e));
+    if (tag == HTMLNames::h1Tag || tag == HTMLNames::h2Tag || tag == HTMLNames::h3Tag ||
+        tag == HTMLNames::h4Tag || tag == HTMLNames::h5Tag || tag == HTMLNames::h6Tag)
+        return JSHTMLHeadingElement::create(ctx, static_cast<HTMLHeadingElement*>(e));
+    if (tag == HTMLNames::headTag) return JSHTMLHeadElement::create(ctx, static_cast<HTMLHeadElement*>(e));
+    if (tag == HTMLNames::hrTag) return JSHTMLHRElement::create(ctx, static_cast<HTMLHRElement*>(e));
+    if (tag == HTMLNames::htmlTag) return JSHTMLHtmlElement::create(ctx, static_cast<HTMLHtmlElement*>(e));
+    if (tag == HTMLNames::iframeTag) return JSHTMLIFrameElement::create(ctx, static_cast<HTMLIFrameElement*>(e));
+    if (tag == HTMLNames::imgTag || tag == HTMLNames::imageTag)
+        return JSHTMLImageElement::create(ctx, static_cast<HTMLImageElement*>(e));
+    if (tag == HTMLNames::inputTag) return JSHTMLInputElement::create(ctx, static_cast<HTMLInputElement*>(e));
+    if (tag == HTMLNames::labelTag) return JSHTMLLabelElement::create(ctx, static_cast<HTMLLabelElement*>(e));
+    if (tag == HTMLNames::legendTag) return JSHTMLLegendElement::create(ctx, static_cast<HTMLLegendElement*>(e));
+    if (tag == HTMLNames::liTag) return JSHTMLLIElement::create(ctx, static_cast<HTMLLIElement*>(e));
+    if (tag == HTMLNames::linkTag) return JSHTMLLinkElement::create(ctx, static_cast<HTMLLinkElement*>(e));
+    if (tag == HTMLNames::mapTag) return JSHTMLMapElement::create(ctx, static_cast<HTMLMapElement*>(e));
+    if (tag == HTMLNames::marqueeTag) return JSHTMLMarqueeElement::create(ctx, static_cast<HTMLMarqueeElement*>(e));
+    if (tag == HTMLNames::metaTag) return JSHTMLMetaElement::create(ctx, static_cast<HTMLMetaElement*>(e));
+    if (tag == HTMLNames::objectTag) return JSHTMLObjectElement::create(ctx, static_cast<HTMLObjectElement*>(e));
+    if (tag == HTMLNames::olTag) return JSHTMLOListElement::create(ctx, static_cast<HTMLOListElement*>(e));
+    if (tag == HTMLNames::optgroupTag) return JSHTMLOptGroupElement::create(ctx, static_cast<HTMLOptGroupElement*>(e));
+    if (tag == HTMLNames::optionTag) return JSHTMLOptionElement::create(ctx, static_cast<HTMLOptionElement*>(e));
+    if (tag == HTMLNames::pTag) return JSHTMLParagraphElement::create(ctx, static_cast<HTMLParagraphElement*>(e));
+    if (tag == HTMLNames::paramTag) return JSHTMLParamElement::create(ctx, static_cast<HTMLParamElement*>(e));
+    if (tag == HTMLNames::preTag || tag == HTMLNames::listingTag || tag == HTMLNames::xmpTag)
+        return JSHTMLPreElement::create(ctx, static_cast<HTMLPreElement*>(e));
+    if (tag == HTMLNames::scriptTag) return JSHTMLScriptElement::create(ctx, static_cast<HTMLScriptElement*>(e));
+    if (tag == HTMLNames::selectTag || tag == HTMLNames::keygenTag)
+        return JSHTMLSelectElement::create(ctx, static_cast<HTMLSelectElement*>(e));
+    if (tag == HTMLNames::styleTag) return JSHTMLStyleElement::create(ctx, static_cast<HTMLStyleElement*>(e));
+    if (tag == HTMLNames::captionTag) return JSHTMLTableCaptionElement::create(ctx, static_cast<HTMLTableCaptionElement*>(e));
+    if (tag == HTMLNames::tdTag || tag == HTMLNames::thTag)
+        return JSHTMLTableCellElement::create(ctx, static_cast<HTMLTableCellElement*>(e));
+    if (tag == HTMLNames::colTag || tag == HTMLNames::colgroupTag)
+        return JSHTMLTableColElement::create(ctx, static_cast<HTMLTableColElement*>(e));
+    if (tag == HTMLNames::tableTag) return JSHTMLTableElement::create(ctx, static_cast<HTMLTableElement*>(e));
+    if (tag == HTMLNames::trTag) return JSHTMLTableRowElement::create(ctx, static_cast<HTMLTableRowElement*>(e));
+    if (tag == HTMLNames::tbodyTag || tag == HTMLNames::tfootTag || tag == HTMLNames::theadTag)
+        return JSHTMLTableSectionElement::create(ctx, static_cast<HTMLTableSectionElement*>(e));
+    if (tag == HTMLNames::textareaTag) return JSHTMLTextAreaElement::create(ctx, static_cast<HTMLTextAreaElement*>(e));
+    if (tag == HTMLNames::titleTag) return JSHTMLTitleElement::create(ctx, static_cast<HTMLTitleElement*>(e));
+    if (tag == HTMLNames::ulTag) return JSHTMLUListElement::create(ctx, static_cast<HTMLUListElement*>(e));
+
+    return JSHTMLElement::create(ctx, e);
 }
 
 }
