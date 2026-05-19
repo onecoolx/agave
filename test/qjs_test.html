@@ -1,0 +1,82 @@
+<html>
+<head>
+<title>QJS Binding Test</title>
+<style>
+body { font-family: sans-serif; margin: 20px; }
+.pass { color: green; }
+.fail { color: red; }
+#results { margin-top: 10px; }
+</style>
+</head>
+<body>
+<h1>QuickJS Binding Test</h1>
+<div id="results"></div>
+<form id="testform">
+<input type="text" id="input1" value="hello">
+<select id="sel1"><option>A</option><option>B</option></select>
+</form>
+
+<script>
+var results = document.getElementById('results');
+var passed = 0;
+var failed = 0;
+
+function test(name, condition) {
+    var div = document.createElement('div');
+    if (condition) {
+        div.className = 'pass';
+        div.innerHTML = 'PASS: ' + name;
+        passed++;
+    } else {
+        div.className = 'fail';
+        div.innerHTML = 'FAIL: ' + name;
+        failed++;
+    }
+    results.appendChild(div);
+}
+
+// Test 1: document.getElementById
+test('document.getElementById', document.getElementById('results') !== null);
+
+// Test 2: document.createElement
+var el = document.createElement('span');
+test('document.createElement', el !== null && el.tagName === 'SPAN');
+
+// Test 3: element.innerHTML
+el.innerHTML = 'test content';
+test('element.innerHTML', el.innerHTML === 'test content');
+
+// Test 4: appendChild
+results.appendChild(el);
+test('appendChild', el.parentNode === results);
+
+// Test 5: element.style
+el.style.color = 'blue';
+test('element.style.color', el.style.color === 'blue');
+
+// Test 6: form access
+var form = document.getElementById('testform');
+test('form element', form !== null);
+
+// Test 7: input value
+var input = document.getElementById('input1');
+test('input.value', input && input.value === 'hello');
+
+// Test 8: select element
+var sel = document.getElementById('sel1');
+test('select.options.length', sel && sel.options.length === 2);
+
+// Test 9: window.navigator
+test('navigator.appName', navigator.appName === 'Netscape');
+
+// Test 10: setTimeout
+var timerFired = false;
+setTimeout(function() { timerFired = true; }, 10);
+
+// Summary
+var summary = document.createElement('h2');
+summary.innerHTML = 'Results: ' + passed + ' passed, ' + failed + ' failed';
+results.appendChild(summary);
+</script>
+</body>
+</html>
