@@ -20,14 +20,20 @@
 #include "QJSDOMExceptionConstructor.h"
 
 #include "Document.h"
+#include "DOMWindow.h"
 #include "Event.h"
+#include "ExceptionCode.h"
+#include "Frame.h"
+#include "HTMLOptionElement.h"
 #include "HTMLSelectElement.h"
 #include "HTMLOptionsCollection.h"
 #include "NodeIterator.h"
+#include "Text.h"
 #include "TreeWalker.h"
 
 #include "qjs_window.h"
 #include "qjs_binding.h"
+#include "QJSNode.h"
 
 using namespace QJS;
 
@@ -86,9 +92,46 @@ void JSTreeWalker::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func)
 
 // JSHTMLOptionElementConstructor
 
+static JSValue qjs_option_constructor(JSContext *ctx, JSValueConst new_target, int argc, JSValueConst *argv)
+{
+    // Get document from the global Window object
+    QJS::Window* window = QJS::Window::retrieveActive(ctx);
+    if (!window || !window->impl()->frame())
+        return JS_EXCEPTION;
+
+    Document* doc = window->impl()->frame()->document();
+    if (!doc)
+        return JS_EXCEPTION;
+
+    ExceptionCode ec = 0;
+    RefPtr<Element> el = doc->createElement("option", ec);
+    if (ec || !el)
+        return JS_EXCEPTION;
+
+    HTMLOptionElement* opt = static_cast<HTMLOptionElement*>(el.get());
+    RefPtr<Text> text = doc->createTextNode("");
+    opt->appendChild(text, ec);
+
+    if (!ec && argc > 0)
+        text->setData(valueToString(ctx, argv[0]), ec);
+    if (!ec && argc > 1)
+        opt->setValue(valueToString(ctx, argv[1]));
+    if (!ec && argc > 2)
+        opt->setDefaultSelected(JS_ToBool(ctx, argv[2]));
+    if (!ec && argc > 3)
+        opt->setSelected(JS_ToBool(ctx, argv[3]));
+
+    if (ec) {
+        setDOMException(ctx, ec);
+        return JS_EXCEPTION;
+    }
+
+    return toJS(ctx, static_cast<Node*>(opt));
+}
+
 JSValue JSHTMLOptionElementConstructor::self(JSContext* ctx, Document* doc)
 {
-    return JS_NULL; // TODO: implement
+    return JS_NewCFunction2(ctx, qjs_option_constructor, "Option", 4, JS_CFUNC_constructor, 0);
 }
 
 // JSHTMLOptionsCollection custom
@@ -132,7 +175,23 @@ JSClassID JSDOMExceptionConstructor::js_class_id = 0;
 
 JSValue JSDOMExceptionConstructor::create(JSContext* ctx)
 {
-    return JS_NULL; // TODO: implement
+    JSValue obj = JS_NewObject(ctx);
+    JS_SetPropertyStr(ctx, obj, "INDEX_SIZE_ERR", JS_NewInt32(ctx, INDEX_SIZE_ERR));
+    JS_SetPropertyStr(ctx, obj, "DOMSTRING_SIZE_ERR", JS_NewInt32(ctx, DOMSTRING_SIZE_ERR));
+    JS_SetPropertyStr(ctx, obj, "HIERARCHY_REQUEST_ERR", JS_NewInt32(ctx, HIERARCHY_REQUEST_ERR));
+    JS_SetPropertyStr(ctx, obj, "WRONG_DOCUMENT_ERR", JS_NewInt32(ctx, WRONG_DOCUMENT_ERR));
+    JS_SetPropertyStr(ctx, obj, "INVALID_CHARACTER_ERR", JS_NewInt32(ctx, INVALID_CHARACTER_ERR));
+    JS_SetPropertyStr(ctx, obj, "NO_DATA_ALLOWED_ERR", JS_NewInt32(ctx, NO_DATA_ALLOWED_ERR));
+    JS_SetPropertyStr(ctx, obj, "NO_MODIFICATION_ALLOWED_ERR", JS_NewInt32(ctx, NO_MODIFICATION_ALLOWED_ERR));
+    JS_SetPropertyStr(ctx, obj, "NOT_FOUND_ERR", JS_NewInt32(ctx, NOT_FOUND_ERR));
+    JS_SetPropertyStr(ctx, obj, "NOT_SUPPORTED_ERR", JS_NewInt32(ctx, NOT_SUPPORTED_ERR));
+    JS_SetPropertyStr(ctx, obj, "INUSE_ATTRIBUTE_ERR", JS_NewInt32(ctx, INUSE_ATTRIBUTE_ERR));
+    JS_SetPropertyStr(ctx, obj, "INVALID_STATE_ERR", JS_NewInt32(ctx, INVALID_STATE_ERR));
+    JS_SetPropertyStr(ctx, obj, "SYNTAX_ERR", JS_NewInt32(ctx, SYNTAX_ERR));
+    JS_SetPropertyStr(ctx, obj, "INVALID_MODIFICATION_ERR", JS_NewInt32(ctx, INVALID_MODIFICATION_ERR));
+    JS_SetPropertyStr(ctx, obj, "NAMESPACE_ERR", JS_NewInt32(ctx, NAMESPACE_ERR));
+    JS_SetPropertyStr(ctx, obj, "INVALID_ACCESS_ERR", JS_NewInt32(ctx, INVALID_ACCESS_ERR));
+    return obj;
 }
 
 void JSDOMExceptionConstructor::init(JSContext* ctx)
@@ -141,7 +200,7 @@ void JSDOMExceptionConstructor::init(JSContext* ctx)
 
 JSValue JSDOMExceptionConstructor::getValueProperty(JSContext *ctx, JSValueConst this_val, int token)
 {
-    return JS_UNDEFINED;
+    return JS_NewInt32(ctx, token);
 }
 
 } // namespace WebCore

@@ -24,7 +24,16 @@
 
 #include "Chrome.h"
 #include "CSSRule.h"
+#include "CSSStyleRule.h"
+#include "CSSMediaRule.h"
+#include "CSSFontFaceRule.h"
+#include "CSSPageRule.h"
+#include "CSSImportRule.h"
+#include "CSSCharsetRule.h"
+#include "CSSPrimitiveValue.h"
 #include "CSSValue.h"
+#include "CSSValueList.h"
+#include "CSSStyleSheet.h"
 #include "Clipboard.h"
 #include "Document.h"
 #include "Event.h"
@@ -33,14 +42,36 @@
 #include "Frame.h"
 #include "HTMLElement.h"
 #include "HTMLNames.h"
+#include "KeyboardEvent.h"
+#include "MouseEvent.h"
+#include "MutationEvent.h"
 #include "Page.h"
 #include "Range.h"
 #include "RangeException.h"
 #include "StyleSheet.h"
+#include "UIEvent.h"
 #include "XMLHttpRequest.h"
 #include "QJSNode.h"
+#include "QJSDocument.h"
 #include "QJSDOMWindow.h"
 #include "QJSHTMLElementWrapperFactory.h"
+#include "QJSCSSRule.h"
+#include "QJSCSSStyleRule.h"
+#include "QJSCSSMediaRule.h"
+#include "QJSCSSFontFaceRule.h"
+#include "QJSCSSPageRule.h"
+#include "QJSCSSImportRule.h"
+#include "QJSCSSCharsetRule.h"
+#include "QJSCSSValue.h"
+#include "QJSCSSValueList.h"
+#include "QJSCSSPrimitiveValue.h"
+#include "QJSCSSStyleSheet.h"
+#include "QJSStyleSheet.h"
+#include "QJSEvent.h"
+#include "QJSKeyboardEvent.h"
+#include "QJSMouseEvent.h"
+#include "QJSMutationEvent.h"
+#include "QJSUIEvent.h"
 
 #include "HTMLAnchorElement.h"
 #include "HTMLAppletElement.h"
@@ -576,42 +607,107 @@ JSValue toJS(JSContext* ctx, Document* doc)
 {
     if (!doc)
         return JS_NULL;
-    return QJS::ScriptInterpreter::getDOMNodeForDocument(doc, doc);
+    JSValue ret = QJS::ScriptInterpreter::getDOMNodeForDocument(doc, doc);
+    if (!JS_IsNull(ret))
+        return ret;
+    ret = JSDocument::create(ctx, doc);
+    QJS::ScriptInterpreter::putDOMNodeForDocument(doc, doc, ret);
+    return ret;
 }
 
 JSValue toJS(JSContext* ctx, Event* event)
 {
     if (!event)
         return JS_NULL;
-    return QJS::ScriptInterpreter::getDOMObject(event);
+    JSValue ret = QJS::ScriptInterpreter::getDOMObject(event);
+    if (!JS_IsNull(ret))
+        return ret;
+
+    if (event->isKeyboardEvent())
+        ret = JSKeyboardEvent::create(ctx, static_cast<KeyboardEvent*>(event));
+    else if (event->isMouseEvent())
+        ret = JSMouseEvent::create(ctx, static_cast<MouseEvent*>(event));
+    else if (event->isUIEvent())
+        ret = JSUIEvent::create(ctx, static_cast<UIEvent*>(event));
+    else if (event->isMutationEvent())
+        ret = JSMutationEvent::create(ctx, static_cast<MutationEvent*>(event));
+    else
+        ret = JSEvent::create(ctx, event);
+
+    QJS::ScriptInterpreter::putDOMObject(event, ret);
+    return ret;
 }
 
 JSValue toJS(JSContext* ctx, CSSRule* rule)
 {
     if (!rule)
         return JS_NULL;
-    return QJS::ScriptInterpreter::getDOMObject(rule);
+    JSValue ret = QJS::ScriptInterpreter::getDOMObject(rule);
+    if (!JS_IsNull(ret))
+        return ret;
+
+    switch (rule->type()) {
+    case CSSRule::STYLE_RULE:
+        ret = JSCSSStyleRule::create(ctx, static_cast<CSSStyleRule*>(rule)); break;
+    case CSSRule::MEDIA_RULE:
+        ret = JSCSSMediaRule::create(ctx, static_cast<CSSMediaRule*>(rule)); break;
+    case CSSRule::FONT_FACE_RULE:
+        ret = JSCSSFontFaceRule::create(ctx, static_cast<CSSFontFaceRule*>(rule)); break;
+    case CSSRule::PAGE_RULE:
+        ret = JSCSSPageRule::create(ctx, static_cast<CSSPageRule*>(rule)); break;
+    case CSSRule::IMPORT_RULE:
+        ret = JSCSSImportRule::create(ctx, static_cast<CSSImportRule*>(rule)); break;
+    case CSSRule::CHARSET_RULE:
+        ret = JSCSSCharsetRule::create(ctx, static_cast<CSSCharsetRule*>(rule)); break;
+    default:
+        ret = JSCSSRule::create(ctx, rule); break;
+    }
+
+    QJS::ScriptInterpreter::putDOMObject(rule, ret);
+    return ret;
 }
 
 JSValue toJS(JSContext* ctx, CSSValue* value)
 {
     if (!value)
         return JS_NULL;
-    return QJS::ScriptInterpreter::getDOMObject(value);
+    JSValue ret = QJS::ScriptInterpreter::getDOMObject(value);
+    if (!JS_IsNull(ret))
+        return ret;
+
+    if (value->isValueList())
+        ret = JSCSSValueList::create(ctx, static_cast<CSSValueList*>(value));
+    else if (value->isPrimitiveValue())
+        ret = JSCSSPrimitiveValue::create(ctx, static_cast<CSSPrimitiveValue*>(value));
+    else
+        ret = JSCSSValue::create(ctx, value);
+
+    QJS::ScriptInterpreter::putDOMObject(value, ret);
+    return ret;
 }
 
 JSValue toJS(JSContext* ctx, StyleSheet* sheet)
 {
     if (!sheet)
         return JS_NULL;
-    return QJS::ScriptInterpreter::getDOMObject(sheet);
+    JSValue ret = QJS::ScriptInterpreter::getDOMObject(sheet);
+    if (!JS_IsNull(ret))
+        return ret;
+
+    if (sheet->isCSSStyleSheet())
+        ret = JSCSSStyleSheet::create(ctx, static_cast<CSSStyleSheet*>(sheet));
+    else
+        ret = JSStyleSheet::create(ctx, sheet);
+
+    QJS::ScriptInterpreter::putDOMObject(sheet, ret);
+    return ret;
 }
 
 JSValue toJS(JSContext* ctx, Clipboard* clipboard)
 {
     if (!clipboard)
         return JS_NULL;
-    return JS_NULL; // TODO: implement Clipboard binding
+    return JS_NULL;
 }
 
 EventTargetNode* toEventTargetNode(JSValue val)
