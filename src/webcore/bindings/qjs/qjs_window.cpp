@@ -37,6 +37,7 @@
 #include "FrameLoadRequest.h"
 #include "FrameLoader.h"
 #include "FrameTree.h"
+#include "HTMLImageElement.h"
 #include "Language.h"
 #include "FrameView.h"
 #include "GCController.h"
@@ -563,7 +564,26 @@ JSValue Window::getValueProperty(JSContext* ctx, JSValueConst this_val, int toke
        case Image:
            if (!window->isSafeScript(ctx))
                return JS_UNDEFINED;
-           return JS_UNDEFINED; // TODO: ImageConstructor
+           {
+               static JSValue imgCtor = JS_UNDEFINED;
+               if (JS_IsUndefined(imgCtor)) {
+                   imgCtor = JS_NewCFunction2(ctx, [](JSContext* c, JSValueConst new_target, int argc, JSValueConst *argv) -> JSValue {
+                       QJS::Window* w = QJS::Window::retrieveActive(c);
+                       if (!w || !w->impl()->frame())
+                           return JS_EXCEPTION;
+                       Document* doc = w->impl()->frame()->document();
+                       if (!doc)
+                           return JS_EXCEPTION;
+                       HTMLImageElement* image = new HTMLImageElement(doc);
+                       if (argc > 0)
+                           image->setWidth(valueToInt32(c, argv[0]));
+                       if (argc > 1)
+                           image->setHeight(valueToInt32(c, argv[1]));
+                       return toJS(c, static_cast<Node*>(image));
+                   }, "Image", 2, JS_CFUNC_constructor, 0);
+               }
+               return imgCtor;
+           }
        case Option:
            if (!window->isSafeScript(ctx))
                return JS_UNDEFINED;
@@ -1304,8 +1324,45 @@ JSValue WindowFunc::callAsFunction(JSContext* ctx, JSValueConst this_val, int ar
           return Window::retrieve(frame);
       }
 
-      // TODO: implement createWindow for named frames/new windows
-      return JS_UNDEFINED;
+      // In the case of a named frame or a new window, use createWindow
+      WindowFeatures windowFeatures;
+      if (argc >= 3) {
+          String features = valueToStringWithUndefinedOrNullCheck(ctx, argv[2]);
+          parseWindowFeatures(features, windowFeatures);
+      }
+      FloatRect windowRect(windowFeatures.x, windowFeatures.y, windowFeatures.width, windowFeatures.height);
+      adjustWindowRect(screenAvailableRect(page->mainFrame()->view()), windowRect);
+      windowFeatures.x = windowRect.x();
+      windowFeatures.y = windowRect.y();
+      windowFeatures.height = windowRect.height();
+      windowFeatures.width = windowRect.width();
+
+      Window* activeWin2 = Window::retrieveActive(ctx);
+      Frame* activeFrame2 = activeWin2 ? activeWin2->impl()->frame() : 0;
+
+      ResourceRequest request;
+      if (activeFrame2)
+          request.setHTTPReferrer(activeFrame2->loader()->outgoingReferrer());
+      FrameLoadRequest frameRequest(request, frameName);
+
+      bool created;
+      Frame* newFrame = frame->loader()->createWindow(frameRequest, windowFeatures, created);
+      if (!newFrame)
+          return JS_UNDEFINED;
+
+      newFrame->loader()->setOpener(frame);
+      newFrame->loader()->setOpenedByDOM();
+
+      if (!urlString.isEmpty() && activeFrame2) {
+          String completedURL = activeFrame2->document()->completeURL(urlString);
+          bool userGesture = window->interpreter()->wasRunByUserGesture();
+          if (created)
+              newFrame->loader()->changeLocation(KURL(completedURL), activeFrame2->loader()->outgoingReferrer(), false, userGesture);
+          else
+              newFrame->loader()->scheduleLocationChange(completedURL, activeFrame2->loader()->outgoingReferrer(), false, userGesture);
+      }
+
+      return Window::retrieve(newFrame);
   }
   case Window::ScrollBy:
     window->updateLayout();

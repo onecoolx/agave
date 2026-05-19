@@ -33,6 +33,7 @@
 
 #include "qjs_window.h"
 #include "qjs_binding.h"
+#include "qjs_script.h"
 #include "QJSNode.h"
 
 using namespace QJS;
@@ -166,7 +167,63 @@ JSValue JSHTMLSelectElement::remove(JSContext *ctx, JSValueConst this_val, int a
 
 PassRefPtr<JSCustomXPathNSResolver> JSCustomXPathNSResolver::create(JSContext* ctx, JSValue resolver)
 {
-    return 0; // TODO: implement
+    if (JS_IsUndefined(resolver) || JS_IsNull(resolver))
+        return 0;
+
+    if (!JS_IsObject(resolver)) {
+        setDOMException(ctx, TYPE_MISMATCH_ERR);
+        return 0;
+    }
+
+    QJS::Window* window = QJS::Window::retrieveActive(ctx);
+    Frame* frame = window ? window->impl()->frame() : 0;
+    return new JSCustomXPathNSResolver(resolver, frame);
+}
+
+JSCustomXPathNSResolver::JSCustomXPathNSResolver(JSValue resolver, Frame* frame)
+    : m_customResolver(resolver)
+    , m_frame(frame)
+{
+}
+
+JSCustomXPathNSResolver::~JSCustomXPathNSResolver()
+{
+}
+
+String JSCustomXPathNSResolver::lookupNamespaceURI(const String& prefix)
+{
+    if (!m_frame)
+        return String();
+
+    ScriptController* script = m_frame->script();
+    if (!script)
+        return String();
+
+    JSContext* ctx = script->context();
+    JSValue func = JS_GetPropertyStr(ctx, m_customResolver, "lookupNamespaceURI");
+
+    if (!JS_IsFunction(ctx, func)) {
+        JS_FreeValue(ctx, func);
+        if (!JS_IsFunction(ctx, m_customResolver))
+            return String();
+        func = JS_DupValue(ctx, m_customResolver);
+    }
+
+    JSValue arg = JS_NewString(ctx, prefix.utf8().data());
+    JSValue ret = JS_Call(ctx, func, m_customResolver, 1, &arg);
+    JS_FreeValue(ctx, arg);
+    JS_FreeValue(ctx, func);
+
+    String result;
+    if (!JS_IsUndefined(ret) && !JS_IsNull(ret) && !JS_IsException(ret)) {
+        const char* str = JS_ToCString(ctx, ret);
+        if (str) {
+            result = String(str);
+            JS_FreeCString(ctx, str);
+        }
+    }
+    JS_FreeValue(ctx, ret);
+    return result;
 }
 
 // JSDOMExceptionConstructor
