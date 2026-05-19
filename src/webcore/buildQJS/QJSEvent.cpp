@@ -266,7 +266,7 @@ JSValue JSEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, int tok
         }
         case ClipboardDataAttrNum: {
             Event* imp = (Event*)JS_GetOpaque2(ctx, this_val, JSEvent::js_class_id);
-            return JSEvent::clipboardData(ctx, imp);
+            return JSEvent::clipboardData(ctx, this_val, imp);
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);

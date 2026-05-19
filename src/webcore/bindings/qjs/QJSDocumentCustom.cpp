@@ -24,52 +24,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _JSDOMParser_H_
-#define _JSDOMParser_H_
+#include "config.h"
 
+#if ENABLE(QJS)
+
+#include "QJSDocument.h"
+
+#include "Document.h"
+#include "Frame.h"
+#include "FrameLoader.h"
 #include "qjs_binding.h"
+#include "qjs_window.h"
+
+using namespace QJS;
 
 namespace WebCore {
 
-class DOMParser;
+JSValue JSDocument::location(JSContext *ctx, JSValueConst this_val, Document *impl)
+{
+    Frame* frame = impl->frame();
+    if (!frame)
+        return JS_NULL;
 
-class JSDOMParser {
-public:
-    static void init(JSContext*);
-    static JSValue create(JSContext*, DOMParser*);
-    static void finalizer(JSRuntime *rt, JSValue val);
+    Window* win = Window::retrieveWindow(frame);
+    if (!win)
+        return JS_NULL;
+    return win->location(ctx);
+}
 
-    static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);
+void JSDocument::setLocation(JSContext *ctx, JSValueConst this_val, JSValue value, Document *impl)
+{
+    Frame* frame = impl->frame();
+    if (!frame)
+        return;
 
-    static JSClassID js_class_id;
+    String str = valueToString(ctx, value);
+    frame->loader()->scheduleLocationChange(str, frame->loader()->outgoingReferrer(), false);
+}
 
-    static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);
-
-    static JSValue getConstructor(JSContext *ctx);
-
-    enum {
-        // The Constructor Attribute
-        ConstructorAttrNum, 
-
-        // Functions
-        ParseFromStringFuncNum
-    };
-};
-
-JSValue toJS(JSContext *ctx, DOMParser*);
-DOMParser* toDOMParser(JSValue);
-
-class JSDOMParserPrototype {
-public:
-    static JSValue self(JSContext * ctx);
-    static void initPrototype(JSContext * ctx, JSValue this_obj);
-};
-
-class JSDOMParserPrototypeFunction {
-public:
-    static JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token);
-};
-
-} // namespace WebCore
+}
 
 #endif

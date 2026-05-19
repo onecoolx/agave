@@ -23,12 +23,18 @@
 #include "qjs_binding.h"
 
 #include "Chrome.h"
+#include "CSSRule.h"
+#include "CSSValue.h"
+#include "Clipboard.h"
+#include "Document.h"
 #include "Event.h"
 #include "EventNames.h"
 #include "Frame.h"
+#include "HTMLElement.h"
 #include "Page.h"
 #include "Range.h"
 #include "RangeException.h"
+#include "StyleSheet.h"
 #include "XMLHttpRequest.h"
 #include "QJSNode.h"
 #include "QJSDOMWindow.h"
@@ -37,6 +43,7 @@
 #include "qjs_dom.h"
 #include "qjs_window.h"
 #include "qjs_script.h"
+#include "QJSDOMExceptionConstructor.h"
 
 #if ENABLE(SVG)
 #include "SVGException.h"
@@ -427,6 +434,103 @@ void setDOMException(JSContext* ctx, ExceptionCode ec)
         errorObject = JS_ThrowInternalError(ctx, "%s Exception %d", type, code);
 
     JS_SetPropertyStr(ctx, errorObject, "code", JS_NewInt32(ctx, code));
+}
+
+JSValue jsString(JSContext* ctx, const WebCore::String& s)
+{
+    if (s.isNull())
+        return JS_NewString(ctx, "");
+    return JS_NewString(ctx, s.utf8().data());
+}
+
+JSValue ScriptInterpreter::evaluate(const WebCore::String& sourceURL, int startingLineNumber, const UChar* code, int codeLength, JSValue thisV)
+{
+    WebCore::String codeStr(code, codeLength);
+    return evaluate(sourceURL, startingLineNumber, codeStr, thisV);
+}
+
+JSValue ScriptInterpreter::evaluate(const WebCore::String& sourceURL, int startingLineNumber, const WebCore::String& code, JSValue thisV)
+{
+    if (!m_context)
+        return JS_UNDEFINED;
+    JSValue result = JS_Eval(m_context, code.utf8().data(), code.utf8().length(),
+                             sourceURL.utf8().data(), JS_EVAL_TYPE_GLOBAL);
+    if (JS_IsException(result)) {
+        JS_FreeValue(m_context, JS_GetException(m_context));
+        return JS_UNDEFINED;
+    }
+    return result;
+}
+
+}
+
+namespace WebCore {
+
+JSValue toJS(JSContext* ctx, Document* doc)
+{
+    if (!doc)
+        return JS_NULL;
+    return QJS::ScriptInterpreter::getDOMNodeForDocument(doc, doc);
+}
+
+JSValue toJS(JSContext* ctx, Event* event)
+{
+    if (!event)
+        return JS_NULL;
+    return QJS::ScriptInterpreter::getDOMObject(event);
+}
+
+JSValue toJS(JSContext* ctx, CSSRule* rule)
+{
+    if (!rule)
+        return JS_NULL;
+    return QJS::ScriptInterpreter::getDOMObject(rule);
+}
+
+JSValue toJS(JSContext* ctx, CSSValue* value)
+{
+    if (!value)
+        return JS_NULL;
+    return QJS::ScriptInterpreter::getDOMObject(value);
+}
+
+JSValue toJS(JSContext* ctx, StyleSheet* sheet)
+{
+    if (!sheet)
+        return JS_NULL;
+    return QJS::ScriptInterpreter::getDOMObject(sheet);
+}
+
+JSValue toJS(JSContext* ctx, Clipboard* clipboard)
+{
+    if (!clipboard)
+        return JS_NULL;
+    return JS_NULL; // TODO: implement Clipboard binding
+}
+
+Node* toEventTargetNode(JSValue val)
+{
+    // TODO: proper implementation
+    return 0;
+}
+
+bool isSafeScript(JSContext* ctx, JSValue val)
+{
+    // TODO: proper cross-frame security check
+    return true;
+}
+
+JSValue getDOMExceptionConstructor(JSContext* ctx)
+{
+    return JSDOMExceptionConstructor::create(ctx);
+}
+
+JSValue createJSHTMLWrapper(JSContext* ctx, PassRefPtr<HTMLElement> element)
+{
+    if (!element)
+        return JS_NULL;
+    // TODO: create proper wrapper based on element type
+    return JS_NULL;
 }
 
 }

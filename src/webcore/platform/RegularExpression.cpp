@@ -43,6 +43,8 @@
 #define TRUE 1
 #endif
 #include <vector>
+#include <quickjs.h>
+#include "global.h"
 extern "C" {
 #include <libregexp.h>
 }
@@ -134,12 +136,13 @@ void RegularExpression::Private::compile(bool caseSensitive, bool glob)
         flags |= LRE_FLAG_IGNORECASE;
     }
     errorMessage = errorMsg;
-    uint8_t * regex = lre_compile(&relen, errorMsg, sizeof(errorMsg), reinterpret_cast<const char *>(p.characters()), p.length() * 2, flags, 0);
+    CString utf8Pattern = p.utf8();
+    uint8_t * regex = lre_compile(&relen, errorMsg, sizeof(errorMsg), utf8Pattern.data(), utf8Pattern.length(), flags, GLOBAL()->utilContext);
     if (regex) {
         regexBuf.resize(relen + 1);
         memcpy(regexBuf.data(), regex, relen);
         regexBuf[relen] = '\0';
-        free(regex);
+        js_free(GLOBAL()->utilContext, regex);
     }
 #endif
 
@@ -218,11 +221,16 @@ int RegularExpression::match(const String &str, int startFrom, int *matchLength)
 #endif
 
 #if ENABLE(QJS)
+    if (d->regexBuf.isEmpty()) {
+        d->lastMatchPos = -1;
+        d->lastMatchLength = -1;
+        return -1;
+    }
     WTF::Vector<uint8_t*> capture;
     int capture_count = lre_get_capture_count(d->regexBuf.data());
     capture.resize(capture_count * 2);
     const uint8_t * str_buf = reinterpret_cast<const uint8_t*>(d->lastMatchString.characters());
-    int rc = lre_exec(capture.data(), d->regexBuf.data(), str_buf, startFrom, d->lastMatchString.length(), 1, 0);
+    int rc = lre_exec(capture.data(), d->regexBuf.data(), str_buf, startFrom, d->lastMatchString.length(), 1, GLOBAL()->utilContext);
     if (rc != 1) {
         d->lastMatchCount = -1;
         d->lastMatchPos = -1;
@@ -298,13 +306,15 @@ String RegularExpression::cap(int n) const
 #endif
 
 #if ENABLE(QJS)
+    if (d->regexBuf.isEmpty())
+        return String();
     WTF::Vector<uint8_t*> capture;
     int capture_count = lre_get_capture_count(d->regexBuf.data());
     capture.resize(capture_count * 2);
     const uint8_t * str_buf = reinterpret_cast<const uint8_t*>(d->lastMatchString.characters());
     int sidx = 0;
     while (sidx < n) {
-        int rc = lre_exec(capture.data(), d->regexBuf.data(), str_buf, 0, d->lastMatchString.length(), 1, 0);
+        int rc = lre_exec(capture.data(), d->regexBuf.data(), str_buf, 0, d->lastMatchString.length(), 1, GLOBAL()->utilContext);
         if (rc != 1) {
             return String();
         }

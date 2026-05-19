@@ -302,7 +302,7 @@ JSValue JSElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst 
             return result;
         }
         case JSElement::SetAttributeFuncNum: {
-            return JSElement::setAttribute(ctx, argc, argv, imp);
+            return JSElement::setAttribute(ctx, this_val, argc, argv, imp);
         }
         case JSElement::RemoveAttributeFuncNum: {
             ExceptionCode ec = 0;
@@ -318,7 +318,7 @@ JSValue JSElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst 
             return result;
         }
         case JSElement::SetAttributeNodeFuncNum: {
-            return JSElement::setAttributeNode(ctx, argc, argv, imp);
+            return JSElement::setAttributeNode(ctx, this_val, argc, argv, imp);
         }
         case JSElement::RemoveAttributeNodeFuncNum: {
             ExceptionCode ec = 0;
@@ -347,7 +347,7 @@ JSValue JSElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst 
             return result;
         }
         case JSElement::SetAttributeNSFuncNum: {
-            return JSElement::setAttributeNS(ctx, argc, argv, imp);
+            return JSElement::setAttributeNS(ctx, this_val, argc, argv, imp);
         }
         case JSElement::RemoveAttributeNSFuncNum: {
             ExceptionCode ec = 0;
@@ -372,7 +372,7 @@ JSValue JSElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst 
             return result;
         }
         case JSElement::SetAttributeNodeNSFuncNum: {
-            return JSElement::setAttributeNodeNS(ctx, argc, argv, imp);
+            return JSElement::setAttributeNodeNS(ctx, this_val, argc, argv, imp);
         }
         case JSElement::HasAttributeFuncNum: {
             String name = valueToString(ctx, argv[0]);

@@ -68,9 +68,9 @@ public:
         GetElementsByTagNameFuncNum, ImportNodeFuncNum, CreateElementNSFuncNum, CreateAttributeNSFuncNum, 
         GetElementsByTagNameNSFuncNum, GetElementByIdFuncNum, AdoptNodeFuncNum, LoadFuncNum, 
         CreateEventFuncNum, CreateRangeFuncNum, CreateNodeIteratorFuncNum, CreateTreeWalkerFuncNum, 
-        GetOverrideStyleFuncNum, ExecCommandFuncNum, QueryCommandEnabledFuncNum, QueryCommandIndetermFuncNum, 
-        QueryCommandStateFuncNum, QueryCommandSupportedFuncNum, QueryCommandValueFuncNum, GetElementsByNameFuncNum, 
-        ElementFromPointFuncNum
+        GetOverrideStyleFuncNum, CreateExpressionFuncNum, CreateNSResolverFuncNum, EvaluateFuncNum, 
+        ExecCommandFuncNum, QueryCommandEnabledFuncNum, QueryCommandIndetermFuncNum, QueryCommandStateFuncNum, 
+        QueryCommandSupportedFuncNum, QueryCommandValueFuncNum, GetElementsByNameFuncNum, ElementFromPointFuncNum
     };
 
     // Custom attributes

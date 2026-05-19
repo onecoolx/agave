@@ -39,7 +39,7 @@ VPATH = \
     $(WebCore)/ksvg2/events \
 #
 
-FEATURE_DEFINES = ENABLE_SVG ENABLE_XPATH ENABLE_XSLT
+FEATURE_DEFINES = ENABLE_XPATH ENABLE_XSLT
 
 .PHONY : all
 
@@ -304,4 +304,4 @@ QJS_BINDINGS_SCRIPTS = \
 #
 
 QJS%.h : %.idl $(QJS_BINDINGS_SCRIPTS)
-	perl -I $(WebCore)/bindings/scripts $(WebCore)/bindings/scripts/generate-bindings.pl --defines "$(FEATURE_DEFINES) LANGUAGE_JAVASCRIPT" --generator QJS --include dom --include html --include css --include page --include xml --include ksvg2/svg --include ksvg2/events --outputdir . $<
+	perl -I $(WebCore)/bindings/scripts $(WebCore)/bindings/scripts/generate-bindings.pl --defines "$(FEATURE_DEFINES) LANGUAGE_JAVASCRIPT" --generator QJS --include $(WebCore)/dom --include $(WebCore)/html --include $(WebCore)/css --include $(WebCore)/page --include $(WebCore)/xml --include $(WebCore)/ksvg2/svg --include $(WebCore)/ksvg2/events --outputdir . $<

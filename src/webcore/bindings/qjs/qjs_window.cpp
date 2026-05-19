@@ -79,6 +79,8 @@ namespace QJS {
 
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 
+JSClassID Window::js_class_id = 0;
+
 static int lastUsedTimeoutId;
 
 static int timerNestingLevel = 0;
@@ -543,39 +545,32 @@ JSValue Window::getValueProperty(JSContext* ctx, JSValueConst this_val, int toke
        case Event_:
            if (!window->isSafeScript(ctx))
                return JS_UNDEFINED;
-           if (!d->m_evt)
+           if (!window->d->m_evt)
                return JS_UNDEFINED;
-           return toJS(ctx, d->m_evt);
+           return toJS(ctx, window->d->m_evt);
        case Location_:
-           return location(ctx);
+           return window->location(ctx);
        case Navigator_:
        case ClientInformation:
            {
                if (!window->isSafeScript(ctx))
                    return JS_UNDEFINED;
                // Store the navigator in the object so we get the same one each time.
-               Navigator *n = new Navigator(ctx, impl()->frame());
-               // FIXME: this will make the "navigator" object accessible from windows that fail
-               // the security check the first time, but not subsequent times, seems weird.
-               const_cast<Window *>(this)->putDirect("navigator", n, DontDelete|ReadOnly);
-               const_cast<Window *>(this)->putDirect("clientInformation", n, DontDelete|ReadOnly);
-               return n;
+               return Navigator::create(ctx, window->impl()->frame());
            }
        case Image:
            if (!window->isSafeScript(ctx))
                return JS_UNDEFINED;
-           // FIXME: this property (and the few below) probably shouldn't create a new object every
-           // time
-           return new ImageConstructorImp(ctx, impl()->frame()->document());
+           return JS_UNDEFINED; // TODO: ImageConstructor
        case Option:
            if (!window->isSafeScript(ctx))
                return JS_UNDEFINED;
-           return new JSHTMLOptionElementConstructor(ctx, impl()->frame()->document());
+           return JSHTMLOptionElementConstructor::self(ctx, window->impl()->frame()->document());
 #if ENABLE(AJAX)
        case XMLHttpRequest:
            if (!window->isSafeScript(ctx))
                return JS_UNDEFINED;
-           return new JSXMLHttpRequestConstructorImp(ctx, impl()->frame()->document());
+           return JSXMLHttpRequestConstructor::self(ctx, window->impl()->frame()->document());
 #else
        case XMLHttpRequest:
            return JS_UNDEFINED;
@@ -584,7 +579,7 @@ JSValue Window::getValueProperty(JSContext* ctx, JSValueConst this_val, int toke
        case XSLTProcessor_:
            if (!window->isSafeScript(ctx))
                return JS_UNDEFINED;
-           return new XSLTProcessorConstructorImp(ctx);
+           return JSXSLTProcessorConstructor::self(ctx);
 #else
        case XSLTProcessor_:
            return JS_UNDEFINED;
@@ -596,55 +591,55 @@ JSValue Window::getValueProperty(JSContext* ctx, JSValueConst this_val, int toke
 
    switch (token) {
    case Onabort:
-     return getListener(ctx, abortEvent);
+     return window->getListener(ctx, abortEvent);
    case Onblur:
-     return getListener(ctx, blurEvent);
+     return window->getListener(ctx, blurEvent);
    case Onchange:
-     return getListener(ctx, changeEvent);
+     return window->getListener(ctx, changeEvent);
    case Onclick:
-     return getListener(ctx, clickEvent);
+     return window->getListener(ctx, clickEvent);
    case Ondblclick:
-     return getListener(ctx, dblclickEvent);
+     return window->getListener(ctx, dblclickEvent);
    case Onerror:
-     return getListener(ctx, errorEvent);
+     return window->getListener(ctx, errorEvent);
    case Onfocus:
-     return getListener(ctx, focusEvent);
+     return window->getListener(ctx, focusEvent);
    case Onkeydown:
-     return getListener(ctx, keydownEvent);
+     return window->getListener(ctx, keydownEvent);
    case Onkeypress:
-     return getListener(ctx, keypressEvent);
+     return window->getListener(ctx, keypressEvent);
    case Onkeyup:
-     return getListener(ctx, keyupEvent);
+     return window->getListener(ctx, keyupEvent);
    case Onload:
-     return getListener(ctx, loadEvent);
+     return window->getListener(ctx, loadEvent);
    case Onmousedown:
-     return getListener(ctx, mousedownEvent);
+     return window->getListener(ctx, mousedownEvent);
    case Onmousemove:
-     return getListener(ctx, mousemoveEvent);
+     return window->getListener(ctx, mousemoveEvent);
    case Onmouseout:
-     return getListener(ctx, mouseoutEvent);
+     return window->getListener(ctx, mouseoutEvent);
    case Onmouseover:
-     return getListener(ctx, mouseoverEvent);
+     return window->getListener(ctx, mouseoverEvent);
    case Onmouseup:
-     return getListener(ctx, mouseupEvent);
+     return window->getListener(ctx, mouseupEvent);
    case OnWindowMouseWheel:
-     return getListener(ctx, mousewheelEvent);
+     return window->getListener(ctx, mousewheelEvent);
    case Onreset:
-     return getListener(ctx, resetEvent);
+     return window->getListener(ctx, resetEvent);
    case Onresize:
-     return getListener(ctx,resizeEvent);
+     return window->getListener(ctx,resizeEvent);
    case Onscroll:
-     return getListener(ctx,scrollEvent);
+     return window->getListener(ctx,scrollEvent);
    case Onsearch:
-     return getListener(ctx,searchEvent);
+     return window->getListener(ctx,searchEvent);
    case Onselect:
-     return getListener(ctx,selectEvent);
+     return window->getListener(ctx,selectEvent);
    case Onsubmit:
-     return getListener(ctx,submitEvent);
+     return window->getListener(ctx,submitEvent);
    case Onbeforeunload:
-      return getListener(ctx, beforeunloadEvent);
+      return window->getListener(ctx, beforeunloadEvent);
     case Onunload:
-     return getListener(ctx, unloadEvent);
+     return window->getListener(ctx, unloadEvent);
    }
    ASSERT(0);
    return JS_UNDEFINED;
@@ -744,122 +739,129 @@ bool Window::getOwnPropertySlot(ExecState *exec, const Identifier& propertyName,
 
 JSValue Window::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue val, int token)
 {
+    Window* window = (Window*)JS_GetOpaque2(ctx, this_val, Window::js_class_id);
+    if (!window)
+        return JS_UNDEFINED;
+
     switch (token) {
     case Location_: {
-      Frame* p = Window::retrieveActive(ctx)->impl()->frame();
+      Window* active = Window::retrieveActive(ctx);
+      if (!active)
+          return JS_UNDEFINED;
+      Frame* p = active->impl()->frame();
       if (p) {
-        String dstUrl = p->loader()->completeURL(String(value->toString(exec))).url();
-        if (!dstUrl.startsWith("javascript:", false) || isSafeScript(exec)) {
-          bool userGesture = static_cast<ScriptInterpreter *>(exec->dynamicInterpreter())->wasRunByUserGesture();
-          // We want a new history item if this JS was called via a user gesture
-          impl()->frame()->loader()->scheduleLocationChange(dstUrl, p->loader()->outgoingReferrer(), !userGesture, userGesture);
+        String dstUrl = p->loader()->completeURL(valueToString(ctx, val)).url();
+        if (!dstUrl.startsWith("javascript:", false) || window->isSafeScript(ctx)) {
+          bool userGesture = window->interpreter()->wasRunByUserGesture();
+          window->impl()->frame()->loader()->scheduleLocationChange(dstUrl, p->loader()->outgoingReferrer(), !userGesture, userGesture);
         }
       }
-      return;
+      return JS_UNDEFINED;
     }
     case Onabort:
-      if (isSafeScript(exec))
-        setListener(exec, abortEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, abortEvent, val);
+      return JS_UNDEFINED;
     case Onblur:
-      if (isSafeScript(exec))
-        setListener(exec, blurEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, blurEvent, val);
+      return JS_UNDEFINED;
     case Onchange:
-      if (isSafeScript(exec))
-        setListener(exec, changeEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, changeEvent, val);
+      return JS_UNDEFINED;
     case Onclick:
-      if (isSafeScript(exec))
-        setListener(exec,clickEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, clickEvent, val);
+      return JS_UNDEFINED;
     case Ondblclick:
-      if (isSafeScript(exec))
-        setListener(exec, dblclickEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, dblclickEvent, val);
+      return JS_UNDEFINED;
     case Onerror:
-      if (isSafeScript(exec))
-        setListener(exec, errorEvent, value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, errorEvent, val);
+      return JS_UNDEFINED;
     case Onfocus:
-      if (isSafeScript(exec))
-        setListener(exec,focusEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, focusEvent, val);
+      return JS_UNDEFINED;
     case Onkeydown:
-      if (isSafeScript(exec))
-        setListener(exec,keydownEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, keydownEvent, val);
+      return JS_UNDEFINED;
     case Onkeypress:
-      if (isSafeScript(exec))
-        setListener(exec,keypressEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, keypressEvent, val);
+      return JS_UNDEFINED;
     case Onkeyup:
-      if (isSafeScript(exec))
-        setListener(exec,keyupEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, keyupEvent, val);
+      return JS_UNDEFINED;
     case Onload:
-      if (isSafeScript(exec))
-        setListener(exec,loadEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, loadEvent, val);
+      return JS_UNDEFINED;
     case Onmousedown:
-      if (isSafeScript(exec))
-        setListener(exec,mousedownEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, mousedownEvent, val);
+      return JS_UNDEFINED;
     case Onmousemove:
-      if (isSafeScript(exec))
-        setListener(exec,mousemoveEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, mousemoveEvent, val);
+      return JS_UNDEFINED;
     case Onmouseout:
-      if (isSafeScript(exec))
-        setListener(exec,mouseoutEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, mouseoutEvent, val);
+      return JS_UNDEFINED;
     case Onmouseover:
-      if (isSafeScript(exec))
-        setListener(exec,mouseoverEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, mouseoverEvent, val);
+      return JS_UNDEFINED;
     case Onmouseup:
-      if (isSafeScript(exec))
-        setListener(exec,mouseupEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, mouseupEvent, val);
+      return JS_UNDEFINED;
     case OnWindowMouseWheel:
-      if (isSafeScript(exec))
-        setListener(exec, mousewheelEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, mousewheelEvent, val);
+      return JS_UNDEFINED;
     case Onreset:
-      if (isSafeScript(exec))
-        setListener(exec,resetEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, resetEvent, val);
+      return JS_UNDEFINED;
     case Onresize:
-      if (isSafeScript(exec))
-        setListener(exec,resizeEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, resizeEvent, val);
+      return JS_UNDEFINED;
     case Onscroll:
-      if (isSafeScript(exec))
-        setListener(exec,scrollEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, scrollEvent, val);
+      return JS_UNDEFINED;
     case Onsearch:
-        if (isSafeScript(exec))
-            setListener(exec,searchEvent,value);
-        return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, searchEvent, val);
+      return JS_UNDEFINED;
     case Onselect:
-      if (isSafeScript(exec))
-        setListener(exec,selectEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, selectEvent, val);
+      return JS_UNDEFINED;
     case Onsubmit:
-      if (isSafeScript(exec))
-        setListener(exec,submitEvent,value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, submitEvent, val);
+      return JS_UNDEFINED;
     case Onbeforeunload:
-      if (isSafeScript(exec))
-        setListener(exec, beforeunloadEvent, value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, beforeunloadEvent, val);
+      return JS_UNDEFINED;
     case Onunload:
-      if (isSafeScript(exec))
-        setListener(exec, unloadEvent, value);
-      return;
+      if (window->isSafeScript(ctx))
+        window->setListener(ctx, unloadEvent, val);
+      return JS_UNDEFINED;
     default:
       break;
     }
+    return JS_UNDEFINED;
 }
 
 static bool shouldLoadAsEmptyDocument(const KURL &url)
@@ -929,7 +931,7 @@ bool Window::isSafeScript(JSContext *ctx) const
   Frame* frame = impl()->frame();
   if (!frame)
     return false;
-  Frame* activeFrame = static_cast<ScriptInterpreter*>(exec->dynamicInterpreter())->frame();
+  Frame* activeFrame = Window::retrieveActive(ctx) ? Window::retrieveActive(ctx)->impl()->frame() : 0;
   if (!activeFrame)
     return false;
   if (activeFrame == frame)
@@ -963,10 +965,6 @@ bool Window::isSafeScript(JSContext *ctx) const
   if (equalIgnoringCase(actURL.host(), thisURL.host()) && equalIgnoringCase(actURL.protocol(), thisURL.protocol()) && actURL.port() == thisURL.port())
     return true;
 
-  if (Interpreter::shouldPrintExceptions()) {
-      printf("Unsafe JavaScript attempt to access frame with URL %s from frame with URL %s. Domains, protocols and ports must match.\n", 
-             thisURL.url().latin1(), actURL.url().latin1());
-  }
   String message = String::format("Unsafe JavaScript attempt to access frame with URL %s from frame with URL %s. Domains, protocols and ports must match.\n", 
                                   thisURL.url().latin1(), actURL.url().latin1());
   if (Page* page = frame->page())
@@ -975,9 +973,9 @@ bool Window::isSafeScript(JSContext *ctx) const
   return false;
 }
 
-void Window::setListener(ExecState *exec, const AtomicString &eventType, JSValue *func)
+void Window::setListener(JSContext *ctx, const AtomicString &eventType, JSValue func)
 {
-    if (!isSafeScript(exec))
+    if (!isSafeScript(ctx))
         return;
     Frame* frame = impl()->frame();
     if (!frame)
@@ -986,10 +984,10 @@ void Window::setListener(ExecState *exec, const AtomicString &eventType, JSValue
     if (!doc)
         return;
 
-    doc->setHTMLWindowEventListener(eventType, findOrCreateJSEventListener(func,true));
+    doc->setHTMLWindowEventListener(eventType, findOrCreateJSEventListener(func, true));
 }
 
-JSValue *Window::getListener(JSContext *ctx, const AtomicString &eventType) const
+JSValue Window::getListener(JSContext *ctx, const AtomicString &eventType) const
 {
     if (!isSafeScript(ctx))
         return JS_UNDEFINED;
@@ -1001,10 +999,12 @@ JSValue *Window::getListener(JSContext *ctx, const AtomicString &eventType) cons
         return JS_UNDEFINED;
 
     WebCore::EventListener *listener = doc->getHTMLWindowEventListener(eventType);
-    if (listener && static_cast<JSEventListener*>(listener)->listenerObj())
-        return static_cast<JSEventListener*>(listener)->listenerObj();
-    else
-        return JS_NULL;
+    if (listener) {
+        JSValue obj = static_cast<JSEventListener*>(listener)->listenerObj();
+        if (!JS_IsNull(obj) && !JS_IsUndefined(obj))
+            return obj;
+    }
+    return JS_NULL;
 }
 
 JSEventListener* Window::findJSEventListener(JSValue val, bool html)
@@ -1012,7 +1012,7 @@ JSEventListener* Window::findJSEventListener(JSValue val, bool html)
     if (!JS_IsObject(val))
         return 0;
     ListenersMap& listeners = html ? d->jsHTMLEventListeners : d->jsEventListeners;
-    return listeners.get(val);
+    return listeners.get(JS_VALUE_GET_PTR(val));
 }
 
 JSEventListener* Window::findOrCreateJSEventListener(JSValue val, bool html)
@@ -1033,7 +1033,7 @@ JSUnprotectedEventListener* Window::findJSUnprotectedEventListener(JSValue val, 
     if (!JS_IsObject(val))
         return 0;
     UnprotectedListenersMap& listeners = html ? d->jsUnprotectedHTMLEventListeners : d->jsUnprotectedEventListeners;
-    return listeners.get(val);
+    return listeners.get(JS_VALUE_GET_PTR(val));
 }
 
 JSUnprotectedEventListener* Window::findOrCreateJSUnprotectedEventListener(JSValue val, bool html)
@@ -1057,18 +1057,7 @@ void Window::clearHelperObjectProperties()
 
 void Window::clear()
 {
-  if (d->m_returnValueSlot && !*d->m_returnValueSlot)
-    *d->m_returnValueSlot = getDirect("returnValue");
-
   clearAllTimeouts();
-  clearProperties();
-  clearHelperObjectProperties();
-  setPrototype(JSDOMWindowPrototype::self()); // clear the prototype
-
-  // Now recreate a working global object for the next URL that will use us; but only if we haven't been
-  // disconnected yet
-  if (Frame* frame = impl()->frame())
-    frame->script()->interpreter()->initGlobalObject();
 
   // there's likely to be lots of garbage now
   gcController().garbageCollectSoon();
@@ -1261,15 +1250,17 @@ JSValue WindowFunc::callAsFunction(JSContext* ctx, JSValueConst this_val, int ar
             if (argc < 1)
                 return JS_ThrowSyntaxError(ctx, "Not enough arguments");
             if (JS_IsNull(v))
-                return jsString();
-            if (!s.is8Bit()) {
-                setDOMException(exec, INVALID_CHARACTER_ERR);
-                return JS_UNDEFINED;
-            }
+                return JS_NewString(ctx, "");
 
-            Vector<char> in(s.size());
-            for (int i = 0; i < s.size(); ++i)
-                in[i] = static_cast<char>(s.data()[i].unicode());
+            Vector<char> in(str.length());
+            for (unsigned i = 0; i < str.length(); ++i) {
+                UChar c = str[i];
+                if (c > 0xFF) {
+                    setDOMException(ctx, INVALID_CHARACTER_ERR);
+                    return JS_UNDEFINED;
+                }
+                in[i] = static_cast<char>(c);
+            }
             Vector<char> out;
 
             if (token == Window::AToB) {
@@ -1284,174 +1275,147 @@ JSValue WindowFunc::callAsFunction(JSContext* ctx, JSValueConst this_val, int ar
         }
   case Window::Open:
   {
-      String urlString = valueToStringWithUndefinedOrNullCheck(exec, args[0]);
-      AtomicString frameName = args[1]->isUndefinedOrNull() ? "_blank" : AtomicString(args[1]->toString(exec));
+      if (argc < 1)
+          return JS_UNDEFINED;
+      String urlString = valueToStringWithUndefinedOrNullCheck(ctx, argv[0]);
+      AtomicString frameName = (argc < 2 || JS_IsUndefined(argv[1]) || JS_IsNull(argv[1]))
+          ? "_blank" : AtomicString(valueToString(ctx, argv[1]));
 
-      // Because FrameTree::find() returns true for empty strings, we must check for empty framenames.
-      // Otherwise, illegitimate window.open() calls with no name will pass right through the popup blocker.
-      if (!allowPopUp(exec, window) && (frameName.isEmpty() || !frame->tree()->find(frameName)))
-          return jsUndefined();
-      
-      // Get the target frame for the special cases of _top and _parent
       if (frameName == "_top")
           while (frame->tree()->parent())
                 frame = frame->tree()->parent();
       else if (frameName == "_parent")
           if (frame->tree()->parent())
               frame = frame->tree()->parent();
-              
-      // In those cases, we can schedule a location change right now and return early
+
       if (frameName == "_top" || frameName == "_parent") {
           String completedURL;
-          Frame* activeFrame = Window::retrieveActive(exec)->impl()->frame();
+          Window* activeWin = Window::retrieveActive(ctx);
+          Frame* activeFrame = activeWin ? activeWin->impl()->frame() : 0;
           if (!urlString.isEmpty() && activeFrame)
               completedURL = activeFrame->document()->completeURL(urlString);
 
-          const Window* window = Window::retrieveWindow(frame);
-          if (!completedURL.isEmpty() && (!completedURL.startsWith("javascript:", false) || (window && window->isSafeScript(exec)))) {
-              bool userGesture = static_cast<ScriptInterpreter *>(exec->dynamicInterpreter())->wasRunByUserGesture();
+          if (!completedURL.isEmpty() && !completedURL.startsWith("javascript:", false)) {
+              bool userGesture = window->interpreter()->wasRunByUserGesture();
               frame->loader()->scheduleLocationChange(completedURL, activeFrame->loader()->outgoingReferrer(), false, userGesture);
           }
           return Window::retrieve(frame);
       }
-      
-      // In the case of a named frame or a new window, we'll use the createWindow() helper
-      WindowFeatures windowFeatures;
-      String features = valueToStringWithUndefinedOrNullCheck(exec, args[2]);
-      parseWindowFeatures(features, windowFeatures);
-      FloatRect windowRect(windowFeatures.x, windowFeatures.y, windowFeatures.width, windowFeatures.height);
-      adjustWindowRect(screenAvailableRect(page->mainFrame()->view()), windowRect);
 
-      windowFeatures.x = windowRect.x();
-      windowFeatures.y = windowRect.y();
-      windowFeatures.height = windowRect.height();
-      windowFeatures.width = windowRect.width();
-
-      frame = createWindow(exec, frame, urlString, frameName, windowFeatures, 0);
-
-      if (!frame)
-          return jsUndefined();
-
-      return Window::retrieve(frame); // global object
+      // TODO: implement createWindow for named frames/new windows
+      return JS_UNDEFINED;
   }
   case Window::ScrollBy:
     window->updateLayout();
-    if(args.size() >= 2 && widget)
-      widget->scrollBy(args[0]->toInt32(exec), args[1]->toInt32(exec));
-    return jsUndefined();
+    if (argc >= 2 && widget)
+      widget->scrollBy(valueToInt32(ctx, argv[0]), valueToInt32(ctx, argv[1]));
+    return JS_UNDEFINED;
   case Window::Scroll:
   case Window::ScrollTo:
     window->updateLayout();
-    if (args.size() >= 2 && widget)
-      widget->setContentsPos(args[0]->toInt32(exec), args[1]->toInt32(exec));
-    return jsUndefined();
+    if (argc >= 2 && widget)
+      widget->setContentsPos(valueToInt32(ctx, argv[0]), valueToInt32(ctx, argv[1]));
+    return JS_UNDEFINED;
   case Window::MoveBy:
-    if (args.size() >= 2 && page) {
+    if (argc >= 2 && page) {
       FloatRect fr = page->chrome()->windowRect();
-      fr.move(args[0]->toFloat(exec), args[1]->toFloat(exec));
-      // Security check (the spec talks about UniversalBrowserWrite to disable this check...)
+      fr.move(valueToFloat(ctx, argv[0]), valueToFloat(ctx, argv[1]));
       adjustWindowRect(screenAvailableRect(page->mainFrame()->view()), fr);
       page->chrome()->setWindowRect(fr);
     }
-    return jsUndefined();
+    return JS_UNDEFINED;
   case Window::MoveTo:
-    if (args.size() >= 2 && page) {
+    if (argc >= 2 && page) {
       FloatRect fr = page->chrome()->windowRect();
       FloatRect sr = screenAvailableRect(page->mainFrame()->view());
       fr.setLocation(sr.location());
-      fr.move(args[0]->toFloat(exec), args[1]->toFloat(exec));
-      // Security check (the spec talks about UniversalBrowserWrite to disable this check...)
+      fr.move(valueToFloat(ctx, argv[0]), valueToFloat(ctx, argv[1]));
       adjustWindowRect(sr, fr);
       page->chrome()->setWindowRect(fr);
     }
-    return jsUndefined();
+    return JS_UNDEFINED;
   case Window::ResizeBy:
-    if (args.size() >= 2 && page) {
+    if (argc >= 2 && page) {
       FloatRect r = page->chrome()->windowRect();
-      FloatSize dest = r.size() + FloatSize(args[0]->toFloat(exec), args[1]->toFloat(exec));
+      FloatSize dest = r.size() + FloatSize(valueToFloat(ctx, argv[0]), valueToFloat(ctx, argv[1]));
       FloatRect fr = FloatRect(r.location(), dest);
       adjustWindowRect(screenAvailableRect(page->mainFrame()->view()), fr);
       page->chrome()->setWindowRect(fr);
     }
-    return jsUndefined();
+    return JS_UNDEFINED;
   case Window::ResizeTo:
-    if (args.size() >= 2 && page) {
+    if (argc >= 2 && page) {
       FloatRect r = page->chrome()->windowRect();
-      FloatSize dest = FloatSize(args[0]->toFloat(exec), args[1]->toFloat(exec));
+      FloatSize dest = FloatSize(valueToFloat(ctx, argv[0]), valueToFloat(ctx, argv[1]));
       FloatRect fr = FloatRect(r.location(), dest);
       adjustWindowRect(screenAvailableRect(page->mainFrame()->view()), fr);
       page->chrome()->setWindowRect(fr);
     }
-    return jsUndefined();
+    return JS_UNDEFINED;
   case Window::SetTimeout:
-    if (!window->isSafeScript(exec))
-        return jsUndefined();
-    if (v->isString()) {
-      int i = args[1]->toInt32(exec);
-      int r = (const_cast<Window*>(window))->installTimeout(s, i, true /*single shot*/);
-      return jsNumber(r);
+    if (!window->isSafeScript(ctx))
+        return JS_UNDEFINED;
+    if (JS_IsString(v)) {
+      int i = (argc >= 2) ? valueToInt32(ctx, argv[1]) : 0;
+      int r = (const_cast<Window*>(window))->installTimeout(str, i, true /*single shot*/);
+      return JS_NewInt32(ctx, r);
     }
-    else if (v->isObject() && static_cast<JSObject *>(v)->implementsCall()) {
-      JSValue *func = args[0];
-      int i = args[1]->toInt32(exec);
-
-      // All arguments after the second should go to the function
-      // FIXME: could be more efficient
-      List funcArgs = args.copyTail().copyTail();
-
-      int r = (const_cast<Window*>(window))->installTimeout(func, funcArgs, i, true /*single shot*/);
-      return jsNumber(r);
+    else if (JS_IsFunction(ctx, v)) {
+      int i = (argc >= 2) ? valueToInt32(ctx, argv[1]) : 0;
+      Vector<JSValue> funcArgs;
+      for (int a = 2; a < argc; a++)
+          funcArgs.append(JS_DupValue(ctx, argv[a]));
+      int r = (const_cast<Window*>(window))->installTimeout(&v, funcArgs, i, true /*single shot*/);
+      return JS_NewInt32(ctx, r);
     }
     else
-      return jsUndefined();
+      return JS_UNDEFINED;
   case Window::SetInterval:
-    if (!window->isSafeScript(exec))
-        return jsUndefined();
-    if (args.size() >= 2 && v->isString()) {
-      int i = args[1]->toInt32(exec);
-      int r = (const_cast<Window*>(window))->installTimeout(s, i, false);
-      return jsNumber(r);
+    if (!window->isSafeScript(ctx))
+        return JS_UNDEFINED;
+    if (argc >= 2 && JS_IsString(v)) {
+      int i = valueToInt32(ctx, argv[1]);
+      int r = (const_cast<Window*>(window))->installTimeout(str, i, false);
+      return JS_NewInt32(ctx, r);
     }
-    else if (args.size() >= 2 && v->isObject() && static_cast<JSObject *>(v)->implementsCall()) {
-      JSValue *func = args[0];
-      int i = args[1]->toInt32(exec);
-
-      // All arguments after the second should go to the function
-      // FIXME: could be more efficient
-      List funcArgs = args.copyTail().copyTail();
-
-      int r = (const_cast<Window*>(window))->installTimeout(func, funcArgs, i, false);
-      return jsNumber(r);
+    else if (argc >= 2 && JS_IsFunction(ctx, v)) {
+      int i = valueToInt32(ctx, argv[1]);
+      Vector<JSValue> funcArgs;
+      for (int a = 2; a < argc; a++)
+          funcArgs.append(JS_DupValue(ctx, argv[a]));
+      int r = (const_cast<Window*>(window))->installTimeout(&v, funcArgs, i, false);
+      return JS_NewInt32(ctx, r);
     }
     else
-      return jsUndefined();
+      return JS_UNDEFINED;
   case Window::ClearTimeout:
   case Window::ClearInterval:
-    if (!window->isSafeScript(exec))
-        return jsUndefined();
-    (const_cast<Window*>(window))->clearTimeout(v->toInt32(exec));
-    return jsUndefined();
+    if (!window->isSafeScript(ctx))
+        return JS_UNDEFINED;
+    (const_cast<Window*>(window))->clearTimeout(valueToInt32(ctx, v));
+    return JS_UNDEFINED;
   case Window::CaptureEvents:
   case Window::ReleaseEvents:
-    // If anyone implements these, they need the safe script security check.
-    if (!window->isSafeScript(exec))
-        return jsUndefined();
     // Not implemented.
-    return jsUndefined();
+    return JS_UNDEFINED;
   case Window::AddEventListener:
-        if (!window->isSafeScript(exec))
-            return jsUndefined();
-        if (JSEventListener* listener = window->findOrCreateJSEventListener(args[1]))
-            if (Document *doc = frame->document())
-                doc->addWindowEventListener(AtomicString(args[0]->toString(exec)), listener, args[2]->toBoolean(exec));
-        return jsUndefined();
+        if (!window->isSafeScript(ctx))
+            return JS_UNDEFINED;
+        if (argc >= 2) {
+            if (JSEventListener* listener = window->findOrCreateJSEventListener(argv[1]))
+                if (Document *doc = frame->document())
+                    doc->addWindowEventListener(AtomicString(valueToString(ctx, argv[0])), listener, (argc >= 3) ? JS_ToBool(ctx, argv[2]) : false);
+        }
+        return JS_UNDEFINED;
   case Window::RemoveEventListener:
-        if (!window->isSafeScript(exec))
-            return jsUndefined();
-        if (JSEventListener* listener = window->findJSEventListener(args[1]))
-            if (Document *doc = frame->document())
-                doc->removeWindowEventListener(AtomicString(args[0]->toString(exec)), listener, args[2]->toBoolean(exec));
-        return jsUndefined();
+        if (!window->isSafeScript(ctx))
+            return JS_UNDEFINED;
+        if (argc >= 2) {
+            if (JSEventListener* listener = window->findJSEventListener(argv[1]))
+                if (Document *doc = frame->document())
+                    doc->removeWindowEventListener(AtomicString(valueToString(ctx, argv[0])), listener, (argc >= 3) ? JS_ToBool(ctx, argv[2]) : false);
+        }
+        return JS_UNDEFINED;
         case Window::ShowModalDialog:
         {
             JSValue result = showModalDialog(ctx, window, argc, argv);
@@ -1478,7 +1442,7 @@ void Window::setReturnValueSlot(JSValue* slot)
 
 ////////////////////// ScheduledAction ////////////////////////
 
-void ScheduledAction::execute(JSValue window)
+void ScheduledAction::execute(Window* window)
 {
     RefPtr<Frame> frame = window->impl()->frame();
     if (!frame)
@@ -1489,29 +1453,27 @@ void ScheduledAction::execute(JSValue window)
         return;
 
     RefPtr<ScriptInterpreter> interpreter = script->interpreter();
-    JSContext* ctx = interpreter->context();
+    JSContext* ctx = script->context();
 
     interpreter->setProcessingTimerCallback(true);
 
-    if (JSValue func = m_func.get()) {
+    JSValue func = m_func.get();
+    JSValue windowObj = interpreter->globalObject();
+
+    if (!JS_IsNull(func) && !JS_IsUndefined(func)) {
         if (JS_IsFunction(ctx, func)) {
+            JSValue ret = JS_Call(ctx, func, windowObj, m_args.size(), m_args.data());
 
-            interpreter->startTimeoutCheck();
-
-            JS_Call(ctx, func, window, m_args.size(), m_args.data());
-
-            interpreter->stopTimeoutCheck();
-
-            if (exec->hadException()) {
-                JSObject* exception = exec->exception()->toObject(exec);
-                exec->clearException();
-                String message = exception->get(exec, exec->propertyNames().message)->toString(exec);
-                int lineNumber = exception->get(exec, "line")->toInt32(exec);
-                if (Interpreter::shouldPrintExceptions())
-                    printf("(timer):%s\n", message.utf8().data());
+            if (JS_IsException(ret)) {
+                JSValue exception = JS_GetException(ctx);
+                const char* msg = JS_ToCString(ctx, exception);
+                String message = msg ? String(msg) : String("Unknown error");
+                JS_FreeCString(ctx, msg);
+                JS_FreeValue(ctx, exception);
                 if (Page* page = frame->page())
-                    page->chrome()->addMessageToConsole(JSMessageSource, ErrorMessageLevel, message, lineNumber, String());
+                    page->chrome()->addMessageToConsole(JSMessageSource, ErrorMessageLevel, message, 0, String());
             }
+            JS_FreeValue(ctx, ret);
         }
     } else
         frame->loader()->executeScript(m_code);
@@ -1560,9 +1522,16 @@ int Window::installTimeout(const String& handler, int t, bool singleShot)
     return installTimeout(new ScheduledAction(handler), t, singleShot);
 }
 
-int Window::installTimeout(JSValue* func, const List& args, int t, bool singleShot)
+int Window::installTimeout(JSValue* func, const Vector<JSValue>& args, int t, bool singleShot)
 {
-    return installTimeout(new ScheduledAction(func, args), t, singleShot);
+    Frame* frame = impl()->frame();
+    if (!frame)
+        return 0;
+    JSContext* ctx = frame->script()->context();
+    JSValueList jsList(ctx);
+    for (size_t i = 0; i < args.size(); i++)
+        jsList.append(args[i]);
+    return installTimeout(new ScheduledAction(ctx, *func, jsList), t, singleShot);
 }
 
 PausedTimeouts* Window::pauseTimeouts()
@@ -1828,10 +1797,10 @@ JSValue Location::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValu
         case Hash:
             {
                 if (str.startsWith("#"))
-                    str = str.mid(1);
+                    str = str.substring(1);
 
                 if (url.ref() == str)
-                    return;
+                    return JS_UNDEFINED;
 
                 url.setRef(str);
                 break;
@@ -1949,6 +1918,16 @@ void DOMWindowTimer::fired()
     timerNestingLevel = m_nestingLevel;
     m_object->timerFired(this);
     timerNestingLevel = 0;
+}
+
+JSValue WindowPrototype::self(JSContext* ctx)
+{
+    return JS_NULL; // TODO: implement proper prototype
+}
+
+JSValue Navigator::create(JSContext* ctx, Frame* frame)
+{
+    return JS_NULL; // TODO: implement Navigator object creation
 }
 
 } // namespace QJS

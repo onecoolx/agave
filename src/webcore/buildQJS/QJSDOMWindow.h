@@ -83,7 +83,7 @@ public:
         HTMLTableRowElementConstructorAttrNum, HTMLTableSectionElementConstructorAttrNum, HTMLTextAreaElementConstructorAttrNum, HTMLTitleElementConstructorAttrNum, 
         HTMLUListElementConstructorAttrNum, EventConstructorAttrNum, MutationEventConstructorAttrNum, NodeFilterConstructorAttrNum, 
         RangeConstructorAttrNum, RangeExceptionConstructorAttrNum, XMLDocumentConstructorAttrNum, DOMParserConstructorAttrNum, 
-        XMLSerializerConstructorAttrNum, 
+        XMLSerializerConstructorAttrNum, XPathEvaluatorConstructorAttrNum, XPathResultConstructorAttrNum, 
 
         // Functions
         GetSelectionFuncNum, FocusFuncNum, BlurFuncNum, CloseFuncNum, 

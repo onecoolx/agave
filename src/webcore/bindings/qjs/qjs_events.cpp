@@ -1,0 +1,189 @@
+/*
+ * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * All rights reserved.
+ */
+
+#include "config.h"
+
+#if ENABLE(QJS)
+
+#include "qjs_events.h"
+#include "qjs_window.h"
+#include "qjs_script.h"
+
+#include "Document.h"
+#include "DOMWindow.h"
+#include "Event.h"
+#include "Frame.h"
+#include "FrameLoader.h"
+#include "Page.h"
+
+using namespace QJS;
+
+namespace WebCore {
+
+// JSAbstractEventListener
+
+JSAbstractEventListener::JSAbstractEventListener(bool html)
+    : m_html(html)
+{
+}
+
+void JSAbstractEventListener::handleEvent(Event* event, bool isWindowEvent)
+{
+    JSValue listener = listenerObj();
+    if (JS_IsNull(listener) || JS_IsUndefined(listener))
+        return;
+
+    Window* window = windowObj();
+    if (!window)
+        return;
+
+    Frame* frame = window->impl()->frame();
+    if (!frame)
+        return;
+
+    ScriptController* script = frame->script();
+    if (!script)
+        return;
+
+    JSContext* ctx = script->context();
+    if (!ctx)
+        return;
+
+    JSValue jsEvent = ScriptInterpreter::getDOMObject(event);
+    if (JS_IsNull(jsEvent))
+        return;
+
+    JSValue thisObj = isWindowEvent ? script->interpreter()->globalObject() : jsEvent;
+    JSValue ret = JS_Call(ctx, listener, thisObj, 1, &jsEvent);
+    if (JS_IsException(ret)) {
+        JS_FreeValue(ctx, JS_GetException(ctx));
+    }
+    JS_FreeValue(ctx, ret);
+}
+
+bool JSAbstractEventListener::isHTMLEventListener() const
+{
+    return m_html;
+}
+
+// JSUnprotectedEventListener
+
+JSUnprotectedEventListener::JSUnprotectedEventListener(JSValue listener, Window* win, bool html)
+    : JSAbstractEventListener(html)
+    , m_listener(listener)
+    , m_win(win)
+{
+}
+
+JSUnprotectedEventListener::~JSUnprotectedEventListener()
+{
+}
+
+JSValue JSUnprotectedEventListener::listenerObj() const
+{
+    return m_listener;
+}
+
+Window* JSUnprotectedEventListener::windowObj() const
+{
+    return m_win;
+}
+
+void JSUnprotectedEventListener::clearWindowObj()
+{
+    m_win = 0;
+}
+
+void JSUnprotectedEventListener::mark()
+{
+}
+
+// JSEventListener
+
+JSEventListener::JSEventListener(JSValue listener, Window* win, bool html)
+    : JSAbstractEventListener(html)
+    , m_listener(listener)
+    , m_win(win)
+{
+}
+
+JSEventListener::~JSEventListener()
+{
+}
+
+JSValue JSEventListener::listenerObj() const
+{
+    return m_listener;
+}
+
+Window* JSEventListener::windowObj() const
+{
+    return m_win;
+}
+
+void JSEventListener::clearWindowObj()
+{
+    m_win = 0;
+}
+
+// JSLazyEventListener
+
+JSLazyEventListener::JSLazyEventListener(const String& functionName, const String& code, Window* win, Node* node, int lineNumber)
+    : JSEventListener(JS_NULL, win, true)
+    , m_functionName(functionName)
+    , m_code(code)
+    , m_parsed(false)
+    , m_lineNumber(lineNumber)
+    , m_originalNode(node)
+{
+}
+
+JSValue JSLazyEventListener::listenerObj() const
+{
+    parseCode();
+    return m_listener;
+}
+
+JSValue JSLazyEventListener::eventParameterName() const
+{
+    return JS_NULL;
+}
+
+void JSLazyEventListener::parseCode() const
+{
+    if (m_parsed)
+        return;
+    m_parsed = true;
+
+    Window* win = windowObj();
+    if (!win)
+        return;
+
+    Frame* frame = win->impl()->frame();
+    if (!frame)
+        return;
+
+    ScriptController* script = frame->script();
+    if (!script)
+        return;
+
+    JSContext* ctx = script->context();
+    String code = "function " + m_functionName + "(event){" + m_code + "}";
+    JSValue result = JS_Eval(ctx, code.utf8().data(), code.utf8().length(), "", JS_EVAL_TYPE_GLOBAL);
+    if (!JS_IsException(result)) {
+        JSValue global = script->interpreter()->globalObject();
+        m_listener = JS_GetPropertyStr(ctx, global, m_functionName.utf8().data());
+    }
+    JS_FreeValue(ctx, result);
+}
+
+JSValue getNodeEventListener(Node* node, const AtomicString& eventType)
+{
+    return JS_NULL;
+}
+
+} // namespace WebCore
+
+#endif

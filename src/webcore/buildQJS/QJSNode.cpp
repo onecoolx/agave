@@ -343,16 +343,16 @@ JSValue JSNodePrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst thi
 
     switch (token) {
         case JSNode::InsertBeforeFuncNum: {
-            return JSNode::insertBefore(ctx, argc, argv, imp);
+            return JSNode::insertBefore(ctx, this_val, argc, argv, imp);
         }
         case JSNode::ReplaceChildFuncNum: {
-            return JSNode::replaceChild(ctx, argc, argv, imp);
+            return JSNode::replaceChild(ctx, this_val, argc, argv, imp);
         }
         case JSNode::RemoveChildFuncNum: {
-            return JSNode::removeChild(ctx, argc, argv, imp);
+            return JSNode::removeChild(ctx, this_val, argc, argv, imp);
         }
         case JSNode::AppendChildFuncNum: {
-            return JSNode::appendChild(ctx, argc, argv, imp);
+            return JSNode::appendChild(ctx, this_val, argc, argv, imp);
         }
         case JSNode::HasChildNodesFuncNum: {
 

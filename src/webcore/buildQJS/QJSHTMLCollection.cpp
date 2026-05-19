@@ -180,10 +180,10 @@ JSValue JSHTMLCollectionPrototypeFunction::callAsFunction(JSContext* ctx, JSValu
 
     switch (token) {
         case JSHTMLCollection::ItemFuncNum: {
-            return JSHTMLCollection::item(ctx, argc, argv, imp);
+            return JSHTMLCollection::item(ctx, this_val, argc, argv, imp);
         }
         case JSHTMLCollection::NamedItemFuncNum: {
-            return JSHTMLCollection::namedItem(ctx, argc, argv, imp);
+            return JSHTMLCollection::namedItem(ctx, this_val, argc, argv, imp);
         }
         case JSHTMLCollection::TagsFuncNum: {
             String name = valueToString(ctx, argv[0]);

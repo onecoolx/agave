@@ -131,8 +131,8 @@ namespace QJS {
         // Set a place to put a dialog return value when the window is cleared.
         void setReturnValueSlot(JSValue* slot);
 
-        typedef HashMap<JSObject*, WebCore::JSEventListener*> ListenersMap;
-        typedef HashMap<JSObject*, WebCore::JSUnprotectedEventListener*> UnprotectedListenersMap;
+        typedef HashMap<void*, WebCore::JSEventListener*> ListenersMap;
+        typedef HashMap<void*, WebCore::JSUnprotectedEventListener*> UnprotectedListenersMap;
 
         ListenersMap& jsEventListeners();
         ListenersMap& jsHTMLEventListeners();
@@ -232,6 +232,8 @@ namespace QJS {
             }
         }
 
+        JSValue get() const { return m_val; }
+
     private:
         JSContext* m_ctx;
         JSValue m_val;
@@ -256,6 +258,9 @@ namespace QJS {
             }
             m_list.clear();
         }
+
+        size_t size() const { return m_list.size(); }
+        JSValue* data() { return m_list.data(); }
 
     private:
         JSContext* m_ctx;

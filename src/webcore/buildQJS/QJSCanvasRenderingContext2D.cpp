@@ -215,11 +215,11 @@ JSValue JSCanvasRenderingContext2D::getValueProperty(JSContext *ctx, JSValueCons
         }
         case StrokeStyleAttrNum: {
             CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
-            return JSCanvasRenderingContext2D::strokeStyle(ctx, imp);
+            return JSCanvasRenderingContext2D::strokeStyle(ctx, this_val, imp);
         }
         case FillStyleAttrNum: {
             CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
-            return JSCanvasRenderingContext2D::fillStyle(ctx, imp);
+            return JSCanvasRenderingContext2D::fillStyle(ctx, this_val, imp);
         }
     }
     return JS_NULL;
@@ -280,12 +280,12 @@ JSValue JSCanvasRenderingContext2D::putValueProperty(JSContext *ctx, JSValueCons
         }
         case StrokeStyleAttrNum: {
             CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
-            JSCanvasRenderingContext2D::setStrokeStyle(ctx, value, imp);
+            JSCanvasRenderingContext2D::setStrokeStyle(ctx, this_val, value, imp);
             break;
         }
         case FillStyleAttrNum: {
             CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
-            JSCanvasRenderingContext2D::setFillStyle(ctx, value, imp);
+            JSCanvasRenderingContext2D::setFillStyle(ctx, this_val, value, imp);
             break;
         }
     }
@@ -482,25 +482,25 @@ JSValue JSCanvasRenderingContext2DPrototypeFunction::callAsFunction(JSContext* c
             return JS_UNDEFINED;
         }
         case JSCanvasRenderingContext2D::SetStrokeColorFuncNum: {
-            return JSCanvasRenderingContext2D::setStrokeColor(ctx, argc, argv, imp);
+            return JSCanvasRenderingContext2D::setStrokeColor(ctx, this_val, argc, argv, imp);
         }
         case JSCanvasRenderingContext2D::SetFillColorFuncNum: {
-            return JSCanvasRenderingContext2D::setFillColor(ctx, argc, argv, imp);
+            return JSCanvasRenderingContext2D::setFillColor(ctx, this_val, argc, argv, imp);
         }
         case JSCanvasRenderingContext2D::StrokeRectFuncNum: {
-            return JSCanvasRenderingContext2D::strokeRect(ctx, argc, argv, imp);
+            return JSCanvasRenderingContext2D::strokeRect(ctx, this_val, argc, argv, imp);
         }
         case JSCanvasRenderingContext2D::DrawImageFuncNum: {
-            return JSCanvasRenderingContext2D::drawImage(ctx, argc, argv, imp);
+            return JSCanvasRenderingContext2D::drawImage(ctx, this_val, argc, argv, imp);
         }
         case JSCanvasRenderingContext2D::DrawImageFromRectFuncNum: {
-            return JSCanvasRenderingContext2D::drawImageFromRect(ctx, argc, argv, imp);
+            return JSCanvasRenderingContext2D::drawImageFromRect(ctx, this_val, argc, argv, imp);
         }
         case JSCanvasRenderingContext2D::SetShadowFuncNum: {
-            return JSCanvasRenderingContext2D::setShadow(ctx, argc, argv, imp);
+            return JSCanvasRenderingContext2D::setShadow(ctx, this_val, argc, argv, imp);
         }
         case JSCanvasRenderingContext2D::CreatePatternFuncNum: {
-            return JSCanvasRenderingContext2D::createPattern(ctx, argc, argv, imp);
+            return JSCanvasRenderingContext2D::createPattern(ctx, this_val, argc, argv, imp);
         }
     }
     return JS_NULL;

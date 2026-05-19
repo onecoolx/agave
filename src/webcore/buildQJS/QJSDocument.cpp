@@ -52,6 +52,7 @@
 #include "QJSCDATASection.h"
 #include "QJSCSSStyleDeclaration.h"
 #include "QJSComment.h"
+#include "QJSCustomXPathNSResolver.h"
 #include "QJSDOMImplementation.h"
 #include "QJSDocumentFragment.h"
 #include "QJSDocumentType.h"
@@ -69,10 +70,16 @@
 #include "QJSStyleSheetList.h"
 #include "QJSText.h"
 #include "QJSTreeWalker.h"
+#include "QJSXPathExpression.h"
+#include "QJSXPathNSResolver.h"
+#include "QJSXPathResult.h"
 #include "Range.h"
 #include "StyleSheetList.h"
 #include "Text.h"
 #include "TreeWalker.h"
+#include "XPathExpression.h"
+#include "XPathNSResolver.h"
+#include "XPathResult.h"
 #include "qjs_window.h"
 #include "text/String.h"
 
@@ -155,34 +162,37 @@ void JSDocumentConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 static const JSCFunctionListEntry JSDocumentPrototypeFunctions[] =
 {
     JS_CFUNC_MAGIC_DEF("importNode", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::ImportNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("getOverrideStyle", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetOverrideStyleFuncNum),
-    JS_CFUNC_MAGIC_DEF("createAttributeNS", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateAttributeNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("queryCommandIndeterm", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::QueryCommandIndetermFuncNum),
-    JS_CFUNC_MAGIC_DEF("createEntityReference", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateEntityReferenceFuncNum),
-    JS_CFUNC_MAGIC_DEF("adoptNode", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::AdoptNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("createRange", 0, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateRangeFuncNum),
-    JS_CFUNC_MAGIC_DEF("queryCommandState", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::QueryCommandStateFuncNum),
-    JS_CFUNC_MAGIC_DEF("createElement", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateElementFuncNum),
-    JS_CFUNC_MAGIC_DEF("createTextNode", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateTextNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("createNodeIterator", 4, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateNodeIteratorFuncNum),
-    JS_CFUNC_MAGIC_DEF("elementFromPoint", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::ElementFromPointFuncNum),
-    JS_CFUNC_MAGIC_DEF("createAttribute", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("createComment", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateCommentFuncNum),
-    JS_CFUNC_MAGIC_DEF("getElementById", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetElementByIdFuncNum),
-    JS_CFUNC_MAGIC_DEF("createDocumentFragment", 0, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateDocumentFragmentFuncNum),
-    JS_CFUNC_MAGIC_DEF("createCDATASection", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateCDATASectionFuncNum),
     JS_CFUNC_MAGIC_DEF("createProcessingInstruction", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateProcessingInstructionFuncNum),
-    JS_CFUNC_MAGIC_DEF("getElementsByTagName", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetElementsByTagNameFuncNum),
     JS_CFUNC_MAGIC_DEF("createElementNS", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateElementNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("getElementsByTagNameNS", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetElementsByTagNameNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("load", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::LoadFuncNum),
-    JS_CFUNC_MAGIC_DEF("createEvent", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateEventFuncNum),
-    JS_CFUNC_MAGIC_DEF("createTreeWalker", 4, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateTreeWalkerFuncNum),
-    JS_CFUNC_MAGIC_DEF("execCommand", 3, JSDocumentPrototypeFunction::callAsFunction, JSDocument::ExecCommandFuncNum),
+    JS_CFUNC_MAGIC_DEF("createDocumentFragment", 0, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateDocumentFragmentFuncNum),
+    JS_CFUNC_MAGIC_DEF("createComment", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateCommentFuncNum),
+    JS_CFUNC_MAGIC_DEF("createCDATASection", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateCDATASectionFuncNum),
+    JS_CFUNC_MAGIC_DEF("createAttribute", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateAttributeFuncNum),
+    JS_CFUNC_MAGIC_DEF("queryCommandIndeterm", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::QueryCommandIndetermFuncNum),
+    JS_CFUNC_MAGIC_DEF("adoptNode", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::AdoptNodeFuncNum),
     JS_CFUNC_MAGIC_DEF("queryCommandEnabled", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::QueryCommandEnabledFuncNum),
+    JS_CFUNC_MAGIC_DEF("getElementsByTagNameNS", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetElementsByTagNameNSFuncNum),
+    JS_CFUNC_MAGIC_DEF("getElementsByTagName", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetElementsByTagNameFuncNum),
+    JS_CFUNC_MAGIC_DEF("createEvent", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateEventFuncNum),
+    JS_CFUNC_MAGIC_DEF("createNodeIterator", 4, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateNodeIteratorFuncNum),
+    JS_CFUNC_MAGIC_DEF("createTextNode", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateTextNodeFuncNum),
+    JS_CFUNC_MAGIC_DEF("createAttributeNS", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateAttributeNSFuncNum),
+    JS_CFUNC_MAGIC_DEF("createElement", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateElementFuncNum),
+    JS_CFUNC_MAGIC_DEF("createEntityReference", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateEntityReferenceFuncNum),
+    JS_CFUNC_MAGIC_DEF("getElementById", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetElementByIdFuncNum),
+    JS_CFUNC_MAGIC_DEF("load", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::LoadFuncNum),
+    JS_CFUNC_MAGIC_DEF("createRange", 0, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateRangeFuncNum),
+    JS_CFUNC_MAGIC_DEF("createTreeWalker", 4, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateTreeWalkerFuncNum),
+    JS_CFUNC_MAGIC_DEF("getOverrideStyle", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetOverrideStyleFuncNum),
+    JS_CFUNC_MAGIC_DEF("createExpression", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateExpressionFuncNum),
+    JS_CFUNC_MAGIC_DEF("createNSResolver", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateNSResolverFuncNum),
+    JS_CFUNC_MAGIC_DEF("evaluate", 5, JSDocumentPrototypeFunction::callAsFunction, JSDocument::EvaluateFuncNum),
+    JS_CFUNC_MAGIC_DEF("execCommand", 3, JSDocumentPrototypeFunction::callAsFunction, JSDocument::ExecCommandFuncNum),
+    JS_CFUNC_MAGIC_DEF("queryCommandState", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::QueryCommandStateFuncNum),
     JS_CFUNC_MAGIC_DEF("queryCommandSupported", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::QueryCommandSupportedFuncNum),
     JS_CFUNC_MAGIC_DEF("queryCommandValue", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::QueryCommandValueFuncNum),
-    JS_CFUNC_MAGIC_DEF("getElementsByName", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetElementsByNameFuncNum)
+    JS_CFUNC_MAGIC_DEF("getElementsByName", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetElementsByNameFuncNum),
+    JS_CFUNC_MAGIC_DEF("elementFromPoint", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::ElementFromPointFuncNum)
 };
 
 JSValue JSDocumentPrototype::self(JSContext * ctx)
@@ -337,7 +347,7 @@ JSValue JSDocument::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
         }
         case LocationAttrNum: {
             Document* imp = (Document*)JS_GetOpaque2(ctx, this_val, JSDocument::js_class_id);
-            return JSDocument::location(ctx, imp);
+            return JSDocument::location(ctx, this_val, imp);
         }
         case CharsetAttrNum: {
             Document* imp = (Document*)JS_GetOpaque2(ctx, this_val, JSDocument::js_class_id);
@@ -422,7 +432,7 @@ JSValue JSDocument::putValueProperty(JSContext *ctx, JSValueConst this_val, JSVa
         }
         case LocationAttrNum: {
             Document* imp = (Document*)JS_GetOpaque2(ctx, this_val, JSDocument::js_class_id);
-            JSDocument::setLocation(ctx, value, imp);
+            JSDocument::setLocation(ctx, this_val, value, imp);
             break;
         }
         case CharsetAttrNum: {
@@ -619,6 +629,47 @@ JSValue JSDocumentPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst
             String pseudoElement = valueToString(ctx, argv[1]);
 
             JSValue result = toJS(ctx, QJS::getPtr(imp->getOverrideStyle(element, pseudoElement)));
+            return result;
+        }
+        case JSDocument::CreateExpressionFuncNum: {
+            ExceptionCode ec = 0;
+            String expression = valueToString(ctx, argv[0]);
+            RefPtr<XPathNSResolver> customResolver;
+            XPathNSResolver* resolver = toXPathNSResolver(argv[1]);
+            if (!resolver) {
+                customResolver = JSCustomXPathNSResolver::create(ctx, argv[1]);
+                if (JS_HasException(ctx))
+                    return JS_UNDEFINED;
+                resolver = customResolver.get();
+            }
+
+            JSValue result = toJS(ctx, QJS::getPtr(imp->createExpression(expression, resolver, ec)));
+            setDOMException(ctx, ec);
+            return result;
+        }
+        case JSDocument::CreateNSResolverFuncNum: {
+            Node* nodeResolver = toNode(argv[0]);
+
+            JSValue result = toJS(ctx, QJS::getPtr(imp->createNSResolver(nodeResolver)));
+            return result;
+        }
+        case JSDocument::EvaluateFuncNum: {
+            ExceptionCode ec = 0;
+            String expression = valueToString(ctx, argv[0]);
+            Node* contextNode = toNode(argv[1]);
+            RefPtr<XPathNSResolver> customResolver;
+            XPathNSResolver* resolver = toXPathNSResolver(argv[2]);
+            if (!resolver) {
+                customResolver = JSCustomXPathNSResolver::create(ctx, argv[2]);
+                if (JS_HasException(ctx))
+                    return JS_UNDEFINED;
+                resolver = customResolver.get();
+            }
+            unsigned short type = valueToInt32(ctx, argv[3]);
+            XPathResult* inResult = toXPathResult(argv[4]);
+
+            JSValue result = toJS(ctx, QJS::getPtr(imp->evaluate(expression, contextNode, resolver, type, inResult, ec)));
+            setDOMException(ctx, ec);
             return result;
         }
         case JSDocument::ExecCommandFuncNum: {

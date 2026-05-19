@@ -125,7 +125,7 @@ JSValue JSHTMLOptionsCollection::getValueProperty(JSContext *ctx, JSValueConst t
         }
         case LengthAttrNum: {
             HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque2(ctx, this_val, JSHTMLOptionsCollection::js_class_id);
-            return JSHTMLOptionsCollection::length(ctx, imp);
+            return JSHTMLOptionsCollection::length(ctx, this_val, imp);
         }
     }
     return JS_NULL;
@@ -141,7 +141,7 @@ JSValue JSHTMLOptionsCollection::putValueProperty(JSContext *ctx, JSValueConst t
         }
         case LengthAttrNum: {
             HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque2(ctx, this_val, JSHTMLOptionsCollection::js_class_id);
-            JSHTMLOptionsCollection::setLength(ctx, value, imp);
+            JSHTMLOptionsCollection::setLength(ctx, this_val, value, imp);
             break;
         }
     }

@@ -146,25 +146,25 @@ JSValue JSSVGPointListPrototypeFunction::callAsFunction(JSContext* ctx, JSValueC
 
     switch (token) {
         case JSSVGPointList::ClearFuncNum: {
-            return JSSVGPointList::clear(ctx, argc, argv, imp);
+            return JSSVGPointList::clear(ctx, this_val, argc, argv, imp);
         }
         case JSSVGPointList::InitializeFuncNum: {
-            return JSSVGPointList::initialize(ctx, argc, argv, imp);
+            return JSSVGPointList::initialize(ctx, this_val, argc, argv, imp);
         }
         case JSSVGPointList::GetItemFuncNum: {
-            return JSSVGPointList::getItem(ctx, argc, argv, imp);
+            return JSSVGPointList::getItem(ctx, this_val, argc, argv, imp);
         }
         case JSSVGPointList::InsertItemBeforeFuncNum: {
-            return JSSVGPointList::insertItemBefore(ctx, argc, argv, imp);
+            return JSSVGPointList::insertItemBefore(ctx, this_val, argc, argv, imp);
         }
         case JSSVGPointList::ReplaceItemFuncNum: {
-            return JSSVGPointList::replaceItem(ctx, argc, argv, imp);
+            return JSSVGPointList::replaceItem(ctx, this_val, argc, argv, imp);
         }
         case JSSVGPointList::RemoveItemFuncNum: {
-            return JSSVGPointList::removeItem(ctx, argc, argv, imp);
+            return JSSVGPointList::removeItem(ctx, this_val, argc, argv, imp);
         }
         case JSSVGPointList::AppendItemFuncNum: {
-            return JSSVGPointList::appendItem(ctx, argc, argv, imp);
+            return JSSVGPointList::appendItem(ctx, this_val, argc, argv, imp);
         }
     }
     (void)imp;

@@ -40,6 +40,7 @@ namespace mescal {
 typedef struct {
     // quick javascript runtime
     JSRuntime* runtime;
+    JSContext* utilContext; // lightweight context for regex/utility use
     DOMObjectMap* domObjects;
     NodePerDocMap* domNodesPerDoc;
     JSValueWindowMap* jsValWindows;

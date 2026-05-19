@@ -151,25 +151,25 @@ JSValue JSSVGTransformListPrototypeFunction::callAsFunction(JSContext* ctx, JSVa
 
     switch (token) {
         case JSSVGTransformList::ClearFuncNum: {
-            return JSSVGTransformList::clear(ctx, argc, argv, imp);
+            return JSSVGTransformList::clear(ctx, this_val, argc, argv, imp);
         }
         case JSSVGTransformList::InitializeFuncNum: {
-            return JSSVGTransformList::initialize(ctx, argc, argv, imp);
+            return JSSVGTransformList::initialize(ctx, this_val, argc, argv, imp);
         }
         case JSSVGTransformList::GetItemFuncNum: {
-            return JSSVGTransformList::getItem(ctx, argc, argv, imp);
+            return JSSVGTransformList::getItem(ctx, this_val, argc, argv, imp);
         }
         case JSSVGTransformList::InsertItemBeforeFuncNum: {
-            return JSSVGTransformList::insertItemBefore(ctx, argc, argv, imp);
+            return JSSVGTransformList::insertItemBefore(ctx, this_val, argc, argv, imp);
         }
         case JSSVGTransformList::ReplaceItemFuncNum: {
-            return JSSVGTransformList::replaceItem(ctx, argc, argv, imp);
+            return JSSVGTransformList::replaceItem(ctx, this_val, argc, argv, imp);
         }
         case JSSVGTransformList::RemoveItemFuncNum: {
-            return JSSVGTransformList::removeItem(ctx, argc, argv, imp);
+            return JSSVGTransformList::removeItem(ctx, this_val, argc, argv, imp);
         }
         case JSSVGTransformList::AppendItemFuncNum: {
-            return JSSVGTransformList::appendItem(ctx, argc, argv, imp);
+            return JSSVGTransformList::appendItem(ctx, this_val, argc, argv, imp);
         }
         case JSSVGTransformList::CreateSVGTransformFromMatrixFuncNum: {
             AffineTransform matrix = toSVGMatrix(argv[0]);

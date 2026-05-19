@@ -146,25 +146,25 @@ JSValue JSSVGPathSegListPrototypeFunction::callAsFunction(JSContext* ctx, JSValu
 
     switch (token) {
         case JSSVGPathSegList::ClearFuncNum: {
-            return JSSVGPathSegList::clear(ctx, argc, argv, imp);
+            return JSSVGPathSegList::clear(ctx, this_val, argc, argv, imp);
         }
         case JSSVGPathSegList::InitializeFuncNum: {
-            return JSSVGPathSegList::initialize(ctx, argc, argv, imp);
+            return JSSVGPathSegList::initialize(ctx, this_val, argc, argv, imp);
         }
         case JSSVGPathSegList::GetItemFuncNum: {
-            return JSSVGPathSegList::getItem(ctx, argc, argv, imp);
+            return JSSVGPathSegList::getItem(ctx, this_val, argc, argv, imp);
         }
         case JSSVGPathSegList::InsertItemBeforeFuncNum: {
-            return JSSVGPathSegList::insertItemBefore(ctx, argc, argv, imp);
+            return JSSVGPathSegList::insertItemBefore(ctx, this_val, argc, argv, imp);
         }
         case JSSVGPathSegList::ReplaceItemFuncNum: {
-            return JSSVGPathSegList::replaceItem(ctx, argc, argv, imp);
+            return JSSVGPathSegList::replaceItem(ctx, this_val, argc, argv, imp);
         }
         case JSSVGPathSegList::RemoveItemFuncNum: {
-            return JSSVGPathSegList::removeItem(ctx, argc, argv, imp);
+            return JSSVGPathSegList::removeItem(ctx, this_val, argc, argv, imp);
         }
         case JSSVGPathSegList::AppendItemFuncNum: {
-            return JSSVGPathSegList::appendItem(ctx, argc, argv, imp);
+            return JSSVGPathSegList::appendItem(ctx, this_val, argc, argv, imp);
         }
     }
     (void)imp;

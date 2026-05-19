@@ -189,7 +189,7 @@ JSValue JSHTMLDocument::getValueProperty(JSContext *ctx, JSValueConst this_val, 
         }
         case AllAttrNum: {
             HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
-            return JSHTMLDocument::all(ctx, imp);
+            return JSHTMLDocument::all(ctx, this_val, imp);
         }
         case WidthAttrNum: {
             HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
@@ -242,7 +242,7 @@ JSValue JSHTMLDocument::putValueProperty(JSContext *ctx, JSValueConst this_val, 
     switch (token) {
         case AllAttrNum: {
             HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
-            JSHTMLDocument::setAll(ctx, value, imp);
+            JSHTMLDocument::setAll(ctx, this_val, value, imp);
             break;
         }
         case DirAttrNum: {
@@ -297,17 +297,17 @@ JSValue JSHTMLDocumentPrototypeFunction::callAsFunction(JSContext* ctx, JSValueC
 
     switch (token) {
         case JSHTMLDocument::OpenFuncNum: {
-            return JSHTMLDocument::open(ctx, argc, argv, imp);
+            return JSHTMLDocument::open(ctx, this_val, argc, argv, imp);
         }
         case JSHTMLDocument::CloseFuncNum: {
             imp->close();
             return JS_UNDEFINED;
         }
         case JSHTMLDocument::WriteFuncNum: {
-            return JSHTMLDocument::write(ctx, argc, argv, imp);
+            return JSHTMLDocument::write(ctx, this_val, argc, argv, imp);
         }
         case JSHTMLDocument::WritelnFuncNum: {
-            return JSHTMLDocument::writeln(ctx, argc, argv, imp);
+            return JSHTMLDocument::writeln(ctx, this_val, argc, argv, imp);
         }
         case JSHTMLDocument::GetElementByIdFuncNum: {
             String elementId = valueToString(ctx, argv[0]);
@@ -316,7 +316,7 @@ JSValue JSHTMLDocumentPrototypeFunction::callAsFunction(JSContext* ctx, JSValueC
             return result;
         }
         case JSHTMLDocument::ClearFuncNum: {
-            return JSHTMLDocument::clear(ctx, argc, argv, imp);
+            return JSHTMLDocument::clear(ctx, this_val, argc, argv, imp);
         }
         case JSHTMLDocument::CaptureEventsFuncNum: {
             imp->captureEvents();

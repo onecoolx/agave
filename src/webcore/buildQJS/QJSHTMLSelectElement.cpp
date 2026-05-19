@@ -294,7 +294,7 @@ JSValue JSHTMLSelectElementPrototypeFunction::callAsFunction(JSContext* ctx, JSV
             return JS_UNDEFINED;
         }
         case JSHTMLSelectElement::RemoveFuncNum: {
-            return JSHTMLSelectElement::remove(ctx, argc, argv, imp);
+            return JSHTMLSelectElement::remove(ctx, this_val, argc, argv, imp);
         }
         case JSHTMLSelectElement::BlurFuncNum: {
             imp->blur();

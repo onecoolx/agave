@@ -234,37 +234,37 @@ JSValue JSSVGMatrixPrototypeFunction::callAsFunction(JSContext* ctx, JSValueCons
 
     switch (token) {
         case JSSVGMatrix::MultiplyFuncNum: {
-            return JSSVGMatrix::multiply(ctx, argc, argv, imp);
+            return JSSVGMatrix::multiply(ctx, this_val, argc, argv, imp);
         }
         case JSSVGMatrix::InverseFuncNum: {
-            return JSSVGMatrix::inverse(ctx, argc, argv, imp);
+            return JSSVGMatrix::inverse(ctx, this_val, argc, argv, imp);
         }
         case JSSVGMatrix::TranslateFuncNum: {
-            return JSSVGMatrix::translate(ctx, argc, argv, imp);
+            return JSSVGMatrix::translate(ctx, this_val, argc, argv, imp);
         }
         case JSSVGMatrix::ScaleFuncNum: {
-            return JSSVGMatrix::scale(ctx, argc, argv, imp);
+            return JSSVGMatrix::scale(ctx, this_val, argc, argv, imp);
         }
         case JSSVGMatrix::ScaleNonUniformFuncNum: {
-            return JSSVGMatrix::scaleNonUniform(ctx, argc, argv, imp);
+            return JSSVGMatrix::scaleNonUniform(ctx, this_val, argc, argv, imp);
         }
         case JSSVGMatrix::RotateFuncNum: {
-            return JSSVGMatrix::rotate(ctx, argc, argv, imp);
+            return JSSVGMatrix::rotate(ctx, this_val, argc, argv, imp);
         }
         case JSSVGMatrix::RotateFromVectorFuncNum: {
-            return JSSVGMatrix::rotateFromVector(ctx, argc, argv, imp);
+            return JSSVGMatrix::rotateFromVector(ctx, this_val, argc, argv, imp);
         }
         case JSSVGMatrix::FlipXFuncNum: {
-            return JSSVGMatrix::flipX(ctx, argc, argv, imp);
+            return JSSVGMatrix::flipX(ctx, this_val, argc, argv, imp);
         }
         case JSSVGMatrix::FlipYFuncNum: {
-            return JSSVGMatrix::flipY(ctx, argc, argv, imp);
+            return JSSVGMatrix::flipY(ctx, this_val, argc, argv, imp);
         }
         case JSSVGMatrix::SkewXFuncNum: {
-            return JSSVGMatrix::skewX(ctx, argc, argv, imp);
+            return JSSVGMatrix::skewX(ctx, this_val, argc, argv, imp);
         }
         case JSSVGMatrix::SkewYFuncNum: {
-            return JSSVGMatrix::skewY(ctx, argc, argv, imp);
+            return JSSVGMatrix::skewY(ctx, this_val, argc, argv, imp);
         }
     }
     (void)imp;

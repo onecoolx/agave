@@ -1013,7 +1013,10 @@ sub GenerateImplementation
                 push(@implContent, "                return JS_UNDEFINED;\n");
             }
 
-            if ($attribute->signature->extendedAttributes->{"Custom"} || $attribute->signature->extendedAttributes->{"CustomGetter"}) {
+            if ($attribute->signature->extendedAttributes->{"Custom"}) {
+                push(@implContent, "            $implClassName* imp = ($implClassName*)JS_GetOpaque2(ctx, this_val, ${className}::js_class_id);\n");
+                push(@implContent, "            return ${className}::$name(ctx, this_val, imp);\n");
+            } elsif ($attribute->signature->extendedAttributes->{"CustomGetter"}) {
                 push(@implContent, "            $implClassName* imp = ($implClassName*)JS_GetOpaque2(ctx, this_val, ${className}::js_class_id);\n");
                 push(@implContent, "            return ${className}::$name(ctx, imp);\n");
             } elsif ($attribute->signature->extendedAttributes->{"CheckNodeSecurity"}) {
@@ -1118,7 +1121,10 @@ sub GenerateImplementation
                         push(@implContent, "                return JS_UNDEFINED;\n");
                     }
 
-                    if ($attribute->signature->extendedAttributes->{"Custom"} || $attribute->signature->extendedAttributes->{"CustomSetter"}) {
+                    if ($attribute->signature->extendedAttributes->{"Custom"}) {
+                        push(@implContent, "            $implClassName* imp = ($implClassName*)JS_GetOpaque2(ctx, this_val, ${className}::js_class_id);\n");
+                        push(@implContent, "            ${className}::set" . WK_ucfirst($name) . "(ctx, this_val, value, imp);\n");
+                    } elsif ($attribute->signature->extendedAttributes->{"CustomSetter"}) {
                         push(@implContent, "            $implClassName* imp = ($implClassName*)JS_GetOpaque2(ctx, this_val, ${className}::js_class_id);\n");
                         push(@implContent, "            ${className}::set" . WK_ucfirst($name) . "(ctx, value, imp);\n");
                     } elsif ($attribute->signature->type =~ /Constructor$/) {
@@ -1191,7 +1197,7 @@ sub GenerateImplementation
             push(@implContent, "        case ${className}::" . WK_ucfirst($function->signature->name) . "FuncNum: {\n");
 
             if ($function->signature->extendedAttributes->{"Custom"}) {
-                push(@implContent, "            return ${className}::" . $function->signature->name . "(ctx, argc, argv, imp);\n        }\n");
+                push(@implContent, "            return ${className}::" . $function->signature->name . "(ctx, this_val, argc, argv, imp);\n        }\n");
                 next;
             }
 
