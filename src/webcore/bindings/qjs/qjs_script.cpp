@@ -26,6 +26,7 @@
 
 #include "Chrome.h"
 #include "Document.h"
+#include "DOMWindow.h"
 #include "Frame.h"
 #include "FrameLoader.h"
 #include "GCController.h"
@@ -170,15 +171,19 @@ void ScriptController::initScriptIfNeeded()
 
     m_context = JS_NewContext(GLOBAL()->runtime);
 
-    // Build the global object - which is a Window instance
+    // Build the global object - which is a Window/DOMWindow instance
     JSDOMWindow::init(m_context);
-    JSValue contextObj = JS_GetGlobalObject(m_context);
-    JSValue globalObject = JSDOMWindow::create(m_context, contextObj, m_frame->domWindow());
-    JS_FreeValue(m_context, contextObj);
+
+    // Set the global object's prototype and opaque to DOMWindow
+    JSValue globalObject = JS_GetGlobalObject(m_context);
+    JS_SetPrototype(m_context, globalObject, JSDOMWindowPrototype::self(m_context));
+    JS_SetOpaque(globalObject, m_frame->domWindow());
+    m_frame->domWindow()->ref();
 
     // Create a QJS interpreter for this frame
     m_script = new ScriptInterpreter(m_context, globalObject, m_frame);
     JS_SetContextOpaque(m_context, m_script.get());
+    JS_FreeValue(m_context, globalObject);
 
     m_frame->loader()->dispatchWindowObjectAvailable();
 
