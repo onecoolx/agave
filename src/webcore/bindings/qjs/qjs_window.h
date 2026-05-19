@@ -73,7 +73,7 @@ namespace QJS {
         friend class Location;
         friend class WindowFunc;
         friend class ScheduledAction;
-    protected:
+    public:
         Window(WebCore::DOMWindow*);
     public:
         ~Window();
@@ -94,6 +94,7 @@ namespace QJS {
          * was called from.
          */
         static Window* retrieveActive(JSContext*);
+        static void storeWindow(JSValue globalObj, Window* window);
 
         int installTimeout(const WebCore::String& handler, int t, bool singleShot);
         int installTimeout(JSValue* function, const WTF::Vector<JSValue>& args, int t, bool singleShot);

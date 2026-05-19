@@ -275,6 +275,11 @@ Window *Window::retrieveActive(JSContext *ctx)
     return static_cast<Window*>(jsvalWindows()->get(&globalObject));
 }
 
+void Window::storeWindow(JSValue globalObj, Window* window)
+{
+    jsvalWindows()->set(&globalObj, window);
+}
+
 JSValue Window::retrieve(Frame *p)
 {
     ASSERT(p);

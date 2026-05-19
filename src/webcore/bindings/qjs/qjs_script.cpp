@@ -183,6 +183,11 @@ void ScriptController::initScriptIfNeeded()
     // Create a QJS interpreter for this frame
     m_script = new ScriptInterpreter(m_context, globalObject, m_frame);
     JS_SetContextOpaque(m_context, m_script.get());
+
+    // Create and register the Window object (provides setTimeout, navigator, etc.)
+    Window* window = new Window(m_frame->domWindow());
+    Window::storeWindow(globalObject, window);
+
     JS_FreeValue(m_context, globalObject);
 
     m_frame->loader()->dispatchWindowObjectAvailable();
