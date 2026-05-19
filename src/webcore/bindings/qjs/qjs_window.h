@@ -94,7 +94,7 @@ namespace QJS {
          * was called from.
          */
         static Window* retrieveActive(JSContext*);
-        static void storeWindow(JSValue globalObj, Window* window);
+        static void storeWindow(Window* window);
 
         int installTimeout(const WebCore::String& handler, int t, bool singleShot);
         int installTimeout(JSValue* function, const WTF::Vector<JSValue>& args, int t, bool singleShot);

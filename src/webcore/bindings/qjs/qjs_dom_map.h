@@ -33,6 +33,10 @@
 #include "Node.h"
 #include "Document.h"
 
+namespace WebCore {
+    class Frame;
+}
+
 namespace QJS {
     class Window;
 }
@@ -41,6 +45,6 @@ typedef HashMap<void*, JSValue> DOMObjectMap;
 typedef HashMap<WebCore::Node*, JSValue> NodeMap;
 typedef HashMap<WebCore::Document*, NodeMap*> NodePerDocMap;
 
-typedef HashMap<JSValue*, QJS::Window*> JSValueWindowMap;
+typedef HashMap<WebCore::Frame*, QJS::Window*> JSValueWindowMap;
 
 #endif /*_JS_GLOBAL_DOM_MAP_H_*/

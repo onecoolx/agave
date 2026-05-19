@@ -263,21 +263,24 @@ ScriptInterpreter* Window::interpreter() const
 
 Window *Window::retrieveWindow(Frame *f)
 {
-    JSValue o = Window::retrieve(f);
-
-    ASSERT(!JS_IsNull(o) || !f->settings() || !f->settings()->isJavaScriptEnabled());
-    return static_cast<Window*>(jsvalWindows()->get(&o));
+    if (!f)
+        return 0;
+    return jsvalWindows()->get(f);
 }
 
 Window *Window::retrieveActive(JSContext *ctx)
 {
-    JSValue globalObject = ((ScriptInterpreter*)JS_GetContextOpaque(ctx))->globalObject();
-    return static_cast<Window*>(jsvalWindows()->get(&globalObject));
+    ScriptInterpreter* interp = (ScriptInterpreter*)JS_GetContextOpaque(ctx);
+    if (!interp)
+        return 0;
+    return jsvalWindows()->get(interp->frame());
 }
 
-void Window::storeWindow(JSValue globalObj, Window* window)
+void Window::storeWindow(Window* window)
 {
-    jsvalWindows()->set(&globalObj, window);
+    Frame* frame = window->impl()->frame();
+    if (frame)
+        jsvalWindows()->set(frame, window);
 }
 
 JSValue Window::retrieve(Frame *p)

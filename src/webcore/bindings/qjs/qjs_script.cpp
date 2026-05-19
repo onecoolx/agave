@@ -186,7 +186,7 @@ void ScriptController::initScriptIfNeeded()
 
     // Create and register the Window object (provides setTimeout, navigator, etc.)
     Window* window = new Window(m_frame->domWindow());
-    Window::storeWindow(globalObject, window);
+    Window::storeWindow(window);
 
     JS_FreeValue(m_context, globalObject);
 
