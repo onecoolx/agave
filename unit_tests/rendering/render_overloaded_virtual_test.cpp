@@ -148,7 +148,7 @@ TEST_F(RenderOverloadedVirtualTest, AddLineBoxRectsIdempotent)
         for (unsigned endIdx = startIdx; endIdx < 6; ++endIdx) {
             unsigned start = testOffsets[startIdx];
             unsigned end = testOffsets[endIdx];
-            if (start > end) continue;
+            if (start > end) { continue; }
 
             Vector<IntRect> rects1;
             Vector<IntRect> rects2;
@@ -156,11 +156,11 @@ TEST_F(RenderOverloadedVirtualTest, AddLineBoxRectsIdempotent)
             renderer->addLineBoxRects(rects2, start, end);
 
             ASSERT_EQ(rects1.size(), rects2.size())
-                << "Mismatch for offsets [" << start << ", " << end << ")";
+                    << "Mismatch for offsets [" << start << ", " << end << ")";
             for (unsigned i = 0; i < rects1.size(); ++i) {
                 EXPECT_EQ(rects1[i], rects2[i])
-                    << "Rect mismatch at index " << i
-                    << " for offsets [" << start << ", " << end << ")";
+                        << "Rect mismatch at index " << i
+                        << " for offsets [" << start << ", " << end << ")";
             }
         }
     }
@@ -224,7 +224,7 @@ TEST_F(RenderOverloadedVirtualTest, RootInlineBoxCanAccommodateEllipsisSemanticP
 namespace {
 
 // RenderObject::addLineBoxRects has signature:
-//   void addLineBoxRects(Vector<IntRect>&, unsigned, unsigned, bool)
+// void addLineBoxRects(Vector<IntRect>&, unsigned, unsigned, bool)
 // with the last param defaulted. RenderContainer overrides with a 3-param version.
 // The using-declaration brings the base 4-param version into scope in RenderContainer.
 typedef void (RenderContainer::*ContainerAddLineBoxRects3)(Vector<IntRect>&, unsigned, unsigned);
