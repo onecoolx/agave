@@ -278,9 +278,8 @@ void ScriptInterpreter::forgetAllDOMNodesForDocument(Document* document)
 
 JSValue ScriptInterpreter::globalObject() const
 {
-    // we need to make sure that any script execution happening in this
-    // frame does not destroy it
-    m_frame->keepAlive();
+    if (m_frame && m_frame->refCount() > 0)
+        m_frame->keepAlive();
     return m_globalObject;
 }
 

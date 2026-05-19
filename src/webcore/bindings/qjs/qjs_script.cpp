@@ -58,18 +58,14 @@ ScriptController::ScriptController(Frame* frame)
 
 ScriptController::~ScriptController()
 {
-    // Check for <rdar://problem/4876466>. In theory, no JS should be executing
-    // in our interpreter. 
-    ASSERT(!m_script || !context());
-    
     if (m_script) {
         JS_SetContextOpaque(m_context, 0);
-
         m_script = 0;
 
+        JSRuntime* rt = JS_GetRuntime(m_context);
         JS_FreeContext(m_context);
-    
-        // It's likely that destroying the interpreter has created a lot of garbage.
+        JS_RunGC(rt);
+
         gcController().garbageCollectSoon();
     }
 }

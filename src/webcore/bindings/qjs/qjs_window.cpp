@@ -265,7 +265,7 @@ Window *Window::retrieveWindow(Frame *f)
 {
     JSValue o = Window::retrieve(f);
 
-    ASSERT(!f->settings() || !f->settings()->isJavaScriptEnabled());
+    ASSERT(!JS_IsNull(o) || !f->settings() || !f->settings()->isJavaScriptEnabled());
     return static_cast<Window*>(jsvalWindows()->get(&o));
 }
 

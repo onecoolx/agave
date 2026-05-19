@@ -213,8 +213,11 @@ Frame::~Frame()
 #endif
 
 #if ENABLE(QJS)
-    if (d->m_jscript && d->m_jscript->haveInterpreter())
-        static_cast<Window*>(d->m_jscript->interpreter()->globalObjectData())->disconnectFrame();
+    if (d->m_jscript && d->m_jscript->haveInterpreter()) {
+        Window* w = static_cast<Window*>(d->m_jscript->interpreter()->globalObjectData());
+        if (w)
+            w->disconnectFrame();
+    }
 #endif
 
     disconnectOwnerElement();

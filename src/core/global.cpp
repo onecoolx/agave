@@ -151,11 +151,43 @@ bool _global_initialize(void)
 
 void _global_shutdown(void)
 {
+    JSRuntime* rt = _globalData.runtime;
+
+    // Free all cached JSValues to release GC references
+    if (_globalData.domObjects) {
+        DOMObjectMap::iterator it = _globalData.domObjects->begin();
+        DOMObjectMap::iterator end = _globalData.domObjects->end();
+        for (; it != end; ++it)
+            JS_FreeValueRT(rt, it->second);
+        delete _globalData.domObjects;
+        _globalData.domObjects = 0;
+    }
+
+    if (_globalData.domNodesPerDoc) {
+        NodePerDocMap::iterator it = _globalData.domNodesPerDoc->begin();
+        NodePerDocMap::iterator end = _globalData.domNodesPerDoc->end();
+        for (; it != end; ++it) {
+            NodeMap* nodeMap = it->second;
+            if (nodeMap) {
+                NodeMap::iterator nit = nodeMap->begin();
+                NodeMap::iterator nend = nodeMap->end();
+                for (; nit != nend; ++nit)
+                    JS_FreeValueRT(rt, nit->second);
+                delete nodeMap;
+            }
+        }
+        delete _globalData.domNodesPerDoc;
+        _globalData.domNodesPerDoc = 0;
+    }
+
+    if (_globalData.jsValWindows) {
+        delete _globalData.jsValWindows;
+        _globalData.jsValWindows = 0;
+    }
+
     JS_FreeContext(_globalData.utilContext);
-    JS_FreeRuntime(_globalData.runtime);
-    delete _globalData.domObjects;
-    delete _globalData.domNodesPerDoc;
-    delete _globalData.jsValWindows;
+    JS_RunGC(rt);
+    JS_FreeRuntime(rt);
 }
 
 }
