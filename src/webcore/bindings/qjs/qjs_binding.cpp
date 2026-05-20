@@ -632,7 +632,7 @@ JSValue toJS(JSContext* ctx, Document* doc)
     if (!doc)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMNodeForDocument(doc, doc);
-    if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
+    if (0)
         return ret;
     ret = JSDocument::create(ctx, doc);
     QJS::ScriptInterpreter::putDOMNodeForDocument(doc, doc, ret);
@@ -644,7 +644,7 @@ JSValue toJS(JSContext* ctx, Event* event)
     if (!event)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(event);
-    if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
+    if (0)
         return ret;
 
     if (event->isKeyboardEvent())
@@ -658,7 +658,7 @@ JSValue toJS(JSContext* ctx, Event* event)
     else
         ret = JSEvent::create(ctx, event);
 
-    QJS::ScriptInterpreter::putDOMObject(event, ret);
+    // QJS::ScriptInterpreter::putDOMObject(event, ret);
     return ret;
 }
 
@@ -667,7 +667,7 @@ JSValue toJS(JSContext* ctx, CSSRule* rule)
     if (!rule)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(rule);
-    if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
+    if (0)
         return ret;
 
     switch (rule->type()) {
@@ -687,7 +687,7 @@ JSValue toJS(JSContext* ctx, CSSRule* rule)
         ret = JSCSSRule::create(ctx, rule); break;
     }
 
-    QJS::ScriptInterpreter::putDOMObject(rule, ret);
+    // QJS::ScriptInterpreter::putDOMObject(rule, ret);
     return ret;
 }
 
@@ -696,7 +696,7 @@ JSValue toJS(JSContext* ctx, CSSValue* value)
     if (!value)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(value);
-    if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
+    if (0)
         return ret;
 
     if (value->isValueList())
@@ -706,7 +706,7 @@ JSValue toJS(JSContext* ctx, CSSValue* value)
     else
         ret = JSCSSValue::create(ctx, value);
 
-    QJS::ScriptInterpreter::putDOMObject(value, ret);
+    // QJS::ScriptInterpreter::putDOMObject(value, ret);
     return ret;
 }
 
@@ -715,7 +715,7 @@ JSValue toJS(JSContext* ctx, StyleSheet* sheet)
     if (!sheet)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(sheet);
-    if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
+    if (0)
         return ret;
 
     if (sheet->isCSSStyleSheet())
@@ -723,7 +723,7 @@ JSValue toJS(JSContext* ctx, StyleSheet* sheet)
     else
         ret = JSStyleSheet::create(ctx, sheet);
 
-    QJS::ScriptInterpreter::putDOMObject(sheet, ret);
+    // QJS::ScriptInterpreter::putDOMObject(sheet, ret);
     return ret;
 }
 

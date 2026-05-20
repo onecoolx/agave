@@ -218,7 +218,7 @@ JSValue JSNode::create(JSContext* ctx, Node* impl)
 
 void JSNode::finalizer(JSRuntime* rt, JSValue val)
 {
-    Node* impl = (Node*)JS_GetOpaque(val, JSNode::js_class_id);
+    Node* impl = (Node*)JS_GetOpaqueNoCheck(val);
     ScriptInterpreter::forgetDOMNodeForDocument(impl->document(), impl);
     impl->deref();
 }
@@ -417,7 +417,7 @@ JSValue JSNodePrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst thi
 Node* toNode(JSValue val)
 {
     if (JS_IsObject(val)) {
-        Node* impl = (Node*)JS_GetOpaque(val, JSNode::js_class_id);
+        Node* impl = (Node*)JS_GetOpaqueNoCheck(val);
         return impl;
     } else {
         return 0;
