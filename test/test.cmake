@@ -59,14 +59,12 @@ target_include_directories(${APP_NAME} PRIVATE
 target_link_libraries(${APP_NAME} PRIVATE ${LIB_NAME} ${LIB_DEPS} picasso2_sw PUBLIC ${SYSTEM_LIBS})
 
 
+if (NOT WIN32)
 # Headless test runner (no Qt dependency)
 set(HEADLESS_NAME headless_test)
 add_executable(${HEADLESS_NAME} ${PROJ_ROOT}/test/headless.cpp)
 target_include_directories(${HEADLESS_NAME} PRIVATE ${PROJ_ROOT}/include ${PROJ_OUT}/)
-if (NOT WIN32)
-    target_link_libraries(${HEADLESS_NAME} PRIVATE ${LIB_NAME} ${LIB_DEPS} picasso2_sw freetype fontconfig pthread m z stdc++)
-    configure_file(${PROJ_ROOT}/benchmark/dom_test.html ${CMAKE_CURRENT_BINARY_DIR}/dom_test.html COPYONLY)
-    configure_file(${PROJ_ROOT}/benchmark/perf_test.html ${CMAKE_CURRENT_BINARY_DIR}/perf_test.html COPYONLY)
-else()
-    target_link_libraries(${HEADLESS_NAME} PRIVATE ${LIB_NAME} ${LIB_DEPS} picasso2_sw)
+target_link_libraries(${HEADLESS_NAME} PRIVATE ${LIB_NAME} ${LIB_DEPS} picasso2_sw freetype fontconfig pthread m z stdc++)
+configure_file(${PROJ_ROOT}/benchmark/dom_test.html ${CMAKE_CURRENT_BINARY_DIR}/dom_test.html COPYONLY)
+configure_file(${PROJ_ROOT}/benchmark/perf_test.html ${CMAKE_CURRENT_BINARY_DIR}/perf_test.html COPYONLY)
 endif()
