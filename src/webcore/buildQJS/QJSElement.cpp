@@ -224,7 +224,7 @@ JSValue JSElement::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
         }
         case OffsetParentAttrNum: {
             Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
-            return toJS(ctx, static_cast<Node*>(QJS::getPtr(imp->offsetParent())));
+            return toJS(ctx, QJS::getPtr(imp->offsetParent()));
         }
         case ClientLeftAttrNum: {
             Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);

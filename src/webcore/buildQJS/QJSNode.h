@@ -32,9 +32,6 @@
 namespace WebCore {
 
 class Node;
-class Element;
-class Attr;
-class EventTargetNode;
 
 class JSNode {
 public:
@@ -77,10 +74,10 @@ public:
 };
 
 JSValue toJS(JSContext *ctx, Node* ptr);
-inline JSValue toJS(JSContext *ctx, PassRefPtr<Node> ptr) { return toJS(ctx, ptr.get()); }
-inline JSValue toJS(JSContext *ctx, Element* ptr) { return toJS(ctx, static_cast<Node*>(ptr)); }
-inline JSValue toJS(JSContext *ctx, Attr* ptr) { return toJS(ctx, static_cast<Node*>(ptr)); }
-inline JSValue toJS(JSContext *ctx, EventTargetNode* ptr) { return toJS(ctx, static_cast<Node*>(ptr)); }
+inline JSValue toJS(JSContext *ctx, PassRefPtr<Node> p) { return toJS(ctx, p.get()); }
+inline JSValue toJS(JSContext *ctx, Element* p) { return toJS(ctx, static_cast<Node*>(p)); }
+inline JSValue toJS(JSContext *ctx, Attr* p) { return toJS(ctx, static_cast<Node*>(p)); }
+inline JSValue toJS(JSContext *ctx, EventTargetNode* p) { return toJS(ctx, static_cast<Node*>(p)); }
 Node* toNode(JSValue);
 
 class JSNodePrototype {
