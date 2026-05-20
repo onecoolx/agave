@@ -175,7 +175,9 @@ void JSSVGGradientElement::init(JSContext* ctx)
 JSValue JSSVGGradientElement::create(JSContext* ctx, SVGGradientElement* impl)
 {
     JSSVGGradientElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGGradientElementPrototype::self(ctx), JSSVGGradientElement::js_class_id);
+    JSValue _proto = JSSVGGradientElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGGradientElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -200,37 +202,37 @@ JSValue JSSVGGradientElement::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case GradientUnitsAttrNum: {
-            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque(this_val, JSSVGGradientElement::js_class_id);
             RefPtr<SVGAnimatedEnumeration> obj = imp->gradientUnitsAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case GradientTransformAttrNum: {
-            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque(this_val, JSSVGGradientElement::js_class_id);
             RefPtr<SVGAnimatedTransformList> obj = imp->gradientTransformAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case SpreadMethodAttrNum: {
-            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque(this_val, JSSVGGradientElement::js_class_id);
             RefPtr<SVGAnimatedEnumeration> obj = imp->spreadMethodAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HrefAttrNum: {
-            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque(this_val, JSSVGGradientElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->hrefAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque(this_val, JSSVGGradientElement::js_class_id);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque(this_val, JSSVGGradientElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque(this_val, JSSVGGradientElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:
@@ -246,7 +248,7 @@ JSValue JSSVGGradientElement::getConstructor(JSContext *ctx)
 
 JSValue JSSVGGradientElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque(this_val, JSSVGGradientElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

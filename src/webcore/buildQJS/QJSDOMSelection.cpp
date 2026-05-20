@@ -117,7 +117,9 @@ void JSDOMSelection::init(JSContext* ctx)
 JSValue JSDOMSelection::create(JSContext* ctx, DOMSelection* impl)
 {
     JSDOMSelection::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSDOMSelectionPrototype::self(ctx), JSDOMSelection::js_class_id);
+    JSValue _proto = JSDOMSelectionPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSDOMSelection::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -142,47 +144,47 @@ JSValue JSDOMSelection::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case AnchorNodeAttrNum: {
-            DOMSelection* imp = (DOMSelection*)JS_GetOpaqueNoCheck(this_val);
+            DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->anchorNode()));
         }
         case AnchorOffsetAttrNum: {
-            DOMSelection* imp = (DOMSelection*)JS_GetOpaqueNoCheck(this_val);
+            DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
             return JS_NewBigUint64(ctx, imp->anchorOffset());
         }
         case FocusNodeAttrNum: {
-            DOMSelection* imp = (DOMSelection*)JS_GetOpaqueNoCheck(this_val);
+            DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->focusNode()));
         }
         case FocusOffsetAttrNum: {
-            DOMSelection* imp = (DOMSelection*)JS_GetOpaqueNoCheck(this_val);
+            DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
             return JS_NewBigUint64(ctx, imp->focusOffset());
         }
         case BaseNodeAttrNum: {
-            DOMSelection* imp = (DOMSelection*)JS_GetOpaqueNoCheck(this_val);
+            DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->baseNode()));
         }
         case BaseOffsetAttrNum: {
-            DOMSelection* imp = (DOMSelection*)JS_GetOpaqueNoCheck(this_val);
+            DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
             return JS_NewBigUint64(ctx, imp->baseOffset());
         }
         case ExtentNodeAttrNum: {
-            DOMSelection* imp = (DOMSelection*)JS_GetOpaqueNoCheck(this_val);
+            DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->extentNode()));
         }
         case ExtentOffsetAttrNum: {
-            DOMSelection* imp = (DOMSelection*)JS_GetOpaqueNoCheck(this_val);
+            DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
             return JS_NewBigUint64(ctx, imp->extentOffset());
         }
         case IsCollapsedAttrNum: {
-            DOMSelection* imp = (DOMSelection*)JS_GetOpaqueNoCheck(this_val);
+            DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
             return JS_NewBool(ctx, imp->isCollapsed() ? 1 : 0);
         }
         case TypeAttrNum: {
-            DOMSelection* imp = (DOMSelection*)JS_GetOpaqueNoCheck(this_val);
+            DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case RangeCountAttrNum: {
-            DOMSelection* imp = (DOMSelection*)JS_GetOpaqueNoCheck(this_val);
+            DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
             return JS_NewBigUint64(ctx, imp->rangeCount());
         }
     }
@@ -191,7 +193,7 @@ JSValue JSDOMSelection::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 
 JSValue JSDOMSelectionPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    DOMSelection* imp = (DOMSelection*)JS_GetOpaqueNoCheck(this_val);
+    DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

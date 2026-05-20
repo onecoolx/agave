@@ -83,7 +83,9 @@ void JSSVGAnimateElement::init(JSContext* ctx)
 JSValue JSSVGAnimateElement::create(JSContext* ctx, SVGAnimateElement* impl)
 {
     JSSVGAnimateElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnimateElementPrototype::self(ctx), JSSVGAnimateElement::js_class_id);
+    JSValue _proto = JSSVGAnimateElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAnimateElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

@@ -96,7 +96,9 @@ void JSSVGScriptElement::init(JSContext* ctx)
 JSValue JSSVGScriptElement::create(JSContext* ctx, SVGScriptElement* impl)
 {
     JSSVGScriptElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGScriptElementPrototype::self(ctx), JSSVGScriptElement::js_class_id);
+    JSValue _proto = JSSVGScriptElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGScriptElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -121,16 +123,16 @@ JSValue JSSVGScriptElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case TypeAttrNum: {
-            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaque(this_val, JSSVGScriptElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case HrefAttrNum: {
-            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaque(this_val, JSSVGScriptElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->hrefAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaque(this_val, JSSVGScriptElement::js_class_id);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
@@ -142,7 +144,7 @@ JSValue JSSVGScriptElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case TypeAttrNum: {
-            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaque(this_val, JSSVGScriptElement::js_class_id);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }

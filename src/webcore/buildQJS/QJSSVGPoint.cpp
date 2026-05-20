@@ -101,7 +101,9 @@ void JSSVGPoint::init(JSContext* ctx)
 JSValue JSSVGPoint::create(JSContext* ctx, JSSVGPODTypeWrapper<FloatPoint>* impl, SVGElement* context)
 {
     JSSVGPoint::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGPointPrototype::self(ctx), JSSVGPoint::js_class_id);
+    JSValue _proto = JSSVGPointPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGPoint::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -164,7 +166,7 @@ JSValue JSSVGPoint::putValueProperty(JSContext *ctx, JSValueConst this_val, JSVa
 
 JSValue JSSVGPointPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGPoint* imp = (SVGPoint*)JS_GetOpaqueNoCheck(this_val);
+    SVGPoint* imp = (SVGPoint*)JS_GetOpaque(this_val, JSSVGPoint::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

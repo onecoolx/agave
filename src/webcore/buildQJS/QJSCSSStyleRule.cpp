@@ -121,7 +121,9 @@ void JSCSSStyleRule::init(JSContext* ctx)
 JSValue JSCSSStyleRule::create(JSContext* ctx, CSSStyleRule* impl)
 {
     JSCSSStyleRule::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCSSStyleRulePrototype::self(ctx), JSCSSStyleRule::js_class_id);
+    JSValue _proto = JSCSSStyleRulePrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCSSStyleRule::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -146,11 +148,11 @@ JSValue JSCSSStyleRule::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case SelectorTextAttrNum: {
-            CSSStyleRule* imp = (CSSStyleRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSStyleRule* imp = (CSSStyleRule*)JS_GetOpaque(this_val, JSCSSStyleRule::js_class_id);
             return jsStringOrNull(ctx, imp->selectorText());
         }
         case StyleAttrNum: {
-            CSSStyleRule* imp = (CSSStyleRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSStyleRule* imp = (CSSStyleRule*)JS_GetOpaque(this_val, JSCSSStyleRule::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:
@@ -163,7 +165,7 @@ JSValue JSCSSStyleRule::putValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case SelectorTextAttrNum: {
-            CSSStyleRule* imp = (CSSStyleRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSStyleRule* imp = (CSSStyleRule*)JS_GetOpaque(this_val, JSCSSStyleRule::js_class_id);
             ExceptionCode ec = 0;
             imp->setSelectorText(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);

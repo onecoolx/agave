@@ -131,7 +131,9 @@ void JSCSSMediaRule::init(JSContext* ctx)
 JSValue JSCSSMediaRule::create(JSContext* ctx, CSSMediaRule* impl)
 {
     JSCSSMediaRule::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCSSMediaRulePrototype::self(ctx), JSCSSMediaRule::js_class_id);
+    JSValue _proto = JSCSSMediaRulePrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCSSMediaRule::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -156,11 +158,11 @@ JSValue JSCSSMediaRule::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case MediaAttrNum: {
-            CSSMediaRule* imp = (CSSMediaRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSMediaRule* imp = (CSSMediaRule*)JS_GetOpaque(this_val, JSCSSMediaRule::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->media()));
         }
         case CssRulesAttrNum: {
-            CSSMediaRule* imp = (CSSMediaRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSMediaRule* imp = (CSSMediaRule*)JS_GetOpaque(this_val, JSCSSMediaRule::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->cssRules()));
         }
         case ConstructorAttrNum:
@@ -176,7 +178,7 @@ JSValue JSCSSMediaRule::getConstructor(JSContext *ctx)
 
 JSValue JSCSSMediaRulePrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    CSSMediaRule* imp = (CSSMediaRule*)JS_GetOpaqueNoCheck(this_val);
+    CSSMediaRule* imp = (CSSMediaRule*)JS_GetOpaque(this_val, JSCSSMediaRule::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

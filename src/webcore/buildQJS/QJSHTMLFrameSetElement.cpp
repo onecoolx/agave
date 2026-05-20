@@ -108,17 +108,17 @@ JSClassID JSHTMLFrameSetElement::js_class_id = 0;
 void JSHTMLFrameSetElement::init(JSContext* ctx)
 {
     if (JSHTMLFrameSetElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLFrameSetElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLFrameSetElement::js_class_id, &JSHTMLFrameSetElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLFrameSetElementConstructor::self(ctx), JSHTMLFrameSetElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLFrameSetElement::js_class_id, JSHTMLFrameSetElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLFrameSetElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLFrameSetElement::create(JSContext* ctx, HTMLFrameSetElement* impl)
 {
     JSHTMLFrameSetElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLFrameSetElementPrototype::self(ctx), JSHTMLFrameSetElement::js_class_id);
+    JSValue _proto = JSHTMLFrameSetElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -129,7 +129,7 @@ JSValue JSHTMLFrameSetElement::create(JSContext* ctx, HTMLFrameSetElement* impl)
 
 void JSHTMLFrameSetElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLFrameSetElement* impl = (HTMLFrameSetElement*)JS_GetOpaque(val, JSHTMLFrameSetElement::js_class_id);
+    HTMLFrameSetElement* impl = (HTMLFrameSetElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -143,11 +143,11 @@ JSValue JSHTMLFrameSetElement::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case ColsAttrNum: {
-            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->cols()).utf8().data());
         }
         case RowsAttrNum: {
-            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->rows()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -160,12 +160,12 @@ JSValue JSHTMLFrameSetElement::putValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case ColsAttrNum: {
-            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCols(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case RowsAttrNum: {
-            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setRows(valueToStringWithNullCheck(ctx, value));
             break;
         }

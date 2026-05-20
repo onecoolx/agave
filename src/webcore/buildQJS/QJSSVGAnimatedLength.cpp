@@ -92,7 +92,9 @@ void JSSVGAnimatedLength::init(JSContext* ctx)
 JSValue JSSVGAnimatedLength::create(JSContext* ctx, SVGAnimatedLength* impl, SVGElement* context)
 {
     JSSVGAnimatedLength::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnimatedLengthPrototype::self(ctx), JSSVGAnimatedLength::js_class_id);
+    JSValue _proto = JSSVGAnimatedLengthPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAnimatedLength::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -117,11 +119,11 @@ JSValue JSSVGAnimatedLength::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedLength* imp = (SVGAnimatedLength*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedLength* imp = (SVGAnimatedLength*)JS_GetOpaque(this_val, JSSVGAnimatedLength::js_class_id);
             return toJS(ctx, JSSVGPODTypeWrapperCache<SVGLength, SVGAnimatedLength>::lookupOrCreateWrapper(imp, &SVGAnimatedLength::baseVal, &SVGAnimatedLength::setBaseVal), context());
         }
         case AnimValAttrNum: {
-            SVGAnimatedLength* imp = (SVGAnimatedLength*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedLength* imp = (SVGAnimatedLength*)JS_GetOpaque(this_val, JSSVGAnimatedLength::js_class_id);
             return toJS(ctx, JSSVGPODTypeWrapperCache<SVGLength, SVGAnimatedLength>::lookupOrCreateWrapper(imp, &SVGAnimatedLength::animVal, &SVGAnimatedLength::setAnimVal), context());
         }
     }

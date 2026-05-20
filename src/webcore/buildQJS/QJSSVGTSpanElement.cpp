@@ -83,7 +83,9 @@ void JSSVGTSpanElement::init(JSContext* ctx)
 JSValue JSSVGTSpanElement::create(JSContext* ctx, SVGTSpanElement* impl)
 {
     JSSVGTSpanElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGTSpanElementPrototype::self(ctx), JSSVGTSpanElement::js_class_id);
+    JSValue _proto = JSSVGTSpanElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGTSpanElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

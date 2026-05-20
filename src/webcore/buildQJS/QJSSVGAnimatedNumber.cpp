@@ -91,7 +91,9 @@ void JSSVGAnimatedNumber::init(JSContext* ctx)
 JSValue JSSVGAnimatedNumber::create(JSContext* ctx, SVGAnimatedNumber* impl, SVGElement* context)
 {
     JSSVGAnimatedNumber::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnimatedNumberPrototype::self(ctx), JSSVGAnimatedNumber::js_class_id);
+    JSValue _proto = JSSVGAnimatedNumberPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAnimatedNumber::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -116,11 +118,11 @@ JSValue JSSVGAnimatedNumber::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedNumber* imp = (SVGAnimatedNumber*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedNumber* imp = (SVGAnimatedNumber*)JS_GetOpaque(this_val, JSSVGAnimatedNumber::js_class_id);
             return JS_NewBigUint64(ctx, imp->baseVal());
         }
         case AnimValAttrNum: {
-            SVGAnimatedNumber* imp = (SVGAnimatedNumber*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedNumber* imp = (SVGAnimatedNumber*)JS_GetOpaque(this_val, JSSVGAnimatedNumber::js_class_id);
             return JS_NewBigUint64(ctx, imp->animVal());
         }
     }
@@ -131,7 +133,7 @@ JSValue JSSVGAnimatedNumber::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedNumber* imp = (SVGAnimatedNumber*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedNumber* imp = (SVGAnimatedNumber*)JS_GetOpaque(this_val, JSSVGAnimatedNumber::js_class_id);
             imp->setBaseVal(valueToFloat(ctx, value));
             break;
         }

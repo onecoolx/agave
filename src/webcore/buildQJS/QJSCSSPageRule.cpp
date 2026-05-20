@@ -121,7 +121,9 @@ void JSCSSPageRule::init(JSContext* ctx)
 JSValue JSCSSPageRule::create(JSContext* ctx, CSSPageRule* impl)
 {
     JSCSSPageRule::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCSSPageRulePrototype::self(ctx), JSCSSPageRule::js_class_id);
+    JSValue _proto = JSCSSPageRulePrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCSSPageRule::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -146,11 +148,11 @@ JSValue JSCSSPageRule::getValueProperty(JSContext *ctx, JSValueConst this_val, i
 {
     switch (token) {
         case SelectorTextAttrNum: {
-            CSSPageRule* imp = (CSSPageRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSPageRule* imp = (CSSPageRule*)JS_GetOpaque(this_val, JSCSSPageRule::js_class_id);
             return jsStringOrNull(ctx, imp->selectorText());
         }
         case StyleAttrNum: {
-            CSSPageRule* imp = (CSSPageRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSPageRule* imp = (CSSPageRule*)JS_GetOpaque(this_val, JSCSSPageRule::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:
@@ -163,7 +165,7 @@ JSValue JSCSSPageRule::putValueProperty(JSContext *ctx, JSValueConst this_val, J
 {
     switch (token) {
         case SelectorTextAttrNum: {
-            CSSPageRule* imp = (CSSPageRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSPageRule* imp = (CSSPageRule*)JS_GetOpaque(this_val, JSCSSPageRule::js_class_id);
             ExceptionCode ec = 0;
             imp->setSelectorText(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);

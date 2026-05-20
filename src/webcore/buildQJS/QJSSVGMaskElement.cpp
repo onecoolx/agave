@@ -125,7 +125,9 @@ void JSSVGMaskElement::init(JSContext* ctx)
 JSValue JSSVGMaskElement::create(JSContext* ctx, SVGMaskElement* impl)
 {
     JSSVGMaskElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGMaskElementPrototype::self(ctx), JSSVGMaskElement::js_class_id);
+    JSValue _proto = JSSVGMaskElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGMaskElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -150,67 +152,67 @@ JSValue JSSVGMaskElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case MaskUnitsAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             RefPtr<SVGAnimatedEnumeration> obj = imp->maskUnitsAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case MaskContentUnitsAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             RefPtr<SVGAnimatedEnumeration> obj = imp->maskContentUnitsAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RequiredFeaturesAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredFeatures()), imp);
         }
         case RequiredExtensionsAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredExtensions()), imp);
         }
         case SystemLanguageAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->systemLanguage()), imp);
         }
         case XmllangAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -221,12 +223,12 @@ JSValue JSSVGMaskElement::putValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -236,7 +238,7 @@ JSValue JSSVGMaskElement::putValueProperty(JSContext *ctx, JSValueConst this_val
 
 JSValue JSSVGMaskElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGMaskElement* imp = (SVGMaskElement*)JS_GetOpaque(this_val, JSSVGMaskElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

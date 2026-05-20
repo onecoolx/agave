@@ -110,17 +110,17 @@ JSClassID JSHTMLIsIndexElement::js_class_id = 0;
 void JSHTMLIsIndexElement::init(JSContext* ctx)
 {
     if (JSHTMLIsIndexElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLIsIndexElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLIsIndexElement::js_class_id, &JSHTMLIsIndexElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLIsIndexElementConstructor::self(ctx), JSHTMLIsIndexElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLIsIndexElement::js_class_id, JSHTMLIsIndexElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLIsIndexElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLIsIndexElement::create(JSContext* ctx, HTMLIsIndexElement* impl)
 {
     JSHTMLIsIndexElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLIsIndexElementPrototype::self(ctx), JSHTMLIsIndexElement::js_class_id);
+    JSValue _proto = JSHTMLIsIndexElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -131,7 +131,7 @@ JSValue JSHTMLIsIndexElement::create(JSContext* ctx, HTMLIsIndexElement* impl)
 
 void JSHTMLIsIndexElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLIsIndexElement* impl = (HTMLIsIndexElement*)JS_GetOpaque(val, JSHTMLIsIndexElement::js_class_id);
+    HTMLIsIndexElement* impl = (HTMLIsIndexElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -145,11 +145,11 @@ JSValue JSHTMLIsIndexElement::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case FormAttrNum: {
-            HTMLIsIndexElement* imp = (HTMLIsIndexElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLIsIndexElement* imp = (HTMLIsIndexElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->form()));
         }
         case PromptAttrNum: {
-            HTMLIsIndexElement* imp = (HTMLIsIndexElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLIsIndexElement* imp = (HTMLIsIndexElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->prompt()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -162,7 +162,7 @@ JSValue JSHTMLIsIndexElement::putValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case PromptAttrNum: {
-            HTMLIsIndexElement* imp = (HTMLIsIndexElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLIsIndexElement* imp = (HTMLIsIndexElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setPrompt(valueToStringWithNullCheck(ctx, value));
             break;
         }

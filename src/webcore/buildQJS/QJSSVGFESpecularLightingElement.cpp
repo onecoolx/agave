@@ -117,7 +117,9 @@ void JSSVGFESpecularLightingElement::init(JSContext* ctx)
 JSValue JSSVGFESpecularLightingElement::create(JSContext* ctx, SVGFESpecularLightingElement* impl)
 {
     JSSVGFESpecularLightingElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGFESpecularLightingElementPrototype::self(ctx), JSSVGFESpecularLightingElement::js_class_id);
+    JSValue _proto = JSSVGFESpecularLightingElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGFESpecularLightingElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -142,57 +144,57 @@ JSValue JSSVGFESpecularLightingElement::getValueProperty(JSContext *ctx, JSValue
 {
     switch (token) {
         case In1AttrNum: {
-            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaque(this_val, JSSVGFESpecularLightingElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->in1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case SurfaceScaleAttrNum: {
-            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaque(this_val, JSSVGFESpecularLightingElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->surfaceScaleAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case SpecularConstantAttrNum: {
-            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaque(this_val, JSSVGFESpecularLightingElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->specularConstantAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case SpecularExponentAttrNum: {
-            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaque(this_val, JSSVGFESpecularLightingElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->specularExponentAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaque(this_val, JSSVGFESpecularLightingElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaque(this_val, JSSVGFESpecularLightingElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaque(this_val, JSSVGFESpecularLightingElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaque(this_val, JSSVGFESpecularLightingElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaque(this_val, JSSVGFESpecularLightingElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaque(this_val, JSSVGFESpecularLightingElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaque(this_val, JSSVGFESpecularLightingElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -201,7 +203,7 @@ JSValue JSSVGFESpecularLightingElement::getValueProperty(JSContext *ctx, JSValue
 
 JSValue JSSVGFESpecularLightingElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGFESpecularLightingElement* imp = (SVGFESpecularLightingElement*)JS_GetOpaque(this_val, JSSVGFESpecularLightingElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

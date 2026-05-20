@@ -164,7 +164,9 @@ void JSSVGColor::init(JSContext* ctx)
 JSValue JSSVGColor::create(JSContext* ctx, SVGColor* impl)
 {
     JSSVGColor::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGColorPrototype::self(ctx), JSSVGColor::js_class_id);
+    JSValue _proto = JSSVGColorPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGColor::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -189,11 +191,11 @@ JSValue JSSVGColor::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
 {
     switch (token) {
         case ColorTypeAttrNum: {
-            SVGColor* imp = (SVGColor*)JS_GetOpaqueNoCheck(this_val);
+            SVGColor* imp = (SVGColor*)JS_GetOpaque(this_val, JSSVGColor::js_class_id);
             return JS_NewBigUint64(ctx, imp->colorType());
         }
         case RgbColorAttrNum: {
-            SVGColor* imp = (SVGColor*)JS_GetOpaqueNoCheck(this_val);
+            SVGColor* imp = (SVGColor*)JS_GetOpaque(this_val, JSSVGColor::js_class_id);
             return getJSRGBColor(ctx, imp->rgbColor());
         }
         case ConstructorAttrNum:
@@ -209,7 +211,7 @@ JSValue JSSVGColor::getConstructor(JSContext *ctx)
 
 JSValue JSSVGColorPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGColor* imp = (SVGColor*)JS_GetOpaqueNoCheck(this_val);
+    SVGColor* imp = (SVGColor*)JS_GetOpaque(this_val, JSSVGColor::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

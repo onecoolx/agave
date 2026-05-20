@@ -108,17 +108,17 @@ JSClassID JSHTMLFieldSetElement::js_class_id = 0;
 void JSHTMLFieldSetElement::init(JSContext* ctx)
 {
     if (JSHTMLFieldSetElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLFieldSetElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLFieldSetElement::js_class_id, &JSHTMLFieldSetElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLFieldSetElementConstructor::self(ctx), JSHTMLFieldSetElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLFieldSetElement::js_class_id, JSHTMLFieldSetElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLFieldSetElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLFieldSetElement::create(JSContext* ctx, HTMLFieldSetElement* impl)
 {
     JSHTMLFieldSetElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLFieldSetElementPrototype::self(ctx), JSHTMLFieldSetElement::js_class_id);
+    JSValue _proto = JSHTMLFieldSetElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -129,7 +129,7 @@ JSValue JSHTMLFieldSetElement::create(JSContext* ctx, HTMLFieldSetElement* impl)
 
 void JSHTMLFieldSetElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLFieldSetElement* impl = (HTMLFieldSetElement*)JS_GetOpaque(val, JSHTMLFieldSetElement::js_class_id);
+    HTMLFieldSetElement* impl = (HTMLFieldSetElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -143,7 +143,7 @@ JSValue JSHTMLFieldSetElement::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case FormAttrNum: {
-            HTMLFieldSetElement* imp = (HTMLFieldSetElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFieldSetElement* imp = (HTMLFieldSetElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->form()));
         }
         case ConstructorAttrNum:

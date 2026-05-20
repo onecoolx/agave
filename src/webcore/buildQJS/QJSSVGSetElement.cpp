@@ -83,7 +83,9 @@ void JSSVGSetElement::init(JSContext* ctx)
 JSValue JSSVGSetElement::create(JSContext* ctx, SVGSetElement* impl)
 {
     JSSVGSetElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGSetElementPrototype::self(ctx), JSSVGSetElement::js_class_id);
+    JSValue _proto = JSSVGSetElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGSetElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

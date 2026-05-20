@@ -139,7 +139,9 @@ void JSCSSStyleDeclaration::init(JSContext* ctx)
 JSValue JSCSSStyleDeclaration::create(JSContext* ctx, CSSStyleDeclaration* impl)
 {
     JSCSSStyleDeclaration::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCSSStyleDeclarationPrototype::self(ctx), JSCSSStyleDeclaration::js_class_id);
+    JSValue _proto = JSCSSStyleDeclarationPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCSSStyleDeclaration::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -164,15 +166,15 @@ JSValue JSCSSStyleDeclaration::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case CssTextAttrNum: {
-            CSSStyleDeclaration* imp = (CSSStyleDeclaration*)JS_GetOpaqueNoCheck(this_val);
+            CSSStyleDeclaration* imp = (CSSStyleDeclaration*)JS_GetOpaque(this_val, JSCSSStyleDeclaration::js_class_id);
             return jsStringOrNull(ctx, imp->cssText());
         }
         case LengthAttrNum: {
-            CSSStyleDeclaration* imp = (CSSStyleDeclaration*)JS_GetOpaqueNoCheck(this_val);
+            CSSStyleDeclaration* imp = (CSSStyleDeclaration*)JS_GetOpaque(this_val, JSCSSStyleDeclaration::js_class_id);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case ParentRuleAttrNum: {
-            CSSStyleDeclaration* imp = (CSSStyleDeclaration*)JS_GetOpaqueNoCheck(this_val);
+            CSSStyleDeclaration* imp = (CSSStyleDeclaration*)JS_GetOpaque(this_val, JSCSSStyleDeclaration::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->parentRule()));
         }
         case ConstructorAttrNum:
@@ -185,7 +187,7 @@ JSValue JSCSSStyleDeclaration::putValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case CssTextAttrNum: {
-            CSSStyleDeclaration* imp = (CSSStyleDeclaration*)JS_GetOpaqueNoCheck(this_val);
+            CSSStyleDeclaration* imp = (CSSStyleDeclaration*)JS_GetOpaque(this_val, JSCSSStyleDeclaration::js_class_id);
             ExceptionCode ec = 0;
             imp->setCssText(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);
@@ -202,7 +204,7 @@ JSValue JSCSSStyleDeclaration::getConstructor(JSContext *ctx)
 
 JSValue JSCSSStyleDeclarationPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    CSSStyleDeclaration* imp = (CSSStyleDeclaration*)JS_GetOpaqueNoCheck(this_val);
+    CSSStyleDeclaration* imp = (CSSStyleDeclaration*)JS_GetOpaque(this_val, JSCSSStyleDeclaration::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

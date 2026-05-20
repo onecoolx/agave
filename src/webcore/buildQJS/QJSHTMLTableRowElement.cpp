@@ -128,17 +128,17 @@ JSClassID JSHTMLTableRowElement::js_class_id = 0;
 void JSHTMLTableRowElement::init(JSContext* ctx)
 {
     if (JSHTMLTableRowElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLTableRowElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLTableRowElement::js_class_id, &JSHTMLTableRowElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLTableRowElementConstructor::self(ctx), JSHTMLTableRowElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLTableRowElement::js_class_id, JSHTMLTableRowElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLTableRowElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLTableRowElement::create(JSContext* ctx, HTMLTableRowElement* impl)
 {
     JSHTMLTableRowElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLTableRowElementPrototype::self(ctx), JSHTMLTableRowElement::js_class_id);
+    JSValue _proto = JSHTMLTableRowElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -149,7 +149,7 @@ JSValue JSHTMLTableRowElement::create(JSContext* ctx, HTMLTableRowElement* impl)
 
 void JSHTMLTableRowElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLTableRowElement* impl = (HTMLTableRowElement*)JS_GetOpaque(val, JSHTMLTableRowElement::js_class_id);
+    HTMLTableRowElement* impl = (HTMLTableRowElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -163,35 +163,35 @@ JSValue JSHTMLTableRowElement::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case RowIndexAttrNum: {
-            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->rowIndex());
         }
         case SectionRowIndexAttrNum: {
-            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->sectionRowIndex());
         }
         case CellsAttrNum: {
-            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->cells()));
         }
         case AlignAttrNum: {
-            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case BgColorAttrNum: {
-            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->bgColor()).utf8().data());
         }
         case ChAttrNum: {
-            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->ch()).utf8().data());
         }
         case ChOffAttrNum: {
-            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->chOff()).utf8().data());
         }
         case VAlignAttrNum: {
-            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->vAlign()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -204,27 +204,27 @@ JSValue JSHTMLTableRowElement::putValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case BgColorAttrNum: {
-            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setBgColor(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ChAttrNum: {
-            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCh(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ChOffAttrNum: {
-            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setChOff(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case VAlignAttrNum: {
-            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setVAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
@@ -239,7 +239,7 @@ JSValue JSHTMLTableRowElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLTableRowElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaqueNoCheck(this_val);
+    HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

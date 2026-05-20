@@ -83,7 +83,9 @@ void JSSVGMetadataElement::init(JSContext* ctx)
 JSValue JSSVGMetadataElement::create(JSContext* ctx, SVGMetadataElement* impl)
 {
     JSSVGMetadataElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGMetadataElementPrototype::self(ctx), JSSVGMetadataElement::js_class_id);
+    JSValue _proto = JSSVGMetadataElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGMetadataElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

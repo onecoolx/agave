@@ -132,7 +132,9 @@ void JSSVGPatternElement::init(JSContext* ctx)
 JSValue JSSVGPatternElement::create(JSContext* ctx, SVGPatternElement* impl)
 {
     JSSVGPatternElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGPatternElementPrototype::self(ctx), JSSVGPatternElement::js_class_id);
+    JSValue _proto = JSSVGPatternElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGPatternElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -157,86 +159,86 @@ JSValue JSSVGPatternElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case PatternUnitsAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             RefPtr<SVGAnimatedEnumeration> obj = imp->patternUnitsAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case PatternContentUnitsAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             RefPtr<SVGAnimatedEnumeration> obj = imp->patternContentUnitsAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case PatternTransformAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             RefPtr<SVGAnimatedTransformList> obj = imp->patternTransformAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HrefAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->hrefAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RequiredFeaturesAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredFeatures()), imp);
         }
         case RequiredExtensionsAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredExtensions()), imp);
         }
         case SystemLanguageAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->systemLanguage()), imp);
         }
         case XmllangAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ViewBoxAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             RefPtr<SVGAnimatedRect> obj = imp->viewBoxAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case PreserveAspectRatioAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             RefPtr<SVGAnimatedPreserveAspectRatio> obj = imp->preserveAspectRatioAnimated();
             return toJS(ctx, obj.get(), imp);
         }
@@ -248,12 +250,12 @@ JSValue JSSVGPatternElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -263,7 +265,7 @@ JSValue JSSVGPatternElement::putValueProperty(JSContext *ctx, JSValueConst this_
 
 JSValue JSSVGPatternElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGPatternElement* imp = (SVGPatternElement*)JS_GetOpaque(this_val, JSSVGPatternElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

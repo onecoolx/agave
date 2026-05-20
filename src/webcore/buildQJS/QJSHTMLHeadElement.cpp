@@ -107,17 +107,17 @@ JSClassID JSHTMLHeadElement::js_class_id = 0;
 void JSHTMLHeadElement::init(JSContext* ctx)
 {
     if (JSHTMLHeadElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLHeadElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLHeadElement::js_class_id, &JSHTMLHeadElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLHeadElementConstructor::self(ctx), JSHTMLHeadElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLHeadElement::js_class_id, JSHTMLHeadElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLHeadElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLHeadElement::create(JSContext* ctx, HTMLHeadElement* impl)
 {
     JSHTMLHeadElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLHeadElementPrototype::self(ctx), JSHTMLHeadElement::js_class_id);
+    JSValue _proto = JSHTMLHeadElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -128,7 +128,7 @@ JSValue JSHTMLHeadElement::create(JSContext* ctx, HTMLHeadElement* impl)
 
 void JSHTMLHeadElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLHeadElement* impl = (HTMLHeadElement*)JS_GetOpaque(val, JSHTMLHeadElement::js_class_id);
+    HTMLHeadElement* impl = (HTMLHeadElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -142,7 +142,7 @@ JSValue JSHTMLHeadElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case ProfileAttrNum: {
-            HTMLHeadElement* imp = (HTMLHeadElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLHeadElement* imp = (HTMLHeadElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->profile()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -155,7 +155,7 @@ JSValue JSHTMLHeadElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case ProfileAttrNum: {
-            HTMLHeadElement* imp = (HTMLHeadElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLHeadElement* imp = (HTMLHeadElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setProfile(valueToStringWithNullCheck(ctx, value));
             break;
         }

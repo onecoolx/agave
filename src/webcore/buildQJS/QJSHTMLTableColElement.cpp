@@ -112,17 +112,17 @@ JSClassID JSHTMLTableColElement::js_class_id = 0;
 void JSHTMLTableColElement::init(JSContext* ctx)
 {
     if (JSHTMLTableColElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLTableColElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLTableColElement::js_class_id, &JSHTMLTableColElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLTableColElementConstructor::self(ctx), JSHTMLTableColElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLTableColElement::js_class_id, JSHTMLTableColElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLTableColElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLTableColElement::create(JSContext* ctx, HTMLTableColElement* impl)
 {
     JSHTMLTableColElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLTableColElementPrototype::self(ctx), JSHTMLTableColElement::js_class_id);
+    JSValue _proto = JSHTMLTableColElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -133,7 +133,7 @@ JSValue JSHTMLTableColElement::create(JSContext* ctx, HTMLTableColElement* impl)
 
 void JSHTMLTableColElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLTableColElement* impl = (HTMLTableColElement*)JS_GetOpaque(val, JSHTMLTableColElement::js_class_id);
+    HTMLTableColElement* impl = (HTMLTableColElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -147,27 +147,27 @@ JSValue JSHTMLTableColElement::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case ChAttrNum: {
-            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->ch()).utf8().data());
         }
         case ChOffAttrNum: {
-            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->chOff()).utf8().data());
         }
         case SpanAttrNum: {
-            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->span());
         }
         case VAlignAttrNum: {
-            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->vAlign()).utf8().data());
         }
         case WidthAttrNum: {
-            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->width()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -180,32 +180,32 @@ JSValue JSHTMLTableColElement::putValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ChAttrNum: {
-            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCh(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ChOffAttrNum: {
-            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setChOff(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case SpanAttrNum: {
-            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setSpan(valueToInt32(ctx, value));
             break;
         }
         case VAlignAttrNum: {
-            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setVAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case WidthAttrNum: {
-            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setWidth(valueToStringWithNullCheck(ctx, value));
             break;
         }

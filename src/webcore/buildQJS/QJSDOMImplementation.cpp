@@ -135,7 +135,9 @@ void JSDOMImplementation::init(JSContext* ctx)
 JSValue JSDOMImplementation::create(JSContext* ctx, DOMImplementation* impl)
 {
     JSDOMImplementation::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSDOMImplementationPrototype::self(ctx), JSDOMImplementation::js_class_id);
+    JSValue _proto = JSDOMImplementationPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSDOMImplementation::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -172,7 +174,7 @@ JSValue JSDOMImplementation::getConstructor(JSContext *ctx)
 
 JSValue JSDOMImplementationPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    DOMImplementation* imp = (DOMImplementation*)JS_GetOpaqueNoCheck(this_val);
+    DOMImplementation* imp = (DOMImplementation*)JS_GetOpaque(this_val, JSDOMImplementation::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

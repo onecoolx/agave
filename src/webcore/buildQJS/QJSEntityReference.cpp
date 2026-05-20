@@ -105,17 +105,17 @@ JSClassID JSEntityReference::js_class_id = 0;
 void JSEntityReference::init(JSContext* ctx)
 {
     if (JSEntityReference::js_class_id == 0) {
-        JS_NewClassID(&JSEntityReference::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSEntityReference::js_class_id, &JSEntityReferenceClassDefine);
-        JS_SetConstructor(ctx, JSEntityReferenceConstructor::self(ctx), JSEntityReferencePrototype::self(ctx));
-        JS_SetClassProto(ctx, JSEntityReference::js_class_id, JSEntityReferencePrototype::self(ctx));
+        JSNode::init(ctx);
+        JSEntityReference::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSEntityReference::create(JSContext* ctx, EntityReference* impl)
 {
     JSEntityReference::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSEntityReferencePrototype::self(ctx), JSEntityReference::js_class_id);
+    JSValue _proto = JSEntityReferencePrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -126,7 +126,7 @@ JSValue JSEntityReference::create(JSContext* ctx, EntityReference* impl)
 
 void JSEntityReference::finalizer(JSRuntime* rt, JSValue val)
 {
-    EntityReference* impl = (EntityReference*)JS_GetOpaque(val, JSEntityReference::js_class_id);
+    EntityReference* impl = (EntityReference*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

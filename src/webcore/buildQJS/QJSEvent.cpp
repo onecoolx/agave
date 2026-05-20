@@ -198,7 +198,9 @@ void JSEvent::init(JSContext* ctx)
 JSValue JSEvent::create(JSContext* ctx, Event* impl)
 {
     JSEvent::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSEventPrototype::self(ctx), JSEvent::js_class_id);
+    JSValue _proto = JSEventPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSEvent::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -223,47 +225,47 @@ JSValue JSEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, int tok
 {
     switch (token) {
         case TypeAttrNum: {
-            Event* imp = (Event*)JS_GetOpaqueNoCheck(this_val);
+            Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case TargetAttrNum: {
-            Event* imp = (Event*)JS_GetOpaqueNoCheck(this_val);
+            Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->target()));
         }
         case CurrentTargetAttrNum: {
-            Event* imp = (Event*)JS_GetOpaqueNoCheck(this_val);
+            Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->currentTarget()));
         }
         case EventPhaseAttrNum: {
-            Event* imp = (Event*)JS_GetOpaqueNoCheck(this_val);
+            Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->eventPhase());
         }
         case BubblesAttrNum: {
-            Event* imp = (Event*)JS_GetOpaqueNoCheck(this_val);
+            Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
             return JS_NewBool(ctx, imp->bubbles() ? 1 : 0);
         }
         case CancelableAttrNum: {
-            Event* imp = (Event*)JS_GetOpaqueNoCheck(this_val);
+            Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
             return JS_NewBool(ctx, imp->cancelable() ? 1 : 0);
         }
         case TimeStampAttrNum: {
-            Event* imp = (Event*)JS_GetOpaqueNoCheck(this_val);
+            Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->timeStamp());
         }
         case SrcElementAttrNum: {
-            Event* imp = (Event*)JS_GetOpaqueNoCheck(this_val);
+            Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->srcElement()));
         }
         case ReturnValueAttrNum: {
-            Event* imp = (Event*)JS_GetOpaqueNoCheck(this_val);
+            Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
             return JS_NewBool(ctx, imp->returnValue() ? 1 : 0);
         }
         case CancelBubbleAttrNum: {
-            Event* imp = (Event*)JS_GetOpaqueNoCheck(this_val);
+            Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
             return JS_NewBool(ctx, imp->cancelBubble() ? 1 : 0);
         }
         case ClipboardDataAttrNum: {
-            Event* imp = (Event*)JS_GetOpaqueNoCheck(this_val);
+            Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
             return JSEvent::clipboardData(ctx, this_val, imp);
         }
         case ConstructorAttrNum:
@@ -276,12 +278,12 @@ JSValue JSEvent::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue
 {
     switch (token) {
         case ReturnValueAttrNum: {
-            Event* imp = (Event*)JS_GetOpaqueNoCheck(this_val);
+            Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
             imp->setReturnValue(valueToBoolean(ctx, value));
             break;
         }
         case CancelBubbleAttrNum: {
-            Event* imp = (Event*)JS_GetOpaqueNoCheck(this_val);
+            Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
             imp->setCancelBubble(valueToBoolean(ctx, value));
             break;
         }
@@ -296,7 +298,7 @@ JSValue JSEvent::getConstructor(JSContext *ctx)
 
 JSValue JSEventPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    Event* imp = (Event*)JS_GetOpaqueNoCheck(this_val);
+    Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

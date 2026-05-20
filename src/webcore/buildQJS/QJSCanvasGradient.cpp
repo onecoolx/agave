@@ -84,7 +84,9 @@ void JSCanvasGradient::init(JSContext* ctx)
 JSValue JSCanvasGradient::create(JSContext* ctx, CanvasGradient* impl)
 {
     JSCanvasGradient::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCanvasGradientPrototype::self(ctx), JSCanvasGradient::js_class_id);
+    JSValue _proto = JSCanvasGradientPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCanvasGradient::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -107,7 +109,7 @@ void JSCanvasGradient::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_f
 
 JSValue JSCanvasGradientPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    CanvasGradient* imp = (CanvasGradient*)JS_GetOpaqueNoCheck(this_val);
+    CanvasGradient* imp = (CanvasGradient*)JS_GetOpaque(this_val, JSCanvasGradient::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

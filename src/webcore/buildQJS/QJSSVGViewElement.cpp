@@ -116,7 +116,9 @@ void JSSVGViewElement::init(JSContext* ctx)
 JSValue JSSVGViewElement::create(JSContext* ctx, SVGViewElement* impl)
 {
     JSSVGViewElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGViewElementPrototype::self(ctx), JSSVGViewElement::js_class_id);
+    JSValue _proto = JSSVGViewElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGViewElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -141,26 +143,26 @@ JSValue JSSVGViewElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case ViewTargetAttrNum: {
-            SVGViewElement* imp = (SVGViewElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGViewElement* imp = (SVGViewElement*)JS_GetOpaque(this_val, JSSVGViewElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->viewTarget()), imp);
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGViewElement* imp = (SVGViewElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGViewElement* imp = (SVGViewElement*)JS_GetOpaque(this_val, JSSVGViewElement::js_class_id);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ViewBoxAttrNum: {
-            SVGViewElement* imp = (SVGViewElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGViewElement* imp = (SVGViewElement*)JS_GetOpaque(this_val, JSSVGViewElement::js_class_id);
             RefPtr<SVGAnimatedRect> obj = imp->viewBoxAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case PreserveAspectRatioAttrNum: {
-            SVGViewElement* imp = (SVGViewElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGViewElement* imp = (SVGViewElement*)JS_GetOpaque(this_val, JSSVGViewElement::js_class_id);
             RefPtr<SVGAnimatedPreserveAspectRatio> obj = imp->preserveAspectRatioAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ZoomAndPanAttrNum: {
-            SVGViewElement* imp = (SVGViewElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGViewElement* imp = (SVGViewElement*)JS_GetOpaque(this_val, JSSVGViewElement::js_class_id);
             return JS_NewBigUint64(ctx, imp->zoomAndPan());
         }
     }
@@ -171,7 +173,7 @@ JSValue JSSVGViewElement::putValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case ZoomAndPanAttrNum: {
-            SVGViewElement* imp = (SVGViewElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGViewElement* imp = (SVGViewElement*)JS_GetOpaque(this_val, JSSVGViewElement::js_class_id);
             imp->setZoomAndPan(valueToInt32(ctx, value));
             break;
         }

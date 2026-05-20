@@ -83,7 +83,9 @@ void JSSVGFEFuncAElement::init(JSContext* ctx)
 JSValue JSSVGFEFuncAElement::create(JSContext* ctx, SVGFEFuncAElement* impl)
 {
     JSSVGFEFuncAElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGFEFuncAElementPrototype::self(ctx), JSSVGFEFuncAElement::js_class_id);
+    JSValue _proto = JSSVGFEFuncAElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGFEFuncAElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

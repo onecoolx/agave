@@ -165,7 +165,9 @@ void JSSVGComponentTransferFunctionElement::init(JSContext* ctx)
 JSValue JSSVGComponentTransferFunctionElement::create(JSContext* ctx, SVGComponentTransferFunctionElement* impl)
 {
     JSSVGComponentTransferFunctionElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGComponentTransferFunctionElementPrototype::self(ctx), JSSVGComponentTransferFunctionElement::js_class_id);
+    JSValue _proto = JSSVGComponentTransferFunctionElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGComponentTransferFunctionElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -190,37 +192,37 @@ JSValue JSSVGComponentTransferFunctionElement::getValueProperty(JSContext *ctx, 
 {
     switch (token) {
         case TypeAttrNum: {
-            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaque(this_val, JSSVGComponentTransferFunctionElement::js_class_id);
             RefPtr<SVGAnimatedEnumeration> obj = imp->typeAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case TableValuesAttrNum: {
-            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaque(this_val, JSSVGComponentTransferFunctionElement::js_class_id);
             RefPtr<SVGAnimatedNumberList> obj = imp->tableValuesAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case SlopeAttrNum: {
-            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaque(this_val, JSSVGComponentTransferFunctionElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->slopeAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case InterceptAttrNum: {
-            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaque(this_val, JSSVGComponentTransferFunctionElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->interceptAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case AmplitudeAttrNum: {
-            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaque(this_val, JSSVGComponentTransferFunctionElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->amplitudeAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ExponentAttrNum: {
-            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaque(this_val, JSSVGComponentTransferFunctionElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->exponentAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case OffsetAttrNum: {
-            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaque(this_val, JSSVGComponentTransferFunctionElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->offsetAnimated();
             return toJS(ctx, obj.get(), imp);
         }

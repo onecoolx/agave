@@ -106,17 +106,17 @@ JSClassID JSHTMLMenuElement::js_class_id = 0;
 void JSHTMLMenuElement::init(JSContext* ctx)
 {
     if (JSHTMLMenuElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLMenuElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLMenuElement::js_class_id, &JSHTMLMenuElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLMenuElementConstructor::self(ctx), JSHTMLMenuElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLMenuElement::js_class_id, JSHTMLMenuElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLMenuElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLMenuElement::create(JSContext* ctx, HTMLMenuElement* impl)
 {
     JSHTMLMenuElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLMenuElementPrototype::self(ctx), JSHTMLMenuElement::js_class_id);
+    JSValue _proto = JSHTMLMenuElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -127,7 +127,7 @@ JSValue JSHTMLMenuElement::create(JSContext* ctx, HTMLMenuElement* impl)
 
 void JSHTMLMenuElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLMenuElement* impl = (HTMLMenuElement*)JS_GetOpaque(val, JSHTMLMenuElement::js_class_id);
+    HTMLMenuElement* impl = (HTMLMenuElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -141,7 +141,7 @@ JSValue JSHTMLMenuElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLMenuElement* imp = (HTMLMenuElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLMenuElement* imp = (HTMLMenuElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->compact() ? 1 : 0);
         }
         case ConstructorAttrNum:
@@ -154,7 +154,7 @@ JSValue JSHTMLMenuElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLMenuElement* imp = (HTMLMenuElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLMenuElement* imp = (HTMLMenuElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCompact(valueToBoolean(ctx, value));
             break;
         }

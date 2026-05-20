@@ -108,17 +108,17 @@ JSClassID JSHTMLModElement::js_class_id = 0;
 void JSHTMLModElement::init(JSContext* ctx)
 {
     if (JSHTMLModElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLModElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLModElement::js_class_id, &JSHTMLModElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLModElementConstructor::self(ctx), JSHTMLModElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLModElement::js_class_id, JSHTMLModElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLModElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLModElement::create(JSContext* ctx, HTMLModElement* impl)
 {
     JSHTMLModElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLModElementPrototype::self(ctx), JSHTMLModElement::js_class_id);
+    JSValue _proto = JSHTMLModElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -129,7 +129,7 @@ JSValue JSHTMLModElement::create(JSContext* ctx, HTMLModElement* impl)
 
 void JSHTMLModElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLModElement* impl = (HTMLModElement*)JS_GetOpaque(val, JSHTMLModElement::js_class_id);
+    HTMLModElement* impl = (HTMLModElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -143,11 +143,11 @@ JSValue JSHTMLModElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case CiteAttrNum: {
-            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->cite()).utf8().data());
         }
         case DateTimeAttrNum: {
-            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->dateTime()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -160,12 +160,12 @@ JSValue JSHTMLModElement::putValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case CiteAttrNum: {
-            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCite(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case DateTimeAttrNum: {
-            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setDateTime(valueToStringWithNullCheck(ctx, value));
             break;
         }

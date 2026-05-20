@@ -108,17 +108,17 @@ JSClassID JSHTMLLIElement::js_class_id = 0;
 void JSHTMLLIElement::init(JSContext* ctx)
 {
     if (JSHTMLLIElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLLIElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLLIElement::js_class_id, &JSHTMLLIElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLLIElementConstructor::self(ctx), JSHTMLLIElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLLIElement::js_class_id, JSHTMLLIElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLLIElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLLIElement::create(JSContext* ctx, HTMLLIElement* impl)
 {
     JSHTMLLIElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLLIElementPrototype::self(ctx), JSHTMLLIElement::js_class_id);
+    JSValue _proto = JSHTMLLIElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -129,7 +129,7 @@ JSValue JSHTMLLIElement::create(JSContext* ctx, HTMLLIElement* impl)
 
 void JSHTMLLIElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLLIElement* impl = (HTMLLIElement*)JS_GetOpaque(val, JSHTMLLIElement::js_class_id);
+    HTMLLIElement* impl = (HTMLLIElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -143,11 +143,11 @@ JSValue JSHTMLLIElement::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case TypeAttrNum: {
-            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case ValueAttrNum: {
-            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->value());
         }
         case ConstructorAttrNum:
@@ -160,12 +160,12 @@ JSValue JSHTMLLIElement::putValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case TypeAttrNum: {
-            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ValueAttrNum: {
-            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setValue(valueToInt32(ctx, value));
             break;
         }

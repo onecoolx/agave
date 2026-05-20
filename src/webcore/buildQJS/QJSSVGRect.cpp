@@ -93,7 +93,9 @@ void JSSVGRect::init(JSContext* ctx)
 JSValue JSSVGRect::create(JSContext* ctx, JSSVGPODTypeWrapper<FloatRect>* impl, SVGElement* context)
 {
     JSSVGRect::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGRectPrototype::self(ctx), JSSVGRect::js_class_id);
+    JSValue _proto = JSSVGRectPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGRect::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

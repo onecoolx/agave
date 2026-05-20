@@ -105,7 +105,9 @@ void JSTreeWalker::init(JSContext* ctx)
 JSValue JSTreeWalker::create(JSContext* ctx, TreeWalker* impl)
 {
     JSTreeWalker::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSTreeWalkerPrototype::self(ctx), JSTreeWalker::js_class_id);
+    JSValue _proto = JSTreeWalkerPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSTreeWalker::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -125,23 +127,23 @@ JSValue JSTreeWalker::getValueProperty(JSContext *ctx, JSValueConst this_val, in
 {
     switch (token) {
         case RootAttrNum: {
-            TreeWalker* imp = (TreeWalker*)JS_GetOpaqueNoCheck(this_val);
+            TreeWalker* imp = (TreeWalker*)JS_GetOpaque(this_val, JSTreeWalker::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->root()));
         }
         case WhatToShowAttrNum: {
-            TreeWalker* imp = (TreeWalker*)JS_GetOpaqueNoCheck(this_val);
+            TreeWalker* imp = (TreeWalker*)JS_GetOpaque(this_val, JSTreeWalker::js_class_id);
             return JS_NewBigUint64(ctx, imp->whatToShow());
         }
         case FilterAttrNum: {
-            TreeWalker* imp = (TreeWalker*)JS_GetOpaqueNoCheck(this_val);
+            TreeWalker* imp = (TreeWalker*)JS_GetOpaque(this_val, JSTreeWalker::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->filter()));
         }
         case ExpandEntityReferencesAttrNum: {
-            TreeWalker* imp = (TreeWalker*)JS_GetOpaqueNoCheck(this_val);
+            TreeWalker* imp = (TreeWalker*)JS_GetOpaque(this_val, JSTreeWalker::js_class_id);
             return JS_NewBool(ctx, imp->expandEntityReferences() ? 1 : 0);
         }
         case CurrentNodeAttrNum: {
-            TreeWalker* imp = (TreeWalker*)JS_GetOpaqueNoCheck(this_val);
+            TreeWalker* imp = (TreeWalker*)JS_GetOpaque(this_val, JSTreeWalker::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->currentNode()));
         }
     }
@@ -152,7 +154,7 @@ JSValue JSTreeWalker::putValueProperty(JSContext *ctx, JSValueConst this_val, JS
 {
     switch (token) {
         case CurrentNodeAttrNum: {
-            TreeWalker* imp = (TreeWalker*)JS_GetOpaqueNoCheck(this_val);
+            TreeWalker* imp = (TreeWalker*)JS_GetOpaque(this_val, JSTreeWalker::js_class_id);
             ExceptionCode ec = 0;
             imp->setCurrentNode(toNode(value), ec);
             setDOMException(ctx, ec);
@@ -164,7 +166,7 @@ JSValue JSTreeWalker::putValueProperty(JSContext *ctx, JSValueConst this_val, JS
 
 JSValue JSTreeWalkerPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    TreeWalker* imp = (TreeWalker*)JS_GetOpaqueNoCheck(this_val);
+    TreeWalker* imp = (TreeWalker*)JS_GetOpaque(this_val, JSTreeWalker::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

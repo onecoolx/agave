@@ -105,7 +105,9 @@ void JSSVGPathSegList::init(JSContext* ctx)
 JSValue JSSVGPathSegList::create(JSContext* ctx, SVGPathSegList* impl, SVGElement* context)
 {
     JSSVGPathSegList::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGPathSegListPrototype::self(ctx), JSSVGPathSegList::js_class_id);
+    JSValue _proto = JSSVGPathSegListPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGPathSegList::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -130,7 +132,7 @@ JSValue JSSVGPathSegList::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case NumberOfItemsAttrNum: {
-            SVGPathSegList* imp = (SVGPathSegList*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegList* imp = (SVGPathSegList*)JS_GetOpaque(this_val, JSSVGPathSegList::js_class_id);
             return JS_NewBigUint64(ctx, imp->numberOfItems());
         }
     }
@@ -139,7 +141,7 @@ JSValue JSSVGPathSegList::getValueProperty(JSContext *ctx, JSValueConst this_val
 
 JSValue JSSVGPathSegListPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGPathSegList* imp = (SVGPathSegList*)JS_GetOpaqueNoCheck(this_val);
+    SVGPathSegList* imp = (SVGPathSegList*)JS_GetOpaque(this_val, JSSVGPathSegList::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -83,7 +83,9 @@ void JSSVGAnimateTransformElement::init(JSContext* ctx)
 JSValue JSSVGAnimateTransformElement::create(JSContext* ctx, SVGAnimateTransformElement* impl)
 {
     JSSVGAnimateTransformElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnimateTransformElementPrototype::self(ctx), JSSVGAnimateTransformElement::js_class_id);
+    JSValue _proto = JSSVGAnimateTransformElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAnimateTransformElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

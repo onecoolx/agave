@@ -131,7 +131,9 @@ void JSDOMParser::init(JSContext* ctx)
 JSValue JSDOMParser::create(JSContext* ctx, DOMParser* impl)
 {
     JSDOMParser::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSDOMParserPrototype::self(ctx), JSDOMParser::js_class_id);
+    JSValue _proto = JSDOMParserPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSDOMParser::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -168,7 +170,7 @@ JSValue JSDOMParser::getConstructor(JSContext *ctx)
 
 JSValue JSDOMParserPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    DOMParser* imp = (DOMParser*)JS_GetOpaqueNoCheck(this_val);
+    DOMParser* imp = (DOMParser*)JS_GetOpaque(this_val, JSDOMParser::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

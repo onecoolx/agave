@@ -93,7 +93,9 @@ void JSTextEvent::init(JSContext* ctx)
 JSValue JSTextEvent::create(JSContext* ctx, TextEvent* impl)
 {
     JSTextEvent::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSTextEventPrototype::self(ctx), JSTextEvent::js_class_id);
+    JSValue _proto = JSTextEventPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSTextEvent::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -118,7 +120,7 @@ JSValue JSTextEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, int
 {
     switch (token) {
         case DataAttrNum: {
-            TextEvent* imp = (TextEvent*)JS_GetOpaqueNoCheck(this_val);
+            TextEvent* imp = (TextEvent*)JS_GetOpaque(this_val, JSTextEvent::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->data()).utf8().data());
         }
     }
@@ -127,7 +129,7 @@ JSValue JSTextEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, int
 
 JSValue JSTextEventPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    TextEvent* imp = (TextEvent*)JS_GetOpaqueNoCheck(this_val);
+    TextEvent* imp = (TextEvent*)JS_GetOpaque(this_val, JSTextEvent::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

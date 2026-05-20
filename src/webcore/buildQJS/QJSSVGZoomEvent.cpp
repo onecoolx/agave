@@ -97,7 +97,9 @@ void JSSVGZoomEvent::init(JSContext* ctx)
 JSValue JSSVGZoomEvent::create(JSContext* ctx, SVGZoomEvent* impl, SVGElement* context)
 {
     JSSVGZoomEvent::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGZoomEventPrototype::self(ctx), JSSVGZoomEvent::js_class_id);
+    JSValue _proto = JSSVGZoomEventPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGZoomEvent::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -122,23 +124,23 @@ JSValue JSSVGZoomEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case ZoomRectScreenAttrNum: {
-            SVGZoomEvent* imp = (SVGZoomEvent*)JS_GetOpaqueNoCheck(this_val);
+            SVGZoomEvent* imp = (SVGZoomEvent*)JS_GetOpaque(this_val, JSSVGZoomEvent::js_class_id);
             return toJS(ctx, new JSSVGPODTypeWrapperCreatorReadOnly<FloatRect>(imp->zoomRectScreen()), 0);
         }
         case PreviousScaleAttrNum: {
-            SVGZoomEvent* imp = (SVGZoomEvent*)JS_GetOpaqueNoCheck(this_val);
+            SVGZoomEvent* imp = (SVGZoomEvent*)JS_GetOpaque(this_val, JSSVGZoomEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->previousScale());
         }
         case PreviousTranslateAttrNum: {
-            SVGZoomEvent* imp = (SVGZoomEvent*)JS_GetOpaqueNoCheck(this_val);
+            SVGZoomEvent* imp = (SVGZoomEvent*)JS_GetOpaque(this_val, JSSVGZoomEvent::js_class_id);
             return toJS(ctx, new JSSVGPODTypeWrapperCreatorReadOnly<FloatPoint>(imp->previousTranslate()), 0);
         }
         case NewScaleAttrNum: {
-            SVGZoomEvent* imp = (SVGZoomEvent*)JS_GetOpaqueNoCheck(this_val);
+            SVGZoomEvent* imp = (SVGZoomEvent*)JS_GetOpaque(this_val, JSSVGZoomEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->newScale());
         }
         case NewTranslateAttrNum: {
-            SVGZoomEvent* imp = (SVGZoomEvent*)JS_GetOpaqueNoCheck(this_val);
+            SVGZoomEvent* imp = (SVGZoomEvent*)JS_GetOpaque(this_val, JSSVGZoomEvent::js_class_id);
             return toJS(ctx, new JSSVGPODTypeWrapperCreatorReadOnly<FloatPoint>(imp->newTranslate()), 0);
         }
     }

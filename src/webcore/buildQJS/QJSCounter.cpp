@@ -119,7 +119,9 @@ void JSCounter::init(JSContext* ctx)
 JSValue JSCounter::create(JSContext* ctx, Counter* impl)
 {
     JSCounter::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCounterPrototype::self(ctx), JSCounter::js_class_id);
+    JSValue _proto = JSCounterPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCounter::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -144,15 +146,15 @@ JSValue JSCounter::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
 {
     switch (token) {
         case IdentifierAttrNum: {
-            Counter* imp = (Counter*)JS_GetOpaqueNoCheck(this_val);
+            Counter* imp = (Counter*)JS_GetOpaque(this_val, JSCounter::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->identifier()).utf8().data());
         }
         case ListStyleAttrNum: {
-            Counter* imp = (Counter*)JS_GetOpaqueNoCheck(this_val);
+            Counter* imp = (Counter*)JS_GetOpaque(this_val, JSCounter::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->listStyle()).utf8().data());
         }
         case SeparatorAttrNum: {
-            Counter* imp = (Counter*)JS_GetOpaqueNoCheck(this_val);
+            Counter* imp = (Counter*)JS_GetOpaque(this_val, JSCounter::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->separator()).utf8().data());
         }
         case ConstructorAttrNum:

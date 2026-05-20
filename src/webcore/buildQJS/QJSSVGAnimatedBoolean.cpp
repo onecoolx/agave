@@ -91,7 +91,9 @@ void JSSVGAnimatedBoolean::init(JSContext* ctx)
 JSValue JSSVGAnimatedBoolean::create(JSContext* ctx, SVGAnimatedBoolean* impl, SVGElement* context)
 {
     JSSVGAnimatedBoolean::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnimatedBooleanPrototype::self(ctx), JSSVGAnimatedBoolean::js_class_id);
+    JSValue _proto = JSSVGAnimatedBooleanPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAnimatedBoolean::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -116,11 +118,11 @@ JSValue JSSVGAnimatedBoolean::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedBoolean* imp = (SVGAnimatedBoolean*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedBoolean* imp = (SVGAnimatedBoolean*)JS_GetOpaque(this_val, JSSVGAnimatedBoolean::js_class_id);
             return JS_NewBool(ctx, imp->baseVal() ? 1 : 0);
         }
         case AnimValAttrNum: {
-            SVGAnimatedBoolean* imp = (SVGAnimatedBoolean*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedBoolean* imp = (SVGAnimatedBoolean*)JS_GetOpaque(this_val, JSSVGAnimatedBoolean::js_class_id);
             return JS_NewBool(ctx, imp->animVal() ? 1 : 0);
         }
     }
@@ -131,7 +133,7 @@ JSValue JSSVGAnimatedBoolean::putValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedBoolean* imp = (SVGAnimatedBoolean*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedBoolean* imp = (SVGAnimatedBoolean*)JS_GetOpaque(this_val, JSSVGAnimatedBoolean::js_class_id);
             imp->setBaseVal(valueToBoolean(ctx, value));
             break;
         }

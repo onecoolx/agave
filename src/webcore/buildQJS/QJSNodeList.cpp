@@ -127,7 +127,9 @@ void JSNodeList::init(JSContext* ctx)
 JSValue JSNodeList::create(JSContext* ctx, NodeList* impl)
 {
     JSNodeList::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSNodeListPrototype::self(ctx), JSNodeList::js_class_id);
+    JSValue _proto = JSNodeListPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNodeList::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -152,7 +154,7 @@ JSValue JSNodeList::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
 {
     switch (token) {
         case LengthAttrNum: {
-            NodeList* imp = (NodeList*)JS_GetOpaqueNoCheck(this_val);
+            NodeList* imp = (NodeList*)JS_GetOpaque(this_val, JSNodeList::js_class_id);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case ConstructorAttrNum:
@@ -168,7 +170,7 @@ JSValue JSNodeList::getConstructor(JSContext *ctx)
 
 JSValue JSNodeListPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    NodeList* imp = (NodeList*)JS_GetOpaqueNoCheck(this_val);
+    NodeList* imp = (NodeList*)JS_GetOpaque(this_val, JSNodeList::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

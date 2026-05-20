@@ -93,7 +93,9 @@ void JSSVGAnimatedAngle::init(JSContext* ctx)
 JSValue JSSVGAnimatedAngle::create(JSContext* ctx, SVGAnimatedAngle* impl, SVGElement* context)
 {
     JSSVGAnimatedAngle::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnimatedAnglePrototype::self(ctx), JSSVGAnimatedAngle::js_class_id);
+    JSValue _proto = JSSVGAnimatedAnglePrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAnimatedAngle::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -118,11 +120,11 @@ JSValue JSSVGAnimatedAngle::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedAngle* imp = (SVGAnimatedAngle*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedAngle* imp = (SVGAnimatedAngle*)JS_GetOpaque(this_val, JSSVGAnimatedAngle::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->baseVal()), context());
         }
         case AnimValAttrNum: {
-            SVGAnimatedAngle* imp = (SVGAnimatedAngle*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedAngle* imp = (SVGAnimatedAngle*)JS_GetOpaque(this_val, JSSVGAnimatedAngle::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->animVal()), context());
         }
     }

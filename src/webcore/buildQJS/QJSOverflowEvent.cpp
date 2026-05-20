@@ -109,7 +109,9 @@ void JSOverflowEvent::init(JSContext* ctx)
 JSValue JSOverflowEvent::create(JSContext* ctx, OverflowEvent* impl)
 {
     JSOverflowEvent::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSOverflowEventPrototype::self(ctx), JSOverflowEvent::js_class_id);
+    JSValue _proto = JSOverflowEventPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSOverflowEvent::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -134,15 +136,15 @@ JSValue JSOverflowEvent::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case OrientAttrNum: {
-            OverflowEvent* imp = (OverflowEvent*)JS_GetOpaqueNoCheck(this_val);
+            OverflowEvent* imp = (OverflowEvent*)JS_GetOpaque(this_val, JSOverflowEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->orient());
         }
         case HorizontalOverflowAttrNum: {
-            OverflowEvent* imp = (OverflowEvent*)JS_GetOpaqueNoCheck(this_val);
+            OverflowEvent* imp = (OverflowEvent*)JS_GetOpaque(this_val, JSOverflowEvent::js_class_id);
             return JS_NewBool(ctx, imp->horizontalOverflow() ? 1 : 0);
         }
         case VerticalOverflowAttrNum: {
-            OverflowEvent* imp = (OverflowEvent*)JS_GetOpaqueNoCheck(this_val);
+            OverflowEvent* imp = (OverflowEvent*)JS_GetOpaque(this_val, JSOverflowEvent::js_class_id);
             return JS_NewBool(ctx, imp->verticalOverflow() ? 1 : 0);
         }
     }
@@ -151,7 +153,7 @@ JSValue JSOverflowEvent::getValueProperty(JSContext *ctx, JSValueConst this_val,
 
 JSValue JSOverflowEventPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    OverflowEvent* imp = (OverflowEvent*)JS_GetOpaqueNoCheck(this_val);
+    OverflowEvent* imp = (OverflowEvent*)JS_GetOpaque(this_val, JSOverflowEvent::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

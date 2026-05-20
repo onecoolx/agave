@@ -93,7 +93,9 @@ void JSSVGAnimatedNumberList::init(JSContext* ctx)
 JSValue JSSVGAnimatedNumberList::create(JSContext* ctx, SVGAnimatedNumberList* impl, SVGElement* context)
 {
     JSSVGAnimatedNumberList::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnimatedNumberListPrototype::self(ctx), JSSVGAnimatedNumberList::js_class_id);
+    JSValue _proto = JSSVGAnimatedNumberListPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAnimatedNumberList::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -118,11 +120,11 @@ JSValue JSSVGAnimatedNumberList::getValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedNumberList* imp = (SVGAnimatedNumberList*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedNumberList* imp = (SVGAnimatedNumberList*)JS_GetOpaque(this_val, JSSVGAnimatedNumberList::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->baseVal()), context());
         }
         case AnimValAttrNum: {
-            SVGAnimatedNumberList* imp = (SVGAnimatedNumberList*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedNumberList* imp = (SVGAnimatedNumberList*)JS_GetOpaque(this_val, JSSVGAnimatedNumberList::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->animVal()), context());
         }
     }

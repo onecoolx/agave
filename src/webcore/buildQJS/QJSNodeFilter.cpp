@@ -176,7 +176,9 @@ void JSNodeFilter::init(JSContext* ctx)
 JSValue JSNodeFilter::create(JSContext* ctx, NodeFilter* impl)
 {
     JSNodeFilter::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSNodeFilterPrototype::self(ctx), JSNodeFilter::js_class_id);
+    JSValue _proto = JSNodeFilterPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNodeFilter::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -208,7 +210,7 @@ JSValue JSNodeFilter::getConstructor(JSContext *ctx)
 
 JSValue JSNodeFilterPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    NodeFilter* imp = (NodeFilter*)JS_GetOpaqueNoCheck(this_val);
+    NodeFilter* imp = (NodeFilter*)JS_GetOpaque(this_val, JSNodeFilter::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

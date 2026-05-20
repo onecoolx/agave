@@ -107,17 +107,17 @@ JSClassID JSHTMLPreElement::js_class_id = 0;
 void JSHTMLPreElement::init(JSContext* ctx)
 {
     if (JSHTMLPreElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLPreElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLPreElement::js_class_id, &JSHTMLPreElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLPreElementConstructor::self(ctx), JSHTMLPreElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLPreElement::js_class_id, JSHTMLPreElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLPreElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLPreElement::create(JSContext* ctx, HTMLPreElement* impl)
 {
     JSHTMLPreElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLPreElementPrototype::self(ctx), JSHTMLPreElement::js_class_id);
+    JSValue _proto = JSHTMLPreElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -128,7 +128,7 @@ JSValue JSHTMLPreElement::create(JSContext* ctx, HTMLPreElement* impl)
 
 void JSHTMLPreElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLPreElement* impl = (HTMLPreElement*)JS_GetOpaque(val, JSHTMLPreElement::js_class_id);
+    HTMLPreElement* impl = (HTMLPreElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -142,11 +142,11 @@ JSValue JSHTMLPreElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case WidthAttrNum: {
-            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->width());
         }
         case WrapAttrNum: {
-            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->wrap() ? 1 : 0);
         }
         case ConstructorAttrNum:
@@ -159,12 +159,12 @@ JSValue JSHTMLPreElement::putValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case WidthAttrNum: {
-            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setWidth(valueToInt32(ctx, value));
             break;
         }
         case WrapAttrNum: {
-            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setWrap(valueToBoolean(ctx, value));
             break;
         }

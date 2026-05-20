@@ -116,17 +116,17 @@ JSClassID JSAttr::js_class_id = 0;
 void JSAttr::init(JSContext* ctx)
 {
     if (JSAttr::js_class_id == 0) {
-        JS_NewClassID(&JSAttr::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSAttr::js_class_id, &JSAttrClassDefine);
-        JS_SetConstructor(ctx, JSAttrConstructor::self(ctx), JSAttrPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSAttr::js_class_id, JSAttrPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSAttr::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSAttr::create(JSContext* ctx, Attr* impl)
 {
     JSAttr::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSAttrPrototype::self(ctx), JSAttr::js_class_id);
+    JSValue _proto = JSAttrPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -137,7 +137,7 @@ JSValue JSAttr::create(JSContext* ctx, Attr* impl)
 
 void JSAttr::finalizer(JSRuntime* rt, JSValue val)
 {
-    Attr* impl = (Attr*)JS_GetOpaque(val, JSAttr::js_class_id);
+    Attr* impl = (Attr*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -151,23 +151,23 @@ JSValue JSAttr::getValueProperty(JSContext *ctx, JSValueConst this_val, int toke
 {
     switch (token) {
         case NameAttrNum: {
-            Attr* imp = (Attr*)JS_GetOpaqueNoCheck(this_val);
+            Attr* imp = (Attr*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->name());
         }
         case SpecifiedAttrNum: {
-            Attr* imp = (Attr*)JS_GetOpaqueNoCheck(this_val);
+            Attr* imp = (Attr*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->specified() ? 1 : 0);
         }
         case ValueAttrNum: {
-            Attr* imp = (Attr*)JS_GetOpaqueNoCheck(this_val);
+            Attr* imp = (Attr*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->value());
         }
         case OwnerElementAttrNum: {
-            Attr* imp = (Attr*)JS_GetOpaqueNoCheck(this_val);
+            Attr* imp = (Attr*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->ownerElement()));
         }
         case StyleAttrNum: {
-            Attr* imp = (Attr*)JS_GetOpaqueNoCheck(this_val);
+            Attr* imp = (Attr*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:
@@ -180,7 +180,7 @@ JSValue JSAttr::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue 
 {
     switch (token) {
         case ValueAttrNum: {
-            Attr* imp = (Attr*)JS_GetOpaqueNoCheck(this_val);
+            Attr* imp = (Attr*)JS_GetOpaque(this_val, JSNode::js_class_id);
             JSAttr::setValue(ctx, value, imp);
             break;
         }

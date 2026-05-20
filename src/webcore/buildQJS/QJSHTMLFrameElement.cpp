@@ -123,17 +123,17 @@ JSClassID JSHTMLFrameElement::js_class_id = 0;
 void JSHTMLFrameElement::init(JSContext* ctx)
 {
     if (JSHTMLFrameElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLFrameElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLFrameElement::js_class_id, &JSHTMLFrameElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLFrameElementConstructor::self(ctx), JSHTMLFrameElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLFrameElement::js_class_id, JSHTMLFrameElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLFrameElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLFrameElement::create(JSContext* ctx, HTMLFrameElement* impl)
 {
     JSHTMLFrameElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLFrameElementPrototype::self(ctx), JSHTMLFrameElement::js_class_id);
+    JSValue _proto = JSHTMLFrameElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -144,7 +144,7 @@ JSValue JSHTMLFrameElement::create(JSContext* ctx, HTMLFrameElement* impl)
 
 void JSHTMLFrameElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLFrameElement* impl = (HTMLFrameElement*)JS_GetOpaque(val, JSHTMLFrameElement::js_class_id);
+    HTMLFrameElement* impl = (HTMLFrameElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -158,55 +158,55 @@ JSValue JSHTMLFrameElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case FrameBorderAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->frameBorder()).utf8().data());
         }
         case LongDescAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->longDesc()).utf8().data());
         }
         case MarginHeightAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->marginHeight()).utf8().data());
         }
         case MarginWidthAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->marginWidth()).utf8().data());
         }
         case NameAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case NoResizeAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->noResize() ? 1 : 0);
         }
         case ScrollingAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->scrolling()).utf8().data());
         }
         case SrcAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->src()).utf8().data());
         }
         case ContentDocumentAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return checkNodeSecurity(ctx, imp->contentDocument()) ? toJS(ctx, QJS::getPtr(imp->contentDocument())) : JS_UNDEFINED;
         }
         case ContentWindowAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->contentWindow()));
         }
         case LocationAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->location()).utf8().data());
         }
         case WidthAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->width());
         }
         case HeightAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->height());
         }
         case ConstructorAttrNum:
@@ -219,47 +219,47 @@ JSValue JSHTMLFrameElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case FrameBorderAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setFrameBorder(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case LongDescAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setLongDesc(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case MarginHeightAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setMarginHeight(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case MarginWidthAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setMarginWidth(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case NameAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case NoResizeAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setNoResize(valueToBoolean(ctx, value));
             break;
         }
         case ScrollingAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setScrolling(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case SrcAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             JSHTMLFrameElement::setSrc(ctx, value, imp);
             break;
         }
         case LocationAttrNum: {
-            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             JSHTMLFrameElement::setLocation(ctx, value, imp);
             break;
         }

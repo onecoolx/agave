@@ -110,17 +110,17 @@ JSClassID JSHTMLParamElement::js_class_id = 0;
 void JSHTMLParamElement::init(JSContext* ctx)
 {
     if (JSHTMLParamElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLParamElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLParamElement::js_class_id, &JSHTMLParamElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLParamElementConstructor::self(ctx), JSHTMLParamElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLParamElement::js_class_id, JSHTMLParamElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLParamElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLParamElement::create(JSContext* ctx, HTMLParamElement* impl)
 {
     JSHTMLParamElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLParamElementPrototype::self(ctx), JSHTMLParamElement::js_class_id);
+    JSValue _proto = JSHTMLParamElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -131,7 +131,7 @@ JSValue JSHTMLParamElement::create(JSContext* ctx, HTMLParamElement* impl)
 
 void JSHTMLParamElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLParamElement* impl = (HTMLParamElement*)JS_GetOpaque(val, JSHTMLParamElement::js_class_id);
+    HTMLParamElement* impl = (HTMLParamElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -145,19 +145,19 @@ JSValue JSHTMLParamElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case NameAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case TypeAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case ValueAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->value()).utf8().data());
         }
         case ValueTypeAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->valueType()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -170,22 +170,22 @@ JSValue JSHTMLParamElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case NameAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TypeAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ValueAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setValue(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ValueTypeAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setValueType(valueToStringWithNullCheck(ctx, value));
             break;
         }

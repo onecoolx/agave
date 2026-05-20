@@ -121,17 +121,17 @@ JSClassID JSHTMLCollection::js_class_id = 0;
 void JSHTMLCollection::init(JSContext* ctx)
 {
     if (JSHTMLCollection::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLCollection::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLCollection::js_class_id, &JSHTMLCollectionClassDefine);
-        JS_SetConstructor(ctx, JSHTMLCollectionConstructor::self(ctx), JSHTMLCollectionPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLCollection::js_class_id, JSHTMLCollectionPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLCollection::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLCollection::create(JSContext* ctx, HTMLCollection* impl)
 {
     JSHTMLCollection::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLCollectionPrototype::self(ctx), JSHTMLCollection::js_class_id);
+    JSValue _proto = JSHTMLCollectionPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -142,7 +142,7 @@ JSValue JSHTMLCollection::create(JSContext* ctx, HTMLCollection* impl)
 
 void JSHTMLCollection::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLCollection* impl = (HTMLCollection*)JS_GetOpaque(val, JSHTMLCollection::js_class_id);
+    HTMLCollection* impl = (HTMLCollection*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -156,7 +156,7 @@ JSValue JSHTMLCollection::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case LengthAttrNum: {
-            HTMLCollection* imp = (HTMLCollection*)JS_GetOpaqueNoCheck(this_val);
+            HTMLCollection* imp = (HTMLCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case ConstructorAttrNum:
@@ -172,7 +172,7 @@ JSValue JSHTMLCollection::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLCollectionPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLCollection* imp = (HTMLCollection*)JS_GetOpaqueNoCheck(this_val);
+    HTMLCollection* imp = (HTMLCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

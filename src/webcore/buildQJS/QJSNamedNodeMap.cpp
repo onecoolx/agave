@@ -133,7 +133,9 @@ void JSNamedNodeMap::init(JSContext* ctx)
 JSValue JSNamedNodeMap::create(JSContext* ctx, NamedNodeMap* impl)
 {
     JSNamedNodeMap::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSNamedNodeMapPrototype::self(ctx), JSNamedNodeMap::js_class_id);
+    JSValue _proto = JSNamedNodeMapPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNamedNodeMap::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -158,7 +160,7 @@ JSValue JSNamedNodeMap::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case LengthAttrNum: {
-            NamedNodeMap* imp = (NamedNodeMap*)JS_GetOpaqueNoCheck(this_val);
+            NamedNodeMap* imp = (NamedNodeMap*)JS_GetOpaque(this_val, JSNamedNodeMap::js_class_id);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case ConstructorAttrNum:
@@ -174,7 +176,7 @@ JSValue JSNamedNodeMap::getConstructor(JSContext *ctx)
 
 JSValue JSNamedNodeMapPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    NamedNodeMap* imp = (NamedNodeMap*)JS_GetOpaqueNoCheck(this_val);
+    NamedNodeMap* imp = (NamedNodeMap*)JS_GetOpaque(this_val, JSNamedNodeMap::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -115,7 +115,9 @@ void JSSVGSymbolElement::init(JSContext* ctx)
 JSValue JSSVGSymbolElement::create(JSContext* ctx, SVGSymbolElement* impl)
 {
     JSSVGSymbolElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGSymbolElementPrototype::self(ctx), JSSVGSymbolElement::js_class_id);
+    JSValue _proto = JSSVGSymbolElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGSymbolElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -140,34 +142,34 @@ JSValue JSSVGSymbolElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaque(this_val, JSSVGSymbolElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaque(this_val, JSSVGSymbolElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaque(this_val, JSSVGSymbolElement::js_class_id);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaque(this_val, JSSVGSymbolElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaque(this_val, JSSVGSymbolElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ViewBoxAttrNum: {
-            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaque(this_val, JSSVGSymbolElement::js_class_id);
             RefPtr<SVGAnimatedRect> obj = imp->viewBoxAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case PreserveAspectRatioAttrNum: {
-            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaque(this_val, JSSVGSymbolElement::js_class_id);
             RefPtr<SVGAnimatedPreserveAspectRatio> obj = imp->preserveAspectRatioAnimated();
             return toJS(ctx, obj.get(), imp);
         }
@@ -179,12 +181,12 @@ JSValue JSSVGSymbolElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaque(this_val, JSSVGSymbolElement::js_class_id);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaque(this_val, JSSVGSymbolElement::js_class_id);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -194,7 +196,7 @@ JSValue JSSVGSymbolElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 
 JSValue JSSVGSymbolElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGSymbolElement* imp = (SVGSymbolElement*)JS_GetOpaque(this_val, JSSVGSymbolElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

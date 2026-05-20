@@ -131,7 +131,9 @@ void JSSVGClipPathElement::init(JSContext* ctx)
 JSValue JSSVGClipPathElement::create(JSContext* ctx, SVGClipPathElement* impl)
 {
     JSSVGClipPathElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGClipPathElementPrototype::self(ctx), JSSVGClipPathElement::js_class_id);
+    JSValue _proto = JSSVGClipPathElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGClipPathElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -156,55 +158,55 @@ JSValue JSSVGClipPathElement::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case ClipPathUnitsAttrNum: {
-            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
             RefPtr<SVGAnimatedEnumeration> obj = imp->clipPathUnitsAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RequiredFeaturesAttrNum: {
-            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredFeatures()), imp);
         }
         case RequiredExtensionsAttrNum: {
-            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredExtensions()), imp);
         }
         case SystemLanguageAttrNum: {
-            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->systemLanguage()), imp);
         }
         case XmllangAttrNum: {
-            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case TransformAttrNum: {
-            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
             RefPtr<SVGAnimatedTransformList> obj = imp->transformAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case NearestViewportElementAttrNum: {
-            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->nearestViewportElement()));
         }
         case FarthestViewportElementAttrNum: {
-            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->farthestViewportElement()));
         }
     }
@@ -215,12 +217,12 @@ JSValue JSSVGClipPathElement::putValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -230,7 +232,7 @@ JSValue JSSVGClipPathElement::putValueProperty(JSContext *ctx, JSValueConst this
 
 JSValue JSSVGClipPathElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGClipPathElement* imp = (SVGClipPathElement*)JS_GetOpaque(this_val, JSSVGClipPathElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

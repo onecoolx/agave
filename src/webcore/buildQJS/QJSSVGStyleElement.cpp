@@ -95,7 +95,9 @@ void JSSVGStyleElement::init(JSContext* ctx)
 JSValue JSSVGStyleElement::create(JSContext* ctx, SVGStyleElement* impl)
 {
     JSSVGStyleElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGStyleElementPrototype::self(ctx), JSSVGStyleElement::js_class_id);
+    JSValue _proto = JSSVGStyleElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGStyleElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -120,19 +122,19 @@ JSValue JSSVGStyleElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case XmlspaceAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque(this_val, JSSVGStyleElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case TypeAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque(this_val, JSSVGStyleElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case MediaAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque(this_val, JSSVGStyleElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->media()).utf8().data());
         }
         case TitleAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque(this_val, JSSVGStyleElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->title()).utf8().data());
         }
     }
@@ -143,28 +145,28 @@ JSValue JSSVGStyleElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case XmlspaceAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque(this_val, JSSVGStyleElement::js_class_id);
             ExceptionCode ec = 0;
             imp->setXmlspace(valueToString(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case TypeAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque(this_val, JSSVGStyleElement::js_class_id);
             ExceptionCode ec = 0;
             imp->setType(valueToString(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case MediaAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque(this_val, JSSVGStyleElement::js_class_id);
             ExceptionCode ec = 0;
             imp->setMedia(valueToString(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case TitleAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque(this_val, JSSVGStyleElement::js_class_id);
             ExceptionCode ec = 0;
             imp->setTitle(valueToString(ctx, value), ec);
             setDOMException(ctx, ec);

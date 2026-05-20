@@ -110,17 +110,17 @@ JSClassID JSHTMLHRElement::js_class_id = 0;
 void JSHTMLHRElement::init(JSContext* ctx)
 {
     if (JSHTMLHRElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLHRElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLHRElement::js_class_id, &JSHTMLHRElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLHRElementConstructor::self(ctx), JSHTMLHRElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLHRElement::js_class_id, JSHTMLHRElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLHRElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLHRElement::create(JSContext* ctx, HTMLHRElement* impl)
 {
     JSHTMLHRElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLHRElementPrototype::self(ctx), JSHTMLHRElement::js_class_id);
+    JSValue _proto = JSHTMLHRElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -131,7 +131,7 @@ JSValue JSHTMLHRElement::create(JSContext* ctx, HTMLHRElement* impl)
 
 void JSHTMLHRElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLHRElement* impl = (HTMLHRElement*)JS_GetOpaque(val, JSHTMLHRElement::js_class_id);
+    HTMLHRElement* impl = (HTMLHRElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -145,19 +145,19 @@ JSValue JSHTMLHRElement::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case NoShadeAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->noShade() ? 1 : 0);
         }
         case SizeAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->size()).utf8().data());
         }
         case WidthAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->width()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -170,22 +170,22 @@ JSValue JSHTMLHRElement::putValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case NoShadeAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setNoShade(valueToBoolean(ctx, value));
             break;
         }
         case SizeAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setSize(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case WidthAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setWidth(valueToStringWithNullCheck(ctx, value));
             break;
         }

@@ -98,7 +98,9 @@ void JSSVGElement::init(JSContext* ctx)
 JSValue JSSVGElement::create(JSContext* ctx, SVGElement* impl)
 {
     JSSVGElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGElementPrototype::self(ctx), JSSVGElement::js_class_id);
+    JSValue _proto = JSSVGElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -123,19 +125,19 @@ JSValue JSSVGElement::getValueProperty(JSContext *ctx, JSValueConst this_val, in
 {
     switch (token) {
         case IdAttrNum: {
-            SVGElement* imp = (SVGElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGElement* imp = (SVGElement*)JS_GetOpaque(this_val, JSSVGElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->id()).utf8().data());
         }
         case XmlbaseAttrNum: {
-            SVGElement* imp = (SVGElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGElement* imp = (SVGElement*)JS_GetOpaque(this_val, JSSVGElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmlbase()).utf8().data());
         }
         case OwnerSVGElementAttrNum: {
-            SVGElement* imp = (SVGElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGElement* imp = (SVGElement*)JS_GetOpaque(this_val, JSSVGElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->ownerSVGElement()));
         }
         case ViewportElementAttrNum: {
-            SVGElement* imp = (SVGElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGElement* imp = (SVGElement*)JS_GetOpaque(this_val, JSSVGElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->viewportElement()));
         }
     }
@@ -146,14 +148,14 @@ JSValue JSSVGElement::putValueProperty(JSContext *ctx, JSValueConst this_val, JS
 {
     switch (token) {
         case IdAttrNum: {
-            SVGElement* imp = (SVGElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGElement* imp = (SVGElement*)JS_GetOpaque(this_val, JSSVGElement::js_class_id);
             ExceptionCode ec = 0;
             imp->setId(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case XmlbaseAttrNum: {
-            SVGElement* imp = (SVGElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGElement* imp = (SVGElement*)JS_GetOpaque(this_val, JSSVGElement::js_class_id);
             ExceptionCode ec = 0;
             imp->setXmlbase(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);

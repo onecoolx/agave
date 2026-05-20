@@ -179,7 +179,9 @@ void JSSVGLength::init(JSContext* ctx)
 JSValue JSSVGLength::create(JSContext* ctx, JSSVGPODTypeWrapper<SVGLength>* impl, SVGElement* context)
 {
     JSSVGLength::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGLengthPrototype::self(ctx), JSSVGLength::js_class_id);
+    JSValue _proto = JSSVGLengthPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGLength::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -267,7 +269,7 @@ JSValue JSSVGLength::getConstructor(JSContext *ctx)
 
 JSValue JSSVGLengthPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGLength* imp = (SVGLength*)JS_GetOpaqueNoCheck(this_val);
+    SVGLength* imp = (SVGLength*)JS_GetOpaque(this_val, JSSVGLength::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

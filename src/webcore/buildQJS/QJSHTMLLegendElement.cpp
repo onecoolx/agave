@@ -119,17 +119,17 @@ JSClassID JSHTMLLegendElement::js_class_id = 0;
 void JSHTMLLegendElement::init(JSContext* ctx)
 {
     if (JSHTMLLegendElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLLegendElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLLegendElement::js_class_id, &JSHTMLLegendElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLLegendElementConstructor::self(ctx), JSHTMLLegendElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLLegendElement::js_class_id, JSHTMLLegendElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLLegendElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLLegendElement::create(JSContext* ctx, HTMLLegendElement* impl)
 {
     JSHTMLLegendElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLLegendElementPrototype::self(ctx), JSHTMLLegendElement::js_class_id);
+    JSValue _proto = JSHTMLLegendElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -140,7 +140,7 @@ JSValue JSHTMLLegendElement::create(JSContext* ctx, HTMLLegendElement* impl)
 
 void JSHTMLLegendElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLLegendElement* impl = (HTMLLegendElement*)JS_GetOpaque(val, JSHTMLLegendElement::js_class_id);
+    HTMLLegendElement* impl = (HTMLLegendElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -154,15 +154,15 @@ JSValue JSHTMLLegendElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case FormAttrNum: {
-            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->form()));
         }
         case AccessKeyAttrNum: {
-            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->accessKey()).utf8().data());
         }
         case AlignAttrNum: {
-            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -175,12 +175,12 @@ JSValue JSHTMLLegendElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case AccessKeyAttrNum: {
-            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAccessKey(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AlignAttrNum: {
-            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
@@ -195,7 +195,7 @@ JSValue JSHTMLLegendElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLLegendElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaqueNoCheck(this_val);
+    HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -96,7 +96,9 @@ void JSSVGRadialGradientElement::init(JSContext* ctx)
 JSValue JSSVGRadialGradientElement::create(JSContext* ctx, SVGRadialGradientElement* impl)
 {
     JSSVGRadialGradientElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGRadialGradientElementPrototype::self(ctx), JSSVGRadialGradientElement::js_class_id);
+    JSValue _proto = JSSVGRadialGradientElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGRadialGradientElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -121,27 +123,27 @@ JSValue JSSVGRadialGradientElement::getValueProperty(JSContext *ctx, JSValueCons
 {
     switch (token) {
         case CxAttrNum: {
-            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaque(this_val, JSSVGRadialGradientElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->cxAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case CyAttrNum: {
-            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaque(this_val, JSSVGRadialGradientElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->cyAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RAttrNum: {
-            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaque(this_val, JSSVGRadialGradientElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->rAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case FxAttrNum: {
-            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaque(this_val, JSSVGRadialGradientElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->fxAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case FyAttrNum: {
-            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaque(this_val, JSSVGRadialGradientElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->fyAnimated();
             return toJS(ctx, obj.get(), imp);
         }

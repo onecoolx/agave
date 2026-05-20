@@ -119,7 +119,9 @@ void JSCSSFontFaceRule::init(JSContext* ctx)
 JSValue JSCSSFontFaceRule::create(JSContext* ctx, CSSFontFaceRule* impl)
 {
     JSCSSFontFaceRule::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCSSFontFaceRulePrototype::self(ctx), JSCSSFontFaceRule::js_class_id);
+    JSValue _proto = JSCSSFontFaceRulePrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCSSFontFaceRule::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -144,7 +146,7 @@ JSValue JSCSSFontFaceRule::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case StyleAttrNum: {
-            CSSFontFaceRule* imp = (CSSFontFaceRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSFontFaceRule* imp = (CSSFontFaceRule*)JS_GetOpaque(this_val, JSCSSFontFaceRule::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:

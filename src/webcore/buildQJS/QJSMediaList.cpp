@@ -129,7 +129,9 @@ void JSMediaList::init(JSContext* ctx)
 JSValue JSMediaList::create(JSContext* ctx, MediaList* impl)
 {
     JSMediaList::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSMediaListPrototype::self(ctx), JSMediaList::js_class_id);
+    JSValue _proto = JSMediaListPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSMediaList::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -154,11 +156,11 @@ JSValue JSMediaList::getValueProperty(JSContext *ctx, JSValueConst this_val, int
 {
     switch (token) {
         case MediaTextAttrNum: {
-            MediaList* imp = (MediaList*)JS_GetOpaqueNoCheck(this_val);
+            MediaList* imp = (MediaList*)JS_GetOpaque(this_val, JSMediaList::js_class_id);
             return jsStringOrNull(ctx, imp->mediaText());
         }
         case LengthAttrNum: {
-            MediaList* imp = (MediaList*)JS_GetOpaqueNoCheck(this_val);
+            MediaList* imp = (MediaList*)JS_GetOpaque(this_val, JSMediaList::js_class_id);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case ConstructorAttrNum:
@@ -171,7 +173,7 @@ JSValue JSMediaList::putValueProperty(JSContext *ctx, JSValueConst this_val, JSV
 {
     switch (token) {
         case MediaTextAttrNum: {
-            MediaList* imp = (MediaList*)JS_GetOpaqueNoCheck(this_val);
+            MediaList* imp = (MediaList*)JS_GetOpaque(this_val, JSMediaList::js_class_id);
             ExceptionCode ec = 0;
             imp->setMediaText(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);
@@ -188,7 +190,7 @@ JSValue JSMediaList::getConstructor(JSContext *ctx)
 
 JSValue JSMediaListPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    MediaList* imp = (MediaList*)JS_GetOpaqueNoCheck(this_val);
+    MediaList* imp = (MediaList*)JS_GetOpaque(this_val, JSMediaList::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

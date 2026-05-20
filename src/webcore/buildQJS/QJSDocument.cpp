@@ -226,17 +226,17 @@ JSClassID JSDocument::js_class_id = 0;
 void JSDocument::init(JSContext* ctx)
 {
     if (JSDocument::js_class_id == 0) {
-        JS_NewClassID(&JSDocument::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSDocument::js_class_id, &JSDocumentClassDefine);
-        JS_SetConstructor(ctx, JSDocumentConstructor::self(ctx), JSDocumentPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSDocument::js_class_id, JSDocumentPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSDocument::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSDocument::create(JSContext* ctx, Document* impl)
 {
     JSDocument::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSDocumentPrototype::self(ctx), JSDocument::js_class_id);
+    JSValue _proto = JSDocumentPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -247,7 +247,7 @@ JSValue JSDocument::create(JSContext* ctx, Document* impl)
 
 void JSDocument::finalizer(JSRuntime* rt, JSValue val)
 {
-    Document* impl = (Document*)JS_GetOpaque(val, JSDocument::js_class_id);
+    Document* impl = (Document*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -256,119 +256,119 @@ JSValue JSDocument::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
 {
     switch (token) {
         case DoctypeAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->doctype()));
         }
         case ImplementationAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->implementation()));
         }
         case DocumentElementAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->documentElement()));
         }
         case InputEncodingAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->inputEncoding());
         }
         case XMLEncodingAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->xmlEncoding());
         }
         case XMLVersionAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->xmlVersion());
         }
         case XMLStandaloneAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->xmlStandalone() ? 1 : 0);
         }
         case DocumentURIAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->documentURI());
         }
         case AsyncAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->async() ? 1 : 0);
         }
         case DefaultViewAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->defaultView()));
         }
         case StyleSheetsAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->styleSheets()));
         }
         case TitleAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->title()).utf8().data());
         }
         case ReferrerAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->referrer()).utf8().data());
         }
         case DomainAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->domain()).utf8().data());
         }
         case URLAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->URL()).utf8().data());
         }
         case CookieAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->cookie()).utf8().data());
         }
         case BodyAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->body()));
         }
         case ImagesAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->images()));
         }
         case AppletsAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->applets()));
         }
         case LinksAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->links()));
         }
         case FormsAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->forms()));
         }
         case AnchorsAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->anchors()));
         }
         case LocationAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JSDocument::location(ctx, this_val, imp);
         }
         case CharsetAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrUndefined(ctx, imp->charset());
         }
         case DefaultCharsetAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrUndefined(ctx, imp->defaultCharset());
         }
         case ReadyStateAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrUndefined(ctx, imp->readyState());
         }
         case CharacterSetAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->characterSet());
         }
         case PreferredStylesheetSetAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->preferredStylesheetSet());
         }
         case SelectedStylesheetSetAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->selectedStylesheetSet());
         }
         case ConstructorAttrNum:
@@ -381,65 +381,65 @@ JSValue JSDocument::putValueProperty(JSContext *ctx, JSValueConst this_val, JSVa
 {
     switch (token) {
         case XMLVersionAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             ExceptionCode ec = 0;
             imp->setXMLVersion(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case XMLStandaloneAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             ExceptionCode ec = 0;
             imp->setXMLStandalone(valueToBoolean(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case DocumentURIAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setDocumentURI(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AsyncAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             ExceptionCode ec = 0;
             imp->setAsync(valueToBoolean(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case TitleAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setTitle(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case DomainAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setDomain(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CookieAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCookie(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case BodyAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             ExceptionCode ec = 0;
             imp->setBody(toHTMLElement(value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case LocationAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             JSDocument::setLocation(ctx, this_val, value, imp);
             break;
         }
         case CharsetAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCharset(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case SelectedStylesheetSetAttrNum: {
-            Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+            Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setSelectedStylesheetSet(valueToStringWithNullCheck(ctx, value));
             break;
         }
@@ -454,7 +454,7 @@ JSValue JSDocument::getConstructor(JSContext *ctx)
 
 JSValue JSDocumentPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    Document* imp = (Document*)JS_GetOpaqueNoCheck(this_val);
+    Document* imp = (Document*)JS_GetOpaque(this_val, JSNode::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

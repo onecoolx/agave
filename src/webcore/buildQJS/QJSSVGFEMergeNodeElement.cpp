@@ -92,7 +92,9 @@ void JSSVGFEMergeNodeElement::init(JSContext* ctx)
 JSValue JSSVGFEMergeNodeElement::create(JSContext* ctx, SVGFEMergeNodeElement* impl)
 {
     JSSVGFEMergeNodeElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGFEMergeNodeElementPrototype::self(ctx), JSSVGFEMergeNodeElement::js_class_id);
+    JSValue _proto = JSSVGFEMergeNodeElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGFEMergeNodeElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -117,7 +119,7 @@ JSValue JSSVGFEMergeNodeElement::getValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case In1AttrNum: {
-            SVGFEMergeNodeElement* imp = (SVGFEMergeNodeElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEMergeNodeElement* imp = (SVGFEMergeNodeElement*)JS_GetOpaque(this_val, JSSVGFEMergeNodeElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->in1Animated();
             return toJS(ctx, obj.get(), imp);
         }

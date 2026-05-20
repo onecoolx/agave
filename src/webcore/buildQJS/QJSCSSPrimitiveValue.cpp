@@ -208,7 +208,9 @@ void JSCSSPrimitiveValue::init(JSContext* ctx)
 JSValue JSCSSPrimitiveValue::create(JSContext* ctx, CSSPrimitiveValue* impl)
 {
     JSCSSPrimitiveValue::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCSSPrimitiveValuePrototype::self(ctx), JSCSSPrimitiveValue::js_class_id);
+    JSValue _proto = JSCSSPrimitiveValuePrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCSSPrimitiveValue::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -233,7 +235,7 @@ JSValue JSCSSPrimitiveValue::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case PrimitiveTypeAttrNum: {
-            CSSPrimitiveValue* imp = (CSSPrimitiveValue*)JS_GetOpaqueNoCheck(this_val);
+            CSSPrimitiveValue* imp = (CSSPrimitiveValue*)JS_GetOpaque(this_val, JSCSSPrimitiveValue::js_class_id);
             return JS_NewBigUint64(ctx, imp->primitiveType());
         }
         case ConstructorAttrNum:
@@ -249,7 +251,7 @@ JSValue JSCSSPrimitiveValue::getConstructor(JSContext *ctx)
 
 JSValue JSCSSPrimitiveValuePrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    CSSPrimitiveValue* imp = (CSSPrimitiveValue*)JS_GetOpaqueNoCheck(this_val);
+    CSSPrimitiveValue* imp = (CSSPrimitiveValue*)JS_GetOpaque(this_val, JSCSSPrimitiveValue::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

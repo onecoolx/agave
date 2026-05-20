@@ -91,7 +91,9 @@ void JSSVGPathSegLinetoHorizontalRel::init(JSContext* ctx)
 JSValue JSSVGPathSegLinetoHorizontalRel::create(JSContext* ctx, SVGPathSegLinetoHorizontalRel* impl, SVGElement* context)
 {
     JSSVGPathSegLinetoHorizontalRel::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGPathSegLinetoHorizontalRelPrototype::self(ctx), JSSVGPathSegLinetoHorizontalRel::js_class_id);
+    JSValue _proto = JSSVGPathSegLinetoHorizontalRelPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGPathSegLinetoHorizontalRel::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -116,7 +118,7 @@ JSValue JSSVGPathSegLinetoHorizontalRel::getValueProperty(JSContext *ctx, JSValu
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegLinetoHorizontalRel* imp = (SVGPathSegLinetoHorizontalRel*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegLinetoHorizontalRel* imp = (SVGPathSegLinetoHorizontalRel*)JS_GetOpaque(this_val, JSSVGPathSegLinetoHorizontalRel::js_class_id);
             return JS_NewBigUint64(ctx, imp->x());
         }
     }
@@ -127,7 +129,7 @@ JSValue JSSVGPathSegLinetoHorizontalRel::putValueProperty(JSContext *ctx, JSValu
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegLinetoHorizontalRel* imp = (SVGPathSegLinetoHorizontalRel*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegLinetoHorizontalRel* imp = (SVGPathSegLinetoHorizontalRel*)JS_GetOpaque(this_val, JSSVGPathSegLinetoHorizontalRel::js_class_id);
             imp->setX(valueToFloat(ctx, value));
             break;
         }

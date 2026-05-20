@@ -92,7 +92,9 @@ void JSSVGAnimatedString::init(JSContext* ctx)
 JSValue JSSVGAnimatedString::create(JSContext* ctx, SVGAnimatedString* impl, SVGElement* context)
 {
     JSSVGAnimatedString::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnimatedStringPrototype::self(ctx), JSSVGAnimatedString::js_class_id);
+    JSValue _proto = JSSVGAnimatedStringPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAnimatedString::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -117,11 +119,11 @@ JSValue JSSVGAnimatedString::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedString* imp = (SVGAnimatedString*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedString* imp = (SVGAnimatedString*)JS_GetOpaque(this_val, JSSVGAnimatedString::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->baseVal()).utf8().data());
         }
         case AnimValAttrNum: {
-            SVGAnimatedString* imp = (SVGAnimatedString*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedString* imp = (SVGAnimatedString*)JS_GetOpaque(this_val, JSSVGAnimatedString::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->animVal()).utf8().data());
         }
     }
@@ -132,7 +134,7 @@ JSValue JSSVGAnimatedString::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedString* imp = (SVGAnimatedString*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedString* imp = (SVGAnimatedString*)JS_GetOpaque(this_val, JSSVGAnimatedString::js_class_id);
             imp->setBaseVal(valueToString(ctx, value));
             break;
         }

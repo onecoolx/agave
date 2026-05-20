@@ -95,7 +95,9 @@ void JSSVGLinearGradientElement::init(JSContext* ctx)
 JSValue JSSVGLinearGradientElement::create(JSContext* ctx, SVGLinearGradientElement* impl)
 {
     JSSVGLinearGradientElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGLinearGradientElementPrototype::self(ctx), JSSVGLinearGradientElement::js_class_id);
+    JSValue _proto = JSSVGLinearGradientElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGLinearGradientElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -120,22 +122,22 @@ JSValue JSSVGLinearGradientElement::getValueProperty(JSContext *ctx, JSValueCons
 {
     switch (token) {
         case X1AttrNum: {
-            SVGLinearGradientElement* imp = (SVGLinearGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLinearGradientElement* imp = (SVGLinearGradientElement*)JS_GetOpaque(this_val, JSSVGLinearGradientElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->x1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case Y1AttrNum: {
-            SVGLinearGradientElement* imp = (SVGLinearGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLinearGradientElement* imp = (SVGLinearGradientElement*)JS_GetOpaque(this_val, JSSVGLinearGradientElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->y1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case X2AttrNum: {
-            SVGLinearGradientElement* imp = (SVGLinearGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLinearGradientElement* imp = (SVGLinearGradientElement*)JS_GetOpaque(this_val, JSSVGLinearGradientElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->x2Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case Y2AttrNum: {
-            SVGLinearGradientElement* imp = (SVGLinearGradientElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLinearGradientElement* imp = (SVGLinearGradientElement*)JS_GetOpaque(this_val, JSSVGLinearGradientElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->y2Animated();
             return toJS(ctx, obj.get(), imp);
         }

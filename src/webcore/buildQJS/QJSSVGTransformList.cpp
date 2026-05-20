@@ -110,7 +110,9 @@ void JSSVGTransformList::init(JSContext* ctx)
 JSValue JSSVGTransformList::create(JSContext* ctx, SVGTransformList* impl, SVGElement* context)
 {
     JSSVGTransformList::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGTransformListPrototype::self(ctx), JSSVGTransformList::js_class_id);
+    JSValue _proto = JSSVGTransformListPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGTransformList::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -135,7 +137,7 @@ JSValue JSSVGTransformList::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case NumberOfItemsAttrNum: {
-            SVGTransformList* imp = (SVGTransformList*)JS_GetOpaqueNoCheck(this_val);
+            SVGTransformList* imp = (SVGTransformList*)JS_GetOpaque(this_val, JSSVGTransformList::js_class_id);
             return JS_NewBigUint64(ctx, imp->numberOfItems());
         }
     }
@@ -144,7 +146,7 @@ JSValue JSSVGTransformList::getValueProperty(JSContext *ctx, JSValueConst this_v
 
 JSValue JSSVGTransformListPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGTransformList* imp = (SVGTransformList*)JS_GetOpaqueNoCheck(this_val);
+    SVGTransformList* imp = (SVGTransformList*)JS_GetOpaque(this_val, JSSVGTransformList::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -90,7 +90,9 @@ void JSSVGNumber::init(JSContext* ctx)
 JSValue JSSVGNumber::create(JSContext* ctx, JSSVGPODTypeWrapper<float>* impl, SVGElement* context)
 {
     JSSVGNumber::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGNumberPrototype::self(ctx), JSSVGNumber::js_class_id);
+    JSValue _proto = JSSVGNumberPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGNumber::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

@@ -42,6 +42,8 @@
 #include "QJSCanvasPattern.h"
 #include "QJSHTMLCanvasElement.h"
 #include "QJSHTMLImageElement.h"
+#include "HTMLNames.h"
+#include "QJSNode.h"
 #include "qjs_binding.h"
 #include "qjs_html.h"
 
@@ -218,8 +220,9 @@ JSValue JSCanvasRenderingContext2D::drawImage(JSContext *ctx, JSValueConst this_
     if (!JS_IsObject(value))
         return JS_ThrowTypeError(ctx, "Type Error");
 
-    HTMLImageElement* imgElt = (HTMLImageElement*)JS_GetOpaque(value, JSHTMLImageElement::js_class_id);
-    HTMLCanvasElement* canvas = (HTMLCanvasElement*)JS_GetOpaque(value, JSHTMLCanvasElement::js_class_id);
+    Node* _node = (Node*)JS_GetOpaque(value, JSNode::js_class_id);
+    HTMLImageElement* imgElt = (_node && _node->hasTagName(HTMLNames::imgTag)) ? static_cast<HTMLImageElement*>(_node) : 0;
+    HTMLCanvasElement* canvas = (_node && _node->hasTagName(HTMLNames::canvasTag)) ? static_cast<HTMLCanvasElement*>(_node) : 0;
     
     ExceptionCode ec = 0;
     if (imgElt) {
@@ -278,7 +281,8 @@ JSValue JSCanvasRenderingContext2D::drawImageFromRect(JSContext *ctx, JSValueCon
     if (!JS_IsObject(value))
         return JS_ThrowTypeError(ctx, "Type Error");
 
-    HTMLImageElement* imgElt = (HTMLImageElement*)JS_GetOpaque(value, JSHTMLImageElement::js_class_id);
+    Node* _node = (Node*)JS_GetOpaque(value, JSNode::js_class_id);
+    HTMLImageElement* imgElt = (_node && _node->hasTagName(HTMLNames::imgTag)) ? static_cast<HTMLImageElement*>(_node) : 0;
     
     if (!imgElt)
         return JS_ThrowTypeError(ctx, "Type Error");
@@ -346,8 +350,9 @@ JSValue JSCanvasRenderingContext2D::createPattern(JSContext *ctx, JSValueConst t
     if (!JS_IsObject(value))
         return JS_ThrowTypeError(ctx, "Type Error");
     
-    HTMLImageElement* imgElt = (HTMLImageElement*)JS_GetOpaque(value, JSHTMLImageElement::js_class_id);
-    HTMLCanvasElement* canvas = (HTMLCanvasElement*)JS_GetOpaque(value, JSHTMLCanvasElement::js_class_id);
+    Node* _node = (Node*)JS_GetOpaque(value, JSNode::js_class_id);
+    HTMLImageElement* imgElt = (_node && _node->hasTagName(HTMLNames::imgTag)) ? static_cast<HTMLImageElement*>(_node) : 0;
+    HTMLCanvasElement* canvas = (_node && _node->hasTagName(HTMLNames::canvasTag)) ? static_cast<HTMLCanvasElement*>(_node) : 0;
 
     if (imgElt) {
         ExceptionCode ec;

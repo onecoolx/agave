@@ -106,17 +106,17 @@ JSClassID JSHTMLDirectoryElement::js_class_id = 0;
 void JSHTMLDirectoryElement::init(JSContext* ctx)
 {
     if (JSHTMLDirectoryElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLDirectoryElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLDirectoryElement::js_class_id, &JSHTMLDirectoryElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLDirectoryElementConstructor::self(ctx), JSHTMLDirectoryElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLDirectoryElement::js_class_id, JSHTMLDirectoryElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLDirectoryElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLDirectoryElement::create(JSContext* ctx, HTMLDirectoryElement* impl)
 {
     JSHTMLDirectoryElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLDirectoryElementPrototype::self(ctx), JSHTMLDirectoryElement::js_class_id);
+    JSValue _proto = JSHTMLDirectoryElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -127,7 +127,7 @@ JSValue JSHTMLDirectoryElement::create(JSContext* ctx, HTMLDirectoryElement* imp
 
 void JSHTMLDirectoryElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLDirectoryElement* impl = (HTMLDirectoryElement*)JS_GetOpaque(val, JSHTMLDirectoryElement::js_class_id);
+    HTMLDirectoryElement* impl = (HTMLDirectoryElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -141,7 +141,7 @@ JSValue JSHTMLDirectoryElement::getValueProperty(JSContext *ctx, JSValueConst th
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLDirectoryElement* imp = (HTMLDirectoryElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLDirectoryElement* imp = (HTMLDirectoryElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->compact() ? 1 : 0);
         }
         case ConstructorAttrNum:
@@ -154,7 +154,7 @@ JSValue JSHTMLDirectoryElement::putValueProperty(JSContext *ctx, JSValueConst th
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLDirectoryElement* imp = (HTMLDirectoryElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLDirectoryElement* imp = (HTMLDirectoryElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCompact(valueToBoolean(ctx, value));
             break;
         }

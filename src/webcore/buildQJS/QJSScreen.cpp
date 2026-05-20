@@ -90,7 +90,9 @@ void JSScreen::init(JSContext* ctx)
 JSValue JSScreen::create(JSContext* ctx, Screen* impl)
 {
     JSScreen::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSScreenPrototype::self(ctx), JSScreen::js_class_id);
+    JSValue _proto = JSScreenPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSScreen::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -115,35 +117,35 @@ JSValue JSScreen::getValueProperty(JSContext *ctx, JSValueConst this_val, int to
 {
     switch (token) {
         case HeightAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
+            Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
             return JS_NewBigUint64(ctx, imp->height());
         }
         case WidthAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
+            Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
             return JS_NewBigUint64(ctx, imp->width());
         }
         case ColorDepthAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
+            Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
             return JS_NewBigUint64(ctx, imp->colorDepth());
         }
         case PixelDepthAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
+            Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
             return JS_NewBigUint64(ctx, imp->pixelDepth());
         }
         case AvailLeftAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
+            Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
             return JS_NewBigUint64(ctx, imp->availLeft());
         }
         case AvailTopAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
+            Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
             return JS_NewBigUint64(ctx, imp->availTop());
         }
         case AvailHeightAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
+            Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
             return JS_NewBigUint64(ctx, imp->availHeight());
         }
         case AvailWidthAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
+            Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
             return JS_NewBigUint64(ctx, imp->availWidth());
         }
     }

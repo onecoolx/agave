@@ -102,7 +102,9 @@ void JSSVGElementInstanceList::init(JSContext* ctx)
 JSValue JSSVGElementInstanceList::create(JSContext* ctx, SVGElementInstanceList* impl)
 {
     JSSVGElementInstanceList::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGElementInstanceListPrototype::self(ctx), JSSVGElementInstanceList::js_class_id);
+    JSValue _proto = JSSVGElementInstanceListPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGElementInstanceList::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -127,7 +129,7 @@ JSValue JSSVGElementInstanceList::getValueProperty(JSContext *ctx, JSValueConst 
 {
     switch (token) {
         case LengthAttrNum: {
-            SVGElementInstanceList* imp = (SVGElementInstanceList*)JS_GetOpaqueNoCheck(this_val);
+            SVGElementInstanceList* imp = (SVGElementInstanceList*)JS_GetOpaque(this_val, JSSVGElementInstanceList::js_class_id);
             return JS_NewBigUint64(ctx, imp->length());
         }
     }
@@ -136,7 +138,7 @@ JSValue JSSVGElementInstanceList::getValueProperty(JSContext *ctx, JSValueConst 
 
 JSValue JSSVGElementInstanceListPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGElementInstanceList* imp = (SVGElementInstanceList*)JS_GetOpaqueNoCheck(this_val);
+    SVGElementInstanceList* imp = (SVGElementInstanceList*)JS_GetOpaque(this_val, JSSVGElementInstanceList::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

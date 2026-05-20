@@ -101,7 +101,9 @@ void JSCSSStyleSheet::init(JSContext* ctx)
 JSValue JSCSSStyleSheet::create(JSContext* ctx, CSSStyleSheet* impl)
 {
     JSCSSStyleSheet::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCSSStyleSheetPrototype::self(ctx), JSCSSStyleSheet::js_class_id);
+    JSValue _proto = JSCSSStyleSheetPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCSSStyleSheet::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -126,15 +128,15 @@ JSValue JSCSSStyleSheet::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case OwnerRuleAttrNum: {
-            CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaqueNoCheck(this_val);
+            CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaque(this_val, JSCSSStyleSheet::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->ownerRule()));
         }
         case CssRulesAttrNum: {
-            CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaqueNoCheck(this_val);
+            CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaque(this_val, JSCSSStyleSheet::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->cssRules()));
         }
         case RulesAttrNum: {
-            CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaqueNoCheck(this_val);
+            CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaque(this_val, JSCSSStyleSheet::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->rules()));
         }
     }
@@ -148,7 +150,7 @@ JSValue JSCSSStyleSheet::getConstructor(JSContext *ctx)
 
 JSValue JSCSSStyleSheetPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaqueNoCheck(this_val);
+    CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaque(this_val, JSCSSStyleSheet::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

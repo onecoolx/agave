@@ -129,7 +129,9 @@ void JSSVGSwitchElement::init(JSContext* ctx)
 JSValue JSSVGSwitchElement::create(JSContext* ctx, SVGSwitchElement* impl)
 {
     JSSVGSwitchElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGSwitchElementPrototype::self(ctx), JSSVGSwitchElement::js_class_id);
+    JSValue _proto = JSSVGSwitchElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGSwitchElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -154,50 +156,50 @@ JSValue JSSVGSwitchElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case RequiredFeaturesAttrNum: {
-            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaque(this_val, JSSVGSwitchElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredFeatures()), imp);
         }
         case RequiredExtensionsAttrNum: {
-            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaque(this_val, JSSVGSwitchElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredExtensions()), imp);
         }
         case SystemLanguageAttrNum: {
-            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaque(this_val, JSSVGSwitchElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->systemLanguage()), imp);
         }
         case XmllangAttrNum: {
-            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaque(this_val, JSSVGSwitchElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaque(this_val, JSSVGSwitchElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaque(this_val, JSSVGSwitchElement::js_class_id);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaque(this_val, JSSVGSwitchElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaque(this_val, JSSVGSwitchElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case TransformAttrNum: {
-            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaque(this_val, JSSVGSwitchElement::js_class_id);
             RefPtr<SVGAnimatedTransformList> obj = imp->transformAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case NearestViewportElementAttrNum: {
-            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaque(this_val, JSSVGSwitchElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->nearestViewportElement()));
         }
         case FarthestViewportElementAttrNum: {
-            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaque(this_val, JSSVGSwitchElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->farthestViewportElement()));
         }
     }
@@ -208,12 +210,12 @@ JSValue JSSVGSwitchElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaque(this_val, JSSVGSwitchElement::js_class_id);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaque(this_val, JSSVGSwitchElement::js_class_id);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -223,7 +225,7 @@ JSValue JSSVGSwitchElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 
 JSValue JSSVGSwitchElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGSwitchElement* imp = (SVGSwitchElement*)JS_GetOpaque(this_val, JSSVGSwitchElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

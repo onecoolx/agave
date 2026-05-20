@@ -103,7 +103,9 @@ void JSSVGDocument::init(JSContext* ctx)
 JSValue JSSVGDocument::create(JSContext* ctx, SVGDocument* impl)
 {
     JSSVGDocument::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGDocumentPrototype::self(ctx), JSSVGDocument::js_class_id);
+    JSValue _proto = JSSVGDocumentPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGDocument::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -128,7 +130,7 @@ JSValue JSSVGDocument::getValueProperty(JSContext *ctx, JSValueConst this_val, i
 {
     switch (token) {
         case RootElementAttrNum: {
-            SVGDocument* imp = (SVGDocument*)JS_GetOpaqueNoCheck(this_val);
+            SVGDocument* imp = (SVGDocument*)JS_GetOpaque(this_val, JSSVGDocument::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->rootElement()));
         }
     }
@@ -137,7 +139,7 @@ JSValue JSSVGDocument::getValueProperty(JSContext *ctx, JSValueConst this_val, i
 
 JSValue JSSVGDocumentPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGDocument* imp = (SVGDocument*)JS_GetOpaqueNoCheck(this_val);
+    SVGDocument* imp = (SVGDocument*)JS_GetOpaque(this_val, JSSVGDocument::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

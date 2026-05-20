@@ -374,199 +374,199 @@ JSValue JSDOMWindow::getValueProperty(JSContext *ctx, JSValueConst this_val, int
         case ScreenAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->screen()));
         }
         case HistoryAttrNum: {
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->history()));
         }
         case LocationbarAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->locationbar()));
         }
         case MenubarAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->menubar()));
         }
         case PersonalbarAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->personalbar()));
         }
         case ScrollbarsAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->scrollbars()));
         }
         case StatusbarAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->statusbar()));
         }
         case ToolbarAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->toolbar()));
         }
         case FrameElementAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return checkNodeSecurity(ctx, imp->frameElement()) ? toJS(ctx, QJS::getPtr(imp->frameElement())) : JS_UNDEFINED;
         }
         case OffscreenBufferingAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBool(ctx, imp->offscreenBuffering() ? 1 : 0);
         }
         case OuterHeightAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBigUint64(ctx, imp->outerHeight());
         }
         case OuterWidthAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBigUint64(ctx, imp->outerWidth());
         }
         case InnerHeightAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBigUint64(ctx, imp->innerHeight());
         }
         case InnerWidthAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBigUint64(ctx, imp->innerWidth());
         }
         case ScreenXAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBigUint64(ctx, imp->screenX());
         }
         case ScreenYAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBigUint64(ctx, imp->screenY());
         }
         case ScreenLeftAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBigUint64(ctx, imp->screenLeft());
         }
         case ScreenTopAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBigUint64(ctx, imp->screenTop());
         }
         case ScrollXAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBigUint64(ctx, imp->scrollX());
         }
         case ScrollYAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBigUint64(ctx, imp->scrollY());
         }
         case PageXOffsetAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBigUint64(ctx, imp->pageXOffset());
         }
         case PageYOffsetAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBigUint64(ctx, imp->pageYOffset());
         }
         case ClosedAttrNum: {
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBool(ctx, imp->closed() ? 1 : 0);
         }
         case LengthAttrNum: {
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case NameAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case StatusAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->status()).utf8().data());
         }
         case DefaultStatusAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->defaultStatus()).utf8().data());
         }
         case DefaultstatusAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->defaultstatus()).utf8().data());
         }
         case SelfAttrNum: {
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->self()));
         }
         case WindowAttrNum: {
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->window()));
         }
         case FramesAttrNum: {
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->frames()));
         }
         case OpenerAttrNum: {
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->opener()));
         }
         case ParentAttrNum: {
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->parent()));
         }
         case TopAttrNum: {
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->top()));
         }
         case DocumentAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->document()));
         }
         case DevicePixelRatioAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             return JS_NewBigUint64(ctx, imp->devicePixelRatio());
         }
         case StyleSheetConstructorAttrNum: {
@@ -1094,28 +1094,28 @@ JSValue JSDOMWindow::putValueProperty(JSContext *ctx, JSValueConst this_val, JSV
         case NameAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             imp->setName(valueToString(ctx, value));
             break;
         }
         case StatusAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             imp->setStatus(valueToString(ctx, value));
             break;
         }
         case DefaultStatusAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             imp->setDefaultStatus(valueToString(ctx, value));
             break;
         }
         case DefaultstatusAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+            DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
             imp->setDefaultstatus(valueToString(ctx, value));
             break;
         }
@@ -1846,7 +1846,7 @@ JSValue JSDOMWindow::putValueProperty(JSContext *ctx, JSValueConst this_val, JSV
 
 JSValue JSDOMWindowPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    DOMWindow* imp = (DOMWindow*)JS_GetOpaqueNoCheck(this_val);
+    DOMWindow* imp = (DOMWindow*)JS_GetOpaque(this_val, JSDOMWindow::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

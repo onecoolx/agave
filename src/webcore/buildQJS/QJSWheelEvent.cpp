@@ -97,7 +97,9 @@ void JSWheelEvent::init(JSContext* ctx)
 JSValue JSWheelEvent::create(JSContext* ctx, WheelEvent* impl)
 {
     JSWheelEvent::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSWheelEventPrototype::self(ctx), JSWheelEvent::js_class_id);
+    JSValue _proto = JSWheelEventPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSWheelEvent::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -122,63 +124,63 @@ JSValue JSWheelEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, in
 {
     switch (token) {
         case ScreenXAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->screenX());
         }
         case ScreenYAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->screenY());
         }
         case ClientXAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->clientX());
         }
         case ClientYAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->clientY());
         }
         case CtrlKeyAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBool(ctx, imp->ctrlKey() ? 1 : 0);
         }
         case ShiftKeyAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBool(ctx, imp->shiftKey() ? 1 : 0);
         }
         case AltKeyAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBool(ctx, imp->altKey() ? 1 : 0);
         }
         case MetaKeyAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBool(ctx, imp->metaKey() ? 1 : 0);
         }
         case WheelDeltaAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->wheelDelta());
         }
         case WheelDeltaXAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->wheelDeltaX());
         }
         case WheelDeltaYAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->wheelDeltaY());
         }
         case OffsetXAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->offsetX());
         }
         case OffsetYAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->offsetY());
         }
         case XAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->x());
         }
         case YAttrNum: {
-            WheelEvent* imp = (WheelEvent*)JS_GetOpaqueNoCheck(this_val);
+            WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->y());
         }
     }

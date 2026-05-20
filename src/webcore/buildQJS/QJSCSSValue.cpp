@@ -146,7 +146,9 @@ void JSCSSValue::init(JSContext* ctx)
 JSValue JSCSSValue::create(JSContext* ctx, CSSValue* impl)
 {
     JSCSSValue::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCSSValuePrototype::self(ctx), JSCSSValue::js_class_id);
+    JSValue _proto = JSCSSValuePrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCSSValue::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -171,11 +173,11 @@ JSValue JSCSSValue::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
 {
     switch (token) {
         case CssTextAttrNum: {
-            CSSValue* imp = (CSSValue*)JS_GetOpaqueNoCheck(this_val);
+            CSSValue* imp = (CSSValue*)JS_GetOpaque(this_val, JSCSSValue::js_class_id);
             return jsStringOrNull(ctx, imp->cssText());
         }
         case CssValueTypeAttrNum: {
-            CSSValue* imp = (CSSValue*)JS_GetOpaqueNoCheck(this_val);
+            CSSValue* imp = (CSSValue*)JS_GetOpaque(this_val, JSCSSValue::js_class_id);
             return JS_NewBigUint64(ctx, imp->cssValueType());
         }
         case ConstructorAttrNum:
@@ -188,7 +190,7 @@ JSValue JSCSSValue::putValueProperty(JSContext *ctx, JSValueConst this_val, JSVa
 {
     switch (token) {
         case CssTextAttrNum: {
-            CSSValue* imp = (CSSValue*)JS_GetOpaqueNoCheck(this_val);
+            CSSValue* imp = (CSSValue*)JS_GetOpaque(this_val, JSCSSValue::js_class_id);
             ExceptionCode ec = 0;
             imp->setCssText(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);

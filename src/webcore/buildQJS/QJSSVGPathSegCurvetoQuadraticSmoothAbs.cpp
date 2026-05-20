@@ -92,7 +92,9 @@ void JSSVGPathSegCurvetoQuadraticSmoothAbs::init(JSContext* ctx)
 JSValue JSSVGPathSegCurvetoQuadraticSmoothAbs::create(JSContext* ctx, SVGPathSegCurvetoQuadraticSmoothAbs* impl, SVGElement* context)
 {
     JSSVGPathSegCurvetoQuadraticSmoothAbs::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGPathSegCurvetoQuadraticSmoothAbsPrototype::self(ctx), JSSVGPathSegCurvetoQuadraticSmoothAbs::js_class_id);
+    JSValue _proto = JSSVGPathSegCurvetoQuadraticSmoothAbsPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGPathSegCurvetoQuadraticSmoothAbs::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -117,11 +119,11 @@ JSValue JSSVGPathSegCurvetoQuadraticSmoothAbs::getValueProperty(JSContext *ctx, 
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegCurvetoQuadraticSmoothAbs* imp = (SVGPathSegCurvetoQuadraticSmoothAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegCurvetoQuadraticSmoothAbs* imp = (SVGPathSegCurvetoQuadraticSmoothAbs*)JS_GetOpaque(this_val, JSSVGPathSegCurvetoQuadraticSmoothAbs::js_class_id);
             return JS_NewBigUint64(ctx, imp->x());
         }
         case YAttrNum: {
-            SVGPathSegCurvetoQuadraticSmoothAbs* imp = (SVGPathSegCurvetoQuadraticSmoothAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegCurvetoQuadraticSmoothAbs* imp = (SVGPathSegCurvetoQuadraticSmoothAbs*)JS_GetOpaque(this_val, JSSVGPathSegCurvetoQuadraticSmoothAbs::js_class_id);
             return JS_NewBigUint64(ctx, imp->y());
         }
     }
@@ -132,12 +134,12 @@ JSValue JSSVGPathSegCurvetoQuadraticSmoothAbs::putValueProperty(JSContext *ctx, 
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegCurvetoQuadraticSmoothAbs* imp = (SVGPathSegCurvetoQuadraticSmoothAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegCurvetoQuadraticSmoothAbs* imp = (SVGPathSegCurvetoQuadraticSmoothAbs*)JS_GetOpaque(this_val, JSSVGPathSegCurvetoQuadraticSmoothAbs::js_class_id);
             imp->setX(valueToFloat(ctx, value));
             break;
         }
         case YAttrNum: {
-            SVGPathSegCurvetoQuadraticSmoothAbs* imp = (SVGPathSegCurvetoQuadraticSmoothAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegCurvetoQuadraticSmoothAbs* imp = (SVGPathSegCurvetoQuadraticSmoothAbs*)JS_GetOpaque(this_val, JSSVGPathSegCurvetoQuadraticSmoothAbs::js_class_id);
             imp->setY(valueToFloat(ctx, value));
             break;
         }

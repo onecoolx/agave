@@ -134,7 +134,9 @@ void JSSVGLineElement::init(JSContext* ctx)
 JSValue JSSVGLineElement::create(JSContext* ctx, SVGLineElement* impl)
 {
     JSSVGLineElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGLineElementPrototype::self(ctx), JSSVGLineElement::js_class_id);
+    JSValue _proto = JSSVGLineElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGLineElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -159,70 +161,70 @@ JSValue JSSVGLineElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case X1AttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->x1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case Y1AttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->y1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case X2AttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->x2Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case Y2AttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->y2Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case RequiredFeaturesAttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredFeatures()), imp);
         }
         case RequiredExtensionsAttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredExtensions()), imp);
         }
         case SystemLanguageAttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->systemLanguage()), imp);
         }
         case XmllangAttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case TransformAttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             RefPtr<SVGAnimatedTransformList> obj = imp->transformAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case NearestViewportElementAttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->nearestViewportElement()));
         }
         case FarthestViewportElementAttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->farthestViewportElement()));
         }
     }
@@ -233,12 +235,12 @@ JSValue JSSVGLineElement::putValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -248,7 +250,7 @@ JSValue JSSVGLineElement::putValueProperty(JSContext *ctx, JSValueConst this_val
 
 JSValue JSSVGLineElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGLineElement* imp = (SVGLineElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGLineElement* imp = (SVGLineElement*)JS_GetOpaque(this_val, JSSVGLineElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

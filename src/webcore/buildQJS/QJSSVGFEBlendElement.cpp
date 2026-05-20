@@ -181,7 +181,9 @@ void JSSVGFEBlendElement::init(JSContext* ctx)
 JSValue JSSVGFEBlendElement::create(JSContext* ctx, SVGFEBlendElement* impl)
 {
     JSSVGFEBlendElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGFEBlendElementPrototype::self(ctx), JSSVGFEBlendElement::js_class_id);
+    JSValue _proto = JSSVGFEBlendElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGFEBlendElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -206,52 +208,52 @@ JSValue JSSVGFEBlendElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case In1AttrNum: {
-            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaque(this_val, JSSVGFEBlendElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->in1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case In2AttrNum: {
-            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaque(this_val, JSSVGFEBlendElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->in2Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case ModeAttrNum: {
-            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaque(this_val, JSSVGFEBlendElement::js_class_id);
             RefPtr<SVGAnimatedEnumeration> obj = imp->modeAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaque(this_val, JSSVGFEBlendElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaque(this_val, JSSVGFEBlendElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaque(this_val, JSSVGFEBlendElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaque(this_val, JSSVGFEBlendElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaque(this_val, JSSVGFEBlendElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaque(this_val, JSSVGFEBlendElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaque(this_val, JSSVGFEBlendElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:
@@ -267,7 +269,7 @@ JSValue JSSVGFEBlendElement::getConstructor(JSContext *ctx)
 
 JSValue JSSVGFEBlendElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGFEBlendElement* imp = (SVGFEBlendElement*)JS_GetOpaque(this_val, JSSVGFEBlendElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

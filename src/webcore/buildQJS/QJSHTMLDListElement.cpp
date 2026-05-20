@@ -106,17 +106,17 @@ JSClassID JSHTMLDListElement::js_class_id = 0;
 void JSHTMLDListElement::init(JSContext* ctx)
 {
     if (JSHTMLDListElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLDListElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLDListElement::js_class_id, &JSHTMLDListElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLDListElementConstructor::self(ctx), JSHTMLDListElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLDListElement::js_class_id, JSHTMLDListElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLDListElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLDListElement::create(JSContext* ctx, HTMLDListElement* impl)
 {
     JSHTMLDListElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLDListElementPrototype::self(ctx), JSHTMLDListElement::js_class_id);
+    JSValue _proto = JSHTMLDListElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -127,7 +127,7 @@ JSValue JSHTMLDListElement::create(JSContext* ctx, HTMLDListElement* impl)
 
 void JSHTMLDListElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLDListElement* impl = (HTMLDListElement*)JS_GetOpaque(val, JSHTMLDListElement::js_class_id);
+    HTMLDListElement* impl = (HTMLDListElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -141,7 +141,7 @@ JSValue JSHTMLDListElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLDListElement* imp = (HTMLDListElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLDListElement* imp = (HTMLDListElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->compact() ? 1 : 0);
         }
         case ConstructorAttrNum:
@@ -154,7 +154,7 @@ JSValue JSHTMLDListElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLDListElement* imp = (HTMLDListElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLDListElement* imp = (HTMLDListElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCompact(valueToBoolean(ctx, value));
             break;
         }

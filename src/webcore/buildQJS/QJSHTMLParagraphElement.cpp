@@ -107,17 +107,17 @@ JSClassID JSHTMLParagraphElement::js_class_id = 0;
 void JSHTMLParagraphElement::init(JSContext* ctx)
 {
     if (JSHTMLParagraphElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLParagraphElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLParagraphElement::js_class_id, &JSHTMLParagraphElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLParagraphElementConstructor::self(ctx), JSHTMLParagraphElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLParagraphElement::js_class_id, JSHTMLParagraphElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLParagraphElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLParagraphElement::create(JSContext* ctx, HTMLParagraphElement* impl)
 {
     JSHTMLParagraphElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLParagraphElementPrototype::self(ctx), JSHTMLParagraphElement::js_class_id);
+    JSValue _proto = JSHTMLParagraphElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -128,7 +128,7 @@ JSValue JSHTMLParagraphElement::create(JSContext* ctx, HTMLParagraphElement* imp
 
 void JSHTMLParagraphElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLParagraphElement* impl = (HTMLParagraphElement*)JS_GetOpaque(val, JSHTMLParagraphElement::js_class_id);
+    HTMLParagraphElement* impl = (HTMLParagraphElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -142,7 +142,7 @@ JSValue JSHTMLParagraphElement::getValueProperty(JSContext *ctx, JSValueConst th
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLParagraphElement* imp = (HTMLParagraphElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLParagraphElement* imp = (HTMLParagraphElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -155,7 +155,7 @@ JSValue JSHTMLParagraphElement::putValueProperty(JSContext *ctx, JSValueConst th
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLParagraphElement* imp = (HTMLParagraphElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLParagraphElement* imp = (HTMLParagraphElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }

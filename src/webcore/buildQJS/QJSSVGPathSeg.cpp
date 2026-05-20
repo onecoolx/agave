@@ -186,7 +186,9 @@ void JSSVGPathSeg::init(JSContext* ctx)
 JSValue JSSVGPathSeg::create(JSContext* ctx, SVGPathSeg* impl, SVGElement* context)
 {
     JSSVGPathSeg::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGPathSegPrototype::self(ctx), JSSVGPathSeg::js_class_id);
+    JSValue _proto = JSSVGPathSegPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGPathSeg::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -211,11 +213,11 @@ JSValue JSSVGPathSeg::getValueProperty(JSContext *ctx, JSValueConst this_val, in
 {
     switch (token) {
         case PathSegTypeAttrNum: {
-            SVGPathSeg* imp = (SVGPathSeg*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSeg* imp = (SVGPathSeg*)JS_GetOpaque(this_val, JSSVGPathSeg::js_class_id);
             return JS_NewBigUint64(ctx, imp->pathSegType());
         }
         case PathSegTypeAsLetterAttrNum: {
-            SVGPathSeg* imp = (SVGPathSeg*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSeg* imp = (SVGPathSeg*)JS_GetOpaque(this_val, JSSVGPathSeg::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->pathSegTypeAsLetter()).utf8().data());
         }
         case ConstructorAttrNum:

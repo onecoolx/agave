@@ -91,7 +91,9 @@ void JSSVGAnimatedInteger::init(JSContext* ctx)
 JSValue JSSVGAnimatedInteger::create(JSContext* ctx, SVGAnimatedInteger* impl, SVGElement* context)
 {
     JSSVGAnimatedInteger::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnimatedIntegerPrototype::self(ctx), JSSVGAnimatedInteger::js_class_id);
+    JSValue _proto = JSSVGAnimatedIntegerPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAnimatedInteger::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -116,11 +118,11 @@ JSValue JSSVGAnimatedInteger::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedInteger* imp = (SVGAnimatedInteger*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedInteger* imp = (SVGAnimatedInteger*)JS_GetOpaque(this_val, JSSVGAnimatedInteger::js_class_id);
             return JS_NewBigUint64(ctx, imp->baseVal());
         }
         case AnimValAttrNum: {
-            SVGAnimatedInteger* imp = (SVGAnimatedInteger*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedInteger* imp = (SVGAnimatedInteger*)JS_GetOpaque(this_val, JSSVGAnimatedInteger::js_class_id);
             return JS_NewBigUint64(ctx, imp->animVal());
         }
     }
@@ -131,7 +133,7 @@ JSValue JSSVGAnimatedInteger::putValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedInteger* imp = (SVGAnimatedInteger*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedInteger* imp = (SVGAnimatedInteger*)JS_GetOpaque(this_val, JSSVGAnimatedInteger::js_class_id);
             imp->setBaseVal(valueToInt32(ctx, value));
             break;
         }

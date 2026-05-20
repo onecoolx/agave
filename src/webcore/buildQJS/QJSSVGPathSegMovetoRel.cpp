@@ -92,7 +92,9 @@ void JSSVGPathSegMovetoRel::init(JSContext* ctx)
 JSValue JSSVGPathSegMovetoRel::create(JSContext* ctx, SVGPathSegMovetoRel* impl, SVGElement* context)
 {
     JSSVGPathSegMovetoRel::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGPathSegMovetoRelPrototype::self(ctx), JSSVGPathSegMovetoRel::js_class_id);
+    JSValue _proto = JSSVGPathSegMovetoRelPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGPathSegMovetoRel::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -117,11 +119,11 @@ JSValue JSSVGPathSegMovetoRel::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaque(this_val, JSSVGPathSegMovetoRel::js_class_id);
             return JS_NewBigUint64(ctx, imp->x());
         }
         case YAttrNum: {
-            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaque(this_val, JSSVGPathSegMovetoRel::js_class_id);
             return JS_NewBigUint64(ctx, imp->y());
         }
     }
@@ -132,12 +134,12 @@ JSValue JSSVGPathSegMovetoRel::putValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaque(this_val, JSSVGPathSegMovetoRel::js_class_id);
             imp->setX(valueToFloat(ctx, value));
             break;
         }
         case YAttrNum: {
-            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaque(this_val, JSSVGPathSegMovetoRel::js_class_id);
             imp->setY(valueToFloat(ctx, value));
             break;
         }

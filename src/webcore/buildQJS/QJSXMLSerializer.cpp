@@ -131,7 +131,9 @@ void JSXMLSerializer::init(JSContext* ctx)
 JSValue JSXMLSerializer::create(JSContext* ctx, XMLSerializer* impl)
 {
     JSXMLSerializer::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSXMLSerializerPrototype::self(ctx), JSXMLSerializer::js_class_id);
+    JSValue _proto = JSXMLSerializerPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSXMLSerializer::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -168,7 +170,7 @@ JSValue JSXMLSerializer::getConstructor(JSContext *ctx)
 
 JSValue JSXMLSerializerPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    XMLSerializer* imp = (XMLSerializer*)JS_GetOpaqueNoCheck(this_val);
+    XMLSerializer* imp = (XMLSerializer*)JS_GetOpaque(this_val, JSXMLSerializer::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

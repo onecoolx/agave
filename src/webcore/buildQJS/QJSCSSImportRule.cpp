@@ -123,7 +123,9 @@ void JSCSSImportRule::init(JSContext* ctx)
 JSValue JSCSSImportRule::create(JSContext* ctx, CSSImportRule* impl)
 {
     JSCSSImportRule::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCSSImportRulePrototype::self(ctx), JSCSSImportRule::js_class_id);
+    JSValue _proto = JSCSSImportRulePrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCSSImportRule::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -148,15 +150,15 @@ JSValue JSCSSImportRule::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case HrefAttrNum: {
-            CSSImportRule* imp = (CSSImportRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSImportRule* imp = (CSSImportRule*)JS_GetOpaque(this_val, JSCSSImportRule::js_class_id);
             return jsStringOrNull(ctx, imp->href());
         }
         case MediaAttrNum: {
-            CSSImportRule* imp = (CSSImportRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSImportRule* imp = (CSSImportRule*)JS_GetOpaque(this_val, JSCSSImportRule::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->media()));
         }
         case StyleSheetAttrNum: {
-            CSSImportRule* imp = (CSSImportRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSImportRule* imp = (CSSImportRule*)JS_GetOpaque(this_val, JSCSSImportRule::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->styleSheet()));
         }
         case ConstructorAttrNum:

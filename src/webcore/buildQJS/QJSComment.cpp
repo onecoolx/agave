@@ -105,17 +105,17 @@ JSClassID JSComment::js_class_id = 0;
 void JSComment::init(JSContext* ctx)
 {
     if (JSComment::js_class_id == 0) {
-        JS_NewClassID(&JSComment::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSComment::js_class_id, &JSCommentClassDefine);
-        JS_SetConstructor(ctx, JSCommentConstructor::self(ctx), JSCommentPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSComment::js_class_id, JSCommentPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSComment::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSComment::create(JSContext* ctx, Comment* impl)
 {
     JSComment::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCommentPrototype::self(ctx), JSComment::js_class_id);
+    JSValue _proto = JSCommentPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -126,7 +126,7 @@ JSValue JSComment::create(JSContext* ctx, Comment* impl)
 
 void JSComment::finalizer(JSRuntime* rt, JSValue val)
 {
-    Comment* impl = (Comment*)JS_GetOpaque(val, JSComment::js_class_id);
+    Comment* impl = (Comment*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

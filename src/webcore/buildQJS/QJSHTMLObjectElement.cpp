@@ -130,17 +130,17 @@ JSClassID JSHTMLObjectElement::js_class_id = 0;
 void JSHTMLObjectElement::init(JSContext* ctx)
 {
     if (JSHTMLObjectElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLObjectElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLObjectElement::js_class_id, &JSHTMLObjectElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLObjectElementConstructor::self(ctx), JSHTMLObjectElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLObjectElement::js_class_id, JSHTMLObjectElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLObjectElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLObjectElement::create(JSContext* ctx, HTMLObjectElement* impl)
 {
     JSHTMLObjectElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLObjectElementPrototype::self(ctx), JSHTMLObjectElement::js_class_id);
+    JSValue _proto = JSHTMLObjectElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -151,7 +151,7 @@ JSValue JSHTMLObjectElement::create(JSContext* ctx, HTMLObjectElement* impl)
 
 void JSHTMLObjectElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLObjectElement* impl = (HTMLObjectElement*)JS_GetOpaque(val, JSHTMLObjectElement::js_class_id);
+    HTMLObjectElement* impl = (HTMLObjectElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -165,79 +165,79 @@ JSValue JSHTMLObjectElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case FormAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->form()));
         }
         case CodeAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->code()).utf8().data());
         }
         case AlignAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case ArchiveAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->archive()).utf8().data());
         }
         case BorderAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->border()).utf8().data());
         }
         case CodeBaseAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->codeBase()).utf8().data());
         }
         case CodeTypeAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->codeType()).utf8().data());
         }
         case DataAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->data()).utf8().data());
         }
         case DeclareAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->declare() ? 1 : 0);
         }
         case HeightAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->height()).utf8().data());
         }
         case HspaceAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->hspace());
         }
         case NameAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case StandbyAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->standby()).utf8().data());
         }
         case TabIndexAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->tabIndex());
         }
         case TypeAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case UseMapAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->useMap()).utf8().data());
         }
         case VspaceAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->vspace());
         }
         case WidthAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->width()).utf8().data());
         }
         case ContentDocumentAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return checkNodeSecurity(ctx, imp->contentDocument()) ? toJS(ctx, QJS::getPtr(imp->contentDocument())) : JS_UNDEFINED;
         }
         case ConstructorAttrNum:
@@ -250,87 +250,87 @@ JSValue JSHTMLObjectElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case CodeAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCode(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AlignAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ArchiveAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setArchive(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case BorderAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setBorder(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CodeBaseAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCodeBase(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CodeTypeAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCodeType(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case DataAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setData(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case DeclareAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setDeclare(valueToBoolean(ctx, value));
             break;
         }
         case HeightAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setHeight(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HspaceAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setHspace(valueToInt32(ctx, value));
             break;
         }
         case NameAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case StandbyAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setStandby(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TabIndexAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setTabIndex(valueToInt32(ctx, value));
             break;
         }
         case TypeAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case UseMapAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setUseMap(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case VspaceAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setVspace(valueToInt32(ctx, value));
             break;
         }
         case WidthAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setWidth(valueToStringWithNullCheck(ctx, value));
             break;
         }

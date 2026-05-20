@@ -157,7 +157,9 @@ void JSCSSRule::init(JSContext* ctx)
 JSValue JSCSSRule::create(JSContext* ctx, CSSRule* impl)
 {
     JSCSSRule::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCSSRulePrototype::self(ctx), JSCSSRule::js_class_id);
+    JSValue _proto = JSCSSRulePrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCSSRule::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -182,19 +184,19 @@ JSValue JSCSSRule::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
 {
     switch (token) {
         case TypeAttrNum: {
-            CSSRule* imp = (CSSRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSRule* imp = (CSSRule*)JS_GetOpaque(this_val, JSCSSRule::js_class_id);
             return JS_NewBigUint64(ctx, imp->type());
         }
         case CssTextAttrNum: {
-            CSSRule* imp = (CSSRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSRule* imp = (CSSRule*)JS_GetOpaque(this_val, JSCSSRule::js_class_id);
             return jsStringOrNull(ctx, imp->cssText());
         }
         case ParentStyleSheetAttrNum: {
-            CSSRule* imp = (CSSRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSRule* imp = (CSSRule*)JS_GetOpaque(this_val, JSCSSRule::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->parentStyleSheet()));
         }
         case ParentRuleAttrNum: {
-            CSSRule* imp = (CSSRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSRule* imp = (CSSRule*)JS_GetOpaque(this_val, JSCSSRule::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->parentRule()));
         }
         case ConstructorAttrNum:
@@ -207,7 +209,7 @@ JSValue JSCSSRule::putValueProperty(JSContext *ctx, JSValueConst this_val, JSVal
 {
     switch (token) {
         case CssTextAttrNum: {
-            CSSRule* imp = (CSSRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSRule* imp = (CSSRule*)JS_GetOpaque(this_val, JSCSSRule::js_class_id);
             ExceptionCode ec = 0;
             imp->setCssText(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);

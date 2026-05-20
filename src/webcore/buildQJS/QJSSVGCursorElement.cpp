@@ -110,7 +110,9 @@ void JSSVGCursorElement::init(JSContext* ctx)
 JSValue JSSVGCursorElement::create(JSContext* ctx, SVGCursorElement* impl)
 {
     JSSVGCursorElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGCursorElementPrototype::self(ctx), JSSVGCursorElement::js_class_id);
+    JSValue _proto = JSSVGCursorElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGCursorElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -135,34 +137,34 @@ JSValue JSSVGCursorElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case XAttrNum: {
-            SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaque(this_val, JSSVGCursorElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaque(this_val, JSSVGCursorElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HrefAttrNum: {
-            SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaque(this_val, JSSVGCursorElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->hrefAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RequiredFeaturesAttrNum: {
-            SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaque(this_val, JSSVGCursorElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredFeatures()), imp);
         }
         case RequiredExtensionsAttrNum: {
-            SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaque(this_val, JSSVGCursorElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredExtensions()), imp);
         }
         case SystemLanguageAttrNum: {
-            SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaque(this_val, JSSVGCursorElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->systemLanguage()), imp);
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaque(this_val, JSSVGCursorElement::js_class_id);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
@@ -172,7 +174,7 @@ JSValue JSSVGCursorElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 
 JSValue JSSVGCursorElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGCursorElement* imp = (SVGCursorElement*)JS_GetOpaque(this_val, JSSVGCursorElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

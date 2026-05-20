@@ -107,17 +107,17 @@ JSClassID JSHTMLBlockquoteElement::js_class_id = 0;
 void JSHTMLBlockquoteElement::init(JSContext* ctx)
 {
     if (JSHTMLBlockquoteElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLBlockquoteElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLBlockquoteElement::js_class_id, &JSHTMLBlockquoteElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLBlockquoteElementConstructor::self(ctx), JSHTMLBlockquoteElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLBlockquoteElement::js_class_id, JSHTMLBlockquoteElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLBlockquoteElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLBlockquoteElement::create(JSContext* ctx, HTMLBlockquoteElement* impl)
 {
     JSHTMLBlockquoteElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLBlockquoteElementPrototype::self(ctx), JSHTMLBlockquoteElement::js_class_id);
+    JSValue _proto = JSHTMLBlockquoteElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -128,7 +128,7 @@ JSValue JSHTMLBlockquoteElement::create(JSContext* ctx, HTMLBlockquoteElement* i
 
 void JSHTMLBlockquoteElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLBlockquoteElement* impl = (HTMLBlockquoteElement*)JS_GetOpaque(val, JSHTMLBlockquoteElement::js_class_id);
+    HTMLBlockquoteElement* impl = (HTMLBlockquoteElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -142,7 +142,7 @@ JSValue JSHTMLBlockquoteElement::getValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case CiteAttrNum: {
-            HTMLBlockquoteElement* imp = (HTMLBlockquoteElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLBlockquoteElement* imp = (HTMLBlockquoteElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->cite()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -155,7 +155,7 @@ JSValue JSHTMLBlockquoteElement::putValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case CiteAttrNum: {
-            HTMLBlockquoteElement* imp = (HTMLBlockquoteElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLBlockquoteElement* imp = (HTMLBlockquoteElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCite(valueToStringWithNullCheck(ctx, value));
             break;
         }

@@ -186,7 +186,9 @@ void JSSVGFETurbulenceElement::init(JSContext* ctx)
 JSValue JSSVGFETurbulenceElement::create(JSContext* ctx, SVGFETurbulenceElement* impl)
 {
     JSSVGFETurbulenceElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGFETurbulenceElementPrototype::self(ctx), JSSVGFETurbulenceElement::js_class_id);
+    JSValue _proto = JSSVGFETurbulenceElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGFETurbulenceElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -211,67 +213,67 @@ JSValue JSSVGFETurbulenceElement::getValueProperty(JSContext *ctx, JSValueConst 
 {
     switch (token) {
         case BaseFrequencyXAttrNum: {
-            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaque(this_val, JSSVGFETurbulenceElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->baseFrequencyXAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case BaseFrequencyYAttrNum: {
-            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaque(this_val, JSSVGFETurbulenceElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->baseFrequencyYAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case NumOctavesAttrNum: {
-            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaque(this_val, JSSVGFETurbulenceElement::js_class_id);
             RefPtr<SVGAnimatedInteger> obj = imp->numOctavesAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case SeedAttrNum: {
-            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaque(this_val, JSSVGFETurbulenceElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->seedAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StitchTilesAttrNum: {
-            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaque(this_val, JSSVGFETurbulenceElement::js_class_id);
             RefPtr<SVGAnimatedEnumeration> obj = imp->stitchTilesAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case TypeAttrNum: {
-            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaque(this_val, JSSVGFETurbulenceElement::js_class_id);
             RefPtr<SVGAnimatedEnumeration> obj = imp->typeAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaque(this_val, JSSVGFETurbulenceElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaque(this_val, JSSVGFETurbulenceElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaque(this_val, JSSVGFETurbulenceElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaque(this_val, JSSVGFETurbulenceElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaque(this_val, JSSVGFETurbulenceElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaque(this_val, JSSVGFETurbulenceElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaque(this_val, JSSVGFETurbulenceElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:
@@ -287,7 +289,7 @@ JSValue JSSVGFETurbulenceElement::getConstructor(JSContext *ctx)
 
 JSValue JSSVGFETurbulenceElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGFETurbulenceElement* imp = (SVGFETurbulenceElement*)JS_GetOpaque(this_val, JSSVGFETurbulenceElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

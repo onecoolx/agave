@@ -94,7 +94,9 @@ void JSSVGFEPointLightElement::init(JSContext* ctx)
 JSValue JSSVGFEPointLightElement::create(JSContext* ctx, SVGFEPointLightElement* impl)
 {
     JSSVGFEPointLightElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGFEPointLightElementPrototype::self(ctx), JSSVGFEPointLightElement::js_class_id);
+    JSValue _proto = JSSVGFEPointLightElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGFEPointLightElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -119,17 +121,17 @@ JSValue JSSVGFEPointLightElement::getValueProperty(JSContext *ctx, JSValueConst 
 {
     switch (token) {
         case XAttrNum: {
-            SVGFEPointLightElement* imp = (SVGFEPointLightElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEPointLightElement* imp = (SVGFEPointLightElement*)JS_GetOpaque(this_val, JSSVGFEPointLightElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFEPointLightElement* imp = (SVGFEPointLightElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEPointLightElement* imp = (SVGFEPointLightElement*)JS_GetOpaque(this_val, JSSVGFEPointLightElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ZAttrNum: {
-            SVGFEPointLightElement* imp = (SVGFEPointLightElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEPointLightElement* imp = (SVGFEPointLightElement*)JS_GetOpaque(this_val, JSSVGFEPointLightElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->zAnimated();
             return toJS(ctx, obj.get(), imp);
         }

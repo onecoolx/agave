@@ -127,7 +127,9 @@ void JSCSSRuleList::init(JSContext* ctx)
 JSValue JSCSSRuleList::create(JSContext* ctx, CSSRuleList* impl)
 {
     JSCSSRuleList::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCSSRuleListPrototype::self(ctx), JSCSSRuleList::js_class_id);
+    JSValue _proto = JSCSSRuleListPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCSSRuleList::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -152,7 +154,7 @@ JSValue JSCSSRuleList::getValueProperty(JSContext *ctx, JSValueConst this_val, i
 {
     switch (token) {
         case LengthAttrNum: {
-            CSSRuleList* imp = (CSSRuleList*)JS_GetOpaqueNoCheck(this_val);
+            CSSRuleList* imp = (CSSRuleList*)JS_GetOpaque(this_val, JSCSSRuleList::js_class_id);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case ConstructorAttrNum:
@@ -168,7 +170,7 @@ JSValue JSCSSRuleList::getConstructor(JSContext *ctx)
 
 JSValue JSCSSRuleListPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    CSSRuleList* imp = (CSSRuleList*)JS_GetOpaqueNoCheck(this_val);
+    CSSRuleList* imp = (CSSRuleList*)JS_GetOpaque(this_val, JSCSSRuleList::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

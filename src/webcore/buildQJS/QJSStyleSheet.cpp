@@ -128,7 +128,9 @@ void JSStyleSheet::init(JSContext* ctx)
 JSValue JSStyleSheet::create(JSContext* ctx, StyleSheet* impl)
 {
     JSStyleSheet::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSStyleSheetPrototype::self(ctx), JSStyleSheet::js_class_id);
+    JSValue _proto = JSStyleSheetPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSStyleSheet::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -153,31 +155,31 @@ JSValue JSStyleSheet::getValueProperty(JSContext *ctx, JSValueConst this_val, in
 {
     switch (token) {
         case TypeAttrNum: {
-            StyleSheet* imp = (StyleSheet*)JS_GetOpaqueNoCheck(this_val);
+            StyleSheet* imp = (StyleSheet*)JS_GetOpaque(this_val, JSStyleSheet::js_class_id);
             return jsStringOrNull(ctx, imp->type());
         }
         case DisabledAttrNum: {
-            StyleSheet* imp = (StyleSheet*)JS_GetOpaqueNoCheck(this_val);
+            StyleSheet* imp = (StyleSheet*)JS_GetOpaque(this_val, JSStyleSheet::js_class_id);
             return JS_NewBool(ctx, imp->disabled() ? 1 : 0);
         }
         case OwnerNodeAttrNum: {
-            StyleSheet* imp = (StyleSheet*)JS_GetOpaqueNoCheck(this_val);
+            StyleSheet* imp = (StyleSheet*)JS_GetOpaque(this_val, JSStyleSheet::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->ownerNode()));
         }
         case ParentStyleSheetAttrNum: {
-            StyleSheet* imp = (StyleSheet*)JS_GetOpaqueNoCheck(this_val);
+            StyleSheet* imp = (StyleSheet*)JS_GetOpaque(this_val, JSStyleSheet::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->parentStyleSheet()));
         }
         case HrefAttrNum: {
-            StyleSheet* imp = (StyleSheet*)JS_GetOpaqueNoCheck(this_val);
+            StyleSheet* imp = (StyleSheet*)JS_GetOpaque(this_val, JSStyleSheet::js_class_id);
             return jsStringOrNull(ctx, imp->href());
         }
         case TitleAttrNum: {
-            StyleSheet* imp = (StyleSheet*)JS_GetOpaqueNoCheck(this_val);
+            StyleSheet* imp = (StyleSheet*)JS_GetOpaque(this_val, JSStyleSheet::js_class_id);
             return jsStringOrNull(ctx, imp->title());
         }
         case MediaAttrNum: {
-            StyleSheet* imp = (StyleSheet*)JS_GetOpaqueNoCheck(this_val);
+            StyleSheet* imp = (StyleSheet*)JS_GetOpaque(this_val, JSStyleSheet::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->media()));
         }
         case ConstructorAttrNum:
@@ -190,7 +192,7 @@ JSValue JSStyleSheet::putValueProperty(JSContext *ctx, JSValueConst this_val, JS
 {
     switch (token) {
         case DisabledAttrNum: {
-            StyleSheet* imp = (StyleSheet*)JS_GetOpaqueNoCheck(this_val);
+            StyleSheet* imp = (StyleSheet*)JS_GetOpaque(this_val, JSStyleSheet::js_class_id);
             imp->setDisabled(valueToBoolean(ctx, value));
             break;
         }

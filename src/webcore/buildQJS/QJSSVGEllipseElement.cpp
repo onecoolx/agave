@@ -134,7 +134,9 @@ void JSSVGEllipseElement::init(JSContext* ctx)
 JSValue JSSVGEllipseElement::create(JSContext* ctx, SVGEllipseElement* impl)
 {
     JSSVGEllipseElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGEllipseElementPrototype::self(ctx), JSSVGEllipseElement::js_class_id);
+    JSValue _proto = JSSVGEllipseElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGEllipseElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -159,70 +161,70 @@ JSValue JSSVGEllipseElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case CxAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->cxAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case CyAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->cyAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RxAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->rxAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RyAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->ryAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RequiredFeaturesAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredFeatures()), imp);
         }
         case RequiredExtensionsAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredExtensions()), imp);
         }
         case SystemLanguageAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->systemLanguage()), imp);
         }
         case XmllangAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case TransformAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             RefPtr<SVGAnimatedTransformList> obj = imp->transformAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case NearestViewportElementAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->nearestViewportElement()));
         }
         case FarthestViewportElementAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->farthestViewportElement()));
         }
     }
@@ -233,12 +235,12 @@ JSValue JSSVGEllipseElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -248,7 +250,7 @@ JSValue JSSVGEllipseElement::putValueProperty(JSContext *ctx, JSValueConst this_
 
 JSValue JSSVGEllipseElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGEllipseElement* imp = (SVGEllipseElement*)JS_GetOpaque(this_val, JSSVGEllipseElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -107,17 +107,17 @@ JSClassID JSHTMLTableCaptionElement::js_class_id = 0;
 void JSHTMLTableCaptionElement::init(JSContext* ctx)
 {
     if (JSHTMLTableCaptionElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLTableCaptionElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLTableCaptionElement::js_class_id, &JSHTMLTableCaptionElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLTableCaptionElementConstructor::self(ctx), JSHTMLTableCaptionElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLTableCaptionElement::js_class_id, JSHTMLTableCaptionElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLTableCaptionElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLTableCaptionElement::create(JSContext* ctx, HTMLTableCaptionElement* impl)
 {
     JSHTMLTableCaptionElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLTableCaptionElementPrototype::self(ctx), JSHTMLTableCaptionElement::js_class_id);
+    JSValue _proto = JSHTMLTableCaptionElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -128,7 +128,7 @@ JSValue JSHTMLTableCaptionElement::create(JSContext* ctx, HTMLTableCaptionElemen
 
 void JSHTMLTableCaptionElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLTableCaptionElement* impl = (HTMLTableCaptionElement*)JS_GetOpaque(val, JSHTMLTableCaptionElement::js_class_id);
+    HTMLTableCaptionElement* impl = (HTMLTableCaptionElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -142,7 +142,7 @@ JSValue JSHTMLTableCaptionElement::getValueProperty(JSContext *ctx, JSValueConst
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLTableCaptionElement* imp = (HTMLTableCaptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableCaptionElement* imp = (HTMLTableCaptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -155,7 +155,7 @@ JSValue JSHTMLTableCaptionElement::putValueProperty(JSContext *ctx, JSValueConst
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLTableCaptionElement* imp = (HTMLTableCaptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTableCaptionElement* imp = (HTMLTableCaptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }

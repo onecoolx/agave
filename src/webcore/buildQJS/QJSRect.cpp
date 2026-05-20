@@ -121,7 +121,9 @@ void JSRect::init(JSContext* ctx)
 JSValue JSRect::create(JSContext* ctx, Rect* impl)
 {
     JSRect::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSRectPrototype::self(ctx), JSRect::js_class_id);
+    JSValue _proto = JSRectPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSRect::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -146,19 +148,19 @@ JSValue JSRect::getValueProperty(JSContext *ctx, JSValueConst this_val, int toke
 {
     switch (token) {
         case TopAttrNum: {
-            Rect* imp = (Rect*)JS_GetOpaqueNoCheck(this_val);
+            Rect* imp = (Rect*)JS_GetOpaque(this_val, JSRect::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->top()));
         }
         case RightAttrNum: {
-            Rect* imp = (Rect*)JS_GetOpaqueNoCheck(this_val);
+            Rect* imp = (Rect*)JS_GetOpaque(this_val, JSRect::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->right()));
         }
         case BottomAttrNum: {
-            Rect* imp = (Rect*)JS_GetOpaqueNoCheck(this_val);
+            Rect* imp = (Rect*)JS_GetOpaque(this_val, JSRect::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->bottom()));
         }
         case LeftAttrNum: {
-            Rect* imp = (Rect*)JS_GetOpaqueNoCheck(this_val);
+            Rect* imp = (Rect*)JS_GetOpaque(this_val, JSRect::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->left()));
         }
         case ConstructorAttrNum:

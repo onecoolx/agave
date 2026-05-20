@@ -83,7 +83,9 @@ void JSSVGAnimateColorElement::init(JSContext* ctx)
 JSValue JSSVGAnimateColorElement::create(JSContext* ctx, SVGAnimateColorElement* impl)
 {
     JSSVGAnimateColorElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnimateColorElementPrototype::self(ctx), JSSVGAnimateColorElement::js_class_id);
+    JSValue _proto = JSSVGAnimateColorElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAnimateColorElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

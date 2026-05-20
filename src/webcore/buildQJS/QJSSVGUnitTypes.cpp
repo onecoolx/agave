@@ -149,7 +149,9 @@ void JSSVGUnitTypes::init(JSContext* ctx)
 JSValue JSSVGUnitTypes::create(JSContext* ctx, SVGUnitTypes* impl, SVGElement* context)
 {
     JSSVGUnitTypes::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGUnitTypesPrototype::self(ctx), JSSVGUnitTypes::js_class_id);
+    JSValue _proto = JSSVGUnitTypesPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGUnitTypes::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

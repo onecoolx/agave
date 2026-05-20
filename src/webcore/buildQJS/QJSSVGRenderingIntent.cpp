@@ -155,7 +155,9 @@ void JSSVGRenderingIntent::init(JSContext* ctx)
 JSValue JSSVGRenderingIntent::create(JSContext* ctx, SVGRenderingIntent* impl, SVGElement* context)
 {
     JSSVGRenderingIntent::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGRenderingIntentPrototype::self(ctx), JSSVGRenderingIntent::js_class_id);
+    JSValue _proto = JSSVGRenderingIntentPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGRenderingIntent::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

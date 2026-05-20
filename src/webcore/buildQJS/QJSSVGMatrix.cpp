@@ -113,7 +113,9 @@ void JSSVGMatrix::init(JSContext* ctx)
 JSValue JSSVGMatrix::create(JSContext* ctx, JSSVGPODTypeWrapper<AffineTransform>* impl, SVGElement* context)
 {
     JSSVGMatrix::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGMatrixPrototype::self(ctx), JSSVGMatrix::js_class_id);
+    JSValue _proto = JSSVGMatrixPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGMatrix::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -224,7 +226,7 @@ JSValue JSSVGMatrix::putValueProperty(JSContext *ctx, JSValueConst this_val, JSV
 
 JSValue JSSVGMatrixPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGMatrix* imp = (SVGMatrix*)JS_GetOpaqueNoCheck(this_val);
+    SVGMatrix* imp = (SVGMatrix*)JS_GetOpaque(this_val, JSSVGMatrix::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

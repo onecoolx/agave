@@ -110,17 +110,17 @@ JSClassID JSHTMLMetaElement::js_class_id = 0;
 void JSHTMLMetaElement::init(JSContext* ctx)
 {
     if (JSHTMLMetaElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLMetaElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLMetaElement::js_class_id, &JSHTMLMetaElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLMetaElementConstructor::self(ctx), JSHTMLMetaElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLMetaElement::js_class_id, JSHTMLMetaElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLMetaElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLMetaElement::create(JSContext* ctx, HTMLMetaElement* impl)
 {
     JSHTMLMetaElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLMetaElementPrototype::self(ctx), JSHTMLMetaElement::js_class_id);
+    JSValue _proto = JSHTMLMetaElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -131,7 +131,7 @@ JSValue JSHTMLMetaElement::create(JSContext* ctx, HTMLMetaElement* impl)
 
 void JSHTMLMetaElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLMetaElement* impl = (HTMLMetaElement*)JS_GetOpaque(val, JSHTMLMetaElement::js_class_id);
+    HTMLMetaElement* impl = (HTMLMetaElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -145,19 +145,19 @@ JSValue JSHTMLMetaElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case ContentAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->content()).utf8().data());
         }
         case HttpEquivAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->httpEquiv()).utf8().data());
         }
         case NameAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case SchemeAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->scheme()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -170,22 +170,22 @@ JSValue JSHTMLMetaElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case ContentAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setContent(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HttpEquivAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setHttpEquiv(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case NameAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case SchemeAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setScheme(valueToStringWithNullCheck(ctx, value));
             break;
         }

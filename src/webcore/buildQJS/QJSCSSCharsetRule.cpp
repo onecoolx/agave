@@ -117,7 +117,9 @@ void JSCSSCharsetRule::init(JSContext* ctx)
 JSValue JSCSSCharsetRule::create(JSContext* ctx, CSSCharsetRule* impl)
 {
     JSCSSCharsetRule::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCSSCharsetRulePrototype::self(ctx), JSCSSCharsetRule::js_class_id);
+    JSValue _proto = JSCSSCharsetRulePrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCSSCharsetRule::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -142,7 +144,7 @@ JSValue JSCSSCharsetRule::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case EncodingAttrNum: {
-            CSSCharsetRule* imp = (CSSCharsetRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSCharsetRule* imp = (CSSCharsetRule*)JS_GetOpaque(this_val, JSCSSCharsetRule::js_class_id);
             return jsStringOrNull(ctx, imp->encoding());
         }
         case ConstructorAttrNum:
@@ -155,7 +157,7 @@ JSValue JSCSSCharsetRule::putValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case EncodingAttrNum: {
-            CSSCharsetRule* imp = (CSSCharsetRule*)JS_GetOpaqueNoCheck(this_val);
+            CSSCharsetRule* imp = (CSSCharsetRule*)JS_GetOpaque(this_val, JSCSSCharsetRule::js_class_id);
             ExceptionCode ec = 0;
             imp->setEncoding(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);

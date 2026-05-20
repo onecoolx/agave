@@ -113,7 +113,9 @@ void JSSVGFETileElement::init(JSContext* ctx)
 JSValue JSSVGFETileElement::create(JSContext* ctx, SVGFETileElement* impl)
 {
     JSSVGFETileElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGFETileElementPrototype::self(ctx), JSSVGFETileElement::js_class_id);
+    JSValue _proto = JSSVGFETileElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGFETileElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -138,42 +140,42 @@ JSValue JSSVGFETileElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case In1AttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque(this_val, JSSVGFETileElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->in1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque(this_val, JSSVGFETileElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque(this_val, JSSVGFETileElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque(this_val, JSSVGFETileElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque(this_val, JSSVGFETileElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque(this_val, JSSVGFETileElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque(this_val, JSSVGFETileElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque(this_val, JSSVGFETileElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -182,7 +184,7 @@ JSValue JSSVGFETileElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 
 JSValue JSSVGFETileElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque(this_val, JSSVGFETileElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

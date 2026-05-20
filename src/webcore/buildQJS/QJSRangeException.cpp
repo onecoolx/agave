@@ -139,7 +139,9 @@ void JSRangeException::init(JSContext* ctx)
 JSValue JSRangeException::create(JSContext* ctx, RangeException* impl)
 {
     JSRangeException::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSRangeExceptionPrototype::self(ctx), JSRangeException::js_class_id);
+    JSValue _proto = JSRangeExceptionPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSRangeException::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

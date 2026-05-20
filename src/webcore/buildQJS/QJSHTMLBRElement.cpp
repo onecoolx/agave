@@ -107,17 +107,17 @@ JSClassID JSHTMLBRElement::js_class_id = 0;
 void JSHTMLBRElement::init(JSContext* ctx)
 {
     if (JSHTMLBRElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLBRElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLBRElement::js_class_id, &JSHTMLBRElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLBRElementConstructor::self(ctx), JSHTMLBRElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLBRElement::js_class_id, JSHTMLBRElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLBRElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLBRElement::create(JSContext* ctx, HTMLBRElement* impl)
 {
     JSHTMLBRElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLBRElementPrototype::self(ctx), JSHTMLBRElement::js_class_id);
+    JSValue _proto = JSHTMLBRElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -128,7 +128,7 @@ JSValue JSHTMLBRElement::create(JSContext* ctx, HTMLBRElement* impl)
 
 void JSHTMLBRElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLBRElement* impl = (HTMLBRElement*)JS_GetOpaque(val, JSHTMLBRElement::js_class_id);
+    HTMLBRElement* impl = (HTMLBRElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -142,7 +142,7 @@ JSValue JSHTMLBRElement::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case ClearAttrNum: {
-            HTMLBRElement* imp = (HTMLBRElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLBRElement* imp = (HTMLBRElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->clear()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -155,7 +155,7 @@ JSValue JSHTMLBRElement::putValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case ClearAttrNum: {
-            HTMLBRElement* imp = (HTMLBRElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLBRElement* imp = (HTMLBRElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setClear(valueToStringWithNullCheck(ctx, value));
             break;
         }

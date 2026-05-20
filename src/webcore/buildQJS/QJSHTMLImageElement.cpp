@@ -124,17 +124,17 @@ JSClassID JSHTMLImageElement::js_class_id = 0;
 void JSHTMLImageElement::init(JSContext* ctx)
 {
     if (JSHTMLImageElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLImageElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLImageElement::js_class_id, &JSHTMLImageElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLImageElementConstructor::self(ctx), JSHTMLImageElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLImageElement::js_class_id, JSHTMLImageElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLImageElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLImageElement::create(JSContext* ctx, HTMLImageElement* impl)
 {
     JSHTMLImageElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLImageElementPrototype::self(ctx), JSHTMLImageElement::js_class_id);
+    JSValue _proto = JSHTMLImageElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -145,7 +145,7 @@ JSValue JSHTMLImageElement::create(JSContext* ctx, HTMLImageElement* impl)
 
 void JSHTMLImageElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLImageElement* impl = (HTMLImageElement*)JS_GetOpaque(val, JSHTMLImageElement::js_class_id);
+    HTMLImageElement* impl = (HTMLImageElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -159,75 +159,75 @@ JSValue JSHTMLImageElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case NameAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case AlignAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case AltAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->alt()).utf8().data());
         }
         case BorderAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->border()).utf8().data());
         }
         case HeightAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->height());
         }
         case HspaceAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->hspace());
         }
         case IsMapAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->isMap() ? 1 : 0);
         }
         case LongDescAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->longDesc()).utf8().data());
         }
         case SrcAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->src()).utf8().data());
         }
         case UseMapAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->useMap()).utf8().data());
         }
         case VspaceAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->vspace());
         }
         case WidthAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->width());
         }
         case CompleteAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->complete() ? 1 : 0);
         }
         case LowsrcAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->lowsrc()).utf8().data());
         }
         case NaturalHeightAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->naturalHeight());
         }
         case NaturalWidthAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->naturalWidth());
         }
         case XAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->x());
         }
         case YAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->y());
         }
         case ConstructorAttrNum:
@@ -240,67 +240,67 @@ JSValue JSHTMLImageElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case NameAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AlignAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AltAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlt(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case BorderAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setBorder(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HeightAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setHeight(valueToInt32(ctx, value));
             break;
         }
         case HspaceAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setHspace(valueToInt32(ctx, value));
             break;
         }
         case IsMapAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setIsMap(valueToBoolean(ctx, value));
             break;
         }
         case LongDescAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setLongDesc(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case SrcAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setSrc(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case UseMapAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setUseMap(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case VspaceAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setVspace(valueToInt32(ctx, value));
             break;
         }
         case WidthAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setWidth(valueToInt32(ctx, value));
             break;
         }
         case LowsrcAttrNum: {
-            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setLowsrc(valueToStringWithNullCheck(ctx, value));
             break;
         }

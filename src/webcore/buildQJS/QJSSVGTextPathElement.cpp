@@ -162,7 +162,9 @@ void JSSVGTextPathElement::init(JSContext* ctx)
 JSValue JSSVGTextPathElement::create(JSContext* ctx, SVGTextPathElement* impl)
 {
     JSSVGTextPathElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGTextPathElementPrototype::self(ctx), JSSVGTextPathElement::js_class_id);
+    JSValue _proto = JSSVGTextPathElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGTextPathElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -187,22 +189,22 @@ JSValue JSSVGTextPathElement::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case StartOffsetAttrNum: {
-            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaque(this_val, JSSVGTextPathElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->startOffsetAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case MethodAttrNum: {
-            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaque(this_val, JSSVGTextPathElement::js_class_id);
             RefPtr<SVGAnimatedEnumeration> obj = imp->methodAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case SpacingAttrNum: {
-            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaque(this_val, JSSVGTextPathElement::js_class_id);
             RefPtr<SVGAnimatedEnumeration> obj = imp->spacingAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HrefAttrNum: {
-            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaque(this_val, JSSVGTextPathElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->hrefAnimated();
             return toJS(ctx, obj.get(), imp);
         }

@@ -115,17 +115,17 @@ JSClassID JSDocumentType::js_class_id = 0;
 void JSDocumentType::init(JSContext* ctx)
 {
     if (JSDocumentType::js_class_id == 0) {
-        JS_NewClassID(&JSDocumentType::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSDocumentType::js_class_id, &JSDocumentTypeClassDefine);
-        JS_SetConstructor(ctx, JSDocumentTypeConstructor::self(ctx), JSDocumentTypePrototype::self(ctx));
-        JS_SetClassProto(ctx, JSDocumentType::js_class_id, JSDocumentTypePrototype::self(ctx));
+        JSNode::init(ctx);
+        JSDocumentType::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSDocumentType::create(JSContext* ctx, DocumentType* impl)
 {
     JSDocumentType::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSDocumentTypePrototype::self(ctx), JSDocumentType::js_class_id);
+    JSValue _proto = JSDocumentTypePrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -136,7 +136,7 @@ JSValue JSDocumentType::create(JSContext* ctx, DocumentType* impl)
 
 void JSDocumentType::finalizer(JSRuntime* rt, JSValue val)
 {
-    DocumentType* impl = (DocumentType*)JS_GetOpaque(val, JSDocumentType::js_class_id);
+    DocumentType* impl = (DocumentType*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -150,27 +150,27 @@ JSValue JSDocumentType::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case NameAttrNum: {
-            DocumentType* imp = (DocumentType*)JS_GetOpaqueNoCheck(this_val);
+            DocumentType* imp = (DocumentType*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case EntitiesAttrNum: {
-            DocumentType* imp = (DocumentType*)JS_GetOpaqueNoCheck(this_val);
+            DocumentType* imp = (DocumentType*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->entities()));
         }
         case NotationsAttrNum: {
-            DocumentType* imp = (DocumentType*)JS_GetOpaqueNoCheck(this_val);
+            DocumentType* imp = (DocumentType*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->notations()));
         }
         case PublicIdAttrNum: {
-            DocumentType* imp = (DocumentType*)JS_GetOpaqueNoCheck(this_val);
+            DocumentType* imp = (DocumentType*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->publicId());
         }
         case SystemIdAttrNum: {
-            DocumentType* imp = (DocumentType*)JS_GetOpaqueNoCheck(this_val);
+            DocumentType* imp = (DocumentType*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->systemId());
         }
         case InternalSubsetAttrNum: {
-            DocumentType* imp = (DocumentType*)JS_GetOpaqueNoCheck(this_val);
+            DocumentType* imp = (DocumentType*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->internalSubset());
         }
         case ConstructorAttrNum:

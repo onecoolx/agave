@@ -174,7 +174,9 @@ void JSSVGTransform::init(JSContext* ctx)
 JSValue JSSVGTransform::create(JSContext* ctx, JSSVGPODTypeWrapper<SVGTransform>* impl, SVGElement* context)
 {
     JSSVGTransform::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGTransformPrototype::self(ctx), JSSVGTransform::js_class_id);
+    JSValue _proto = JSSVGTransformPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGTransform::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -226,7 +228,7 @@ JSValue JSSVGTransform::getConstructor(JSContext *ctx)
 
 JSValue JSSVGTransformPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGTransform* imp = (SVGTransform*)JS_GetOpaqueNoCheck(this_val);
+    SVGTransform* imp = (SVGTransform*)JS_GetOpaque(this_val, JSSVGTransform::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

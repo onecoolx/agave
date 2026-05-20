@@ -107,17 +107,17 @@ JSClassID JSHTMLTitleElement::js_class_id = 0;
 void JSHTMLTitleElement::init(JSContext* ctx)
 {
     if (JSHTMLTitleElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLTitleElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLTitleElement::js_class_id, &JSHTMLTitleElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLTitleElementConstructor::self(ctx), JSHTMLTitleElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLTitleElement::js_class_id, JSHTMLTitleElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLTitleElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLTitleElement::create(JSContext* ctx, HTMLTitleElement* impl)
 {
     JSHTMLTitleElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLTitleElementPrototype::self(ctx), JSHTMLTitleElement::js_class_id);
+    JSValue _proto = JSHTMLTitleElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -128,7 +128,7 @@ JSValue JSHTMLTitleElement::create(JSContext* ctx, HTMLTitleElement* impl)
 
 void JSHTMLTitleElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLTitleElement* impl = (HTMLTitleElement*)JS_GetOpaque(val, JSHTMLTitleElement::js_class_id);
+    HTMLTitleElement* impl = (HTMLTitleElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -142,7 +142,7 @@ JSValue JSHTMLTitleElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case TextAttrNum: {
-            HTMLTitleElement* imp = (HTMLTitleElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTitleElement* imp = (HTMLTitleElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->text()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -155,7 +155,7 @@ JSValue JSHTMLTitleElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case TextAttrNum: {
-            HTMLTitleElement* imp = (HTMLTitleElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLTitleElement* imp = (HTMLTitleElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setText(valueToStringWithNullCheck(ctx, value));
             break;
         }

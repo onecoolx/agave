@@ -91,7 +91,9 @@ void JSSVGAnimatedEnumeration::init(JSContext* ctx)
 JSValue JSSVGAnimatedEnumeration::create(JSContext* ctx, SVGAnimatedEnumeration* impl, SVGElement* context)
 {
     JSSVGAnimatedEnumeration::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnimatedEnumerationPrototype::self(ctx), JSSVGAnimatedEnumeration::js_class_id);
+    JSValue _proto = JSSVGAnimatedEnumerationPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAnimatedEnumeration::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -116,11 +118,11 @@ JSValue JSSVGAnimatedEnumeration::getValueProperty(JSContext *ctx, JSValueConst 
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedEnumeration* imp = (SVGAnimatedEnumeration*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedEnumeration* imp = (SVGAnimatedEnumeration*)JS_GetOpaque(this_val, JSSVGAnimatedEnumeration::js_class_id);
             return JS_NewBigUint64(ctx, imp->baseVal());
         }
         case AnimValAttrNum: {
-            SVGAnimatedEnumeration* imp = (SVGAnimatedEnumeration*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedEnumeration* imp = (SVGAnimatedEnumeration*)JS_GetOpaque(this_val, JSSVGAnimatedEnumeration::js_class_id);
             return JS_NewBigUint64(ctx, imp->animVal());
         }
     }
@@ -131,7 +133,7 @@ JSValue JSSVGAnimatedEnumeration::putValueProperty(JSContext *ctx, JSValueConst 
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedEnumeration* imp = (SVGAnimatedEnumeration*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedEnumeration* imp = (SVGAnimatedEnumeration*)JS_GetOpaque(this_val, JSSVGAnimatedEnumeration::js_class_id);
             imp->setBaseVal(valueToInt32(ctx, value));
             break;
         }

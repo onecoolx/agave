@@ -97,7 +97,9 @@ void JSSVGPathSegArcAbs::init(JSContext* ctx)
 JSValue JSSVGPathSegArcAbs::create(JSContext* ctx, SVGPathSegArcAbs* impl, SVGElement* context)
 {
     JSSVGPathSegArcAbs::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGPathSegArcAbsPrototype::self(ctx), JSSVGPathSegArcAbs::js_class_id);
+    JSValue _proto = JSSVGPathSegArcAbsPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGPathSegArcAbs::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -122,31 +124,31 @@ JSValue JSSVGPathSegArcAbs::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
             return JS_NewBigUint64(ctx, imp->x());
         }
         case YAttrNum: {
-            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
             return JS_NewBigUint64(ctx, imp->y());
         }
         case R1AttrNum: {
-            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
             return JS_NewBigUint64(ctx, imp->r1());
         }
         case R2AttrNum: {
-            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
             return JS_NewBigUint64(ctx, imp->r2());
         }
         case AngleAttrNum: {
-            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
             return JS_NewBigUint64(ctx, imp->angle());
         }
         case LargeArcFlagAttrNum: {
-            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
             return JS_NewBool(ctx, imp->largeArcFlag() ? 1 : 0);
         }
         case SweepFlagAttrNum: {
-            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
             return JS_NewBool(ctx, imp->sweepFlag() ? 1 : 0);
         }
     }
@@ -157,37 +159,37 @@ JSValue JSSVGPathSegArcAbs::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
             imp->setX(valueToFloat(ctx, value));
             break;
         }
         case YAttrNum: {
-            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
             imp->setY(valueToFloat(ctx, value));
             break;
         }
         case R1AttrNum: {
-            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
             imp->setR1(valueToFloat(ctx, value));
             break;
         }
         case R2AttrNum: {
-            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
             imp->setR2(valueToFloat(ctx, value));
             break;
         }
         case AngleAttrNum: {
-            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
             imp->setAngle(valueToFloat(ctx, value));
             break;
         }
         case LargeArcFlagAttrNum: {
-            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
             imp->setLargeArcFlag(valueToBoolean(ctx, value));
             break;
         }
         case SweepFlagAttrNum: {
-            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
             imp->setSweepFlag(valueToBoolean(ctx, value));
             break;
         }

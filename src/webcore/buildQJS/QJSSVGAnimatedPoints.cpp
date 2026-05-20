@@ -94,7 +94,9 @@ void JSSVGAnimatedPoints::init(JSContext* ctx)
 JSValue JSSVGAnimatedPoints::create(JSContext* ctx, SVGAnimatedPoints* impl, SVGElement* context)
 {
     JSSVGAnimatedPoints::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnimatedPointsPrototype::self(ctx), JSSVGAnimatedPoints::js_class_id);
+    JSValue _proto = JSSVGAnimatedPointsPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAnimatedPoints::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -119,11 +121,11 @@ JSValue JSSVGAnimatedPoints::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case PointsAttrNum: {
-            SVGAnimatedPoints* imp = (SVGAnimatedPoints*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedPoints* imp = (SVGAnimatedPoints*)JS_GetOpaque(this_val, JSSVGAnimatedPoints::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->points()), context());
         }
         case AnimatedPointsAttrNum: {
-            SVGAnimatedPoints* imp = (SVGAnimatedPoints*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedPoints* imp = (SVGAnimatedPoints*)JS_GetOpaque(this_val, JSSVGAnimatedPoints::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->animatedPoints()), context());
         }
     }

@@ -138,17 +138,17 @@ JSClassID JSHTMLInputElement::js_class_id = 0;
 void JSHTMLInputElement::init(JSContext* ctx)
 {
     if (JSHTMLInputElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLInputElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLInputElement::js_class_id, &JSHTMLInputElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLInputElementConstructor::self(ctx), JSHTMLInputElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLInputElement::js_class_id, JSHTMLInputElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLInputElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLInputElement::create(JSContext* ctx, HTMLInputElement* impl)
 {
     JSHTMLInputElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLInputElementPrototype::self(ctx), JSHTMLInputElement::js_class_id);
+    JSValue _proto = JSHTMLInputElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -159,7 +159,7 @@ JSValue JSHTMLInputElement::create(JSContext* ctx, HTMLInputElement* impl)
 
 void JSHTMLInputElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLInputElement* impl = (HTMLInputElement*)JS_GetOpaque(val, JSHTMLInputElement::js_class_id);
+    HTMLInputElement* impl = (HTMLInputElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -173,79 +173,79 @@ JSValue JSHTMLInputElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case DefaultValueAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->defaultValue()).utf8().data());
         }
         case DefaultCheckedAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->defaultChecked() ? 1 : 0);
         }
         case FormAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->form()));
         }
         case AcceptAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->accept()).utf8().data());
         }
         case AccessKeyAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->accessKey()).utf8().data());
         }
         case AlignAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case AltAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->alt()).utf8().data());
         }
         case CheckedAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->checked() ? 1 : 0);
         }
         case DisabledAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->disabled() ? 1 : 0);
         }
         case MaxLengthAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->maxLength());
         }
         case NameAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case ReadOnlyAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->readOnly() ? 1 : 0);
         }
         case SizeAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->size());
         }
         case SrcAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->src()).utf8().data());
         }
         case TabIndexAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->tabIndex());
         }
         case TypeAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case UseMapAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->useMap()).utf8().data());
         }
         case ValueAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->value()).utf8().data());
         }
         case IndeterminateAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->indeterminate() ? 1 : 0);
         }
         case ConstructorAttrNum:
@@ -258,92 +258,92 @@ JSValue JSHTMLInputElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case DefaultValueAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setDefaultValue(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case DefaultCheckedAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setDefaultChecked(valueToBoolean(ctx, value));
             break;
         }
         case AcceptAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAccept(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AccessKeyAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAccessKey(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AlignAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AltAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlt(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CheckedAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setChecked(valueToBoolean(ctx, value));
             break;
         }
         case DisabledAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setDisabled(valueToBoolean(ctx, value));
             break;
         }
         case MaxLengthAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setMaxLength(valueToInt32(ctx, value));
             break;
         }
         case NameAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ReadOnlyAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setReadOnly(valueToBoolean(ctx, value));
             break;
         }
         case SizeAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setSize(valueToInt32(ctx, value));
             break;
         }
         case SrcAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setSrc(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TabIndexAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setTabIndex(valueToInt32(ctx, value));
             break;
         }
         case TypeAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case UseMapAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setUseMap(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ValueAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setValue(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case IndeterminateAttrNum: {
-            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setIndeterminate(valueToBoolean(ctx, value));
             break;
         }
@@ -358,7 +358,7 @@ JSValue JSHTMLInputElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLInputElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaqueNoCheck(this_val);
+    HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

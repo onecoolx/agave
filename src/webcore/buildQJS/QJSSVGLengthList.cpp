@@ -108,7 +108,9 @@ void JSSVGLengthList::init(JSContext* ctx)
 JSValue JSSVGLengthList::create(JSContext* ctx, SVGLengthList* impl, SVGElement* context)
 {
     JSSVGLengthList::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGLengthListPrototype::self(ctx), JSSVGLengthList::js_class_id);
+    JSValue _proto = JSSVGLengthListPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGLengthList::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -133,7 +135,7 @@ JSValue JSSVGLengthList::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case NumberOfItemsAttrNum: {
-            SVGLengthList* imp = (SVGLengthList*)JS_GetOpaqueNoCheck(this_val);
+            SVGLengthList* imp = (SVGLengthList*)JS_GetOpaque(this_val, JSSVGLengthList::js_class_id);
             return JS_NewBigUint64(ctx, imp->numberOfItems());
         }
     }
@@ -142,7 +144,7 @@ JSValue JSSVGLengthList::getValueProperty(JSContext *ctx, JSValueConst this_val,
 
 JSValue JSSVGLengthListPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGLengthList* imp = (SVGLengthList*)JS_GetOpaqueNoCheck(this_val);
+    SVGLengthList* imp = (SVGLengthList*)JS_GetOpaque(this_val, JSSVGLengthList::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

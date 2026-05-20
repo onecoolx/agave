@@ -107,17 +107,17 @@ JSClassID JSHTMLHeadingElement::js_class_id = 0;
 void JSHTMLHeadingElement::init(JSContext* ctx)
 {
     if (JSHTMLHeadingElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLHeadingElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLHeadingElement::js_class_id, &JSHTMLHeadingElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLHeadingElementConstructor::self(ctx), JSHTMLHeadingElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLHeadingElement::js_class_id, JSHTMLHeadingElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLHeadingElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLHeadingElement::create(JSContext* ctx, HTMLHeadingElement* impl)
 {
     JSHTMLHeadingElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLHeadingElementPrototype::self(ctx), JSHTMLHeadingElement::js_class_id);
+    JSValue _proto = JSHTMLHeadingElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -128,7 +128,7 @@ JSValue JSHTMLHeadingElement::create(JSContext* ctx, HTMLHeadingElement* impl)
 
 void JSHTMLHeadingElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLHeadingElement* impl = (HTMLHeadingElement*)JS_GetOpaque(val, JSHTMLHeadingElement::js_class_id);
+    HTMLHeadingElement* impl = (HTMLHeadingElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -142,7 +142,7 @@ JSValue JSHTMLHeadingElement::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLHeadingElement* imp = (HTMLHeadingElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLHeadingElement* imp = (HTMLHeadingElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -155,7 +155,7 @@ JSValue JSHTMLHeadingElement::putValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLHeadingElement* imp = (HTMLHeadingElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLHeadingElement* imp = (HTMLHeadingElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }

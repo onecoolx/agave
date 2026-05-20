@@ -85,16 +85,17 @@ JSClassID JSHTMLOptionsCollection::js_class_id = 0;
 void JSHTMLOptionsCollection::init(JSContext* ctx)
 {
     if (JSHTMLOptionsCollection::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLOptionsCollection::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLOptionsCollection::js_class_id, &JSHTMLOptionsCollectionClassDefine);
-        JS_SetClassProto(ctx, JSHTMLOptionsCollection::js_class_id, JSHTMLOptionsCollectionPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLOptionsCollection::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLOptionsCollection::create(JSContext* ctx, HTMLOptionsCollection* impl)
 {
     JSHTMLOptionsCollection::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLOptionsCollectionPrototype::self(ctx), JSHTMLOptionsCollection::js_class_id);
+    JSValue _proto = JSHTMLOptionsCollectionPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -105,7 +106,7 @@ JSValue JSHTMLOptionsCollection::create(JSContext* ctx, HTMLOptionsCollection* i
 
 void JSHTMLOptionsCollection::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLOptionsCollection* impl = (HTMLOptionsCollection*)JS_GetOpaque(val, JSHTMLOptionsCollection::js_class_id);
+    HTMLOptionsCollection* impl = (HTMLOptionsCollection*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -119,11 +120,11 @@ JSValue JSHTMLOptionsCollection::getValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case SelectedIndexAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->selectedIndex());
         }
         case LengthAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JSHTMLOptionsCollection::length(ctx, this_val, imp);
         }
     }
@@ -134,12 +135,12 @@ JSValue JSHTMLOptionsCollection::putValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case SelectedIndexAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setSelectedIndex(valueToInt32(ctx, value));
             break;
         }
         case LengthAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
             JSHTMLOptionsCollection::setLength(ctx, this_val, value, imp);
             break;
         }
@@ -149,7 +150,7 @@ JSValue JSHTMLOptionsCollection::putValueProperty(JSContext *ctx, JSValueConst t
 
 JSValue JSHTMLOptionsCollectionPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaqueNoCheck(this_val);
+    HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

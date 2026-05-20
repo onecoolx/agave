@@ -107,17 +107,17 @@ JSClassID JSHTMLDivElement::js_class_id = 0;
 void JSHTMLDivElement::init(JSContext* ctx)
 {
     if (JSHTMLDivElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLDivElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLDivElement::js_class_id, &JSHTMLDivElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLDivElementConstructor::self(ctx), JSHTMLDivElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLDivElement::js_class_id, JSHTMLDivElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLDivElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLDivElement::create(JSContext* ctx, HTMLDivElement* impl)
 {
     JSHTMLDivElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLDivElementPrototype::self(ctx), JSHTMLDivElement::js_class_id);
+    JSValue _proto = JSHTMLDivElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -128,7 +128,7 @@ JSValue JSHTMLDivElement::create(JSContext* ctx, HTMLDivElement* impl)
 
 void JSHTMLDivElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLDivElement* impl = (HTMLDivElement*)JS_GetOpaque(val, JSHTMLDivElement::js_class_id);
+    HTMLDivElement* impl = (HTMLDivElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -142,7 +142,7 @@ JSValue JSHTMLDivElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLDivElement* imp = (HTMLDivElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLDivElement* imp = (HTMLDivElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -155,7 +155,7 @@ JSValue JSHTMLDivElement::putValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLDivElement* imp = (HTMLDivElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLDivElement* imp = (HTMLDivElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }

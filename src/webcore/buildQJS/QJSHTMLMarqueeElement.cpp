@@ -114,17 +114,17 @@ JSClassID JSHTMLMarqueeElement::js_class_id = 0;
 void JSHTMLMarqueeElement::init(JSContext* ctx)
 {
     if (JSHTMLMarqueeElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLMarqueeElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLMarqueeElement::js_class_id, &JSHTMLMarqueeElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLMarqueeElementConstructor::self(ctx), JSHTMLMarqueeElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLMarqueeElement::js_class_id, JSHTMLMarqueeElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLMarqueeElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLMarqueeElement::create(JSContext* ctx, HTMLMarqueeElement* impl)
 {
     JSHTMLMarqueeElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLMarqueeElementPrototype::self(ctx), JSHTMLMarqueeElement::js_class_id);
+    JSValue _proto = JSHTMLMarqueeElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -135,7 +135,7 @@ JSValue JSHTMLMarqueeElement::create(JSContext* ctx, HTMLMarqueeElement* impl)
 
 void JSHTMLMarqueeElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLMarqueeElement* impl = (HTMLMarqueeElement*)JS_GetOpaque(val, JSHTMLMarqueeElement::js_class_id);
+    HTMLMarqueeElement* impl = (HTMLMarqueeElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -161,7 +161,7 @@ JSValue JSHTMLMarqueeElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLMarqueeElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLMarqueeElement* imp = (HTMLMarqueeElement*)JS_GetOpaqueNoCheck(this_val);
+    HTMLMarqueeElement* imp = (HTMLMarqueeElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

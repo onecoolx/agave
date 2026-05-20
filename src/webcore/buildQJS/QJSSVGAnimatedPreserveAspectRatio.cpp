@@ -93,7 +93,9 @@ void JSSVGAnimatedPreserveAspectRatio::init(JSContext* ctx)
 JSValue JSSVGAnimatedPreserveAspectRatio::create(JSContext* ctx, SVGAnimatedPreserveAspectRatio* impl, SVGElement* context)
 {
     JSSVGAnimatedPreserveAspectRatio::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnimatedPreserveAspectRatioPrototype::self(ctx), JSSVGAnimatedPreserveAspectRatio::js_class_id);
+    JSValue _proto = JSSVGAnimatedPreserveAspectRatioPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAnimatedPreserveAspectRatio::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -118,11 +120,11 @@ JSValue JSSVGAnimatedPreserveAspectRatio::getValueProperty(JSContext *ctx, JSVal
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedPreserveAspectRatio* imp = (SVGAnimatedPreserveAspectRatio*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedPreserveAspectRatio* imp = (SVGAnimatedPreserveAspectRatio*)JS_GetOpaque(this_val, JSSVGAnimatedPreserveAspectRatio::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->baseVal()), context());
         }
         case AnimValAttrNum: {
-            SVGAnimatedPreserveAspectRatio* imp = (SVGAnimatedPreserveAspectRatio*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedPreserveAspectRatio* imp = (SVGAnimatedPreserveAspectRatio*)JS_GetOpaque(this_val, JSSVGAnimatedPreserveAspectRatio::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->animVal()), context());
         }
     }

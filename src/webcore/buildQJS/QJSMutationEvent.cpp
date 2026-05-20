@@ -157,7 +157,9 @@ void JSMutationEvent::init(JSContext* ctx)
 JSValue JSMutationEvent::create(JSContext* ctx, MutationEvent* impl)
 {
     JSMutationEvent::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSMutationEventPrototype::self(ctx), JSMutationEvent::js_class_id);
+    JSValue _proto = JSMutationEventPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSMutationEvent::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -182,23 +184,23 @@ JSValue JSMutationEvent::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case RelatedNodeAttrNum: {
-            MutationEvent* imp = (MutationEvent*)JS_GetOpaqueNoCheck(this_val);
+            MutationEvent* imp = (MutationEvent*)JS_GetOpaque(this_val, JSMutationEvent::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->relatedNode()));
         }
         case PrevValueAttrNum: {
-            MutationEvent* imp = (MutationEvent*)JS_GetOpaqueNoCheck(this_val);
+            MutationEvent* imp = (MutationEvent*)JS_GetOpaque(this_val, JSMutationEvent::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->prevValue()).utf8().data());
         }
         case NewValueAttrNum: {
-            MutationEvent* imp = (MutationEvent*)JS_GetOpaqueNoCheck(this_val);
+            MutationEvent* imp = (MutationEvent*)JS_GetOpaque(this_val, JSMutationEvent::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->newValue()).utf8().data());
         }
         case AttrNameAttrNum: {
-            MutationEvent* imp = (MutationEvent*)JS_GetOpaqueNoCheck(this_val);
+            MutationEvent* imp = (MutationEvent*)JS_GetOpaque(this_val, JSMutationEvent::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->attrName()).utf8().data());
         }
         case AttrChangeAttrNum: {
-            MutationEvent* imp = (MutationEvent*)JS_GetOpaqueNoCheck(this_val);
+            MutationEvent* imp = (MutationEvent*)JS_GetOpaque(this_val, JSMutationEvent::js_class_id);
             return JS_NewBigUint64(ctx, imp->attrChange());
         }
         case ConstructorAttrNum:
@@ -214,7 +216,7 @@ JSValue JSMutationEvent::getConstructor(JSContext *ctx)
 
 JSValue JSMutationEventPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    MutationEvent* imp = (MutationEvent*)JS_GetOpaqueNoCheck(this_val);
+    MutationEvent* imp = (MutationEvent*)JS_GetOpaque(this_val, JSMutationEvent::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

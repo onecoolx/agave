@@ -116,17 +116,17 @@ JSClassID JSHTMLCanvasElement::js_class_id = 0;
 void JSHTMLCanvasElement::init(JSContext* ctx)
 {
     if (JSHTMLCanvasElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLCanvasElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLCanvasElement::js_class_id, &JSHTMLCanvasElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLCanvasElementConstructor::self(ctx), JSHTMLCanvasElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLCanvasElement::js_class_id, JSHTMLCanvasElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLCanvasElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLCanvasElement::create(JSContext* ctx, HTMLCanvasElement* impl)
 {
     JSHTMLCanvasElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLCanvasElementPrototype::self(ctx), JSHTMLCanvasElement::js_class_id);
+    JSValue _proto = JSHTMLCanvasElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -137,7 +137,7 @@ JSValue JSHTMLCanvasElement::create(JSContext* ctx, HTMLCanvasElement* impl)
 
 void JSHTMLCanvasElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLCanvasElement* impl = (HTMLCanvasElement*)JS_GetOpaque(val, JSHTMLCanvasElement::js_class_id);
+    HTMLCanvasElement* impl = (HTMLCanvasElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -151,11 +151,11 @@ JSValue JSHTMLCanvasElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case WidthAttrNum: {
-            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->width());
         }
         case HeightAttrNum: {
-            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->height());
         }
         case ConstructorAttrNum:
@@ -168,12 +168,12 @@ JSValue JSHTMLCanvasElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case WidthAttrNum: {
-            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setWidth(valueToInt32(ctx, value));
             break;
         }
         case HeightAttrNum: {
-            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setHeight(valueToInt32(ctx, value));
             break;
         }
@@ -188,7 +188,7 @@ JSValue JSHTMLCanvasElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLCanvasElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaqueNoCheck(this_val);
+    HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

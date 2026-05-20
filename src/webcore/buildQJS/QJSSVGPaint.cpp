@@ -175,7 +175,9 @@ void JSSVGPaint::init(JSContext* ctx)
 JSValue JSSVGPaint::create(JSContext* ctx, SVGPaint* impl)
 {
     JSSVGPaint::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGPaintPrototype::self(ctx), JSSVGPaint::js_class_id);
+    JSValue _proto = JSSVGPaintPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGPaint::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -200,11 +202,11 @@ JSValue JSSVGPaint::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
 {
     switch (token) {
         case PaintTypeAttrNum: {
-            SVGPaint* imp = (SVGPaint*)JS_GetOpaqueNoCheck(this_val);
+            SVGPaint* imp = (SVGPaint*)JS_GetOpaque(this_val, JSSVGPaint::js_class_id);
             return JS_NewBigUint64(ctx, imp->paintType());
         }
         case UriAttrNum: {
-            SVGPaint* imp = (SVGPaint*)JS_GetOpaqueNoCheck(this_val);
+            SVGPaint* imp = (SVGPaint*)JS_GetOpaque(this_val, JSSVGPaint::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->uri()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -220,7 +222,7 @@ JSValue JSSVGPaint::getConstructor(JSContext *ctx)
 
 JSValue JSSVGPaintPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGPaint* imp = (SVGPaint*)JS_GetOpaqueNoCheck(this_val);
+    SVGPaint* imp = (SVGPaint*)JS_GetOpaque(this_val, JSSVGPaint::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -131,7 +131,9 @@ void JSCharacterData::init(JSContext* ctx)
 JSValue JSCharacterData::create(JSContext* ctx, CharacterData* impl)
 {
     JSCharacterData::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCharacterDataPrototype::self(ctx), JSCharacterData::js_class_id);
+    JSValue _proto = JSCharacterDataPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCharacterData::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -156,11 +158,11 @@ JSValue JSCharacterData::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case DataAttrNum: {
-            CharacterData* imp = (CharacterData*)JS_GetOpaqueNoCheck(this_val);
+            CharacterData* imp = (CharacterData*)JS_GetOpaque(this_val, JSCharacterData::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->data()).utf8().data());
         }
         case LengthAttrNum: {
-            CharacterData* imp = (CharacterData*)JS_GetOpaqueNoCheck(this_val);
+            CharacterData* imp = (CharacterData*)JS_GetOpaque(this_val, JSCharacterData::js_class_id);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case ConstructorAttrNum:
@@ -173,7 +175,7 @@ JSValue JSCharacterData::putValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case DataAttrNum: {
-            CharacterData* imp = (CharacterData*)JS_GetOpaqueNoCheck(this_val);
+            CharacterData* imp = (CharacterData*)JS_GetOpaque(this_val, JSCharacterData::js_class_id);
             ExceptionCode ec = 0;
             imp->setData(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);
@@ -190,7 +192,7 @@ JSValue JSCharacterData::getConstructor(JSContext *ctx)
 
 JSValue JSCharacterDataPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    CharacterData* imp = (CharacterData*)JS_GetOpaqueNoCheck(this_val);
+    CharacterData* imp = (CharacterData*)JS_GetOpaque(this_val, JSCharacterData::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

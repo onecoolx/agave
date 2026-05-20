@@ -109,17 +109,17 @@ JSClassID JSHTMLBaseFontElement::js_class_id = 0;
 void JSHTMLBaseFontElement::init(JSContext* ctx)
 {
     if (JSHTMLBaseFontElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLBaseFontElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLBaseFontElement::js_class_id, &JSHTMLBaseFontElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLBaseFontElementConstructor::self(ctx), JSHTMLBaseFontElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLBaseFontElement::js_class_id, JSHTMLBaseFontElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLBaseFontElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLBaseFontElement::create(JSContext* ctx, HTMLBaseFontElement* impl)
 {
     JSHTMLBaseFontElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLBaseFontElementPrototype::self(ctx), JSHTMLBaseFontElement::js_class_id);
+    JSValue _proto = JSHTMLBaseFontElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -130,7 +130,7 @@ JSValue JSHTMLBaseFontElement::create(JSContext* ctx, HTMLBaseFontElement* impl)
 
 void JSHTMLBaseFontElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLBaseFontElement* impl = (HTMLBaseFontElement*)JS_GetOpaque(val, JSHTMLBaseFontElement::js_class_id);
+    HTMLBaseFontElement* impl = (HTMLBaseFontElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -144,15 +144,15 @@ JSValue JSHTMLBaseFontElement::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case ColorAttrNum: {
-            HTMLBaseFontElement* imp = (HTMLBaseFontElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLBaseFontElement* imp = (HTMLBaseFontElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->color()).utf8().data());
         }
         case FaceAttrNum: {
-            HTMLBaseFontElement* imp = (HTMLBaseFontElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLBaseFontElement* imp = (HTMLBaseFontElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->face()).utf8().data());
         }
         case SizeAttrNum: {
-            HTMLBaseFontElement* imp = (HTMLBaseFontElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLBaseFontElement* imp = (HTMLBaseFontElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->size());
         }
         case ConstructorAttrNum:
@@ -165,17 +165,17 @@ JSValue JSHTMLBaseFontElement::putValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case ColorAttrNum: {
-            HTMLBaseFontElement* imp = (HTMLBaseFontElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLBaseFontElement* imp = (HTMLBaseFontElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setColor(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case FaceAttrNum: {
-            HTMLBaseFontElement* imp = (HTMLBaseFontElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLBaseFontElement* imp = (HTMLBaseFontElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setFace(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case SizeAttrNum: {
-            HTMLBaseFontElement* imp = (HTMLBaseFontElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLBaseFontElement* imp = (HTMLBaseFontElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setSize(valueToInt32(ctx, value));
             break;
         }

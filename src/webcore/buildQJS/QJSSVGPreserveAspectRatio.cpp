@@ -173,7 +173,9 @@ void JSSVGPreserveAspectRatio::init(JSContext* ctx)
 JSValue JSSVGPreserveAspectRatio::create(JSContext* ctx, SVGPreserveAspectRatio* impl, SVGElement* context)
 {
     JSSVGPreserveAspectRatio::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGPreserveAspectRatioPrototype::self(ctx), JSSVGPreserveAspectRatio::js_class_id);
+    JSValue _proto = JSSVGPreserveAspectRatioPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGPreserveAspectRatio::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -198,11 +200,11 @@ JSValue JSSVGPreserveAspectRatio::getValueProperty(JSContext *ctx, JSValueConst 
 {
     switch (token) {
         case AlignAttrNum: {
-            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaqueNoCheck(this_val);
+            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaque(this_val, JSSVGPreserveAspectRatio::js_class_id);
             return JS_NewBigUint64(ctx, imp->align());
         }
         case MeetOrSliceAttrNum: {
-            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaqueNoCheck(this_val);
+            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaque(this_val, JSSVGPreserveAspectRatio::js_class_id);
             return JS_NewBigUint64(ctx, imp->meetOrSlice());
         }
         case ConstructorAttrNum:
@@ -215,12 +217,12 @@ JSValue JSSVGPreserveAspectRatio::putValueProperty(JSContext *ctx, JSValueConst 
 {
     switch (token) {
         case AlignAttrNum: {
-            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaqueNoCheck(this_val);
+            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaque(this_val, JSSVGPreserveAspectRatio::js_class_id);
             imp->setAlign(valueToInt32(ctx, value));
             break;
         }
         case MeetOrSliceAttrNum: {
-            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaqueNoCheck(this_val);
+            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaque(this_val, JSSVGPreserveAspectRatio::js_class_id);
             imp->setMeetOrSlice(valueToInt32(ctx, value));
             break;
         }

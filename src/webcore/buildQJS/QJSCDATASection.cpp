@@ -105,17 +105,17 @@ JSClassID JSCDATASection::js_class_id = 0;
 void JSCDATASection::init(JSContext* ctx)
 {
     if (JSCDATASection::js_class_id == 0) {
-        JS_NewClassID(&JSCDATASection::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSCDATASection::js_class_id, &JSCDATASectionClassDefine);
-        JS_SetConstructor(ctx, JSCDATASectionConstructor::self(ctx), JSCDATASectionPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSCDATASection::js_class_id, JSCDATASectionPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSCDATASection::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSCDATASection::create(JSContext* ctx, CDATASection* impl)
 {
     JSCDATASection::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCDATASectionPrototype::self(ctx), JSCDATASection::js_class_id);
+    JSValue _proto = JSCDATASectionPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -126,7 +126,7 @@ JSValue JSCDATASection::create(JSContext* ctx, CDATASection* impl)
 
 void JSCDATASection::finalizer(JSRuntime* rt, JSValue val)
 {
-    CDATASection* impl = (CDATASection*)JS_GetOpaque(val, JSCDATASection::js_class_id);
+    CDATASection* impl = (CDATASection*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

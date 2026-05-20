@@ -110,17 +110,17 @@ JSClassID JSHTMLMapElement::js_class_id = 0;
 void JSHTMLMapElement::init(JSContext* ctx)
 {
     if (JSHTMLMapElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLMapElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLMapElement::js_class_id, &JSHTMLMapElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLMapElementConstructor::self(ctx), JSHTMLMapElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLMapElement::js_class_id, JSHTMLMapElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLMapElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLMapElement::create(JSContext* ctx, HTMLMapElement* impl)
 {
     JSHTMLMapElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLMapElementPrototype::self(ctx), JSHTMLMapElement::js_class_id);
+    JSValue _proto = JSHTMLMapElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -131,7 +131,7 @@ JSValue JSHTMLMapElement::create(JSContext* ctx, HTMLMapElement* impl)
 
 void JSHTMLMapElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLMapElement* impl = (HTMLMapElement*)JS_GetOpaque(val, JSHTMLMapElement::js_class_id);
+    HTMLMapElement* impl = (HTMLMapElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -145,11 +145,11 @@ JSValue JSHTMLMapElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case AreasAttrNum: {
-            HTMLMapElement* imp = (HTMLMapElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLMapElement* imp = (HTMLMapElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->areas()));
         }
         case NameAttrNum: {
-            HTMLMapElement* imp = (HTMLMapElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLMapElement* imp = (HTMLMapElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -162,7 +162,7 @@ JSValue JSHTMLMapElement::putValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case NameAttrNum: {
-            HTMLMapElement* imp = (HTMLMapElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLMapElement* imp = (HTMLMapElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }

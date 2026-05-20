@@ -93,7 +93,9 @@ void JSSVGFEDistantLightElement::init(JSContext* ctx)
 JSValue JSSVGFEDistantLightElement::create(JSContext* ctx, SVGFEDistantLightElement* impl)
 {
     JSSVGFEDistantLightElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGFEDistantLightElementPrototype::self(ctx), JSSVGFEDistantLightElement::js_class_id);
+    JSValue _proto = JSSVGFEDistantLightElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGFEDistantLightElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -118,12 +120,12 @@ JSValue JSSVGFEDistantLightElement::getValueProperty(JSContext *ctx, JSValueCons
 {
     switch (token) {
         case AzimuthAttrNum: {
-            SVGFEDistantLightElement* imp = (SVGFEDistantLightElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEDistantLightElement* imp = (SVGFEDistantLightElement*)JS_GetOpaque(this_val, JSSVGFEDistantLightElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->azimuthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ElevationAttrNum: {
-            SVGFEDistantLightElement* imp = (SVGFEDistantLightElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEDistantLightElement* imp = (SVGFEDistantLightElement*)JS_GetOpaque(this_val, JSSVGFEDistantLightElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->elevationAnimated();
             return toJS(ctx, obj.get(), imp);
         }

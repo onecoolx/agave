@@ -143,7 +143,9 @@ void JSXPathEvaluator::init(JSContext* ctx)
 JSValue JSXPathEvaluator::create(JSContext* ctx, XPathEvaluator* impl)
 {
     JSXPathEvaluator::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSXPathEvaluatorPrototype::self(ctx), JSXPathEvaluator::js_class_id);
+    JSValue _proto = JSXPathEvaluatorPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSXPathEvaluator::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -180,7 +182,7 @@ JSValue JSXPathEvaluator::getConstructor(JSContext *ctx)
 
 JSValue JSXPathEvaluatorPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    XPathEvaluator* imp = (XPathEvaluator*)JS_GetOpaqueNoCheck(this_val);
+    XPathEvaluator* imp = (XPathEvaluator*)JS_GetOpaque(this_val, JSXPathEvaluator::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

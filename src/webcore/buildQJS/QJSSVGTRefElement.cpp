@@ -92,7 +92,9 @@ void JSSVGTRefElement::init(JSContext* ctx)
 JSValue JSSVGTRefElement::create(JSContext* ctx, SVGTRefElement* impl)
 {
     JSSVGTRefElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGTRefElementPrototype::self(ctx), JSSVGTRefElement::js_class_id);
+    JSValue _proto = JSSVGTRefElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGTRefElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -117,7 +119,7 @@ JSValue JSSVGTRefElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case HrefAttrNum: {
-            SVGTRefElement* imp = (SVGTRefElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTRefElement* imp = (SVGTRefElement*)JS_GetOpaque(this_val, JSSVGTRefElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->hrefAnimated();
             return toJS(ctx, obj.get(), imp);
         }

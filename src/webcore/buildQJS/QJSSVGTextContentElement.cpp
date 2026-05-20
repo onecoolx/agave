@@ -193,7 +193,9 @@ void JSSVGTextContentElement::init(JSContext* ctx)
 JSValue JSSVGTextContentElement::create(JSContext* ctx, SVGTextContentElement* impl)
 {
     JSSVGTextContentElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGTextContentElementPrototype::self(ctx), JSSVGTextContentElement::js_class_id);
+    JSValue _proto = JSSVGTextContentElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGTextContentElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -218,47 +220,47 @@ JSValue JSSVGTextContentElement::getValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case TextLengthAttrNum: {
-            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaque(this_val, JSSVGTextContentElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->textLengthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case LengthAdjustAttrNum: {
-            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaque(this_val, JSSVGTextContentElement::js_class_id);
             RefPtr<SVGAnimatedEnumeration> obj = imp->lengthAdjustAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RequiredFeaturesAttrNum: {
-            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaque(this_val, JSSVGTextContentElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredFeatures()), imp);
         }
         case RequiredExtensionsAttrNum: {
-            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaque(this_val, JSSVGTextContentElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->requiredExtensions()), imp);
         }
         case SystemLanguageAttrNum: {
-            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaque(this_val, JSSVGTextContentElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->systemLanguage()), imp);
         }
         case XmllangAttrNum: {
-            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaque(this_val, JSSVGTextContentElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaque(this_val, JSSVGTextContentElement::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaque(this_val, JSSVGTextContentElement::js_class_id);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaque(this_val, JSSVGTextContentElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaque(this_val, JSSVGTextContentElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:
@@ -271,12 +273,12 @@ JSValue JSSVGTextContentElement::putValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaque(this_val, JSSVGTextContentElement::js_class_id);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaque(this_val, JSSVGTextContentElement::js_class_id);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -291,7 +293,7 @@ JSValue JSSVGTextContentElement::getConstructor(JSContext *ctx)
 
 JSValue JSSVGTextContentElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGTextContentElement* imp = (SVGTextContentElement*)JS_GetOpaque(this_val, JSSVGTextContentElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

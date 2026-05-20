@@ -89,7 +89,9 @@ void JSXPathExpression::init(JSContext* ctx)
 JSValue JSXPathExpression::create(JSContext* ctx, XPathExpression* impl)
 {
     JSXPathExpression::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSXPathExpressionPrototype::self(ctx), JSXPathExpression::js_class_id);
+    JSValue _proto = JSXPathExpressionPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSXPathExpression::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -112,7 +114,7 @@ void JSXPathExpression::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_
 
 JSValue JSXPathExpressionPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    XPathExpression* imp = (XPathExpression*)JS_GetOpaqueNoCheck(this_val);
+    XPathExpression* imp = (XPathExpression*)JS_GetOpaque(this_val, JSXPathExpression::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

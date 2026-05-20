@@ -149,7 +149,9 @@ void JSSVGException::init(JSContext* ctx)
 JSValue JSSVGException::create(JSContext* ctx, SVGException* impl, SVGElement* context)
 {
     JSSVGException::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGExceptionPrototype::self(ctx), JSSVGException::js_class_id);
+    JSValue _proto = JSSVGExceptionPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGException::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

@@ -88,7 +88,9 @@ void JSXPathNSResolver::init(JSContext* ctx)
 JSValue JSXPathNSResolver::create(JSContext* ctx, XPathNSResolver* impl)
 {
     JSXPathNSResolver::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSXPathNSResolverPrototype::self(ctx), JSXPathNSResolver::js_class_id);
+    JSValue _proto = JSXPathNSResolverPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSXPathNSResolver::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -111,7 +113,7 @@ void JSXPathNSResolver::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_
 
 JSValue JSXPathNSResolverPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    XPathNSResolver* imp = (XPathNSResolver*)JS_GetOpaqueNoCheck(this_val);
+    XPathNSResolver* imp = (XPathNSResolver*)JS_GetOpaque(this_val, JSXPathNSResolver::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

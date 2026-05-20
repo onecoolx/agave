@@ -93,7 +93,9 @@ void JSSVGAnimatedRect::init(JSContext* ctx)
 JSValue JSSVGAnimatedRect::create(JSContext* ctx, SVGAnimatedRect* impl, SVGElement* context)
 {
     JSSVGAnimatedRect::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnimatedRectPrototype::self(ctx), JSSVGAnimatedRect::js_class_id);
+    JSValue _proto = JSSVGAnimatedRectPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAnimatedRect::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -118,11 +120,11 @@ JSValue JSSVGAnimatedRect::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedRect* imp = (SVGAnimatedRect*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedRect* imp = (SVGAnimatedRect*)JS_GetOpaque(this_val, JSSVGAnimatedRect::js_class_id);
             return toJS(ctx, JSSVGPODTypeWrapperCache<FloatRect, SVGAnimatedRect>::lookupOrCreateWrapper(imp, &SVGAnimatedRect::baseVal, &SVGAnimatedRect::setBaseVal), context());
         }
         case AnimValAttrNum: {
-            SVGAnimatedRect* imp = (SVGAnimatedRect*)JS_GetOpaqueNoCheck(this_val);
+            SVGAnimatedRect* imp = (SVGAnimatedRect*)JS_GetOpaque(this_val, JSSVGAnimatedRect::js_class_id);
             return toJS(ctx, JSSVGPODTypeWrapperCache<FloatRect, SVGAnimatedRect>::lookupOrCreateWrapper(imp, &SVGAnimatedRect::animVal, &SVGAnimatedRect::setAnimVal), context());
         }
     }

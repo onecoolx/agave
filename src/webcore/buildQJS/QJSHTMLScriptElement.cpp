@@ -113,17 +113,17 @@ JSClassID JSHTMLScriptElement::js_class_id = 0;
 void JSHTMLScriptElement::init(JSContext* ctx)
 {
     if (JSHTMLScriptElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLScriptElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLScriptElement::js_class_id, &JSHTMLScriptElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLScriptElementConstructor::self(ctx), JSHTMLScriptElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLScriptElement::js_class_id, JSHTMLScriptElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLScriptElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLScriptElement::create(JSContext* ctx, HTMLScriptElement* impl)
 {
     JSHTMLScriptElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLScriptElementPrototype::self(ctx), JSHTMLScriptElement::js_class_id);
+    JSValue _proto = JSHTMLScriptElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -134,7 +134,7 @@ JSValue JSHTMLScriptElement::create(JSContext* ctx, HTMLScriptElement* impl)
 
 void JSHTMLScriptElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLScriptElement* impl = (HTMLScriptElement*)JS_GetOpaque(val, JSHTMLScriptElement::js_class_id);
+    HTMLScriptElement* impl = (HTMLScriptElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -148,31 +148,31 @@ JSValue JSHTMLScriptElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case TextAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->text()).utf8().data());
         }
         case HtmlForAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->htmlFor()).utf8().data());
         }
         case EventAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->event()).utf8().data());
         }
         case CharsetAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->charset()).utf8().data());
         }
         case DeferAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->defer() ? 1 : 0);
         }
         case SrcAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->src()).utf8().data());
         }
         case TypeAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -185,37 +185,37 @@ JSValue JSHTMLScriptElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case TextAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setText(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HtmlForAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setHtmlFor(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case EventAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setEvent(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CharsetAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCharset(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case DeferAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setDefer(valueToBoolean(ctx, value));
             break;
         }
         case SrcAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setSrc(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TypeAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }

@@ -83,7 +83,9 @@ void JSBarInfo::init(JSContext* ctx)
 JSValue JSBarInfo::create(JSContext* ctx, BarInfo* impl)
 {
     JSBarInfo::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSBarInfoPrototype::self(ctx), JSBarInfo::js_class_id);
+    JSValue _proto = JSBarInfoPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSBarInfo::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -108,7 +110,7 @@ JSValue JSBarInfo::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
 {
     switch (token) {
         case VisibleAttrNum: {
-            BarInfo* imp = (BarInfo*)JS_GetOpaqueNoCheck(this_val);
+            BarInfo* imp = (BarInfo*)JS_GetOpaque(this_val, JSBarInfo::js_class_id);
             return JS_NewBool(ctx, imp->visible() ? 1 : 0);
         }
     }

@@ -117,17 +117,17 @@ JSClassID JSHTMLAppletElement::js_class_id = 0;
 void JSHTMLAppletElement::init(JSContext* ctx)
 {
     if (JSHTMLAppletElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLAppletElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLAppletElement::js_class_id, &JSHTMLAppletElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLAppletElementConstructor::self(ctx), JSHTMLAppletElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLAppletElement::js_class_id, JSHTMLAppletElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLAppletElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLAppletElement::create(JSContext* ctx, HTMLAppletElement* impl)
 {
     JSHTMLAppletElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLAppletElementPrototype::self(ctx), JSHTMLAppletElement::js_class_id);
+    JSValue _proto = JSHTMLAppletElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -138,7 +138,7 @@ JSValue JSHTMLAppletElement::create(JSContext* ctx, HTMLAppletElement* impl)
 
 void JSHTMLAppletElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLAppletElement* impl = (HTMLAppletElement*)JS_GetOpaque(val, JSHTMLAppletElement::js_class_id);
+    HTMLAppletElement* impl = (HTMLAppletElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -152,47 +152,47 @@ JSValue JSHTMLAppletElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case AltAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->alt()).utf8().data());
         }
         case ArchiveAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->archive()).utf8().data());
         }
         case CodeAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->code()).utf8().data());
         }
         case CodeBaseAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->codeBase()).utf8().data());
         }
         case HeightAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->height()).utf8().data());
         }
         case HspaceAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->hspace()).utf8().data());
         }
         case NameAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case ObjectAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->object()).utf8().data());
         }
         case VspaceAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->vspace()).utf8().data());
         }
         case WidthAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->width()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -205,57 +205,57 @@ JSValue JSHTMLAppletElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AltAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlt(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ArchiveAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setArchive(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CodeAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCode(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CodeBaseAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCodeBase(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HeightAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setHeight(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HspaceAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setHspace(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case NameAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ObjectAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setObject(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case VspaceAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setVspace(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case WidthAttrNum: {
-            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAppletElement* imp = (HTMLAppletElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setWidth(valueToStringWithNullCheck(ctx, value));
             break;
         }

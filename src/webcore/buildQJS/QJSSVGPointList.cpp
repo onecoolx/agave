@@ -105,7 +105,9 @@ void JSSVGPointList::init(JSContext* ctx)
 JSValue JSSVGPointList::create(JSContext* ctx, SVGPointList* impl, SVGElement* context)
 {
     JSSVGPointList::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGPointListPrototype::self(ctx), JSSVGPointList::js_class_id);
+    JSValue _proto = JSSVGPointListPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGPointList::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -130,7 +132,7 @@ JSValue JSSVGPointList::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case NumberOfItemsAttrNum: {
-            SVGPointList* imp = (SVGPointList*)JS_GetOpaqueNoCheck(this_val);
+            SVGPointList* imp = (SVGPointList*)JS_GetOpaque(this_val, JSSVGPointList::js_class_id);
             return JS_NewBigUint64(ctx, imp->numberOfItems());
         }
     }
@@ -139,7 +141,7 @@ JSValue JSSVGPointList::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 
 JSValue JSSVGPointListPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGPointList* imp = (SVGPointList*)JS_GetOpaqueNoCheck(this_val);
+    SVGPointList* imp = (SVGPointList*)JS_GetOpaque(this_val, JSSVGPointList::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

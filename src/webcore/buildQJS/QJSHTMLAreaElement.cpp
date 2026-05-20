@@ -121,17 +121,17 @@ JSClassID JSHTMLAreaElement::js_class_id = 0;
 void JSHTMLAreaElement::init(JSContext* ctx)
 {
     if (JSHTMLAreaElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLAreaElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLAreaElement::js_class_id, &JSHTMLAreaElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLAreaElementConstructor::self(ctx), JSHTMLAreaElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLAreaElement::js_class_id, JSHTMLAreaElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLAreaElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLAreaElement::create(JSContext* ctx, HTMLAreaElement* impl)
 {
     JSHTMLAreaElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLAreaElementPrototype::self(ctx), JSHTMLAreaElement::js_class_id);
+    JSValue _proto = JSHTMLAreaElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -142,7 +142,7 @@ JSValue JSHTMLAreaElement::create(JSContext* ctx, HTMLAreaElement* impl)
 
 void JSHTMLAreaElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLAreaElement* impl = (HTMLAreaElement*)JS_GetOpaque(val, JSHTMLAreaElement::js_class_id);
+    HTMLAreaElement* impl = (HTMLAreaElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -156,63 +156,63 @@ JSValue JSHTMLAreaElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case AccessKeyAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->accessKey()).utf8().data());
         }
         case AltAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->alt()).utf8().data());
         }
         case CoordsAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->coords()).utf8().data());
         }
         case HrefAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->href()).utf8().data());
         }
         case NoHrefAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->noHref() ? 1 : 0);
         }
         case ShapeAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->shape()).utf8().data());
         }
         case TabIndexAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->tabIndex());
         }
         case TargetAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->target()).utf8().data());
         }
         case HashAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->hash()).utf8().data());
         }
         case HostAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->host()).utf8().data());
         }
         case HostnameAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->hostname()).utf8().data());
         }
         case PathnameAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->pathname()).utf8().data());
         }
         case PortAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->port()).utf8().data());
         }
         case ProtocolAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->protocol()).utf8().data());
         }
         case SearchAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->search()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -225,42 +225,42 @@ JSValue JSHTMLAreaElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case AccessKeyAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAccessKey(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AltAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setAlt(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CoordsAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCoords(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HrefAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setHref(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case NoHrefAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setNoHref(valueToBoolean(ctx, value));
             break;
         }
         case ShapeAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setShape(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TabIndexAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setTabIndex(valueToInt32(ctx, value));
             break;
         }
         case TargetAttrNum: {
-            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setTarget(valueToStringWithNullCheck(ctx, value));
             break;
         }

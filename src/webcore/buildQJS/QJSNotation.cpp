@@ -108,17 +108,17 @@ JSClassID JSNotation::js_class_id = 0;
 void JSNotation::init(JSContext* ctx)
 {
     if (JSNotation::js_class_id == 0) {
-        JS_NewClassID(&JSNotation::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSNotation::js_class_id, &JSNotationClassDefine);
-        JS_SetConstructor(ctx, JSNotationConstructor::self(ctx), JSNotationPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSNotation::js_class_id, JSNotationPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSNotation::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSNotation::create(JSContext* ctx, Notation* impl)
 {
     JSNotation::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSNotationPrototype::self(ctx), JSNotation::js_class_id);
+    JSValue _proto = JSNotationPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -129,7 +129,7 @@ JSValue JSNotation::create(JSContext* ctx, Notation* impl)
 
 void JSNotation::finalizer(JSRuntime* rt, JSValue val)
 {
-    Notation* impl = (Notation*)JS_GetOpaque(val, JSNotation::js_class_id);
+    Notation* impl = (Notation*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -143,11 +143,11 @@ JSValue JSNotation::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
 {
     switch (token) {
         case PublicIdAttrNum: {
-            Notation* imp = (Notation*)JS_GetOpaqueNoCheck(this_val);
+            Notation* imp = (Notation*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->publicId());
         }
         case SystemIdAttrNum: {
-            Notation* imp = (Notation*)JS_GetOpaqueNoCheck(this_val);
+            Notation* imp = (Notation*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->systemId());
         }
         case ConstructorAttrNum:

@@ -113,7 +113,9 @@ void JSSVGFEComponentTransferElement::init(JSContext* ctx)
 JSValue JSSVGFEComponentTransferElement::create(JSContext* ctx, SVGFEComponentTransferElement* impl)
 {
     JSSVGFEComponentTransferElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGFEComponentTransferElementPrototype::self(ctx), JSSVGFEComponentTransferElement::js_class_id);
+    JSValue _proto = JSSVGFEComponentTransferElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGFEComponentTransferElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -138,42 +140,42 @@ JSValue JSSVGFEComponentTransferElement::getValueProperty(JSContext *ctx, JSValu
 {
     switch (token) {
         case In1AttrNum: {
-            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaque(this_val, JSSVGFEComponentTransferElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->in1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaque(this_val, JSSVGFEComponentTransferElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaque(this_val, JSSVGFEComponentTransferElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaque(this_val, JSSVGFEComponentTransferElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaque(this_val, JSSVGFEComponentTransferElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaque(this_val, JSSVGFEComponentTransferElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaque(this_val, JSSVGFEComponentTransferElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaque(this_val, JSSVGFEComponentTransferElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -182,7 +184,7 @@ JSValue JSSVGFEComponentTransferElement::getValueProperty(JSContext *ctx, JSValu
 
 JSValue JSSVGFEComponentTransferElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGFEComponentTransferElement* imp = (SVGFEComponentTransferElement*)JS_GetOpaque(this_val, JSSVGFEComponentTransferElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

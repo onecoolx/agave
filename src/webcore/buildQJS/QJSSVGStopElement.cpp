@@ -108,7 +108,9 @@ void JSSVGStopElement::init(JSContext* ctx)
 JSValue JSSVGStopElement::create(JSContext* ctx, SVGStopElement* impl)
 {
     JSSVGStopElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGStopElementPrototype::self(ctx), JSSVGStopElement::js_class_id);
+    JSValue _proto = JSSVGStopElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGStopElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -133,17 +135,17 @@ JSValue JSSVGStopElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case OffsetAttrNum: {
-            SVGStopElement* imp = (SVGStopElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGStopElement* imp = (SVGStopElement*)JS_GetOpaque(this_val, JSSVGStopElement::js_class_id);
             RefPtr<SVGAnimatedNumber> obj = imp->offsetAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGStopElement* imp = (SVGStopElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGStopElement* imp = (SVGStopElement*)JS_GetOpaque(this_val, JSSVGStopElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGStopElement* imp = (SVGStopElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGStopElement* imp = (SVGStopElement*)JS_GetOpaque(this_val, JSSVGStopElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -152,7 +154,7 @@ JSValue JSSVGStopElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 
 JSValue JSSVGStopElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGStopElement* imp = (SVGStopElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGStopElement* imp = (SVGStopElement*)JS_GetOpaque(this_val, JSSVGStopElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

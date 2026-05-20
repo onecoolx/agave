@@ -109,7 +109,9 @@ void JSSVGTextElement::init(JSContext* ctx)
 JSValue JSSVGTextElement::create(JSContext* ctx, SVGTextElement* impl)
 {
     JSSVGTextElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGTextElementPrototype::self(ctx), JSSVGTextElement::js_class_id);
+    JSValue _proto = JSSVGTextElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGTextElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -134,16 +136,16 @@ JSValue JSSVGTextElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case TransformAttrNum: {
-            SVGTextElement* imp = (SVGTextElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextElement* imp = (SVGTextElement*)JS_GetOpaque(this_val, JSSVGTextElement::js_class_id);
             RefPtr<SVGAnimatedTransformList> obj = imp->transformAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case NearestViewportElementAttrNum: {
-            SVGTextElement* imp = (SVGTextElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextElement* imp = (SVGTextElement*)JS_GetOpaque(this_val, JSSVGTextElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->nearestViewportElement()));
         }
         case FarthestViewportElementAttrNum: {
-            SVGTextElement* imp = (SVGTextElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGTextElement* imp = (SVGTextElement*)JS_GetOpaque(this_val, JSSVGTextElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->farthestViewportElement()));
         }
     }
@@ -152,7 +154,7 @@ JSValue JSSVGTextElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 
 JSValue JSSVGTextElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGTextElement* imp = (SVGTextElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGTextElement* imp = (SVGTextElement*)JS_GetOpaque(this_val, JSSVGTextElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

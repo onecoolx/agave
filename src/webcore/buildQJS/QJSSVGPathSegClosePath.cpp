@@ -83,7 +83,9 @@ void JSSVGPathSegClosePath::init(JSContext* ctx)
 JSValue JSSVGPathSegClosePath::create(JSContext* ctx, SVGPathSegClosePath* impl, SVGElement* context)
 {
     JSSVGPathSegClosePath::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGPathSegClosePathPrototype::self(ctx), JSSVGPathSegClosePath::js_class_id);
+    JSValue _proto = JSSVGPathSegClosePathPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGPathSegClosePath::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

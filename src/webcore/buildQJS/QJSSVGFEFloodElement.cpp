@@ -113,7 +113,9 @@ void JSSVGFEFloodElement::init(JSContext* ctx)
 JSValue JSSVGFEFloodElement::create(JSContext* ctx, SVGFEFloodElement* impl)
 {
     JSSVGFEFloodElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGFEFloodElementPrototype::self(ctx), JSSVGFEFloodElement::js_class_id);
+    JSValue _proto = JSSVGFEFloodElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGFEFloodElement::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -138,42 +140,42 @@ JSValue JSSVGFEFloodElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case In1AttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque(this_val, JSSVGFEFloodElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->in1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque(this_val, JSSVGFEFloodElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque(this_val, JSSVGFEFloodElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque(this_val, JSSVGFEFloodElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque(this_val, JSSVGFEFloodElement::js_class_id);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque(this_val, JSSVGFEFloodElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque(this_val, JSSVGFEFloodElement::js_class_id);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque(this_val, JSSVGFEFloodElement::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -182,7 +184,7 @@ JSValue JSSVGFEFloodElement::getValueProperty(JSContext *ctx, JSValueConst this_
 
 JSValue JSSVGFEFloodElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
+    SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque(this_val, JSSVGFEFloodElement::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

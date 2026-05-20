@@ -107,17 +107,17 @@ JSClassID JSHTMLHtmlElement::js_class_id = 0;
 void JSHTMLHtmlElement::init(JSContext* ctx)
 {
     if (JSHTMLHtmlElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLHtmlElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLHtmlElement::js_class_id, &JSHTMLHtmlElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLHtmlElementConstructor::self(ctx), JSHTMLHtmlElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLHtmlElement::js_class_id, JSHTMLHtmlElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLHtmlElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLHtmlElement::create(JSContext* ctx, HTMLHtmlElement* impl)
 {
     JSHTMLHtmlElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLHtmlElementPrototype::self(ctx), JSHTMLHtmlElement::js_class_id);
+    JSValue _proto = JSHTMLHtmlElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -128,7 +128,7 @@ JSValue JSHTMLHtmlElement::create(JSContext* ctx, HTMLHtmlElement* impl)
 
 void JSHTMLHtmlElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLHtmlElement* impl = (HTMLHtmlElement*)JS_GetOpaque(val, JSHTMLHtmlElement::js_class_id);
+    HTMLHtmlElement* impl = (HTMLHtmlElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -142,7 +142,7 @@ JSValue JSHTMLHtmlElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case VersionAttrNum: {
-            HTMLHtmlElement* imp = (HTMLHtmlElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLHtmlElement* imp = (HTMLHtmlElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->version()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -155,7 +155,7 @@ JSValue JSHTMLHtmlElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case VersionAttrNum: {
-            HTMLHtmlElement* imp = (HTMLHtmlElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLHtmlElement* imp = (HTMLHtmlElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setVersion(valueToStringWithNullCheck(ctx, value));
             break;
         }

@@ -107,17 +107,17 @@ JSClassID JSHTMLQuoteElement::js_class_id = 0;
 void JSHTMLQuoteElement::init(JSContext* ctx)
 {
     if (JSHTMLQuoteElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLQuoteElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLQuoteElement::js_class_id, &JSHTMLQuoteElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLQuoteElementConstructor::self(ctx), JSHTMLQuoteElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLQuoteElement::js_class_id, JSHTMLQuoteElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLQuoteElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLQuoteElement::create(JSContext* ctx, HTMLQuoteElement* impl)
 {
     JSHTMLQuoteElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLQuoteElementPrototype::self(ctx), JSHTMLQuoteElement::js_class_id);
+    JSValue _proto = JSHTMLQuoteElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -128,7 +128,7 @@ JSValue JSHTMLQuoteElement::create(JSContext* ctx, HTMLQuoteElement* impl)
 
 void JSHTMLQuoteElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLQuoteElement* impl = (HTMLQuoteElement*)JS_GetOpaque(val, JSHTMLQuoteElement::js_class_id);
+    HTMLQuoteElement* impl = (HTMLQuoteElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -142,7 +142,7 @@ JSValue JSHTMLQuoteElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CiteAttrNum: {
-            HTMLQuoteElement* imp = (HTMLQuoteElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLQuoteElement* imp = (HTMLQuoteElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->cite()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -155,7 +155,7 @@ JSValue JSHTMLQuoteElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CiteAttrNum: {
-            HTMLQuoteElement* imp = (HTMLQuoteElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLQuoteElement* imp = (HTMLQuoteElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setCite(valueToStringWithNullCheck(ctx, value));
             break;
         }

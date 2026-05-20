@@ -127,7 +127,9 @@ void JSStyleSheetList::init(JSContext* ctx)
 JSValue JSStyleSheetList::create(JSContext* ctx, StyleSheetList* impl)
 {
     JSStyleSheetList::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSStyleSheetListPrototype::self(ctx), JSStyleSheetList::js_class_id);
+    JSValue _proto = JSStyleSheetListPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSStyleSheetList::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -152,7 +154,7 @@ JSValue JSStyleSheetList::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case LengthAttrNum: {
-            StyleSheetList* imp = (StyleSheetList*)JS_GetOpaqueNoCheck(this_val);
+            StyleSheetList* imp = (StyleSheetList*)JS_GetOpaque(this_val, JSStyleSheetList::js_class_id);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case ConstructorAttrNum:
@@ -168,7 +170,7 @@ JSValue JSStyleSheetList::getConstructor(JSContext *ctx)
 
 JSValue JSStyleSheetListPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    StyleSheetList* imp = (StyleSheetList*)JS_GetOpaqueNoCheck(this_val);
+    StyleSheetList* imp = (StyleSheetList*)JS_GetOpaque(this_val, JSStyleSheetList::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

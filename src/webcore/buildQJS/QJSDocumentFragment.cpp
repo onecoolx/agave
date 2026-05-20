@@ -105,17 +105,17 @@ JSClassID JSDocumentFragment::js_class_id = 0;
 void JSDocumentFragment::init(JSContext* ctx)
 {
     if (JSDocumentFragment::js_class_id == 0) {
-        JS_NewClassID(&JSDocumentFragment::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSDocumentFragment::js_class_id, &JSDocumentFragmentClassDefine);
-        JS_SetConstructor(ctx, JSDocumentFragmentConstructor::self(ctx), JSDocumentFragmentPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSDocumentFragment::js_class_id, JSDocumentFragmentPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSDocumentFragment::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSDocumentFragment::create(JSContext* ctx, DocumentFragment* impl)
 {
     JSDocumentFragment::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSDocumentFragmentPrototype::self(ctx), JSDocumentFragment::js_class_id);
+    JSValue _proto = JSDocumentFragmentPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -126,7 +126,7 @@ JSValue JSDocumentFragment::create(JSContext* ctx, DocumentFragment* impl)
 
 void JSDocumentFragment::finalizer(JSRuntime* rt, JSValue val)
 {
-    DocumentFragment* impl = (DocumentFragment*)JS_GetOpaque(val, JSDocumentFragment::js_class_id);
+    DocumentFragment* impl = (DocumentFragment*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

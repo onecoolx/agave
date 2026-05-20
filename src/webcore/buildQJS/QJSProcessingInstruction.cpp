@@ -111,17 +111,17 @@ JSClassID JSProcessingInstruction::js_class_id = 0;
 void JSProcessingInstruction::init(JSContext* ctx)
 {
     if (JSProcessingInstruction::js_class_id == 0) {
-        JS_NewClassID(&JSProcessingInstruction::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSProcessingInstruction::js_class_id, &JSProcessingInstructionClassDefine);
-        JS_SetConstructor(ctx, JSProcessingInstructionConstructor::self(ctx), JSProcessingInstructionPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSProcessingInstruction::js_class_id, JSProcessingInstructionPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSProcessingInstruction::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSProcessingInstruction::create(JSContext* ctx, ProcessingInstruction* impl)
 {
     JSProcessingInstruction::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSProcessingInstructionPrototype::self(ctx), JSProcessingInstruction::js_class_id);
+    JSValue _proto = JSProcessingInstructionPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -132,7 +132,7 @@ JSValue JSProcessingInstruction::create(JSContext* ctx, ProcessingInstruction* i
 
 void JSProcessingInstruction::finalizer(JSRuntime* rt, JSValue val)
 {
-    ProcessingInstruction* impl = (ProcessingInstruction*)JS_GetOpaque(val, JSProcessingInstruction::js_class_id);
+    ProcessingInstruction* impl = (ProcessingInstruction*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -146,15 +146,15 @@ JSValue JSProcessingInstruction::getValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case TargetAttrNum: {
-            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaqueNoCheck(this_val);
+            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->target());
         }
         case DataAttrNum: {
-            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaqueNoCheck(this_val);
+            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->data());
         }
         case SheetAttrNum: {
-            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaqueNoCheck(this_val);
+            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->sheet()));
         }
         case ConstructorAttrNum:
@@ -167,7 +167,7 @@ JSValue JSProcessingInstruction::putValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case DataAttrNum: {
-            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaqueNoCheck(this_val);
+            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaque(this_val, JSNode::js_class_id);
             ExceptionCode ec = 0;
             imp->setData(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);

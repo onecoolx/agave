@@ -108,17 +108,17 @@ JSClassID JSHTMLBaseElement::js_class_id = 0;
 void JSHTMLBaseElement::init(JSContext* ctx)
 {
     if (JSHTMLBaseElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLBaseElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLBaseElement::js_class_id, &JSHTMLBaseElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLBaseElementConstructor::self(ctx), JSHTMLBaseElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLBaseElement::js_class_id, JSHTMLBaseElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLBaseElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLBaseElement::create(JSContext* ctx, HTMLBaseElement* impl)
 {
     JSHTMLBaseElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLBaseElementPrototype::self(ctx), JSHTMLBaseElement::js_class_id);
+    JSValue _proto = JSHTMLBaseElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -129,7 +129,7 @@ JSValue JSHTMLBaseElement::create(JSContext* ctx, HTMLBaseElement* impl)
 
 void JSHTMLBaseElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLBaseElement* impl = (HTMLBaseElement*)JS_GetOpaque(val, JSHTMLBaseElement::js_class_id);
+    HTMLBaseElement* impl = (HTMLBaseElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -143,11 +143,11 @@ JSValue JSHTMLBaseElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case HrefAttrNum: {
-            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->href()).utf8().data());
         }
         case TargetAttrNum: {
-            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->target()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -160,12 +160,12 @@ JSValue JSHTMLBaseElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case HrefAttrNum: {
-            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setHref(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TargetAttrNum: {
-            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setTarget(valueToStringWithNullCheck(ctx, value));
             break;
         }

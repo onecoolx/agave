@@ -75,7 +75,9 @@ void JSCanvasPattern::init(JSContext* ctx)
 JSValue JSCanvasPattern::create(JSContext* ctx, CanvasPattern* impl)
 {
     JSCanvasPattern::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSCanvasPatternPrototype::self(ctx), JSCanvasPattern::js_class_id);
+    JSValue _proto = JSCanvasPatternPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCanvasPattern::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }

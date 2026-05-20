@@ -108,17 +108,17 @@ JSClassID JSHTMLOptGroupElement::js_class_id = 0;
 void JSHTMLOptGroupElement::init(JSContext* ctx)
 {
     if (JSHTMLOptGroupElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLOptGroupElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLOptGroupElement::js_class_id, &JSHTMLOptGroupElementClassDefine);
-        JS_SetConstructor(ctx, JSHTMLOptGroupElementConstructor::self(ctx), JSHTMLOptGroupElementPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSHTMLOptGroupElement::js_class_id, JSHTMLOptGroupElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLOptGroupElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLOptGroupElement::create(JSContext* ctx, HTMLOptGroupElement* impl)
 {
     JSHTMLOptGroupElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLOptGroupElementPrototype::self(ctx), JSHTMLOptGroupElement::js_class_id);
+    JSValue _proto = JSHTMLOptGroupElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -129,7 +129,7 @@ JSValue JSHTMLOptGroupElement::create(JSContext* ctx, HTMLOptGroupElement* impl)
 
 void JSHTMLOptGroupElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLOptGroupElement* impl = (HTMLOptGroupElement*)JS_GetOpaque(val, JSHTMLOptGroupElement::js_class_id);
+    HTMLOptGroupElement* impl = (HTMLOptGroupElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -143,11 +143,11 @@ JSValue JSHTMLOptGroupElement::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case DisabledAttrNum: {
-            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->disabled() ? 1 : 0);
         }
         case LabelAttrNum: {
-            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->label()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -160,12 +160,12 @@ JSValue JSHTMLOptGroupElement::putValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case DisabledAttrNum: {
-            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setDisabled(valueToBoolean(ctx, value));
             break;
         }
         case LabelAttrNum: {
-            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setLabel(valueToStringWithNullCheck(ctx, value));
             break;
         }

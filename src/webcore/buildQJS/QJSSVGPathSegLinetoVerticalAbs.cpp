@@ -91,7 +91,9 @@ void JSSVGPathSegLinetoVerticalAbs::init(JSContext* ctx)
 JSValue JSSVGPathSegLinetoVerticalAbs::create(JSContext* ctx, SVGPathSegLinetoVerticalAbs* impl, SVGElement* context)
 {
     JSSVGPathSegLinetoVerticalAbs::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGPathSegLinetoVerticalAbsPrototype::self(ctx), JSSVGPathSegLinetoVerticalAbs::js_class_id);
+    JSValue _proto = JSSVGPathSegLinetoVerticalAbsPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGPathSegLinetoVerticalAbs::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -116,7 +118,7 @@ JSValue JSSVGPathSegLinetoVerticalAbs::getValueProperty(JSContext *ctx, JSValueC
 {
     switch (token) {
         case YAttrNum: {
-            SVGPathSegLinetoVerticalAbs* imp = (SVGPathSegLinetoVerticalAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegLinetoVerticalAbs* imp = (SVGPathSegLinetoVerticalAbs*)JS_GetOpaque(this_val, JSSVGPathSegLinetoVerticalAbs::js_class_id);
             return JS_NewBigUint64(ctx, imp->y());
         }
     }
@@ -127,7 +129,7 @@ JSValue JSSVGPathSegLinetoVerticalAbs::putValueProperty(JSContext *ctx, JSValueC
 {
     switch (token) {
         case YAttrNum: {
-            SVGPathSegLinetoVerticalAbs* imp = (SVGPathSegLinetoVerticalAbs*)JS_GetOpaqueNoCheck(this_val);
+            SVGPathSegLinetoVerticalAbs* imp = (SVGPathSegLinetoVerticalAbs*)JS_GetOpaque(this_val, JSSVGPathSegLinetoVerticalAbs::js_class_id);
             imp->setY(valueToFloat(ctx, value));
             break;
         }

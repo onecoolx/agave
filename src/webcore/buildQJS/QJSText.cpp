@@ -115,17 +115,17 @@ JSClassID JSText::js_class_id = 0;
 void JSText::init(JSContext* ctx)
 {
     if (JSText::js_class_id == 0) {
-        JS_NewClassID(&JSText::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSText::js_class_id, &JSTextClassDefine);
-        JS_SetConstructor(ctx, JSTextConstructor::self(ctx), JSTextPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSText::js_class_id, JSTextPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSText::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSText::create(JSContext* ctx, Text* impl)
 {
     JSText::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSTextPrototype::self(ctx), JSText::js_class_id);
+    JSValue _proto = JSTextPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -136,7 +136,7 @@ JSValue JSText::create(JSContext* ctx, Text* impl)
 
 void JSText::finalizer(JSRuntime* rt, JSValue val)
 {
-    Text* impl = (Text*)JS_GetOpaque(val, JSText::js_class_id);
+    Text* impl = (Text*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -162,7 +162,7 @@ JSValue JSText::getConstructor(JSContext *ctx)
 
 JSValue JSTextPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    Text* imp = (Text*)JS_GetOpaqueNoCheck(this_val);
+    Text* imp = (Text*)JS_GetOpaque(this_val, JSNode::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

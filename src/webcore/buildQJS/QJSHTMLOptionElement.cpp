@@ -84,16 +84,17 @@ JSClassID JSHTMLOptionElement::js_class_id = 0;
 void JSHTMLOptionElement::init(JSContext* ctx)
 {
     if (JSHTMLOptionElement::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLOptionElement::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLOptionElement::js_class_id, &JSHTMLOptionElementClassDefine);
-        JS_SetClassProto(ctx, JSHTMLOptionElement::js_class_id, JSHTMLOptionElementPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSHTMLOptionElement::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSHTMLOptionElement::create(JSContext* ctx, HTMLOptionElement* impl)
 {
     JSHTMLOptionElement::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSHTMLOptionElementPrototype::self(ctx), JSHTMLOptionElement::js_class_id);
+    JSValue _proto = JSHTMLOptionElementPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -104,7 +105,7 @@ JSValue JSHTMLOptionElement::create(JSContext* ctx, HTMLOptionElement* impl)
 
 void JSHTMLOptionElement::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLOptionElement* impl = (HTMLOptionElement*)JS_GetOpaque(val, JSHTMLOptionElement::js_class_id);
+    HTMLOptionElement* impl = (HTMLOptionElement*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -118,35 +119,35 @@ JSValue JSHTMLOptionElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case FormAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return toJS(ctx, QJS::getPtr(imp->form()));
         }
         case DefaultSelectedAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->defaultSelected() ? 1 : 0);
         }
         case TextAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->text()).utf8().data());
         }
         case IndexAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBigUint64(ctx, imp->index());
         }
         case DisabledAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->disabled() ? 1 : 0);
         }
         case LabelAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->label()).utf8().data());
         }
         case SelectedAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->selected() ? 1 : 0);
         }
         case ValueAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->value()).utf8().data());
         }
     }
@@ -157,41 +158,41 @@ JSValue JSHTMLOptionElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case DefaultSelectedAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setDefaultSelected(valueToBoolean(ctx, value));
             break;
         }
         case TextAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             ExceptionCode ec = 0;
             imp->setText(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case IndexAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             ExceptionCode ec = 0;
             imp->setIndex(valueToInt32(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case DisabledAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setDisabled(valueToBoolean(ctx, value));
             break;
         }
         case LabelAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setLabel(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case SelectedAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setSelected(valueToBoolean(ctx, value));
             break;
         }
         case ValueAttrNum: {
-            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaqueNoCheck(this_val);
+            HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             imp->setValue(valueToStringWithNullCheck(ctx, value));
             break;
         }

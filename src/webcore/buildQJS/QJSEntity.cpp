@@ -109,17 +109,17 @@ JSClassID JSEntity::js_class_id = 0;
 void JSEntity::init(JSContext* ctx)
 {
     if (JSEntity::js_class_id == 0) {
-        JS_NewClassID(&JSEntity::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSEntity::js_class_id, &JSEntityClassDefine);
-        JS_SetConstructor(ctx, JSEntityConstructor::self(ctx), JSEntityPrototype::self(ctx));
-        JS_SetClassProto(ctx, JSEntity::js_class_id, JSEntityPrototype::self(ctx));
+        JSNode::init(ctx);
+        JSEntity::js_class_id = JSNode::js_class_id;
     }
 }
 
 JSValue JSEntity::create(JSContext* ctx, Entity* impl)
 {
     JSEntity::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSEntityPrototype::self(ctx), JSEntity::js_class_id);
+    JSValue _proto = JSEntityPrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -130,7 +130,7 @@ JSValue JSEntity::create(JSContext* ctx, Entity* impl)
 
 void JSEntity::finalizer(JSRuntime* rt, JSValue val)
 {
-    Entity* impl = (Entity*)JS_GetOpaque(val, JSEntity::js_class_id);
+    Entity* impl = (Entity*)JS_GetOpaque(val, JSNode::js_class_id);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
@@ -144,15 +144,15 @@ JSValue JSEntity::getValueProperty(JSContext *ctx, JSValueConst this_val, int to
 {
     switch (token) {
         case PublicIdAttrNum: {
-            Entity* imp = (Entity*)JS_GetOpaqueNoCheck(this_val);
+            Entity* imp = (Entity*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->publicId());
         }
         case SystemIdAttrNum: {
-            Entity* imp = (Entity*)JS_GetOpaqueNoCheck(this_val);
+            Entity* imp = (Entity*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->systemId());
         }
         case NotationNameAttrNum: {
-            Entity* imp = (Entity*)JS_GetOpaqueNoCheck(this_val);
+            Entity* imp = (Entity*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return jsStringOrNull(ctx, imp->notationName());
         }
         case ConstructorAttrNum:

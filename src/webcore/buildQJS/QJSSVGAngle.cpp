@@ -167,7 +167,9 @@ void JSSVGAngle::init(JSContext* ctx)
 JSValue JSSVGAngle::create(JSContext* ctx, SVGAngle* impl, SVGElement* context)
 {
     JSSVGAngle::init(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, JSSVGAnglePrototype::self(ctx), JSSVGAngle::js_class_id);
+    JSValue _proto = JSSVGAnglePrototype::self(ctx);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSSVGAngle::js_class_id);
+    JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
     }
@@ -192,19 +194,19 @@ JSValue JSSVGAngle::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
 {
     switch (token) {
         case UnitTypeAttrNum: {
-            SVGAngle* imp = (SVGAngle*)JS_GetOpaqueNoCheck(this_val);
+            SVGAngle* imp = (SVGAngle*)JS_GetOpaque(this_val, JSSVGAngle::js_class_id);
             return JS_NewBigUint64(ctx, imp->unitType());
         }
         case ValueAttrNum: {
-            SVGAngle* imp = (SVGAngle*)JS_GetOpaqueNoCheck(this_val);
+            SVGAngle* imp = (SVGAngle*)JS_GetOpaque(this_val, JSSVGAngle::js_class_id);
             return JS_NewBigUint64(ctx, imp->value());
         }
         case ValueInSpecifiedUnitsAttrNum: {
-            SVGAngle* imp = (SVGAngle*)JS_GetOpaqueNoCheck(this_val);
+            SVGAngle* imp = (SVGAngle*)JS_GetOpaque(this_val, JSSVGAngle::js_class_id);
             return JS_NewBigUint64(ctx, imp->valueInSpecifiedUnits());
         }
         case ValueAsStringAttrNum: {
-            SVGAngle* imp = (SVGAngle*)JS_GetOpaqueNoCheck(this_val);
+            SVGAngle* imp = (SVGAngle*)JS_GetOpaque(this_val, JSSVGAngle::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->valueAsString()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -217,17 +219,17 @@ JSValue JSSVGAngle::putValueProperty(JSContext *ctx, JSValueConst this_val, JSVa
 {
     switch (token) {
         case ValueAttrNum: {
-            SVGAngle* imp = (SVGAngle*)JS_GetOpaqueNoCheck(this_val);
+            SVGAngle* imp = (SVGAngle*)JS_GetOpaque(this_val, JSSVGAngle::js_class_id);
             imp->setValue(valueToFloat(ctx, value));
             break;
         }
         case ValueInSpecifiedUnitsAttrNum: {
-            SVGAngle* imp = (SVGAngle*)JS_GetOpaqueNoCheck(this_val);
+            SVGAngle* imp = (SVGAngle*)JS_GetOpaque(this_val, JSSVGAngle::js_class_id);
             imp->setValueInSpecifiedUnits(valueToFloat(ctx, value));
             break;
         }
         case ValueAsStringAttrNum: {
-            SVGAngle* imp = (SVGAngle*)JS_GetOpaqueNoCheck(this_val);
+            SVGAngle* imp = (SVGAngle*)JS_GetOpaque(this_val, JSSVGAngle::js_class_id);
             imp->setValueAsString(valueToStringWithNullCheck(ctx, value));
             break;
         }
@@ -244,7 +246,7 @@ JSValue JSSVGAngle::getConstructor(JSContext *ctx)
 
 JSValue JSSVGAnglePrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGAngle* imp = (SVGAngle*)JS_GetOpaqueNoCheck(this_val);
+    SVGAngle* imp = (SVGAngle*)JS_GetOpaque(this_val, JSSVGAngle::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 
