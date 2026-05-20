@@ -175,7 +175,11 @@ void ScriptController::initScriptIfNeeded()
 
     // Register all properties directly on global object
     JSDOMWindow::init(m_context);
-    JSDOMWindowPrototype::initPrototype(m_context, globalObject);
+    // Register only essential DOMWindow properties on global
+    {
+        extern void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global);
+        initEssentialDOMWindowProperties(m_context, globalObject);
+    }
     // Window functions override DOMWindow's generated versions (our impl has better null safety)
     WindowPrototype::initPrototype(m_context, globalObject);
 
@@ -211,3 +215,27 @@ void ScriptController::clearDocumentWrapper()
 
 }
 #endif
+
+// Minimal DOMWindow properties registered on global object
+// Full list causes memory corruption due to QuickJS global object limitations
+namespace WebCore {
+static JSValue js_get_document(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
+    QJS::ScriptInterpreter* interp = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx);
+    if (!interp || !interp->frame() || !interp->frame()->domWindow())
+        return JS_UNDEFINED;
+    WebCore::Document* doc = interp->frame()->domWindow()->document(); return doc ? toJS(ctx, static_cast<WebCore::Node*>(doc)) : JS_NULL;
+}
+
+void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global)
+{
+    JS_SetPropertyStr(ctx, global, "window", JS_DupValue(ctx, global));
+    JS_SetPropertyStr(ctx, global, "self", JS_DupValue(ctx, global));
+
+    // document getter
+    JSAtom atom = JS_NewAtom(ctx, "document");
+    JSValue getter = JS_NewCFunction(ctx, (JSCFunction*)js_get_document, "get document", 0);
+    JS_DefinePropertyGetSet(ctx, global, atom, getter, JS_UNDEFINED, JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
+    JS_FreeAtom(ctx, atom);
+}
+} // namespace WebCore
