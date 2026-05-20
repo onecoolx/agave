@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ JSValue JSHTMLHeadingElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLHeadingElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLHeadingElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLHeadingElement.constructor]]", obj);
@@ -81,7 +81,7 @@ JSValue JSHTMLHeadingElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLHeadingElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLHeadingElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLHeadingElement.prototype]]", obj);
@@ -144,7 +144,7 @@ JSValue JSHTMLHeadingElement::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLHeadingElement* imp = (HTMLHeadingElement*)JS_GetOpaque2(ctx, this_val, JSHTMLHeadingElement::js_class_id);
+            HTMLHeadingElement* imp = (HTMLHeadingElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -157,7 +157,7 @@ JSValue JSHTMLHeadingElement::putValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLHeadingElement* imp = (HTMLHeadingElement*)JS_GetOpaque2(ctx, this_val, JSHTMLHeadingElement::js_class_id);
+            HTMLHeadingElement* imp = (HTMLHeadingElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }

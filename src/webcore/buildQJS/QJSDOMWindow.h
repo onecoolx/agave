@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ JSValue JSHTMLCanvasElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLCanvasElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLCanvasElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLCanvasElement.constructor]]", obj);
@@ -89,7 +89,7 @@ JSValue JSHTMLCanvasElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLCanvasElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLCanvasElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLCanvasElement.prototype]]", obj);
@@ -153,11 +153,11 @@ JSValue JSHTMLCanvasElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case WidthAttrNum: {
-            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaque2(ctx, this_val, JSHTMLCanvasElement::js_class_id);
+            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->width());
         }
         case HeightAttrNum: {
-            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaque2(ctx, this_val, JSHTMLCanvasElement::js_class_id);
+            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->height());
         }
         case ConstructorAttrNum:
@@ -170,12 +170,12 @@ JSValue JSHTMLCanvasElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case WidthAttrNum: {
-            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaque2(ctx, this_val, JSHTMLCanvasElement::js_class_id);
+            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setWidth(valueToInt32(ctx, value));
             break;
         }
         case HeightAttrNum: {
-            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaque2(ctx, this_val, JSHTMLCanvasElement::js_class_id);
+            HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setHeight(valueToInt32(ctx, value));
             break;
         }
@@ -190,7 +190,7 @@ JSValue JSHTMLCanvasElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLCanvasElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaque2(ctx, this_val, JSHTMLCanvasElement::js_class_id);
+    HTMLCanvasElement* imp = (HTMLCanvasElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ JSValue JSCSSFontFaceRuleConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[CSSFontFaceRule.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSCSSFontFaceRuleConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[CSSFontFaceRule.constructor]]", obj);
@@ -83,7 +83,7 @@ JSValue JSCSSFontFaceRulePrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSCSSFontFaceRule.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSCSSRulePrototype::self(ctx));
         JSCSSFontFaceRulePrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSCSSFontFaceRule.prototype]]", obj);
@@ -146,7 +146,7 @@ JSValue JSCSSFontFaceRule::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case StyleAttrNum: {
-            CSSFontFaceRule* imp = (CSSFontFaceRule*)JS_GetOpaque2(ctx, this_val, JSCSSFontFaceRule::js_class_id);
+            CSSFontFaceRule* imp = (CSSFontFaceRule*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:

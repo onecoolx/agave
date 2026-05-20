@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ JSValue JSCounterConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[Counter.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSCounterConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[Counter.constructor]]", obj);
@@ -83,7 +83,7 @@ JSValue JSCounterPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSCounter.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSCounterPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSCounter.prototype]]", obj);
@@ -146,15 +146,15 @@ JSValue JSCounter::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
 {
     switch (token) {
         case IdentifierAttrNum: {
-            Counter* imp = (Counter*)JS_GetOpaque2(ctx, this_val, JSCounter::js_class_id);
+            Counter* imp = (Counter*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->identifier()).utf8().data());
         }
         case ListStyleAttrNum: {
-            Counter* imp = (Counter*)JS_GetOpaque2(ctx, this_val, JSCounter::js_class_id);
+            Counter* imp = (Counter*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->listStyle()).utf8().data());
         }
         case SeparatorAttrNum: {
-            Counter* imp = (Counter*)JS_GetOpaque2(ctx, this_val, JSCounter::js_class_id);
+            Counter* imp = (Counter*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->separator()).utf8().data());
         }
         case ConstructorAttrNum:

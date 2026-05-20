@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ JSValue JSHTMLUListElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLUListElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLUListElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLUListElement.constructor]]", obj);
@@ -82,7 +82,7 @@ JSValue JSHTMLUListElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLUListElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLUListElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLUListElement.prototype]]", obj);
@@ -145,11 +145,11 @@ JSValue JSHTMLUListElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLUListElement* imp = (HTMLUListElement*)JS_GetOpaque2(ctx, this_val, JSHTMLUListElement::js_class_id);
+            HTMLUListElement* imp = (HTMLUListElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->compact() ? 1 : 0);
         }
         case TypeAttrNum: {
-            HTMLUListElement* imp = (HTMLUListElement*)JS_GetOpaque2(ctx, this_val, JSHTMLUListElement::js_class_id);
+            HTMLUListElement* imp = (HTMLUListElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -162,12 +162,12 @@ JSValue JSHTMLUListElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLUListElement* imp = (HTMLUListElement*)JS_GetOpaque2(ctx, this_val, JSHTMLUListElement::js_class_id);
+            HTMLUListElement* imp = (HTMLUListElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCompact(valueToBoolean(ctx, value));
             break;
         }
         case TypeAttrNum: {
-            HTMLUListElement* imp = (HTMLUListElement*)JS_GetOpaque2(ctx, this_val, JSHTMLUListElement::js_class_id);
+            HTMLUListElement* imp = (HTMLUListElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }

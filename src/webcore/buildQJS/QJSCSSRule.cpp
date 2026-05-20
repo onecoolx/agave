@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,7 +81,7 @@ JSValue JSCSSRuleConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[CSSRule.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSCSSRuleConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[CSSRule.constructor]]", obj);
@@ -114,7 +114,7 @@ JSValue JSCSSRulePrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSCSSRule.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSCSSRulePrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSCSSRule.prototype]]", obj);
@@ -184,19 +184,19 @@ JSValue JSCSSRule::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
 {
     switch (token) {
         case TypeAttrNum: {
-            CSSRule* imp = (CSSRule*)JS_GetOpaque2(ctx, this_val, JSCSSRule::js_class_id);
+            CSSRule* imp = (CSSRule*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->type());
         }
         case CssTextAttrNum: {
-            CSSRule* imp = (CSSRule*)JS_GetOpaque2(ctx, this_val, JSCSSRule::js_class_id);
+            CSSRule* imp = (CSSRule*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->cssText());
         }
         case ParentStyleSheetAttrNum: {
-            CSSRule* imp = (CSSRule*)JS_GetOpaque2(ctx, this_val, JSCSSRule::js_class_id);
+            CSSRule* imp = (CSSRule*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->parentStyleSheet()));
         }
         case ParentRuleAttrNum: {
-            CSSRule* imp = (CSSRule*)JS_GetOpaque2(ctx, this_val, JSCSSRule::js_class_id);
+            CSSRule* imp = (CSSRule*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->parentRule()));
         }
         case ConstructorAttrNum:
@@ -209,7 +209,7 @@ JSValue JSCSSRule::putValueProperty(JSContext *ctx, JSValueConst this_val, JSVal
 {
     switch (token) {
         case CssTextAttrNum: {
-            CSSRule* imp = (CSSRule*)JS_GetOpaque2(ctx, this_val, JSCSSRule::js_class_id);
+            CSSRule* imp = (CSSRule*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setCssText(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ JSValue JSHistoryPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHistory.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHistoryPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHistory.prototype]]", obj);
@@ -120,7 +120,7 @@ JSValue JSHistory::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
 {
     switch (token) {
         case LengthAttrNum: {
-            History* imp = (History*)JS_GetOpaque2(ctx, this_val, JSHistory::js_class_id);
+            History* imp = (History*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->length());
         }
     }
@@ -129,7 +129,7 @@ JSValue JSHistory::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
 
 JSValue JSHistoryPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    History* imp = (History*)JS_GetOpaque2(ctx, this_val, JSHistory::js_class_id);
+    History* imp = (History*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

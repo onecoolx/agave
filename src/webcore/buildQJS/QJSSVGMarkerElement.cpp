@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -108,7 +108,7 @@ JSValue JSSVGMarkerElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[SVGMarkerElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGMarkerElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[SVGMarkerElement.constructor]]", obj);
@@ -149,7 +149,7 @@ JSValue JSSVGMarkerElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGMarkerElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGMarkerElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGMarkerElement.prototype]]", obj);
@@ -220,69 +220,69 @@ JSValue JSSVGMarkerElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case RefXAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->refXAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RefYAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->refYAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case MarkerUnitsAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedEnumeration> obj = imp->markerUnitsAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case MarkerWidthAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->markerWidthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case MarkerHeightAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->markerHeightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case OrientTypeAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedEnumeration> obj = imp->orientTypeAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case OrientAngleAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedAngle> obj = imp->orientAngleAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XmllangAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ViewBoxAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedRect> obj = imp->viewBoxAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case PreserveAspectRatioAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedPreserveAspectRatio> obj = imp->preserveAspectRatioAnimated();
             return toJS(ctx, obj.get(), imp);
         }
@@ -296,12 +296,12 @@ JSValue JSSVGMarkerElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+            SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -316,7 +316,7 @@ JSValue JSSVGMarkerElement::getConstructor(JSContext *ctx)
 
 JSValue JSSVGMarkerElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaque2(ctx, this_val, JSSVGMarkerElement::js_class_id);
+    SVGMarkerElement* imp = (SVGMarkerElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

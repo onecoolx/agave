@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -59,7 +59,7 @@ JSValue JSSVGStyleElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGStyleElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGStyleElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGStyleElement.prototype]]", obj);
@@ -121,19 +121,19 @@ JSValue JSSVGStyleElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case XmlspaceAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque2(ctx, this_val, JSSVGStyleElement::js_class_id);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case TypeAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque2(ctx, this_val, JSSVGStyleElement::js_class_id);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case MediaAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque2(ctx, this_val, JSSVGStyleElement::js_class_id);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->media()).utf8().data());
         }
         case TitleAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque2(ctx, this_val, JSSVGStyleElement::js_class_id);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->title()).utf8().data());
         }
     }
@@ -144,28 +144,28 @@ JSValue JSSVGStyleElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case XmlspaceAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque2(ctx, this_val, JSSVGStyleElement::js_class_id);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setXmlspace(valueToString(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case TypeAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque2(ctx, this_val, JSSVGStyleElement::js_class_id);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setType(valueToString(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case MediaAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque2(ctx, this_val, JSSVGStyleElement::js_class_id);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setMedia(valueToString(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case TitleAttrNum: {
-            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaque2(ctx, this_val, JSSVGStyleElement::js_class_id);
+            SVGStyleElement* imp = (SVGStyleElement*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setTitle(valueToString(ctx, value), ec);
             setDOMException(ctx, ec);

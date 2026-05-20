@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ JSValue JSHTMLMarqueeElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLMarqueeElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLMarqueeElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLMarqueeElement.constructor]]", obj);
@@ -87,7 +87,7 @@ JSValue JSHTMLMarqueeElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLMarqueeElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLMarqueeElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLMarqueeElement.prototype]]", obj);
@@ -163,7 +163,7 @@ JSValue JSHTMLMarqueeElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLMarqueeElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLMarqueeElement* imp = (HTMLMarqueeElement*)JS_GetOpaque2(ctx, this_val, JSHTMLMarqueeElement::js_class_id);
+    HTMLMarqueeElement* imp = (HTMLMarqueeElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

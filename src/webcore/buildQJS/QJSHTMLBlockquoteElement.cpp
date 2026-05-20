@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ JSValue JSHTMLBlockquoteElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLBlockquoteElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLBlockquoteElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLBlockquoteElement.constructor]]", obj);
@@ -81,7 +81,7 @@ JSValue JSHTMLBlockquoteElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLBlockquoteElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLBlockquoteElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLBlockquoteElement.prototype]]", obj);
@@ -144,7 +144,7 @@ JSValue JSHTMLBlockquoteElement::getValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case CiteAttrNum: {
-            HTMLBlockquoteElement* imp = (HTMLBlockquoteElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBlockquoteElement::js_class_id);
+            HTMLBlockquoteElement* imp = (HTMLBlockquoteElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->cite()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -157,7 +157,7 @@ JSValue JSHTMLBlockquoteElement::putValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case CiteAttrNum: {
-            HTMLBlockquoteElement* imp = (HTMLBlockquoteElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBlockquoteElement::js_class_id);
+            HTMLBlockquoteElement* imp = (HTMLBlockquoteElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCite(valueToStringWithNullCheck(ctx, value));
             break;
         }

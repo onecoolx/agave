@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ JSValue JSSVGScriptElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGScriptElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGScriptElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGScriptElement.prototype]]", obj);
@@ -122,16 +122,16 @@ JSValue JSSVGScriptElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case TypeAttrNum: {
-            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaque2(ctx, this_val, JSSVGScriptElement::js_class_id);
+            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case HrefAttrNum: {
-            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaque2(ctx, this_val, JSSVGScriptElement::js_class_id);
+            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->hrefAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaque2(ctx, this_val, JSSVGScriptElement::js_class_id);
+            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
@@ -143,7 +143,7 @@ JSValue JSSVGScriptElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case TypeAttrNum: {
-            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaque2(ctx, this_val, JSSVGScriptElement::js_class_id);
+            SVGScriptElement* imp = (SVGScriptElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }

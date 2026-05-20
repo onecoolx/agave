@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ JSValue JSHTMLOptionsCollectionPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLOptionsCollection.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLCollectionPrototype::self(ctx));
         JSHTMLOptionsCollectionPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLOptionsCollection.prototype]]", obj);
@@ -120,11 +120,11 @@ JSValue JSHTMLOptionsCollection::getValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case SelectedIndexAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque2(ctx, this_val, JSHTMLOptionsCollection::js_class_id);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->selectedIndex());
         }
         case LengthAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque2(ctx, this_val, JSHTMLOptionsCollection::js_class_id);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaqueNoCheck(this_val);
             return JSHTMLOptionsCollection::length(ctx, this_val, imp);
         }
     }
@@ -135,12 +135,12 @@ JSValue JSHTMLOptionsCollection::putValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case SelectedIndexAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque2(ctx, this_val, JSHTMLOptionsCollection::js_class_id);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaqueNoCheck(this_val);
             imp->setSelectedIndex(valueToInt32(ctx, value));
             break;
         }
         case LengthAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque2(ctx, this_val, JSHTMLOptionsCollection::js_class_id);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaqueNoCheck(this_val);
             JSHTMLOptionsCollection::setLength(ctx, this_val, value, imp);
             break;
         }
@@ -150,7 +150,7 @@ JSValue JSHTMLOptionsCollection::putValueProperty(JSContext *ctx, JSValueConst t
 
 JSValue JSHTMLOptionsCollectionPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque2(ctx, this_val, JSHTMLOptionsCollection::js_class_id);
+    HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

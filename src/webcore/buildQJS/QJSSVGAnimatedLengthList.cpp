@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ JSValue JSSVGAnimatedLengthListPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedLengthList.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGAnimatedLengthListPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedLengthList.prototype]]", obj);
@@ -119,11 +119,11 @@ JSValue JSSVGAnimatedLengthList::getValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedLengthList* imp = (SVGAnimatedLengthList*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedLengthList::js_class_id);
+            SVGAnimatedLengthList* imp = (SVGAnimatedLengthList*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->baseVal()), context());
         }
         case AnimValAttrNum: {
-            SVGAnimatedLengthList* imp = (SVGAnimatedLengthList*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedLengthList::js_class_id);
+            SVGAnimatedLengthList* imp = (SVGAnimatedLengthList*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->animVal()), context());
         }
     }

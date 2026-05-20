@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,7 +72,7 @@ JSValue JSHTMLFormElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLFormElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLFormElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLFormElement.constructor]]", obj);
@@ -99,7 +99,7 @@ JSValue JSHTMLFormElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLFormElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLFormElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLFormElement.prototype]]", obj);
@@ -163,39 +163,39 @@ JSValue JSHTMLFormElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case ElementsAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->elements()));
         }
         case LengthAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case NameAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case AcceptCharsetAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->acceptCharset()).utf8().data());
         }
         case ActionAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->action()).utf8().data());
         }
         case EncodingAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->encoding()).utf8().data());
         }
         case EnctypeAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->enctype()).utf8().data());
         }
         case MethodAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->method()).utf8().data());
         }
         case TargetAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->target()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -208,37 +208,37 @@ JSValue JSHTMLFormElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case NameAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AcceptCharsetAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAcceptCharset(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ActionAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAction(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case EncodingAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setEncoding(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case EnctypeAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setEnctype(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case MethodAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setMethod(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TargetAttrNum: {
-            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+            HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setTarget(valueToStringWithNullCheck(ctx, value));
             break;
         }
@@ -253,7 +253,7 @@ JSValue JSHTMLFormElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLFormElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFormElement::js_class_id);
+    HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

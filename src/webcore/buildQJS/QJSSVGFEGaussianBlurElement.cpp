@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -80,7 +80,7 @@ JSValue JSSVGFEGaussianBlurElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGFEGaussianBlurElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGFEGaussianBlurElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGFEGaussianBlurElement.prototype]]", obj);
@@ -143,52 +143,52 @@ JSValue JSSVGFEGaussianBlurElement::getValueProperty(JSContext *ctx, JSValueCons
 {
     switch (token) {
         case In1AttrNum: {
-            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEGaussianBlurElement::js_class_id);
+            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->in1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case StdDeviationXAttrNum: {
-            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEGaussianBlurElement::js_class_id);
+            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->stdDeviationXAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StdDeviationYAttrNum: {
-            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEGaussianBlurElement::js_class_id);
+            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->stdDeviationYAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEGaussianBlurElement::js_class_id);
+            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEGaussianBlurElement::js_class_id);
+            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEGaussianBlurElement::js_class_id);
+            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEGaussianBlurElement::js_class_id);
+            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEGaussianBlurElement::js_class_id);
+            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEGaussianBlurElement::js_class_id);
+            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEGaussianBlurElement::js_class_id);
+            SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -197,7 +197,7 @@ JSValue JSSVGFEGaussianBlurElement::getValueProperty(JSContext *ctx, JSValueCons
 
 JSValue JSSVGFEGaussianBlurElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEGaussianBlurElement::js_class_id);
+    SVGFEGaussianBlurElement* imp = (SVGFEGaussianBlurElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ JSValue JSSVGFEOffsetElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGFEOffsetElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGFEOffsetElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGFEOffsetElement.prototype]]", obj);
@@ -142,52 +142,52 @@ JSValue JSSVGFEOffsetElement::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case In1AttrNum: {
-            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEOffsetElement::js_class_id);
+            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->in1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case DxAttrNum: {
-            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEOffsetElement::js_class_id);
+            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->dxAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case DyAttrNum: {
-            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEOffsetElement::js_class_id);
+            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->dyAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEOffsetElement::js_class_id);
+            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEOffsetElement::js_class_id);
+            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEOffsetElement::js_class_id);
+            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEOffsetElement::js_class_id);
+            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEOffsetElement::js_class_id);
+            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEOffsetElement::js_class_id);
+            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEOffsetElement::js_class_id);
+            SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -196,7 +196,7 @@ JSValue JSSVGFEOffsetElement::getValueProperty(JSContext *ctx, JSValueConst this
 
 JSValue JSSVGFEOffsetElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEOffsetElement::js_class_id);
+    SVGFEOffsetElement* imp = (SVGFEOffsetElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

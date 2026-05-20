@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,7 @@ JSValue JSSVGTextPositioningElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGTextPositioningElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGTextContentElementPrototype::self(ctx));
         JSSVGTextPositioningElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGTextPositioningElement.prototype]]", obj);
@@ -123,27 +123,27 @@ JSValue JSSVGTextPositioningElement::getValueProperty(JSContext *ctx, JSValueCon
 {
     switch (token) {
         case XAttrNum: {
-            SVGTextPositioningElement* imp = (SVGTextPositioningElement*)JS_GetOpaque2(ctx, this_val, JSSVGTextPositioningElement::js_class_id);
+            SVGTextPositioningElement* imp = (SVGTextPositioningElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLengthList> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGTextPositioningElement* imp = (SVGTextPositioningElement*)JS_GetOpaque2(ctx, this_val, JSSVGTextPositioningElement::js_class_id);
+            SVGTextPositioningElement* imp = (SVGTextPositioningElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLengthList> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case DxAttrNum: {
-            SVGTextPositioningElement* imp = (SVGTextPositioningElement*)JS_GetOpaque2(ctx, this_val, JSSVGTextPositioningElement::js_class_id);
+            SVGTextPositioningElement* imp = (SVGTextPositioningElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLengthList> obj = imp->dxAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case DyAttrNum: {
-            SVGTextPositioningElement* imp = (SVGTextPositioningElement*)JS_GetOpaque2(ctx, this_val, JSSVGTextPositioningElement::js_class_id);
+            SVGTextPositioningElement* imp = (SVGTextPositioningElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLengthList> obj = imp->dyAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RotateAttrNum: {
-            SVGTextPositioningElement* imp = (SVGTextPositioningElement*)JS_GetOpaque2(ctx, this_val, JSSVGTextPositioningElement::js_class_id);
+            SVGTextPositioningElement* imp = (SVGTextPositioningElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumberList> obj = imp->rotateAnimated();
             return toJS(ctx, obj.get(), imp);
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ JSValue JSNotationConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[Notation.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSNotationConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[Notation.constructor]]", obj);
@@ -82,7 +82,7 @@ JSValue JSNotationPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSNotation.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSNodePrototype::self(ctx));
         JSNotationPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSNotation.prototype]]", obj);
@@ -145,11 +145,11 @@ JSValue JSNotation::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
 {
     switch (token) {
         case PublicIdAttrNum: {
-            Notation* imp = (Notation*)JS_GetOpaque2(ctx, this_val, JSNotation::js_class_id);
+            Notation* imp = (Notation*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->publicId());
         }
         case SystemIdAttrNum: {
-            Notation* imp = (Notation*)JS_GetOpaque2(ctx, this_val, JSNotation::js_class_id);
+            Notation* imp = (Notation*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->systemId());
         }
         case ConstructorAttrNum:

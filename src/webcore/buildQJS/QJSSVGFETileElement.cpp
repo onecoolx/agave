@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -76,7 +76,7 @@ JSValue JSSVGFETileElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGFETileElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGFETileElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGFETileElement.prototype]]", obj);
@@ -139,42 +139,42 @@ JSValue JSSVGFETileElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case In1AttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque2(ctx, this_val, JSSVGFETileElement::js_class_id);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->in1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque2(ctx, this_val, JSSVGFETileElement::js_class_id);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque2(ctx, this_val, JSSVGFETileElement::js_class_id);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque2(ctx, this_val, JSSVGFETileElement::js_class_id);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque2(ctx, this_val, JSSVGFETileElement::js_class_id);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque2(ctx, this_val, JSSVGFETileElement::js_class_id);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque2(ctx, this_val, JSSVGFETileElement::js_class_id);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque2(ctx, this_val, JSSVGFETileElement::js_class_id);
+            SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -183,7 +183,7 @@ JSValue JSSVGFETileElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 
 JSValue JSSVGFETileElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaque2(ctx, this_val, JSSVGFETileElement::js_class_id);
+    SVGFETileElement* imp = (SVGFETileElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

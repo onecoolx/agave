@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ JSValue JSRectConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[Rect.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSRectConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[Rect.constructor]]", obj);
@@ -85,7 +85,7 @@ JSValue JSRectPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSRect.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSRectPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSRect.prototype]]", obj);
@@ -148,19 +148,19 @@ JSValue JSRect::getValueProperty(JSContext *ctx, JSValueConst this_val, int toke
 {
     switch (token) {
         case TopAttrNum: {
-            Rect* imp = (Rect*)JS_GetOpaque2(ctx, this_val, JSRect::js_class_id);
+            Rect* imp = (Rect*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->top()));
         }
         case RightAttrNum: {
-            Rect* imp = (Rect*)JS_GetOpaque2(ctx, this_val, JSRect::js_class_id);
+            Rect* imp = (Rect*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->right()));
         }
         case BottomAttrNum: {
-            Rect* imp = (Rect*)JS_GetOpaque2(ctx, this_val, JSRect::js_class_id);
+            Rect* imp = (Rect*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->bottom()));
         }
         case LeftAttrNum: {
-            Rect* imp = (Rect*)JS_GetOpaque2(ctx, this_val, JSRect::js_class_id);
+            Rect* imp = (Rect*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->left()));
         }
         case ConstructorAttrNum:

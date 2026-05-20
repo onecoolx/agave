@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -68,7 +68,7 @@ JSValue JSCSSImportRuleConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[CSSImportRule.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSCSSImportRuleConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[CSSImportRule.constructor]]", obj);
@@ -87,7 +87,7 @@ JSValue JSCSSImportRulePrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSCSSImportRule.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSCSSRulePrototype::self(ctx));
         JSCSSImportRulePrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSCSSImportRule.prototype]]", obj);
@@ -150,15 +150,15 @@ JSValue JSCSSImportRule::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case HrefAttrNum: {
-            CSSImportRule* imp = (CSSImportRule*)JS_GetOpaque2(ctx, this_val, JSCSSImportRule::js_class_id);
+            CSSImportRule* imp = (CSSImportRule*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->href());
         }
         case MediaAttrNum: {
-            CSSImportRule* imp = (CSSImportRule*)JS_GetOpaque2(ctx, this_val, JSCSSImportRule::js_class_id);
+            CSSImportRule* imp = (CSSImportRule*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->media()));
         }
         case StyleSheetAttrNum: {
-            CSSImportRule* imp = (CSSImportRule*)JS_GetOpaque2(ctx, this_val, JSCSSImportRule::js_class_id);
+            CSSImportRule* imp = (CSSImportRule*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->styleSheet()));
         }
         case ConstructorAttrNum:

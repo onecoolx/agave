@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -96,7 +96,7 @@ JSValue JSSVGPolylineElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGPolylineElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGPolylineElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGPolylineElement.prototype]]", obj);
@@ -159,58 +159,58 @@ JSValue JSSVGPolylineElement::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case RequiredFeaturesAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->requiredFeatures()), imp);
         }
         case RequiredExtensionsAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->requiredExtensions()), imp);
         }
         case SystemLanguageAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->systemLanguage()), imp);
         }
         case XmllangAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case TransformAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedTransformList> obj = imp->transformAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case NearestViewportElementAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->nearestViewportElement()));
         }
         case FarthestViewportElementAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->farthestViewportElement()));
         }
         case PointsAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->points()), imp);
         }
         case AnimatedPointsAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->animatedPoints()), imp);
         }
     }
@@ -221,12 +221,12 @@ JSValue JSSVGPolylineElement::putValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+            SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -236,7 +236,7 @@ JSValue JSSVGPolylineElement::putValueProperty(JSContext *ctx, JSValueConst this
 
 JSValue JSSVGPolylineElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolylineElement::js_class_id);
+    SVGPolylineElement* imp = (SVGPolylineElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

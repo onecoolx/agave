@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -87,7 +87,7 @@ JSValue JSSVGTextPathElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[SVGTextPathElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGTextPathElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[SVGTextPathElement.constructor]]", obj);
@@ -119,7 +119,7 @@ JSValue JSSVGTextPathElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGTextPathElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGTextContentElementPrototype::self(ctx));
         JSSVGTextPathElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGTextPathElement.prototype]]", obj);
@@ -189,22 +189,22 @@ JSValue JSSVGTextPathElement::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case StartOffsetAttrNum: {
-            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGTextPathElement::js_class_id);
+            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->startOffsetAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case MethodAttrNum: {
-            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGTextPathElement::js_class_id);
+            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedEnumeration> obj = imp->methodAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case SpacingAttrNum: {
-            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGTextPathElement::js_class_id);
+            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedEnumeration> obj = imp->spacingAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HrefAttrNum: {
-            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGTextPathElement::js_class_id);
+            SVGTextPathElement* imp = (SVGTextPathElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->hrefAnimated();
             return toJS(ctx, obj.get(), imp);
         }

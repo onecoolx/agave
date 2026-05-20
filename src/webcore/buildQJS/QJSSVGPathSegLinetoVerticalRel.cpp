@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ JSValue JSSVGPathSegLinetoVerticalRelPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGPathSegLinetoVerticalRel.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGPathSegPrototype::self(ctx));
         JSSVGPathSegLinetoVerticalRelPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGPathSegLinetoVerticalRel.prototype]]", obj);
@@ -117,7 +117,7 @@ JSValue JSSVGPathSegLinetoVerticalRel::getValueProperty(JSContext *ctx, JSValueC
 {
     switch (token) {
         case YAttrNum: {
-            SVGPathSegLinetoVerticalRel* imp = (SVGPathSegLinetoVerticalRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegLinetoVerticalRel::js_class_id);
+            SVGPathSegLinetoVerticalRel* imp = (SVGPathSegLinetoVerticalRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->y());
         }
     }
@@ -128,7 +128,7 @@ JSValue JSSVGPathSegLinetoVerticalRel::putValueProperty(JSContext *ctx, JSValueC
 {
     switch (token) {
         case YAttrNum: {
-            SVGPathSegLinetoVerticalRel* imp = (SVGPathSegLinetoVerticalRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegLinetoVerticalRel::js_class_id);
+            SVGPathSegLinetoVerticalRel* imp = (SVGPathSegLinetoVerticalRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setY(valueToFloat(ctx, value));
             break;
         }

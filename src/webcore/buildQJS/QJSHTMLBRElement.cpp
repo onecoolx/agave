@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ JSValue JSHTMLBRElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLBRElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLBRElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLBRElement.constructor]]", obj);
@@ -81,7 +81,7 @@ JSValue JSHTMLBRElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLBRElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLBRElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLBRElement.prototype]]", obj);
@@ -144,7 +144,7 @@ JSValue JSHTMLBRElement::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case ClearAttrNum: {
-            HTMLBRElement* imp = (HTMLBRElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBRElement::js_class_id);
+            HTMLBRElement* imp = (HTMLBRElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->clear()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -157,7 +157,7 @@ JSValue JSHTMLBRElement::putValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case ClearAttrNum: {
-            HTMLBRElement* imp = (HTMLBRElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBRElement::js_class_id);
+            HTMLBRElement* imp = (HTMLBRElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setClear(valueToStringWithNullCheck(ctx, value));
             break;
         }

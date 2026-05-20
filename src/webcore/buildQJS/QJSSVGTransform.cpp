@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -85,7 +85,7 @@ JSValue JSSVGTransformConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[SVGTransform.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGTransformConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[SVGTransform.constructor]]", obj);
@@ -130,7 +130,7 @@ JSValue JSSVGTransformPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGTransform.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGTransformPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGTransform.prototype]]", obj);
@@ -228,7 +228,7 @@ JSValue JSSVGTransform::getConstructor(JSContext *ctx)
 
 JSValue JSSVGTransformPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGTransform* imp = (SVGTransform*)JS_GetOpaque2(ctx, this_val, JSSVGTransform::js_class_id);
+    SVGTransform* imp = (SVGTransform*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

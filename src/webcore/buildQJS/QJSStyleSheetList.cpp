@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ JSValue JSStyleSheetListConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[StyleSheetList.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSStyleSheetListConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[StyleSheetList.constructor]]", obj);
@@ -90,7 +90,7 @@ JSValue JSStyleSheetListPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSStyleSheetList.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSStyleSheetListPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSStyleSheetList.prototype]]", obj);
@@ -154,7 +154,7 @@ JSValue JSStyleSheetList::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case LengthAttrNum: {
-            StyleSheetList* imp = (StyleSheetList*)JS_GetOpaque2(ctx, this_val, JSStyleSheetList::js_class_id);
+            StyleSheetList* imp = (StyleSheetList*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case ConstructorAttrNum:
@@ -170,7 +170,7 @@ JSValue JSStyleSheetList::getConstructor(JSContext *ctx)
 
 JSValue JSStyleSheetListPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    StyleSheetList* imp = (StyleSheetList*)JS_GetOpaque2(ctx, this_val, JSStyleSheetList::js_class_id);
+    StyleSheetList* imp = (StyleSheetList*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

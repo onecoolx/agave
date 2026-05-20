@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -96,7 +96,7 @@ JSValue JSSVGCircleElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGCircleElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGCircleElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGCircleElement.prototype]]", obj);
@@ -159,65 +159,65 @@ JSValue JSSVGCircleElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CxAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->cxAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case CyAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->cyAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->rAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RequiredFeaturesAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->requiredFeatures()), imp);
         }
         case RequiredExtensionsAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->requiredExtensions()), imp);
         }
         case SystemLanguageAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->systemLanguage()), imp);
         }
         case XmllangAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case TransformAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedTransformList> obj = imp->transformAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case NearestViewportElementAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->nearestViewportElement()));
         }
         case FarthestViewportElementAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->farthestViewportElement()));
         }
     }
@@ -228,12 +228,12 @@ JSValue JSSVGCircleElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+            SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -243,7 +243,7 @@ JSValue JSSVGCircleElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 
 JSValue JSSVGCircleElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaque2(ctx, this_val, JSSVGCircleElement::js_class_id);
+    SVGCircleElement* imp = (SVGCircleElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

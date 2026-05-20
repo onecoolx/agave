@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ JSValue JSHTMLLegendElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLLegendElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLLegendElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLLegendElement.constructor]]", obj);
@@ -92,7 +92,7 @@ JSValue JSHTMLLegendElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLLegendElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLLegendElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLLegendElement.prototype]]", obj);
@@ -156,15 +156,15 @@ JSValue JSHTMLLegendElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case FormAttrNum: {
-            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLegendElement::js_class_id);
+            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->form()));
         }
         case AccessKeyAttrNum: {
-            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLegendElement::js_class_id);
+            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->accessKey()).utf8().data());
         }
         case AlignAttrNum: {
-            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLegendElement::js_class_id);
+            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -177,12 +177,12 @@ JSValue JSHTMLLegendElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case AccessKeyAttrNum: {
-            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLegendElement::js_class_id);
+            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAccessKey(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AlignAttrNum: {
-            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLegendElement::js_class_id);
+            HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
@@ -197,7 +197,7 @@ JSValue JSHTMLLegendElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLLegendElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLegendElement::js_class_id);
+    HTMLLegendElement* imp = (HTMLLegendElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

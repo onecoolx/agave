@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ JSValue JSHTMLDivElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLDivElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLDivElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLDivElement.constructor]]", obj);
@@ -81,7 +81,7 @@ JSValue JSHTMLDivElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLDivElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLDivElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLDivElement.prototype]]", obj);
@@ -144,7 +144,7 @@ JSValue JSHTMLDivElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLDivElement* imp = (HTMLDivElement*)JS_GetOpaque2(ctx, this_val, JSHTMLDivElement::js_class_id);
+            HTMLDivElement* imp = (HTMLDivElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -157,7 +157,7 @@ JSValue JSHTMLDivElement::putValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLDivElement* imp = (HTMLDivElement*)JS_GetOpaque2(ctx, this_val, JSHTMLDivElement::js_class_id);
+            HTMLDivElement* imp = (HTMLDivElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ JSValue JSSVGTRefElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGTRefElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGTextPositioningElementPrototype::self(ctx));
         JSSVGTRefElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGTRefElement.prototype]]", obj);
@@ -118,7 +118,7 @@ JSValue JSSVGTRefElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case HrefAttrNum: {
-            SVGTRefElement* imp = (SVGTRefElement*)JS_GetOpaque2(ctx, this_val, JSSVGTRefElement::js_class_id);
+            SVGTRefElement* imp = (SVGTRefElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->hrefAnimated();
             return toJS(ctx, obj.get(), imp);
         }

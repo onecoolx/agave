@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,7 @@ JSValue JSAttrConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[Attr.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSAttrConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[Attr.constructor]]", obj);
@@ -90,7 +90,7 @@ JSValue JSAttrPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSAttr.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSEventTargetNodePrototype::self(ctx));
         JSAttrPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSAttr.prototype]]", obj);
@@ -153,23 +153,23 @@ JSValue JSAttr::getValueProperty(JSContext *ctx, JSValueConst this_val, int toke
 {
     switch (token) {
         case NameAttrNum: {
-            Attr* imp = (Attr*)JS_GetOpaque2(ctx, this_val, JSAttr::js_class_id);
+            Attr* imp = (Attr*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->name());
         }
         case SpecifiedAttrNum: {
-            Attr* imp = (Attr*)JS_GetOpaque2(ctx, this_val, JSAttr::js_class_id);
+            Attr* imp = (Attr*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->specified() ? 1 : 0);
         }
         case ValueAttrNum: {
-            Attr* imp = (Attr*)JS_GetOpaque2(ctx, this_val, JSAttr::js_class_id);
+            Attr* imp = (Attr*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->value());
         }
         case OwnerElementAttrNum: {
-            Attr* imp = (Attr*)JS_GetOpaque2(ctx, this_val, JSAttr::js_class_id);
+            Attr* imp = (Attr*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->ownerElement()));
         }
         case StyleAttrNum: {
-            Attr* imp = (Attr*)JS_GetOpaque2(ctx, this_val, JSAttr::js_class_id);
+            Attr* imp = (Attr*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:
@@ -182,7 +182,7 @@ JSValue JSAttr::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue 
 {
     switch (token) {
         case ValueAttrNum: {
-            Attr* imp = (Attr*)JS_GetOpaque2(ctx, this_val, JSAttr::js_class_id);
+            Attr* imp = (Attr*)JS_GetOpaqueNoCheck(this_val);
             JSAttr::setValue(ctx, value, imp);
             break;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ JSValue JSHTMLParagraphElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLParagraphElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLParagraphElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLParagraphElement.constructor]]", obj);
@@ -81,7 +81,7 @@ JSValue JSHTMLParagraphElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLParagraphElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLParagraphElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLParagraphElement.prototype]]", obj);
@@ -144,7 +144,7 @@ JSValue JSHTMLParagraphElement::getValueProperty(JSContext *ctx, JSValueConst th
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLParagraphElement* imp = (HTMLParagraphElement*)JS_GetOpaque2(ctx, this_val, JSHTMLParagraphElement::js_class_id);
+            HTMLParagraphElement* imp = (HTMLParagraphElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -157,7 +157,7 @@ JSValue JSHTMLParagraphElement::putValueProperty(JSContext *ctx, JSValueConst th
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLParagraphElement* imp = (HTMLParagraphElement*)JS_GetOpaque2(ctx, this_val, JSHTMLParagraphElement::js_class_id);
+            HTMLParagraphElement* imp = (HTMLParagraphElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }

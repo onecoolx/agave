@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ JSValue JSHTMLLabelElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLLabelElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLLabelElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLLabelElement.constructor]]", obj);
@@ -92,7 +92,7 @@ JSValue JSHTMLLabelElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLLabelElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLLabelElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLLabelElement.prototype]]", obj);
@@ -156,15 +156,15 @@ JSValue JSHTMLLabelElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case FormAttrNum: {
-            HTMLLabelElement* imp = (HTMLLabelElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLabelElement::js_class_id);
+            HTMLLabelElement* imp = (HTMLLabelElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->form()));
         }
         case AccessKeyAttrNum: {
-            HTMLLabelElement* imp = (HTMLLabelElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLabelElement::js_class_id);
+            HTMLLabelElement* imp = (HTMLLabelElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->accessKey()).utf8().data());
         }
         case HtmlForAttrNum: {
-            HTMLLabelElement* imp = (HTMLLabelElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLabelElement::js_class_id);
+            HTMLLabelElement* imp = (HTMLLabelElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->htmlFor()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -177,12 +177,12 @@ JSValue JSHTMLLabelElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case AccessKeyAttrNum: {
-            HTMLLabelElement* imp = (HTMLLabelElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLabelElement::js_class_id);
+            HTMLLabelElement* imp = (HTMLLabelElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAccessKey(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HtmlForAttrNum: {
-            HTMLLabelElement* imp = (HTMLLabelElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLabelElement::js_class_id);
+            HTMLLabelElement* imp = (HTMLLabelElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setHtmlFor(valueToStringWithNullCheck(ctx, value));
             break;
         }
@@ -197,7 +197,7 @@ JSValue JSHTMLLabelElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLLabelElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLLabelElement* imp = (HTMLLabelElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLabelElement::js_class_id);
+    HTMLLabelElement* imp = (HTMLLabelElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

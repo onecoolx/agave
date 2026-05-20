@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,7 @@ JSValue JSHTMLMenuElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLMenuElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLMenuElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLMenuElement.constructor]]", obj);
@@ -80,7 +80,7 @@ JSValue JSHTMLMenuElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLMenuElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLMenuElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLMenuElement.prototype]]", obj);
@@ -143,7 +143,7 @@ JSValue JSHTMLMenuElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLMenuElement* imp = (HTMLMenuElement*)JS_GetOpaque2(ctx, this_val, JSHTMLMenuElement::js_class_id);
+            HTMLMenuElement* imp = (HTMLMenuElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->compact() ? 1 : 0);
         }
         case ConstructorAttrNum:
@@ -156,7 +156,7 @@ JSValue JSHTMLMenuElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLMenuElement* imp = (HTMLMenuElement*)JS_GetOpaque2(ctx, this_val, JSHTMLMenuElement::js_class_id);
+            HTMLMenuElement* imp = (HTMLMenuElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCompact(valueToBoolean(ctx, value));
             break;
         }

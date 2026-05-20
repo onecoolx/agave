@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -87,7 +87,7 @@ JSValue JSSVGPaintConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[SVGPaint.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGPaintConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[SVGPaint.constructor]]", obj);
@@ -131,7 +131,7 @@ JSValue JSSVGPaintPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGPaint.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGColorPrototype::self(ctx));
         JSSVGPaintPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGPaint.prototype]]", obj);
@@ -202,11 +202,11 @@ JSValue JSSVGPaint::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
 {
     switch (token) {
         case PaintTypeAttrNum: {
-            SVGPaint* imp = (SVGPaint*)JS_GetOpaque2(ctx, this_val, JSSVGPaint::js_class_id);
+            SVGPaint* imp = (SVGPaint*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->paintType());
         }
         case UriAttrNum: {
-            SVGPaint* imp = (SVGPaint*)JS_GetOpaque2(ctx, this_val, JSSVGPaint::js_class_id);
+            SVGPaint* imp = (SVGPaint*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->uri()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -222,7 +222,7 @@ JSValue JSSVGPaint::getConstructor(JSContext *ctx)
 
 JSValue JSSVGPaintPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGPaint* imp = (SVGPaint*)JS_GetOpaque2(ctx, this_val, JSSVGPaint::js_class_id);
+    SVGPaint* imp = (SVGPaint*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

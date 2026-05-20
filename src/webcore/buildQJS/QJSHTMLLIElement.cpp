@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ JSValue JSHTMLLIElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLLIElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLLIElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLLIElement.constructor]]", obj);
@@ -82,7 +82,7 @@ JSValue JSHTMLLIElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLLIElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLLIElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLLIElement.prototype]]", obj);
@@ -145,11 +145,11 @@ JSValue JSHTMLLIElement::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case TypeAttrNum: {
-            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLIElement::js_class_id);
+            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case ValueAttrNum: {
-            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLIElement::js_class_id);
+            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->value());
         }
         case ConstructorAttrNum:
@@ -162,12 +162,12 @@ JSValue JSHTMLLIElement::putValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case TypeAttrNum: {
-            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLIElement::js_class_id);
+            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ValueAttrNum: {
-            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLIElement::js_class_id);
+            HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setValue(valueToInt32(ctx, value));
             break;
         }

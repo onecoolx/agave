@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,7 +67,7 @@ JSValue JSCSSMediaRuleConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[CSSMediaRule.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSCSSMediaRuleConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[CSSMediaRule.constructor]]", obj);
@@ -94,7 +94,7 @@ JSValue JSCSSMediaRulePrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSCSSMediaRule.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSCSSRulePrototype::self(ctx));
         JSCSSMediaRulePrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSCSSMediaRule.prototype]]", obj);
@@ -158,11 +158,11 @@ JSValue JSCSSMediaRule::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case MediaAttrNum: {
-            CSSMediaRule* imp = (CSSMediaRule*)JS_GetOpaque2(ctx, this_val, JSCSSMediaRule::js_class_id);
+            CSSMediaRule* imp = (CSSMediaRule*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->media()));
         }
         case CssRulesAttrNum: {
-            CSSMediaRule* imp = (CSSMediaRule*)JS_GetOpaque2(ctx, this_val, JSCSSMediaRule::js_class_id);
+            CSSMediaRule* imp = (CSSMediaRule*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->cssRules()));
         }
         case ConstructorAttrNum:
@@ -178,7 +178,7 @@ JSValue JSCSSMediaRule::getConstructor(JSContext *ctx)
 
 JSValue JSCSSMediaRulePrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    CSSMediaRule* imp = (CSSMediaRule*)JS_GetOpaque2(ctx, this_val, JSCSSMediaRule::js_class_id);
+    CSSMediaRule* imp = (CSSMediaRule*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

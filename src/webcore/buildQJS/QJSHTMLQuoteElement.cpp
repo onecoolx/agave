@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ JSValue JSHTMLQuoteElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLQuoteElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLQuoteElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLQuoteElement.constructor]]", obj);
@@ -81,7 +81,7 @@ JSValue JSHTMLQuoteElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLQuoteElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLQuoteElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLQuoteElement.prototype]]", obj);
@@ -144,7 +144,7 @@ JSValue JSHTMLQuoteElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CiteAttrNum: {
-            HTMLQuoteElement* imp = (HTMLQuoteElement*)JS_GetOpaque2(ctx, this_val, JSHTMLQuoteElement::js_class_id);
+            HTMLQuoteElement* imp = (HTMLQuoteElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->cite()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -157,7 +157,7 @@ JSValue JSHTMLQuoteElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CiteAttrNum: {
-            HTMLQuoteElement* imp = (HTMLQuoteElement*)JS_GetOpaque2(ctx, this_val, JSHTMLQuoteElement::js_class_id);
+            HTMLQuoteElement* imp = (HTMLQuoteElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCite(valueToStringWithNullCheck(ctx, value));
             break;
         }

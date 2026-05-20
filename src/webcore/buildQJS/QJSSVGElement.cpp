@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ JSValue JSSVGElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSElementPrototype::self(ctx));
         JSSVGElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGElement.prototype]]", obj);
@@ -124,19 +124,19 @@ JSValue JSSVGElement::getValueProperty(JSContext *ctx, JSValueConst this_val, in
 {
     switch (token) {
         case IdAttrNum: {
-            SVGElement* imp = (SVGElement*)JS_GetOpaque2(ctx, this_val, JSSVGElement::js_class_id);
+            SVGElement* imp = (SVGElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->id()).utf8().data());
         }
         case XmlbaseAttrNum: {
-            SVGElement* imp = (SVGElement*)JS_GetOpaque2(ctx, this_val, JSSVGElement::js_class_id);
+            SVGElement* imp = (SVGElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmlbase()).utf8().data());
         }
         case OwnerSVGElementAttrNum: {
-            SVGElement* imp = (SVGElement*)JS_GetOpaque2(ctx, this_val, JSSVGElement::js_class_id);
+            SVGElement* imp = (SVGElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->ownerSVGElement()));
         }
         case ViewportElementAttrNum: {
-            SVGElement* imp = (SVGElement*)JS_GetOpaque2(ctx, this_val, JSSVGElement::js_class_id);
+            SVGElement* imp = (SVGElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->viewportElement()));
         }
     }
@@ -147,14 +147,14 @@ JSValue JSSVGElement::putValueProperty(JSContext *ctx, JSValueConst this_val, JS
 {
     switch (token) {
         case IdAttrNum: {
-            SVGElement* imp = (SVGElement*)JS_GetOpaque2(ctx, this_val, JSSVGElement::js_class_id);
+            SVGElement* imp = (SVGElement*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setId(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case XmlbaseAttrNum: {
-            SVGElement* imp = (SVGElement*)JS_GetOpaque2(ctx, this_val, JSSVGElement::js_class_id);
+            SVGElement* imp = (SVGElement*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setXmlbase(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);

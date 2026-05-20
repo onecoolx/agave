@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,7 @@ JSValue JSHTMLHRElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLHRElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLHRElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLHRElement.constructor]]", obj);
@@ -84,7 +84,7 @@ JSValue JSHTMLHRElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLHRElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLHRElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLHRElement.prototype]]", obj);
@@ -147,19 +147,19 @@ JSValue JSHTMLHRElement::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque2(ctx, this_val, JSHTMLHRElement::js_class_id);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case NoShadeAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque2(ctx, this_val, JSHTMLHRElement::js_class_id);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->noShade() ? 1 : 0);
         }
         case SizeAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque2(ctx, this_val, JSHTMLHRElement::js_class_id);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->size()).utf8().data());
         }
         case WidthAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque2(ctx, this_val, JSHTMLHRElement::js_class_id);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->width()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -172,22 +172,22 @@ JSValue JSHTMLHRElement::putValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque2(ctx, this_val, JSHTMLHRElement::js_class_id);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case NoShadeAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque2(ctx, this_val, JSHTMLHRElement::js_class_id);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setNoShade(valueToBoolean(ctx, value));
             break;
         }
         case SizeAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque2(ctx, this_val, JSHTMLHRElement::js_class_id);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setSize(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case WidthAttrNum: {
-            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaque2(ctx, this_val, JSHTMLHRElement::js_class_id);
+            HTMLHRElement* imp = (HTMLHRElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setWidth(valueToStringWithNullCheck(ctx, value));
             break;
         }

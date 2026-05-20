@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ JSValue JSSVGAnimatedPreserveAspectRatioPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedPreserveAspectRatio.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGAnimatedPreserveAspectRatioPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedPreserveAspectRatio.prototype]]", obj);
@@ -119,11 +119,11 @@ JSValue JSSVGAnimatedPreserveAspectRatio::getValueProperty(JSContext *ctx, JSVal
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedPreserveAspectRatio* imp = (SVGAnimatedPreserveAspectRatio*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedPreserveAspectRatio::js_class_id);
+            SVGAnimatedPreserveAspectRatio* imp = (SVGAnimatedPreserveAspectRatio*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->baseVal()), context());
         }
         case AnimValAttrNum: {
-            SVGAnimatedPreserveAspectRatio* imp = (SVGAnimatedPreserveAspectRatio*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedPreserveAspectRatio::js_class_id);
+            SVGAnimatedPreserveAspectRatio* imp = (SVGAnimatedPreserveAspectRatio*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->animVal()), context());
         }
     }

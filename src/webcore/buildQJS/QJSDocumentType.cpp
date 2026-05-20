@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,7 +70,7 @@ JSValue JSDocumentTypeConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[DocumentType.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSDocumentTypeConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[DocumentType.constructor]]", obj);
@@ -89,7 +89,7 @@ JSValue JSDocumentTypePrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSDocumentType.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSNodePrototype::self(ctx));
         JSDocumentTypePrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSDocumentType.prototype]]", obj);
@@ -152,27 +152,27 @@ JSValue JSDocumentType::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case NameAttrNum: {
-            DocumentType* imp = (DocumentType*)JS_GetOpaque2(ctx, this_val, JSDocumentType::js_class_id);
+            DocumentType* imp = (DocumentType*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case EntitiesAttrNum: {
-            DocumentType* imp = (DocumentType*)JS_GetOpaque2(ctx, this_val, JSDocumentType::js_class_id);
+            DocumentType* imp = (DocumentType*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->entities()));
         }
         case NotationsAttrNum: {
-            DocumentType* imp = (DocumentType*)JS_GetOpaque2(ctx, this_val, JSDocumentType::js_class_id);
+            DocumentType* imp = (DocumentType*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->notations()));
         }
         case PublicIdAttrNum: {
-            DocumentType* imp = (DocumentType*)JS_GetOpaque2(ctx, this_val, JSDocumentType::js_class_id);
+            DocumentType* imp = (DocumentType*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->publicId());
         }
         case SystemIdAttrNum: {
-            DocumentType* imp = (DocumentType*)JS_GetOpaque2(ctx, this_val, JSDocumentType::js_class_id);
+            DocumentType* imp = (DocumentType*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->systemId());
         }
         case InternalSubsetAttrNum: {
-            DocumentType* imp = (DocumentType*)JS_GetOpaque2(ctx, this_val, JSDocumentType::js_class_id);
+            DocumentType* imp = (DocumentType*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->internalSubset());
         }
         case ConstructorAttrNum:

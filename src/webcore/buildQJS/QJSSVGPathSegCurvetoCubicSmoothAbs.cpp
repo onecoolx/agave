@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ JSValue JSSVGPathSegCurvetoCubicSmoothAbsPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGPathSegCurvetoCubicSmoothAbs.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGPathSegPrototype::self(ctx));
         JSSVGPathSegCurvetoCubicSmoothAbsPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGPathSegCurvetoCubicSmoothAbs.prototype]]", obj);
@@ -120,19 +120,19 @@ JSValue JSSVGPathSegCurvetoCubicSmoothAbs::getValueProperty(JSContext *ctx, JSVa
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicSmoothAbs::js_class_id);
+            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->x());
         }
         case YAttrNum: {
-            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicSmoothAbs::js_class_id);
+            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->y());
         }
         case X2AttrNum: {
-            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicSmoothAbs::js_class_id);
+            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->x2());
         }
         case Y2AttrNum: {
-            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicSmoothAbs::js_class_id);
+            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->y2());
         }
     }
@@ -143,22 +143,22 @@ JSValue JSSVGPathSegCurvetoCubicSmoothAbs::putValueProperty(JSContext *ctx, JSVa
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicSmoothAbs::js_class_id);
+            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaqueNoCheck(this_val);
             imp->setX(valueToFloat(ctx, value));
             break;
         }
         case YAttrNum: {
-            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicSmoothAbs::js_class_id);
+            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaqueNoCheck(this_val);
             imp->setY(valueToFloat(ctx, value));
             break;
         }
         case X2AttrNum: {
-            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicSmoothAbs::js_class_id);
+            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaqueNoCheck(this_val);
             imp->setX2(valueToFloat(ctx, value));
             break;
         }
         case Y2AttrNum: {
-            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicSmoothAbs::js_class_id);
+            SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaqueNoCheck(this_val);
             imp->setY2(valueToFloat(ctx, value));
             break;
         }

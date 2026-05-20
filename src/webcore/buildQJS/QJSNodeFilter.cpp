@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -83,7 +83,7 @@ JSValue JSNodeFilterConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[NodeFilter.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSNodeFilterConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[NodeFilter.constructor]]", obj);
@@ -132,7 +132,7 @@ JSValue JSNodeFilterPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSNodeFilter.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSNodeFilterPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSNodeFilter.prototype]]", obj);
@@ -210,7 +210,7 @@ JSValue JSNodeFilter::getConstructor(JSContext *ctx)
 
 JSValue JSNodeFilterPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    NodeFilter* imp = (NodeFilter*)JS_GetOpaque2(ctx, this_val, JSNodeFilter::js_class_id);
+    NodeFilter* imp = (NodeFilter*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

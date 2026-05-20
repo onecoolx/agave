@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ JSValue JSNamedNodeMapConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[NamedNodeMap.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSNamedNodeMapConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[NamedNodeMap.constructor]]", obj);
@@ -96,7 +96,7 @@ JSValue JSNamedNodeMapPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSNamedNodeMap.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSNamedNodeMapPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSNamedNodeMap.prototype]]", obj);
@@ -160,7 +160,7 @@ JSValue JSNamedNodeMap::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case LengthAttrNum: {
-            NamedNodeMap* imp = (NamedNodeMap*)JS_GetOpaque2(ctx, this_val, JSNamedNodeMap::js_class_id);
+            NamedNodeMap* imp = (NamedNodeMap*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case ConstructorAttrNum:
@@ -176,7 +176,7 @@ JSValue JSNamedNodeMap::getConstructor(JSContext *ctx)
 
 JSValue JSNamedNodeMapPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    NamedNodeMap* imp = (NamedNodeMap*)JS_GetOpaque2(ctx, this_val, JSNamedNodeMap::js_class_id);
+    NamedNodeMap* imp = (NamedNodeMap*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

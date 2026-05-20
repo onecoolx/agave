@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -77,7 +77,7 @@ JSValue JSMutationEventConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[MutationEvent.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSMutationEventConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[MutationEvent.constructor]]", obj);
@@ -113,7 +113,7 @@ JSValue JSMutationEventPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSMutationEvent.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSEventPrototype::self(ctx));
         JSMutationEventPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSMutationEvent.prototype]]", obj);
@@ -184,23 +184,23 @@ JSValue JSMutationEvent::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case RelatedNodeAttrNum: {
-            MutationEvent* imp = (MutationEvent*)JS_GetOpaque2(ctx, this_val, JSMutationEvent::js_class_id);
+            MutationEvent* imp = (MutationEvent*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->relatedNode()));
         }
         case PrevValueAttrNum: {
-            MutationEvent* imp = (MutationEvent*)JS_GetOpaque2(ctx, this_val, JSMutationEvent::js_class_id);
+            MutationEvent* imp = (MutationEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->prevValue()).utf8().data());
         }
         case NewValueAttrNum: {
-            MutationEvent* imp = (MutationEvent*)JS_GetOpaque2(ctx, this_val, JSMutationEvent::js_class_id);
+            MutationEvent* imp = (MutationEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->newValue()).utf8().data());
         }
         case AttrNameAttrNum: {
-            MutationEvent* imp = (MutationEvent*)JS_GetOpaque2(ctx, this_val, JSMutationEvent::js_class_id);
+            MutationEvent* imp = (MutationEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->attrName()).utf8().data());
         }
         case AttrChangeAttrNum: {
-            MutationEvent* imp = (MutationEvent*)JS_GetOpaque2(ctx, this_val, JSMutationEvent::js_class_id);
+            MutationEvent* imp = (MutationEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->attrChange());
         }
         case ConstructorAttrNum:
@@ -216,7 +216,7 @@ JSValue JSMutationEvent::getConstructor(JSContext *ctx)
 
 JSValue JSMutationEventPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    MutationEvent* imp = (MutationEvent*)JS_GetOpaque2(ctx, this_val, JSMutationEvent::js_class_id);
+    MutationEvent* imp = (MutationEvent*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

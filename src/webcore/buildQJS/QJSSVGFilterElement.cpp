@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -88,7 +88,7 @@ JSValue JSSVGFilterElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGFilterElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGFilterElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGFilterElement.prototype]]", obj);
@@ -151,70 +151,70 @@ JSValue JSSVGFilterElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case FilterUnitsAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedEnumeration> obj = imp->filterUnitsAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case PrimitiveUnitsAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedEnumeration> obj = imp->primitiveUnitsAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case FilterResXAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedInteger> obj = imp->filterResXAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case FilterResYAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedInteger> obj = imp->filterResYAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HrefAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->hrefAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XmllangAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -225,12 +225,12 @@ JSValue JSSVGFilterElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+            SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -240,7 +240,7 @@ JSValue JSSVGFilterElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 
 JSValue JSSVGFilterElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaque2(ctx, this_val, JSSVGFilterElement::js_class_id);
+    SVGFilterElement* imp = (SVGFilterElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

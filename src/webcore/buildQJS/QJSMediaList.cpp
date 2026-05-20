@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ JSValue JSMediaListConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[MediaList.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSMediaListConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[MediaList.constructor]]", obj);
@@ -92,7 +92,7 @@ JSValue JSMediaListPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSMediaList.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSMediaListPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSMediaList.prototype]]", obj);
@@ -156,11 +156,11 @@ JSValue JSMediaList::getValueProperty(JSContext *ctx, JSValueConst this_val, int
 {
     switch (token) {
         case MediaTextAttrNum: {
-            MediaList* imp = (MediaList*)JS_GetOpaque2(ctx, this_val, JSMediaList::js_class_id);
+            MediaList* imp = (MediaList*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->mediaText());
         }
         case LengthAttrNum: {
-            MediaList* imp = (MediaList*)JS_GetOpaque2(ctx, this_val, JSMediaList::js_class_id);
+            MediaList* imp = (MediaList*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case ConstructorAttrNum:
@@ -173,7 +173,7 @@ JSValue JSMediaList::putValueProperty(JSContext *ctx, JSValueConst this_val, JSV
 {
     switch (token) {
         case MediaTextAttrNum: {
-            MediaList* imp = (MediaList*)JS_GetOpaque2(ctx, this_val, JSMediaList::js_class_id);
+            MediaList* imp = (MediaList*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setMediaText(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);
@@ -190,7 +190,7 @@ JSValue JSMediaList::getConstructor(JSContext *ctx)
 
 JSValue JSMediaListPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    MediaList* imp = (MediaList*)JS_GetOpaque2(ctx, this_val, JSMediaList::js_class_id);
+    MediaList* imp = (MediaList*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

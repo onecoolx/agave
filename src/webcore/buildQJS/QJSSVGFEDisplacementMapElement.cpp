@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -100,7 +100,7 @@ JSValue JSSVGFEDisplacementMapElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[SVGFEDisplacementMapElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGFEDisplacementMapElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[SVGFEDisplacementMapElement.constructor]]", obj);
@@ -138,7 +138,7 @@ JSValue JSSVGFEDisplacementMapElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGFEDisplacementMapElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGFEDisplacementMapElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGFEDisplacementMapElement.prototype]]", obj);
@@ -209,62 +209,62 @@ JSValue JSSVGFEDisplacementMapElement::getValueProperty(JSContext *ctx, JSValueC
 {
     switch (token) {
         case In1AttrNum: {
-            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDisplacementMapElement::js_class_id);
+            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->in1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case In2AttrNum: {
-            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDisplacementMapElement::js_class_id);
+            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->in2Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case ScaleAttrNum: {
-            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDisplacementMapElement::js_class_id);
+            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->scaleAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XChannelSelectorAttrNum: {
-            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDisplacementMapElement::js_class_id);
+            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedEnumeration> obj = imp->xChannelSelectorAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YChannelSelectorAttrNum: {
-            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDisplacementMapElement::js_class_id);
+            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedEnumeration> obj = imp->yChannelSelectorAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDisplacementMapElement::js_class_id);
+            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDisplacementMapElement::js_class_id);
+            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDisplacementMapElement::js_class_id);
+            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDisplacementMapElement::js_class_id);
+            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDisplacementMapElement::js_class_id);
+            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDisplacementMapElement::js_class_id);
+            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDisplacementMapElement::js_class_id);
+            SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:
@@ -280,7 +280,7 @@ JSValue JSSVGFEDisplacementMapElement::getConstructor(JSContext *ctx)
 
 JSValue JSSVGFEDisplacementMapElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDisplacementMapElement::js_class_id);
+    SVGFEDisplacementMapElement* imp = (SVGFEDisplacementMapElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

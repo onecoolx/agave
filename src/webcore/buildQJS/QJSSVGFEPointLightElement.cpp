@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ JSValue JSSVGFEPointLightElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGFEPointLightElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGFEPointLightElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGFEPointLightElement.prototype]]", obj);
@@ -120,17 +120,17 @@ JSValue JSSVGFEPointLightElement::getValueProperty(JSContext *ctx, JSValueConst 
 {
     switch (token) {
         case XAttrNum: {
-            SVGFEPointLightElement* imp = (SVGFEPointLightElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEPointLightElement::js_class_id);
+            SVGFEPointLightElement* imp = (SVGFEPointLightElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFEPointLightElement* imp = (SVGFEPointLightElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEPointLightElement::js_class_id);
+            SVGFEPointLightElement* imp = (SVGFEPointLightElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ZAttrNum: {
-            SVGFEPointLightElement* imp = (SVGFEPointLightElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEPointLightElement::js_class_id);
+            SVGFEPointLightElement* imp = (SVGFEPointLightElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->zAnimated();
             return toJS(ctx, obj.get(), imp);
         }

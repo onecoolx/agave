@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ JSValue JSCSSCharsetRuleConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[CSSCharsetRule.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSCSSCharsetRuleConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[CSSCharsetRule.constructor]]", obj);
@@ -81,7 +81,7 @@ JSValue JSCSSCharsetRulePrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSCSSCharsetRule.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSCSSRulePrototype::self(ctx));
         JSCSSCharsetRulePrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSCSSCharsetRule.prototype]]", obj);
@@ -144,7 +144,7 @@ JSValue JSCSSCharsetRule::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case EncodingAttrNum: {
-            CSSCharsetRule* imp = (CSSCharsetRule*)JS_GetOpaque2(ctx, this_val, JSCSSCharsetRule::js_class_id);
+            CSSCharsetRule* imp = (CSSCharsetRule*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->encoding());
         }
         case ConstructorAttrNum:
@@ -157,7 +157,7 @@ JSValue JSCSSCharsetRule::putValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case EncodingAttrNum: {
-            CSSCharsetRule* imp = (CSSCharsetRule*)JS_GetOpaque2(ctx, this_val, JSCSSCharsetRule::js_class_id);
+            CSSCharsetRule* imp = (CSSCharsetRule*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setEncoding(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);

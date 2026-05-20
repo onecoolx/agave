@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ JSValue JSSVGAnimatedLengthPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedLength.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGAnimatedLengthPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedLength.prototype]]", obj);
@@ -118,11 +118,11 @@ JSValue JSSVGAnimatedLength::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedLength* imp = (SVGAnimatedLength*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedLength::js_class_id);
+            SVGAnimatedLength* imp = (SVGAnimatedLength*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, JSSVGPODTypeWrapperCache<SVGLength, SVGAnimatedLength>::lookupOrCreateWrapper(imp, &SVGAnimatedLength::baseVal, &SVGAnimatedLength::setBaseVal), context());
         }
         case AnimValAttrNum: {
-            SVGAnimatedLength* imp = (SVGAnimatedLength*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedLength::js_class_id);
+            SVGAnimatedLength* imp = (SVGAnimatedLength*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, JSSVGPODTypeWrapperCache<SVGLength, SVGAnimatedLength>::lookupOrCreateWrapper(imp, &SVGAnimatedLength::animVal, &SVGAnimatedLength::setAnimVal), context());
         }
     }

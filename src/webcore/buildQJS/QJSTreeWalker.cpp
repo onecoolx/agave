@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -68,7 +68,7 @@ JSValue JSTreeWalkerPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSTreeWalker.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSTreeWalkerPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSTreeWalker.prototype]]", obj);
@@ -126,23 +126,23 @@ JSValue JSTreeWalker::getValueProperty(JSContext *ctx, JSValueConst this_val, in
 {
     switch (token) {
         case RootAttrNum: {
-            TreeWalker* imp = (TreeWalker*)JS_GetOpaque2(ctx, this_val, JSTreeWalker::js_class_id);
+            TreeWalker* imp = (TreeWalker*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->root()));
         }
         case WhatToShowAttrNum: {
-            TreeWalker* imp = (TreeWalker*)JS_GetOpaque2(ctx, this_val, JSTreeWalker::js_class_id);
+            TreeWalker* imp = (TreeWalker*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->whatToShow());
         }
         case FilterAttrNum: {
-            TreeWalker* imp = (TreeWalker*)JS_GetOpaque2(ctx, this_val, JSTreeWalker::js_class_id);
+            TreeWalker* imp = (TreeWalker*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->filter()));
         }
         case ExpandEntityReferencesAttrNum: {
-            TreeWalker* imp = (TreeWalker*)JS_GetOpaque2(ctx, this_val, JSTreeWalker::js_class_id);
+            TreeWalker* imp = (TreeWalker*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->expandEntityReferences() ? 1 : 0);
         }
         case CurrentNodeAttrNum: {
-            TreeWalker* imp = (TreeWalker*)JS_GetOpaque2(ctx, this_val, JSTreeWalker::js_class_id);
+            TreeWalker* imp = (TreeWalker*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->currentNode()));
         }
     }
@@ -153,7 +153,7 @@ JSValue JSTreeWalker::putValueProperty(JSContext *ctx, JSValueConst this_val, JS
 {
     switch (token) {
         case CurrentNodeAttrNum: {
-            TreeWalker* imp = (TreeWalker*)JS_GetOpaque2(ctx, this_val, JSTreeWalker::js_class_id);
+            TreeWalker* imp = (TreeWalker*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setCurrentNode(toNode(value), ec);
             setDOMException(ctx, ec);
@@ -165,7 +165,7 @@ JSValue JSTreeWalker::putValueProperty(JSContext *ctx, JSValueConst this_val, JS
 
 JSValue JSTreeWalkerPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    TreeWalker* imp = (TreeWalker*)JS_GetOpaque2(ctx, this_val, JSTreeWalker::js_class_id);
+    TreeWalker* imp = (TreeWalker*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

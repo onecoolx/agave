@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ JSValue JSHTMLHtmlElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLHtmlElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLHtmlElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLHtmlElement.constructor]]", obj);
@@ -81,7 +81,7 @@ JSValue JSHTMLHtmlElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLHtmlElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLHtmlElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLHtmlElement.prototype]]", obj);
@@ -144,7 +144,7 @@ JSValue JSHTMLHtmlElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case VersionAttrNum: {
-            HTMLHtmlElement* imp = (HTMLHtmlElement*)JS_GetOpaque2(ctx, this_val, JSHTMLHtmlElement::js_class_id);
+            HTMLHtmlElement* imp = (HTMLHtmlElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->version()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -157,7 +157,7 @@ JSValue JSHTMLHtmlElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case VersionAttrNum: {
-            HTMLHtmlElement* imp = (HTMLHtmlElement*)JS_GetOpaque2(ctx, this_val, JSHTMLHtmlElement::js_class_id);
+            HTMLHtmlElement* imp = (HTMLHtmlElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setVersion(valueToStringWithNullCheck(ctx, value));
             break;
         }

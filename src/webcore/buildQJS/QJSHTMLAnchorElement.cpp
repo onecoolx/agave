@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,7 +81,7 @@ JSValue JSHTMLAnchorElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLAnchorElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLAnchorElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLAnchorElement.constructor]]", obj);
@@ -109,7 +109,7 @@ JSValue JSHTMLAnchorElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLAnchorElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLAnchorElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLAnchorElement.prototype]]", obj);
@@ -173,83 +173,83 @@ JSValue JSHTMLAnchorElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case AccessKeyAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->accessKey()).utf8().data());
         }
         case CharsetAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->charset()).utf8().data());
         }
         case CoordsAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->coords()).utf8().data());
         }
         case HrefAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->href()).utf8().data());
         }
         case HreflangAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->hreflang()).utf8().data());
         }
         case NameAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case RelAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->rel()).utf8().data());
         }
         case RevAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->rev()).utf8().data());
         }
         case ShapeAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->shape()).utf8().data());
         }
         case TabIndexAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->tabIndex());
         }
         case TargetAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->target()).utf8().data());
         }
         case TypeAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case HashAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->hash()).utf8().data());
         }
         case HostAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->host()).utf8().data());
         }
         case HostnameAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->hostname()).utf8().data());
         }
         case PathnameAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->pathname()).utf8().data());
         }
         case PortAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->port()).utf8().data());
         }
         case ProtocolAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->protocol()).utf8().data());
         }
         case SearchAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->search()).utf8().data());
         }
         case TextAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->text()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -262,62 +262,62 @@ JSValue JSHTMLAnchorElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case AccessKeyAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAccessKey(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CharsetAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCharset(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CoordsAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCoords(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HrefAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setHref(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HreflangAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setHreflang(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case NameAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case RelAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setRel(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case RevAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setRev(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ShapeAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setShape(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TabIndexAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setTabIndex(valueToInt32(ctx, value));
             break;
         }
         case TargetAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setTarget(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TypeAttrNum: {
-            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+            HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }
@@ -332,7 +332,7 @@ JSValue JSHTMLAnchorElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLAnchorElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaque2(ctx, this_val, JSHTMLAnchorElement::js_class_id);
+    HTMLAnchorElement* imp = (HTMLAnchorElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

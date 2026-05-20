@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -104,7 +104,7 @@ JSValue JSSVGFECompositeElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[SVGFECompositeElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGFECompositeElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[SVGFECompositeElement.constructor]]", obj);
@@ -144,7 +144,7 @@ JSValue JSSVGFECompositeElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGFECompositeElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGFECompositeElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGFECompositeElement.prototype]]", obj);
@@ -215,72 +215,72 @@ JSValue JSSVGFECompositeElement::getValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case In1AttrNum: {
-            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->in1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case In2AttrNum: {
-            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->in2Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case _operatorAttrNum: {
-            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedEnumeration> obj = imp->_operatorAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case K1AttrNum: {
-            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->k1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case K2AttrNum: {
-            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->k2Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case K3AttrNum: {
-            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->k3Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case K4AttrNum: {
-            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->k4Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+            SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:
@@ -296,7 +296,7 @@ JSValue JSSVGFECompositeElement::getConstructor(JSContext *ctx)
 
 JSValue JSSVGFECompositeElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFECompositeElement::js_class_id);
+    SVGFECompositeElement* imp = (SVGFECompositeElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

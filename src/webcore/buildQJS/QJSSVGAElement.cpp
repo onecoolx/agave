@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -94,7 +94,7 @@ JSValue JSSVGAElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGAElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGAElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGAElement.prototype]]", obj);
@@ -157,60 +157,60 @@ JSValue JSSVGAElement::getValueProperty(JSContext *ctx, JSValueConst this_val, i
 {
     switch (token) {
         case TargetAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->targetAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HrefAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->hrefAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RequiredFeaturesAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->requiredFeatures()), imp);
         }
         case RequiredExtensionsAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->requiredExtensions()), imp);
         }
         case SystemLanguageAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->systemLanguage()), imp);
         }
         case XmllangAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case TransformAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedTransformList> obj = imp->transformAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case NearestViewportElementAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->nearestViewportElement()));
         }
         case FarthestViewportElementAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->farthestViewportElement()));
         }
     }
@@ -221,12 +221,12 @@ JSValue JSSVGAElement::putValueProperty(JSContext *ctx, JSValueConst this_val, J
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+            SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -236,7 +236,7 @@ JSValue JSSVGAElement::putValueProperty(JSContext *ctx, JSValueConst this_val, J
 
 JSValue JSSVGAElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGAElement* imp = (SVGAElement*)JS_GetOpaque2(ctx, this_val, JSSVGAElement::js_class_id);
+    SVGAElement* imp = (SVGAElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

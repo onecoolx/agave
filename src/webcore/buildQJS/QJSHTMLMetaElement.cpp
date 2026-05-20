@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,7 @@ JSValue JSHTMLMetaElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLMetaElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLMetaElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLMetaElement.constructor]]", obj);
@@ -84,7 +84,7 @@ JSValue JSHTMLMetaElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLMetaElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLMetaElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLMetaElement.prototype]]", obj);
@@ -147,19 +147,19 @@ JSValue JSHTMLMetaElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case ContentAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLMetaElement::js_class_id);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->content()).utf8().data());
         }
         case HttpEquivAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLMetaElement::js_class_id);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->httpEquiv()).utf8().data());
         }
         case NameAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLMetaElement::js_class_id);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case SchemeAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLMetaElement::js_class_id);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->scheme()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -172,22 +172,22 @@ JSValue JSHTMLMetaElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case ContentAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLMetaElement::js_class_id);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setContent(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HttpEquivAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLMetaElement::js_class_id);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setHttpEquiv(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case NameAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLMetaElement::js_class_id);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case SchemeAttrNum: {
-            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLMetaElement::js_class_id);
+            HTMLMetaElement* imp = (HTMLMetaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setScheme(valueToStringWithNullCheck(ctx, value));
             break;
         }

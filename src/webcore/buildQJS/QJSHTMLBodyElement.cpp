@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,7 @@ JSValue JSHTMLBodyElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLBodyElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLBodyElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLBodyElement.constructor]]", obj);
@@ -90,7 +90,7 @@ JSValue JSHTMLBodyElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLBodyElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLBodyElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLBodyElement.prototype]]", obj);
@@ -153,43 +153,43 @@ JSValue JSHTMLBodyElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case ALinkAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->aLink()).utf8().data());
         }
         case BackgroundAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->background()).utf8().data());
         }
         case BgColorAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->bgColor()).utf8().data());
         }
         case LinkAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->link()).utf8().data());
         }
         case TextAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->text()).utf8().data());
         }
         case VLinkAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->vLink()).utf8().data());
         }
         case ScrollLeftAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->scrollLeft());
         }
         case ScrollTopAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->scrollTop());
         }
         case ScrollWidthAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->scrollWidth());
         }
         case ScrollHeightAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->scrollHeight());
         }
         case ConstructorAttrNum:
@@ -202,42 +202,42 @@ JSValue JSHTMLBodyElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case ALinkAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setALink(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case BackgroundAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setBackground(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case BgColorAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setBgColor(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case LinkAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setLink(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TextAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setText(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case VLinkAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setVLink(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ScrollLeftAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setScrollLeft(valueToInt32(ctx, value));
             break;
         }
         case ScrollTopAttrNum: {
-            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBodyElement::js_class_id);
+            HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setScrollTop(valueToInt32(ctx, value));
             break;
         }

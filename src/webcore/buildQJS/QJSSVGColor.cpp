@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,7 +81,7 @@ JSValue JSSVGColorConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[SVGColor.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGColorConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[SVGColor.constructor]]", obj);
@@ -120,7 +120,7 @@ JSValue JSSVGColorPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGColor.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSCSSValuePrototype::self(ctx));
         JSSVGColorPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGColor.prototype]]", obj);
@@ -191,11 +191,11 @@ JSValue JSSVGColor::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
 {
     switch (token) {
         case ColorTypeAttrNum: {
-            SVGColor* imp = (SVGColor*)JS_GetOpaque2(ctx, this_val, JSSVGColor::js_class_id);
+            SVGColor* imp = (SVGColor*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->colorType());
         }
         case RgbColorAttrNum: {
-            SVGColor* imp = (SVGColor*)JS_GetOpaque2(ctx, this_val, JSSVGColor::js_class_id);
+            SVGColor* imp = (SVGColor*)JS_GetOpaqueNoCheck(this_val);
             return getJSRGBColor(ctx, imp->rgbColor());
         }
         case ConstructorAttrNum:
@@ -211,7 +211,7 @@ JSValue JSSVGColor::getConstructor(JSContext *ctx)
 
 JSValue JSSVGColorPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGColor* imp = (SVGColor*)JS_GetOpaque2(ctx, this_val, JSSVGColor::js_class_id);
+    SVGColor* imp = (SVGColor*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

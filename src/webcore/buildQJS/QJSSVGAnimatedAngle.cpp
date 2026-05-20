@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ JSValue JSSVGAnimatedAnglePrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedAngle.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGAnimatedAnglePrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedAngle.prototype]]", obj);
@@ -119,11 +119,11 @@ JSValue JSSVGAnimatedAngle::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedAngle* imp = (SVGAnimatedAngle*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedAngle::js_class_id);
+            SVGAnimatedAngle* imp = (SVGAnimatedAngle*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->baseVal()), context());
         }
         case AnimValAttrNum: {
-            SVGAnimatedAngle* imp = (SVGAnimatedAngle*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedAngle::js_class_id);
+            SVGAnimatedAngle* imp = (SVGAnimatedAngle*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->animVal()), context());
         }
     }

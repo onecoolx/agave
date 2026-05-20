@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -68,7 +68,7 @@ JSValue JSHTMLScriptElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLScriptElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLScriptElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLScriptElement.constructor]]", obj);
@@ -87,7 +87,7 @@ JSValue JSHTMLScriptElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLScriptElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLScriptElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLScriptElement.prototype]]", obj);
@@ -150,31 +150,31 @@ JSValue JSHTMLScriptElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case TextAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque2(ctx, this_val, JSHTMLScriptElement::js_class_id);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->text()).utf8().data());
         }
         case HtmlForAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque2(ctx, this_val, JSHTMLScriptElement::js_class_id);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->htmlFor()).utf8().data());
         }
         case EventAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque2(ctx, this_val, JSHTMLScriptElement::js_class_id);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->event()).utf8().data());
         }
         case CharsetAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque2(ctx, this_val, JSHTMLScriptElement::js_class_id);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->charset()).utf8().data());
         }
         case DeferAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque2(ctx, this_val, JSHTMLScriptElement::js_class_id);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->defer() ? 1 : 0);
         }
         case SrcAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque2(ctx, this_val, JSHTMLScriptElement::js_class_id);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->src()).utf8().data());
         }
         case TypeAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque2(ctx, this_val, JSHTMLScriptElement::js_class_id);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -187,37 +187,37 @@ JSValue JSHTMLScriptElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case TextAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque2(ctx, this_val, JSHTMLScriptElement::js_class_id);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setText(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HtmlForAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque2(ctx, this_val, JSHTMLScriptElement::js_class_id);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setHtmlFor(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case EventAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque2(ctx, this_val, JSHTMLScriptElement::js_class_id);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setEvent(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CharsetAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque2(ctx, this_val, JSHTMLScriptElement::js_class_id);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCharset(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case DeferAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque2(ctx, this_val, JSHTMLScriptElement::js_class_id);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setDefer(valueToBoolean(ctx, value));
             break;
         }
         case SrcAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque2(ctx, this_val, JSHTMLScriptElement::js_class_id);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setSrc(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TypeAttrNum: {
-            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaque2(ctx, this_val, JSHTMLScriptElement::js_class_id);
+            HTMLScriptElement* imp = (HTMLScriptElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }

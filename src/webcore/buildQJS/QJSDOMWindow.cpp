@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -373,207 +373,203 @@ void JSDOMWindow::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func)
 
 JSValue JSDOMWindow::getValueProperty(JSContext *ctx, JSValueConst this_val, int token)
 {
-    QJS::ScriptInterpreter* _interp = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* _imp = (_interp && _interp->frame()) ? _interp->frame()->domWindow() : 0;
-    if (!_imp)
-        return JS_UNDEFINED;
-
     switch (token) {
         case ScreenAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->screen()));
         }
         case HistoryAttrNum: {
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->history()));
         }
         case LocationbarAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->locationbar()));
         }
         case MenubarAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->menubar()));
         }
         case PersonalbarAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->personalbar()));
         }
         case ScrollbarsAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->scrollbars()));
         }
         case StatusbarAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->statusbar()));
         }
         case ToolbarAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->toolbar()));
         }
         case FrameElementAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return checkNodeSecurity(ctx, imp->frameElement()) ? toJS(ctx, QJS::getPtr(imp->frameElement())) : JS_UNDEFINED;
         }
         case OffscreenBufferingAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBool(ctx, imp->offscreenBuffering() ? 1 : 0);
         }
         case OuterHeightAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBigUint64(ctx, imp->outerHeight());
         }
         case OuterWidthAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBigUint64(ctx, imp->outerWidth());
         }
         case InnerHeightAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBigUint64(ctx, imp->innerHeight());
         }
         case InnerWidthAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBigUint64(ctx, imp->innerWidth());
         }
         case ScreenXAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBigUint64(ctx, imp->screenX());
         }
         case ScreenYAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBigUint64(ctx, imp->screenY());
         }
         case ScreenLeftAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBigUint64(ctx, imp->screenLeft());
         }
         case ScreenTopAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBigUint64(ctx, imp->screenTop());
         }
         case ScrollXAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBigUint64(ctx, imp->scrollX());
         }
         case ScrollYAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBigUint64(ctx, imp->scrollY());
         }
         case PageXOffsetAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBigUint64(ctx, imp->pageXOffset());
         }
         case PageYOffsetAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBigUint64(ctx, imp->pageYOffset());
         }
         case ClosedAttrNum: {
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBool(ctx, imp->closed() ? 1 : 0);
         }
         case LengthAttrNum: {
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case NameAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case StatusAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewString(ctx, ((const String&)imp->status()).utf8().data());
         }
         case DefaultStatusAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewString(ctx, ((const String&)imp->defaultStatus()).utf8().data());
         }
         case DefaultstatusAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewString(ctx, ((const String&)imp->defaultstatus()).utf8().data());
         }
         case SelfAttrNum: {
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->self()));
         }
         case WindowAttrNum: {
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->window()));
         }
         case FramesAttrNum: {
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->frames()));
         }
         case OpenerAttrNum: {
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->opener()));
         }
         case ParentAttrNum: {
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->parent()));
         }
         case TopAttrNum: {
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->top()));
         }
         case DocumentAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return toJS(ctx, QJS::getPtr(imp->document()));
         }
         case DevicePixelRatioAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             return JS_NewBigUint64(ctx, imp->devicePixelRatio());
         }
         case StyleSheetConstructorAttrNum: {
@@ -1097,36 +1093,32 @@ JSValue JSDOMWindow::getValueProperty(JSContext *ctx, JSValueConst this_val, int
 
 JSValue JSDOMWindow::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue value, int token)
 {
-    QJS::ScriptInterpreter* _interp = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* _imp = (_interp && _interp->frame()) ? _interp->frame()->domWindow() : 0;
-    if (!_imp)
-        return JS_UNDEFINED;
-
     switch (token) {
         case NameAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             imp->setName(valueToString(ctx, value));
             break;
         }
         case StatusAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             imp->setStatus(valueToString(ctx, value));
             break;
         }
         case DefaultStatusAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             imp->setDefaultStatus(valueToString(ctx, value));
             break;
         }
         case DefaultstatusAttrNum: {
             if (!isSafeScript(ctx, this_val))
                 return JS_UNDEFINED;
-            QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+            DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
             imp->setDefaultstatus(valueToString(ctx, value));
             break;
         }
@@ -1857,7 +1849,7 @@ JSValue JSDOMWindow::putValueProperty(JSContext *ctx, JSValueConst this_val, JSV
 
 JSValue JSDOMWindowPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    QJS::ScriptInterpreter* _interp2 = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx); DOMWindow* imp = (_interp2 && _interp2->frame()) ? _interp2->frame()->domWindow() : 0;
+    DOMWindow* imp = (DOMWindow*)(((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx)) && ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame() ? ((QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx))->frame()->domWindow() : 0);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -96,7 +96,7 @@ JSValue JSSVGPolygonElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGPolygonElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGPolygonElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGPolygonElement.prototype]]", obj);
@@ -159,58 +159,58 @@ JSValue JSSVGPolygonElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case RequiredFeaturesAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->requiredFeatures()), imp);
         }
         case RequiredExtensionsAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->requiredExtensions()), imp);
         }
         case SystemLanguageAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->systemLanguage()), imp);
         }
         case XmllangAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case TransformAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedTransformList> obj = imp->transformAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case NearestViewportElementAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->nearestViewportElement()));
         }
         case FarthestViewportElementAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->farthestViewportElement()));
         }
         case PointsAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->points()), imp);
         }
         case AnimatedPointsAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->animatedPoints()), imp);
         }
     }
@@ -221,12 +221,12 @@ JSValue JSSVGPolygonElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+            SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -236,7 +236,7 @@ JSValue JSSVGPolygonElement::putValueProperty(JSContext *ctx, JSValueConst this_
 
 JSValue JSSVGPolygonElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaque2(ctx, this_val, JSSVGPolygonElement::js_class_id);
+    SVGPolygonElement* imp = (SVGPolygonElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

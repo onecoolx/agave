@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,7 @@ JSValue JSScreenPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSScreen.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSScreenPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSScreen.prototype]]", obj);
@@ -116,35 +116,35 @@ JSValue JSScreen::getValueProperty(JSContext *ctx, JSValueConst this_val, int to
 {
     switch (token) {
         case HeightAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaque2(ctx, this_val, JSScreen::js_class_id);
+            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->height());
         }
         case WidthAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaque2(ctx, this_val, JSScreen::js_class_id);
+            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->width());
         }
         case ColorDepthAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaque2(ctx, this_val, JSScreen::js_class_id);
+            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->colorDepth());
         }
         case PixelDepthAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaque2(ctx, this_val, JSScreen::js_class_id);
+            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->pixelDepth());
         }
         case AvailLeftAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaque2(ctx, this_val, JSScreen::js_class_id);
+            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->availLeft());
         }
         case AvailTopAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaque2(ctx, this_val, JSScreen::js_class_id);
+            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->availTop());
         }
         case AvailHeightAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaque2(ctx, this_val, JSScreen::js_class_id);
+            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->availHeight());
         }
         case AvailWidthAttrNum: {
-            Screen* imp = (Screen*)JS_GetOpaque2(ctx, this_val, JSScreen::js_class_id);
+            Screen* imp = (Screen*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->availWidth());
         }
     }

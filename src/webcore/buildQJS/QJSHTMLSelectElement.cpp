@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -80,7 +80,7 @@ JSValue JSHTMLSelectElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLSelectElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLSelectElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLSelectElement.constructor]]", obj);
@@ -111,7 +111,7 @@ JSValue JSHTMLSelectElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLSelectElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLSelectElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLSelectElement.prototype]]", obj);
@@ -175,47 +175,47 @@ JSValue JSHTMLSelectElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case TypeAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case SelectedIndexAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->selectedIndex());
         }
         case ValueAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->value()).utf8().data());
         }
         case LengthAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case FormAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->form()));
         }
         case OptionsAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->options()));
         }
         case DisabledAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->disabled() ? 1 : 0);
         }
         case MultipleAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->multiple() ? 1 : 0);
         }
         case NameAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case SizeAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->size());
         }
         case TabIndexAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->tabIndex());
         }
         case ConstructorAttrNum:
@@ -228,44 +228,44 @@ JSValue JSHTMLSelectElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case SelectedIndexAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setSelectedIndex(valueToInt32(ctx, value));
             break;
         }
         case ValueAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setValue(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case LengthAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setLength(valueToInt32(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case DisabledAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setDisabled(valueToBoolean(ctx, value));
             break;
         }
         case MultipleAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setMultiple(valueToBoolean(ctx, value));
             break;
         }
         case NameAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case SizeAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setSize(valueToInt32(ctx, value));
             break;
         }
         case TabIndexAttrNum: {
-            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+            HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setTabIndex(valueToInt32(ctx, value));
             break;
         }
@@ -280,7 +280,7 @@ JSValue JSHTMLSelectElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLSelectElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLSelectElement::js_class_id);
+    HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

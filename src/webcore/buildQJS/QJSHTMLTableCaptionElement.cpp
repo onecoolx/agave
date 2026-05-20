@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ JSValue JSHTMLTableCaptionElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLTableCaptionElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLTableCaptionElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLTableCaptionElement.constructor]]", obj);
@@ -81,7 +81,7 @@ JSValue JSHTMLTableCaptionElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLTableCaptionElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLTableCaptionElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLTableCaptionElement.prototype]]", obj);
@@ -144,7 +144,7 @@ JSValue JSHTMLTableCaptionElement::getValueProperty(JSContext *ctx, JSValueConst
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLTableCaptionElement* imp = (HTMLTableCaptionElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableCaptionElement::js_class_id);
+            HTMLTableCaptionElement* imp = (HTMLTableCaptionElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -157,7 +157,7 @@ JSValue JSHTMLTableCaptionElement::putValueProperty(JSContext *ctx, JSValueConst
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLTableCaptionElement* imp = (HTMLTableCaptionElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableCaptionElement::js_class_id);
+            HTMLTableCaptionElement* imp = (HTMLTableCaptionElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }

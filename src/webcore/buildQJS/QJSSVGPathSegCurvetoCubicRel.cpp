@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ JSValue JSSVGPathSegCurvetoCubicRelPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGPathSegCurvetoCubicRel.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGPathSegPrototype::self(ctx));
         JSSVGPathSegCurvetoCubicRelPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGPathSegCurvetoCubicRel.prototype]]", obj);
@@ -122,27 +122,27 @@ JSValue JSSVGPathSegCurvetoCubicRel::getValueProperty(JSContext *ctx, JSValueCon
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicRel::js_class_id);
+            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->x());
         }
         case YAttrNum: {
-            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicRel::js_class_id);
+            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->y());
         }
         case X1AttrNum: {
-            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicRel::js_class_id);
+            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->x1());
         }
         case Y1AttrNum: {
-            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicRel::js_class_id);
+            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->y1());
         }
         case X2AttrNum: {
-            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicRel::js_class_id);
+            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->x2());
         }
         case Y2AttrNum: {
-            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicRel::js_class_id);
+            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->y2());
         }
     }
@@ -153,32 +153,32 @@ JSValue JSSVGPathSegCurvetoCubicRel::putValueProperty(JSContext *ctx, JSValueCon
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicRel::js_class_id);
+            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setX(valueToFloat(ctx, value));
             break;
         }
         case YAttrNum: {
-            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicRel::js_class_id);
+            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setY(valueToFloat(ctx, value));
             break;
         }
         case X1AttrNum: {
-            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicRel::js_class_id);
+            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setX1(valueToFloat(ctx, value));
             break;
         }
         case Y1AttrNum: {
-            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicRel::js_class_id);
+            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setY1(valueToFloat(ctx, value));
             break;
         }
         case X2AttrNum: {
-            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicRel::js_class_id);
+            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setX2(valueToFloat(ctx, value));
             break;
         }
         case Y2AttrNum: {
-            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegCurvetoCubicRel::js_class_id);
+            SVGPathSegCurvetoCubicRel* imp = (SVGPathSegCurvetoCubicRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setY2(valueToFloat(ctx, value));
             break;
         }

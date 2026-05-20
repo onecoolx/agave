@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ JSValue JSHTMLBaseElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLBaseElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLBaseElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLBaseElement.constructor]]", obj);
@@ -82,7 +82,7 @@ JSValue JSHTMLBaseElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLBaseElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLBaseElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLBaseElement.prototype]]", obj);
@@ -145,11 +145,11 @@ JSValue JSHTMLBaseElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case HrefAttrNum: {
-            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBaseElement::js_class_id);
+            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->href()).utf8().data());
         }
         case TargetAttrNum: {
-            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBaseElement::js_class_id);
+            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->target()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -162,12 +162,12 @@ JSValue JSHTMLBaseElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case HrefAttrNum: {
-            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBaseElement::js_class_id);
+            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setHref(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TargetAttrNum: {
-            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaque2(ctx, this_val, JSHTMLBaseElement::js_class_id);
+            HTMLBaseElement* imp = (HTMLBaseElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setTarget(valueToStringWithNullCheck(ctx, value));
             break;
         }

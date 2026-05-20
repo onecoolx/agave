@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ JSValue JSSVGAnimatedStringPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedString.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGAnimatedStringPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedString.prototype]]", obj);
@@ -118,11 +118,11 @@ JSValue JSSVGAnimatedString::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedString* imp = (SVGAnimatedString*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedString::js_class_id);
+            SVGAnimatedString* imp = (SVGAnimatedString*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->baseVal()).utf8().data());
         }
         case AnimValAttrNum: {
-            SVGAnimatedString* imp = (SVGAnimatedString*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedString::js_class_id);
+            SVGAnimatedString* imp = (SVGAnimatedString*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->animVal()).utf8().data());
         }
     }
@@ -133,7 +133,7 @@ JSValue JSSVGAnimatedString::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedString* imp = (SVGAnimatedString*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedString::js_class_id);
+            SVGAnimatedString* imp = (SVGAnimatedString*)JS_GetOpaqueNoCheck(this_val);
             imp->setBaseVal(valueToString(ctx, value));
             break;
         }

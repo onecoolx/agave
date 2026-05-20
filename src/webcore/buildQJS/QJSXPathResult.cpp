@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -90,7 +90,7 @@ JSValue JSXPathResultConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[XPathResult.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSXPathResultConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[XPathResult.constructor]]", obj);
@@ -134,7 +134,7 @@ JSValue JSXPathResultPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSXPathResult.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSXPathResultPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSXPathResult.prototype]]", obj);
@@ -205,44 +205,44 @@ JSValue JSXPathResult::getValueProperty(JSContext *ctx, JSValueConst this_val, i
 {
     switch (token) {
         case ResultTypeAttrNum: {
-            XPathResult* imp = (XPathResult*)JS_GetOpaque2(ctx, this_val, JSXPathResult::js_class_id);
+            XPathResult* imp = (XPathResult*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->resultType());
         }
         case NumberValueAttrNum: {
             ExceptionCode ec = 0;
-            XPathResult* imp = (XPathResult*)JS_GetOpaque2(ctx, this_val, JSXPathResult::js_class_id);
+            XPathResult* imp = (XPathResult*)JS_GetOpaqueNoCheck(this_val);
             JSValue result = JS_NewBigUint64(ctx, imp->numberValue(ec));
             setDOMException(ctx, ec);
             return result;
         }
         case StringValueAttrNum: {
             ExceptionCode ec = 0;
-            XPathResult* imp = (XPathResult*)JS_GetOpaque2(ctx, this_val, JSXPathResult::js_class_id);
+            XPathResult* imp = (XPathResult*)JS_GetOpaqueNoCheck(this_val);
             JSValue result = JS_NewString(ctx, ((const String&)imp->stringValue(ec)).utf8().data());
             setDOMException(ctx, ec);
             return result;
         }
         case BooleanValueAttrNum: {
             ExceptionCode ec = 0;
-            XPathResult* imp = (XPathResult*)JS_GetOpaque2(ctx, this_val, JSXPathResult::js_class_id);
+            XPathResult* imp = (XPathResult*)JS_GetOpaqueNoCheck(this_val);
             JSValue result = JS_NewBool(ctx, imp->booleanValue(ec) ? 1 : 0);
             setDOMException(ctx, ec);
             return result;
         }
         case SingleNodeValueAttrNum: {
             ExceptionCode ec = 0;
-            XPathResult* imp = (XPathResult*)JS_GetOpaque2(ctx, this_val, JSXPathResult::js_class_id);
+            XPathResult* imp = (XPathResult*)JS_GetOpaqueNoCheck(this_val);
             JSValue result = toJS(ctx, QJS::getPtr(imp->singleNodeValue(ec)));
             setDOMException(ctx, ec);
             return result;
         }
         case InvalidIteratorStateAttrNum: {
-            XPathResult* imp = (XPathResult*)JS_GetOpaque2(ctx, this_val, JSXPathResult::js_class_id);
+            XPathResult* imp = (XPathResult*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->invalidIteratorState() ? 1 : 0);
         }
         case SnapshotLengthAttrNum: {
             ExceptionCode ec = 0;
-            XPathResult* imp = (XPathResult*)JS_GetOpaque2(ctx, this_val, JSXPathResult::js_class_id);
+            XPathResult* imp = (XPathResult*)JS_GetOpaqueNoCheck(this_val);
             JSValue result = JS_NewBigUint64(ctx, imp->snapshotLength(ec));
             setDOMException(ctx, ec);
             return result;
@@ -260,7 +260,7 @@ JSValue JSXPathResult::getConstructor(JSContext *ctx)
 
 JSValue JSXPathResultPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    XPathResult* imp = (XPathResult*)JS_GetOpaque2(ctx, this_val, JSXPathResult::js_class_id);
+    XPathResult* imp = (XPathResult*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

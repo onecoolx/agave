@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ JSValue JSSVGAnimatedEnumerationPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedEnumeration.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGAnimatedEnumerationPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedEnumeration.prototype]]", obj);
@@ -117,11 +117,11 @@ JSValue JSSVGAnimatedEnumeration::getValueProperty(JSContext *ctx, JSValueConst 
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedEnumeration* imp = (SVGAnimatedEnumeration*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedEnumeration::js_class_id);
+            SVGAnimatedEnumeration* imp = (SVGAnimatedEnumeration*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->baseVal());
         }
         case AnimValAttrNum: {
-            SVGAnimatedEnumeration* imp = (SVGAnimatedEnumeration*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedEnumeration::js_class_id);
+            SVGAnimatedEnumeration* imp = (SVGAnimatedEnumeration*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->animVal());
         }
     }
@@ -132,7 +132,7 @@ JSValue JSSVGAnimatedEnumeration::putValueProperty(JSContext *ctx, JSValueConst 
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedEnumeration* imp = (SVGAnimatedEnumeration*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedEnumeration::js_class_id);
+            SVGAnimatedEnumeration* imp = (SVGAnimatedEnumeration*)JS_GetOpaqueNoCheck(this_val);
             imp->setBaseVal(valueToInt32(ctx, value));
             break;
         }

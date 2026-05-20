@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ JSValue JSHTMLHeadElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLHeadElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLHeadElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLHeadElement.constructor]]", obj);
@@ -81,7 +81,7 @@ JSValue JSHTMLHeadElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLHeadElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLHeadElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLHeadElement.prototype]]", obj);
@@ -144,7 +144,7 @@ JSValue JSHTMLHeadElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case ProfileAttrNum: {
-            HTMLHeadElement* imp = (HTMLHeadElement*)JS_GetOpaque2(ctx, this_val, JSHTMLHeadElement::js_class_id);
+            HTMLHeadElement* imp = (HTMLHeadElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->profile()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -157,7 +157,7 @@ JSValue JSHTMLHeadElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case ProfileAttrNum: {
-            HTMLHeadElement* imp = (HTMLHeadElement*)JS_GetOpaque2(ctx, this_val, JSHTMLHeadElement::js_class_id);
+            HTMLHeadElement* imp = (HTMLHeadElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setProfile(valueToStringWithNullCheck(ctx, value));
             break;
         }

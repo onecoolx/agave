@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ JSValue JSSVGRadialGradientElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGRadialGradientElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGGradientElementPrototype::self(ctx));
         JSSVGRadialGradientElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGRadialGradientElement.prototype]]", obj);
@@ -122,27 +122,27 @@ JSValue JSSVGRadialGradientElement::getValueProperty(JSContext *ctx, JSValueCons
 {
     switch (token) {
         case CxAttrNum: {
-            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaque2(ctx, this_val, JSSVGRadialGradientElement::js_class_id);
+            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->cxAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case CyAttrNum: {
-            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaque2(ctx, this_val, JSSVGRadialGradientElement::js_class_id);
+            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->cyAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RAttrNum: {
-            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaque2(ctx, this_val, JSSVGRadialGradientElement::js_class_id);
+            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->rAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case FxAttrNum: {
-            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaque2(ctx, this_val, JSSVGRadialGradientElement::js_class_id);
+            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->fxAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case FyAttrNum: {
-            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaque2(ctx, this_val, JSSVGRadialGradientElement::js_class_id);
+            SVGRadialGradientElement* imp = (SVGRadialGradientElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->fyAnimated();
             return toJS(ctx, obj.get(), imp);
         }

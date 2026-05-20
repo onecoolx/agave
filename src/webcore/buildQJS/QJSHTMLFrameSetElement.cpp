@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ JSValue JSHTMLFrameSetElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLFrameSetElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLFrameSetElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLFrameSetElement.constructor]]", obj);
@@ -82,7 +82,7 @@ JSValue JSHTMLFrameSetElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLFrameSetElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLFrameSetElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLFrameSetElement.prototype]]", obj);
@@ -145,11 +145,11 @@ JSValue JSHTMLFrameSetElement::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case ColsAttrNum: {
-            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFrameSetElement::js_class_id);
+            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->cols()).utf8().data());
         }
         case RowsAttrNum: {
-            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFrameSetElement::js_class_id);
+            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->rows()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -162,12 +162,12 @@ JSValue JSHTMLFrameSetElement::putValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case ColsAttrNum: {
-            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFrameSetElement::js_class_id);
+            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCols(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case RowsAttrNum: {
-            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFrameSetElement::js_class_id);
+            HTMLFrameSetElement* imp = (HTMLFrameSetElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setRows(valueToStringWithNullCheck(ctx, value));
             break;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ JSValue JSHTMLPreElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLPreElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLPreElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLPreElement.constructor]]", obj);
@@ -81,7 +81,7 @@ JSValue JSHTMLPreElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLPreElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLPreElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLPreElement.prototype]]", obj);
@@ -144,11 +144,11 @@ JSValue JSHTMLPreElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case WidthAttrNum: {
-            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaque2(ctx, this_val, JSHTMLPreElement::js_class_id);
+            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->width());
         }
         case WrapAttrNum: {
-            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaque2(ctx, this_val, JSHTMLPreElement::js_class_id);
+            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->wrap() ? 1 : 0);
         }
         case ConstructorAttrNum:
@@ -161,12 +161,12 @@ JSValue JSHTMLPreElement::putValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case WidthAttrNum: {
-            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaque2(ctx, this_val, JSHTMLPreElement::js_class_id);
+            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setWidth(valueToInt32(ctx, value));
             break;
         }
         case WrapAttrNum: {
-            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaque2(ctx, this_val, JSHTMLPreElement::js_class_id);
+            HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setWrap(valueToBoolean(ctx, value));
             break;
         }

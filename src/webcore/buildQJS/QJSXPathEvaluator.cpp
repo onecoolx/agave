@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ JSValue JSXPathEvaluatorConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[XPathEvaluator.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewCFunction2(ctx, JSXPathEvaluatorConstructor::construct, "XPathEvaluator", 0, JS_CFUNC_constructor, 0);
         JSXPathEvaluatorConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[XPathEvaluator.constructor]]", obj);
@@ -106,7 +106,7 @@ JSValue JSXPathEvaluatorPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSXPathEvaluator.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSXPathEvaluatorPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSXPathEvaluator.prototype]]", obj);
@@ -182,7 +182,7 @@ JSValue JSXPathEvaluator::getConstructor(JSContext *ctx)
 
 JSValue JSXPathEvaluatorPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    XPathEvaluator* imp = (XPathEvaluator*)JS_GetOpaque2(ctx, this_val, JSXPathEvaluator::js_class_id);
+    XPathEvaluator* imp = (XPathEvaluator*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

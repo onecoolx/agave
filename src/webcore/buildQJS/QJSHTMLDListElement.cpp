@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,7 @@ JSValue JSHTMLDListElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLDListElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLDListElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLDListElement.constructor]]", obj);
@@ -80,7 +80,7 @@ JSValue JSHTMLDListElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLDListElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLDListElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLDListElement.prototype]]", obj);
@@ -143,7 +143,7 @@ JSValue JSHTMLDListElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLDListElement* imp = (HTMLDListElement*)JS_GetOpaque2(ctx, this_val, JSHTMLDListElement::js_class_id);
+            HTMLDListElement* imp = (HTMLDListElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->compact() ? 1 : 0);
         }
         case ConstructorAttrNum:
@@ -156,7 +156,7 @@ JSValue JSHTMLDListElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLDListElement* imp = (HTMLDListElement*)JS_GetOpaque2(ctx, this_val, JSHTMLDListElement::js_class_id);
+            HTMLDListElement* imp = (HTMLDListElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCompact(valueToBoolean(ctx, value));
             break;
         }

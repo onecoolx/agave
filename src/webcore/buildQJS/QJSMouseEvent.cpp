@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ JSValue JSMouseEventPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSMouseEvent.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSUIEventPrototype::self(ctx));
         JSMouseEventPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSMouseEvent.prototype]]", obj);
@@ -142,71 +142,71 @@ JSValue JSMouseEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, in
 {
     switch (token) {
         case ScreenXAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->screenX());
         }
         case ScreenYAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->screenY());
         }
         case ClientXAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->clientX());
         }
         case ClientYAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->clientY());
         }
         case CtrlKeyAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->ctrlKey() ? 1 : 0);
         }
         case ShiftKeyAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->shiftKey() ? 1 : 0);
         }
         case AltKeyAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->altKey() ? 1 : 0);
         }
         case MetaKeyAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->metaKey() ? 1 : 0);
         }
         case ButtonAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->button());
         }
         case RelatedTargetAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->relatedTarget()));
         }
         case OffsetXAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->offsetX());
         }
         case OffsetYAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->offsetY());
         }
         case XAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->x());
         }
         case YAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->y());
         }
         case FromElementAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->fromElement()));
         }
         case ToElementAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->toElement()));
         }
         case DataTransferAttrNum: {
-            MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+            MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->dataTransfer()));
         }
     }
@@ -215,7 +215,7 @@ JSValue JSMouseEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, in
 
 JSValue JSMouseEventPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    MouseEvent* imp = (MouseEvent*)JS_GetOpaque2(ctx, this_val, JSMouseEvent::js_class_id);
+    MouseEvent* imp = (MouseEvent*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

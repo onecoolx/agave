@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -94,7 +94,7 @@ JSValue JSSVGGradientElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[SVGGradientElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGGradientElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[SVGGradientElement.constructor]]", obj);
@@ -131,7 +131,7 @@ JSValue JSSVGGradientElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGGradientElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGGradientElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGGradientElement.prototype]]", obj);
@@ -202,37 +202,37 @@ JSValue JSSVGGradientElement::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case GradientUnitsAttrNum: {
-            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque2(ctx, this_val, JSSVGGradientElement::js_class_id);
+            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedEnumeration> obj = imp->gradientUnitsAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case GradientTransformAttrNum: {
-            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque2(ctx, this_val, JSSVGGradientElement::js_class_id);
+            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedTransformList> obj = imp->gradientTransformAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case SpreadMethodAttrNum: {
-            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque2(ctx, this_val, JSSVGGradientElement::js_class_id);
+            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedEnumeration> obj = imp->spreadMethodAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HrefAttrNum: {
-            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque2(ctx, this_val, JSSVGGradientElement::js_class_id);
+            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->hrefAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque2(ctx, this_val, JSSVGGradientElement::js_class_id);
+            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque2(ctx, this_val, JSSVGGradientElement::js_class_id);
+            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque2(ctx, this_val, JSSVGGradientElement::js_class_id);
+            SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:
@@ -248,7 +248,7 @@ JSValue JSSVGGradientElement::getConstructor(JSContext *ctx)
 
 JSValue JSSVGGradientElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaque2(ctx, this_val, JSSVGGradientElement::js_class_id);
+    SVGGradientElement* imp = (SVGGradientElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

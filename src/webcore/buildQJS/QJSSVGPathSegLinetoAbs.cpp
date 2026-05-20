@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ JSValue JSSVGPathSegLinetoAbsPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGPathSegLinetoAbs.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGPathSegPrototype::self(ctx));
         JSSVGPathSegLinetoAbsPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGPathSegLinetoAbs.prototype]]", obj);
@@ -118,11 +118,11 @@ JSValue JSSVGPathSegLinetoAbs::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegLinetoAbs* imp = (SVGPathSegLinetoAbs*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegLinetoAbs::js_class_id);
+            SVGPathSegLinetoAbs* imp = (SVGPathSegLinetoAbs*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->x());
         }
         case YAttrNum: {
-            SVGPathSegLinetoAbs* imp = (SVGPathSegLinetoAbs*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegLinetoAbs::js_class_id);
+            SVGPathSegLinetoAbs* imp = (SVGPathSegLinetoAbs*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->y());
         }
     }
@@ -133,12 +133,12 @@ JSValue JSSVGPathSegLinetoAbs::putValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegLinetoAbs* imp = (SVGPathSegLinetoAbs*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegLinetoAbs::js_class_id);
+            SVGPathSegLinetoAbs* imp = (SVGPathSegLinetoAbs*)JS_GetOpaqueNoCheck(this_val);
             imp->setX(valueToFloat(ctx, value));
             break;
         }
         case YAttrNum: {
-            SVGPathSegLinetoAbs* imp = (SVGPathSegLinetoAbs*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegLinetoAbs::js_class_id);
+            SVGPathSegLinetoAbs* imp = (SVGPathSegLinetoAbs*)JS_GetOpaqueNoCheck(this_val);
             imp->setY(valueToFloat(ctx, value));
             break;
         }

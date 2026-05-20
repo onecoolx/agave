@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -77,7 +77,7 @@ JSValue JSHTMLTextAreaElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLTextAreaElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLTextAreaElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLTextAreaElement.constructor]]", obj);
@@ -106,7 +106,7 @@ JSValue JSHTMLTextAreaElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLTextAreaElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLTextAreaElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLTextAreaElement.prototype]]", obj);
@@ -170,55 +170,55 @@ JSValue JSHTMLTextAreaElement::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case DefaultValueAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->defaultValue()).utf8().data());
         }
         case FormAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->form()));
         }
         case AccessKeyAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->accessKey()).utf8().data());
         }
         case ColsAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->cols());
         }
         case DisabledAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->disabled() ? 1 : 0);
         }
         case NameAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case ReadOnlyAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->readOnly() ? 1 : 0);
         }
         case RowsAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->rows());
         }
         case TabIndexAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->tabIndex());
         }
         case TypeAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case ValueAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->value()).utf8().data());
         }
         case SelectionStartAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->selectionStart());
         }
         case SelectionEndAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->selectionEnd());
         }
         case ConstructorAttrNum:
@@ -231,57 +231,57 @@ JSValue JSHTMLTextAreaElement::putValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case DefaultValueAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setDefaultValue(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AccessKeyAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAccessKey(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ColsAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCols(valueToInt32(ctx, value));
             break;
         }
         case DisabledAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setDisabled(valueToBoolean(ctx, value));
             break;
         }
         case NameAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ReadOnlyAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setReadOnly(valueToBoolean(ctx, value));
             break;
         }
         case RowsAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setRows(valueToInt32(ctx, value));
             break;
         }
         case TabIndexAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setTabIndex(valueToInt32(ctx, value));
             break;
         }
         case ValueAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setValue(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case SelectionStartAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setSelectionStart(valueToInt32(ctx, value));
             break;
         }
         case SelectionEndAttrNum: {
-            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+            HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setSelectionEnd(valueToInt32(ctx, value));
             break;
         }
@@ -296,7 +296,7 @@ JSValue JSHTMLTextAreaElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLTextAreaElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTextAreaElement::js_class_id);
+    HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

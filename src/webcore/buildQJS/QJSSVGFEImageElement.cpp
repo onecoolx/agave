@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,7 +81,7 @@ JSValue JSSVGFEImageElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGFEImageElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGFEImageElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGFEImageElement.prototype]]", obj);
@@ -144,55 +144,55 @@ JSValue JSSVGFEImageElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case HrefAttrNum: {
-            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEImageElement::js_class_id);
+            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->hrefAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XmllangAttrNum: {
-            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEImageElement::js_class_id);
+            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEImageElement::js_class_id);
+            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEImageElement::js_class_id);
+            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEImageElement::js_class_id);
+            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEImageElement::js_class_id);
+            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEImageElement::js_class_id);
+            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEImageElement::js_class_id);
+            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEImageElement::js_class_id);
+            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEImageElement::js_class_id);
+            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEImageElement::js_class_id);
+            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -203,12 +203,12 @@ JSValue JSSVGFEImageElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEImageElement::js_class_id);
+            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEImageElement::js_class_id);
+            SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -218,7 +218,7 @@ JSValue JSSVGFEImageElement::putValueProperty(JSContext *ctx, JSValueConst this_
 
 JSValue JSSVGFEImageElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEImageElement::js_class_id);
+    SVGFEImageElement* imp = (SVGFEImageElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ JSValue JSHTMLTitleElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLTitleElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLTitleElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLTitleElement.constructor]]", obj);
@@ -81,7 +81,7 @@ JSValue JSHTMLTitleElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLTitleElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLTitleElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLTitleElement.prototype]]", obj);
@@ -144,7 +144,7 @@ JSValue JSHTMLTitleElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case TextAttrNum: {
-            HTMLTitleElement* imp = (HTMLTitleElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTitleElement::js_class_id);
+            HTMLTitleElement* imp = (HTMLTitleElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->text()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -157,7 +157,7 @@ JSValue JSHTMLTitleElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case TextAttrNum: {
-            HTMLTitleElement* imp = (HTMLTitleElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTitleElement::js_class_id);
+            HTMLTitleElement* imp = (HTMLTitleElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setText(valueToStringWithNullCheck(ctx, value));
             break;
         }

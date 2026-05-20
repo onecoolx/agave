@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ JSValue JSCharacterDataConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[CharacterData.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSCharacterDataConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[CharacterData.constructor]]", obj);
@@ -94,7 +94,7 @@ JSValue JSCharacterDataPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSCharacterData.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSEventTargetNodePrototype::self(ctx));
         JSCharacterDataPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSCharacterData.prototype]]", obj);
@@ -158,11 +158,11 @@ JSValue JSCharacterData::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case DataAttrNum: {
-            CharacterData* imp = (CharacterData*)JS_GetOpaque2(ctx, this_val, JSCharacterData::js_class_id);
+            CharacterData* imp = (CharacterData*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->data()).utf8().data());
         }
         case LengthAttrNum: {
-            CharacterData* imp = (CharacterData*)JS_GetOpaque2(ctx, this_val, JSCharacterData::js_class_id);
+            CharacterData* imp = (CharacterData*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->length());
         }
         case ConstructorAttrNum:
@@ -175,7 +175,7 @@ JSValue JSCharacterData::putValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case DataAttrNum: {
-            CharacterData* imp = (CharacterData*)JS_GetOpaque2(ctx, this_val, JSCharacterData::js_class_id);
+            CharacterData* imp = (CharacterData*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setData(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);
@@ -192,7 +192,7 @@ JSValue JSCharacterData::getConstructor(JSContext *ctx)
 
 JSValue JSCharacterDataPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    CharacterData* imp = (CharacterData*)JS_GetOpaque2(ctx, this_val, JSCharacterData::js_class_id);
+    CharacterData* imp = (CharacterData*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

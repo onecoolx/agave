@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,7 +72,7 @@ JSValue JSSVGTitleElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGTitleElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGTitleElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGTitleElement.prototype]]", obj);
@@ -135,20 +135,20 @@ JSValue JSSVGTitleElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGTitleElement* imp = (SVGTitleElement*)JS_GetOpaque2(ctx, this_val, JSSVGTitleElement::js_class_id);
+            SVGTitleElement* imp = (SVGTitleElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGTitleElement* imp = (SVGTitleElement*)JS_GetOpaque2(ctx, this_val, JSSVGTitleElement::js_class_id);
+            SVGTitleElement* imp = (SVGTitleElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ClassNameAttrNum: {
-            SVGTitleElement* imp = (SVGTitleElement*)JS_GetOpaque2(ctx, this_val, JSSVGTitleElement::js_class_id);
+            SVGTitleElement* imp = (SVGTitleElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGTitleElement* imp = (SVGTitleElement*)JS_GetOpaque2(ctx, this_val, JSSVGTitleElement::js_class_id);
+            SVGTitleElement* imp = (SVGTitleElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -159,12 +159,12 @@ JSValue JSSVGTitleElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGTitleElement* imp = (SVGTitleElement*)JS_GetOpaque2(ctx, this_val, JSSVGTitleElement::js_class_id);
+            SVGTitleElement* imp = (SVGTitleElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGTitleElement* imp = (SVGTitleElement*)JS_GetOpaque2(ctx, this_val, JSSVGTitleElement::js_class_id);
+            SVGTitleElement* imp = (SVGTitleElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -174,7 +174,7 @@ JSValue JSSVGTitleElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 
 JSValue JSSVGTitleElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGTitleElement* imp = (SVGTitleElement*)JS_GetOpaque2(ctx, this_val, JSSVGTitleElement::js_class_id);
+    SVGTitleElement* imp = (SVGTitleElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

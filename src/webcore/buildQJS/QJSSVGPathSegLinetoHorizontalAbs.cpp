@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ JSValue JSSVGPathSegLinetoHorizontalAbsPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGPathSegLinetoHorizontalAbs.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGPathSegPrototype::self(ctx));
         JSSVGPathSegLinetoHorizontalAbsPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGPathSegLinetoHorizontalAbs.prototype]]", obj);
@@ -117,7 +117,7 @@ JSValue JSSVGPathSegLinetoHorizontalAbs::getValueProperty(JSContext *ctx, JSValu
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegLinetoHorizontalAbs* imp = (SVGPathSegLinetoHorizontalAbs*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegLinetoHorizontalAbs::js_class_id);
+            SVGPathSegLinetoHorizontalAbs* imp = (SVGPathSegLinetoHorizontalAbs*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->x());
         }
     }
@@ -128,7 +128,7 @@ JSValue JSSVGPathSegLinetoHorizontalAbs::putValueProperty(JSContext *ctx, JSValu
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegLinetoHorizontalAbs* imp = (SVGPathSegLinetoHorizontalAbs*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegLinetoHorizontalAbs::js_class_id);
+            SVGPathSegLinetoHorizontalAbs* imp = (SVGPathSegLinetoHorizontalAbs*)JS_GetOpaqueNoCheck(this_val);
             imp->setX(valueToFloat(ctx, value));
             break;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ JSValue JSSVGAnimatedBooleanPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedBoolean.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGAnimatedBooleanPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedBoolean.prototype]]", obj);
@@ -117,11 +117,11 @@ JSValue JSSVGAnimatedBoolean::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedBoolean* imp = (SVGAnimatedBoolean*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedBoolean::js_class_id);
+            SVGAnimatedBoolean* imp = (SVGAnimatedBoolean*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->baseVal() ? 1 : 0);
         }
         case AnimValAttrNum: {
-            SVGAnimatedBoolean* imp = (SVGAnimatedBoolean*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedBoolean::js_class_id);
+            SVGAnimatedBoolean* imp = (SVGAnimatedBoolean*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->animVal() ? 1 : 0);
         }
     }
@@ -132,7 +132,7 @@ JSValue JSSVGAnimatedBoolean::putValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedBoolean* imp = (SVGAnimatedBoolean*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedBoolean::js_class_id);
+            SVGAnimatedBoolean* imp = (SVGAnimatedBoolean*)JS_GetOpaqueNoCheck(this_val);
             imp->setBaseVal(valueToBoolean(ctx, value));
             break;
         }

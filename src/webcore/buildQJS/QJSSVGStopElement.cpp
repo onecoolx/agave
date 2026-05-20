@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,7 @@ JSValue JSSVGStopElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGStopElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGStopElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGStopElement.prototype]]", obj);
@@ -134,17 +134,17 @@ JSValue JSSVGStopElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case OffsetAttrNum: {
-            SVGStopElement* imp = (SVGStopElement*)JS_GetOpaque2(ctx, this_val, JSSVGStopElement::js_class_id);
+            SVGStopElement* imp = (SVGStopElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->offsetAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGStopElement* imp = (SVGStopElement*)JS_GetOpaque2(ctx, this_val, JSSVGStopElement::js_class_id);
+            SVGStopElement* imp = (SVGStopElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGStopElement* imp = (SVGStopElement*)JS_GetOpaque2(ctx, this_val, JSSVGStopElement::js_class_id);
+            SVGStopElement* imp = (SVGStopElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -153,7 +153,7 @@ JSValue JSSVGStopElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 
 JSValue JSSVGStopElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGStopElement* imp = (SVGStopElement*)JS_GetOpaque2(ctx, this_val, JSSVGStopElement::js_class_id);
+    SVGStopElement* imp = (SVGStopElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

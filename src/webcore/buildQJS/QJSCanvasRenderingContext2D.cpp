@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -107,7 +107,7 @@ JSValue JSCanvasRenderingContext2DPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSCanvasRenderingContext2D.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSCanvasRenderingContext2DPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSCanvasRenderingContext2D.prototype]]", obj);
@@ -170,55 +170,55 @@ JSValue JSCanvasRenderingContext2D::getValueProperty(JSContext *ctx, JSValueCons
 {
     switch (token) {
         case CanvasAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->canvas()));
         }
         case GlobalAlphaAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->globalAlpha());
         }
         case GlobalCompositeOperationAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->globalCompositeOperation()).utf8().data());
         }
         case LineWidthAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->lineWidth());
         }
         case LineCapAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->lineCap()).utf8().data());
         }
         case LineJoinAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->lineJoin()).utf8().data());
         }
         case MiterLimitAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->miterLimit());
         }
         case ShadowOffsetXAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->shadowOffsetX());
         }
         case ShadowOffsetYAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->shadowOffsetY());
         }
         case ShadowBlurAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->shadowBlur());
         }
         case ShadowColorAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->shadowColor()).utf8().data());
         }
         case StrokeStyleAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             return JSCanvasRenderingContext2D::strokeStyle(ctx, this_val, imp);
         }
         case FillStyleAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             return JSCanvasRenderingContext2D::fillStyle(ctx, this_val, imp);
         }
     }
@@ -229,62 +229,62 @@ JSValue JSCanvasRenderingContext2D::putValueProperty(JSContext *ctx, JSValueCons
 {
     switch (token) {
         case GlobalAlphaAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             imp->setGlobalAlpha(valueToFloat(ctx, value));
             break;
         }
         case GlobalCompositeOperationAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             imp->setGlobalCompositeOperation(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case LineWidthAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             imp->setLineWidth(valueToFloat(ctx, value));
             break;
         }
         case LineCapAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             imp->setLineCap(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case LineJoinAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             imp->setLineJoin(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case MiterLimitAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             imp->setMiterLimit(valueToFloat(ctx, value));
             break;
         }
         case ShadowOffsetXAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             imp->setShadowOffsetX(valueToFloat(ctx, value));
             break;
         }
         case ShadowOffsetYAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             imp->setShadowOffsetY(valueToFloat(ctx, value));
             break;
         }
         case ShadowBlurAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             imp->setShadowBlur(valueToFloat(ctx, value));
             break;
         }
         case ShadowColorAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             imp->setShadowColor(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case StrokeStyleAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             JSCanvasRenderingContext2D::setStrokeStyle(ctx, this_val, value, imp);
             break;
         }
         case FillStyleAttrNum: {
-            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+            CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
             JSCanvasRenderingContext2D::setFillStyle(ctx, this_val, value, imp);
             break;
         }
@@ -294,7 +294,7 @@ JSValue JSCanvasRenderingContext2D::putValueProperty(JSContext *ctx, JSValueCons
 
 JSValue JSCanvasRenderingContext2DPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaque2(ctx, this_val, JSCanvasRenderingContext2D::js_class_id);
+    CanvasRenderingContext2D* imp = (CanvasRenderingContext2D*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

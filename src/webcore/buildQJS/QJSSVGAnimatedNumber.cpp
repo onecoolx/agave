@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ JSValue JSSVGAnimatedNumberPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedNumber.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGAnimatedNumberPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedNumber.prototype]]", obj);
@@ -117,11 +117,11 @@ JSValue JSSVGAnimatedNumber::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedNumber* imp = (SVGAnimatedNumber*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedNumber::js_class_id);
+            SVGAnimatedNumber* imp = (SVGAnimatedNumber*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->baseVal());
         }
         case AnimValAttrNum: {
-            SVGAnimatedNumber* imp = (SVGAnimatedNumber*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedNumber::js_class_id);
+            SVGAnimatedNumber* imp = (SVGAnimatedNumber*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->animVal());
         }
     }
@@ -132,7 +132,7 @@ JSValue JSSVGAnimatedNumber::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedNumber* imp = (SVGAnimatedNumber*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedNumber::js_class_id);
+            SVGAnimatedNumber* imp = (SVGAnimatedNumber*)JS_GetOpaqueNoCheck(this_val);
             imp->setBaseVal(valueToFloat(ctx, value));
             break;
         }

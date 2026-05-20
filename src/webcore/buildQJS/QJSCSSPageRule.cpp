@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ JSValue JSCSSPageRuleConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[CSSPageRule.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSCSSPageRuleConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[CSSPageRule.constructor]]", obj);
@@ -85,7 +85,7 @@ JSValue JSCSSPageRulePrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSCSSPageRule.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSCSSRulePrototype::self(ctx));
         JSCSSPageRulePrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSCSSPageRule.prototype]]", obj);
@@ -148,11 +148,11 @@ JSValue JSCSSPageRule::getValueProperty(JSContext *ctx, JSValueConst this_val, i
 {
     switch (token) {
         case SelectorTextAttrNum: {
-            CSSPageRule* imp = (CSSPageRule*)JS_GetOpaque2(ctx, this_val, JSCSSPageRule::js_class_id);
+            CSSPageRule* imp = (CSSPageRule*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->selectorText());
         }
         case StyleAttrNum: {
-            CSSPageRule* imp = (CSSPageRule*)JS_GetOpaque2(ctx, this_val, JSCSSPageRule::js_class_id);
+            CSSPageRule* imp = (CSSPageRule*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:
@@ -165,7 +165,7 @@ JSValue JSCSSPageRule::putValueProperty(JSContext *ctx, JSValueConst this_val, J
 {
     switch (token) {
         case SelectorTextAttrNum: {
-            CSSPageRule* imp = (CSSPageRule*)JS_GetOpaque2(ctx, this_val, JSCSSPageRule::js_class_id);
+            CSSPageRule* imp = (CSSPageRule*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setSelectorText(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);

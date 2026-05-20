@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ JSValue JSProcessingInstructionConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[ProcessingInstruction.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSProcessingInstructionConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[ProcessingInstruction.constructor]]", obj);
@@ -85,7 +85,7 @@ JSValue JSProcessingInstructionPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSProcessingInstruction.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSNodePrototype::self(ctx));
         JSProcessingInstructionPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSProcessingInstruction.prototype]]", obj);
@@ -148,15 +148,15 @@ JSValue JSProcessingInstruction::getValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case TargetAttrNum: {
-            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaque2(ctx, this_val, JSProcessingInstruction::js_class_id);
+            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->target());
         }
         case DataAttrNum: {
-            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaque2(ctx, this_val, JSProcessingInstruction::js_class_id);
+            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->data());
         }
         case SheetAttrNum: {
-            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaque2(ctx, this_val, JSProcessingInstruction::js_class_id);
+            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->sheet()));
         }
         case ConstructorAttrNum:
@@ -169,7 +169,7 @@ JSValue JSProcessingInstruction::putValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case DataAttrNum: {
-            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaque2(ctx, this_val, JSProcessingInstruction::js_class_id);
+            ProcessingInstruction* imp = (ProcessingInstruction*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setData(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);

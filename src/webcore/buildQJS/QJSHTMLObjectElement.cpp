@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -85,7 +85,7 @@ JSValue JSHTMLObjectElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLObjectElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLObjectElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLObjectElement.constructor]]", obj);
@@ -104,7 +104,7 @@ JSValue JSHTMLObjectElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLObjectElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLObjectElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLObjectElement.prototype]]", obj);
@@ -167,79 +167,79 @@ JSValue JSHTMLObjectElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case FormAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->form()));
         }
         case CodeAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->code()).utf8().data());
         }
         case AlignAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case ArchiveAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->archive()).utf8().data());
         }
         case BorderAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->border()).utf8().data());
         }
         case CodeBaseAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->codeBase()).utf8().data());
         }
         case CodeTypeAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->codeType()).utf8().data());
         }
         case DataAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->data()).utf8().data());
         }
         case DeclareAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->declare() ? 1 : 0);
         }
         case HeightAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->height()).utf8().data());
         }
         case HspaceAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->hspace());
         }
         case NameAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case StandbyAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->standby()).utf8().data());
         }
         case TabIndexAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->tabIndex());
         }
         case TypeAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case UseMapAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->useMap()).utf8().data());
         }
         case VspaceAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->vspace());
         }
         case WidthAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->width()).utf8().data());
         }
         case ContentDocumentAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             return checkNodeSecurity(ctx, imp->contentDocument()) ? toJS(ctx, QJS::getPtr(imp->contentDocument())) : JS_UNDEFINED;
         }
         case ConstructorAttrNum:
@@ -252,87 +252,87 @@ JSValue JSHTMLObjectElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case CodeAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCode(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AlignAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ArchiveAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setArchive(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case BorderAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setBorder(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CodeBaseAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCodeBase(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CodeTypeAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCodeType(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case DataAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setData(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case DeclareAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setDeclare(valueToBoolean(ctx, value));
             break;
         }
         case HeightAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setHeight(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HspaceAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setHspace(valueToInt32(ctx, value));
             break;
         }
         case NameAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case StandbyAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setStandby(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TabIndexAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setTabIndex(valueToInt32(ctx, value));
             break;
         }
         case TypeAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case UseMapAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setUseMap(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case VspaceAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setVspace(valueToInt32(ctx, value));
             break;
         }
         case WidthAttrNum: {
-            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque2(ctx, this_val, JSHTMLObjectElement::js_class_id);
+            HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setWidth(valueToStringWithNullCheck(ctx, value));
             break;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ JSValue JSHTMLOptGroupElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLOptGroupElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLOptGroupElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLOptGroupElement.constructor]]", obj);
@@ -82,7 +82,7 @@ JSValue JSHTMLOptGroupElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLOptGroupElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLOptGroupElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLOptGroupElement.prototype]]", obj);
@@ -145,11 +145,11 @@ JSValue JSHTMLOptGroupElement::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case DisabledAttrNum: {
-            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaque2(ctx, this_val, JSHTMLOptGroupElement::js_class_id);
+            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->disabled() ? 1 : 0);
         }
         case LabelAttrNum: {
-            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaque2(ctx, this_val, JSHTMLOptGroupElement::js_class_id);
+            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->label()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -162,12 +162,12 @@ JSValue JSHTMLOptGroupElement::putValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case DisabledAttrNum: {
-            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaque2(ctx, this_val, JSHTMLOptGroupElement::js_class_id);
+            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setDisabled(valueToBoolean(ctx, value));
             break;
         }
         case LabelAttrNum: {
-            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaque2(ctx, this_val, JSHTMLOptGroupElement::js_class_id);
+            HTMLOptGroupElement* imp = (HTMLOptGroupElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setLabel(valueToStringWithNullCheck(ctx, value));
             break;
         }

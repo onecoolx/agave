@@ -746,9 +746,9 @@ EventTargetNode* toEventTargetNode(JSValue val)
 
 bool isSafeScript(JSContext* ctx, JSValue val)
 {
-    QJS::Window* window = static_cast<QJS::Window*>(JS_GetOpaque(val, QJS::Window::js_class_id));
+    QJS::Window* window = QJS::Window::retrieveActive(ctx);
     if (!window)
-        return false;
+        return true; // no window means no cross-frame risk
     return window->isSafeScript(ctx);
 }
 

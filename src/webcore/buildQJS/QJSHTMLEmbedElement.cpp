@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,7 +67,7 @@ JSValue JSHTMLEmbedElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLEmbedElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLEmbedElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLEmbedElement.constructor]]", obj);
@@ -86,7 +86,7 @@ JSValue JSHTMLEmbedElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLEmbedElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLEmbedElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLEmbedElement.prototype]]", obj);
@@ -149,27 +149,27 @@ JSValue JSHTMLEmbedElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaque2(ctx, this_val, JSHTMLEmbedElement::js_class_id);
+            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case HeightAttrNum: {
-            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaque2(ctx, this_val, JSHTMLEmbedElement::js_class_id);
+            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->height()).utf8().data());
         }
         case NameAttrNum: {
-            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaque2(ctx, this_val, JSHTMLEmbedElement::js_class_id);
+            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case SrcAttrNum: {
-            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaque2(ctx, this_val, JSHTMLEmbedElement::js_class_id);
+            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->src()).utf8().data());
         }
         case TypeAttrNum: {
-            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaque2(ctx, this_val, JSHTMLEmbedElement::js_class_id);
+            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case WidthAttrNum: {
-            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaque2(ctx, this_val, JSHTMLEmbedElement::js_class_id);
+            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->width()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -182,32 +182,32 @@ JSValue JSHTMLEmbedElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case AlignAttrNum: {
-            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaque2(ctx, this_val, JSHTMLEmbedElement::js_class_id);
+            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HeightAttrNum: {
-            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaque2(ctx, this_val, JSHTMLEmbedElement::js_class_id);
+            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setHeight(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case NameAttrNum: {
-            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaque2(ctx, this_val, JSHTMLEmbedElement::js_class_id);
+            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case SrcAttrNum: {
-            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaque2(ctx, this_val, JSHTMLEmbedElement::js_class_id);
+            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setSrc(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TypeAttrNum: {
-            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaque2(ctx, this_val, JSHTMLEmbedElement::js_class_id);
+            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case WidthAttrNum: {
-            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaque2(ctx, this_val, JSHTMLEmbedElement::js_class_id);
+            HTMLEmbedElement* imp = (HTMLEmbedElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setWidth(valueToStringWithNullCheck(ctx, value));
             break;
         }

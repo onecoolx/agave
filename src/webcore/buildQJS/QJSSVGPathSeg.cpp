@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -97,7 +97,7 @@ JSValue JSSVGPathSegConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[SVGPathSeg.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGPathSegConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[SVGPathSeg.constructor]]", obj);
@@ -143,7 +143,7 @@ JSValue JSSVGPathSegPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGPathSeg.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGPathSegPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGPathSeg.prototype]]", obj);
@@ -213,11 +213,11 @@ JSValue JSSVGPathSeg::getValueProperty(JSContext *ctx, JSValueConst this_val, in
 {
     switch (token) {
         case PathSegTypeAttrNum: {
-            SVGPathSeg* imp = (SVGPathSeg*)JS_GetOpaque2(ctx, this_val, JSSVGPathSeg::js_class_id);
+            SVGPathSeg* imp = (SVGPathSeg*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->pathSegType());
         }
         case PathSegTypeAsLetterAttrNum: {
-            SVGPathSeg* imp = (SVGPathSeg*)JS_GetOpaque2(ctx, this_val, JSSVGPathSeg::js_class_id);
+            SVGPathSeg* imp = (SVGPathSeg*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->pathSegTypeAsLetter()).utf8().data());
         }
         case ConstructorAttrNum:

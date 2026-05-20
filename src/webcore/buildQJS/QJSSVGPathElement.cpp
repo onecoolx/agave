@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -152,7 +152,7 @@ JSValue JSSVGPathElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGPathElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGPathElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGPathElement.prototype]]", obj);
@@ -215,71 +215,71 @@ JSValue JSSVGPathElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case PathLengthAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->pathLengthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case RequiredFeaturesAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->requiredFeatures()), imp);
         }
         case RequiredExtensionsAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->requiredExtensions()), imp);
         }
         case SystemLanguageAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->systemLanguage()), imp);
         }
         case XmllangAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmllang()).utf8().data());
         }
         case XmlspaceAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->xmlspace()).utf8().data());
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case TransformAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedTransformList> obj = imp->transformAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case NearestViewportElementAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->nearestViewportElement()));
         }
         case FarthestViewportElementAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->farthestViewportElement()));
         }
         case PathSegListAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->pathSegList()), imp);
         }
         case NormalizedPathSegListAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->normalizedPathSegList()), imp);
         }
         case AnimatedPathSegListAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->animatedPathSegList()), imp);
         }
         case AnimatedNormalizedPathSegListAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->animatedNormalizedPathSegList()), imp);
         }
     }
@@ -290,12 +290,12 @@ JSValue JSSVGPathElement::putValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case XmllangAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmllang(valueToString(ctx, value));
             break;
         }
         case XmlspaceAttrNum: {
-            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+            SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setXmlspace(valueToString(ctx, value));
             break;
         }
@@ -305,7 +305,7 @@ JSValue JSSVGPathElement::putValueProperty(JSContext *ctx, JSValueConst this_val
 
 JSValue JSSVGPathElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGPathElement* imp = (SVGPathElement*)JS_GetOpaque2(ctx, this_val, JSSVGPathElement::js_class_id);
+    SVGPathElement* imp = (SVGPathElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

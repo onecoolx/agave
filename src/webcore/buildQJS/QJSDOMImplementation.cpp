@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -68,7 +68,7 @@ JSValue JSDOMImplementationConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[DOMImplementation.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSDOMImplementationConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[DOMImplementation.constructor]]", obj);
@@ -98,7 +98,7 @@ JSValue JSDOMImplementationPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSDOMImplementation.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSDOMImplementationPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSDOMImplementation.prototype]]", obj);
@@ -174,7 +174,7 @@ JSValue JSDOMImplementation::getConstructor(JSContext *ctx)
 
 JSValue JSDOMImplementationPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    DOMImplementation* imp = (DOMImplementation*)JS_GetOpaque2(ctx, this_val, JSDOMImplementation::js_class_id);
+    DOMImplementation* imp = (DOMImplementation*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

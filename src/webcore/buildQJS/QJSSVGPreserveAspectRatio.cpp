@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -90,7 +90,7 @@ JSValue JSSVGPreserveAspectRatioConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[SVGPreserveAspectRatio.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGPreserveAspectRatioConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[SVGPreserveAspectRatio.constructor]]", obj);
@@ -130,7 +130,7 @@ JSValue JSSVGPreserveAspectRatioPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGPreserveAspectRatio.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGPreserveAspectRatioPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGPreserveAspectRatio.prototype]]", obj);
@@ -200,11 +200,11 @@ JSValue JSSVGPreserveAspectRatio::getValueProperty(JSContext *ctx, JSValueConst 
 {
     switch (token) {
         case AlignAttrNum: {
-            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaque2(ctx, this_val, JSSVGPreserveAspectRatio::js_class_id);
+            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->align());
         }
         case MeetOrSliceAttrNum: {
-            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaque2(ctx, this_val, JSSVGPreserveAspectRatio::js_class_id);
+            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->meetOrSlice());
         }
         case ConstructorAttrNum:
@@ -217,12 +217,12 @@ JSValue JSSVGPreserveAspectRatio::putValueProperty(JSContext *ctx, JSValueConst 
 {
     switch (token) {
         case AlignAttrNum: {
-            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaque2(ctx, this_val, JSSVGPreserveAspectRatio::js_class_id);
+            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaqueNoCheck(this_val);
             imp->setAlign(valueToInt32(ctx, value));
             break;
         }
         case MeetOrSliceAttrNum: {
-            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaque2(ctx, this_val, JSSVGPreserveAspectRatio::js_class_id);
+            SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaqueNoCheck(this_val);
             imp->setMeetOrSlice(valueToInt32(ctx, value));
             break;
         }

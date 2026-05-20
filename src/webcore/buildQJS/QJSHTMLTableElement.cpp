@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -84,7 +84,7 @@ JSValue JSHTMLTableElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLTableElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLTableElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLTableElement.constructor]]", obj);
@@ -117,7 +117,7 @@ JSValue JSHTMLTableElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLTableElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLTableElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLTableElement.prototype]]", obj);
@@ -181,59 +181,59 @@ JSValue JSHTMLTableElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CaptionAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->caption()));
         }
         case THeadAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->tHead()));
         }
         case TFootAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->tFoot()));
         }
         case RowsAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->rows()));
         }
         case TBodiesAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->tBodies()));
         }
         case AlignAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->align()).utf8().data());
         }
         case BgColorAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->bgColor()).utf8().data());
         }
         case BorderAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->border()).utf8().data());
         }
         case CellPaddingAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->cellPadding()).utf8().data());
         }
         case CellSpacingAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->cellSpacing()).utf8().data());
         }
         case FrameAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->frame()).utf8().data());
         }
         case RulesAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->rules()).utf8().data());
         }
         case SummaryAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->summary()).utf8().data());
         }
         case WidthAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->width()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -246,62 +246,62 @@ JSValue JSHTMLTableElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CaptionAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCaption(toHTMLTableCaptionElement(value));
             break;
         }
         case THeadAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setTHead(toHTMLTableSectionElement(value));
             break;
         }
         case TFootAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setTFoot(toHTMLTableSectionElement(value));
             break;
         }
         case AlignAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAlign(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case BgColorAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setBgColor(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case BorderAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setBorder(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CellPaddingAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCellPadding(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case CellSpacingAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCellSpacing(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case FrameAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setFrame(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case RulesAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setRules(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case SummaryAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setSummary(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case WidthAttrNum: {
-            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+            HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setWidth(valueToStringWithNullCheck(ctx, value));
             break;
         }
@@ -316,7 +316,7 @@ JSValue JSHTMLTableElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLTableElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaque2(ctx, this_val, JSHTMLTableElement::js_class_id);
+    HTMLTableElement* imp = (HTMLTableElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

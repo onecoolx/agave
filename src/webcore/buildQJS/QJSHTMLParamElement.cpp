@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,7 @@ JSValue JSHTMLParamElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLParamElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLParamElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLParamElement.constructor]]", obj);
@@ -84,7 +84,7 @@ JSValue JSHTMLParamElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLParamElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLParamElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLParamElement.prototype]]", obj);
@@ -147,19 +147,19 @@ JSValue JSHTMLParamElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case NameAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque2(ctx, this_val, JSHTMLParamElement::js_class_id);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case TypeAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque2(ctx, this_val, JSHTMLParamElement::js_class_id);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case ValueAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque2(ctx, this_val, JSHTMLParamElement::js_class_id);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->value()).utf8().data());
         }
         case ValueTypeAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque2(ctx, this_val, JSHTMLParamElement::js_class_id);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->valueType()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -172,22 +172,22 @@ JSValue JSHTMLParamElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case NameAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque2(ctx, this_val, JSHTMLParamElement::js_class_id);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TypeAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque2(ctx, this_val, JSHTMLParamElement::js_class_id);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ValueAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque2(ctx, this_val, JSHTMLParamElement::js_class_id);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setValue(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case ValueTypeAttrNum: {
-            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaque2(ctx, this_val, JSHTMLParamElement::js_class_id);
+            HTMLParamElement* imp = (HTMLParamElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setValueType(valueToStringWithNullCheck(ctx, value));
             break;
         }

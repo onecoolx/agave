@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ JSValue JSSVGAnimatedPointsPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedPoints.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGAnimatedPointsPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedPoints.prototype]]", obj);
@@ -120,11 +120,11 @@ JSValue JSSVGAnimatedPoints::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case PointsAttrNum: {
-            SVGAnimatedPoints* imp = (SVGAnimatedPoints*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedPoints::js_class_id);
+            SVGAnimatedPoints* imp = (SVGAnimatedPoints*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->points()), context());
         }
         case AnimatedPointsAttrNum: {
-            SVGAnimatedPoints* imp = (SVGAnimatedPoints*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedPoints::js_class_id);
+            SVGAnimatedPoints* imp = (SVGAnimatedPoints*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->animatedPoints()), context());
         }
     }

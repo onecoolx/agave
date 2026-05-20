@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,7 @@ JSValue JSOverflowEventPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSOverflowEvent.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSEventPrototype::self(ctx));
         JSOverflowEventPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSOverflowEvent.prototype]]", obj);
@@ -135,15 +135,15 @@ JSValue JSOverflowEvent::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case OrientAttrNum: {
-            OverflowEvent* imp = (OverflowEvent*)JS_GetOpaque2(ctx, this_val, JSOverflowEvent::js_class_id);
+            OverflowEvent* imp = (OverflowEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->orient());
         }
         case HorizontalOverflowAttrNum: {
-            OverflowEvent* imp = (OverflowEvent*)JS_GetOpaque2(ctx, this_val, JSOverflowEvent::js_class_id);
+            OverflowEvent* imp = (OverflowEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->horizontalOverflow() ? 1 : 0);
         }
         case VerticalOverflowAttrNum: {
-            OverflowEvent* imp = (OverflowEvent*)JS_GetOpaque2(ctx, this_val, JSOverflowEvent::js_class_id);
+            OverflowEvent* imp = (OverflowEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->verticalOverflow() ? 1 : 0);
         }
     }
@@ -152,7 +152,7 @@ JSValue JSOverflowEvent::getValueProperty(JSContext *ctx, JSValueConst this_val,
 
 JSValue JSOverflowEventPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    OverflowEvent* imp = (OverflowEvent*)JS_GetOpaque2(ctx, this_val, JSOverflowEvent::js_class_id);
+    OverflowEvent* imp = (OverflowEvent*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

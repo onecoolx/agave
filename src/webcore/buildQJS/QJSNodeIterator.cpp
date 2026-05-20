@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,7 @@ JSValue JSNodeIteratorPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSNodeIterator.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSNodeIteratorPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSNodeIterator.prototype]]", obj);
@@ -123,27 +123,27 @@ JSValue JSNodeIterator::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case RootAttrNum: {
-            NodeIterator* imp = (NodeIterator*)JS_GetOpaque2(ctx, this_val, JSNodeIterator::js_class_id);
+            NodeIterator* imp = (NodeIterator*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->root()));
         }
         case WhatToShowAttrNum: {
-            NodeIterator* imp = (NodeIterator*)JS_GetOpaque2(ctx, this_val, JSNodeIterator::js_class_id);
+            NodeIterator* imp = (NodeIterator*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->whatToShow());
         }
         case FilterAttrNum: {
-            NodeIterator* imp = (NodeIterator*)JS_GetOpaque2(ctx, this_val, JSNodeIterator::js_class_id);
+            NodeIterator* imp = (NodeIterator*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->filter()));
         }
         case ExpandEntityReferencesAttrNum: {
-            NodeIterator* imp = (NodeIterator*)JS_GetOpaque2(ctx, this_val, JSNodeIterator::js_class_id);
+            NodeIterator* imp = (NodeIterator*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->expandEntityReferences() ? 1 : 0);
         }
         case ReferenceNodeAttrNum: {
-            NodeIterator* imp = (NodeIterator*)JS_GetOpaque2(ctx, this_val, JSNodeIterator::js_class_id);
+            NodeIterator* imp = (NodeIterator*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->referenceNode()));
         }
         case PointerBeforeReferenceNodeAttrNum: {
-            NodeIterator* imp = (NodeIterator*)JS_GetOpaque2(ctx, this_val, JSNodeIterator::js_class_id);
+            NodeIterator* imp = (NodeIterator*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->pointerBeforeReferenceNode() ? 1 : 0);
         }
     }
@@ -152,7 +152,7 @@ JSValue JSNodeIterator::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 
 JSValue JSNodeIteratorPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    NodeIterator* imp = (NodeIterator*)JS_GetOpaque2(ctx, this_val, JSNodeIterator::js_class_id);
+    NodeIterator* imp = (NodeIterator*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

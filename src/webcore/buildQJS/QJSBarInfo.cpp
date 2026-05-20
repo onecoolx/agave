@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,7 @@ JSValue JSBarInfoPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSBarInfo.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSBarInfoPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSBarInfo.prototype]]", obj);
@@ -109,7 +109,7 @@ JSValue JSBarInfo::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
 {
     switch (token) {
         case VisibleAttrNum: {
-            BarInfo* imp = (BarInfo*)JS_GetOpaque2(ctx, this_val, JSBarInfo::js_class_id);
+            BarInfo* imp = (BarInfo*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->visible() ? 1 : 0);
         }
     }

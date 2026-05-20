@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ JSValue JSHTMLOListElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLOListElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLOListElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLOListElement.constructor]]", obj);
@@ -83,7 +83,7 @@ JSValue JSHTMLOListElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLOListElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLOListElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLOListElement.prototype]]", obj);
@@ -146,15 +146,15 @@ JSValue JSHTMLOListElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLOListElement* imp = (HTMLOListElement*)JS_GetOpaque2(ctx, this_val, JSHTMLOListElement::js_class_id);
+            HTMLOListElement* imp = (HTMLOListElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->compact() ? 1 : 0);
         }
         case StartAttrNum: {
-            HTMLOListElement* imp = (HTMLOListElement*)JS_GetOpaque2(ctx, this_val, JSHTMLOListElement::js_class_id);
+            HTMLOListElement* imp = (HTMLOListElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->start());
         }
         case TypeAttrNum: {
-            HTMLOListElement* imp = (HTMLOListElement*)JS_GetOpaque2(ctx, this_val, JSHTMLOListElement::js_class_id);
+            HTMLOListElement* imp = (HTMLOListElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -167,17 +167,17 @@ JSValue JSHTMLOListElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLOListElement* imp = (HTMLOListElement*)JS_GetOpaque2(ctx, this_val, JSHTMLOListElement::js_class_id);
+            HTMLOListElement* imp = (HTMLOListElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCompact(valueToBoolean(ctx, value));
             break;
         }
         case StartAttrNum: {
-            HTMLOListElement* imp = (HTMLOListElement*)JS_GetOpaque2(ctx, this_val, JSHTMLOListElement::js_class_id);
+            HTMLOListElement* imp = (HTMLOListElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setStart(valueToInt32(ctx, value));
             break;
         }
         case TypeAttrNum: {
-            HTMLOListElement* imp = (HTMLOListElement*)JS_GetOpaque2(ctx, this_val, JSHTMLOListElement::js_class_id);
+            HTMLOListElement* imp = (HTMLOListElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }

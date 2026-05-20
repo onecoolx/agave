@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -76,7 +76,7 @@ JSValue JSSVGFEFloodElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGFEFloodElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGFEFloodElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGFEFloodElement.prototype]]", obj);
@@ -139,42 +139,42 @@ JSValue JSSVGFEFloodElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case In1AttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEFloodElement::js_class_id);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->in1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEFloodElement::js_class_id);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEFloodElement::js_class_id);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEFloodElement::js_class_id);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEFloodElement::js_class_id);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEFloodElement::js_class_id);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEFloodElement::js_class_id);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEFloodElement::js_class_id);
+            SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -183,7 +183,7 @@ JSValue JSSVGFEFloodElement::getValueProperty(JSContext *ctx, JSValueConst this_
 
 JSValue JSSVGFEFloodElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEFloodElement::js_class_id);
+    SVGFEFloodElement* imp = (SVGFEFloodElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

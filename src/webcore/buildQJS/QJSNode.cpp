@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -105,7 +105,7 @@ JSValue JSNodeConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[Node.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSNodeConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[Node.constructor]]", obj);
@@ -163,7 +163,7 @@ JSValue JSNodePrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSNode.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSNodePrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSNode.prototype]]", obj);
@@ -229,71 +229,71 @@ JSValue JSNode::getValueProperty(JSContext *ctx, JSValueConst this_val, int toke
 {
     switch (token) {
         case NodeNameAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->nodeName());
         }
         case NodeValueAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->nodeValue());
         }
         case NodeTypeAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->nodeType());
         }
         case ParentNodeAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->parentNode()));
         }
         case ChildNodesAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->childNodes()));
         }
         case FirstChildAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->firstChild()));
         }
         case LastChildAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->lastChild()));
         }
         case PreviousSiblingAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->previousSibling()));
         }
         case NextSiblingAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->nextSibling()));
         }
         case AttributesAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->attributes()));
         }
         case OwnerDocumentAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->ownerDocument()));
         }
         case NamespaceURIAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->namespaceURI());
         }
         case PrefixAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->prefix());
         }
         case LocalNameAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->localName());
         }
         case BaseURIAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->baseURI());
         }
         case TextContentAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->textContent());
         }
         case ParentElementAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->parentElement()));
         }
         case ConstructorAttrNum:
@@ -306,21 +306,21 @@ JSValue JSNode::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue 
 {
     switch (token) {
         case NodeValueAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setNodeValue(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case PrefixAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setPrefix(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);
             break;
         }
         case TextContentAttrNum: {
-            Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+            Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setTextContent(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);
@@ -337,7 +337,7 @@ JSValue JSNode::getConstructor(JSContext *ctx)
 
 JSValue JSNodePrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    Node* imp = (Node*)JS_GetOpaque2(ctx, this_val, JSNode::js_class_id);
+    Node* imp = (Node*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

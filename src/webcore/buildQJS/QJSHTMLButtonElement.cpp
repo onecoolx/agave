@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,7 +70,7 @@ JSValue JSHTMLButtonElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLButtonElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLButtonElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLButtonElement.constructor]]", obj);
@@ -96,7 +96,7 @@ JSValue JSHTMLButtonElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLButtonElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLButtonElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLButtonElement.prototype]]", obj);
@@ -160,31 +160,31 @@ JSValue JSHTMLButtonElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case FormAttrNum: {
-            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque2(ctx, this_val, JSHTMLButtonElement::js_class_id);
+            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->form()));
         }
         case AccessKeyAttrNum: {
-            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque2(ctx, this_val, JSHTMLButtonElement::js_class_id);
+            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->accessKey()).utf8().data());
         }
         case DisabledAttrNum: {
-            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque2(ctx, this_val, JSHTMLButtonElement::js_class_id);
+            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->disabled() ? 1 : 0);
         }
         case NameAttrNum: {
-            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque2(ctx, this_val, JSHTMLButtonElement::js_class_id);
+            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->name()).utf8().data());
         }
         case TabIndexAttrNum: {
-            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque2(ctx, this_val, JSHTMLButtonElement::js_class_id);
+            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->tabIndex());
         }
         case TypeAttrNum: {
-            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque2(ctx, this_val, JSHTMLButtonElement::js_class_id);
+            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case ValueAttrNum: {
-            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque2(ctx, this_val, JSHTMLButtonElement::js_class_id);
+            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->value()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -197,27 +197,27 @@ JSValue JSHTMLButtonElement::putValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case AccessKeyAttrNum: {
-            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque2(ctx, this_val, JSHTMLButtonElement::js_class_id);
+            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setAccessKey(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case DisabledAttrNum: {
-            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque2(ctx, this_val, JSHTMLButtonElement::js_class_id);
+            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setDisabled(valueToBoolean(ctx, value));
             break;
         }
         case NameAttrNum: {
-            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque2(ctx, this_val, JSHTMLButtonElement::js_class_id);
+            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setName(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TabIndexAttrNum: {
-            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque2(ctx, this_val, JSHTMLButtonElement::js_class_id);
+            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setTabIndex(valueToInt32(ctx, value));
             break;
         }
         case ValueAttrNum: {
-            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque2(ctx, this_val, JSHTMLButtonElement::js_class_id);
+            HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setValue(valueToStringWithNullCheck(ctx, value));
             break;
         }
@@ -232,7 +232,7 @@ JSValue JSHTMLButtonElement::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLButtonElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque2(ctx, this_val, JSHTMLButtonElement::js_class_id);
+    HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

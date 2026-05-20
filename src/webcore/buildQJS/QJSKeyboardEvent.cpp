@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ JSValue JSKeyboardEventPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSKeyboardEvent.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSUIEventPrototype::self(ctx));
         JSKeyboardEventPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSKeyboardEvent.prototype]]", obj);
@@ -126,31 +126,31 @@ JSValue JSKeyboardEvent::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case KeyIdentifierAttrNum: {
-            KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaque2(ctx, this_val, JSKeyboardEvent::js_class_id);
+            KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->keyIdentifier()).utf8().data());
         }
         case KeyLocationAttrNum: {
-            KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaque2(ctx, this_val, JSKeyboardEvent::js_class_id);
+            KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->keyLocation());
         }
         case CtrlKeyAttrNum: {
-            KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaque2(ctx, this_val, JSKeyboardEvent::js_class_id);
+            KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->ctrlKey() ? 1 : 0);
         }
         case ShiftKeyAttrNum: {
-            KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaque2(ctx, this_val, JSKeyboardEvent::js_class_id);
+            KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->shiftKey() ? 1 : 0);
         }
         case AltKeyAttrNum: {
-            KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaque2(ctx, this_val, JSKeyboardEvent::js_class_id);
+            KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->altKey() ? 1 : 0);
         }
         case MetaKeyAttrNum: {
-            KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaque2(ctx, this_val, JSKeyboardEvent::js_class_id);
+            KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->metaKey() ? 1 : 0);
         }
         case AltGraphKeyAttrNum: {
-            KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaque2(ctx, this_val, JSKeyboardEvent::js_class_id);
+            KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->altGraphKey() ? 1 : 0);
         }
     }
@@ -159,7 +159,7 @@ JSValue JSKeyboardEvent::getValueProperty(JSContext *ctx, JSValueConst this_val,
 
 JSValue JSKeyboardEventPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaque2(ctx, this_val, JSKeyboardEvent::js_class_id);
+    KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

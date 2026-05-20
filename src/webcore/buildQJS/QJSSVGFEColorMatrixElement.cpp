@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -98,7 +98,7 @@ JSValue JSSVGFEColorMatrixElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[SVGFEColorMatrixElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGFEColorMatrixElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[SVGFEColorMatrixElement.constructor]]", obj);
@@ -136,7 +136,7 @@ JSValue JSSVGFEColorMatrixElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGFEColorMatrixElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGFEColorMatrixElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGFEColorMatrixElement.prototype]]", obj);
@@ -207,52 +207,52 @@ JSValue JSSVGFEColorMatrixElement::getValueProperty(JSContext *ctx, JSValueConst
 {
     switch (token) {
         case In1AttrNum: {
-            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEColorMatrixElement::js_class_id);
+            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->in1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case TypeAttrNum: {
-            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEColorMatrixElement::js_class_id);
+            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedEnumeration> obj = imp->typeAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ValuesAttrNum: {
-            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEColorMatrixElement::js_class_id);
+            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumberList> obj = imp->valuesAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEColorMatrixElement::js_class_id);
+            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEColorMatrixElement::js_class_id);
+            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEColorMatrixElement::js_class_id);
+            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEColorMatrixElement::js_class_id);
+            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEColorMatrixElement::js_class_id);
+            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEColorMatrixElement::js_class_id);
+            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEColorMatrixElement::js_class_id);
+            SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:
@@ -268,7 +268,7 @@ JSValue JSSVGFEColorMatrixElement::getConstructor(JSContext *ctx)
 
 JSValue JSSVGFEColorMatrixElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEColorMatrixElement::js_class_id);
+    SVGFEColorMatrixElement* imp = (SVGFEColorMatrixElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

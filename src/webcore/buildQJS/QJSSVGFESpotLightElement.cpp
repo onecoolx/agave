@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ JSValue JSSVGFESpotLightElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGFESpotLightElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGFESpotLightElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGFESpotLightElement.prototype]]", obj);
@@ -125,42 +125,42 @@ JSValue JSSVGFESpotLightElement::getValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case XAttrNum: {
-            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaque2(ctx, this_val, JSSVGFESpotLightElement::js_class_id);
+            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaque2(ctx, this_val, JSSVGFESpotLightElement::js_class_id);
+            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ZAttrNum: {
-            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaque2(ctx, this_val, JSSVGFESpotLightElement::js_class_id);
+            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->zAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case PointsAtXAttrNum: {
-            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaque2(ctx, this_val, JSSVGFESpotLightElement::js_class_id);
+            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->pointsAtXAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case PointsAtYAttrNum: {
-            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaque2(ctx, this_val, JSSVGFESpotLightElement::js_class_id);
+            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->pointsAtYAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case PointsAtZAttrNum: {
-            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaque2(ctx, this_val, JSSVGFESpotLightElement::js_class_id);
+            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->pointsAtZAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case SpecularExponentAttrNum: {
-            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaque2(ctx, this_val, JSSVGFESpotLightElement::js_class_id);
+            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->specularExponentAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case LimitingConeAngleAttrNum: {
-            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaque2(ctx, this_val, JSSVGFESpotLightElement::js_class_id);
+            SVGFESpotLightElement* imp = (SVGFESpotLightElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->limitingConeAngleAnimated();
             return toJS(ctx, obj.get(), imp);
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,7 @@ JSValue JSUIEventPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSUIEvent.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSEventPrototype::self(ctx));
         JSUIEventPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSUIEvent.prototype]]", obj);
@@ -128,39 +128,39 @@ JSValue JSUIEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
 {
     switch (token) {
         case ViewAttrNum: {
-            UIEvent* imp = (UIEvent*)JS_GetOpaque2(ctx, this_val, JSUIEvent::js_class_id);
+            UIEvent* imp = (UIEvent*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->view()));
         }
         case DetailAttrNum: {
-            UIEvent* imp = (UIEvent*)JS_GetOpaque2(ctx, this_val, JSUIEvent::js_class_id);
+            UIEvent* imp = (UIEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->detail());
         }
         case KeyCodeAttrNum: {
-            UIEvent* imp = (UIEvent*)JS_GetOpaque2(ctx, this_val, JSUIEvent::js_class_id);
+            UIEvent* imp = (UIEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->keyCode());
         }
         case CharCodeAttrNum: {
-            UIEvent* imp = (UIEvent*)JS_GetOpaque2(ctx, this_val, JSUIEvent::js_class_id);
+            UIEvent* imp = (UIEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->charCode());
         }
         case LayerXAttrNum: {
-            UIEvent* imp = (UIEvent*)JS_GetOpaque2(ctx, this_val, JSUIEvent::js_class_id);
+            UIEvent* imp = (UIEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->layerX());
         }
         case LayerYAttrNum: {
-            UIEvent* imp = (UIEvent*)JS_GetOpaque2(ctx, this_val, JSUIEvent::js_class_id);
+            UIEvent* imp = (UIEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->layerY());
         }
         case PageXAttrNum: {
-            UIEvent* imp = (UIEvent*)JS_GetOpaque2(ctx, this_val, JSUIEvent::js_class_id);
+            UIEvent* imp = (UIEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->pageX());
         }
         case PageYAttrNum: {
-            UIEvent* imp = (UIEvent*)JS_GetOpaque2(ctx, this_val, JSUIEvent::js_class_id);
+            UIEvent* imp = (UIEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->pageY());
         }
         case WhichAttrNum: {
-            UIEvent* imp = (UIEvent*)JS_GetOpaque2(ctx, this_val, JSUIEvent::js_class_id);
+            UIEvent* imp = (UIEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->which());
         }
     }
@@ -169,7 +169,7 @@ JSValue JSUIEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
 
 JSValue JSUIEventPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    UIEvent* imp = (UIEvent*)JS_GetOpaque2(ctx, this_val, JSUIEvent::js_class_id);
+    UIEvent* imp = (UIEvent*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ JSValue JSDOMParserConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[DOMParser.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewCFunction2(ctx, JSDOMParserConstructor::construct, "DOMParser", 0, JS_CFUNC_constructor, 0);
         JSDOMParserConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[DOMParser.constructor]]", obj);
@@ -94,7 +94,7 @@ JSValue JSDOMParserPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSDOMParser.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSDOMParserPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSDOMParser.prototype]]", obj);
@@ -170,7 +170,7 @@ JSValue JSDOMParser::getConstructor(JSContext *ctx)
 
 JSValue JSDOMParserPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    DOMParser* imp = (DOMParser*)JS_GetOpaque2(ctx, this_val, JSDOMParser::js_class_id);
+    DOMParser* imp = (DOMParser*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

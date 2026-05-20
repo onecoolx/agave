@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,7 +70,7 @@ JSValue JSSVGNumberListPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGNumberList.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGNumberListPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGNumberList.prototype]]", obj);
@@ -133,7 +133,7 @@ JSValue JSSVGNumberList::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case NumberOfItemsAttrNum: {
-            SVGNumberList* imp = (SVGNumberList*)JS_GetOpaque2(ctx, this_val, JSSVGNumberList::js_class_id);
+            SVGNumberList* imp = (SVGNumberList*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->numberOfItems());
         }
     }
@@ -142,7 +142,7 @@ JSValue JSSVGNumberList::getValueProperty(JSContext *ctx, JSValueConst this_val,
 
 JSValue JSSVGNumberListPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGNumberList* imp = (SVGNumberList*)JS_GetOpaque2(ctx, this_val, JSSVGNumberList::js_class_id);
+    SVGNumberList* imp = (SVGNumberList*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,7 +81,7 @@ JSValue JSSVGFEDiffuseLightingElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGFEDiffuseLightingElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGFEDiffuseLightingElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGFEDiffuseLightingElement.prototype]]", obj);
@@ -144,62 +144,62 @@ JSValue JSSVGFEDiffuseLightingElement::getValueProperty(JSContext *ctx, JSValueC
 {
     switch (token) {
         case In1AttrNum: {
-            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDiffuseLightingElement::js_class_id);
+            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->in1Animated();
             return toJS(ctx, obj.get(), imp);
         }
         case SurfaceScaleAttrNum: {
-            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDiffuseLightingElement::js_class_id);
+            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->surfaceScaleAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case DiffuseConstantAttrNum: {
-            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDiffuseLightingElement::js_class_id);
+            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->diffuseConstantAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case KernelUnitLengthXAttrNum: {
-            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDiffuseLightingElement::js_class_id);
+            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->kernelUnitLengthXAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case KernelUnitLengthYAttrNum: {
-            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDiffuseLightingElement::js_class_id);
+            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->kernelUnitLengthYAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case XAttrNum: {
-            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDiffuseLightingElement::js_class_id);
+            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDiffuseLightingElement::js_class_id);
+            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDiffuseLightingElement::js_class_id);
+            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDiffuseLightingElement::js_class_id);
+            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDiffuseLightingElement::js_class_id);
+            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDiffuseLightingElement::js_class_id);
+            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDiffuseLightingElement::js_class_id);
+            SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -208,7 +208,7 @@ JSValue JSSVGFEDiffuseLightingElement::getValueProperty(JSContext *ctx, JSValueC
 
 JSValue JSSVGFEDiffuseLightingElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDiffuseLightingElement::js_class_id);
+    SVGFEDiffuseLightingElement* imp = (SVGFEDiffuseLightingElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

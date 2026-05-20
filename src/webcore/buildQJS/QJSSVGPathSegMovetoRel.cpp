@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ JSValue JSSVGPathSegMovetoRelPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGPathSegMovetoRel.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGPathSegPrototype::self(ctx));
         JSSVGPathSegMovetoRelPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGPathSegMovetoRel.prototype]]", obj);
@@ -118,11 +118,11 @@ JSValue JSSVGPathSegMovetoRel::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegMovetoRel::js_class_id);
+            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->x());
         }
         case YAttrNum: {
-            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegMovetoRel::js_class_id);
+            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->y());
         }
     }
@@ -133,12 +133,12 @@ JSValue JSSVGPathSegMovetoRel::putValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegMovetoRel::js_class_id);
+            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setX(valueToFloat(ctx, value));
             break;
         }
         case YAttrNum: {
-            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegMovetoRel::js_class_id);
+            SVGPathSegMovetoRel* imp = (SVGPathSegMovetoRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setY(valueToFloat(ctx, value));
             break;
         }

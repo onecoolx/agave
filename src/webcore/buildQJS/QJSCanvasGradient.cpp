@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ JSValue JSCanvasGradientPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSCanvasGradient.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSCanvasGradientPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSCanvasGradient.prototype]]", obj);
@@ -108,7 +108,7 @@ void JSCanvasGradient::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_f
 
 JSValue JSCanvasGradientPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    CanvasGradient* imp = (CanvasGradient*)JS_GetOpaque2(ctx, this_val, JSCanvasGradient::js_class_id);
+    CanvasGradient* imp = (CanvasGradient*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

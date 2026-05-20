@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -89,7 +89,7 @@ JSValue JSElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[Element.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[Element.constructor]]", obj);
@@ -137,7 +137,7 @@ JSValue JSElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSEventTargetNodePrototype::self(ctx));
         JSElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSElement.prototype]]", obj);
@@ -201,63 +201,63 @@ JSValue JSElement::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
 {
     switch (token) {
         case TagNameAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->tagName());
         }
         case StyleAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case OffsetLeftAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->offsetLeft());
         }
         case OffsetTopAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->offsetTop());
         }
         case OffsetWidthAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->offsetWidth());
         }
         case OffsetHeightAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->offsetHeight());
         }
         case OffsetParentAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->offsetParent()));
         }
         case ClientLeftAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->clientLeft());
         }
         case ClientTopAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->clientTop());
         }
         case ClientWidthAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->clientWidth());
         }
         case ClientHeightAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->clientHeight());
         }
         case ScrollLeftAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->scrollLeft());
         }
         case ScrollTopAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->scrollTop());
         }
         case ScrollWidthAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->scrollWidth());
         }
         case ScrollHeightAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->scrollHeight());
         }
         case ConstructorAttrNum:
@@ -270,12 +270,12 @@ JSValue JSElement::putValueProperty(JSContext *ctx, JSValueConst this_val, JSVal
 {
     switch (token) {
         case ScrollLeftAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             imp->setScrollLeft(valueToInt32(ctx, value));
             break;
         }
         case ScrollTopAttrNum: {
-            Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+            Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
             imp->setScrollTop(valueToInt32(ctx, value));
             break;
         }
@@ -290,7 +290,7 @@ JSValue JSElement::getConstructor(JSContext *ctx)
 
 JSValue JSElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    Element* imp = (Element*)JS_GetOpaque2(ctx, this_val, JSElement::js_class_id);
+    Element* imp = (Element*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

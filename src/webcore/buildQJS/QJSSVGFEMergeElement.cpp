@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,7 +75,7 @@ JSValue JSSVGFEMergeElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGFEMergeElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGFEMergeElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGFEMergeElement.prototype]]", obj);
@@ -138,37 +138,37 @@ JSValue JSSVGFEMergeElement::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case XAttrNum: {
-            SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEMergeElement::js_class_id);
+            SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->xAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case YAttrNum: {
-            SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEMergeElement::js_class_id);
+            SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->yAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case WidthAttrNum: {
-            SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEMergeElement::js_class_id);
+            SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->widthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case HeightAttrNum: {
-            SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEMergeElement::js_class_id);
+            SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedLength> obj = imp->heightAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ResultAttrNum: {
-            SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEMergeElement::js_class_id);
+            SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->resultAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ClassNameAttrNum: {
-            SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEMergeElement::js_class_id);
+            SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedString> obj = imp->classNameAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case StyleAttrNum: {
-            SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEMergeElement::js_class_id);
+            SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
     }
@@ -177,7 +177,7 @@ JSValue JSSVGFEMergeElement::getValueProperty(JSContext *ctx, JSValueConst this_
 
 JSValue JSSVGFEMergeElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEMergeElement::js_class_id);
+    SVGFEMergeElement* imp = (SVGFEMergeElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

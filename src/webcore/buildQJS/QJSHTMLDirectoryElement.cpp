@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,7 @@ JSValue JSHTMLDirectoryElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLDirectoryElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLDirectoryElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLDirectoryElement.constructor]]", obj);
@@ -80,7 +80,7 @@ JSValue JSHTMLDirectoryElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLDirectoryElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLDirectoryElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLDirectoryElement.prototype]]", obj);
@@ -143,7 +143,7 @@ JSValue JSHTMLDirectoryElement::getValueProperty(JSContext *ctx, JSValueConst th
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLDirectoryElement* imp = (HTMLDirectoryElement*)JS_GetOpaque2(ctx, this_val, JSHTMLDirectoryElement::js_class_id);
+            HTMLDirectoryElement* imp = (HTMLDirectoryElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->compact() ? 1 : 0);
         }
         case ConstructorAttrNum:
@@ -156,7 +156,7 @@ JSValue JSHTMLDirectoryElement::putValueProperty(JSContext *ctx, JSValueConst th
 {
     switch (token) {
         case CompactAttrNum: {
-            HTMLDirectoryElement* imp = (HTMLDirectoryElement*)JS_GetOpaque2(ctx, this_val, JSHTMLDirectoryElement::js_class_id);
+            HTMLDirectoryElement* imp = (HTMLDirectoryElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCompact(valueToBoolean(ctx, value));
             break;
         }

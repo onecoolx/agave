@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ JSValue JSSVGAnimatedTransformListPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedTransformList.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGAnimatedTransformListPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGAnimatedTransformList.prototype]]", obj);
@@ -119,11 +119,11 @@ JSValue JSSVGAnimatedTransformList::getValueProperty(JSContext *ctx, JSValueCons
 {
     switch (token) {
         case BaseValAttrNum: {
-            SVGAnimatedTransformList* imp = (SVGAnimatedTransformList*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedTransformList::js_class_id);
+            SVGAnimatedTransformList* imp = (SVGAnimatedTransformList*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->baseVal()), context());
         }
         case AnimValAttrNum: {
-            SVGAnimatedTransformList* imp = (SVGAnimatedTransformList*)JS_GetOpaque2(ctx, this_val, JSSVGAnimatedTransformList::js_class_id);
+            SVGAnimatedTransformList* imp = (SVGAnimatedTransformList*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->animVal()), context());
         }
     }

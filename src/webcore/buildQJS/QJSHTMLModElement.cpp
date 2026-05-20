@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ JSValue JSHTMLModElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLModElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLModElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLModElement.constructor]]", obj);
@@ -82,7 +82,7 @@ JSValue JSHTMLModElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLModElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLModElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLModElement.prototype]]", obj);
@@ -145,11 +145,11 @@ JSValue JSHTMLModElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case CiteAttrNum: {
-            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaque2(ctx, this_val, JSHTMLModElement::js_class_id);
+            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->cite()).utf8().data());
         }
         case DateTimeAttrNum: {
-            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaque2(ctx, this_val, JSHTMLModElement::js_class_id);
+            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->dateTime()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -162,12 +162,12 @@ JSValue JSHTMLModElement::putValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case CiteAttrNum: {
-            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaque2(ctx, this_val, JSHTMLModElement::js_class_id);
+            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCite(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case DateTimeAttrNum: {
-            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaque2(ctx, this_val, JSHTMLModElement::js_class_id);
+            HTMLModElement* imp = (HTMLModElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setDateTime(valueToStringWithNullCheck(ctx, value));
             break;
         }

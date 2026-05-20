@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ JSValue JSCSSStyleSheetPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSCSSStyleSheet.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSStyleSheetPrototype::self(ctx));
         JSCSSStyleSheetPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSCSSStyleSheet.prototype]]", obj);
@@ -127,15 +127,15 @@ JSValue JSCSSStyleSheet::getValueProperty(JSContext *ctx, JSValueConst this_val,
 {
     switch (token) {
         case OwnerRuleAttrNum: {
-            CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaque2(ctx, this_val, JSCSSStyleSheet::js_class_id);
+            CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->ownerRule()));
         }
         case CssRulesAttrNum: {
-            CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaque2(ctx, this_val, JSCSSStyleSheet::js_class_id);
+            CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->cssRules()));
         }
         case RulesAttrNum: {
-            CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaque2(ctx, this_val, JSCSSStyleSheet::js_class_id);
+            CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->rules()));
         }
     }
@@ -149,7 +149,7 @@ JSValue JSCSSStyleSheet::getConstructor(JSContext *ctx)
 
 JSValue JSCSSStyleSheetPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaque2(ctx, this_val, JSCSSStyleSheet::js_class_id);
+    CSSStyleSheet* imp = (CSSStyleSheet*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

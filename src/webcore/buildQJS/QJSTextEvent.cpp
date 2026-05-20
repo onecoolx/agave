@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ JSValue JSTextEventPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSTextEvent.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSUIEventPrototype::self(ctx));
         JSTextEventPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSTextEvent.prototype]]", obj);
@@ -119,7 +119,7 @@ JSValue JSTextEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, int
 {
     switch (token) {
         case DataAttrNum: {
-            TextEvent* imp = (TextEvent*)JS_GetOpaque2(ctx, this_val, JSTextEvent::js_class_id);
+            TextEvent* imp = (TextEvent*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->data()).utf8().data());
         }
     }
@@ -128,7 +128,7 @@ JSValue JSTextEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, int
 
 JSValue JSTextEventPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    TextEvent* imp = (TextEvent*)JS_GetOpaque2(ctx, this_val, JSTextEvent::js_class_id);
+    TextEvent* imp = (TextEvent*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

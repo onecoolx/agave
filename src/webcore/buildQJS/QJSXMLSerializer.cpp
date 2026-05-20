@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ JSValue JSXMLSerializerConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[XMLSerializer.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewCFunction2(ctx, JSXMLSerializerConstructor::construct, "XMLSerializer", 0, JS_CFUNC_constructor, 0);
         JSXMLSerializerConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[XMLSerializer.constructor]]", obj);
@@ -94,7 +94,7 @@ JSValue JSXMLSerializerPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSXMLSerializer.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSXMLSerializerPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSXMLSerializer.prototype]]", obj);
@@ -170,7 +170,7 @@ JSValue JSXMLSerializer::getConstructor(JSContext *ctx)
 
 JSValue JSXMLSerializerPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    XMLSerializer* imp = (XMLSerializer*)JS_GetOpaque2(ctx, this_val, JSXMLSerializer::js_class_id);
+    XMLSerializer* imp = (XMLSerializer*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

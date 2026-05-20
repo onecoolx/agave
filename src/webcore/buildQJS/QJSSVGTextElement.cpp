@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,7 +72,7 @@ JSValue JSSVGTextElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGTextElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGTextPositioningElementPrototype::self(ctx));
         JSSVGTextElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGTextElement.prototype]]", obj);
@@ -135,16 +135,16 @@ JSValue JSSVGTextElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case TransformAttrNum: {
-            SVGTextElement* imp = (SVGTextElement*)JS_GetOpaque2(ctx, this_val, JSSVGTextElement::js_class_id);
+            SVGTextElement* imp = (SVGTextElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedTransformList> obj = imp->transformAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case NearestViewportElementAttrNum: {
-            SVGTextElement* imp = (SVGTextElement*)JS_GetOpaque2(ctx, this_val, JSSVGTextElement::js_class_id);
+            SVGTextElement* imp = (SVGTextElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->nearestViewportElement()));
         }
         case FarthestViewportElementAttrNum: {
-            SVGTextElement* imp = (SVGTextElement*)JS_GetOpaque2(ctx, this_val, JSSVGTextElement::js_class_id);
+            SVGTextElement* imp = (SVGTextElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->farthestViewportElement()));
         }
     }
@@ -153,7 +153,7 @@ JSValue JSSVGTextElement::getValueProperty(JSContext *ctx, JSValueConst this_val
 
 JSValue JSSVGTextElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGTextElement* imp = (SVGTextElement*)JS_GetOpaque2(ctx, this_val, JSSVGTextElement::js_class_id);
+    SVGTextElement* imp = (SVGTextElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -90,7 +90,7 @@ JSValue JSSVGComponentTransferFunctionElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[SVGComponentTransferFunctionElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGComponentTransferFunctionElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[SVGComponentTransferFunctionElement.constructor]]", obj);
@@ -122,7 +122,7 @@ JSValue JSSVGComponentTransferFunctionElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGComponentTransferFunctionElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGComponentTransferFunctionElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGComponentTransferFunctionElement.prototype]]", obj);
@@ -192,37 +192,37 @@ JSValue JSSVGComponentTransferFunctionElement::getValueProperty(JSContext *ctx, 
 {
     switch (token) {
         case TypeAttrNum: {
-            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaque2(ctx, this_val, JSSVGComponentTransferFunctionElement::js_class_id);
+            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedEnumeration> obj = imp->typeAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case TableValuesAttrNum: {
-            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaque2(ctx, this_val, JSSVGComponentTransferFunctionElement::js_class_id);
+            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumberList> obj = imp->tableValuesAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case SlopeAttrNum: {
-            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaque2(ctx, this_val, JSSVGComponentTransferFunctionElement::js_class_id);
+            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->slopeAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case InterceptAttrNum: {
-            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaque2(ctx, this_val, JSSVGComponentTransferFunctionElement::js_class_id);
+            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->interceptAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case AmplitudeAttrNum: {
-            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaque2(ctx, this_val, JSSVGComponentTransferFunctionElement::js_class_id);
+            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->amplitudeAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ExponentAttrNum: {
-            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaque2(ctx, this_val, JSSVGComponentTransferFunctionElement::js_class_id);
+            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->exponentAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case OffsetAttrNum: {
-            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaque2(ctx, this_val, JSSVGComponentTransferFunctionElement::js_class_id);
+            SVGComponentTransferFunctionElement* imp = (SVGComponentTransferFunctionElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->offsetAnimated();
             return toJS(ctx, obj.get(), imp);
         }

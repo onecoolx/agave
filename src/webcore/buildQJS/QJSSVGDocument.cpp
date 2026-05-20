@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ JSValue JSSVGDocumentPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGDocument.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSDocumentPrototype::self(ctx));
         JSSVGDocumentPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGDocument.prototype]]", obj);
@@ -129,7 +129,7 @@ JSValue JSSVGDocument::getValueProperty(JSContext *ctx, JSValueConst this_val, i
 {
     switch (token) {
         case RootElementAttrNum: {
-            SVGDocument* imp = (SVGDocument*)JS_GetOpaque2(ctx, this_val, JSSVGDocument::js_class_id);
+            SVGDocument* imp = (SVGDocument*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->rootElement()));
         }
     }
@@ -138,7 +138,7 @@ JSValue JSSVGDocument::getValueProperty(JSContext *ctx, JSValueConst this_val, i
 
 JSValue JSSVGDocumentPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGDocument* imp = (SVGDocument*)JS_GetOpaque2(ctx, this_val, JSSVGDocument::js_class_id);
+    SVGDocument* imp = (SVGDocument*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

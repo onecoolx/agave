@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ JSValue JSHTMLFontElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLFontElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLFontElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLFontElement.constructor]]", obj);
@@ -83,7 +83,7 @@ JSValue JSHTMLFontElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLFontElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLFontElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLFontElement.prototype]]", obj);
@@ -146,15 +146,15 @@ JSValue JSHTMLFontElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case ColorAttrNum: {
-            HTMLFontElement* imp = (HTMLFontElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFontElement::js_class_id);
+            HTMLFontElement* imp = (HTMLFontElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->color()).utf8().data());
         }
         case FaceAttrNum: {
-            HTMLFontElement* imp = (HTMLFontElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFontElement::js_class_id);
+            HTMLFontElement* imp = (HTMLFontElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->face()).utf8().data());
         }
         case SizeAttrNum: {
-            HTMLFontElement* imp = (HTMLFontElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFontElement::js_class_id);
+            HTMLFontElement* imp = (HTMLFontElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->size()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -167,17 +167,17 @@ JSValue JSHTMLFontElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case ColorAttrNum: {
-            HTMLFontElement* imp = (HTMLFontElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFontElement::js_class_id);
+            HTMLFontElement* imp = (HTMLFontElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setColor(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case FaceAttrNum: {
-            HTMLFontElement* imp = (HTMLFontElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFontElement::js_class_id);
+            HTMLFontElement* imp = (HTMLFontElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setFace(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case SizeAttrNum: {
-            HTMLFontElement* imp = (HTMLFontElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFontElement::js_class_id);
+            HTMLFontElement* imp = (HTMLFontElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setSize(valueToStringWithNullCheck(ctx, value));
             break;
         }

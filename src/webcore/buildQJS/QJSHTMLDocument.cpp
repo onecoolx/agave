@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ JSValue JSHTMLDocumentConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLDocument.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLDocumentConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLDocument.constructor]]", obj);
@@ -112,7 +112,7 @@ JSValue JSHTMLDocumentPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLDocument.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSDocumentPrototype::self(ctx));
         JSHTMLDocumentPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLDocument.prototype]]", obj);
@@ -176,59 +176,59 @@ JSValue JSHTMLDocument::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case EmbedsAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->embeds()));
         }
         case PluginsAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->plugins()));
         }
         case ScriptsAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->scripts()));
         }
         case AllAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             return JSHTMLDocument::all(ctx, this_val, imp);
         }
         case WidthAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->width());
         }
         case HeightAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->height());
         }
         case DirAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->dir()).utf8().data());
         }
         case DesignModeAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->designMode()).utf8().data());
         }
         case CompatModeAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->compatMode()).utf8().data());
         }
         case BgColorAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->bgColor()).utf8().data());
         }
         case FgColorAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->fgColor()).utf8().data());
         }
         case AlinkColorAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->alinkColor()).utf8().data());
         }
         case LinkColorAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->linkColor()).utf8().data());
         }
         case VlinkColorAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->vlinkColor()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -241,42 +241,42 @@ JSValue JSHTMLDocument::putValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case AllAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             JSHTMLDocument::setAll(ctx, this_val, value, imp);
             break;
         }
         case DirAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             imp->setDir(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case DesignModeAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             imp->setDesignMode(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case BgColorAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             imp->setBgColor(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case FgColorAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             imp->setFgColor(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case AlinkColorAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             imp->setAlinkColor(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case LinkColorAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             imp->setLinkColor(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case VlinkColorAttrNum: {
-            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+            HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
             imp->setVlinkColor(valueToStringWithNullCheck(ctx, value));
             break;
         }
@@ -291,7 +291,7 @@ JSValue JSHTMLDocument::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLDocumentPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque2(ctx, this_val, JSHTMLDocument::js_class_id);
+    HTMLDocument* imp = (HTMLDocument*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

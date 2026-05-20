@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ JSValue JSSVGFEDistantLightElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGFEDistantLightElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGFEDistantLightElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGFEDistantLightElement.prototype]]", obj);
@@ -119,12 +119,12 @@ JSValue JSSVGFEDistantLightElement::getValueProperty(JSContext *ctx, JSValueCons
 {
     switch (token) {
         case AzimuthAttrNum: {
-            SVGFEDistantLightElement* imp = (SVGFEDistantLightElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDistantLightElement::js_class_id);
+            SVGFEDistantLightElement* imp = (SVGFEDistantLightElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->azimuthAnimated();
             return toJS(ctx, obj.get(), imp);
         }
         case ElevationAttrNum: {
-            SVGFEDistantLightElement* imp = (SVGFEDistantLightElement*)JS_GetOpaque2(ctx, this_val, JSSVGFEDistantLightElement::js_class_id);
+            SVGFEDistantLightElement* imp = (SVGFEDistantLightElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedNumber> obj = imp->elevationAnimated();
             return toJS(ctx, obj.get(), imp);
         }

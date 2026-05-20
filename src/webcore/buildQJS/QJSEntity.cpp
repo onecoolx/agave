@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ JSValue JSEntityConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[Entity.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSEntityConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[Entity.constructor]]", obj);
@@ -83,7 +83,7 @@ JSValue JSEntityPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSEntity.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSNodePrototype::self(ctx));
         JSEntityPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSEntity.prototype]]", obj);
@@ -146,15 +146,15 @@ JSValue JSEntity::getValueProperty(JSContext *ctx, JSValueConst this_val, int to
 {
     switch (token) {
         case PublicIdAttrNum: {
-            Entity* imp = (Entity*)JS_GetOpaque2(ctx, this_val, JSEntity::js_class_id);
+            Entity* imp = (Entity*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->publicId());
         }
         case SystemIdAttrNum: {
-            Entity* imp = (Entity*)JS_GetOpaque2(ctx, this_val, JSEntity::js_class_id);
+            Entity* imp = (Entity*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->systemId());
         }
         case NotationNameAttrNum: {
-            Entity* imp = (Entity*)JS_GetOpaque2(ctx, this_val, JSEntity::js_class_id);
+            Entity* imp = (Entity*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->notationName());
         }
         case ConstructorAttrNum:

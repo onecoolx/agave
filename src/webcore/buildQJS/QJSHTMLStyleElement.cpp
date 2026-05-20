@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,7 +67,7 @@ JSValue JSHTMLStyleElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLStyleElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLStyleElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLStyleElement.constructor]]", obj);
@@ -86,7 +86,7 @@ JSValue JSHTMLStyleElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLStyleElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLStyleElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLStyleElement.prototype]]", obj);
@@ -149,19 +149,19 @@ JSValue JSHTMLStyleElement::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case DisabledAttrNum: {
-            HTMLStyleElement* imp = (HTMLStyleElement*)JS_GetOpaque2(ctx, this_val, JSHTMLStyleElement::js_class_id);
+            HTMLStyleElement* imp = (HTMLStyleElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->disabled() ? 1 : 0);
         }
         case MediaAttrNum: {
-            HTMLStyleElement* imp = (HTMLStyleElement*)JS_GetOpaque2(ctx, this_val, JSHTMLStyleElement::js_class_id);
+            HTMLStyleElement* imp = (HTMLStyleElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->media()).utf8().data());
         }
         case TypeAttrNum: {
-            HTMLStyleElement* imp = (HTMLStyleElement*)JS_GetOpaque2(ctx, this_val, JSHTMLStyleElement::js_class_id);
+            HTMLStyleElement* imp = (HTMLStyleElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case SheetAttrNum: {
-            HTMLStyleElement* imp = (HTMLStyleElement*)JS_GetOpaque2(ctx, this_val, JSHTMLStyleElement::js_class_id);
+            HTMLStyleElement* imp = (HTMLStyleElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->sheet()));
         }
         case ConstructorAttrNum:
@@ -174,17 +174,17 @@ JSValue JSHTMLStyleElement::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case DisabledAttrNum: {
-            HTMLStyleElement* imp = (HTMLStyleElement*)JS_GetOpaque2(ctx, this_val, JSHTMLStyleElement::js_class_id);
+            HTMLStyleElement* imp = (HTMLStyleElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setDisabled(valueToBoolean(ctx, value));
             break;
         }
         case MediaAttrNum: {
-            HTMLStyleElement* imp = (HTMLStyleElement*)JS_GetOpaque2(ctx, this_val, JSHTMLStyleElement::js_class_id);
+            HTMLStyleElement* imp = (HTMLStyleElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setMedia(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TypeAttrNum: {
-            HTMLStyleElement* imp = (HTMLStyleElement*)JS_GetOpaque2(ctx, this_val, JSHTMLStyleElement::js_class_id);
+            HTMLStyleElement* imp = (HTMLStyleElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }

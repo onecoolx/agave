@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ JSValue JSSVGElementInstancePrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGElementInstance.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSSVGElementInstancePrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGElementInstance.prototype]]", obj);
@@ -131,35 +131,35 @@ JSValue JSSVGElementInstance::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case CorrespondingElementAttrNum: {
-            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaque2(ctx, this_val, JSSVGElementInstance::js_class_id);
+            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->correspondingElement()));
         }
         case CorrespondingUseElementAttrNum: {
-            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaque2(ctx, this_val, JSSVGElementInstance::js_class_id);
+            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->correspondingUseElement()));
         }
         case ParentNodeAttrNum: {
-            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaque2(ctx, this_val, JSSVGElementInstance::js_class_id);
+            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->parentNode()));
         }
         case ChildNodesAttrNum: {
-            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaque2(ctx, this_val, JSSVGElementInstance::js_class_id);
+            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->childNodes()));
         }
         case FirstChildAttrNum: {
-            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaque2(ctx, this_val, JSSVGElementInstance::js_class_id);
+            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->firstChild()));
         }
         case LastChildAttrNum: {
-            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaque2(ctx, this_val, JSSVGElementInstance::js_class_id);
+            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->lastChild()));
         }
         case PreviousSiblingAttrNum: {
-            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaque2(ctx, this_val, JSSVGElementInstance::js_class_id);
+            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->previousSibling()));
         }
         case NextSiblingAttrNum: {
-            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaque2(ctx, this_val, JSSVGElementInstance::js_class_id);
+            SVGElementInstance* imp = (SVGElementInstance*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->nextSibling()));
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,7 +74,7 @@ JSValue JSSVGAnimationElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGAnimationElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGElementPrototype::self(ctx));
         JSSVGAnimationElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGAnimationElement.prototype]]", obj);
@@ -137,23 +137,23 @@ JSValue JSSVGAnimationElement::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case TargetElementAttrNum: {
-            SVGAnimationElement* imp = (SVGAnimationElement*)JS_GetOpaque2(ctx, this_val, JSSVGAnimationElement::js_class_id);
+            SVGAnimationElement* imp = (SVGAnimationElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->targetElement()));
         }
         case RequiredFeaturesAttrNum: {
-            SVGAnimationElement* imp = (SVGAnimationElement*)JS_GetOpaque2(ctx, this_val, JSSVGAnimationElement::js_class_id);
+            SVGAnimationElement* imp = (SVGAnimationElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->requiredFeatures()), imp);
         }
         case RequiredExtensionsAttrNum: {
-            SVGAnimationElement* imp = (SVGAnimationElement*)JS_GetOpaque2(ctx, this_val, JSSVGAnimationElement::js_class_id);
+            SVGAnimationElement* imp = (SVGAnimationElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->requiredExtensions()), imp);
         }
         case SystemLanguageAttrNum: {
-            SVGAnimationElement* imp = (SVGAnimationElement*)JS_GetOpaque2(ctx, this_val, JSSVGAnimationElement::js_class_id);
+            SVGAnimationElement* imp = (SVGAnimationElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->systemLanguage()), imp);
         }
         case ExternalResourcesRequiredAttrNum: {
-            SVGAnimationElement* imp = (SVGAnimationElement*)JS_GetOpaque2(ctx, this_val, JSSVGAnimationElement::js_class_id);
+            SVGAnimationElement* imp = (SVGAnimationElement*)JS_GetOpaqueNoCheck(this_val);
             RefPtr<SVGAnimatedBoolean> obj = imp->externalResourcesRequiredAnimated();
             return toJS(ctx, obj.get(), imp);
         }
@@ -163,7 +163,7 @@ JSValue JSSVGAnimationElement::getValueProperty(JSContext *ctx, JSValueConst thi
 
 JSValue JSSVGAnimationElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    SVGAnimationElement* imp = (SVGAnimationElement*)JS_GetOpaque2(ctx, this_val, JSSVGAnimationElement::js_class_id);
+    SVGAnimationElement* imp = (SVGAnimationElement*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,7 @@ JSValue JSSVGPathSegArcRelPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSSVGPathSegArcRel.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSSVGPathSegPrototype::self(ctx));
         JSSVGPathSegArcRelPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSSVGPathSegArcRel.prototype]]", obj);
@@ -123,31 +123,31 @@ JSValue JSSVGPathSegArcRel::getValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegArcRel::js_class_id);
+            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->x());
         }
         case YAttrNum: {
-            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegArcRel::js_class_id);
+            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->y());
         }
         case R1AttrNum: {
-            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegArcRel::js_class_id);
+            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->r1());
         }
         case R2AttrNum: {
-            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegArcRel::js_class_id);
+            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->r2());
         }
         case AngleAttrNum: {
-            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegArcRel::js_class_id);
+            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->angle());
         }
         case LargeArcFlagAttrNum: {
-            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegArcRel::js_class_id);
+            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->largeArcFlag() ? 1 : 0);
         }
         case SweepFlagAttrNum: {
-            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegArcRel::js_class_id);
+            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->sweepFlag() ? 1 : 0);
         }
     }
@@ -158,37 +158,37 @@ JSValue JSSVGPathSegArcRel::putValueProperty(JSContext *ctx, JSValueConst this_v
 {
     switch (token) {
         case XAttrNum: {
-            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegArcRel::js_class_id);
+            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setX(valueToFloat(ctx, value));
             break;
         }
         case YAttrNum: {
-            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegArcRel::js_class_id);
+            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setY(valueToFloat(ctx, value));
             break;
         }
         case R1AttrNum: {
-            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegArcRel::js_class_id);
+            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setR1(valueToFloat(ctx, value));
             break;
         }
         case R2AttrNum: {
-            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegArcRel::js_class_id);
+            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setR2(valueToFloat(ctx, value));
             break;
         }
         case AngleAttrNum: {
-            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegArcRel::js_class_id);
+            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setAngle(valueToFloat(ctx, value));
             break;
         }
         case LargeArcFlagAttrNum: {
-            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegArcRel::js_class_id);
+            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setLargeArcFlag(valueToBoolean(ctx, value));
             break;
         }
         case SweepFlagAttrNum: {
-            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaque2(ctx, this_val, JSSVGPathSegArcRel::js_class_id);
+            SVGPathSegArcRel* imp = (SVGPathSegArcRel*)JS_GetOpaqueNoCheck(this_val);
             imp->setSweepFlag(valueToBoolean(ctx, value));
             break;
         }

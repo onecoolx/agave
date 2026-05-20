@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,7 @@ JSValue JSHTMLIsIndexElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLIsIndexElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLIsIndexElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLIsIndexElement.constructor]]", obj);
@@ -84,7 +84,7 @@ JSValue JSHTMLIsIndexElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLIsIndexElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLInputElementPrototype::self(ctx));
         JSHTMLIsIndexElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLIsIndexElement.prototype]]", obj);
@@ -147,11 +147,11 @@ JSValue JSHTMLIsIndexElement::getValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case FormAttrNum: {
-            HTMLIsIndexElement* imp = (HTMLIsIndexElement*)JS_GetOpaque2(ctx, this_val, JSHTMLIsIndexElement::js_class_id);
+            HTMLIsIndexElement* imp = (HTMLIsIndexElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->form()));
         }
         case PromptAttrNum: {
-            HTMLIsIndexElement* imp = (HTMLIsIndexElement*)JS_GetOpaque2(ctx, this_val, JSHTMLIsIndexElement::js_class_id);
+            HTMLIsIndexElement* imp = (HTMLIsIndexElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->prompt()).utf8().data());
         }
         case ConstructorAttrNum:
@@ -164,7 +164,7 @@ JSValue JSHTMLIsIndexElement::putValueProperty(JSContext *ctx, JSValueConst this
 {
     switch (token) {
         case PromptAttrNum: {
-            HTMLIsIndexElement* imp = (HTMLIsIndexElement*)JS_GetOpaque2(ctx, this_val, JSHTMLIsIndexElement::js_class_id);
+            HTMLIsIndexElement* imp = (HTMLIsIndexElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setPrompt(valueToStringWithNullCheck(ctx, value));
             break;
         }

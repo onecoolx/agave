@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -87,7 +87,7 @@ JSValue JSRangeConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[Range.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSRangeConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[Range.constructor]]", obj);
@@ -150,7 +150,7 @@ JSValue JSRangePrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSRange.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSRangePrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSRange.prototype]]", obj);
@@ -222,42 +222,42 @@ JSValue JSRange::getValueProperty(JSContext *ctx, JSValueConst this_val, int tok
     switch (token) {
         case StartContainerAttrNum: {
             ExceptionCode ec = 0;
-            Range* imp = (Range*)JS_GetOpaque2(ctx, this_val, JSRange::js_class_id);
+            Range* imp = (Range*)JS_GetOpaqueNoCheck(this_val);
             JSValue result = toJS(ctx, QJS::getPtr(imp->startContainer(ec)));
             setDOMException(ctx, ec);
             return result;
         }
         case StartOffsetAttrNum: {
             ExceptionCode ec = 0;
-            Range* imp = (Range*)JS_GetOpaque2(ctx, this_val, JSRange::js_class_id);
+            Range* imp = (Range*)JS_GetOpaqueNoCheck(this_val);
             JSValue result = JS_NewBigUint64(ctx, imp->startOffset(ec));
             setDOMException(ctx, ec);
             return result;
         }
         case EndContainerAttrNum: {
             ExceptionCode ec = 0;
-            Range* imp = (Range*)JS_GetOpaque2(ctx, this_val, JSRange::js_class_id);
+            Range* imp = (Range*)JS_GetOpaqueNoCheck(this_val);
             JSValue result = toJS(ctx, QJS::getPtr(imp->endContainer(ec)));
             setDOMException(ctx, ec);
             return result;
         }
         case EndOffsetAttrNum: {
             ExceptionCode ec = 0;
-            Range* imp = (Range*)JS_GetOpaque2(ctx, this_val, JSRange::js_class_id);
+            Range* imp = (Range*)JS_GetOpaqueNoCheck(this_val);
             JSValue result = JS_NewBigUint64(ctx, imp->endOffset(ec));
             setDOMException(ctx, ec);
             return result;
         }
         case CollapsedAttrNum: {
             ExceptionCode ec = 0;
-            Range* imp = (Range*)JS_GetOpaque2(ctx, this_val, JSRange::js_class_id);
+            Range* imp = (Range*)JS_GetOpaqueNoCheck(this_val);
             JSValue result = JS_NewBool(ctx, imp->collapsed(ec) ? 1 : 0);
             setDOMException(ctx, ec);
             return result;
         }
         case CommonAncestorContainerAttrNum: {
             ExceptionCode ec = 0;
-            Range* imp = (Range*)JS_GetOpaque2(ctx, this_val, JSRange::js_class_id);
+            Range* imp = (Range*)JS_GetOpaqueNoCheck(this_val);
             JSValue result = toJS(ctx, QJS::getPtr(imp->commonAncestorContainer(ec)));
             setDOMException(ctx, ec);
             return result;
@@ -275,7 +275,7 @@ JSValue JSRange::getConstructor(JSContext *ctx)
 
 JSValue JSRangePrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    Range* imp = (Range*)JS_GetOpaque2(ctx, this_val, JSRange::js_class_id);
+    Range* imp = (Range*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ JSValue JSHTMLLinkElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLLinkElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLLinkElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLLinkElement.constructor]]", obj);
@@ -92,7 +92,7 @@ JSValue JSHTMLLinkElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLLinkElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLLinkElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLLinkElement.prototype]]", obj);
@@ -155,43 +155,43 @@ JSValue JSHTMLLinkElement::getValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case DisabledAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBool(ctx, imp->disabled() ? 1 : 0);
         }
         case CharsetAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->charset()).utf8().data());
         }
         case HrefAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->href()).utf8().data());
         }
         case HreflangAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->hreflang()).utf8().data());
         }
         case MediaAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->media()).utf8().data());
         }
         case RelAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->rel()).utf8().data());
         }
         case RevAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->rev()).utf8().data());
         }
         case TargetAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->target()).utf8().data());
         }
         case TypeAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewString(ctx, ((const String&)imp->type()).utf8().data());
         }
         case SheetAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->sheet()));
         }
         case ConstructorAttrNum:
@@ -204,47 +204,47 @@ JSValue JSHTMLLinkElement::putValueProperty(JSContext *ctx, JSValueConst this_va
 {
     switch (token) {
         case DisabledAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setDisabled(valueToBoolean(ctx, value));
             break;
         }
         case CharsetAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setCharset(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HrefAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setHref(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case HreflangAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setHreflang(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case MediaAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setMedia(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case RelAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setRel(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case RevAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setRev(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TargetAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setTarget(valueToStringWithNullCheck(ctx, value));
             break;
         }
         case TypeAttrNum: {
-            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaque2(ctx, this_val, JSHTMLLinkElement::js_class_id);
+            HTMLLinkElement* imp = (HTMLLinkElement*)JS_GetOpaqueNoCheck(this_val);
             imp->setType(valueToStringWithNullCheck(ctx, value));
             break;
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -99,7 +99,7 @@ JSValue JSCSSPrimitiveValueConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[CSSPrimitiveValue.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSCSSPrimitiveValueConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[CSSPrimitiveValue.constructor]]", obj);
@@ -164,7 +164,7 @@ JSValue JSCSSPrimitiveValuePrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSCSSPrimitiveValue.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSCSSValuePrototype::self(ctx));
         JSCSSPrimitiveValuePrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSCSSPrimitiveValue.prototype]]", obj);
@@ -235,7 +235,7 @@ JSValue JSCSSPrimitiveValue::getValueProperty(JSContext *ctx, JSValueConst this_
 {
     switch (token) {
         case PrimitiveTypeAttrNum: {
-            CSSPrimitiveValue* imp = (CSSPrimitiveValue*)JS_GetOpaque2(ctx, this_val, JSCSSPrimitiveValue::js_class_id);
+            CSSPrimitiveValue* imp = (CSSPrimitiveValue*)JS_GetOpaqueNoCheck(this_val);
             return JS_NewBigUint64(ctx, imp->primitiveType());
         }
         case ConstructorAttrNum:
@@ -251,7 +251,7 @@ JSValue JSCSSPrimitiveValue::getConstructor(JSContext *ctx)
 
 JSValue JSCSSPrimitiveValuePrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    CSSPrimitiveValue* imp = (CSSPrimitiveValue*)JS_GetOpaque2(ctx, this_val, JSCSSPrimitiveValue::js_class_id);
+    CSSPrimitiveValue* imp = (CSSPrimitiveValue*)JS_GetOpaqueNoCheck(this_val);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

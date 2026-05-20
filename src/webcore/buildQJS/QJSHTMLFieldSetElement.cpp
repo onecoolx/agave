@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ JSValue JSHTMLFieldSetElementConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[HTMLFieldSetElement.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSHTMLFieldSetElementConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[HTMLFieldSetElement.constructor]]", obj);
@@ -82,7 +82,7 @@ JSValue JSHTMLFieldSetElementPrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSHTMLFieldSetElement.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSHTMLElementPrototype::self(ctx));
         JSHTMLFieldSetElementPrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSHTMLFieldSetElement.prototype]]", obj);
@@ -145,7 +145,7 @@ JSValue JSHTMLFieldSetElement::getValueProperty(JSContext *ctx, JSValueConst thi
 {
     switch (token) {
         case FormAttrNum: {
-            HTMLFieldSetElement* imp = (HTMLFieldSetElement*)JS_GetOpaque2(ctx, this_val, JSHTMLFieldSetElement::js_class_id);
+            HTMLFieldSetElement* imp = (HTMLFieldSetElement*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->form()));
         }
         case ConstructorAttrNum:

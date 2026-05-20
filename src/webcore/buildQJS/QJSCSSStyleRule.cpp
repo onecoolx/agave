@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, Zhang Ji Peng <onecoolx@gmail.com>
+ * Copyright (c) 2026, Zhang Ji Peng <onecoolx@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ JSValue JSCSSStyleRuleConstructor::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[CSSStyleRule.constructor]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObject(ctx);
         JSCSSStyleRuleConstructor::initConstructor(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[CSSStyleRule.constructor]]", obj);
@@ -85,7 +85,7 @@ JSValue JSCSSStyleRulePrototype::self(JSContext * ctx)
 {
     JSValue globalObj = JS_GetGlobalObject(ctx);
     JSValue obj = JS_GetPropertyStr(ctx, globalObj, "[[JSCSSStyleRule.prototype]]");
-    if (JS_IsException(obj)) {
+    if (JS_IsUndefined(obj)) {
         obj = JS_NewObjectProto(ctx, JSCSSRulePrototype::self(ctx));
         JSCSSStyleRulePrototype::initPrototype(ctx, obj);
         JS_SetPropertyStr(ctx, globalObj, "[[JSCSSStyleRule.prototype]]", obj);
@@ -148,11 +148,11 @@ JSValue JSCSSStyleRule::getValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case SelectorTextAttrNum: {
-            CSSStyleRule* imp = (CSSStyleRule*)JS_GetOpaque2(ctx, this_val, JSCSSStyleRule::js_class_id);
+            CSSStyleRule* imp = (CSSStyleRule*)JS_GetOpaqueNoCheck(this_val);
             return jsStringOrNull(ctx, imp->selectorText());
         }
         case StyleAttrNum: {
-            CSSStyleRule* imp = (CSSStyleRule*)JS_GetOpaque2(ctx, this_val, JSCSSStyleRule::js_class_id);
+            CSSStyleRule* imp = (CSSStyleRule*)JS_GetOpaqueNoCheck(this_val);
             return toJS(ctx, QJS::getPtr(imp->style()));
         }
         case ConstructorAttrNum:
@@ -165,7 +165,7 @@ JSValue JSCSSStyleRule::putValueProperty(JSContext *ctx, JSValueConst this_val, 
 {
     switch (token) {
         case SelectorTextAttrNum: {
-            CSSStyleRule* imp = (CSSStyleRule*)JS_GetOpaque2(ctx, this_val, JSCSSStyleRule::js_class_id);
+            CSSStyleRule* imp = (CSSStyleRule*)JS_GetOpaqueNoCheck(this_val);
             ExceptionCode ec = 0;
             imp->setSelectorText(valueToStringWithNullCheck(ctx, value), ec);
             setDOMException(ctx, ec);
