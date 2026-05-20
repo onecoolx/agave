@@ -15,18 +15,20 @@
 
 static char g_result[4096] = {0};
 static int g_result_set = 0;
+static int g_alert_set = 0;
 
 static void on_alert(MaCrossView* view, const char* msg)
 {
     if (msg && msg[0]) {
         strncpy(g_result, msg, sizeof(g_result) - 1);
         g_result_set = 1;
+        g_alert_set = 1;
     }
 }
 
 static void on_set_title(MaCrossView* view, const char* title)
 {
-    if (title && title[0]) {
+    if (title && title[0] && !g_alert_set) {
         strncpy(g_result, title, sizeof(g_result) - 1);
         g_result_set = 1;
     }
@@ -55,7 +57,7 @@ static void pump(MaCrossView* view, int ms)
         macross_event_dispatch();
         macross_view_update(view, 0);
         nanosleep(&ts, NULL);
-        if (g_result_set) break;
+        if (g_alert_set) break;
     }
 }
 

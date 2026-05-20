@@ -93,27 +93,23 @@ JSValue ScriptController::evaluate(const String& filename, int baseLine, const S
         return comp;
     } else {
         JSContext * ctx = context();
-        JSValue strObj = JS_ToString(ctx, comp);
-        const char * str = JS_ToCString(ctx, strObj);
-        String errorMessage(str);
+        JSValue exc = JS_GetException(ctx);
+        const char * msg = JS_ToCString(ctx, exc);
+        fprintf(stderr, "[QJS-ERR] %s\n", msg ? msg : "unknown");
 
-        JSValue line = JS_GetPropertyStr(ctx, comp, "line");
-        int32_t lineNumber;
+        String errorMessage = msg ? String(msg) : String("unknown error");
+        JS_FreeCString(ctx, msg);
+
+        JSValue line = JS_GetPropertyStr(ctx, exc, "lineNumber");
+        int32_t lineNumber = 0;
         JS_ToInt32(ctx, &lineNumber, line);
+        JS_FreeValue(ctx, line);
 
-        JSValue url = JS_GetPropertyStr(ctx, comp, "sourceURL");
-        const char * urlStr = JS_ToCString(ctx, url);
-        String sourceURL(urlStr);
+        JS_FreeValue(ctx, exc);
 
         if (Page* page = m_frame->page()) {
-            page->chrome()->addMessageToConsole(JSMessageSource, ErrorMessageLevel, errorMessage, lineNumber, sourceURL);
+            page->chrome()->addMessageToConsole(JSMessageSource, ErrorMessageLevel, errorMessage, lineNumber, String());
         }
-
-        JS_FreeCString(ctx, urlStr);
-        JS_FreeValue(ctx, url);
-        JS_FreeValue(ctx, line);
-        JS_FreeCString(ctx, str);
-        JS_FreeValue(ctx, strObj);
     }
 
     return JS_NULL;
@@ -174,11 +170,14 @@ void ScriptController::initScriptIfNeeded()
     // Build the global object - which is a Window/DOMWindow instance
     JSDOMWindow::init(m_context);
 
-    // Set the global object's prototype and opaque to DOMWindow
+    // Set up global object with DOMWindow properties
     JSValue globalObject = JS_GetGlobalObject(m_context);
-    JS_SetPrototype(m_context, globalObject, JSDOMWindowPrototype::self(m_context));
-    JS_SetOpaque(globalObject, m_frame->domWindow());
-    m_frame->domWindow()->ref();
+
+    // Register all properties directly on global object
+    JSDOMWindow::init(m_context);
+    JSDOMWindowPrototype::initPrototype(m_context, globalObject);
+    // Window functions override DOMWindow's generated versions (our impl has better null safety)
+    WindowPrototype::initPrototype(m_context, globalObject);
 
     // Create a QJS interpreter for this frame
     m_script = new ScriptInterpreter(m_context, globalObject, m_frame);

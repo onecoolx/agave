@@ -1259,7 +1259,7 @@ static void adjustWindowRect(const FloatRect& screen, FloatRect& window)
 
 JSValue WindowFunc::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    Window * window = (Window*)JS_GetOpaque2(ctx, this_val, Window::js_class_id);
+    Window * window = Window::retrieveActive(ctx);
     if (!window)
         return JS_ThrowTypeError(ctx, "Type Error");
 
@@ -2014,8 +2014,6 @@ static JSValue js_window_func(JSContext* ctx, JSValueConst this_val, int argc, J
 }
 
 static const JSCFunctionListEntry js_window_funcs[] = {
-    JS_CFUNC_MAGIC_DEF("alert", 1, js_window_func, Window::Alert),
-    JS_CFUNC_MAGIC_DEF("confirm", 1, js_window_func, Window::Confirm),
     JS_CFUNC_MAGIC_DEF("open", 3, js_window_func, Window::Open),
     JS_CFUNC_MAGIC_DEF("setTimeout", 2, js_window_func, Window::SetTimeout),
     JS_CFUNC_MAGIC_DEF("clearTimeout", 1, js_window_func, Window::ClearTimeout),
@@ -2036,7 +2034,31 @@ static const JSCFunctionListEntry js_window_funcs[] = {
 
 void WindowPrototype::initPrototype(JSContext* ctx, JSValue this_obj)
 {
-    JS_SetPropertyFunctionList(ctx, this_obj, js_window_funcs, sizeof(js_window_funcs) / sizeof(js_window_funcs[0]));
+    struct { const char* name; int nargs; int magic; } funcs[] = {
+        {"alert", 1, Window::Alert},
+        {"confirm", 1, Window::Confirm},
+        {"open", 3, Window::Open},
+        {"setTimeout", 2, Window::SetTimeout},
+        {"clearTimeout", 1, Window::ClearTimeout},
+        {"setInterval", 2, Window::SetInterval},
+        {"clearInterval", 1, Window::ClearInterval},
+        {"scrollBy", 2, Window::ScrollBy},
+        {"scrollTo", 2, Window::ScrollTo},
+        {"scroll", 2, Window::Scroll},
+        {"moveBy", 2, Window::MoveBy},
+        {"moveTo", 2, Window::MoveTo},
+        {"resizeBy", 2, Window::ResizeBy},
+        {"resizeTo", 2, Window::ResizeTo},
+        {"atob", 1, Window::AToB},
+        {"btoa", 1, Window::BToA},
+        {"addEventListener", 3, Window::AddEventListener},
+        {"removeEventListener", 3, Window::RemoveEventListener},
+        {NULL, 0, 0}
+    };
+    for (int i = 0; funcs[i].name; i++) {
+        JSValue fn = JS_NewCFunction2(ctx, (JSCFunction*)js_window_func, funcs[i].name, funcs[i].nargs, JS_CFUNC_generic_magic, funcs[i].magic);
+        JS_SetPropertyStr(ctx, this_obj, funcs[i].name, fn);
+    }
 }
 
 JSClassID Navigator::js_class_id = 0;
