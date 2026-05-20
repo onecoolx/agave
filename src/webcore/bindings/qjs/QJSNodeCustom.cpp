@@ -151,8 +151,7 @@ JSValue toJS(JSContext *ctx, Node* node)
 
     Document* doc = node->document();
     JSValue ret = QJS::ScriptInterpreter::getDOMNodeForDocument(doc, node);
-    if (0 && JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT) {
-        return ret;
+    if (0) { // cache disabled - GC incompatible
     }
 
     switch (node->nodeType()) {
@@ -203,7 +202,7 @@ JSValue toJS(JSContext *ctx, Node* node)
             ret = JSNode::create(ctx, node);
     }
 
-    // cache disabled: QJS::ScriptInterpreter::putDOMNodeForDocument(doc, node, ret);
+    // no cache
     return ret;
 }
 

@@ -153,12 +153,7 @@ void _global_shutdown(void)
 {
     JSRuntime* rt = _globalData.runtime;
 
-    // Free all cached JSValues to release GC references
     if (_globalData.domObjects) {
-        DOMObjectMap::iterator it = _globalData.domObjects->begin();
-        DOMObjectMap::iterator end = _globalData.domObjects->end();
-        for (; it != end; ++it)
-            JS_FreeValueRT(rt, it->second);
         delete _globalData.domObjects;
         _globalData.domObjects = 0;
     }
@@ -166,16 +161,8 @@ void _global_shutdown(void)
     if (_globalData.domNodesPerDoc) {
         NodePerDocMap::iterator it = _globalData.domNodesPerDoc->begin();
         NodePerDocMap::iterator end = _globalData.domNodesPerDoc->end();
-        for (; it != end; ++it) {
-            NodeMap* nodeMap = it->second;
-            if (nodeMap) {
-                NodeMap::iterator nit = nodeMap->begin();
-                NodeMap::iterator nend = nodeMap->end();
-                for (; nit != nend; ++nit)
-                    JS_FreeValueRT(rt, nit->second);
-                delete nodeMap;
-            }
-        }
+        for (; it != end; ++it)
+            delete it->second;
         delete _globalData.domNodesPerDoc;
         _globalData.domNodesPerDoc = 0;
     }

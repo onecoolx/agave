@@ -222,19 +222,11 @@ JSValue ScriptInterpreter::getDOMObject(void* objectHandle)
 
 void ScriptInterpreter::putDOMObject(void* objectHandle, JSValue obj) 
 {
-    JSRuntime* rt = GLOBAL()->runtime;
-    JSValue old = domObjects()->get(objectHandle);
-    if (!JS_IsNull(old))
-        JS_FreeValueRT(rt, old);
-    domObjects()->set(objectHandle, JS_DupValueRT(rt, obj));
+    domObjects()->set(objectHandle, obj);
 }
 
 void ScriptInterpreter::forgetDOMObject(void* objectHandle)
 {
-    JSRuntime* rt = GLOBAL()->runtime;
-    JSValue old = domObjects()->get(objectHandle);
-    if (!JS_IsNull(old))
-        JS_FreeValueRT(rt, old);
     domObjects()->remove(objectHandle);
 }
 
@@ -252,32 +244,19 @@ JSValue ScriptInterpreter::getDOMNodeForDocument(Document* document, Node* node)
 
 void ScriptInterpreter::forgetDOMNodeForDocument(Document* document, Node* node)
 {
-    JSRuntime* rt = GLOBAL()->runtime;
     if (!document) {
-        JSValue old = domObjects()->get(node);
-        if (!JS_IsNull(old))
-            JS_FreeValueRT(rt, old);
         domObjects()->remove(node);
         return;
     }
     NodeMap* documentDict = domNodesPerDocument()->get(document);
-    if (documentDict) {
-        JSValue old = documentDict->get(node);
-        if (!JS_IsNull(old))
-            JS_FreeValueRT(rt, old);
+    if (documentDict)
         documentDict->remove(node);
-    }
 }
 
 void ScriptInterpreter::putDOMNodeForDocument(Document* document, Node* node, JSValue obj)
 {
-    JSRuntime* rt = GLOBAL()->runtime;
-    JSValue duped = JS_DupValueRT(rt, obj);
     if (!document) {
-        JSValue old = domObjects()->get(node);
-        if (!JS_IsNull(old))
-            JS_FreeValueRT(rt, old);
-        domObjects()->set(node, duped);
+        domObjects()->set(node, obj);
         return;
     }
     NodeMap* documentDict = domNodesPerDocument()->get(document);
@@ -285,10 +264,7 @@ void ScriptInterpreter::putDOMNodeForDocument(Document* document, Node* node, JS
         documentDict = new NodeMap;
         domNodesPerDocument()->set(document, documentDict);
     }
-    JSValue old = documentDict->get(node);
-    if (!JS_IsNull(old))
-        JS_FreeValueRT(rt, old);
-    documentDict->set(node, duped);
+    documentDict->set(node, obj);
 }
 
 void ScriptInterpreter::forgetAllDOMNodesForDocument(Document* document)
@@ -632,7 +608,7 @@ JSValue toJS(JSContext* ctx, Document* doc)
     if (!doc)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMNodeForDocument(doc, doc);
-    if (0)
+    if (0) // cache disabled
         return ret;
     ret = JSDocument::create(ctx, doc);
     QJS::ScriptInterpreter::putDOMNodeForDocument(doc, doc, ret);
@@ -644,7 +620,7 @@ JSValue toJS(JSContext* ctx, Event* event)
     if (!event)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(event);
-    if (0)
+    if (0) // cache disabled
         return ret;
 
     if (event->isKeyboardEvent())
@@ -658,7 +634,7 @@ JSValue toJS(JSContext* ctx, Event* event)
     else
         ret = JSEvent::create(ctx, event);
 
-    // QJS::ScriptInterpreter::putDOMObject(event, ret);
+    // no cache: // QJS::ScriptInterpreter::putDOMObject(event, ret);
     return ret;
 }
 
@@ -667,7 +643,7 @@ JSValue toJS(JSContext* ctx, CSSRule* rule)
     if (!rule)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(rule);
-    if (0)
+    if (0) // cache disabled
         return ret;
 
     switch (rule->type()) {
@@ -687,7 +663,7 @@ JSValue toJS(JSContext* ctx, CSSRule* rule)
         ret = JSCSSRule::create(ctx, rule); break;
     }
 
-    // QJS::ScriptInterpreter::putDOMObject(rule, ret);
+    // no cache: // QJS::ScriptInterpreter::putDOMObject(rule, ret);
     return ret;
 }
 
@@ -696,7 +672,7 @@ JSValue toJS(JSContext* ctx, CSSValue* value)
     if (!value)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(value);
-    if (0)
+    if (0) // cache disabled
         return ret;
 
     if (value->isValueList())
@@ -706,7 +682,7 @@ JSValue toJS(JSContext* ctx, CSSValue* value)
     else
         ret = JSCSSValue::create(ctx, value);
 
-    // QJS::ScriptInterpreter::putDOMObject(value, ret);
+    // no cache: // QJS::ScriptInterpreter::putDOMObject(value, ret);
     return ret;
 }
 
@@ -715,7 +691,7 @@ JSValue toJS(JSContext* ctx, StyleSheet* sheet)
     if (!sheet)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(sheet);
-    if (0)
+    if (0) // cache disabled
         return ret;
 
     if (sheet->isCSSStyleSheet())
@@ -723,7 +699,7 @@ JSValue toJS(JSContext* ctx, StyleSheet* sheet)
     else
         ret = JSStyleSheet::create(ctx, sheet);
 
-    // QJS::ScriptInterpreter::putDOMObject(sheet, ret);
+    // no cache: // QJS::ScriptInterpreter::putDOMObject(sheet, ret);
     return ret;
 }
 
