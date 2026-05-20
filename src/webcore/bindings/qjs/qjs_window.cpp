@@ -1679,10 +1679,13 @@ void Window::timerFired(DOMWindowTimer* timer)
 
 void Window::disconnectFrame()
 {
-    clearAllTimeouts();
-    if (!JS_IsNull(d->loc)) {
-        JS_SetOpaque(d->loc, 0);
-    }
+    // Remove from global window map
+    Frame* frame = impl()->frame();
+    if (frame)
+        jsvalWindows()->remove(frame);
+
+    // Self-delete triggers destructor which clears timeouts and listeners
+    delete this;
 }
 
 Window::ListenersMap& Window::jsEventListeners()

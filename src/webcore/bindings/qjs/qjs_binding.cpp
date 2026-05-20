@@ -177,6 +177,7 @@
 #include "QJSHTMLUListElement.h"
 
 #include <text/String.h>
+#include "global.h"
 #include "qjs_dom.h"
 #include "qjs_window.h"
 #include "qjs_script.h"
@@ -221,11 +222,19 @@ JSValue ScriptInterpreter::getDOMObject(void* objectHandle)
 
 void ScriptInterpreter::putDOMObject(void* objectHandle, JSValue obj) 
 {
-    domObjects()->set(objectHandle, obj);
+    JSRuntime* rt = GLOBAL()->runtime;
+    JSValue old = domObjects()->get(objectHandle);
+    if (!JS_IsNull(old))
+        JS_FreeValueRT(rt, old);
+    domObjects()->set(objectHandle, JS_DupValueRT(rt, obj));
 }
 
 void ScriptInterpreter::forgetDOMObject(void* objectHandle)
 {
+    JSRuntime* rt = GLOBAL()->runtime;
+    JSValue old = domObjects()->get(objectHandle);
+    if (!JS_IsNull(old))
+        JS_FreeValueRT(rt, old);
     domObjects()->remove(objectHandle);
 }
 
@@ -243,19 +252,32 @@ JSValue ScriptInterpreter::getDOMNodeForDocument(Document* document, Node* node)
 
 void ScriptInterpreter::forgetDOMNodeForDocument(Document* document, Node* node)
 {
+    JSRuntime* rt = GLOBAL()->runtime;
     if (!document) {
+        JSValue old = domObjects()->get(node);
+        if (!JS_IsNull(old))
+            JS_FreeValueRT(rt, old);
         domObjects()->remove(node);
         return;
     }
     NodeMap* documentDict = domNodesPerDocument()->get(document);
-    if (documentDict)
+    if (documentDict) {
+        JSValue old = documentDict->get(node);
+        if (!JS_IsNull(old))
+            JS_FreeValueRT(rt, old);
         documentDict->remove(node);
+    }
 }
 
 void ScriptInterpreter::putDOMNodeForDocument(Document* document, Node* node, JSValue obj)
 {
+    JSRuntime* rt = GLOBAL()->runtime;
+    JSValue duped = JS_DupValueRT(rt, obj);
     if (!document) {
-        domObjects()->set(node, obj);
+        JSValue old = domObjects()->get(node);
+        if (!JS_IsNull(old))
+            JS_FreeValueRT(rt, old);
+        domObjects()->set(node, duped);
         return;
     }
     NodeMap* documentDict = domNodesPerDocument()->get(document);
@@ -263,7 +285,10 @@ void ScriptInterpreter::putDOMNodeForDocument(Document* document, Node* node, JS
         documentDict = new NodeMap;
         domNodesPerDocument()->set(document, documentDict);
     }
-    documentDict->set(node, obj);
+    JSValue old = documentDict->get(node);
+    if (!JS_IsNull(old))
+        JS_FreeValueRT(rt, old);
+    documentDict->set(node, duped);
 }
 
 void ScriptInterpreter::forgetAllDOMNodesForDocument(Document* document)
