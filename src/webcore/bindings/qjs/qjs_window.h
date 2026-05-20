@@ -154,7 +154,7 @@ namespace QJS {
 
         enum {
             // Functions
-            AToB, BToA, Open, SetTimeout,
+            AToB, BToA, Open, Alert, Confirm, SetTimeout,
             ClearTimeout, SetInterval, ClearInterval, CaptureEvents, 
             ReleaseEvents, AddEventListener, RemoveEventListener, Scroll,
             ScrollBy, ScrollTo, MoveBy, MoveTo,

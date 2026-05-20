@@ -1,0 +1,93 @@
+<html>
+<head><title>DOM Binding Test Suite</title></head>
+<body>
+<div id="container"></div>
+<form id="form1"><input id="input1" type="text" value="test"><select id="sel1"><option>A</option><option>B</option></select></form>
+<script>
+var R = [];
+function T(name, result) { R.push(name + ':' + (result ? 'PASS' : 'FAIL')); }
+
+// === Document ===
+T('document.getElementById', document.getElementById('container') !== null);
+T('document.createElement', document.createElement('div') !== null);
+T('document.createTextNode', document.createTextNode('hi') !== null);
+T('document.title', document.title === 'DOM Binding Test Suite');
+T('document.body', document.body !== null);
+
+// === Element ===
+var el = document.createElement('div');
+el.id = 'test1';
+el.className = 'cls';
+el.setAttribute('data-x', '123');
+document.getElementById('container').appendChild(el);
+T('element.id', el.id === 'test1');
+T('element.className', el.className === 'cls');
+T('element.getAttribute', el.getAttribute('data-x') === '123');
+T('element.tagName', el.tagName === 'DIV');
+T('element.appendChild', el.parentNode === document.getElementById('container'));
+
+// === Node ===
+var txt = document.createTextNode('hello');
+el.appendChild(txt);
+T('node.nodeType', txt.nodeType === 3);
+T('node.nodeValue', txt.nodeValue === 'hello');
+T('node.parentNode', txt.parentNode === el);
+T('node.firstChild', el.firstChild === txt);
+T('node.childNodes.length', el.childNodes.length === 1);
+
+// === innerHTML ===
+el.innerHTML = '<span>inner</span>';
+T('element.innerHTML set', el.innerHTML.indexOf('inner') >= 0);
+T('element.firstChild after innerHTML', el.firstChild !== null && el.firstChild.tagName === 'SPAN');
+
+// === Style ===
+el.style.color = 'red';
+el.style.fontSize = '12px';
+T('element.style.color', el.style.color === 'red');
+T('element.style.fontSize', el.style.fontSize === '12px');
+
+// === Form ===
+var form = document.getElementById('form1');
+var input = document.getElementById('input1');
+T('form element', form !== null);
+T('input.value', input.value === 'test');
+T('input.type', input.type === 'text');
+
+// === Select ===
+var sel = document.getElementById('sel1');
+T('select.options.length', sel.options.length === 2);
+T('select.selectedIndex', sel.selectedIndex === 0);
+
+// === Window ===
+T('window.document', window.document === document);
+T('window.navigator', window.navigator !== null);
+T('navigator.appName', navigator.appName === 'Netscape');
+T('navigator.userAgent', typeof navigator.userAgent === 'string' && navigator.userAgent.length > 0);
+
+// === Timer ===
+var timerOk = false;
+setTimeout(function() { timerOk = true; }, 1);
+
+// === Events ===
+var clicked = false;
+el.onclick = function() { clicked = true; };
+// Simulate click via dispatchEvent if available
+if (el.dispatchEvent) {
+    var evt = document.createEvent('MouseEvents');
+    if (evt && evt.initMouseEvent) {
+        evt.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        el.dispatchEvent(evt);
+    }
+}
+T('onclick handler', clicked);
+
+// === Output ===
+var pass = 0, fail = 0;
+for (var i = 0; i < R.length; i++) {
+    if (R[i].indexOf(':PASS') > 0) pass++; else fail++;
+}
+document.title = 'RESULT:' + pass + '/' + (pass+fail) + ' ' + R.join('|');
+alert('RESULT:' + pass + '/' + (pass+fail) + ' ' + R.join('|'));
+</script>
+</body>
+</html>

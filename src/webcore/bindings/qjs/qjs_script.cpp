@@ -184,7 +184,10 @@ void ScriptController::initScriptIfNeeded()
     m_script = new ScriptInterpreter(m_context, globalObject, m_frame);
     JS_SetContextOpaque(m_context, m_script.get());
 
-    // Create and register the Window object (provides setTimeout, navigator, etc.)
+    // Register Window functions (alert, setTimeout, etc.) on global object
+    WindowPrototype::initPrototype(m_context, globalObject);
+
+    // Create and register the Window object
     Window* window = new Window(m_frame->domWindow());
     Window::storeWindow(window);
 

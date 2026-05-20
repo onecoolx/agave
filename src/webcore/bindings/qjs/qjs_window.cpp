@@ -1303,6 +1303,14 @@ JSValue WindowFunc::callAsFunction(JSContext* ctx, JSValueConst this_val, int ar
 
             return JS_NewStringLen(ctx, out.data(), out.size());
         }
+  case Window::Alert:
+    if (frame && frame->page())
+        frame->page()->chrome()->runJavaScriptAlert(frame, str);
+    return JS_UNDEFINED;
+  case Window::Confirm:
+    if (frame && frame->page())
+        return JS_NewBool(ctx, frame->page()->chrome()->runJavaScriptConfirm(frame, str));
+    return JS_FALSE;
   case Window::Open:
   {
       if (argc < 1)
@@ -2000,9 +2008,35 @@ JSValue WindowPrototype::self(JSContext* ctx)
     return proto;
 }
 
+static JSValue js_window_func(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int magic)
+{
+    return WindowFunc::callAsFunction(ctx, this_val, argc, argv, magic);
+}
+
+static const JSCFunctionListEntry js_window_funcs[] = {
+    JS_CFUNC_MAGIC_DEF("alert", 1, js_window_func, Window::Alert),
+    JS_CFUNC_MAGIC_DEF("confirm", 1, js_window_func, Window::Confirm),
+    JS_CFUNC_MAGIC_DEF("open", 3, js_window_func, Window::Open),
+    JS_CFUNC_MAGIC_DEF("setTimeout", 2, js_window_func, Window::SetTimeout),
+    JS_CFUNC_MAGIC_DEF("clearTimeout", 1, js_window_func, Window::ClearTimeout),
+    JS_CFUNC_MAGIC_DEF("setInterval", 2, js_window_func, Window::SetInterval),
+    JS_CFUNC_MAGIC_DEF("clearInterval", 1, js_window_func, Window::ClearInterval),
+    JS_CFUNC_MAGIC_DEF("scrollBy", 2, js_window_func, Window::ScrollBy),
+    JS_CFUNC_MAGIC_DEF("scrollTo", 2, js_window_func, Window::ScrollTo),
+    JS_CFUNC_MAGIC_DEF("scroll", 2, js_window_func, Window::Scroll),
+    JS_CFUNC_MAGIC_DEF("moveBy", 2, js_window_func, Window::MoveBy),
+    JS_CFUNC_MAGIC_DEF("moveTo", 2, js_window_func, Window::MoveTo),
+    JS_CFUNC_MAGIC_DEF("resizeBy", 2, js_window_func, Window::ResizeBy),
+    JS_CFUNC_MAGIC_DEF("resizeTo", 2, js_window_func, Window::ResizeTo),
+    JS_CFUNC_MAGIC_DEF("atob", 1, js_window_func, Window::AToB),
+    JS_CFUNC_MAGIC_DEF("btoa", 1, js_window_func, Window::BToA),
+    JS_CFUNC_MAGIC_DEF("addEventListener", 3, js_window_func, Window::AddEventListener),
+    JS_CFUNC_MAGIC_DEF("removeEventListener", 3, js_window_func, Window::RemoveEventListener),
+};
+
 void WindowPrototype::initPrototype(JSContext* ctx, JSValue this_obj)
 {
-    // Window function properties will be set up when the Window object is created
+    JS_SetPropertyFunctionList(ctx, this_obj, js_window_funcs, sizeof(js_window_funcs) / sizeof(js_window_funcs[0]));
 }
 
 JSClassID Navigator::js_class_id = 0;
