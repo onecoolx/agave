@@ -167,7 +167,7 @@ namespace QJS {
     double valueToDouble(JSContext*, JSValue);
     bool valueToBoolean(JSContext*, JSValue);
 
-    template <typename T> inline JSValue toJS(JSContext* ctx, PassRefPtr<T> ptr) { return toJS(ctx, ptr.get()); }
+    
 
 
     static inline void gcProtect(JSContext* ctx, JSValue val) 

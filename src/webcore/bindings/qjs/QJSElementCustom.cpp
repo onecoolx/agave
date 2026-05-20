@@ -83,7 +83,7 @@ JSValue JSElement::setAttributeNode(JSContext *ctx, JSValueConst this_val, int a
     if (!allowSettingSrcToJavascriptURL(ctx, imp, newAttr->name(), newAttr->value()))
         return JS_UNDEFINED;
 
-    JSValue result = toJS(ctx, QJS::getPtr(imp->setAttributeNode(newAttr, ec)));
+    JSValue result = toJS(ctx, static_cast<Node*>(QJS::getPtr(imp->setAttributeNode(newAttr, ec))));
     setDOMException(ctx, ec);
     return result;
 }
@@ -116,7 +116,7 @@ JSValue JSElement::setAttributeNodeNS(JSContext *ctx, JSValueConst this_val, int
     if (!allowSettingSrcToJavascriptURL(ctx, imp, newAttr->name(), newAttr->value()))
         return JS_UNDEFINED;
 
-    JSValue result = toJS(ctx, QJS::getPtr(imp->setAttributeNodeNS(newAttr, ec)));
+    JSValue result = toJS(ctx, static_cast<Node*>(QJS::getPtr(imp->setAttributeNodeNS(newAttr, ec))));
     setDOMException(ctx, ec);
     return result;
 }

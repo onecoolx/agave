@@ -112,7 +112,7 @@ JSValue JSStyleSheetList::nameGetter(JSContext* ctx, JSValueConst this_obj, cons
     HTMLStyleElement* elem = impl->getNamedItem(String(prop));
     if (!elem)
         return JS_NULL;
-    return toJS(ctx, PassRefPtr<Node>(elem));
+    return toJS(ctx, static_cast<Node*>(elem));
 }
 
 // --- JSHTMLFormElement ---

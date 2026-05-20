@@ -144,25 +144,24 @@ void JSNode::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func)
     root->m_inSubtreeMark = false;
 }
 
-JSValue toJS(JSContext *ctx, PassRefPtr<Node> n)
+JSValue toJS(JSContext *ctx, Node* node)
 {
-    Node* node = n.get(); 
     if (!node)
         return JS_NULL;
 
     Document* doc = node->document();
     JSValue ret = QJS::ScriptInterpreter::getDOMNodeForDocument(doc, node);
-    if (!JS_IsNull(ret)) {
+    if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT) {
         return ret;
     }
 
     switch (node->nodeType()) {
         case Node::ELEMENT_NODE:
             if (node->isHTMLElement())
-                ret = createJSHTMLWrapper(ctx, static_pointer_cast<HTMLElement>(n));
+                ret = createJSHTMLWrapper(ctx, static_cast<HTMLElement*>(node));
 #if ENABLE(SVG)
             else if (node->isSVGElement())
-                ret = createJSSVGWrapper(ctx, static_pointer_cast<SVGElement>(n));
+                ret = createJSSVGWrapper(ctx, static_cast<SVGElement*>(node));
 #endif
             else
                 ret = JSElement::create(ctx, static_cast<Element*>(node));

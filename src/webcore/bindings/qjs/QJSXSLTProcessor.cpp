@@ -133,7 +133,7 @@ JSValue JSXSLTProcessorPrototypeFunction::callAsFunction(JSContext* ctx, JSValue
             Node* node = (Node*)JS_GetOpaque(argv[0], JSNode::js_class_id);
             Document* doc = (Document*)JS_GetOpaque(argv[1], JSDocument::js_class_id);
             if (node && doc) {
-                return toJS(ctx, imp->transformToFragment(node, doc).get());
+                return toJS(ctx, static_cast<Node*>(imp->transformToFragment(node, doc).get()));
             }
             break;
         }
