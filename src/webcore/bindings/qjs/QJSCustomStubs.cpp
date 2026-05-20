@@ -50,7 +50,7 @@ void JSEventTargetNode::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_
 
 JSValue JSEventTargetNodePrototype::self(JSContext *ctx)
 {
-    return JS_NULL;
+    return JSNodePrototype::self(ctx);
 }
 
 // JSHTMLInputElementBase
