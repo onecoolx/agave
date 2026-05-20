@@ -694,7 +694,6 @@ sub GenerateImplementation
         push(@implContent, "        obj = JS_DupValue(ctx, obj);\n");
         push(@implContent, "    }\n");
         push(@implContent, "    JS_FreeValue(ctx, globalObj);\n");
-        push(@implContent, "    JS_FreeValue(ctx, obj);\n");
         push(@implContent, "    return obj;\n");
         push(@implContent, "}\n\n");
 
@@ -788,7 +787,6 @@ sub GenerateImplementation
         push(@implContent, "        obj = JS_DupValue(ctx, obj);\n");
         push(@implContent, "    }\n");
         push(@implContent, "    JS_FreeValue(ctx, globalObj);\n");
-        push(@implContent, "    JS_FreeValue(ctx, obj);\n");
         push(@implContent, "    return obj;\n");
         push(@implContent, "}\n\n");
     }

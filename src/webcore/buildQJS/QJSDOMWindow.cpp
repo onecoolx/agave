@@ -27,9 +27,6 @@
 #include "config.h"
 
 #include "QJSDOMWindow.h"
-#include "qjs_binding.h"
-#include "Frame.h"
-#include "DOMWindow.h"
 
 #include "BarInfo.h"
 #include "CSSMutableStyleDeclaration.h"
@@ -37,6 +34,8 @@
 #include "CSSStyleDeclaration.h"
 #include "DOMSelection.h"
 #include "DOMWindow.h"
+#include "qjs_binding.h"
+#include "Frame.h"
 #include "Document.h"
 #include "Element.h"
 #include "History.h"

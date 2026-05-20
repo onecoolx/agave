@@ -83,7 +83,6 @@ JSValue JSHTMLAreaElementConstructor::self(JSContext * ctx)
         obj = JS_DupValue(ctx, obj);
     }
     JS_FreeValue(ctx, globalObj);
-    JS_FreeValue(ctx, obj);
     return obj;
 }
 
@@ -102,7 +101,6 @@ JSValue JSHTMLAreaElementPrototype::self(JSContext * ctx)
         obj = JS_DupValue(ctx, obj);
     }
     JS_FreeValue(ctx, globalObj);
-    JS_FreeValue(ctx, obj);
     return obj;
 }
 
