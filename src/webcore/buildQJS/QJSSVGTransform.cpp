@@ -203,7 +203,7 @@ JSValue JSSVGTransform::getValueProperty(JSContext *ctx, JSValueConst this_val, 
         case TypeAttrNum: {
             SVGTransform imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.type());
+            return JS_NewInt32(ctx, imp.type());
         }
         case MatrixAttrNum: {
             SVGTransform imp(*impl());
@@ -213,7 +213,7 @@ JSValue JSSVGTransform::getValueProperty(JSContext *ctx, JSValueConst this_val, 
         case AngleAttrNum: {
             SVGTransform imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.angle());
+            return JS_NewInt32(ctx, imp.angle());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);

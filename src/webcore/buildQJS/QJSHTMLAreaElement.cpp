@@ -181,7 +181,7 @@ JSValue JSHTMLAreaElement::getValueProperty(JSContext *ctx, JSValueConst this_va
         }
         case TabIndexAttrNum: {
             HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->tabIndex());
+            return JS_NewInt32(ctx, imp->tabIndex());
         }
         case TargetAttrNum: {
             HTMLAreaElement* imp = (HTMLAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);

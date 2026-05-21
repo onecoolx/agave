@@ -119,11 +119,11 @@ JSValue JSSVGAnimatedInteger::getValueProperty(JSContext *ctx, JSValueConst this
     switch (token) {
         case BaseValAttrNum: {
             SVGAnimatedInteger* imp = (SVGAnimatedInteger*)JS_GetOpaque(this_val, JSSVGAnimatedInteger::js_class_id);
-            return JS_NewBigUint64(ctx, imp->baseVal());
+            return JS_NewInt32(ctx, imp->baseVal());
         }
         case AnimValAttrNum: {
             SVGAnimatedInteger* imp = (SVGAnimatedInteger*)JS_GetOpaque(this_val, JSSVGAnimatedInteger::js_class_id);
-            return JS_NewBigUint64(ctx, imp->animVal());
+            return JS_NewInt32(ctx, imp->animVal());
         }
     }
     return JS_NULL;

@@ -236,7 +236,7 @@ JSValue JSCSSPrimitiveValue::getValueProperty(JSContext *ctx, JSValueConst this_
     switch (token) {
         case PrimitiveTypeAttrNum: {
             CSSPrimitiveValue* imp = (CSSPrimitiveValue*)JS_GetOpaque(this_val, JSCSSPrimitiveValue::js_class_id);
-            return JS_NewBigUint64(ctx, imp->primitiveType());
+            return JS_NewInt32(ctx, imp->primitiveType());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);
@@ -267,7 +267,7 @@ JSValue JSCSSPrimitiveValuePrototypeFunction::callAsFunction(JSContext* ctx, JSV
         case JSCSSPrimitiveValue::GetFloatValueFuncNum: {
             unsigned short unitType = valueToInt32(ctx, argv[0]);
 
-            JSValue result = JS_NewBigUint64(ctx, imp->getFloatValue(unitType));
+            JSValue result = JS_NewInt32(ctx, imp->getFloatValue(unitType));
             return result;
         }
         case JSCSSPrimitiveValue::SetStringValueFuncNum: {

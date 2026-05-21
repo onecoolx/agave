@@ -122,7 +122,7 @@ JSValue JSHistory::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
     switch (token) {
         case LengthAttrNum: {
             History* imp = (History*)JS_GetOpaque(this_val, JSHistory::js_class_id);
-            return JS_NewBigUint64(ctx, imp->length());
+            return JS_NewInt32(ctx, imp->length());
         }
     }
     return JS_NULL;

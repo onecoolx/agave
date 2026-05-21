@@ -155,7 +155,7 @@ JSValue JSNodeList::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
     switch (token) {
         case LengthAttrNum: {
             NodeList* imp = (NodeList*)JS_GetOpaque(this_val, JSNodeList::js_class_id);
-            return JS_NewBigUint64(ctx, imp->length());
+            return JS_NewInt32(ctx, imp->length());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);

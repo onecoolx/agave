@@ -119,7 +119,7 @@ JSValue JSSVGNumber::getValueProperty(JSContext *ctx, JSValueConst this_val, int
         case ValueAttrNum: {
             float imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp);
+            return JS_NewInt32(ctx, imp);
         }
     }
     return JS_NULL;

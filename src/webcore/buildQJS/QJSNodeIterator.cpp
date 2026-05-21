@@ -129,7 +129,7 @@ JSValue JSNodeIterator::getValueProperty(JSContext *ctx, JSValueConst this_val, 
         }
         case WhatToShowAttrNum: {
             NodeIterator* imp = (NodeIterator*)JS_GetOpaque(this_val, JSNodeIterator::js_class_id);
-            return JS_NewBigUint64(ctx, imp->whatToShow());
+            return JS_NewInt32(ctx, imp->whatToShow());
         }
         case FilterAttrNum: {
             NodeIterator* imp = (NodeIterator*)JS_GetOpaque(this_val, JSNodeIterator::js_class_id);

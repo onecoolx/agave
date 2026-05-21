@@ -118,35 +118,35 @@ JSValue JSScreen::getValueProperty(JSContext *ctx, JSValueConst this_val, int to
     switch (token) {
         case HeightAttrNum: {
             Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
-            return JS_NewBigUint64(ctx, imp->height());
+            return JS_NewInt32(ctx, imp->height());
         }
         case WidthAttrNum: {
             Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
-            return JS_NewBigUint64(ctx, imp->width());
+            return JS_NewInt32(ctx, imp->width());
         }
         case ColorDepthAttrNum: {
             Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
-            return JS_NewBigUint64(ctx, imp->colorDepth());
+            return JS_NewInt32(ctx, imp->colorDepth());
         }
         case PixelDepthAttrNum: {
             Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
-            return JS_NewBigUint64(ctx, imp->pixelDepth());
+            return JS_NewInt32(ctx, imp->pixelDepth());
         }
         case AvailLeftAttrNum: {
             Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
-            return JS_NewBigUint64(ctx, imp->availLeft());
+            return JS_NewInt32(ctx, imp->availLeft());
         }
         case AvailTopAttrNum: {
             Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
-            return JS_NewBigUint64(ctx, imp->availTop());
+            return JS_NewInt32(ctx, imp->availTop());
         }
         case AvailHeightAttrNum: {
             Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
-            return JS_NewBigUint64(ctx, imp->availHeight());
+            return JS_NewInt32(ctx, imp->availHeight());
         }
         case AvailWidthAttrNum: {
             Screen* imp = (Screen*)JS_GetOpaque(this_val, JSScreen::js_class_id);
-            return JS_NewBigUint64(ctx, imp->availWidth());
+            return JS_NewInt32(ctx, imp->availWidth());
         }
     }
     return JS_NULL;

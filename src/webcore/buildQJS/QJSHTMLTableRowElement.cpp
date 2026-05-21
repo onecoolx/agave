@@ -164,11 +164,11 @@ JSValue JSHTMLTableRowElement::getValueProperty(JSContext *ctx, JSValueConst thi
     switch (token) {
         case RowIndexAttrNum: {
             HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->rowIndex());
+            return JS_NewInt32(ctx, imp->rowIndex());
         }
         case SectionRowIndexAttrNum: {
             HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->sectionRowIndex());
+            return JS_NewInt32(ctx, imp->sectionRowIndex());
         }
         case CellsAttrNum: {
             HTMLTableRowElement* imp = (HTMLTableRowElement*)JS_GetOpaque(this_val, JSNode::js_class_id);

@@ -135,7 +135,7 @@ JSValue JSSVGNumberList::getValueProperty(JSContext *ctx, JSValueConst this_val,
     switch (token) {
         case NumberOfItemsAttrNum: {
             SVGNumberList* imp = (SVGNumberList*)JS_GetOpaque(this_val, JSSVGNumberList::js_class_id);
-            return JS_NewBigUint64(ctx, imp->numberOfItems());
+            return JS_NewInt32(ctx, imp->numberOfItems());
         }
     }
     return JS_NULL;

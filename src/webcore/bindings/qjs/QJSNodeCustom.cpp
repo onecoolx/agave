@@ -152,6 +152,7 @@ JSValue toJS(JSContext *ctx, Node* node)
     Document* doc = node->document();
     JSValue ret = QJS::ScriptInterpreter::getDOMNodeForDocument(doc, node);
     if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT) {
+        return JS_DupValue(ctx, ret);
     }
 
     switch (node->nodeType()) {

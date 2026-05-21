@@ -171,7 +171,7 @@ JSValue JSCSSStyleDeclaration::getValueProperty(JSContext *ctx, JSValueConst thi
         }
         case LengthAttrNum: {
             CSSStyleDeclaration* imp = (CSSStyleDeclaration*)JS_GetOpaque(this_val, JSCSSStyleDeclaration::js_class_id);
-            return JS_NewBigUint64(ctx, imp->length());
+            return JS_NewInt32(ctx, imp->length());
         }
         case ParentRuleAttrNum: {
             CSSStyleDeclaration* imp = (CSSStyleDeclaration*)JS_GetOpaque(this_val, JSCSSStyleDeclaration::js_class_id);

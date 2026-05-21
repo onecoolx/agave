@@ -300,12 +300,12 @@ JSValue JSSVGTextContentElementPrototypeFunction::callAsFunction(JSContext* ctx,
     switch (token) {
         case JSSVGTextContentElement::GetNumberOfCharsFuncNum: {
 
-            JSValue result = JS_NewBigUint64(ctx, imp->getNumberOfChars());
+            JSValue result = JS_NewInt32(ctx, imp->getNumberOfChars());
             return result;
         }
         case JSSVGTextContentElement::GetComputedTextLengthFuncNum: {
 
-            JSValue result = JS_NewBigUint64(ctx, imp->getComputedTextLength());
+            JSValue result = JS_NewInt32(ctx, imp->getComputedTextLength());
             return result;
         }
         case JSSVGTextContentElement::GetSubStringLengthFuncNum: {
@@ -323,7 +323,7 @@ JSValue JSSVGTextContentElementPrototypeFunction::callAsFunction(JSContext* ctx,
                 return JS_UNDEFINED;
             }
 
-            JSValue result = JS_NewBigUint64(ctx, imp->getSubStringLength(offset, length, ec));
+            JSValue result = JS_NewInt32(ctx, imp->getSubStringLength(offset, length, ec));
             setDOMException(ctx, ec);
             return result;
         }
@@ -375,14 +375,14 @@ JSValue JSSVGTextContentElementPrototypeFunction::callAsFunction(JSContext* ctx,
                 return JS_UNDEFINED;
             }
 
-            JSValue result = JS_NewBigUint64(ctx, imp->getRotationOfChar(offset, ec));
+            JSValue result = JS_NewInt32(ctx, imp->getRotationOfChar(offset, ec));
             setDOMException(ctx, ec);
             return result;
         }
         case JSSVGTextContentElement::GetCharNumAtPositionFuncNum: {
             FloatPoint point = toSVGPoint(argv[0]);
 
-            JSValue result = JS_NewBigUint64(ctx, imp->getCharNumAtPosition(point));
+            JSValue result = JS_NewInt32(ctx, imp->getCharNumAtPosition(point));
             return result;
         }
         case JSSVGTextContentElement::SelectSubStringFuncNum: {

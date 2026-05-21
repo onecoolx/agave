@@ -109,8 +109,8 @@ namespace QJS {
             return JS_NULL;
 
         JSValue ret = ScriptInterpreter::getDOMObject(domObj);
-        if (!JS_IsNull(ret)) {
-            return ret;
+        if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT) {
+            return JS_DupValue(ctx, ret);
         }
         ret = QJSDOMObj::create(ctx, domObj);
         ScriptInterpreter::putDOMObject(domObj, ret);

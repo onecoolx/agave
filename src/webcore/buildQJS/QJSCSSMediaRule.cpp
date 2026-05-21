@@ -193,7 +193,7 @@ JSValue JSCSSMediaRulePrototypeFunction::callAsFunction(JSContext* ctx, JSValueC
                 return JS_UNDEFINED;
             }
 
-            JSValue result = JS_NewBigUint64(ctx, imp->insertRule(rule, index, ec));
+            JSValue result = JS_NewInt32(ctx, imp->insertRule(rule, index, ec));
             setDOMException(ctx, ec);
             return result;
         }

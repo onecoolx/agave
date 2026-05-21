@@ -181,7 +181,7 @@ JSValue JSHTMLTextAreaElement::getValueProperty(JSContext *ctx, JSValueConst thi
         }
         case ColsAttrNum: {
             HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->cols());
+            return JS_NewInt32(ctx, imp->cols());
         }
         case DisabledAttrNum: {
             HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
@@ -197,11 +197,11 @@ JSValue JSHTMLTextAreaElement::getValueProperty(JSContext *ctx, JSValueConst thi
         }
         case RowsAttrNum: {
             HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->rows());
+            return JS_NewInt32(ctx, imp->rows());
         }
         case TabIndexAttrNum: {
             HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->tabIndex());
+            return JS_NewInt32(ctx, imp->tabIndex());
         }
         case TypeAttrNum: {
             HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
@@ -213,11 +213,11 @@ JSValue JSHTMLTextAreaElement::getValueProperty(JSContext *ctx, JSValueConst thi
         }
         case SelectionStartAttrNum: {
             HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->selectionStart());
+            return JS_NewInt32(ctx, imp->selectionStart());
         }
         case SelectionEndAttrNum: {
             HTMLTextAreaElement* imp = (HTMLTextAreaElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->selectionEnd());
+            return JS_NewInt32(ctx, imp->selectionEnd());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);

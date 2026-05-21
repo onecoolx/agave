@@ -222,7 +222,7 @@ JSValue ScriptInterpreter::getDOMObject(void* objectHandle)
 
 void ScriptInterpreter::putDOMObject(void* objectHandle, JSValue obj) 
 {
-    domObjects()->set(objectHandle, obj); // no DupValue for non-Node objects
+    domObjects()->set(objectHandle, JS_DupValueRT(GLOBAL()->runtime, obj));
 }
 
 void ScriptInterpreter::forgetDOMObject(void* objectHandle)
@@ -628,7 +628,7 @@ JSValue toJS(JSContext* ctx, Document* doc)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMNodeForDocument(doc, doc);
     if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
-        return ret;
+        return JS_DupValue(ctx, ret);
     ret = JSDocument::create(ctx, doc);
     QJS::ScriptInterpreter::putDOMNodeForDocument(doc, doc, ret);
     return ret;
@@ -640,7 +640,7 @@ JSValue toJS(JSContext* ctx, Event* event)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(event);
     if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
-        return ret;
+        return JS_DupValue(ctx, ret);
 
     if (event->isKeyboardEvent())
         ret = JSKeyboardEvent::create(ctx, static_cast<KeyboardEvent*>(event));
@@ -663,7 +663,7 @@ JSValue toJS(JSContext* ctx, CSSRule* rule)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(rule);
     if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
-        return ret;
+        return JS_DupValue(ctx, ret);
 
     switch (rule->type()) {
     case CSSRule::STYLE_RULE:
@@ -692,7 +692,7 @@ JSValue toJS(JSContext* ctx, CSSValue* value)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(value);
     if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
-        return ret;
+        return JS_DupValue(ctx, ret);
 
     if (value->isValueList())
         ret = JSCSSValueList::create(ctx, static_cast<CSSValueList*>(value));
@@ -711,7 +711,7 @@ JSValue toJS(JSContext* ctx, StyleSheet* sheet)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(sheet);
     if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
-        return ret;
+        return JS_DupValue(ctx, ret);
 
     if (sheet->isCSSStyleSheet())
         ret = JSCSSStyleSheet::create(ctx, static_cast<CSSStyleSheet*>(sheet));

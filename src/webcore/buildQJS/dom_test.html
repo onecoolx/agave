@@ -1,0 +1,85 @@
+<html><body>
+<div id="container"><span id="child1" class="cls">text1</span><p id="child2">text2</p></div>
+<form id="form1"><input id="inp1" type="text" value="hello"><select id="sel1"><option>A</option><option>B</option></select></form>
+<script>
+var R=[], P=0, F=0;
+function T(n,v){if(v){P++;R.push(n+":PASS");}else{F++;R.push(n+":FAIL");}}
+
+// Document
+T("doc.getElementById", document.getElementById("container")!==null);
+T("doc.createElement", document.createElement("div")!==null);
+T("doc.createTextNode", document.createTextNode("x")!==null);
+T("doc.body", document.body!==null);
+T("doc.body.tagName", document.body.tagName==="BODY");
+
+// Element basics
+var el=document.getElementById("container");
+T("el.tagName", el.tagName==="DIV");
+T("el.id", el.id==="container");
+T("el.className", document.getElementById("child1").className==="cls");
+
+// DOM tree
+T("el.childNodes", el.childNodes.length===2);
+T("el.firstChild", el.firstChild.tagName==="SPAN");
+T("el.lastChild", el.lastChild.tagName==="P");
+T("child.parentNode", el.firstChild.parentNode===el);
+T("child.nextSibling", el.firstChild.nextSibling.tagName==="P");
+
+// createElement + appendChild
+var d=document.createElement("div");
+d.id="new1";
+el.appendChild(d);
+T("appendChild", d.parentNode===el);
+T("appendChild.id", d.id==="new1");
+T("childNodes+1", el.childNodes.length===3);
+
+// removeChild
+el.removeChild(d);
+T("removeChild", d.parentNode===null);
+T("childNodes-1", el.childNodes.length===2);
+
+// insertBefore
+var s=document.createElement("span");
+el.insertBefore(s, el.lastChild);
+T("insertBefore", el.childNodes.length===3);
+
+// setAttribute/getAttribute
+el.setAttribute("data-x","123");
+T("setAttribute", el.getAttribute("data-x")==="123");
+
+// innerHTML
+var box=document.createElement("div");
+box.innerHTML="<b>bold</b>";
+T("innerHTML.set", box.innerHTML.indexOf("bold")>=0);
+T("innerHTML.child", box.firstChild.tagName==="B");
+
+// Style
+el.style.color="red";
+T("style.color", el.style.color==="red");
+el.style.fontSize="14px";
+T("style.fontSize", el.style.fontSize==="14px");
+
+// Form
+var form=document.getElementById("form1");
+var inp=document.getElementById("inp1");
+T("input.value", inp.value==="hello");
+T("input.type", inp.type==="text");
+var sel=document.getElementById("sel1");
+T("select.options", sel.options.length===2);
+
+// Window
+T("window===self", window===self);
+T("typeof setTimeout", typeof setTimeout==="function");
+
+// Text node
+var txt=document.createTextNode("hello");
+T("textNode.nodeType", txt.nodeType===3);
+T("textNode.nodeValue", txt.nodeValue==="hello");
+
+// Node types
+T("element.nodeType", el.nodeType===1);
+T("document.nodeType", document.nodeType===9);
+
+// Result
+alert("RESULT:"+P+"/"+(P+F)+"|"+R.join("|"));
+</script></body></html>

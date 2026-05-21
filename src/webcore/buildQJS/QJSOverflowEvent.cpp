@@ -137,7 +137,7 @@ JSValue JSOverflowEvent::getValueProperty(JSContext *ctx, JSValueConst this_val,
     switch (token) {
         case OrientAttrNum: {
             OverflowEvent* imp = (OverflowEvent*)JS_GetOpaque(this_val, JSOverflowEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->orient());
+            return JS_NewInt32(ctx, imp->orient());
         }
         case HorizontalOverflowAttrNum: {
             OverflowEvent* imp = (OverflowEvent*)JS_GetOpaque(this_val, JSOverflowEvent::js_class_id);

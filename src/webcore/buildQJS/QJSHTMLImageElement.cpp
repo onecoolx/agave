@@ -176,11 +176,11 @@ JSValue JSHTMLImageElement::getValueProperty(JSContext *ctx, JSValueConst this_v
         }
         case HeightAttrNum: {
             HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->height());
+            return JS_NewInt32(ctx, imp->height());
         }
         case HspaceAttrNum: {
             HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->hspace());
+            return JS_NewInt32(ctx, imp->hspace());
         }
         case IsMapAttrNum: {
             HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
@@ -200,11 +200,11 @@ JSValue JSHTMLImageElement::getValueProperty(JSContext *ctx, JSValueConst this_v
         }
         case VspaceAttrNum: {
             HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->vspace());
+            return JS_NewInt32(ctx, imp->vspace());
         }
         case WidthAttrNum: {
             HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->width());
+            return JS_NewInt32(ctx, imp->width());
         }
         case CompleteAttrNum: {
             HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
@@ -216,19 +216,19 @@ JSValue JSHTMLImageElement::getValueProperty(JSContext *ctx, JSValueConst this_v
         }
         case NaturalHeightAttrNum: {
             HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->naturalHeight());
+            return JS_NewInt32(ctx, imp->naturalHeight());
         }
         case NaturalWidthAttrNum: {
             HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->naturalWidth());
+            return JS_NewInt32(ctx, imp->naturalWidth());
         }
         case XAttrNum: {
             HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->x());
+            return JS_NewInt32(ctx, imp->x());
         }
         case YAttrNum: {
             HTMLImageElement* imp = (HTMLImageElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->y());
+            return JS_NewInt32(ctx, imp->y());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);

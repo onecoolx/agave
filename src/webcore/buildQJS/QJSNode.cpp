@@ -238,7 +238,7 @@ JSValue JSNode::getValueProperty(JSContext *ctx, JSValueConst this_val, int toke
         }
         case NodeTypeAttrNum: {
             Node* imp = (Node*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->nodeType());
+            return JS_NewInt32(ctx, imp->nodeType());
         }
         case ParentNodeAttrNum: {
             Node* imp = (Node*)JS_GetOpaque(this_val, JSNode::js_class_id);

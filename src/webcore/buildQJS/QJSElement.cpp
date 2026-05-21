@@ -208,19 +208,19 @@ JSValue JSElement::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
         }
         case OffsetLeftAttrNum: {
             Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->offsetLeft());
+            return JS_NewInt32(ctx, imp->offsetLeft());
         }
         case OffsetTopAttrNum: {
             Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->offsetTop());
+            return JS_NewInt32(ctx, imp->offsetTop());
         }
         case OffsetWidthAttrNum: {
             Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->offsetWidth());
+            return JS_NewInt32(ctx, imp->offsetWidth());
         }
         case OffsetHeightAttrNum: {
             Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->offsetHeight());
+            return JS_NewInt32(ctx, imp->offsetHeight());
         }
         case OffsetParentAttrNum: {
             Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
@@ -228,35 +228,35 @@ JSValue JSElement::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
         }
         case ClientLeftAttrNum: {
             Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->clientLeft());
+            return JS_NewInt32(ctx, imp->clientLeft());
         }
         case ClientTopAttrNum: {
             Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->clientTop());
+            return JS_NewInt32(ctx, imp->clientTop());
         }
         case ClientWidthAttrNum: {
             Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->clientWidth());
+            return JS_NewInt32(ctx, imp->clientWidth());
         }
         case ClientHeightAttrNum: {
             Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->clientHeight());
+            return JS_NewInt32(ctx, imp->clientHeight());
         }
         case ScrollLeftAttrNum: {
             Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->scrollLeft());
+            return JS_NewInt32(ctx, imp->scrollLeft());
         }
         case ScrollTopAttrNum: {
             Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->scrollTop());
+            return JS_NewInt32(ctx, imp->scrollTop());
         }
         case ScrollWidthAttrNum: {
             Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->scrollWidth());
+            return JS_NewInt32(ctx, imp->scrollWidth());
         }
         case ScrollHeightAttrNum: {
             Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->scrollHeight());
+            return JS_NewInt32(ctx, imp->scrollHeight());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);

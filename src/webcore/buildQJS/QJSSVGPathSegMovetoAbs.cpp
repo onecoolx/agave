@@ -120,11 +120,11 @@ JSValue JSSVGPathSegMovetoAbs::getValueProperty(JSContext *ctx, JSValueConst thi
     switch (token) {
         case XAttrNum: {
             SVGPathSegMovetoAbs* imp = (SVGPathSegMovetoAbs*)JS_GetOpaque(this_val, JSSVGPathSegMovetoAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->x());
+            return JS_NewInt32(ctx, imp->x());
         }
         case YAttrNum: {
             SVGPathSegMovetoAbs* imp = (SVGPathSegMovetoAbs*)JS_GetOpaque(this_val, JSSVGPathSegMovetoAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->y());
+            return JS_NewInt32(ctx, imp->y());
         }
     }
     return JS_NULL;

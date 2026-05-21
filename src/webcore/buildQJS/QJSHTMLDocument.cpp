@@ -191,11 +191,11 @@ JSValue JSHTMLDocument::getValueProperty(JSContext *ctx, JSValueConst this_val, 
         }
         case WidthAttrNum: {
             HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->width());
+            return JS_NewInt32(ctx, imp->width());
         }
         case HeightAttrNum: {
             HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->height());
+            return JS_NewInt32(ctx, imp->height());
         }
         case DirAttrNum: {
             HTMLDocument* imp = (HTMLDocument*)JS_GetOpaque(this_val, JSNode::js_class_id);

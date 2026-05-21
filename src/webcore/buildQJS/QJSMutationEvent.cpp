@@ -201,7 +201,7 @@ JSValue JSMutationEvent::getValueProperty(JSContext *ctx, JSValueConst this_val,
         }
         case AttrChangeAttrNum: {
             MutationEvent* imp = (MutationEvent*)JS_GetOpaque(this_val, JSMutationEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->attrChange());
+            return JS_NewInt32(ctx, imp->attrChange());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);

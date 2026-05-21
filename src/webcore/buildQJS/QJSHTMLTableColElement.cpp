@@ -160,7 +160,7 @@ JSValue JSHTMLTableColElement::getValueProperty(JSContext *ctx, JSValueConst thi
         }
         case SpanAttrNum: {
             HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->span());
+            return JS_NewInt32(ctx, imp->span());
         }
         case VAlignAttrNum: {
             HTMLTableColElement* imp = (HTMLTableColElement*)JS_GetOpaque(this_val, JSNode::js_class_id);

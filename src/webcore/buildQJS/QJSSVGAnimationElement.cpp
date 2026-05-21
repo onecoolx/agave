@@ -171,18 +171,18 @@ JSValue JSSVGAnimationElementPrototypeFunction::callAsFunction(JSContext* ctx, J
     switch (token) {
         case JSSVGAnimationElement::GetStartTimeFuncNum: {
 
-            JSValue result = JS_NewBigUint64(ctx, imp->getStartTime());
+            JSValue result = JS_NewInt32(ctx, imp->getStartTime());
             return result;
         }
         case JSSVGAnimationElement::GetCurrentTimeFuncNum: {
 
-            JSValue result = JS_NewBigUint64(ctx, imp->getCurrentTime());
+            JSValue result = JS_NewInt32(ctx, imp->getCurrentTime());
             return result;
         }
         case JSSVGAnimationElement::GetSimpleDurationFuncNum: {
             ExceptionCode ec = 0;
 
-            JSValue result = JS_NewBigUint64(ctx, imp->getSimpleDuration(ec));
+            JSValue result = JS_NewInt32(ctx, imp->getSimpleDuration(ec));
             setDOMException(ctx, ec);
             return result;
         }

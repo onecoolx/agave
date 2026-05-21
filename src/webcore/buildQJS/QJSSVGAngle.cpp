@@ -195,15 +195,15 @@ JSValue JSSVGAngle::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
     switch (token) {
         case UnitTypeAttrNum: {
             SVGAngle* imp = (SVGAngle*)JS_GetOpaque(this_val, JSSVGAngle::js_class_id);
-            return JS_NewBigUint64(ctx, imp->unitType());
+            return JS_NewInt32(ctx, imp->unitType());
         }
         case ValueAttrNum: {
             SVGAngle* imp = (SVGAngle*)JS_GetOpaque(this_val, JSSVGAngle::js_class_id);
-            return JS_NewBigUint64(ctx, imp->value());
+            return JS_NewInt32(ctx, imp->value());
         }
         case ValueInSpecifiedUnitsAttrNum: {
             SVGAngle* imp = (SVGAngle*)JS_GetOpaque(this_val, JSSVGAngle::js_class_id);
-            return JS_NewBigUint64(ctx, imp->valueInSpecifiedUnits());
+            return JS_NewInt32(ctx, imp->valueInSpecifiedUnits());
         }
         case ValueAsStringAttrNum: {
             SVGAngle* imp = (SVGAngle*)JS_GetOpaque(this_val, JSSVGAngle::js_class_id);

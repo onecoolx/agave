@@ -206,12 +206,12 @@ JSValue JSXPathResult::getValueProperty(JSContext *ctx, JSValueConst this_val, i
     switch (token) {
         case ResultTypeAttrNum: {
             XPathResult* imp = (XPathResult*)JS_GetOpaque(this_val, JSXPathResult::js_class_id);
-            return JS_NewBigUint64(ctx, imp->resultType());
+            return JS_NewInt32(ctx, imp->resultType());
         }
         case NumberValueAttrNum: {
             ExceptionCode ec = 0;
             XPathResult* imp = (XPathResult*)JS_GetOpaque(this_val, JSXPathResult::js_class_id);
-            JSValue result = JS_NewBigUint64(ctx, imp->numberValue(ec));
+            JSValue result = JS_NewInt32(ctx, imp->numberValue(ec));
             setDOMException(ctx, ec);
             return result;
         }
@@ -243,7 +243,7 @@ JSValue JSXPathResult::getValueProperty(JSContext *ctx, JSValueConst this_val, i
         case SnapshotLengthAttrNum: {
             ExceptionCode ec = 0;
             XPathResult* imp = (XPathResult*)JS_GetOpaque(this_val, JSXPathResult::js_class_id);
-            JSValue result = JS_NewBigUint64(ctx, imp->snapshotLength(ec));
+            JSValue result = JS_NewInt32(ctx, imp->snapshotLength(ec));
             setDOMException(ctx, ec);
             return result;
         }

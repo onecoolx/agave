@@ -122,19 +122,19 @@ JSValue JSSVGPathSegCurvetoCubicSmoothAbs::getValueProperty(JSContext *ctx, JSVa
     switch (token) {
         case XAttrNum: {
             SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaque(this_val, JSSVGPathSegCurvetoCubicSmoothAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->x());
+            return JS_NewInt32(ctx, imp->x());
         }
         case YAttrNum: {
             SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaque(this_val, JSSVGPathSegCurvetoCubicSmoothAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->y());
+            return JS_NewInt32(ctx, imp->y());
         }
         case X2AttrNum: {
             SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaque(this_val, JSSVGPathSegCurvetoCubicSmoothAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->x2());
+            return JS_NewInt32(ctx, imp->x2());
         }
         case Y2AttrNum: {
             SVGPathSegCurvetoCubicSmoothAbs* imp = (SVGPathSegCurvetoCubicSmoothAbs*)JS_GetOpaque(this_val, JSSVGPathSegCurvetoCubicSmoothAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->y2());
+            return JS_NewInt32(ctx, imp->y2());
         }
     }
     return JS_NULL;

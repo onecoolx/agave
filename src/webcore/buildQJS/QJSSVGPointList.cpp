@@ -133,7 +133,7 @@ JSValue JSSVGPointList::getValueProperty(JSContext *ctx, JSValueConst this_val, 
     switch (token) {
         case NumberOfItemsAttrNum: {
             SVGPointList* imp = (SVGPointList*)JS_GetOpaque(this_val, JSSVGPointList::js_class_id);
-            return JS_NewBigUint64(ctx, imp->numberOfItems());
+            return JS_NewInt32(ctx, imp->numberOfItems());
         }
     }
     return JS_NULL;

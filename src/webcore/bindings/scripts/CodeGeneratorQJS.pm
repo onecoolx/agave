@@ -1580,7 +1580,7 @@ sub NativeToJSValue
     my $type = $codeGenerator->StripModule($signature->type);
 
     return "JS_NewBool(ctx, $value ? 1 : 0)" if $type eq "boolean";
-    return "JS_NewBigUint64(ctx, $value)" if $codeGenerator->IsPrimitiveType($type) or $type eq "SVGPaintType" or $type eq "DOMTimeStamp";
+    return "JS_NewInt32(ctx, $value)" if $codeGenerator->IsPrimitiveType($type) or $type eq "SVGPaintType" or $type eq "DOMTimeStamp";
 
     if ($codeGenerator->IsStringType($type)) {
         $implIncludes{"text/String.h"} = 1;

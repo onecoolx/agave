@@ -206,7 +206,7 @@ JSValue JSHTMLObjectElement::getValueProperty(JSContext *ctx, JSValueConst this_
         }
         case HspaceAttrNum: {
             HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->hspace());
+            return JS_NewInt32(ctx, imp->hspace());
         }
         case NameAttrNum: {
             HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
@@ -218,7 +218,7 @@ JSValue JSHTMLObjectElement::getValueProperty(JSContext *ctx, JSValueConst this_
         }
         case TabIndexAttrNum: {
             HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->tabIndex());
+            return JS_NewInt32(ctx, imp->tabIndex());
         }
         case TypeAttrNum: {
             HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
@@ -230,7 +230,7 @@ JSValue JSHTMLObjectElement::getValueProperty(JSContext *ctx, JSValueConst this_
         }
         case VspaceAttrNum: {
             HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->vspace());
+            return JS_NewInt32(ctx, imp->vspace());
         }
         case WidthAttrNum: {
             HTMLObjectElement* imp = (HTMLObjectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);

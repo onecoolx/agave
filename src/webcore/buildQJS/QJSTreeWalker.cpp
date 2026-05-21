@@ -132,7 +132,7 @@ JSValue JSTreeWalker::getValueProperty(JSContext *ctx, JSValueConst this_val, in
         }
         case WhatToShowAttrNum: {
             TreeWalker* imp = (TreeWalker*)JS_GetOpaque(this_val, JSTreeWalker::js_class_id);
-            return JS_NewBigUint64(ctx, imp->whatToShow());
+            return JS_NewInt32(ctx, imp->whatToShow());
         }
         case FilterAttrNum: {
             TreeWalker* imp = (TreeWalker*)JS_GetOpaque(this_val, JSTreeWalker::js_class_id);

@@ -157,7 +157,7 @@ JSValue JSHTMLTableCellElement::getValueProperty(JSContext *ctx, JSValueConst th
     switch (token) {
         case CellIndexAttrNum: {
             HTMLTableCellElement* imp = (HTMLTableCellElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->cellIndex());
+            return JS_NewInt32(ctx, imp->cellIndex());
         }
         case AbbrAttrNum: {
             HTMLTableCellElement* imp = (HTMLTableCellElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
@@ -185,7 +185,7 @@ JSValue JSHTMLTableCellElement::getValueProperty(JSContext *ctx, JSValueConst th
         }
         case ColSpanAttrNum: {
             HTMLTableCellElement* imp = (HTMLTableCellElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->colSpan());
+            return JS_NewInt32(ctx, imp->colSpan());
         }
         case HeadersAttrNum: {
             HTMLTableCellElement* imp = (HTMLTableCellElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
@@ -201,7 +201,7 @@ JSValue JSHTMLTableCellElement::getValueProperty(JSContext *ctx, JSValueConst th
         }
         case RowSpanAttrNum: {
             HTMLTableCellElement* imp = (HTMLTableCellElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->rowSpan());
+            return JS_NewInt32(ctx, imp->rowSpan());
         }
         case ScopeAttrNum: {
             HTMLTableCellElement* imp = (HTMLTableCellElement*)JS_GetOpaque(this_val, JSNode::js_class_id);

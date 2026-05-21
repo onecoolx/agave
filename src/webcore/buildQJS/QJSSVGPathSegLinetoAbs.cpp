@@ -120,11 +120,11 @@ JSValue JSSVGPathSegLinetoAbs::getValueProperty(JSContext *ctx, JSValueConst thi
     switch (token) {
         case XAttrNum: {
             SVGPathSegLinetoAbs* imp = (SVGPathSegLinetoAbs*)JS_GetOpaque(this_val, JSSVGPathSegLinetoAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->x());
+            return JS_NewInt32(ctx, imp->x());
         }
         case YAttrNum: {
             SVGPathSegLinetoAbs* imp = (SVGPathSegLinetoAbs*)JS_GetOpaque(this_val, JSSVGPathSegLinetoAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->y());
+            return JS_NewInt32(ctx, imp->y());
         }
     }
     return JS_NULL;

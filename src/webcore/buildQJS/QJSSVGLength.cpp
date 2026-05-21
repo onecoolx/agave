@@ -209,17 +209,17 @@ JSValue JSSVGLength::getValueProperty(JSContext *ctx, JSValueConst this_val, int
         case UnitTypeAttrNum: {
             SVGLength imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.unitType());
+            return JS_NewInt32(ctx, imp.unitType());
         }
         case ValueAttrNum: {
             SVGLength imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.value());
+            return JS_NewInt32(ctx, imp.value());
         }
         case ValueInSpecifiedUnitsAttrNum: {
             SVGLength imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.valueInSpecifiedUnits());
+            return JS_NewInt32(ctx, imp.valueInSpecifiedUnits());
         }
         case ValueAsStringAttrNum: {
             SVGLength imp(*impl());

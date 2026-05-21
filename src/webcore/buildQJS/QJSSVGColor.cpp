@@ -192,7 +192,7 @@ JSValue JSSVGColor::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
     switch (token) {
         case ColorTypeAttrNum: {
             SVGColor* imp = (SVGColor*)JS_GetOpaque(this_val, JSSVGColor::js_class_id);
-            return JS_NewBigUint64(ctx, imp->colorType());
+            return JS_NewInt32(ctx, imp->colorType());
         }
         case RgbColorAttrNum: {
             SVGColor* imp = (SVGColor*)JS_GetOpaque(this_val, JSSVGColor::js_class_id);

@@ -130,12 +130,12 @@ JSValue JSSVGPoint::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
         case XAttrNum: {
             FloatPoint imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.x());
+            return JS_NewInt32(ctx, imp.x());
         }
         case YAttrNum: {
             FloatPoint imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.y());
+            return JS_NewInt32(ctx, imp.y());
         }
     }
     return JS_NULL;

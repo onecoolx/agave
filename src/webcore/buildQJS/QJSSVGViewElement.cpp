@@ -163,7 +163,7 @@ JSValue JSSVGViewElement::getValueProperty(JSContext *ctx, JSValueConst this_val
         }
         case ZoomAndPanAttrNum: {
             SVGViewElement* imp = (SVGViewElement*)JS_GetOpaque(this_val, JSSVGViewElement::js_class_id);
-            return JS_NewBigUint64(ctx, imp->zoomAndPan());
+            return JS_NewInt32(ctx, imp->zoomAndPan());
         }
     }
     return JS_NULL;

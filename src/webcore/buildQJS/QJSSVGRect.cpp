@@ -123,22 +123,22 @@ JSValue JSSVGRect::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
         case XAttrNum: {
             FloatRect imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.x());
+            return JS_NewInt32(ctx, imp.x());
         }
         case YAttrNum: {
             FloatRect imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.y());
+            return JS_NewInt32(ctx, imp.y());
         }
         case WidthAttrNum: {
             FloatRect imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.width());
+            return JS_NewInt32(ctx, imp.width());
         }
         case HeightAttrNum: {
             FloatRect imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.height());
+            return JS_NewInt32(ctx, imp.height());
         }
     }
     return JS_NULL;

@@ -149,7 +149,7 @@ JSValue JSDOMSelection::getValueProperty(JSContext *ctx, JSValueConst this_val, 
         }
         case AnchorOffsetAttrNum: {
             DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
-            return JS_NewBigUint64(ctx, imp->anchorOffset());
+            return JS_NewInt32(ctx, imp->anchorOffset());
         }
         case FocusNodeAttrNum: {
             DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
@@ -157,7 +157,7 @@ JSValue JSDOMSelection::getValueProperty(JSContext *ctx, JSValueConst this_val, 
         }
         case FocusOffsetAttrNum: {
             DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
-            return JS_NewBigUint64(ctx, imp->focusOffset());
+            return JS_NewInt32(ctx, imp->focusOffset());
         }
         case BaseNodeAttrNum: {
             DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
@@ -165,7 +165,7 @@ JSValue JSDOMSelection::getValueProperty(JSContext *ctx, JSValueConst this_val, 
         }
         case BaseOffsetAttrNum: {
             DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
-            return JS_NewBigUint64(ctx, imp->baseOffset());
+            return JS_NewInt32(ctx, imp->baseOffset());
         }
         case ExtentNodeAttrNum: {
             DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
@@ -173,7 +173,7 @@ JSValue JSDOMSelection::getValueProperty(JSContext *ctx, JSValueConst this_val, 
         }
         case ExtentOffsetAttrNum: {
             DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
-            return JS_NewBigUint64(ctx, imp->extentOffset());
+            return JS_NewInt32(ctx, imp->extentOffset());
         }
         case IsCollapsedAttrNum: {
             DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
@@ -185,7 +185,7 @@ JSValue JSDOMSelection::getValueProperty(JSContext *ctx, JSValueConst this_val, 
         }
         case RangeCountAttrNum: {
             DOMSelection* imp = (DOMSelection*)JS_GetOpaque(this_val, JSDOMSelection::js_class_id);
-            return JS_NewBigUint64(ctx, imp->rangeCount());
+            return JS_NewInt32(ctx, imp->rangeCount());
         }
     }
     return JS_NULL;

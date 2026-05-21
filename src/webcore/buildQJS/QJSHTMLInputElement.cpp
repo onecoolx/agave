@@ -210,7 +210,7 @@ JSValue JSHTMLInputElement::getValueProperty(JSContext *ctx, JSValueConst this_v
         }
         case MaxLengthAttrNum: {
             HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->maxLength());
+            return JS_NewInt32(ctx, imp->maxLength());
         }
         case NameAttrNum: {
             HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
@@ -222,7 +222,7 @@ JSValue JSHTMLInputElement::getValueProperty(JSContext *ctx, JSValueConst this_v
         }
         case SizeAttrNum: {
             HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->size());
+            return JS_NewInt32(ctx, imp->size());
         }
         case SrcAttrNum: {
             HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
@@ -230,7 +230,7 @@ JSValue JSHTMLInputElement::getValueProperty(JSContext *ctx, JSValueConst this_v
         }
         case TabIndexAttrNum: {
             HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->tabIndex());
+            return JS_NewInt32(ctx, imp->tabIndex());
         }
         case TypeAttrNum: {
             HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);

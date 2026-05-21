@@ -218,7 +218,7 @@ JSValue JSNodeFilterPrototypeFunction::callAsFunction(JSContext* ctx, JSValueCon
         case JSNodeFilter::AcceptNodeFuncNum: {
             Node* n = toNode(argv[0]);
 
-            JSValue result = JS_NewBigUint64(ctx, imp->acceptNode(n));
+            JSValue result = JS_NewInt32(ctx, imp->acceptNode(n));
             return result;
         }
     }

@@ -175,7 +175,7 @@ JSValue JSHTMLButtonElement::getValueProperty(JSContext *ctx, JSValueConst this_
         }
         case TabIndexAttrNum: {
             HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->tabIndex());
+            return JS_NewInt32(ctx, imp->tabIndex());
         }
         case TypeAttrNum: {
             HTMLButtonElement* imp = (HTMLButtonElement*)JS_GetOpaque(this_val, JSNode::js_class_id);

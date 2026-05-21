@@ -119,7 +119,7 @@ JSValue JSSVGPathSegLinetoVerticalRel::getValueProperty(JSContext *ctx, JSValueC
     switch (token) {
         case YAttrNum: {
             SVGPathSegLinetoVerticalRel* imp = (SVGPathSegLinetoVerticalRel*)JS_GetOpaque(this_val, JSSVGPathSegLinetoVerticalRel::js_class_id);
-            return JS_NewBigUint64(ctx, imp->y());
+            return JS_NewInt32(ctx, imp->y());
         }
     }
     return JS_NULL;

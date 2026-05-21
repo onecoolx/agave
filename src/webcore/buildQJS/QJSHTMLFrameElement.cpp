@@ -203,11 +203,11 @@ JSValue JSHTMLFrameElement::getValueProperty(JSContext *ctx, JSValueConst this_v
         }
         case WidthAttrNum: {
             HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->width());
+            return JS_NewInt32(ctx, imp->width());
         }
         case HeightAttrNum: {
             HTMLFrameElement* imp = (HTMLFrameElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->height());
+            return JS_NewInt32(ctx, imp->height());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);

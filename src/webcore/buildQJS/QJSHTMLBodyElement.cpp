@@ -176,19 +176,19 @@ JSValue JSHTMLBodyElement::getValueProperty(JSContext *ctx, JSValueConst this_va
         }
         case ScrollLeftAttrNum: {
             HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->scrollLeft());
+            return JS_NewInt32(ctx, imp->scrollLeft());
         }
         case ScrollTopAttrNum: {
             HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->scrollTop());
+            return JS_NewInt32(ctx, imp->scrollTop());
         }
         case ScrollWidthAttrNum: {
             HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->scrollWidth());
+            return JS_NewInt32(ctx, imp->scrollWidth());
         }
         case ScrollHeightAttrNum: {
             HTMLBodyElement* imp = (HTMLBodyElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->scrollHeight());
+            return JS_NewInt32(ctx, imp->scrollHeight());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);

@@ -132,7 +132,7 @@ JSValue JSHTMLOptionElement::getValueProperty(JSContext *ctx, JSValueConst this_
         }
         case IndexAttrNum: {
             HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->index());
+            return JS_NewInt32(ctx, imp->index());
         }
         case DisabledAttrNum: {
             HTMLOptionElement* imp = (HTMLOptionElement*)JS_GetOpaque(this_val, JSNode::js_class_id);

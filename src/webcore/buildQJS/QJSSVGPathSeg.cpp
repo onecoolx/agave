@@ -214,7 +214,7 @@ JSValue JSSVGPathSeg::getValueProperty(JSContext *ctx, JSValueConst this_val, in
     switch (token) {
         case PathSegTypeAttrNum: {
             SVGPathSeg* imp = (SVGPathSeg*)JS_GetOpaque(this_val, JSSVGPathSeg::js_class_id);
-            return JS_NewBigUint64(ctx, imp->pathSegType());
+            return JS_NewInt32(ctx, imp->pathSegType());
         }
         case PathSegTypeAsLetterAttrNum: {
             SVGPathSeg* imp = (SVGPathSeg*)JS_GetOpaque(this_val, JSSVGPathSeg::js_class_id);

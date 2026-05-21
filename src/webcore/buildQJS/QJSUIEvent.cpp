@@ -134,35 +134,35 @@ JSValue JSUIEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
         }
         case DetailAttrNum: {
             UIEvent* imp = (UIEvent*)JS_GetOpaque(this_val, JSUIEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->detail());
+            return JS_NewInt32(ctx, imp->detail());
         }
         case KeyCodeAttrNum: {
             UIEvent* imp = (UIEvent*)JS_GetOpaque(this_val, JSUIEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->keyCode());
+            return JS_NewInt32(ctx, imp->keyCode());
         }
         case CharCodeAttrNum: {
             UIEvent* imp = (UIEvent*)JS_GetOpaque(this_val, JSUIEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->charCode());
+            return JS_NewInt32(ctx, imp->charCode());
         }
         case LayerXAttrNum: {
             UIEvent* imp = (UIEvent*)JS_GetOpaque(this_val, JSUIEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->layerX());
+            return JS_NewInt32(ctx, imp->layerX());
         }
         case LayerYAttrNum: {
             UIEvent* imp = (UIEvent*)JS_GetOpaque(this_val, JSUIEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->layerY());
+            return JS_NewInt32(ctx, imp->layerY());
         }
         case PageXAttrNum: {
             UIEvent* imp = (UIEvent*)JS_GetOpaque(this_val, JSUIEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->pageX());
+            return JS_NewInt32(ctx, imp->pageX());
         }
         case PageYAttrNum: {
             UIEvent* imp = (UIEvent*)JS_GetOpaque(this_val, JSUIEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->pageY());
+            return JS_NewInt32(ctx, imp->pageY());
         }
         case WhichAttrNum: {
             UIEvent* imp = (UIEvent*)JS_GetOpaque(this_val, JSUIEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->which());
+            return JS_NewInt32(ctx, imp->which());
         }
     }
     return JS_NULL;

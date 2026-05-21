@@ -4,3 +4,4 @@ proj
 vcproj
 *.pyc
 */__pycache__/*
+proj_kjs/

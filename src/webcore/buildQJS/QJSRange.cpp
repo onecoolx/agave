@@ -230,7 +230,7 @@ JSValue JSRange::getValueProperty(JSContext *ctx, JSValueConst this_val, int tok
         case StartOffsetAttrNum: {
             ExceptionCode ec = 0;
             Range* imp = (Range*)JS_GetOpaque(this_val, JSRange::js_class_id);
-            JSValue result = JS_NewBigUint64(ctx, imp->startOffset(ec));
+            JSValue result = JS_NewInt32(ctx, imp->startOffset(ec));
             setDOMException(ctx, ec);
             return result;
         }
@@ -244,7 +244,7 @@ JSValue JSRange::getValueProperty(JSContext *ctx, JSValueConst this_val, int tok
         case EndOffsetAttrNum: {
             ExceptionCode ec = 0;
             Range* imp = (Range*)JS_GetOpaque(this_val, JSRange::js_class_id);
-            JSValue result = JS_NewBigUint64(ctx, imp->endOffset(ec));
+            JSValue result = JS_NewInt32(ctx, imp->endOffset(ec));
             setDOMException(ctx, ec);
             return result;
         }
@@ -360,7 +360,7 @@ JSValue JSRangePrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst th
             Range::CompareHow how = static_cast<Range::CompareHow>(valueToInt32(ctx, argv[0]));
             Range* sourceRange = toRange(argv[1]);
 
-            JSValue result = JS_NewBigUint64(ctx, imp->compareBoundaryPoints(how, sourceRange, ec));
+            JSValue result = JS_NewInt32(ctx, imp->compareBoundaryPoints(how, sourceRange, ec));
             setDOMException(ctx, ec);
             return result;
         }
@@ -438,7 +438,7 @@ JSValue JSRangePrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst th
             ExceptionCode ec = 0;
             Node* refNode = toNode(argv[0]);
 
-            JSValue result = JS_NewBigUint64(ctx, imp->compareNode(refNode, ec));
+            JSValue result = JS_NewInt32(ctx, imp->compareNode(refNode, ec));
             setDOMException(ctx, ec);
             return result;
         }
@@ -452,7 +452,7 @@ JSValue JSRangePrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst th
                 return JS_UNDEFINED;
             }
 
-            JSValue result = JS_NewBigUint64(ctx, imp->comparePoint(refNode, offset, ec));
+            JSValue result = JS_NewInt32(ctx, imp->comparePoint(refNode, offset, ec));
             setDOMException(ctx, ec);
             return result;
         }

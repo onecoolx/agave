@@ -143,7 +143,7 @@ JSValue JSHTMLPreElement::getValueProperty(JSContext *ctx, JSValueConst this_val
     switch (token) {
         case WidthAttrNum: {
             HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->width());
+            return JS_NewInt32(ctx, imp->width());
         }
         case WrapAttrNum: {
             HTMLPreElement* imp = (HTMLPreElement*)JS_GetOpaque(this_val, JSNode::js_class_id);

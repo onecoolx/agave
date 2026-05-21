@@ -142,32 +142,32 @@ JSValue JSSVGMatrix::getValueProperty(JSContext *ctx, JSValueConst this_val, int
         case AAttrNum: {
             AffineTransform imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.a());
+            return JS_NewInt32(ctx, imp.a());
         }
         case BAttrNum: {
             AffineTransform imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.b());
+            return JS_NewInt32(ctx, imp.b());
         }
         case CAttrNum: {
             AffineTransform imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.c());
+            return JS_NewInt32(ctx, imp.c());
         }
         case DAttrNum: {
             AffineTransform imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.d());
+            return JS_NewInt32(ctx, imp.d());
         }
         case EAttrNum: {
             AffineTransform imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.e());
+            return JS_NewInt32(ctx, imp.e());
         }
         case FAttrNum: {
             AffineTransform imp(*impl());
 
-            return JS_NewBigUint64(ctx, imp.f());
+            return JS_NewInt32(ctx, imp.f());
         }
     }
     return JS_NULL;

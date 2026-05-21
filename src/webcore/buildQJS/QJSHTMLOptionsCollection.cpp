@@ -121,7 +121,7 @@ JSValue JSHTMLOptionsCollection::getValueProperty(JSContext *ctx, JSValueConst t
     switch (token) {
         case SelectedIndexAttrNum: {
             HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->selectedIndex());
+            return JS_NewInt32(ctx, imp->selectedIndex());
         }
         case LengthAttrNum: {
             HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);

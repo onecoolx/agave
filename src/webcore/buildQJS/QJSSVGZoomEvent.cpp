@@ -129,7 +129,7 @@ JSValue JSSVGZoomEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, 
         }
         case PreviousScaleAttrNum: {
             SVGZoomEvent* imp = (SVGZoomEvent*)JS_GetOpaque(this_val, JSSVGZoomEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->previousScale());
+            return JS_NewInt32(ctx, imp->previousScale());
         }
         case PreviousTranslateAttrNum: {
             SVGZoomEvent* imp = (SVGZoomEvent*)JS_GetOpaque(this_val, JSSVGZoomEvent::js_class_id);
@@ -137,7 +137,7 @@ JSValue JSSVGZoomEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, 
         }
         case NewScaleAttrNum: {
             SVGZoomEvent* imp = (SVGZoomEvent*)JS_GetOpaque(this_val, JSSVGZoomEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->newScale());
+            return JS_NewInt32(ctx, imp->newScale());
         }
         case NewTranslateAttrNum: {
             SVGZoomEvent* imp = (SVGZoomEvent*)JS_GetOpaque(this_val, JSSVGZoomEvent::js_class_id);

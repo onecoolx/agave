@@ -120,11 +120,11 @@ JSValue JSSVGPathSegCurvetoQuadraticSmoothAbs::getValueProperty(JSContext *ctx, 
     switch (token) {
         case XAttrNum: {
             SVGPathSegCurvetoQuadraticSmoothAbs* imp = (SVGPathSegCurvetoQuadraticSmoothAbs*)JS_GetOpaque(this_val, JSSVGPathSegCurvetoQuadraticSmoothAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->x());
+            return JS_NewInt32(ctx, imp->x());
         }
         case YAttrNum: {
             SVGPathSegCurvetoQuadraticSmoothAbs* imp = (SVGPathSegCurvetoQuadraticSmoothAbs*)JS_GetOpaque(this_val, JSSVGPathSegCurvetoQuadraticSmoothAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->y());
+            return JS_NewInt32(ctx, imp->y());
         }
     }
     return JS_NULL;

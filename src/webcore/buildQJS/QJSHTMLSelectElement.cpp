@@ -178,7 +178,7 @@ JSValue JSHTMLSelectElement::getValueProperty(JSContext *ctx, JSValueConst this_
         }
         case SelectedIndexAttrNum: {
             HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->selectedIndex());
+            return JS_NewInt32(ctx, imp->selectedIndex());
         }
         case ValueAttrNum: {
             HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
@@ -186,7 +186,7 @@ JSValue JSHTMLSelectElement::getValueProperty(JSContext *ctx, JSValueConst this_
         }
         case LengthAttrNum: {
             HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->length());
+            return JS_NewInt32(ctx, imp->length());
         }
         case FormAttrNum: {
             HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
@@ -210,11 +210,11 @@ JSValue JSHTMLSelectElement::getValueProperty(JSContext *ctx, JSValueConst this_
         }
         case SizeAttrNum: {
             HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->size());
+            return JS_NewInt32(ctx, imp->size());
         }
         case TabIndexAttrNum: {
             HTMLSelectElement* imp = (HTMLSelectElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->tabIndex());
+            return JS_NewInt32(ctx, imp->tabIndex());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);

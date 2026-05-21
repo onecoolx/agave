@@ -165,7 +165,7 @@ JSValue JSCSSStyleSheetPrototypeFunction::callAsFunction(JSContext* ctx, JSValue
                 return JS_UNDEFINED;
             }
 
-            JSValue result = JS_NewBigUint64(ctx, imp->insertRule(rule, index, ec));
+            JSValue result = JS_NewInt32(ctx, imp->insertRule(rule, index, ec));
             setDOMException(ctx, ec);
             return result;
         }
@@ -187,7 +187,7 @@ JSValue JSCSSStyleSheetPrototypeFunction::callAsFunction(JSContext* ctx, JSValue
             String style = valueToString(ctx, argv[1]);
             if (argc < 3) {
 
-                  JSValue result = JS_NewBigUint64(ctx, imp->addRule(selector, style, ec));
+                  JSValue result = JS_NewInt32(ctx, imp->addRule(selector, style, ec));
                   setDOMException(ctx, ec);
                   return result;
             }
@@ -199,7 +199,7 @@ JSValue JSCSSStyleSheetPrototypeFunction::callAsFunction(JSContext* ctx, JSValue
                 return JS_UNDEFINED;
             }
 
-            JSValue result = JS_NewBigUint64(ctx, imp->addRule(selector, style, index, ec));
+            JSValue result = JS_NewInt32(ctx, imp->addRule(selector, style, index, ec));
             setDOMException(ctx, ec);
             return result;
         }

@@ -238,7 +238,7 @@ JSValue JSEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, int tok
         }
         case EventPhaseAttrNum: {
             Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->eventPhase());
+            return JS_NewInt32(ctx, imp->eventPhase());
         }
         case BubblesAttrNum: {
             Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
@@ -250,7 +250,7 @@ JSValue JSEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, int tok
         }
         case TimeStampAttrNum: {
             Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->timeStamp());
+            return JS_NewInt32(ctx, imp->timeStamp());
         }
         case SrcElementAttrNum: {
             Event* imp = (Event*)JS_GetOpaque(this_val, JSEvent::js_class_id);

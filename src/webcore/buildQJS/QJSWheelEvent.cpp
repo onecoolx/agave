@@ -125,19 +125,19 @@ JSValue JSWheelEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, in
     switch (token) {
         case ScreenXAttrNum: {
             WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->screenX());
+            return JS_NewInt32(ctx, imp->screenX());
         }
         case ScreenYAttrNum: {
             WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->screenY());
+            return JS_NewInt32(ctx, imp->screenY());
         }
         case ClientXAttrNum: {
             WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->clientX());
+            return JS_NewInt32(ctx, imp->clientX());
         }
         case ClientYAttrNum: {
             WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->clientY());
+            return JS_NewInt32(ctx, imp->clientY());
         }
         case CtrlKeyAttrNum: {
             WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
@@ -157,31 +157,31 @@ JSValue JSWheelEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, in
         }
         case WheelDeltaAttrNum: {
             WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->wheelDelta());
+            return JS_NewInt32(ctx, imp->wheelDelta());
         }
         case WheelDeltaXAttrNum: {
             WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->wheelDeltaX());
+            return JS_NewInt32(ctx, imp->wheelDeltaX());
         }
         case WheelDeltaYAttrNum: {
             WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->wheelDeltaY());
+            return JS_NewInt32(ctx, imp->wheelDeltaY());
         }
         case OffsetXAttrNum: {
             WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->offsetX());
+            return JS_NewInt32(ctx, imp->offsetX());
         }
         case OffsetYAttrNum: {
             WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->offsetY());
+            return JS_NewInt32(ctx, imp->offsetY());
         }
         case XAttrNum: {
             WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->x());
+            return JS_NewInt32(ctx, imp->x());
         }
         case YAttrNum: {
             WheelEvent* imp = (WheelEvent*)JS_GetOpaque(this_val, JSWheelEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->y());
+            return JS_NewInt32(ctx, imp->y());
         }
     }
     return JS_NULL;

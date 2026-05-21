@@ -149,7 +149,7 @@ JSValue JSHTMLOListElement::getValueProperty(JSContext *ctx, JSValueConst this_v
         }
         case StartAttrNum: {
             HTMLOListElement* imp = (HTMLOListElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->start());
+            return JS_NewInt32(ctx, imp->start());
         }
         case TypeAttrNum: {
             HTMLOListElement* imp = (HTMLOListElement*)JS_GetOpaque(this_val, JSNode::js_class_id);

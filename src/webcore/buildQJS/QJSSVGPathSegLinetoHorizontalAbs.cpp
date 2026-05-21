@@ -119,7 +119,7 @@ JSValue JSSVGPathSegLinetoHorizontalAbs::getValueProperty(JSContext *ctx, JSValu
     switch (token) {
         case XAttrNum: {
             SVGPathSegLinetoHorizontalAbs* imp = (SVGPathSegLinetoHorizontalAbs*)JS_GetOpaque(this_val, JSSVGPathSegLinetoHorizontalAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->x());
+            return JS_NewInt32(ctx, imp->x());
         }
     }
     return JS_NULL;

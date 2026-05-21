@@ -144,19 +144,19 @@ JSValue JSMouseEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, in
     switch (token) {
         case ScreenXAttrNum: {
             MouseEvent* imp = (MouseEvent*)JS_GetOpaque(this_val, JSMouseEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->screenX());
+            return JS_NewInt32(ctx, imp->screenX());
         }
         case ScreenYAttrNum: {
             MouseEvent* imp = (MouseEvent*)JS_GetOpaque(this_val, JSMouseEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->screenY());
+            return JS_NewInt32(ctx, imp->screenY());
         }
         case ClientXAttrNum: {
             MouseEvent* imp = (MouseEvent*)JS_GetOpaque(this_val, JSMouseEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->clientX());
+            return JS_NewInt32(ctx, imp->clientX());
         }
         case ClientYAttrNum: {
             MouseEvent* imp = (MouseEvent*)JS_GetOpaque(this_val, JSMouseEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->clientY());
+            return JS_NewInt32(ctx, imp->clientY());
         }
         case CtrlKeyAttrNum: {
             MouseEvent* imp = (MouseEvent*)JS_GetOpaque(this_val, JSMouseEvent::js_class_id);
@@ -176,7 +176,7 @@ JSValue JSMouseEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, in
         }
         case ButtonAttrNum: {
             MouseEvent* imp = (MouseEvent*)JS_GetOpaque(this_val, JSMouseEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->button());
+            return JS_NewInt32(ctx, imp->button());
         }
         case RelatedTargetAttrNum: {
             MouseEvent* imp = (MouseEvent*)JS_GetOpaque(this_val, JSMouseEvent::js_class_id);
@@ -184,19 +184,19 @@ JSValue JSMouseEvent::getValueProperty(JSContext *ctx, JSValueConst this_val, in
         }
         case OffsetXAttrNum: {
             MouseEvent* imp = (MouseEvent*)JS_GetOpaque(this_val, JSMouseEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->offsetX());
+            return JS_NewInt32(ctx, imp->offsetX());
         }
         case OffsetYAttrNum: {
             MouseEvent* imp = (MouseEvent*)JS_GetOpaque(this_val, JSMouseEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->offsetY());
+            return JS_NewInt32(ctx, imp->offsetY());
         }
         case XAttrNum: {
             MouseEvent* imp = (MouseEvent*)JS_GetOpaque(this_val, JSMouseEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->x());
+            return JS_NewInt32(ctx, imp->x());
         }
         case YAttrNum: {
             MouseEvent* imp = (MouseEvent*)JS_GetOpaque(this_val, JSMouseEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->y());
+            return JS_NewInt32(ctx, imp->y());
         }
         case FromElementAttrNum: {
             MouseEvent* imp = (MouseEvent*)JS_GetOpaque(this_val, JSMouseEvent::js_class_id);

@@ -132,7 +132,7 @@ JSValue JSKeyboardEvent::getValueProperty(JSContext *ctx, JSValueConst this_val,
         }
         case KeyLocationAttrNum: {
             KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaque(this_val, JSKeyboardEvent::js_class_id);
-            return JS_NewBigUint64(ctx, imp->keyLocation());
+            return JS_NewInt32(ctx, imp->keyLocation());
         }
         case CtrlKeyAttrNum: {
             KeyboardEvent* imp = (KeyboardEvent*)JS_GetOpaque(this_val, JSKeyboardEvent::js_class_id);

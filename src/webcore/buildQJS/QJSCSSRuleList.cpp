@@ -155,7 +155,7 @@ JSValue JSCSSRuleList::getValueProperty(JSContext *ctx, JSValueConst this_val, i
     switch (token) {
         case LengthAttrNum: {
             CSSRuleList* imp = (CSSRuleList*)JS_GetOpaque(this_val, JSCSSRuleList::js_class_id);
-            return JS_NewBigUint64(ctx, imp->length());
+            return JS_NewInt32(ctx, imp->length());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);

@@ -201,11 +201,11 @@ JSValue JSSVGPreserveAspectRatio::getValueProperty(JSContext *ctx, JSValueConst 
     switch (token) {
         case AlignAttrNum: {
             SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaque(this_val, JSSVGPreserveAspectRatio::js_class_id);
-            return JS_NewBigUint64(ctx, imp->align());
+            return JS_NewInt32(ctx, imp->align());
         }
         case MeetOrSliceAttrNum: {
             SVGPreserveAspectRatio* imp = (SVGPreserveAspectRatio*)JS_GetOpaque(this_val, JSSVGPreserveAspectRatio::js_class_id);
-            return JS_NewBigUint64(ctx, imp->meetOrSlice());
+            return JS_NewInt32(ctx, imp->meetOrSlice());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);

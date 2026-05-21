@@ -313,7 +313,7 @@ JSValue JSSVGPathElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValu
     switch (token) {
         case JSSVGPathElement::GetTotalLengthFuncNum: {
 
-            JSValue result = JS_NewBigUint64(ctx, imp->getTotalLength());
+            JSValue result = JS_NewInt32(ctx, imp->getTotalLength());
             return result;
         }
         case JSSVGPathElement::GetPointAtLengthFuncNum: {
@@ -325,7 +325,7 @@ JSValue JSSVGPathElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValu
         case JSSVGPathElement::GetPathSegAtLengthFuncNum: {
             float distance = valueToFloat(ctx, argv[0]);
 
-            JSValue result = JS_NewBigUint64(ctx, imp->getPathSegAtLength(distance));
+            JSValue result = JS_NewInt32(ctx, imp->getPathSegAtLength(distance));
             return result;
         }
         case JSSVGPathElement::CreateSVGPathSegClosePathFuncNum: {

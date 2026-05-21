@@ -258,19 +258,19 @@ JSValue JSSVGSVGElement::getValueProperty(JSContext *ctx, JSValueConst this_val,
         }
         case PixelUnitToMillimeterXAttrNum: {
             SVGSVGElement* imp = (SVGSVGElement*)JS_GetOpaque(this_val, JSSVGSVGElement::js_class_id);
-            return JS_NewBigUint64(ctx, imp->pixelUnitToMillimeterX());
+            return JS_NewInt32(ctx, imp->pixelUnitToMillimeterX());
         }
         case PixelUnitToMillimeterYAttrNum: {
             SVGSVGElement* imp = (SVGSVGElement*)JS_GetOpaque(this_val, JSSVGSVGElement::js_class_id);
-            return JS_NewBigUint64(ctx, imp->pixelUnitToMillimeterY());
+            return JS_NewInt32(ctx, imp->pixelUnitToMillimeterY());
         }
         case ScreenPixelToMillimeterXAttrNum: {
             SVGSVGElement* imp = (SVGSVGElement*)JS_GetOpaque(this_val, JSSVGSVGElement::js_class_id);
-            return JS_NewBigUint64(ctx, imp->screenPixelToMillimeterX());
+            return JS_NewInt32(ctx, imp->screenPixelToMillimeterX());
         }
         case ScreenPixelToMillimeterYAttrNum: {
             SVGSVGElement* imp = (SVGSVGElement*)JS_GetOpaque(this_val, JSSVGSVGElement::js_class_id);
-            return JS_NewBigUint64(ctx, imp->screenPixelToMillimeterY());
+            return JS_NewInt32(ctx, imp->screenPixelToMillimeterY());
         }
         case UseCurrentViewAttrNum: {
             SVGSVGElement* imp = (SVGSVGElement*)JS_GetOpaque(this_val, JSSVGSVGElement::js_class_id);
@@ -278,7 +278,7 @@ JSValue JSSVGSVGElement::getValueProperty(JSContext *ctx, JSValueConst this_val,
         }
         case CurrentScaleAttrNum: {
             SVGSVGElement* imp = (SVGSVGElement*)JS_GetOpaque(this_val, JSSVGSVGElement::js_class_id);
-            return JS_NewBigUint64(ctx, imp->currentScale());
+            return JS_NewInt32(ctx, imp->currentScale());
         }
         case CurrentTranslateAttrNum: {
             SVGSVGElement* imp = (SVGSVGElement*)JS_GetOpaque(this_val, JSSVGSVGElement::js_class_id);
@@ -338,7 +338,7 @@ JSValue JSSVGSVGElement::getValueProperty(JSContext *ctx, JSValueConst this_val,
         }
         case ZoomAndPanAttrNum: {
             SVGSVGElement* imp = (SVGSVGElement*)JS_GetOpaque(this_val, JSSVGSVGElement::js_class_id);
-            return JS_NewBigUint64(ctx, imp->zoomAndPan());
+            return JS_NewInt32(ctx, imp->zoomAndPan());
         }
     }
     return JS_NULL;
@@ -401,7 +401,7 @@ JSValue JSSVGSVGElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValue
                 return JS_UNDEFINED;
             }
 
-            JSValue result = JS_NewBigUint64(ctx, imp->suspendRedraw(maxWaitMilliseconds));
+            JSValue result = JS_NewInt32(ctx, imp->suspendRedraw(maxWaitMilliseconds));
             return result;
         }
         case JSSVGSVGElement::UnsuspendRedrawFuncNum: {
@@ -439,7 +439,7 @@ JSValue JSSVGSVGElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValue
         }
         case JSSVGSVGElement::GetCurrentTimeFuncNum: {
 
-            JSValue result = JS_NewBigUint64(ctx, imp->getCurrentTime());
+            JSValue result = JS_NewInt32(ctx, imp->getCurrentTime());
             return result;
         }
         case JSSVGSVGElement::SetCurrentTimeFuncNum: {

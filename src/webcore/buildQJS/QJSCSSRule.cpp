@@ -185,7 +185,7 @@ JSValue JSCSSRule::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
     switch (token) {
         case TypeAttrNum: {
             CSSRule* imp = (CSSRule*)JS_GetOpaque(this_val, JSCSSRule::js_class_id);
-            return JS_NewBigUint64(ctx, imp->type());
+            return JS_NewInt32(ctx, imp->type());
         }
         case CssTextAttrNum: {
             CSSRule* imp = (CSSRule*)JS_GetOpaque(this_val, JSCSSRule::js_class_id);

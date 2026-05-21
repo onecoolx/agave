@@ -138,7 +138,7 @@ JSValue JSSVGTransformList::getValueProperty(JSContext *ctx, JSValueConst this_v
     switch (token) {
         case NumberOfItemsAttrNum: {
             SVGTransformList* imp = (SVGTransformList*)JS_GetOpaque(this_val, JSSVGTransformList::js_class_id);
-            return JS_NewBigUint64(ctx, imp->numberOfItems());
+            return JS_NewInt32(ctx, imp->numberOfItems());
         }
     }
     return JS_NULL;

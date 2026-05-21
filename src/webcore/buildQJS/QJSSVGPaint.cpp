@@ -203,7 +203,7 @@ JSValue JSSVGPaint::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
     switch (token) {
         case PaintTypeAttrNum: {
             SVGPaint* imp = (SVGPaint*)JS_GetOpaque(this_val, JSSVGPaint::js_class_id);
-            return JS_NewBigUint64(ctx, imp->paintType());
+            return JS_NewInt32(ctx, imp->paintType());
         }
         case UriAttrNum: {
             SVGPaint* imp = (SVGPaint*)JS_GetOpaque(this_val, JSSVGPaint::js_class_id);

@@ -178,7 +178,7 @@ JSValue JSCSSValue::getValueProperty(JSContext *ctx, JSValueConst this_val, int 
         }
         case CssValueTypeAttrNum: {
             CSSValue* imp = (CSSValue*)JS_GetOpaque(this_val, JSCSSValue::js_class_id);
-            return JS_NewBigUint64(ctx, imp->cssValueType());
+            return JS_NewInt32(ctx, imp->cssValueType());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);

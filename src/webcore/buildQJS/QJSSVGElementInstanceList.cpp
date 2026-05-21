@@ -130,7 +130,7 @@ JSValue JSSVGElementInstanceList::getValueProperty(JSContext *ctx, JSValueConst 
     switch (token) {
         case LengthAttrNum: {
             SVGElementInstanceList* imp = (SVGElementInstanceList*)JS_GetOpaque(this_val, JSSVGElementInstanceList::js_class_id);
-            return JS_NewBigUint64(ctx, imp->length());
+            return JS_NewInt32(ctx, imp->length());
         }
     }
     return JS_NULL;

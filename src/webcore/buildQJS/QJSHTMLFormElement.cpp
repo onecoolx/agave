@@ -166,7 +166,7 @@ JSValue JSHTMLFormElement::getValueProperty(JSContext *ctx, JSValueConst this_va
         }
         case LengthAttrNum: {
             HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->length());
+            return JS_NewInt32(ctx, imp->length());
         }
         case NameAttrNum: {
             HTMLFormElement* imp = (HTMLFormElement*)JS_GetOpaque(this_val, JSNode::js_class_id);

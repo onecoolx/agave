@@ -148,7 +148,7 @@ JSValue JSHTMLLIElement::getValueProperty(JSContext *ctx, JSValueConst this_val,
         }
         case ValueAttrNum: {
             HTMLLIElement* imp = (HTMLLIElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
-            return JS_NewBigUint64(ctx, imp->value());
+            return JS_NewInt32(ctx, imp->value());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);

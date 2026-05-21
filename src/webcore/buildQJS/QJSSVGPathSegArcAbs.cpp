@@ -125,23 +125,23 @@ JSValue JSSVGPathSegArcAbs::getValueProperty(JSContext *ctx, JSValueConst this_v
     switch (token) {
         case XAttrNum: {
             SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->x());
+            return JS_NewInt32(ctx, imp->x());
         }
         case YAttrNum: {
             SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->y());
+            return JS_NewInt32(ctx, imp->y());
         }
         case R1AttrNum: {
             SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->r1());
+            return JS_NewInt32(ctx, imp->r1());
         }
         case R2AttrNum: {
             SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->r2());
+            return JS_NewInt32(ctx, imp->r2());
         }
         case AngleAttrNum: {
             SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
-            return JS_NewBigUint64(ctx, imp->angle());
+            return JS_NewInt32(ctx, imp->angle());
         }
         case LargeArcFlagAttrNum: {
             SVGPathSegArcAbs* imp = (SVGPathSegArcAbs*)JS_GetOpaque(this_val, JSSVGPathSegArcAbs::js_class_id);
