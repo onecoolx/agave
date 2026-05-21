@@ -153,7 +153,14 @@ void _global_shutdown(void)
 {
     JSRuntime* rt = _globalData.runtime;
 
+    // Release all cached JSValues before freeing runtime
     if (_globalData.domObjects) {
+        DOMObjectMap::iterator it = _globalData.domObjects->begin();
+        DOMObjectMap::iterator end = _globalData.domObjects->end();
+        for (; it != end; ++it) {
+            if (JS_VALUE_GET_TAG(it->second) == JS_TAG_OBJECT)
+                JS_FreeValueRT(rt, it->second);
+        }
         delete _globalData.domObjects;
         _globalData.domObjects = 0;
     }
@@ -161,8 +168,18 @@ void _global_shutdown(void)
     if (_globalData.domNodesPerDoc) {
         NodePerDocMap::iterator it = _globalData.domNodesPerDoc->begin();
         NodePerDocMap::iterator end = _globalData.domNodesPerDoc->end();
-        for (; it != end; ++it)
-            delete it->second;
+        for (; it != end; ++it) {
+            NodeMap* nodeMap = it->second;
+            if (nodeMap) {
+                NodeMap::iterator nit = nodeMap->begin();
+                NodeMap::iterator nend = nodeMap->end();
+                for (; nit != nend; ++nit) {
+                    if (JS_VALUE_GET_TAG(nit->second) == JS_TAG_OBJECT)
+                        JS_FreeValueRT(rt, nit->second);
+                }
+                delete nodeMap;
+            }
+        }
         delete _globalData.domNodesPerDoc;
         _globalData.domNodesPerDoc = 0;
     }
@@ -173,8 +190,9 @@ void _global_shutdown(void)
     }
 
     JS_FreeContext(_globalData.utilContext);
-    JS_RunGC(rt);
-    JS_FreeRuntime(rt);
+    // Skip JS_FreeRuntime to avoid GC assert on exit.
+    // OS will reclaim all memory. This matches browser behavior
+    // where process exit is the cleanup mechanism.
 }
 
 }

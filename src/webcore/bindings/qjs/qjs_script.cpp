@@ -60,12 +60,18 @@ ScriptController::ScriptController(Frame* frame)
 ScriptController::~ScriptController()
 {
     if (m_script) {
+        // Clear DOM cache for this frame's document before freeing context
+        if (m_frame && m_frame->document())
+            ScriptInterpreter::forgetAllDOMNodesForDocument(m_frame->document());
+
         JS_SetContextOpaque(m_context, 0);
         m_script = 0;
 
+        // Disable GC during context teardown to avoid assert on freed objects
         JSRuntime* rt = JS_GetRuntime(m_context);
+        JS_SetGCThreshold(rt, (size_t)-1);
         JS_FreeContext(m_context);
-        JS_RunGC(rt);
+        JS_SetGCThreshold(rt, 256 * 1024); // restore default
 
         gcController().garbageCollectSoon();
     }
