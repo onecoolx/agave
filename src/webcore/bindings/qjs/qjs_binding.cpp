@@ -227,6 +227,10 @@ void ScriptInterpreter::putDOMObject(void* objectHandle, JSValue obj)
 
 void ScriptInterpreter::forgetDOMObject(void* objectHandle)
 {
+    JSRuntime* rt = GLOBAL()->runtime;
+    JSValue old = domObjects()->get(objectHandle);
+    if (JS_VALUE_GET_TAG(old) == JS_TAG_OBJECT)
+        JS_FreeValueRT(rt, old);
     domObjects()->remove(objectHandle);
 }
 
@@ -244,13 +248,21 @@ JSValue ScriptInterpreter::getDOMNodeForDocument(Document* document, Node* node)
 
 void ScriptInterpreter::forgetDOMNodeForDocument(Document* document, Node* node)
 {
+    JSRuntime* rt = GLOBAL()->runtime;
     if (!document) {
+        JSValue old = domObjects()->get(node);
+        if (JS_VALUE_GET_TAG(old) == JS_TAG_OBJECT)
+            JS_FreeValueRT(rt, old);
         domObjects()->remove(node);
         return;
     }
     NodeMap* documentDict = domNodesPerDocument()->get(document);
-    if (documentDict)
+    if (documentDict) {
+        JSValue old = documentDict->get(node);
+        if (JS_VALUE_GET_TAG(old) == JS_TAG_OBJECT)
+            JS_FreeValueRT(rt, old);
         documentDict->remove(node);
+    }
 }
 
 void ScriptInterpreter::putDOMNodeForDocument(Document* document, Node* node, JSValue obj)
@@ -273,7 +285,13 @@ void ScriptInterpreter::forgetAllDOMNodesForDocument(Document* document)
     ASSERT(document);
     NodePerDocMap::iterator it = domNodesPerDocument()->find(document);
     if (it != domNodesPerDocument()->end()) {
-        delete it->second;
+        JSRuntime* rt = GLOBAL()->runtime;
+        NodeMap* nodeMap = it->second;
+        NodeMap::iterator nit = nodeMap->begin();
+        NodeMap::iterator nend = nodeMap->end();
+        for (; nit != nend; ++nit)
+            JS_FreeValueRT(rt, nit->second);
+        delete nodeMap;
         domNodesPerDocument()->remove(it);
     }
 }
