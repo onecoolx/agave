@@ -20,7 +20,7 @@ static int g_alert_set = 0;
 static void on_alert(MaCrossView* view, const char* msg)
 {
     if (msg && msg[0]) {
-        strncpy(g_result, msg, sizeof(g_result) - 1);
+        strncat(g_result, msg, sizeof(g_result) - strlen(g_result) - 2); strcat(g_result, "\n");
         g_result_set = 1;
         g_alert_set = 1;
     }
@@ -88,16 +88,8 @@ int main(int argc, char* argv[])
     unsigned char* buffer = (unsigned char*)calloc(pitch, height);
     MaCrossView* view = macross_view_create(buffer, width, height, pitch, NULL);
 
-    /* Load page - use file:// URL for proper loading */
-    char url[4096];
-    if (path[0] == '/') {
-        snprintf(url, sizeof(url), "file://%s", path);
-    } else {
-        char cwd[2048];
-        getcwd(cwd, sizeof(cwd));
-        snprintf(url, sizeof(url), "file://%s/%s", cwd, path);
-    }
-    macross_view_open_url(view, url);
+    /* Load HTML directly to avoid file:// navigation issues */
+    macross_view_load_html(view, html, "");
     free(html);
 
     /* Wait for page to process and JS to execute */

@@ -222,7 +222,7 @@ JSValue ScriptInterpreter::getDOMObject(void* objectHandle)
 
 void ScriptInterpreter::putDOMObject(void* objectHandle, JSValue obj) 
 {
-    domObjects()->set(objectHandle, obj);
+    domObjects()->set(objectHandle, JS_DupValueRT(GLOBAL()->runtime, obj));
 }
 
 void ScriptInterpreter::forgetDOMObject(void* objectHandle)
@@ -255,8 +255,9 @@ void ScriptInterpreter::forgetDOMNodeForDocument(Document* document, Node* node)
 
 void ScriptInterpreter::putDOMNodeForDocument(Document* document, Node* node, JSValue obj)
 {
+    JSRuntime* rt = GLOBAL()->runtime;
     if (!document) {
-        domObjects()->set(node, obj);
+        domObjects()->set(node, JS_DupValueRT(rt, obj));
         return;
     }
     NodeMap* documentDict = domNodesPerDocument()->get(document);
@@ -264,7 +265,7 @@ void ScriptInterpreter::putDOMNodeForDocument(Document* document, Node* node, JS
         documentDict = new NodeMap;
         domNodesPerDocument()->set(document, documentDict);
     }
-    documentDict->set(node, obj);
+    documentDict->set(node, JS_DupValueRT(rt, obj));
 }
 
 void ScriptInterpreter::forgetAllDOMNodesForDocument(Document* document)
@@ -608,7 +609,7 @@ JSValue toJS(JSContext* ctx, Document* doc)
     if (!doc)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMNodeForDocument(doc, doc);
-    if (0) // cache disabled
+    if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
         return ret;
     ret = JSDocument::create(ctx, doc);
     QJS::ScriptInterpreter::putDOMNodeForDocument(doc, doc, ret);
@@ -620,7 +621,7 @@ JSValue toJS(JSContext* ctx, Event* event)
     if (!event)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(event);
-    if (0) // cache disabled
+    if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
         return ret;
 
     if (event->isKeyboardEvent())
@@ -634,7 +635,7 @@ JSValue toJS(JSContext* ctx, Event* event)
     else
         ret = JSEvent::create(ctx, event);
 
-    // no cache: // QJS::ScriptInterpreter::putDOMObject(event, ret);
+    QJS::ScriptInterpreter::putDOMObject(event, ret);
     return ret;
 }
 
@@ -643,7 +644,7 @@ JSValue toJS(JSContext* ctx, CSSRule* rule)
     if (!rule)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(rule);
-    if (0) // cache disabled
+    if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
         return ret;
 
     switch (rule->type()) {
@@ -663,7 +664,7 @@ JSValue toJS(JSContext* ctx, CSSRule* rule)
         ret = JSCSSRule::create(ctx, rule); break;
     }
 
-    // no cache: // QJS::ScriptInterpreter::putDOMObject(rule, ret);
+    QJS::ScriptInterpreter::putDOMObject(rule, ret);
     return ret;
 }
 
@@ -672,7 +673,7 @@ JSValue toJS(JSContext* ctx, CSSValue* value)
     if (!value)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(value);
-    if (0) // cache disabled
+    if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
         return ret;
 
     if (value->isValueList())
@@ -682,7 +683,7 @@ JSValue toJS(JSContext* ctx, CSSValue* value)
     else
         ret = JSCSSValue::create(ctx, value);
 
-    // no cache: // QJS::ScriptInterpreter::putDOMObject(value, ret);
+    QJS::ScriptInterpreter::putDOMObject(value, ret);
     return ret;
 }
 
@@ -691,7 +692,7 @@ JSValue toJS(JSContext* ctx, StyleSheet* sheet)
     if (!sheet)
         return JS_NULL;
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(sheet);
-    if (0) // cache disabled
+    if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT)
         return ret;
 
     if (sheet->isCSSStyleSheet())
@@ -699,7 +700,7 @@ JSValue toJS(JSContext* ctx, StyleSheet* sheet)
     else
         ret = JSStyleSheet::create(ctx, sheet);
 
-    // no cache: // QJS::ScriptInterpreter::putDOMObject(sheet, ret);
+    QJS::ScriptInterpreter::putDOMObject(sheet, ret);
     return ret;
 }
 
