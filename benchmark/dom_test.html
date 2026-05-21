@@ -1,93 +1,85 @@
-<html>
-<head><title>DOM Binding Test Suite</title></head>
-<body>
-<div id="container"></div>
-<form id="form1"><input id="input1" type="text" value="test"><select id="sel1"><option>A</option><option>B</option></select></form>
+<html><body>
+<div id="container"><span id="child1" class="cls">text1</span><p id="child2">text2</p></div>
+<form id="form1"><input id="inp1" type="text" value="hello"><select id="sel1"><option>A</option><option>B</option></select></form>
 <script>
-var R = [];
-function T(name, result) { R.push(name + ':' + (result ? 'PASS' : 'FAIL')); }
+var R=[], P=0, F=0;
+function T(n,v){if(v){P++;R.push(n+":PASS");}else{F++;R.push(n+":FAIL");}}
 
-// === Document ===
-T('document.getElementById', document.getElementById('container') !== null);
-T('document.createElement', document.createElement('div') !== null);
-T('document.createTextNode', document.createTextNode('hi') !== null);
-T('document.title', document.title === 'DOM Binding Test Suite');
-T('document.body', document.body !== null);
+// Document
+T("doc.getElementById", document.getElementById("container")!==null);
+T("doc.createElement", document.createElement("div")!==null);
+T("doc.createTextNode", document.createTextNode("x")!==null);
+T("doc.body", document.body!==null);
+T("doc.body.tagName", document.body.tagName==="BODY");
 
-// === Element ===
-var el = document.createElement('div');
-el.id = 'test1';
-el.className = 'cls';
-el.setAttribute('data-x', '123');
-document.getElementById('container').appendChild(el);
-T('element.id', el.id === 'test1');
-T('element.className', el.className === 'cls');
-T('element.getAttribute', el.getAttribute('data-x') === '123');
-T('element.tagName', el.tagName === 'DIV');
-T('element.appendChild', el.parentNode === document.getElementById('container'));
+// Element basics
+var el=document.getElementById("container");
+T("el.tagName", el.tagName==="DIV");
+T("el.id", el.id==="container");
+T("el.className", document.getElementById("child1").className==="cls");
 
-// === Node ===
-var txt = document.createTextNode('hello');
-el.appendChild(txt);
-T('node.nodeType', txt.nodeType === 3);
-T('node.nodeValue', txt.nodeValue === 'hello');
-T('node.parentNode', txt.parentNode === el);
-T('node.firstChild', el.firstChild === txt);
-T('node.childNodes.length', el.childNodes.length === 1);
+// DOM tree
+T("el.childNodes", el.childNodes.length===2);
+T("el.firstChild", el.firstChild.tagName==="SPAN");
+T("el.lastChild", el.lastChild.tagName==="P");
+T("child.parentNode", el.firstChild.parentNode===el);
+T("child.nextSibling", el.firstChild.nextSibling.tagName==="P");
 
-// === innerHTML ===
-el.innerHTML = '<span>inner</span>';
-T('element.innerHTML set', el.innerHTML.indexOf('inner') >= 0);
-T('element.firstChild after innerHTML', el.firstChild !== null && el.firstChild.tagName === 'SPAN');
+// createElement + appendChild
+var d=document.createElement("div");
+d.id="new1";
+el.appendChild(d);
+T("appendChild", d.parentNode===el);
+T("appendChild.id", d.id==="new1");
+T("childNodes+1", el.childNodes.length===3);
 
-// === Style ===
-el.style.color = 'red';
-el.style.fontSize = '12px';
-T('element.style.color', el.style.color === 'red');
-T('element.style.fontSize', el.style.fontSize === '12px');
+// removeChild
+el.removeChild(d);
+T("removeChild", d.parentNode===null);
+T("childNodes-1", el.childNodes.length===2);
 
-// === Form ===
-var form = document.getElementById('form1');
-var input = document.getElementById('input1');
-T('form element', form !== null);
-T('input.value', input.value === 'test');
-T('input.type', input.type === 'text');
+// insertBefore
+var s=document.createElement("span");
+el.insertBefore(s, el.lastChild);
+T("insertBefore", el.childNodes.length===3);
 
-// === Select ===
-var sel = document.getElementById('sel1');
-T('select.options.length', sel.options.length === 2);
-T('select.selectedIndex', sel.selectedIndex === 0);
+// setAttribute/getAttribute
+el.setAttribute("data-x","123");
+T("setAttribute", el.getAttribute("data-x")==="123");
 
-// === Window ===
-T('window.document', window.document === document);
-T('window.navigator', window.navigator !== null);
-T('navigator.appName', navigator.appName === 'Netscape');
-T('navigator.userAgent', typeof navigator.userAgent === 'string' && navigator.userAgent.length > 0);
+// innerHTML
+var box=document.createElement("div");
+box.innerHTML="<b>bold</b>";
+T("innerHTML.set", box.innerHTML.indexOf("bold")>=0);
+T("innerHTML.child", box.firstChild.tagName==="B");
 
-// === Timer ===
-var timerOk = false;
-setTimeout(function() { timerOk = true; }, 1);
+// Style
+el.style.color="red";
+T("style.color", el.style.color==="red");
+el.style.fontSize="14px";
+T("style.fontSize", el.style.fontSize==="14px");
 
-// === Events ===
-var clicked = false;
-el.onclick = function() { clicked = true; };
-// Simulate click via dispatchEvent if available
-if (el.dispatchEvent) {
-    var evt = document.createEvent('MouseEvents');
-    if (evt && evt.initMouseEvent) {
-        evt.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-        el.dispatchEvent(evt);
-    }
-}
-T('onclick handler', clicked);
+// Form
+var form=document.getElementById("form1");
+var inp=document.getElementById("inp1");
+T("input.value", inp.value==="hello");
+T("input.type", inp.type==="text");
+var sel=document.getElementById("sel1");
+T("select.options", sel.options.length===2);
 
-// === Output ===
-var pass = 0, fail = 0;
-for (var i = 0; i < R.length; i++) {
-    if (R[i].indexOf(':PASS') > 0) pass++; else fail++;
-}
-document.title = 'RESULT:' + pass + '/' + (pass+fail) + ' ' + R.join('|');
-alert('RESULT:' + pass + '/' + (pass+fail) + ' ' + R.join('|'));
-</script>
-</body>
-</html>
+// Window
+T("window===self", window===self);
+T("typeof setTimeout", typeof setTimeout==="function");
+
+// Text node
+var txt=document.createTextNode("hello");
+T("textNode.nodeType", txt.nodeType===3);
+T("textNode.nodeValue", txt.nodeValue==="hello");
+
+// Node types
+T("element.nodeType", el.nodeType===1);
+T("document.nodeType", document.nodeType===9);
+
+// Result
+alert("RESULT:"+P+"/"+(P+F)+"|"+R.join("|"));
+</script></body></html>

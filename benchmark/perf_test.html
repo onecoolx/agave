@@ -1,68 +1,39 @@
-<html>
-<head><title>Performance Benchmark</title></head>
-<body>
-<div id="root"></div>
+<html><body><div id="root"></div>
 <script>
-var results = {};
-
-function bench(name, fn, iterations) {
-    var start = new Date().getTime();
-    for (var i = 0; i < iterations; i++) fn();
-    var elapsed = new Date().getTime() - start;
-    results[name] = elapsed;
-}
+var R={};
+function B(name,fn,n){var s=new Date().getTime();for(var i=0;i<n;i++)fn();R[name]=new Date().getTime()-s;}
 
 // DOM creation
-bench('createElement_10000', function() {
-    var el = document.createElement('div');
-}, 10000);
-
-// DOM tree manipulation
-var root = document.getElementById('root');
-bench('appendChild_1000', function() {
-    var el = document.createElement('span');
-    root.appendChild(el);
-}, 1000);
+B("createElement_1k",function(){document.createElement("div");},1000);
 
 // Property access
-var div = document.createElement('div');
-div.id = 'x';
-bench('getAttribute_10000', function() {
-    var x = div.id;
-}, 10000);
+var div=document.createElement("div"); div.id="x";
+B("getId_10k",function(){var x=div.id;},10000);
 
-// Style manipulation
-bench('style_set_10000', function() {
-    div.style.color = 'red';
-}, 10000);
+// appendChild + removeChild
+var root=document.getElementById("root");
+B("append_remove_500",function(){var e=document.createElement("span");root.appendChild(e);root.removeChild(e);},500);
 
-// String operations
-bench('innerHTML_set_1000', function() {
-    div.innerHTML = '<b>test</b>';
-}, 1000);
+// setAttribute
+B("setAttribute_5k",function(){div.setAttribute("data-i","v");},5000);
 
-// Object creation
-bench('object_create_10000', function() {
-    var o = { a: 1, b: 'x', c: true };
-}, 10000);
+// Style
+B("style_set_5k",function(){div.style.color="blue";},5000);
 
-// Function calls
-function dummy(a, b) { return a + b; }
-bench('function_call_100000', function() {
-    dummy(1, 2);
-}, 100000);
+// Pure JS: object creation
+B("obj_create_10k",function(){var o={a:1,b:"x"};},10000);
 
-// Array operations
-bench('array_push_10000', function() {
-    var a = [];
-    for (var j = 0; j < 100; j++) a.push(j);
-}, 10000);
+// Pure JS: function call
+function dummy(a,b){return a+b;}
+B("func_call_100k",function(){dummy(1,2);},100000);
+
+// Pure JS: array
+B("array_push_10k",function(){var a=[];for(var j=0;j<100;j++)a.push(j);},10000);
+
+// Pure JS: string concat
+B("str_concat_10k",function(){var s="";for(var j=0;j<20;j++)s+="abc";},10000);
 
 // Output
-var out = [];
-for (var k in results) out.push(k + ':' + results[k] + 'ms');
-document.title = 'PERF:' + out.join('|');
-alert('PERF:' + out.join('|'));
-</script>
-</body>
-</html>
+var out=[];for(var k in R)out.push(k+":"+R[k]+"ms");
+alert("PERF:"+out.join("|"));
+</script></body></html>
