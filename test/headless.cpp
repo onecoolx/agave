@@ -88,6 +88,13 @@ int main(int argc, char* argv[])
     unsigned char* buffer = (unsigned char*)calloc(pitch, height);
     MaCrossView* view = macross_view_create(buffer, width, height, pitch, NULL);
 
+    /* Let initial blank page complete before loading new URL */
+    struct timespec init_ts = { 0, 50000000 }; /* 50ms */
+    for (int i = 0; i < 5; i++) {
+        macross_event_dispatch();
+        nanosleep(&init_ts, NULL);
+    }
+
     /* Load page via file:// URL */
     char url[4096];
     char* rp = realpath(path, NULL);

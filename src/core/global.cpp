@@ -142,7 +142,7 @@ const GlobalData* const _global(void)
 bool _global_initialize(void)
 {
     _globalData.runtime = JS_NewRuntime2(&qjs_malloc_funcs, NULL);
-    JS_SetGCThreshold(_globalData.runtime, (size_t)-1); // disable auto GC cycle detection
+    JS_SetGCThreshold(_globalData.runtime, (size_t)-1);
     _globalData.utilContext = JS_NewContext(_globalData.runtime);
     _globalData.domObjects = new DOMObjectMap;
     _globalData.domNodesPerDoc = new NodePerDocMap;
