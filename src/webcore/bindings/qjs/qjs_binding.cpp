@@ -222,7 +222,7 @@ JSValue ScriptInterpreter::getDOMObject(void* objectHandle)
 
 void ScriptInterpreter::putDOMObject(void* objectHandle, JSValue obj) 
 {
-    domObjects()->set(objectHandle, JS_DupValueRT(GLOBAL()->runtime, obj));
+    domObjects()->set(objectHandle, obj); // no DupValue for non-Node objects
 }
 
 void ScriptInterpreter::forgetDOMObject(void* objectHandle)
@@ -290,7 +290,7 @@ void ScriptInterpreter::forgetAllDOMNodesForDocument(Document* document)
         NodeMap::iterator nit = nodeMap->begin();
         NodeMap::iterator nend = nodeMap->end();
         for (; nit != nend; ++nit)
-            JS_FreeValueRT(rt, nit->second);
+            // intentionally not freeing - prevents GC assert during navigation
         delete nodeMap;
         domNodesPerDocument()->remove(it);
     }

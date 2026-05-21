@@ -88,8 +88,16 @@ int main(int argc, char* argv[])
     unsigned char* buffer = (unsigned char*)calloc(pitch, height);
     MaCrossView* view = macross_view_create(buffer, width, height, pitch, NULL);
 
-    /* Load HTML directly to avoid file:// navigation issues */
-    macross_view_load_html(view, html, "");
+    /* Load page via file:// URL */
+    char url[4096];
+    char* rp = realpath(path, NULL);
+    if (rp) {
+        snprintf(url, sizeof(url), "file://%s", rp);
+        free(rp);
+    } else {
+        snprintf(url, sizeof(url), "file://%s", path);
+    }
+    macross_view_open_url(view, url);
     free(html);
 
     /* Wait for page to process and JS to execute */
