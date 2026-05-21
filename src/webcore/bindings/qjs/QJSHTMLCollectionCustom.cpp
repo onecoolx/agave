@@ -129,8 +129,8 @@ JSValue toJS(JSContext* ctx, HTMLCollection* collection)
 
     JSValue ret = QJS::ScriptInterpreter::getDOMObject(collection);
 
-    if (!JS_IsNull(ret)) {
-        return ret;
+    if (JS_VALUE_GET_TAG(ret) == JS_TAG_OBJECT) {
+        return JS_DupValue(ctx, ret);
     }
 
     switch (collection->collectionType()) {

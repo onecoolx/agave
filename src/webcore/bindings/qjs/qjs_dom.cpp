@@ -100,7 +100,7 @@ JSValue toJS(JSContext* ctx, EventTarget* target)
     XMLHttpRequest* xhr = target->toXMLHttpRequest();
     if (xhr) {
         // XMLHttpRequest is always created via JS, so we don't need to use cacheDOMObject() here.
-        return QJS::ScriptInterpreter::getDOMObject(xhr);
+        return JS_DupValue(ctx, QJS::ScriptInterpreter::getDOMObject(xhr));
     }
 #endif
 
