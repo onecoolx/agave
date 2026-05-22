@@ -27,6 +27,18 @@
  */
 
 #include "test.h"
+#include "global.h"
+
+namespace {
+class RegexEnvironment : public ::testing::Environment
+{
+public:
+    void SetUp() override { mescal::_global_initialize(); }
+    void TearDown() override { mescal::_global_shutdown(); }
+};
+static testing::Environment* const regex_env =
+    testing::AddGlobalTestEnvironment(new RegexEnvironment);
+}
 
 // ============================================================
 // Basic matching

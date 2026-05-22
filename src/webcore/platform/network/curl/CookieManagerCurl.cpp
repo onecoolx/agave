@@ -108,12 +108,21 @@ CookieManager::~CookieManager()
 #endif
 }
 
+static CookieManager *s_sharedCookieManager = NULL;
+
 CookieManager *CookieManager::sharedInstance()
 {
-    static CookieManager *sharedCookieManager = NULL;
-    if (!sharedCookieManager)
-       sharedCookieManager = new CookieManager();
-    return sharedCookieManager;
+    if (!s_sharedCookieManager)
+       s_sharedCookieManager = new CookieManager();
+    return s_sharedCookieManager;
+}
+
+void CookieManager::releaseSharedInstance()
+{
+    if (s_sharedCookieManager) {
+        delete s_sharedCookieManager;
+        s_sharedCookieManager = NULL;
+    }
 }
 
 int CookieManager::removeCookie(const DomainCookie *domain, Cookie *cookie)

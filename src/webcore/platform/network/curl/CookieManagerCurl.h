@@ -54,6 +54,7 @@ private:
 class CookieManager {
 public:
     static CookieManager *sharedInstance();
+    static void releaseSharedInstance();
     bool removeAll(void);
 
     Vector<DomainCookie*>& domains() {return m_domains;}

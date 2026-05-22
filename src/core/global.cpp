@@ -142,6 +142,8 @@ const GlobalData* const _global(void)
 
 bool _global_initialize(void)
 {
+    if (_globalData.runtime)
+        return true;
     _globalData.runtime = JS_NewRuntime2(&qjs_malloc_funcs, NULL);
     JS_SetGCThreshold(_globalData.runtime, (size_t)-1);
     _globalData.utilContext = JS_NewContext(_globalData.runtime);
@@ -153,6 +155,9 @@ bool _global_initialize(void)
 
 void _global_shutdown(void)
 {
+    if (!_globalData.runtime)
+        return;
+
     WebCore::GCController::shutdown();
 
     JSRuntime* rt = _globalData.runtime;
