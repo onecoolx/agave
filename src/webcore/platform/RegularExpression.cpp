@@ -137,12 +137,17 @@ void RegularExpression::Private::compile(bool caseSensitive, bool glob)
     }
     errorMessage = errorMsg;
     CString utf8Pattern = p.utf8();
-    uint8_t * regex = lre_compile(&relen, errorMsg, sizeof(errorMsg), utf8Pattern.data(), utf8Pattern.length(), flags, GLOBAL()->utilContext);
+    JSContext* ctx = GLOBAL()->utilContext;
+    if (!ctx) {
+        mescal::_global_initialize();
+        ctx = GLOBAL()->utilContext;
+    }
+    uint8_t * regex = lre_compile(&relen, errorMsg, sizeof(errorMsg), utf8Pattern.data(), utf8Pattern.length(), flags, ctx);
     if (regex) {
         regexBuf.resize(relen + 1);
         memcpy(regexBuf.data(), regex, relen);
         regexBuf[relen] = '\0';
-        js_free(GLOBAL()->utilContext, regex);
+        js_free(ctx, regex);
     }
 #endif
 
@@ -312,19 +317,20 @@ String RegularExpression::cap(int n) const
     int capture_count = lre_get_capture_count(d->regexBuf.data());
     capture.resize(capture_count * 2);
     const uint8_t * str_buf = reinterpret_cast<const uint8_t*>(d->lastMatchString.characters());
-    int sidx = 0;
-    while (sidx < n) {
-        int rc = lre_exec(capture.data(), d->regexBuf.data(), str_buf, 0, d->lastMatchString.length(), 1, GLOBAL()->utilContext);
-        if (rc != 1) {
-            return String();
-        }
-        sidx++;
-    }
+    int rc = lre_exec(capture.data(), d->regexBuf.data(), str_buf, 0, d->lastMatchString.length(), 1, GLOBAL()->utilContext);
+    if (rc != 1)
+        return String();
 
-    int startPos = (capture[0] - str_buf) >> 1;
-    int len = (capture[1] - capture[0]) >> 1;
-    String subString(d->lastMatchString.characters() + startPos, len);
-    return subString;
+    // n=0 is first capture group (capture[2]/[3]), matching pcre semantics
+    // but if no explicit group, n=0 is the whole match (capture[0]/[1])
+    int idx = (n + 1) * 2;
+    if (idx + 1 >= capture_count * 2)
+        idx = 0; // fallback to whole match
+    if (!capture[idx] || !capture[idx + 1])
+        return String();
+    int startPos = (capture[idx] - str_buf) >> 1;
+    int len = (capture[idx + 1] - capture[idx]) >> 1;
+    return String(d->lastMatchString.characters() + startPos, len);
 #endif
 }
 

@@ -50,6 +50,10 @@ include_directories(
 if (OPT_USE_KJS)
     ${PROJ_ROOT}/src/webcore/buildKJS/
     ${PROJ_ROOT}/src/javascript
+else if (OPT_USE_QJS)
+    ${PROJ_ROOT}/src/webcore/buildQJS/
+    ${PROJ_ROOT}/src/webcore/bindings/qjs
+    ${PROJ_ROOT}/src/core/
 endif()
     ${PROJ_ROOT}/src/webview
     ${PROJ_ROOT}/include
