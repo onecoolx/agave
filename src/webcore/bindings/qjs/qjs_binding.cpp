@@ -285,7 +285,17 @@ void ScriptInterpreter::forgetAllDOMNodesForDocument(Document* document)
     ASSERT(document);
     NodePerDocMap::iterator it = domNodesPerDocument()->find(document);
     if (it != domNodesPerDocument()->end()) {
+        JSRuntime* rt = GLOBAL()->runtime;
         NodeMap* nodeMap = it->second;
+        NodeMap::iterator nit = nodeMap->begin();
+        NodeMap::iterator nend = nodeMap->end();
+        for (; nit != nend; ++nit) {
+            if (JS_VALUE_GET_TAG(nit->second) == JS_TAG_OBJECT) {
+                // Detach C++ pointer before freeing to prevent finalizer from deref'ing
+                JS_SetOpaque(nit->second, NULL);
+                JS_FreeValueRT(rt, nit->second);
+            }
+        }
         delete nodeMap;
         domNodesPerDocument()->remove(it);
     }

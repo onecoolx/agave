@@ -221,6 +221,8 @@ JSValue JSNode::create(JSContext* ctx, Node* impl)
 void JSNode::finalizer(JSRuntime* rt, JSValue val)
 {
     Node* impl = (Node*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMNodeForDocument(impl->document(), impl);
     impl->deref();
 }
