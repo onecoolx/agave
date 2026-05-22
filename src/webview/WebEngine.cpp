@@ -905,10 +905,10 @@ void macross_shutdown(void)
         FontCache::releaseAllFontCacheData();
 		WebCore::eventShatdown();
 		globalDataSave();
+        releaseGlobalContext(); 
 #if ENABLE(QJS)
         mescal::_global_shutdown();
 #endif
-        releaseGlobalContext(); 
 		ps_shutdown();
 		g_initialize = false;
 	}

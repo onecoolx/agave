@@ -50,6 +50,7 @@ void GCController::shutdown()
     if (staticGCController) {
         if (staticGCController->m_GCTimer.isActive())
             staticGCController->m_GCTimer.stop();
+        staticGCController->m_runtime = NULL;
         delete staticGCController;
         staticGCController = NULL;
     }
@@ -63,13 +64,14 @@ GCController::GCController(JSRuntime* runtime)
 
 void GCController::garbageCollectSoon()
 {
-    if (!m_GCTimer.isActive())
+    if (m_runtime && !m_GCTimer.isActive())
         m_GCTimer.startOneShot(0.05);
 }
 
 void GCController::gcTimerFired(Timer<GCController>*)
 {
-    JS_RunGC(m_runtime);
+    if (m_runtime)
+        JS_RunGC(m_runtime);
 }
     
 } // namespace WebCore
