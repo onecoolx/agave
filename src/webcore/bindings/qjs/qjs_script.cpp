@@ -71,7 +71,6 @@ ScriptController::~ScriptController()
         JSRuntime* rt = JS_GetRuntime(m_context);
         JS_SetGCThreshold(rt, (size_t)-1);
         JS_FreeContext(m_context);
-        JS_SetGCThreshold(rt, 256 * 1024); // restore default
 
         gcController().garbageCollectSoon();
     }

@@ -289,8 +289,10 @@ void ScriptInterpreter::forgetAllDOMNodesForDocument(Document* document)
         NodeMap* nodeMap = it->second;
         NodeMap::iterator nit = nodeMap->begin();
         NodeMap::iterator nend = nodeMap->end();
-        for (; nit != nend; ++nit)
-            // intentionally not freeing - prevents GC assert during navigation
+        for (; nit != nend; ++nit) {
+            if (JS_VALUE_GET_TAG(nit->second) == JS_TAG_OBJECT)
+                JS_FreeValueRT(rt, nit->second);
+        }
         delete nodeMap;
         domNodesPerDocument()->remove(it);
     }
