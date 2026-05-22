@@ -40,6 +40,7 @@ namespace WebCore {
         void garbageCollectSoon();
         
         static void init(JSRuntime*);
+        static void shutdown();
     private:
         GCController(JSRuntime*); // Use gcController() instead
         void gcTimerFired(Timer<GCController>*);

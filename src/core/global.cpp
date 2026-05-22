@@ -28,6 +28,7 @@
 #include "global.h"
 
 #include <wtf/FastMalloc.h>
+#include "GCController.h"
 
 #include <assert.h>
 
@@ -152,6 +153,8 @@ bool _global_initialize(void)
 
 void _global_shutdown(void)
 {
+    WebCore::GCController::shutdown();
+
     JSRuntime* rt = _globalData.runtime;
 
     // Release all cached JSValues before freeing runtime

@@ -45,6 +45,16 @@ void GCController::init(JSRuntime* runtime)
     }
 }
 
+void GCController::shutdown()
+{
+    if (staticGCController) {
+        if (staticGCController->m_GCTimer.isActive())
+            staticGCController->m_GCTimer.stop();
+        delete staticGCController;
+        staticGCController = NULL;
+    }
+}
+
 GCController::GCController(JSRuntime* runtime)
     : m_GCTimer(this, &GCController::gcTimerFired)
     , m_runtime(runtime)
