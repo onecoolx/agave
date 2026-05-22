@@ -145,6 +145,8 @@ JSValue JSSVGClipPathElement::create(JSContext* ctx, SVGClipPathElement* impl)
 void JSSVGClipPathElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGClipPathElement* impl = (SVGClipPathElement*)JS_GetOpaque(val, JSSVGClipPathElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -189,6 +189,8 @@ JSValue JSSVGPaint::create(JSContext* ctx, SVGPaint* impl)
 void JSSVGPaint::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPaint* impl = (SVGPaint*)JS_GetOpaque(val, JSSVGPaint::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

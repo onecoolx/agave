@@ -147,6 +147,8 @@ JSValue JSSVGPolylineElement::create(JSContext* ctx, SVGPolylineElement* impl)
 void JSSVGPolylineElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPolylineElement* impl = (SVGPolylineElement*)JS_GetOpaque(val, JSSVGPolylineElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

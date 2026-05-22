@@ -143,6 +143,8 @@ JSValue JSMediaList::create(JSContext* ctx, MediaList* impl)
 void JSMediaList::finalizer(JSRuntime* rt, JSValue val)
 {
     MediaList* impl = (MediaList*)JS_GetOpaque(val, JSMediaList::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

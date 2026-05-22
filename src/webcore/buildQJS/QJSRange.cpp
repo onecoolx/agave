@@ -208,6 +208,8 @@ JSValue JSRange::create(JSContext* ctx, Range* impl)
 void JSRange::finalizer(JSRuntime* rt, JSValue val)
 {
     Range* impl = (Range*)JS_GetOpaque(val, JSRange::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

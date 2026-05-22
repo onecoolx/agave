@@ -111,6 +111,8 @@ JSValue JSSVGTextPositioningElement::create(JSContext* ctx, SVGTextPositioningEl
 void JSSVGTextPositioningElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGTextPositioningElement* impl = (SVGTextPositioningElement*)JS_GetOpaque(val, JSSVGTextPositioningElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

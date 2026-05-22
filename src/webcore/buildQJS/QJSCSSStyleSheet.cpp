@@ -115,6 +115,8 @@ JSValue JSCSSStyleSheet::create(JSContext* ctx, CSSStyleSheet* impl)
 void JSCSSStyleSheet::finalizer(JSRuntime* rt, JSValue val)
 {
     CSSStyleSheet* impl = (CSSStyleSheet*)JS_GetOpaque(val, JSCSSStyleSheet::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

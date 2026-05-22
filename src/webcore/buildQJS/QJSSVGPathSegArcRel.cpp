@@ -111,6 +111,8 @@ JSValue JSSVGPathSegArcRel::create(JSContext* ctx, SVGPathSegArcRel* impl, SVGEl
 void JSSVGPathSegArcRel::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPathSegArcRel* impl = (SVGPathSegArcRel*)JS_GetOpaque(val, JSSVGPathSegArcRel::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

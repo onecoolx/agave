@@ -107,6 +107,8 @@ JSValue JSSVGAnimatedAngle::create(JSContext* ctx, SVGAnimatedAngle* impl, SVGEl
 void JSSVGAnimatedAngle::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGAnimatedAngle* impl = (SVGAnimatedAngle*)JS_GetOpaque(val, JSSVGAnimatedAngle::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

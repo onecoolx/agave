@@ -106,6 +106,8 @@ JSValue JSSVGAnimatedLength::create(JSContext* ctx, SVGAnimatedLength* impl, SVG
 void JSSVGAnimatedLength::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGAnimatedLength* impl = (SVGAnimatedLength*)JS_GetOpaque(val, JSSVGAnimatedLength::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

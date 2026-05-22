@@ -107,6 +107,8 @@ JSValue JSTextEvent::create(JSContext* ctx, TextEvent* impl)
 void JSTextEvent::finalizer(JSRuntime* rt, JSValue val)
 {
     TextEvent* impl = (TextEvent*)JS_GetOpaque(val, JSTextEvent::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

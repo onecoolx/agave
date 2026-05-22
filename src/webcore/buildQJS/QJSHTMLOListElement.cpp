@@ -131,6 +131,8 @@ JSValue JSHTMLOListElement::create(JSContext* ctx, HTMLOListElement* impl)
 void JSHTMLOListElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLOListElement* impl = (HTMLOListElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

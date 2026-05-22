@@ -127,6 +127,8 @@ JSValue JSSVGFETileElement::create(JSContext* ctx, SVGFETileElement* impl)
 void JSSVGFETileElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFETileElement* impl = (SVGFETileElement*)JS_GetOpaque(val, JSSVGFETileElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -97,6 +97,8 @@ JSValue JSSVGTSpanElement::create(JSContext* ctx, SVGTSpanElement* impl)
 void JSSVGTSpanElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGTSpanElement* impl = (SVGTSpanElement*)JS_GetOpaque(val, JSSVGTSpanElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

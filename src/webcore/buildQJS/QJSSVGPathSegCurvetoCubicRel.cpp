@@ -110,6 +110,8 @@ JSValue JSSVGPathSegCurvetoCubicRel::create(JSContext* ctx, SVGPathSegCurvetoCub
 void JSSVGPathSegCurvetoCubicRel::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPathSegCurvetoCubicRel* impl = (SVGPathSegCurvetoCubicRel*)JS_GetOpaque(val, JSSVGPathSegCurvetoCubicRel::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

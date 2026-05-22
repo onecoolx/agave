@@ -143,6 +143,8 @@ JSValue JSHTMLCollection::create(JSContext* ctx, HTMLCollection* impl)
 void JSHTMLCollection::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLCollection* impl = (HTMLCollection*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

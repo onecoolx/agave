@@ -105,6 +105,8 @@ JSValue JSSVGAnimatedBoolean::create(JSContext* ctx, SVGAnimatedBoolean* impl, S
 void JSSVGAnimatedBoolean::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGAnimatedBoolean* impl = (SVGAnimatedBoolean*)JS_GetOpaque(val, JSSVGAnimatedBoolean::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

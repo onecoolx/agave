@@ -143,6 +143,8 @@ JSValue JSHTMLTableCellElement::create(JSContext* ctx, HTMLTableCellElement* imp
 void JSHTMLTableCellElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLTableCellElement* impl = (HTMLTableCellElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -148,6 +148,8 @@ JSValue JSHTMLFormElement::create(JSContext* ctx, HTMLFormElement* impl)
 void JSHTMLFormElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLFormElement* impl = (HTMLFormElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

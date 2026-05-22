@@ -108,6 +108,8 @@ void JSSVGRect::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGRect* impl = (SVGRect*)JS_GetOpaque(val, JSSVGRect::js_class_id);
     JSSVGPODTypeWrapperCache<FloatRect, SVGAnimatedRect>::forgetWrapper(impl);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

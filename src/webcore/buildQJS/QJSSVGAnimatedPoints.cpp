@@ -108,6 +108,8 @@ JSValue JSSVGAnimatedPoints::create(JSContext* ctx, SVGAnimatedPoints* impl, SVG
 void JSSVGAnimatedPoints::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGAnimatedPoints* impl = (SVGAnimatedPoints*)JS_GetOpaque(val, JSSVGAnimatedPoints::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

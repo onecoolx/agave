@@ -150,6 +150,8 @@ JSValue JSHTMLTableRowElement::create(JSContext* ctx, HTMLTableRowElement* impl)
 void JSHTMLTableRowElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLTableRowElement* impl = (HTMLTableRowElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

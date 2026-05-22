@@ -153,6 +153,8 @@ JSValue JSRangeException::create(JSContext* ctx, RangeException* impl)
 void JSRangeException::finalizer(JSRuntime* rt, JSValue val)
 {
     RangeException* impl = (RangeException*)JS_GetOpaque(val, JSRangeException::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -145,6 +145,8 @@ JSValue JSDOMParser::create(JSContext* ctx, DOMParser* impl)
 void JSDOMParser::finalizer(JSRuntime* rt, JSValue val)
 {
     DOMParser* impl = (DOMParser*)JS_GetOpaque(val, JSDOMParser::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

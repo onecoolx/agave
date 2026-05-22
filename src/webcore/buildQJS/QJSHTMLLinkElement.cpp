@@ -140,6 +140,8 @@ JSValue JSHTMLLinkElement::create(JSContext* ctx, HTMLLinkElement* impl)
 void JSHTMLLinkElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLLinkElement* impl = (HTMLLinkElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

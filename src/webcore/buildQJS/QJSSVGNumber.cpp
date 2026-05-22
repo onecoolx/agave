@@ -104,6 +104,8 @@ JSValue JSSVGNumber::create(JSContext* ctx, JSSVGPODTypeWrapper<float>* impl, SV
 void JSSVGNumber::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGNumber* impl = (SVGNumber*)JS_GetOpaque(val, JSSVGNumber::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -163,6 +163,8 @@ JSValue JSSVGUnitTypes::create(JSContext* ctx, SVGUnitTypes* impl, SVGElement* c
 void JSSVGUnitTypes::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGUnitTypes* impl = (SVGUnitTypes*)JS_GetOpaque(val, JSSVGUnitTypes::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

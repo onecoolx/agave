@@ -132,6 +132,8 @@ JSValue JSHTMLIsIndexElement::create(JSContext* ctx, HTMLIsIndexElement* impl)
 void JSHTMLIsIndexElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLIsIndexElement* impl = (HTMLIsIndexElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

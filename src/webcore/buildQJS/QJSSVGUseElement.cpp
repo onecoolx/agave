@@ -153,6 +153,8 @@ JSValue JSSVGUseElement::create(JSContext* ctx, SVGUseElement* impl)
 void JSSVGUseElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGUseElement* impl = (SVGUseElement*)JS_GetOpaque(val, JSSVGUseElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

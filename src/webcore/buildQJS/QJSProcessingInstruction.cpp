@@ -133,6 +133,8 @@ JSValue JSProcessingInstruction::create(JSContext* ctx, ProcessingInstruction* i
 void JSProcessingInstruction::finalizer(JSRuntime* rt, JSValue val)
 {
     ProcessingInstruction* impl = (ProcessingInstruction*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

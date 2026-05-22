@@ -179,6 +179,8 @@ JSValue JSSVGComponentTransferFunctionElement::create(JSContext* ctx, SVGCompone
 void JSSVGComponentTransferFunctionElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGComponentTransferFunctionElement* impl = (SVGComponentTransferFunctionElement*)JS_GetOpaque(val, JSSVGComponentTransferFunctionElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

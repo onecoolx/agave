@@ -145,6 +145,8 @@ JSValue JSCSSMediaRule::create(JSContext* ctx, CSSMediaRule* impl)
 void JSCSSMediaRule::finalizer(JSRuntime* rt, JSValue val)
 {
     CSSMediaRule* impl = (CSSMediaRule*)JS_GetOpaque(val, JSCSSMediaRule::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

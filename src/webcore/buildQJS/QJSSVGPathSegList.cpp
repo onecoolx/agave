@@ -119,6 +119,8 @@ JSValue JSSVGPathSegList::create(JSContext* ctx, SVGPathSegList* impl, SVGElemen
 void JSSVGPathSegList::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPathSegList* impl = (SVGPathSegList*)JS_GetOpaque(val, JSSVGPathSegList::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -102,6 +102,8 @@ JSValue JSXPathNSResolver::create(JSContext* ctx, XPathNSResolver* impl)
 void JSXPathNSResolver::finalizer(JSRuntime* rt, JSValue val)
 {
     XPathNSResolver* impl = (XPathNSResolver*)JS_GetOpaque(val, JSXPathNSResolver::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

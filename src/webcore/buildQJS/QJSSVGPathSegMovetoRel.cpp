@@ -106,6 +106,8 @@ JSValue JSSVGPathSegMovetoRel::create(JSContext* ctx, SVGPathSegMovetoRel* impl,
 void JSSVGPathSegMovetoRel::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPathSegMovetoRel* impl = (SVGPathSegMovetoRel*)JS_GetOpaque(val, JSSVGPathSegMovetoRel::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

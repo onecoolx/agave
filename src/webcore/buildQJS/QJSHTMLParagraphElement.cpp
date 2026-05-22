@@ -129,6 +129,8 @@ JSValue JSHTMLParagraphElement::create(JSContext* ctx, HTMLParagraphElement* imp
 void JSHTMLParagraphElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLParagraphElement* impl = (HTMLParagraphElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

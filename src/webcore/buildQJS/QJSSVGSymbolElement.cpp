@@ -129,6 +129,8 @@ JSValue JSSVGSymbolElement::create(JSContext* ctx, SVGSymbolElement* impl)
 void JSSVGSymbolElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGSymbolElement* impl = (SVGSymbolElement*)JS_GetOpaque(val, JSSVGSymbolElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

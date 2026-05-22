@@ -130,6 +130,8 @@ JSValue JSHTMLOptGroupElement::create(JSContext* ctx, HTMLOptGroupElement* impl)
 void JSHTMLOptGroupElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLOptGroupElement* impl = (HTMLOptGroupElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

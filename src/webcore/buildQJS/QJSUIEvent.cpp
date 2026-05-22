@@ -116,6 +116,8 @@ JSValue JSUIEvent::create(JSContext* ctx, UIEvent* impl)
 void JSUIEvent::finalizer(JSRuntime* rt, JSValue val)
 {
     UIEvent* impl = (UIEvent*)JS_GetOpaque(val, JSUIEvent::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -106,6 +106,8 @@ JSValue JSSVGPathSegLinetoRel::create(JSContext* ctx, SVGPathSegLinetoRel* impl,
 void JSSVGPathSegLinetoRel::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPathSegLinetoRel* impl = (SVGPathSegLinetoRel*)JS_GetOpaque(val, JSSVGPathSegLinetoRel::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

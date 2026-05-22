@@ -139,6 +139,8 @@ JSValue JSSVGFilterElement::create(JSContext* ctx, SVGFilterElement* impl)
 void JSSVGFilterElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFilterElement* impl = (SVGFilterElement*)JS_GetOpaque(val, JSSVGFilterElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

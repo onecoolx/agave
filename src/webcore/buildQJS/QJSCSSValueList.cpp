@@ -141,6 +141,8 @@ JSValue JSCSSValueList::create(JSContext* ctx, CSSValueList* impl)
 void JSCSSValueList::finalizer(JSRuntime* rt, JSValue val)
 {
     CSSValueList* impl = (CSSValueList*)JS_GetOpaque(val, JSCSSValueList::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

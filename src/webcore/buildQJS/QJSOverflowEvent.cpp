@@ -123,6 +123,8 @@ JSValue JSOverflowEvent::create(JSContext* ctx, OverflowEvent* impl)
 void JSOverflowEvent::finalizer(JSRuntime* rt, JSValue val)
 {
     OverflowEvent* impl = (OverflowEvent*)JS_GetOpaque(val, JSOverflowEvent::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

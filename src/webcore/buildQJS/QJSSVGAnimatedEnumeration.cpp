@@ -105,6 +105,8 @@ JSValue JSSVGAnimatedEnumeration::create(JSContext* ctx, SVGAnimatedEnumeration*
 void JSSVGAnimatedEnumeration::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGAnimatedEnumeration* impl = (SVGAnimatedEnumeration*)JS_GetOpaque(val, JSSVGAnimatedEnumeration::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

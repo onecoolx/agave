@@ -107,6 +107,8 @@ JSValue JSSVGAnimatedNumberList::create(JSContext* ctx, SVGAnimatedNumberList* i
 void JSSVGAnimatedNumberList::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGAnimatedNumberList* impl = (SVGAnimatedNumberList*)JS_GetOpaque(val, JSSVGAnimatedNumberList::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

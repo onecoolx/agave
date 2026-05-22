@@ -129,6 +129,8 @@ JSValue JSHTMLHeadingElement::create(JSContext* ctx, HTMLHeadingElement* impl)
 void JSHTMLHeadingElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLHeadingElement* impl = (HTMLHeadingElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

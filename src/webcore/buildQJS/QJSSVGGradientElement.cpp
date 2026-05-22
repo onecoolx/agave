@@ -189,6 +189,8 @@ JSValue JSSVGGradientElement::create(JSContext* ctx, SVGGradientElement* impl)
 void JSSVGGradientElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGGradientElement* impl = (SVGGradientElement*)JS_GetOpaque(val, JSSVGGradientElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

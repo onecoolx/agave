@@ -130,6 +130,8 @@ JSValue JSSVGFEOffsetElement::create(JSContext* ctx, SVGFEOffsetElement* impl)
 void JSSVGFEOffsetElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFEOffsetElement* impl = (SVGFEOffsetElement*)JS_GetOpaque(val, JSSVGFEOffsetElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

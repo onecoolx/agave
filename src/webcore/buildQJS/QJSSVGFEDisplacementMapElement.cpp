@@ -196,6 +196,8 @@ JSValue JSSVGFEDisplacementMapElement::create(JSContext* ctx, SVGFEDisplacementM
 void JSSVGFEDisplacementMapElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFEDisplacementMapElement* impl = (SVGFEDisplacementMapElement*)JS_GetOpaque(val, JSSVGFEDisplacementMapElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

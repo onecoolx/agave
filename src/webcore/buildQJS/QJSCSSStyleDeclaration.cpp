@@ -153,6 +153,8 @@ JSValue JSCSSStyleDeclaration::create(JSContext* ctx, CSSStyleDeclaration* impl)
 void JSCSSStyleDeclaration::finalizer(JSRuntime* rt, JSValue val)
 {
     CSSStyleDeclaration* impl = (CSSStyleDeclaration*)JS_GetOpaque(val, JSCSSStyleDeclaration::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

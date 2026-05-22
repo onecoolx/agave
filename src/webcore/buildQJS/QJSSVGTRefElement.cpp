@@ -106,6 +106,8 @@ JSValue JSSVGTRefElement::create(JSContext* ctx, SVGTRefElement* impl)
 void JSSVGTRefElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGTRefElement* impl = (SVGTRefElement*)JS_GetOpaque(val, JSSVGTRefElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

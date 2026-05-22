@@ -98,6 +98,8 @@ JSValue JSCanvasGradient::create(JSContext* ctx, CanvasGradient* impl)
 void JSCanvasGradient::finalizer(JSRuntime* rt, JSValue val)
 {
     CanvasGradient* impl = (CanvasGradient*)JS_GetOpaque(val, JSCanvasGradient::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

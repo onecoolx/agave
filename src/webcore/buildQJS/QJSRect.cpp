@@ -135,6 +135,8 @@ JSValue JSRect::create(JSContext* ctx, Rect* impl)
 void JSRect::finalizer(JSRuntime* rt, JSValue val)
 {
     Rect* impl = (Rect*)JS_GetOpaque(val, JSRect::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -132,6 +132,8 @@ JSValue JSSVGFEDiffuseLightingElement::create(JSContext* ctx, SVGFEDiffuseLighti
 void JSSVGFEDiffuseLightingElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFEDiffuseLightingElement* impl = (SVGFEDiffuseLightingElement*)JS_GetOpaque(val, JSSVGFEDiffuseLightingElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

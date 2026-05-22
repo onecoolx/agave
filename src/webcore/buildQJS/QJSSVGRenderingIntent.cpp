@@ -169,6 +169,8 @@ JSValue JSSVGRenderingIntent::create(JSContext* ctx, SVGRenderingIntent* impl, S
 void JSSVGRenderingIntent::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGRenderingIntent* impl = (SVGRenderingIntent*)JS_GetOpaque(val, JSSVGRenderingIntent::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

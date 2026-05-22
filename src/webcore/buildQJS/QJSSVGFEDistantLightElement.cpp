@@ -107,6 +107,8 @@ JSValue JSSVGFEDistantLightElement::create(JSContext* ctx, SVGFEDistantLightElem
 void JSSVGFEDistantLightElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFEDistantLightElement* impl = (SVGFEDistantLightElement*)JS_GetOpaque(val, JSSVGFEDistantLightElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

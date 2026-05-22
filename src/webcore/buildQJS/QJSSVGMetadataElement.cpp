@@ -97,6 +97,8 @@ JSValue JSSVGMetadataElement::create(JSContext* ctx, SVGMetadataElement* impl)
 void JSSVGMetadataElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGMetadataElement* impl = (SVGMetadataElement*)JS_GetOpaque(val, JSSVGMetadataElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

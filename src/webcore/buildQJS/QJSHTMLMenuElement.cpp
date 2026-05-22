@@ -128,6 +128,8 @@ JSValue JSHTMLMenuElement::create(JSContext* ctx, HTMLMenuElement* impl)
 void JSHTMLMenuElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLMenuElement* impl = (HTMLMenuElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

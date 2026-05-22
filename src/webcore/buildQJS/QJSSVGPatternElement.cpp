@@ -146,6 +146,8 @@ JSValue JSSVGPatternElement::create(JSContext* ctx, SVGPatternElement* impl)
 void JSSVGPatternElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPatternElement* impl = (SVGPatternElement*)JS_GetOpaque(val, JSSVGPatternElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

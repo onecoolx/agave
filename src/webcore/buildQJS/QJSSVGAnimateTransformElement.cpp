@@ -97,6 +97,8 @@ JSValue JSSVGAnimateTransformElement::create(JSContext* ctx, SVGAnimateTransform
 void JSSVGAnimateTransformElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGAnimateTransformElement* impl = (SVGAnimateTransformElement*)JS_GetOpaque(val, JSSVGAnimateTransformElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

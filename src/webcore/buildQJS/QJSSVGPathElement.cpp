@@ -203,6 +203,8 @@ JSValue JSSVGPathElement::create(JSContext* ctx, SVGPathElement* impl)
 void JSSVGPathElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPathElement* impl = (SVGPathElement*)JS_GetOpaque(val, JSSVGPathElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

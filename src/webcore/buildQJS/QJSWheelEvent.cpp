@@ -111,6 +111,8 @@ JSValue JSWheelEvent::create(JSContext* ctx, WheelEvent* impl)
 void JSWheelEvent::finalizer(JSRuntime* rt, JSValue val)
 {
     WheelEvent* impl = (WheelEvent*)JS_GetOpaque(val, JSWheelEvent::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

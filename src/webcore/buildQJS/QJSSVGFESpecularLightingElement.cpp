@@ -131,6 +131,8 @@ JSValue JSSVGFESpecularLightingElement::create(JSContext* ctx, SVGFESpecularLigh
 void JSSVGFESpecularLightingElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFESpecularLightingElement* impl = (SVGFESpecularLightingElement*)JS_GetOpaque(val, JSSVGFESpecularLightingElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

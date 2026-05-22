@@ -222,6 +222,8 @@ JSValue JSCSSPrimitiveValue::create(JSContext* ctx, CSSPrimitiveValue* impl)
 void JSCSSPrimitiveValue::finalizer(JSRuntime* rt, JSValue val)
 {
     CSSPrimitiveValue* impl = (CSSPrimitiveValue*)JS_GetOpaque(val, JSCSSPrimitiveValue::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

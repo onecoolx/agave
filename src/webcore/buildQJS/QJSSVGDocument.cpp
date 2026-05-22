@@ -117,6 +117,8 @@ JSValue JSSVGDocument::create(JSContext* ctx, SVGDocument* impl)
 void JSSVGDocument::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGDocument* impl = (SVGDocument*)JS_GetOpaque(val, JSSVGDocument::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

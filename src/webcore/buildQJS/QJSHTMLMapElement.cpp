@@ -132,6 +132,8 @@ JSValue JSHTMLMapElement::create(JSContext* ctx, HTMLMapElement* impl)
 void JSHTMLMapElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLMapElement* impl = (HTMLMapElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

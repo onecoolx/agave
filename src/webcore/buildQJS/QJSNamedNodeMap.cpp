@@ -147,6 +147,8 @@ JSValue JSNamedNodeMap::create(JSContext* ctx, NamedNodeMap* impl)
 void JSNamedNodeMap::finalizer(JSRuntime* rt, JSValue val)
 {
     NamedNodeMap* impl = (NamedNodeMap*)JS_GetOpaque(val, JSNamedNodeMap::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

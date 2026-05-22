@@ -132,6 +132,8 @@ JSValue JSHTMLHRElement::create(JSContext* ctx, HTMLHRElement* impl)
 void JSHTMLHRElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLHRElement* impl = (HTMLHRElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

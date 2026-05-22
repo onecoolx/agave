@@ -133,6 +133,8 @@ JSValue JSCSSFontFaceRule::create(JSContext* ctx, CSSFontFaceRule* impl)
 void JSCSSFontFaceRule::finalizer(JSRuntime* rt, JSValue val)
 {
     CSSFontFaceRule* impl = (CSSFontFaceRule*)JS_GetOpaque(val, JSCSSFontFaceRule::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

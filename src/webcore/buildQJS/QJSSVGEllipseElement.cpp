@@ -148,6 +148,8 @@ JSValue JSSVGEllipseElement::create(JSContext* ctx, SVGEllipseElement* impl)
 void JSSVGEllipseElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGEllipseElement* impl = (SVGEllipseElement*)JS_GetOpaque(val, JSSVGEllipseElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

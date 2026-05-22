@@ -145,6 +145,8 @@ JSValue JSXMLSerializer::create(JSContext* ctx, XMLSerializer* impl)
 void JSXMLSerializer::finalizer(JSRuntime* rt, JSValue val)
 {
     XMLSerializer* impl = (XMLSerializer*)JS_GetOpaque(val, JSXMLSerializer::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

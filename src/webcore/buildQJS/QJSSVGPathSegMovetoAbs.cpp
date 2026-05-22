@@ -106,6 +106,8 @@ JSValue JSSVGPathSegMovetoAbs::create(JSContext* ctx, SVGPathSegMovetoAbs* impl,
 void JSSVGPathSegMovetoAbs::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPathSegMovetoAbs* impl = (SVGPathSegMovetoAbs*)JS_GetOpaque(val, JSSVGPathSegMovetoAbs::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

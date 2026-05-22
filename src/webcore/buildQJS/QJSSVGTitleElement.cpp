@@ -123,6 +123,8 @@ JSValue JSSVGTitleElement::create(JSContext* ctx, SVGTitleElement* impl)
 void JSSVGTitleElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGTitleElement* impl = (SVGTitleElement*)JS_GetOpaque(val, JSSVGTitleElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -111,6 +111,8 @@ JSValue JSSVGZoomEvent::create(JSContext* ctx, SVGZoomEvent* impl, SVGElement* c
 void JSSVGZoomEvent::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGZoomEvent* impl = (SVGZoomEvent*)JS_GetOpaque(val, JSSVGZoomEvent::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

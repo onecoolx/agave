@@ -181,6 +181,8 @@ JSValue JSSVGAngle::create(JSContext* ctx, SVGAngle* impl, SVGElement* context)
 void JSSVGAngle::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGAngle* impl = (SVGAngle*)JS_GetOpaque(val, JSSVGAngle::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

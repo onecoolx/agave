@@ -127,6 +127,8 @@ JSValue JSSVGFEComponentTransferElement::create(JSContext* ctx, SVGFEComponentTr
 void JSSVGFEComponentTransferElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFEComponentTransferElement* impl = (SVGFEComponentTransferElement*)JS_GetOpaque(val, JSSVGFEComponentTransferElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -147,6 +147,8 @@ JSValue JSSVGPolygonElement::create(JSContext* ctx, SVGPolygonElement* impl)
 void JSSVGPolygonElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPolygonElement* impl = (SVGPolygonElement*)JS_GetOpaque(val, JSSVGPolygonElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -132,6 +132,8 @@ JSValue JSHTMLParamElement::create(JSContext* ctx, HTMLParamElement* impl)
 void JSHTMLParamElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLParamElement* impl = (HTMLParamElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

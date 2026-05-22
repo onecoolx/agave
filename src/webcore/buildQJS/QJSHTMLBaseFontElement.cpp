@@ -131,6 +131,8 @@ JSValue JSHTMLBaseFontElement::create(JSContext* ctx, HTMLBaseFontElement* impl)
 void JSHTMLBaseFontElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLBaseFontElement* impl = (HTMLBaseFontElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

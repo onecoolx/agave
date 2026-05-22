@@ -130,6 +130,8 @@ JSValue JSMouseEvent::create(JSContext* ctx, MouseEvent* impl)
 void JSMouseEvent::finalizer(JSRuntime* rt, JSValue val)
 {
     MouseEvent* impl = (MouseEvent*)JS_GetOpaque(val, JSMouseEvent::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -131,6 +131,8 @@ JSValue JSDOMSelection::create(JSContext* ctx, DOMSelection* impl)
 void JSDOMSelection::finalizer(JSRuntime* rt, JSValue val)
 {
     DOMSelection* impl = (DOMSelection*)JS_GetOpaque(val, JSDOMSelection::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -160,6 +160,8 @@ JSValue JSCSSValue::create(JSContext* ctx, CSSValue* impl)
 void JSCSSValue::finalizer(JSRuntime* rt, JSValue val)
 {
     CSSValue* impl = (CSSValue*)JS_GetOpaque(val, JSCSSValue::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

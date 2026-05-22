@@ -105,6 +105,8 @@ JSValue JSSVGAnimatedNumber::create(JSContext* ctx, SVGAnimatedNumber* impl, SVG
 void JSSVGAnimatedNumber::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGAnimatedNumber* impl = (SVGAnimatedNumber*)JS_GetOpaque(val, JSSVGAnimatedNumber::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

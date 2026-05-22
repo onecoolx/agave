@@ -116,6 +116,8 @@ JSValue JSSVGElementInstanceList::create(JSContext* ctx, SVGElementInstanceList*
 void JSSVGElementInstanceList::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGElementInstanceList* impl = (SVGElementInstanceList*)JS_GetOpaque(val, JSSVGElementInstanceList::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

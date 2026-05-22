@@ -119,6 +119,8 @@ JSValue JSSVGPointList::create(JSContext* ctx, SVGPointList* impl, SVGElement* c
 void JSSVGPointList::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPointList* impl = (SVGPointList*)JS_GetOpaque(val, JSSVGPointList::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

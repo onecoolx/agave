@@ -202,6 +202,8 @@ JSValue JSSVGFECompositeElement::create(JSContext* ctx, SVGFECompositeElement* i
 void JSSVGFECompositeElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFECompositeElement* impl = (SVGFECompositeElement*)JS_GetOpaque(val, JSSVGFECompositeElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

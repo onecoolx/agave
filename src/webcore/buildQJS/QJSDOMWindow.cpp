@@ -359,6 +359,8 @@ JSValue JSDOMWindow::create(JSContext* ctx, JSValue obj, DOMWindow* impl)
 void JSDOMWindow::finalizer(JSRuntime* rt, JSValue val)
 {
     DOMWindow* impl = (DOMWindow*)JS_GetOpaque(val, JSDOMWindow::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

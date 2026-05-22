@@ -141,6 +141,8 @@ JSValue JSHTMLLegendElement::create(JSContext* ctx, HTMLLegendElement* impl)
 void JSHTMLLegendElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLLegendElement* impl = (HTMLLegendElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

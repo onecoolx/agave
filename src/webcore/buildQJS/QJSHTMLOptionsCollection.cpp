@@ -107,6 +107,8 @@ JSValue JSHTMLOptionsCollection::create(JSContext* ctx, HTMLOptionsCollection* i
 void JSHTMLOptionsCollection::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLOptionsCollection* impl = (HTMLOptionsCollection*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

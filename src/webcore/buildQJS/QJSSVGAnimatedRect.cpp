@@ -107,6 +107,8 @@ JSValue JSSVGAnimatedRect::create(JSContext* ctx, SVGAnimatedRect* impl, SVGElem
 void JSSVGAnimatedRect::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGAnimatedRect* impl = (SVGAnimatedRect*)JS_GetOpaque(val, JSSVGAnimatedRect::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -108,6 +108,8 @@ JSValue JSSVGPathSegCurvetoQuadraticAbs::create(JSContext* ctx, SVGPathSegCurvet
 void JSSVGPathSegCurvetoQuadraticAbs::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPathSegCurvetoQuadraticAbs* impl = (SVGPathSegCurvetoQuadraticAbs*)JS_GetOpaque(val, JSSVGPathSegCurvetoQuadraticAbs::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

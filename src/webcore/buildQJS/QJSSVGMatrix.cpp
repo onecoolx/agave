@@ -127,6 +127,8 @@ JSValue JSSVGMatrix::create(JSContext* ctx, JSSVGPODTypeWrapper<AffineTransform>
 void JSSVGMatrix::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGMatrix* impl = (SVGMatrix*)JS_GetOpaque(val, JSSVGMatrix::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

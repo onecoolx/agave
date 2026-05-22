@@ -129,6 +129,8 @@ JSValue JSHTMLPreElement::create(JSContext* ctx, HTMLPreElement* impl)
 void JSHTMLPreElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLPreElement* impl = (HTMLPreElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

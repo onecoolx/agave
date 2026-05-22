@@ -200,6 +200,8 @@ JSValue JSSVGFETurbulenceElement::create(JSContext* ctx, SVGFETurbulenceElement*
 void JSSVGFETurbulenceElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFETurbulenceElement* impl = (SVGFETurbulenceElement*)JS_GetOpaque(val, JSSVGFETurbulenceElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

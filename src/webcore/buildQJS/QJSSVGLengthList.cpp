@@ -122,6 +122,8 @@ JSValue JSSVGLengthList::create(JSContext* ctx, SVGLengthList* impl, SVGElement*
 void JSSVGLengthList::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGLengthList* impl = (SVGLengthList*)JS_GetOpaque(val, JSSVGLengthList::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

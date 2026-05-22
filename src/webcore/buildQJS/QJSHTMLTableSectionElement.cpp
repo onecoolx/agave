@@ -147,6 +147,8 @@ JSValue JSHTMLTableSectionElement::create(JSContext* ctx, HTMLTableSectionElemen
 void JSHTMLTableSectionElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLTableSectionElement* impl = (HTMLTableSectionElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

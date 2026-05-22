@@ -132,6 +132,8 @@ JSValue JSHTMLMetaElement::create(JSContext* ctx, HTMLMetaElement* impl)
 void JSHTMLMetaElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLMetaElement* impl = (HTMLMetaElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

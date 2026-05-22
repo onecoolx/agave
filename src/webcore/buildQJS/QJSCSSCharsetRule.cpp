@@ -131,6 +131,8 @@ JSValue JSCSSCharsetRule::create(JSContext* ctx, CSSCharsetRule* impl)
 void JSCSSCharsetRule::finalizer(JSRuntime* rt, JSValue val)
 {
     CSSCharsetRule* impl = (CSSCharsetRule*)JS_GetOpaque(val, JSCSSCharsetRule::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

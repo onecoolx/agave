@@ -119,6 +119,8 @@ JSValue JSTreeWalker::create(JSContext* ctx, TreeWalker* impl)
 void JSTreeWalker::finalizer(JSRuntime* rt, JSValue val)
 {
     TreeWalker* impl = (TreeWalker*)JS_GetOpaque(val, JSTreeWalker::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -158,6 +158,8 @@ JSValue JSCanvasRenderingContext2D::create(JSContext* ctx, CanvasRenderingContex
 void JSCanvasRenderingContext2D::finalizer(JSRuntime* rt, JSValue val)
 {
     CanvasRenderingContext2D* impl = (CanvasRenderingContext2D*)JS_GetOpaque(val, JSCanvasRenderingContext2D::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

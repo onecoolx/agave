@@ -145,6 +145,8 @@ JSValue JSHTMLButtonElement::create(JSContext* ctx, HTMLButtonElement* impl)
 void JSHTMLButtonElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLButtonElement* impl = (HTMLButtonElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

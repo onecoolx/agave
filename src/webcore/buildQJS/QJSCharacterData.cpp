@@ -145,6 +145,8 @@ JSValue JSCharacterData::create(JSContext* ctx, CharacterData* impl)
 void JSCharacterData::finalizer(JSRuntime* rt, JSValue val)
 {
     CharacterData* impl = (CharacterData*)JS_GetOpaque(val, JSCharacterData::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -160,6 +160,8 @@ JSValue JSHTMLInputElement::create(JSContext* ctx, HTMLInputElement* impl)
 void JSHTMLInputElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLInputElement* impl = (HTMLInputElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

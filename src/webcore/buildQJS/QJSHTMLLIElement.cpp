@@ -130,6 +130,8 @@ JSValue JSHTMLLIElement::create(JSContext* ctx, HTMLLIElement* impl)
 void JSHTMLLIElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLLIElement* impl = (HTMLLIElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

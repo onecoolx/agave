@@ -124,6 +124,8 @@ JSValue JSSVGTransformList::create(JSContext* ctx, SVGTransformList* impl, SVGEl
 void JSSVGTransformList::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGTransformList* impl = (SVGTransformList*)JS_GetOpaque(val, JSSVGTransformList::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -137,6 +137,8 @@ JSValue JSCSSImportRule::create(JSContext* ctx, CSSImportRule* impl)
 void JSCSSImportRule::finalizer(JSRuntime* rt, JSValue val)
 {
     CSSImportRule* impl = (CSSImportRule*)JS_GetOpaque(val, JSCSSImportRule::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

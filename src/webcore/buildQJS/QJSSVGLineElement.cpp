@@ -148,6 +148,8 @@ JSValue JSSVGLineElement::create(JSContext* ctx, SVGLineElement* impl)
 void JSSVGLineElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGLineElement* impl = (SVGLineElement*)JS_GetOpaque(val, JSSVGLineElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -115,6 +115,8 @@ JSValue JSSVGPoint::create(JSContext* ctx, JSSVGPODTypeWrapper<FloatPoint>* impl
 void JSSVGPoint::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPoint* impl = (SVGPoint*)JS_GetOpaque(val, JSSVGPoint::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

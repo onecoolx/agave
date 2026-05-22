@@ -103,6 +103,8 @@ JSValue JSXPathExpression::create(JSContext* ctx, XPathExpression* impl)
 void JSXPathExpression::finalizer(JSRuntime* rt, JSValue val)
 {
     XPathExpression* impl = (XPathExpression*)JS_GetOpaque(val, JSXPathExpression::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

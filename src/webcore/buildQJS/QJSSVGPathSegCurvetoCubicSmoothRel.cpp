@@ -108,6 +108,8 @@ JSValue JSSVGPathSegCurvetoCubicSmoothRel::create(JSContext* ctx, SVGPathSegCurv
 void JSSVGPathSegCurvetoCubicSmoothRel::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPathSegCurvetoCubicSmoothRel* impl = (SVGPathSegCurvetoCubicSmoothRel*)JS_GetOpaque(val, JSSVGPathSegCurvetoCubicSmoothRel::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

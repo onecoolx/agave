@@ -123,6 +123,8 @@ JSValue JSSVGTextElement::create(JSContext* ctx, SVGTextElement* impl)
 void JSSVGTextElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGTextElement* impl = (SVGTextElement*)JS_GetOpaque(val, JSSVGTextElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

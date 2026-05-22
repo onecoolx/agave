@@ -135,6 +135,8 @@ JSValue JSCSSPageRule::create(JSContext* ctx, CSSPageRule* impl)
 void JSCSSPageRule::finalizer(JSRuntime* rt, JSValue val)
 {
     CSSPageRule* impl = (CSSPageRule*)JS_GetOpaque(val, JSCSSPageRule::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

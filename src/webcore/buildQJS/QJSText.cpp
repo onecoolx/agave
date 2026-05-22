@@ -137,6 +137,8 @@ JSValue JSText::create(JSContext* ctx, Text* impl)
 void JSText::finalizer(JSRuntime* rt, JSValue val)
 {
     Text* impl = (Text*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

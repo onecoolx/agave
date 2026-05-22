@@ -149,6 +149,8 @@ JSValue JSDOMImplementation::create(JSContext* ctx, DOMImplementation* impl)
 void JSDOMImplementation::finalizer(JSRuntime* rt, JSValue val)
 {
     DOMImplementation* impl = (DOMImplementation*)JS_GetOpaque(val, JSDOMImplementation::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

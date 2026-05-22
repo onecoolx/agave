@@ -138,6 +138,8 @@ JSValue JSAttr::create(JSContext* ctx, Attr* impl)
 void JSAttr::finalizer(JSRuntime* rt, JSValue val)
 {
     Attr* impl = (Attr*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

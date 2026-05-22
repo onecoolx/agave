@@ -194,6 +194,8 @@ void JSSVGLength::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGLength* impl = (SVGLength*)JS_GetOpaque(val, JSSVGLength::js_class_id);
     JSSVGPODTypeWrapperCache<SVGLength, SVGAnimatedLength>::forgetWrapper(impl);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

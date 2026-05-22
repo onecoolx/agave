@@ -128,6 +128,8 @@ JSValue JSHTMLDirectoryElement::create(JSContext* ctx, HTMLDirectoryElement* imp
 void JSHTMLDirectoryElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLDirectoryElement* impl = (HTMLDirectoryElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

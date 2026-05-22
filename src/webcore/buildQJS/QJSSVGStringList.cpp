@@ -121,6 +121,8 @@ JSValue JSSVGStringList::create(JSContext* ctx, SVGStringList* impl, SVGElement*
 void JSSVGStringList::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGStringList* impl = (SVGStringList*)JS_GetOpaque(val, JSSVGStringList::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

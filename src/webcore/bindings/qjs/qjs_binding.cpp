@@ -217,16 +217,22 @@ ScriptInterpreter::ScriptInterpreter(JSContext* ctx, JSValue global, Frame* fram
 
 JSValue ScriptInterpreter::getDOMObject(void* objectHandle) 
 {
+    if (!domObjects())
+        return JS_NULL;
     return domObjects()->get(objectHandle);
 }
 
 void ScriptInterpreter::putDOMObject(void* objectHandle, JSValue obj) 
 {
+    if (!domObjects())
+        return;
     domObjects()->set(objectHandle, JS_DupValueRT(GLOBAL()->runtime, obj));
 }
 
 void ScriptInterpreter::forgetDOMObject(void* objectHandle)
 {
+    if (!domObjects())
+        return;
     JSRuntime* rt = GLOBAL()->runtime;
     JSValue old = domObjects()->get(objectHandle);
     if (JS_VALUE_GET_TAG(old) == JS_TAG_OBJECT)
@@ -236,9 +242,14 @@ void ScriptInterpreter::forgetDOMObject(void* objectHandle)
 
 JSValue ScriptInterpreter::getDOMNodeForDocument(Document* document, Node* node)
 {
-    if (!document)
+    if (!document) {
+        if (!domObjects())
+            return JS_NULL;
         return domObjects()->get(node);
+    }
 
+    if (!domNodesPerDocument())
+        return JS_NULL;
     NodeMap* documentDict = domNodesPerDocument()->get(document);
     if (documentDict)
         return documentDict->get(node);
@@ -248,16 +259,21 @@ JSValue ScriptInterpreter::getDOMNodeForDocument(Document* document, Node* node)
 
 void ScriptInterpreter::forgetDOMNodeForDocument(Document* document, Node* node)
 {
-    JSRuntime* rt = GLOBAL()->runtime;
     if (!document) {
+        if (!domObjects())
+            return;
+        JSRuntime* rt = GLOBAL()->runtime;
         JSValue old = domObjects()->get(node);
         if (JS_VALUE_GET_TAG(old) == JS_TAG_OBJECT)
             JS_FreeValueRT(rt, old);
         domObjects()->remove(node);
         return;
     }
+    if (!domNodesPerDocument())
+        return;
     NodeMap* documentDict = domNodesPerDocument()->get(document);
     if (documentDict) {
+        JSRuntime* rt = GLOBAL()->runtime;
         JSValue old = documentDict->get(node);
         if (JS_VALUE_GET_TAG(old) == JS_TAG_OBJECT)
             JS_FreeValueRT(rt, old);
@@ -269,9 +285,13 @@ void ScriptInterpreter::putDOMNodeForDocument(Document* document, Node* node, JS
 {
     JSRuntime* rt = GLOBAL()->runtime;
     if (!document) {
+        if (!domObjects())
+            return;
         domObjects()->set(node, JS_DupValueRT(rt, obj));
         return;
     }
+    if (!domNodesPerDocument())
+        return;
     NodeMap* documentDict = domNodesPerDocument()->get(document);
     if (!documentDict) {
         documentDict = new NodeMap;
@@ -283,6 +303,8 @@ void ScriptInterpreter::putDOMNodeForDocument(Document* document, Node* node, JS
 void ScriptInterpreter::forgetAllDOMNodesForDocument(Document* document)
 {
     ASSERT(document);
+    if (!domNodesPerDocument())
+        return;
     NodePerDocMap::iterator it = domNodesPerDocument()->find(document);
     if (it != domNodesPerDocument()->end()) {
         JSRuntime* rt = GLOBAL()->runtime;

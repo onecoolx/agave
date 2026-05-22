@@ -116,6 +116,8 @@ JSValue JSNodeIterator::create(JSContext* ctx, NodeIterator* impl)
 void JSNodeIterator::finalizer(JSRuntime* rt, JSValue val)
 {
     NodeIterator* impl = (NodeIterator*)JS_GetOpaque(val, JSNodeIterator::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

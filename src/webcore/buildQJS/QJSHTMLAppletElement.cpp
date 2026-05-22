@@ -139,6 +139,8 @@ JSValue JSHTMLAppletElement::create(JSContext* ctx, HTMLAppletElement* impl)
 void JSHTMLAppletElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLAppletElement* impl = (HTMLAppletElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

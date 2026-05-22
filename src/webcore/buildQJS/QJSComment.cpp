@@ -127,6 +127,8 @@ JSValue JSComment::create(JSContext* ctx, Comment* impl)
 void JSComment::finalizer(JSRuntime* rt, JSValue val)
 {
     Comment* impl = (Comment*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

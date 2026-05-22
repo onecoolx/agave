@@ -194,6 +194,8 @@ JSValue JSSVGFEColorMatrixElement::create(JSContext* ctx, SVGFEColorMatrixElemen
 void JSSVGFEColorMatrixElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFEColorMatrixElement* impl = (SVGFEColorMatrixElement*)JS_GetOpaque(val, JSSVGFEColorMatrixElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

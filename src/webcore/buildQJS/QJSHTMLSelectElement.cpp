@@ -160,6 +160,8 @@ JSValue JSHTMLSelectElement::create(JSContext* ctx, HTMLSelectElement* impl)
 void JSHTMLSelectElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLSelectElement* impl = (HTMLSelectElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

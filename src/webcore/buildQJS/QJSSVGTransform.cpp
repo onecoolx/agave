@@ -188,6 +188,8 @@ JSValue JSSVGTransform::create(JSContext* ctx, JSSVGPODTypeWrapper<SVGTransform>
 void JSSVGTransform::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGTransform* impl = (SVGTransform*)JS_GetOpaque(val, JSSVGTransform::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

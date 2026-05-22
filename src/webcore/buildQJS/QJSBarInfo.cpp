@@ -97,6 +97,8 @@ JSValue JSBarInfo::create(JSContext* ctx, BarInfo* impl)
 void JSBarInfo::finalizer(JSRuntime* rt, JSValue val)
 {
     BarInfo* impl = (BarInfo*)JS_GetOpaque(val, JSBarInfo::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

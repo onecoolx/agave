@@ -212,6 +212,8 @@ JSValue JSSVGSVGElement::create(JSContext* ctx, SVGSVGElement* impl)
 void JSSVGSVGElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGSVGElement* impl = (SVGSVGElement*)JS_GetOpaque(val, JSSVGSVGElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

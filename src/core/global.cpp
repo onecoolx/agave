@@ -163,34 +163,41 @@ void _global_shutdown(void)
     JSRuntime* rt = _globalData.runtime;
 
     // Release all cached JSValues before freeing runtime
+    // Detach maps first so finalizers won't modify them during iteration
     if (_globalData.domObjects) {
-        DOMObjectMap::iterator it = _globalData.domObjects->begin();
-        DOMObjectMap::iterator end = _globalData.domObjects->end();
-        for (; it != end; ++it) {
-            if (JS_VALUE_GET_TAG(it->second) == JS_TAG_OBJECT)
-                JS_FreeValueRT(rt, it->second);
-        }
-        delete _globalData.domObjects;
+        DOMObjectMap* objs = _globalData.domObjects;
         _globalData.domObjects = 0;
+        DOMObjectMap::iterator it = objs->begin();
+        DOMObjectMap::iterator end = objs->end();
+        for (; it != end; ++it) {
+            if (JS_VALUE_GET_TAG(it->second) == JS_TAG_OBJECT) {
+                JS_SetOpaque(it->second, NULL);
+                JS_FreeValueRT(rt, it->second);
+            }
+        }
+        delete objs;
     }
 
     if (_globalData.domNodesPerDoc) {
-        NodePerDocMap::iterator it = _globalData.domNodesPerDoc->begin();
-        NodePerDocMap::iterator end = _globalData.domNodesPerDoc->end();
+        NodePerDocMap* nodesPerDoc = _globalData.domNodesPerDoc;
+        _globalData.domNodesPerDoc = 0;
+        NodePerDocMap::iterator it = nodesPerDoc->begin();
+        NodePerDocMap::iterator end = nodesPerDoc->end();
         for (; it != end; ++it) {
             NodeMap* nodeMap = it->second;
             if (nodeMap) {
                 NodeMap::iterator nit = nodeMap->begin();
                 NodeMap::iterator nend = nodeMap->end();
                 for (; nit != nend; ++nit) {
-                    if (JS_VALUE_GET_TAG(nit->second) == JS_TAG_OBJECT)
+                    if (JS_VALUE_GET_TAG(nit->second) == JS_TAG_OBJECT) {
+                        JS_SetOpaque(nit->second, NULL);
                         JS_FreeValueRT(rt, nit->second);
+                    }
                 }
                 delete nodeMap;
             }
         }
-        delete _globalData.domNodesPerDoc;
-        _globalData.domNodesPerDoc = 0;
+        delete nodesPerDoc;
     }
 
     if (_globalData.jsValWindows) {

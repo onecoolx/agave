@@ -133,6 +133,8 @@ JSValue JSCounter::create(JSContext* ctx, Counter* impl)
 void JSCounter::finalizer(JSRuntime* rt, JSValue val)
 {
     Counter* impl = (Counter*)JS_GetOpaque(val, JSCounter::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

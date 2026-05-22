@@ -212,6 +212,8 @@ JSValue JSEvent::create(JSContext* ctx, Event* impl)
 void JSEvent::finalizer(JSRuntime* rt, JSValue val)
 {
     Event* impl = (Event*)JS_GetOpaque(val, JSEvent::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

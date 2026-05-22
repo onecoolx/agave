@@ -139,6 +139,8 @@ JSValue JSSVGMaskElement::create(JSContext* ctx, SVGMaskElement* impl)
 void JSSVGMaskElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGMaskElement* impl = (SVGMaskElement*)JS_GetOpaque(val, JSSVGMaskElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

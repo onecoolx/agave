@@ -146,6 +146,8 @@ JSValue JSHTMLImageElement::create(JSContext* ctx, HTMLImageElement* impl)
 void JSHTMLImageElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLImageElement* impl = (HTMLImageElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

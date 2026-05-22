@@ -141,6 +141,8 @@ JSValue JSHTMLLabelElement::create(JSContext* ctx, HTMLLabelElement* impl)
 void JSHTMLLabelElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLLabelElement* impl = (HTMLLabelElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

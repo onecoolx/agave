@@ -127,6 +127,8 @@ JSValue JSCDATASection::create(JSContext* ctx, CDATASection* impl)
 void JSCDATASection::finalizer(JSRuntime* rt, JSValue val)
 {
     CDATASection* impl = (CDATASection*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

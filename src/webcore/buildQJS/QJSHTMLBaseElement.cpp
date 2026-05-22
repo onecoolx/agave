@@ -130,6 +130,8 @@ JSValue JSHTMLBaseElement::create(JSContext* ctx, HTMLBaseElement* impl)
 void JSHTMLBaseElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLBaseElement* impl = (HTMLBaseElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

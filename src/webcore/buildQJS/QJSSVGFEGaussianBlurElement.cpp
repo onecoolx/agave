@@ -131,6 +131,8 @@ JSValue JSSVGFEGaussianBlurElement::create(JSContext* ctx, SVGFEGaussianBlurElem
 void JSSVGFEGaussianBlurElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFEGaussianBlurElement* impl = (SVGFEGaussianBlurElement*)JS_GetOpaque(val, JSSVGFEGaussianBlurElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

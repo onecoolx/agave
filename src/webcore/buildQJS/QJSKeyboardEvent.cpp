@@ -114,6 +114,8 @@ JSValue JSKeyboardEvent::create(JSContext* ctx, KeyboardEvent* impl)
 void JSKeyboardEvent::finalizer(JSRuntime* rt, JSValue val)
 {
     KeyboardEvent* impl = (KeyboardEvent*)JS_GetOpaque(val, JSKeyboardEvent::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

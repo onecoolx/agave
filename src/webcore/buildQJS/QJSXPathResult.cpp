@@ -192,6 +192,8 @@ JSValue JSXPathResult::create(JSContext* ctx, XPathResult* impl)
 void JSXPathResult::finalizer(JSRuntime* rt, JSValue val)
 {
     XPathResult* impl = (XPathResult*)JS_GetOpaque(val, JSXPathResult::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

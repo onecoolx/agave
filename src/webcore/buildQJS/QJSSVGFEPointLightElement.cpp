@@ -108,6 +108,8 @@ JSValue JSSVGFEPointLightElement::create(JSContext* ctx, SVGFEPointLightElement*
 void JSSVGFEPointLightElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFEPointLightElement* impl = (SVGFEPointLightElement*)JS_GetOpaque(val, JSSVGFEPointLightElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

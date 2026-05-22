@@ -941,6 +941,8 @@ sub GenerateImplementation
     push(@implContent, "{\n");
     my $finClassId = $object->IsNodeSubclass($dataNode) ? "JSNode::js_class_id" : "${className}::js_class_id";
     push(@implContent, "    ${implClassName}* impl = (${implClassName}*)JS_GetOpaque(val, $finClassId);\n");
+    push(@implContent, "    if (!impl)\n");
+    push(@implContent, "        return;\n");
 
     if ($interfaceName eq "Node") {
         push(@implContent, "    ScriptInterpreter::forgetDOMNodeForDocument(impl->document(), impl);\n");

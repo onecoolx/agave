@@ -97,6 +97,8 @@ JSValue JSSVGPathSegClosePath::create(JSContext* ctx, SVGPathSegClosePath* impl,
 void JSSVGPathSegClosePath::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPathSegClosePath* impl = (SVGPathSegClosePath*)JS_GetOpaque(val, JSSVGPathSegClosePath::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

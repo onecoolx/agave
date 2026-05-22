@@ -176,6 +176,8 @@ JSValue JSSVGTextPathElement::create(JSContext* ctx, SVGTextPathElement* impl)
 void JSSVGTextPathElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGTextPathElement* impl = (SVGTextPathElement*)JS_GetOpaque(val, JSSVGTextPathElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -147,6 +147,8 @@ JSValue JSSVGCircleElement::create(JSContext* ctx, SVGCircleElement* impl)
 void JSSVGCircleElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGCircleElement* impl = (SVGCircleElement*)JS_GetOpaque(val, JSSVGCircleElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

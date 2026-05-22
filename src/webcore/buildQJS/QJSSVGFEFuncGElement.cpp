@@ -97,6 +97,8 @@ JSValue JSSVGFEFuncGElement::create(JSContext* ctx, SVGFEFuncGElement* impl)
 void JSSVGFEFuncGElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFEFuncGElement* impl = (SVGFEFuncGElement*)JS_GetOpaque(val, JSSVGFEFuncGElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

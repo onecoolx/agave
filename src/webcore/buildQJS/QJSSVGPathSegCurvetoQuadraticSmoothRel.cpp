@@ -106,6 +106,8 @@ JSValue JSSVGPathSegCurvetoQuadraticSmoothRel::create(JSContext* ctx, SVGPathSeg
 void JSSVGPathSegCurvetoQuadraticSmoothRel::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPathSegCurvetoQuadraticSmoothRel* impl = (SVGPathSegCurvetoQuadraticSmoothRel*)JS_GetOpaque(val, JSSVGPathSegCurvetoQuadraticSmoothRel::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

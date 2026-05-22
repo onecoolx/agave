@@ -124,6 +124,8 @@ JSValue JSSVGCursorElement::create(JSContext* ctx, SVGCursorElement* impl)
 void JSSVGCursorElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGCursorElement* impl = (SVGCursorElement*)JS_GetOpaque(val, JSSVGCursorElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

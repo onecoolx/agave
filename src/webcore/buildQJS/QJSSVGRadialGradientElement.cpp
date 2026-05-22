@@ -110,6 +110,8 @@ JSValue JSSVGRadialGradientElement::create(JSContext* ctx, SVGRadialGradientElem
 void JSSVGRadialGradientElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGRadialGradientElement* impl = (SVGRadialGradientElement*)JS_GetOpaque(val, JSSVGRadialGradientElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

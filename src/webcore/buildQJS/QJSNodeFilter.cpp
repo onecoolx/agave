@@ -190,6 +190,8 @@ JSValue JSNodeFilter::create(JSContext* ctx, NodeFilter* impl)
 void JSNodeFilter::finalizer(JSRuntime* rt, JSValue val)
 {
     NodeFilter* impl = (NodeFilter*)JS_GetOpaque(val, JSNodeFilter::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

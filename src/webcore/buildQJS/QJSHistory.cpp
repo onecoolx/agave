@@ -108,6 +108,8 @@ JSValue JSHistory::create(JSContext* ctx, History* impl)
 void JSHistory::finalizer(JSRuntime* rt, JSValue val)
 {
     History* impl = (History*)JS_GetOpaque(val, JSHistory::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

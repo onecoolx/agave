@@ -143,6 +143,8 @@ JSValue JSHTMLAreaElement::create(JSContext* ctx, HTMLAreaElement* impl)
 void JSHTMLAreaElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLAreaElement* impl = (HTMLAreaElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

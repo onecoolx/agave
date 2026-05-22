@@ -158,6 +158,8 @@ JSValue JSHTMLAnchorElement::create(JSContext* ctx, HTMLAnchorElement* impl)
 void JSHTMLAnchorElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLAnchorElement* impl = (HTMLAnchorElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

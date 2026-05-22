@@ -150,6 +150,8 @@ JSValue JSSVGRectElement::create(JSContext* ctx, SVGRectElement* impl)
 void JSSVGRectElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGRectElement* impl = (SVGRectElement*)JS_GetOpaque(val, JSSVGRectElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

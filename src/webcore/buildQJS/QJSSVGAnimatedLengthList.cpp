@@ -107,6 +107,8 @@ JSValue JSSVGAnimatedLengthList::create(JSContext* ctx, SVGAnimatedLengthList* i
 void JSSVGAnimatedLengthList::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGAnimatedLengthList* impl = (SVGAnimatedLengthList*)JS_GetOpaque(val, JSSVGAnimatedLengthList::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

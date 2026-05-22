@@ -141,6 +141,8 @@ JSValue JSNodeList::create(JSContext* ctx, NodeList* impl)
 void JSNodeList::finalizer(JSRuntime* rt, JSValue val)
 {
     NodeList* impl = (NodeList*)JS_GetOpaque(val, JSNodeList::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

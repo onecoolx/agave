@@ -89,6 +89,8 @@ JSValue JSCanvasPattern::create(JSContext* ctx, CanvasPattern* impl)
 void JSCanvasPattern::finalizer(JSRuntime* rt, JSValue val)
 {
     CanvasPattern* impl = (CanvasPattern*)JS_GetOpaque(val, JSCanvasPattern::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

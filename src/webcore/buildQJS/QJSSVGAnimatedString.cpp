@@ -106,6 +106,8 @@ JSValue JSSVGAnimatedString::create(JSContext* ctx, SVGAnimatedString* impl, SVG
 void JSSVGAnimatedString::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGAnimatedString* impl = (SVGAnimatedString*)JS_GetOpaque(val, JSSVGAnimatedString::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

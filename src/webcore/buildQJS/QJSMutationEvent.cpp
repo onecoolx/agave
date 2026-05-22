@@ -171,6 +171,8 @@ JSValue JSMutationEvent::create(JSContext* ctx, MutationEvent* impl)
 void JSMutationEvent::finalizer(JSRuntime* rt, JSValue val)
 {
     MutationEvent* impl = (MutationEvent*)JS_GetOpaque(val, JSMutationEvent::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

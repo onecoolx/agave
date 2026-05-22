@@ -130,6 +130,8 @@ JSValue JSHTMLModElement::create(JSContext* ctx, HTMLModElement* impl)
 void JSHTMLModElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLModElement* impl = (HTMLModElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

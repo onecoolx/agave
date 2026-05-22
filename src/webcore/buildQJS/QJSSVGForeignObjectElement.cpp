@@ -148,6 +148,8 @@ JSValue JSSVGForeignObjectElement::create(JSContext* ctx, SVGForeignObjectElemen
 void JSSVGForeignObjectElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGForeignObjectElement* impl = (SVGForeignObjectElement*)JS_GetOpaque(val, JSSVGForeignObjectElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

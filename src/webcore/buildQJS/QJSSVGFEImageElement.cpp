@@ -132,6 +132,8 @@ JSValue JSSVGFEImageElement::create(JSContext* ctx, SVGFEImageElement* impl)
 void JSSVGFEImageElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFEImageElement* impl = (SVGFEImageElement*)JS_GetOpaque(val, JSSVGFEImageElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

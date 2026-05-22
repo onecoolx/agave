@@ -163,6 +163,8 @@ JSValue JSSVGException::create(JSContext* ctx, SVGException* impl, SVGElement* c
 void JSSVGException::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGException* impl = (SVGException*)JS_GetOpaque(val, JSSVGException::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

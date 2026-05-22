@@ -143,6 +143,8 @@ JSValue JSSVGSwitchElement::create(JSContext* ctx, SVGSwitchElement* impl)
 void JSSVGSwitchElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGSwitchElement* impl = (SVGSwitchElement*)JS_GetOpaque(val, JSSVGSwitchElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

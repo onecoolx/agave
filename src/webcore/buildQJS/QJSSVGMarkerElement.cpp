@@ -207,6 +207,8 @@ JSValue JSSVGMarkerElement::create(JSContext* ctx, SVGMarkerElement* impl)
 void JSSVGMarkerElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGMarkerElement* impl = (SVGMarkerElement*)JS_GetOpaque(val, JSSVGMarkerElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

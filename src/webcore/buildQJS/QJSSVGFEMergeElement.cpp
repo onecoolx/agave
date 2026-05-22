@@ -126,6 +126,8 @@ JSValue JSSVGFEMergeElement::create(JSContext* ctx, SVGFEMergeElement* impl)
 void JSSVGFEMergeElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFEMergeElement* impl = (SVGFEMergeElement*)JS_GetOpaque(val, JSSVGFEMergeElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

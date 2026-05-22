@@ -178,6 +178,8 @@ JSValue JSSVGColor::create(JSContext* ctx, SVGColor* impl)
 void JSSVGColor::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGColor* impl = (SVGColor*)JS_GetOpaque(val, JSSVGColor::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -195,6 +195,8 @@ JSValue JSSVGFEBlendElement::create(JSContext* ctx, SVGFEBlendElement* impl)
 void JSSVGFEBlendElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFEBlendElement* impl = (SVGFEBlendElement*)JS_GetOpaque(val, JSSVGFEBlendElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

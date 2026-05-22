@@ -122,6 +122,8 @@ JSValue JSSVGStopElement::create(JSContext* ctx, SVGStopElement* impl)
 void JSSVGStopElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGStopElement* impl = (SVGStopElement*)JS_GetOpaque(val, JSSVGStopElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

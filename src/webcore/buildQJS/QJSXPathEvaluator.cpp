@@ -157,6 +157,8 @@ JSValue JSXPathEvaluator::create(JSContext* ctx, XPathEvaluator* impl)
 void JSXPathEvaluator::finalizer(JSRuntime* rt, JSValue val)
 {
     XPathEvaluator* impl = (XPathEvaluator*)JS_GetOpaque(val, JSXPathEvaluator::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -113,6 +113,8 @@ JSValue JSSVGFESpotLightElement::create(JSContext* ctx, SVGFESpotLightElement* i
 void JSSVGFESpotLightElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFESpotLightElement* impl = (SVGFESpotLightElement*)JS_GetOpaque(val, JSSVGFESpotLightElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

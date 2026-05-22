@@ -104,6 +104,8 @@ JSValue JSScreen::create(JSContext* ctx, Screen* impl)
 void JSScreen::finalizer(JSRuntime* rt, JSValue val)
 {
     Screen* impl = (Screen*)JS_GetOpaque(val, JSScreen::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

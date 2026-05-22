@@ -127,6 +127,8 @@ JSValue JSSVGFEFloodElement::create(JSContext* ctx, SVGFEFloodElement* impl)
 void JSSVGFEFloodElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGFEFloodElement* impl = (SVGFEFloodElement*)JS_GetOpaque(val, JSSVGFEFloodElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

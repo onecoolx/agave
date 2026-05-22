@@ -127,6 +127,8 @@ JSValue JSEntityReference::create(JSContext* ctx, EntityReference* impl)
 void JSEntityReference::finalizer(JSRuntime* rt, JSValue val)
 {
     EntityReference* impl = (EntityReference*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

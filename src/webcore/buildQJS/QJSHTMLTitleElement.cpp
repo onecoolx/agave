@@ -129,6 +129,8 @@ JSValue JSHTMLTitleElement::create(JSContext* ctx, HTMLTitleElement* impl)
 void JSHTMLTitleElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLTitleElement* impl = (HTMLTitleElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

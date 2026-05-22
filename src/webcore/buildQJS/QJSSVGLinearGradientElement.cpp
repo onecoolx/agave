@@ -109,6 +109,8 @@ JSValue JSSVGLinearGradientElement::create(JSContext* ctx, SVGLinearGradientElem
 void JSSVGLinearGradientElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGLinearGradientElement* impl = (SVGLinearGradientElement*)JS_GetOpaque(val, JSSVGLinearGradientElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

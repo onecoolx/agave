@@ -105,6 +105,8 @@ JSValue JSSVGPathSegLinetoHorizontalAbs::create(JSContext* ctx, SVGPathSegLineto
 void JSSVGPathSegLinetoHorizontalAbs::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPathSegLinetoHorizontalAbs* impl = (SVGPathSegLinetoHorizontalAbs*)JS_GetOpaque(val, JSSVGPathSegLinetoHorizontalAbs::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

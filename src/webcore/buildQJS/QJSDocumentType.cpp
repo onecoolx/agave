@@ -137,6 +137,8 @@ JSValue JSDocumentType::create(JSContext* ctx, DocumentType* impl)
 void JSDocumentType::finalizer(JSRuntime* rt, JSValue val)
 {
     DocumentType* impl = (DocumentType*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

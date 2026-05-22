@@ -123,6 +123,8 @@ JSValue JSSVGDescElement::create(JSContext* ctx, SVGDescElement* impl)
 void JSSVGDescElement::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGDescElement* impl = (SVGDescElement*)JS_GetOpaque(val, JSSVGDescElement::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

@@ -134,6 +134,8 @@ JSValue JSHTMLEmbedElement::create(JSContext* ctx, HTMLEmbedElement* impl)
 void JSHTMLEmbedElement::finalizer(JSRuntime* rt, JSValue val)
 {
     HTMLEmbedElement* impl = (HTMLEmbedElement*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

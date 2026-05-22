@@ -187,6 +187,8 @@ JSValue JSSVGPreserveAspectRatio::create(JSContext* ctx, SVGPreserveAspectRatio*
 void JSSVGPreserveAspectRatio::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGPreserveAspectRatio* impl = (SVGPreserveAspectRatio*)JS_GetOpaque(val, JSSVGPreserveAspectRatio::js_class_id);
+    if (!impl)
+        return;
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }
