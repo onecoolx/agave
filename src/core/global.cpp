@@ -191,9 +191,9 @@ void _global_shutdown(void)
     }
 
     JS_FreeContext(_globalData.utilContext);
-    // Skip JS_FreeRuntime to avoid GC assert on exit.
-    // OS will reclaim all memory. This matches browser behavior
-    // where process exit is the cleanup mechanism.
+    _globalData.utilContext = 0;
+    JS_FreeRuntime(_globalData.runtime);
+    _globalData.runtime = 0;
 }
 
 }
