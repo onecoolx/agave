@@ -906,6 +906,7 @@ void macross_shutdown(void)
 		WebCore::eventShatdown();
 		globalDataSave();
         releaseGlobalContext(); 
+        CookieManager::releaseSharedInstance();
 #if ENABLE(QJS)
         mescal::_global_shutdown();
 #endif

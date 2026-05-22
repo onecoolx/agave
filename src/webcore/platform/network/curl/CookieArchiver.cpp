@@ -204,6 +204,10 @@ int CookieArchiver::loadDomain(DomainCookie *domain)
 
             if (!cookie->isExpired())
                 domain->add(cookie);
+            else
+                delete cookie;
+        } else {
+            delete cookie;
         }
         delete[] pBuf;
     }
