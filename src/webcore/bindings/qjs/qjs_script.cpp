@@ -96,6 +96,7 @@ JSValue ScriptController::evaluate(const String& filename, int baseLine, const S
     //m_script->stopTimeoutCheck();
   
     if (!JS_IsException(comp)) {
+        gcController().garbageCollectSoon();
         return comp;
     } else {
         JSContext * ctx = context();
@@ -118,6 +119,7 @@ JSValue ScriptController::evaluate(const String& filename, int baseLine, const S
         }
     }
 
+    gcController().garbageCollectSoon();
     return JS_NULL;
 }
 

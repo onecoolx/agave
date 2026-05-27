@@ -65,7 +65,7 @@ GCController::GCController(JSRuntime* runtime)
 void GCController::garbageCollectSoon()
 {
     if (m_runtime && !m_GCTimer.isActive())
-        m_GCTimer.startOneShot(0.05);
+        m_GCTimer.startOneShot(0.5);
 }
 
 void GCController::gcTimerFired(Timer<GCController>*)
