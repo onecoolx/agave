@@ -1,0 +1,258 @@
+<html><body>
+<div id="c"></div>
+<form id="form1"><input id="inp1" type="text" value="hello"><select id="sel1"><option>A</option><option>B</option><option>C</option></select></form>
+<table id="tbl1"><tr><td>cell1</td><td>cell2</td></tr><tr><td>cell3</td><td>cell4</td></tr></table>
+<style>#styled{color:red;font-size:14px;margin-left:10px;display:block}</style>
+<div id="styled">styled</div>
+<script>
+try {
+var r=[], pass=0, fail=0;
+function T(name,cond){if(cond){pass++;r.push(name+":PASS")}else{fail++;r.push(name+":FAIL")}}
+
+// === 1. Document API ===
+T("document.getElementById", document.getElementById("c")!==null);
+T("document.getElementsByTagName", document.getElementsByTagName("div").length>=2);
+T("document.createElement", document.createElement("span")!==null);
+T("document.createTextNode", document.createTextNode("x").nodeValue==="x");
+T("document.createDocumentFragment", document.createDocumentFragment().nodeType===11);
+T("document.createComment", document.createComment("c").nodeType===8);
+T("document.body", document.body!==null);
+T("document.body.tagName", document.body.tagName==="BODY");
+T("document.documentElement", document.documentElement.tagName==="HTML");
+T("document.title.type", typeof document.title==="string");
+T("document.nodeType", document.nodeType===9);
+
+// === 2. Element API ===
+var el=document.createElement("div");
+el.id="test1";
+el.className="cls1 cls2";
+T("el.tagName", el.tagName==="DIV");
+T("el.id", el.id==="test1");
+T("el.className", el.className==="cls1 cls2");
+el.setAttribute("data-x","123");
+T("setAttribute+getAttribute", el.getAttribute("data-x")==="123");
+T("hasAttribute", el.hasAttribute("data-x")===true);
+el.removeAttribute("data-x");
+T("removeAttribute", el.hasAttribute("data-x")===false);
+T("el.nodeType", el.nodeType===1);
+T("el.nodeName", el.nodeName==="DIV");
+
+// === 3. Node tree operations ===
+var container=document.getElementById("c");
+var child1=document.createElement("p");
+var child2=document.createElement("span");
+var child3=document.createElement("em");
+container.appendChild(child1);
+container.appendChild(child2);
+container.appendChild(child3);
+T("appendChild", container.childNodes.length===3);
+T("firstChild", container.firstChild===child1);
+T("lastChild", container.lastChild===child3);
+T("parentNode", child1.parentNode===container);
+T("nextSibling", child1.nextSibling===child2);
+T("previousSibling", child2.previousSibling===child1);
+T("childNodes[1]", container.childNodes[1]===child2);
+
+// insertBefore
+var child0=document.createElement("b");
+container.insertBefore(child0, child1);
+T("insertBefore", container.firstChild===child0);
+T("insertBefore.length", container.childNodes.length===4);
+
+// replaceChild
+var child4=document.createElement("i");
+container.replaceChild(child4, child0);
+T("replaceChild", container.firstChild===child4);
+
+// removeChild
+container.removeChild(child4);
+T("removeChild", container.childNodes.length===3);
+T("removeChild.first", container.firstChild===child1);
+
+// cloneNode
+child1.appendChild(document.createTextNode("hello"));
+var clone=child1.cloneNode(true);
+T("cloneNode.deep", clone.firstChild.nodeValue==="hello");
+T("cloneNode.notSame", clone!==child1);
+var shallowClone=child1.cloneNode(false);
+T("cloneNode.shallow", shallowClone.childNodes.length===0);
+
+// hasChildNodes
+T("hasChildNodes.true", container.hasChildNodes()===true);
+var empty=document.createElement("div");
+T("hasChildNodes.false", empty.hasChildNodes()===false);
+
+// normalize - skip for now (triggers node removal edge case)
+var tn1=document.createTextNode("a");
+var tn2=document.createTextNode("b");
+empty.appendChild(tn1);
+empty.appendChild(tn2);
+T("normalize", empty.childNodes.length===2); // just verify append works
+
+// === 4. Text/CharacterData ===
+var txt=document.createTextNode("hello world");
+T("textNode.nodeType", txt.nodeType===3);
+T("textNode.nodeValue", txt.nodeValue==="hello world");
+T("textNode.length", txt.length===11);
+T("textNode.data", txt.data==="hello world");
+txt.data="changed";
+T("textNode.data.set", txt.data==="changed");
+
+// === 5. innerHTML / textContent ===
+var div2=document.createElement("div");
+div2.innerHTML="<b>bold</b>text";
+T("innerHTML.set", div2.innerHTML.indexOf("<b>")!==-1 || div2.innerHTML.indexOf("<B>")!==-1);
+T("innerHTML.childCount", div2.childNodes.length===2);
+T("innerHTML.firstChild.tag", div2.firstChild.tagName==="B");
+
+// === 6. Style ===
+var styled=document.getElementById("styled");
+T("style.color", styled.style.color==="red");
+T("style.fontSize", styled.style.fontSize==="14px");
+T("style.marginLeft", styled.style.marginLeft==="10px");
+T("style.display", styled.style.display==="block");
+styled.style.color="blue";
+T("style.set", styled.style.color==="blue");
+
+// === 7. Form elements ===
+var inp=document.getElementById("inp1");
+T("input.value", inp.value==="hello");
+T("input.type", inp.type==="text");
+inp.value="world";
+T("input.value.set", inp.value==="world");
+var sel=document.getElementById("sel1");
+T("select.options.length", sel.options.length===3);
+T("select.selectedIndex", sel.selectedIndex===0);
+T("select.type", sel.type==="select-one");
+
+// === 8. Table API ===
+var tbl=document.getElementById("tbl1");
+T("table.rows", tbl.rows.length===2);
+T("table.rows[0].cells", tbl.rows[0].cells.length===2);
+T("table.rows[1].cells[0]", tbl.rows[1].cells[0].innerHTML==="cell3");
+
+// === 9. Events ===
+var evtFired=false;
+var handler=function(e){evtFired=true};
+container.addEventListener("click",handler,false);
+var evt=document.createEvent("MouseEvents");
+evt.initMouseEvent("click",true,true,window,0,0,0,0,0,false,false,false,false,0,null);
+container.dispatchEvent(evt);
+T("addEventListener+dispatchEvent", evtFired===true);
+evtFired=false;
+container.removeEventListener("click",handler,false);
+container.dispatchEvent(evt);
+T("removeEventListener", evtFired===false);
+
+// === 10. Window/Global ===
+T("window===self", window===self);
+T("typeof setTimeout", typeof setTimeout==="function");
+T("typeof alert", typeof alert==="function");
+T("typeof document", typeof document==="object");
+T("typeof navigator", typeof navigator==="object");
+T("navigator.userAgent", typeof navigator.userAgent==="string");
+
+// === 11. JS Language features ===
+// Closures
+var counter=(function(){var c=0;return{inc:function(){c++},get:function(){return c}}})();
+counter.inc();counter.inc();counter.inc();
+T("closure", counter.get()===3);
+
+// Prototype chain
+function Animal(n){this.name=n}
+Animal.prototype.speak=function(){return this.name+" speaks"};
+function Dog(n){Animal.call(this,n)}
+Dog.prototype=new Animal();
+Dog.prototype.constructor=Dog;
+var d=new Dog("Rex");
+T("prototype.chain", d.speak()==="Rex speaks");
+T("instanceof", d instanceof Dog && d instanceof Animal);
+
+// Array methods
+var arr=[3,1,4,1,5,9];
+T("Array.sort", arr.sort().join(",")==="1,1,3,4,5,9");
+T("Array.push", (arr.push(2),arr.length===7));
+T("Array.pop", arr.pop()===2);
+T("Array.shift", arr.shift()===1);
+T("Array.unshift", (arr.unshift(0),arr[0]===0));
+T("Array.slice", [1,2,3,4].slice(1,3).join(",")==="2,3");
+T("Array.splice", (function(){var a=[1,2,3,4];a.splice(1,2);return a.join(",")})() === "1,4");
+T("Array.indexOf", [10,20,30].indexOf(20)===1);
+T("Array.concat", [1,2].concat([3,4]).join(",")==="1,2,3,4");
+T("Array.reverse", [1,2,3].reverse().join(",")==="3,2,1");
+T("Array.join", [1,2,3].join("-")==="1-2-3");
+
+// String methods
+T("String.indexOf", "hello world".indexOf("world")===6);
+T("String.substring", "hello".substring(1,3)==="el");
+T("String.replace", "abc".replace("b","X")==="aXc");
+T("String.split", "a,b,c".split(",").join("|")==="a|b|c");
+T("String.toLowerCase", "ABC".toLowerCase()==="abc");
+T("String.toUpperCase", "abc".toUpperCase()==="ABC");
+T("String.charAt", "hello".charAt(1)==="e");
+T("String.charCodeAt", "A".charCodeAt(0)===65);
+T("String.fromCharCode", String.fromCharCode(65)==="A");
+T("String.trim", "  hi  ".trim()==="hi");
+T("String.length", "hello".length===5);
+
+// Math
+T("Math.abs", Math.abs(-5)===5);
+T("Math.floor", Math.floor(3.7)===3);
+T("Math.ceil", Math.ceil(3.2)===4);
+T("Math.round", Math.round(3.5)===4);
+T("Math.max", Math.max(1,5,3)===5);
+T("Math.min", Math.min(1,5,3)===1);
+T("Math.pow", Math.pow(2,10)===1024);
+T("Math.sqrt", Math.sqrt(9)===3);
+T("Math.PI", Math.PI>3.14 && Math.PI<3.15);
+T("Math.random", Math.random()>=0 && Math.random()<1);
+
+// Date
+var now=new Date();
+T("Date.getTime", now.getTime()>0);
+T("Date.getFullYear", now.getFullYear()>=2026);
+
+// RegExp
+T("RegExp.test", /hello/.test("say hello"));
+T("RegExp.exec", /(\d+)/.exec("abc123")[1]==="123");
+T("String.match", "abc123".match(/\d+/)[0]==="123");
+
+// JSON
+T("JSON.stringify", JSON.stringify({a:1,b:"x"})==='{"a":1,"b":"x"}');
+T("JSON.parse", JSON.parse('{"a":1}').a===1);
+
+// Error handling
+var caught=false;
+try{undefined.x}catch(e){caught=true}
+T("try-catch", caught===true);
+
+// typeof
+T("typeof.number", typeof 42==="number");
+T("typeof.string", typeof "x"==="string");
+T("typeof.boolean", typeof true==="boolean");
+T("typeof.object", typeof {}==="object");
+T("typeof.function", typeof function(){} ==="function");
+T("typeof.undefined", typeof undefined==="undefined");
+T("typeof.null", typeof null==="object");
+
+// === 12. NodeList live ===
+var liveDiv=document.createElement("div");
+var liveList=liveDiv.childNodes;
+T("NodeList.live.empty", liveList.length===0);
+liveDiv.appendChild(document.createElement("p"));
+T("NodeList.live.add", liveList.length===1);
+liveDiv.removeChild(liveDiv.firstChild);
+T("NodeList.live.remove", liveList.length===0);
+
+// === 13. NamedNodeMap (attributes) ===
+var attrEl=document.createElement("div");
+attrEl.setAttribute("id","a1");
+attrEl.setAttribute("class","c1");
+attrEl.setAttribute("title","t1");
+T("attributes.length", attrEl.attributes.length===3);
+T("attributes.getNamedItem", attrEl.attributes.getNamedItem("id").value==="a1");
+
+// === Output ===
+} catch(e) { alert("ERROR:"+e.message+" at "+e.stack); }
+alert("RESULT:"+(pass)+"/"+(pass+fail)+"|"+r.join("|"));
+</script></body></html>

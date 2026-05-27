@@ -1,0 +1,122 @@
+<html><body><div id="c"></div><script>
+function bench(name, fn, iter) {
+  var start = new Date().getTime();
+  fn(iter);
+  return new Date().getTime() - start;
+}
+
+var results = [];
+
+// 1. DOM createElement
+results.push("createElement_1k:" + bench("createElement", function(n) {
+  for (var i = 0; i < n; i++) document.createElement("div");
+}, 1000) + "ms");
+
+// 2. DOM getElementById
+var c = document.getElementById("c");
+c.id = "c";
+results.push("getElementById_10k:" + bench("getElementById", function(n) {
+  for (var i = 0; i < n; i++) document.getElementById("c");
+}, 10000) + "ms");
+
+// 3. DOM setAttribute
+var el = document.createElement("div");
+results.push("setAttribute_5k:" + bench("setAttribute", function(n) {
+  for (var i = 0; i < n; i++) el.setAttribute("data-i", "v" + i);
+}, 5000) + "ms");
+
+// 4. DOM appendChild + removeChild
+results.push("append_remove_1k:" + bench("append_remove", function(n) {
+  var parent = document.createElement("div");
+  for (var i = 0; i < n; i++) {
+    var child = document.createElement("span");
+    parent.appendChild(child);
+  }
+  while (parent.firstChild) parent.removeChild(parent.firstChild);
+}, 1000) + "ms");
+
+// 5. DOM innerHTML parse
+results.push("innerHTML_1k:" + bench("innerHTML", function(n) {
+  var d = document.createElement("div");
+  for (var i = 0; i < n; i++) d.innerHTML = "<b>x</b><i>y</i>";
+}, 1000) + "ms");
+
+// 6. DOM childNodes traversal
+var bigDiv = document.createElement("div");
+for (var i = 0; i < 100; i++) bigDiv.appendChild(document.createElement("p"));
+results.push("traverse_10k:" + bench("traverse", function(n) {
+  for (var i = 0; i < n; i++) {
+    var node = bigDiv.firstChild;
+    while (node) node = node.nextSibling;
+  }
+}, 10000) + "ms");
+
+// 7. JS object creation
+results.push("obj_create_10k:" + bench("obj_create", function(n) {
+  for (var i = 0; i < n; i++) var o = {a: i, b: "x", c: [1,2,3]};
+}, 10000) + "ms");
+
+// 8. JS function call
+function add(a, b) { return a + b; }
+results.push("func_call_100k:" + bench("func_call", function(n) {
+  for (var i = 0; i < n; i++) add(i, i+1);
+}, 100000) + "ms");
+
+// 9. JS array operations
+results.push("array_ops_10k:" + bench("array_ops", function(n) {
+  var arr = [];
+  for (var i = 0; i < n; i++) arr.push(i);
+  arr.sort(function(a,b){return b-a});
+  arr.reverse();
+}, 10000) + "ms");
+
+// 10. JS string concat
+results.push("str_concat_10k:" + bench("str_concat", function(n) {
+  var s = "";
+  for (var i = 0; i < n; i++) s += "x";
+}, 10000) + "ms");
+
+// 11. JS regex
+results.push("regex_10k:" + bench("regex", function(n) {
+  var re = /(\d+)-(\w+)/;
+  for (var i = 0; i < n; i++) re.exec("abc-123-def");
+}, 10000) + "ms");
+
+// 12. JS JSON parse/stringify
+results.push("json_5k:" + bench("json", function(n) {
+  var obj = {name:"test",values:[1,2,3],nested:{a:true}};
+  for (var i = 0; i < n; i++) {
+    var s = JSON.stringify(obj);
+    JSON.parse(s);
+  }
+}, 5000) + "ms");
+
+// 13. JS closure/scope
+results.push("closure_100k:" + bench("closure", function(n) {
+  for (var i = 0; i < n; i++) {
+    (function(x){ return function(){ return x; }; })(i);
+  }
+}, 100000) + "ms");
+
+// 14. JS prototype lookup
+function Base(){}
+Base.prototype.method = function(){ return 1; };
+function Mid(){} Mid.prototype = new Base();
+function Leaf(){} Leaf.prototype = new Mid();
+var leaf = new Leaf();
+results.push("proto_lookup_100k:" + bench("proto_lookup", function(n) {
+  for (var i = 0; i < n; i++) leaf.method();
+}, 100000) + "ms");
+
+// 15. DOM event dispatch
+var target = document.createElement("div");
+var count = 0;
+target.addEventListener("click", function(){ count++; }, false);
+var clickEvt = document.createEvent("MouseEvents");
+clickEvt.initMouseEvent("click",true,true,window,0,0,0,0,0,false,false,false,false,0,null);
+results.push("event_dispatch_5k:" + bench("event_dispatch", function(n) {
+  for (var i = 0; i < n; i++) target.dispatchEvent(clickEvt);
+}, 5000) + "ms");
+
+alert("PERF:" + results.join("|"));
+</script></body></html>

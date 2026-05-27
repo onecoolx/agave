@@ -139,6 +139,7 @@ sub IsNodeSubclass
     my $name = $dataNode->name;
     return 1 if $name eq "Node";
     return 1 if $name eq "EventTargetNode";
+    return 1 if $name eq "CharacterData";
     return 1 if $name eq "Element";
     return 1 if $name eq "Document";
     return 1 if $name eq "HTMLDocument";
