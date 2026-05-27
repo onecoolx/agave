@@ -110,6 +110,8 @@ JSValue JSNode::appendChild(JSContext *ctx, JSValueConst this_val, int argc, JSV
 void JSNode::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func)
 {
     Node* node = (Node*)JS_GetOpaque(val, JSNode::js_class_id);
+    if (!node)
+        return;
 
     if (node->inDocument()) {
         JS_MarkValue(rt, val, mark_func);

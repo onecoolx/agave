@@ -233,10 +233,6 @@ void ScriptInterpreter::forgetDOMObject(void* objectHandle)
 {
     if (!domObjects())
         return;
-    JSRuntime* rt = GLOBAL()->runtime;
-    JSValue old = domObjects()->get(objectHandle);
-    if (JS_VALUE_GET_TAG(old) == JS_TAG_OBJECT)
-        JS_FreeValueRT(rt, old);
     domObjects()->remove(objectHandle);
 }
 
@@ -262,23 +258,14 @@ void ScriptInterpreter::forgetDOMNodeForDocument(Document* document, Node* node)
     if (!document) {
         if (!domObjects())
             return;
-        JSRuntime* rt = GLOBAL()->runtime;
-        JSValue old = domObjects()->get(node);
-        if (JS_VALUE_GET_TAG(old) == JS_TAG_OBJECT)
-            JS_FreeValueRT(rt, old);
         domObjects()->remove(node);
         return;
     }
     if (!domNodesPerDocument())
         return;
     NodeMap* documentDict = domNodesPerDocument()->get(document);
-    if (documentDict) {
-        JSRuntime* rt = GLOBAL()->runtime;
-        JSValue old = documentDict->get(node);
-        if (JS_VALUE_GET_TAG(old) == JS_TAG_OBJECT)
-            JS_FreeValueRT(rt, old);
+    if (documentDict)
         documentDict->remove(node);
-    }
 }
 
 void ScriptInterpreter::putDOMNodeForDocument(Document* document, Node* node, JSValue obj)
@@ -307,18 +294,15 @@ void ScriptInterpreter::forgetAllDOMNodesForDocument(Document* document)
         return;
     NodePerDocMap::iterator it = domNodesPerDocument()->find(document);
     if (it != domNodesPerDocument()->end()) {
-        JSRuntime* rt = GLOBAL()->runtime;
         NodeMap* nodeMap = it->second;
+        domNodesPerDocument()->remove(it);
         NodeMap::iterator nit = nodeMap->begin();
         NodeMap::iterator nend = nodeMap->end();
         for (; nit != nend; ++nit) {
-            if (JS_VALUE_GET_TAG(nit->second) == JS_TAG_OBJECT) {
+            if (JS_VALUE_GET_TAG(nit->second) == JS_TAG_OBJECT)
                 JS_SetOpaque(nit->second, NULL);
-                JS_FreeValueRT(rt, nit->second);
-            }
         }
         delete nodeMap;
-        domNodesPerDocument()->remove(it);
     }
 }
 

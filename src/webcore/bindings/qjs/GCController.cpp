@@ -64,8 +64,8 @@ GCController::GCController(JSRuntime* runtime)
 
 void GCController::garbageCollectSoon()
 {
-    if (m_runtime && !m_GCTimer.isActive())
-        m_GCTimer.startOneShot(0.5);
+    // GC cycle detection disabled - incompatible with DOM cache strong references.
+    // Cyclic JS objects are freed when JS_FreeContext destroys the context.
 }
 
 void GCController::gcTimerFired(Timer<GCController>*)

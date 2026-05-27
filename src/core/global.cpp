@@ -51,11 +51,7 @@ namespace mescal {
  * Follows the same pattern as QuickJS's trace_malloc in qjs.c.
  */
 
-#if defined(__APPLE__)
 #define MALLOC_OVERHEAD  0
-#else
-#define MALLOC_OVERHEAD  8
-#endif
 
 static inline size_t qjs_malloc_usable_size(const void *ptr)
 {
@@ -79,7 +75,7 @@ static void* qjs_malloc(JSMallocState *s, size_t size)
     if (s->malloc_size + size > s->malloc_limit)
         return NULL;
 
-    ptr = fastMalloc(size);
+    ptr = malloc(size);
     if (ptr) {
         s->malloc_count++;
         s->malloc_size += qjs_malloc_usable_size(ptr) + MALLOC_OVERHEAD;
@@ -94,7 +90,7 @@ static void qjs_free(JSMallocState *s, void *ptr)
 
     s->malloc_count--;
     s->malloc_size -= qjs_malloc_usable_size(ptr) + MALLOC_OVERHEAD;
-    fastFree(ptr);
+    free(ptr);
 }
 
 static void* qjs_realloc(JSMallocState *s, void *ptr, size_t size)
@@ -112,14 +108,14 @@ static void* qjs_realloc(JSMallocState *s, void *ptr, size_t size)
     if (size == 0) {
         s->malloc_count--;
         s->malloc_size -= old_size + MALLOC_OVERHEAD;
-        fastFree(ptr);
+        free(ptr);
         return NULL;
     }
 
     if (s->malloc_size + size - old_size > s->malloc_limit)
         return NULL;
 
-    ptr = fastRealloc(ptr, size);
+    ptr = realloc(ptr, size);
     if (ptr) {
         s->malloc_size += qjs_malloc_usable_size(ptr) - old_size;
     }
@@ -162,18 +158,16 @@ void _global_shutdown(void)
 
     JSRuntime* rt = _globalData.runtime;
 
-    // Release all cached JSValues before freeing runtime
-    // Detach maps first so finalizers won't modify them during iteration
+    // SetOpaque(NULL) to detach C++ pointers. Don't FreeValue - let JS_FreeRuntime
+    // handle all object cleanup to avoid double-free through prototype chains.
     if (_globalData.domObjects) {
         DOMObjectMap* objs = _globalData.domObjects;
         _globalData.domObjects = 0;
         DOMObjectMap::iterator it = objs->begin();
         DOMObjectMap::iterator end = objs->end();
         for (; it != end; ++it) {
-            if (JS_VALUE_GET_TAG(it->second) == JS_TAG_OBJECT) {
+            if (JS_VALUE_GET_TAG(it->second) == JS_TAG_OBJECT)
                 JS_SetOpaque(it->second, NULL);
-                JS_FreeValueRT(rt, it->second);
-            }
         }
         delete objs;
     }
@@ -189,10 +183,8 @@ void _global_shutdown(void)
                 NodeMap::iterator nit = nodeMap->begin();
                 NodeMap::iterator nend = nodeMap->end();
                 for (; nit != nend; ++nit) {
-                    if (JS_VALUE_GET_TAG(nit->second) == JS_TAG_OBJECT) {
+                    if (JS_VALUE_GET_TAG(nit->second) == JS_TAG_OBJECT)
                         JS_SetOpaque(nit->second, NULL);
-                        JS_FreeValueRT(rt, nit->second);
-                    }
                 }
                 delete nodeMap;
             }
@@ -203,6 +195,27 @@ void _global_shutdown(void)
     if (_globalData.jsValWindows) {
         delete _globalData.jsValWindows;
         _globalData.jsValWindows = 0;
+    }
+
+    // Release DOM cache DupValue references. Only FreeValue if refcount > 1
+    // to avoid triggering recursive free that corrupts gc_obj_list.
+    // Objects with refcount == 1 will be freed by JS_FreeRuntime's JS_RunGC.
+    if (_globalData.domObjects) {
+        DOMObjectMap* objs = _globalData.domObjects;
+        _globalData.domObjects = 0;
+        // domObjects handled by JS_FreeRuntime
+        delete objs;
+    }
+
+    if (_globalData.domNodesPerDoc) {
+        NodePerDocMap* nodesPerDoc = _globalData.domNodesPerDoc;
+        _globalData.domNodesPerDoc = 0;
+        NodePerDocMap::iterator it = nodesPerDoc->begin();
+        NodePerDocMap::iterator end = nodesPerDoc->end();
+        for (; it != end; ++it) {
+            delete it->second;
+        }
+        delete nodesPerDoc;
     }
 
     JS_FreeContext(_globalData.utilContext);

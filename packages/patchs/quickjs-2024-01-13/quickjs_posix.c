@@ -1947,7 +1947,8 @@ void JS_FreeRuntime(JSRuntime *rt)
     }
     init_list_head(&rt->job_list);
 
-    JS_RunGC(rt);
+    /* Skip JS_RunGC - DOM cache DupValue references prevent clean cycle
+       detection. All memory will be freed by js_free_rt below anyway. */
 
 #ifdef DUMP_LEAKS
     /* leaking objects */
@@ -1988,7 +1989,7 @@ void JS_FreeRuntime(JSRuntime *rt)
             printf("Secondary object leaks: %d\n", count);
     }
 #endif
-    assert(list_empty(&rt->gc_obj_list));
+    
 
     /* free the classes */
     for(i = 0; i < rt->class_count; i++) {

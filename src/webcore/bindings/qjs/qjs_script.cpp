@@ -63,15 +63,14 @@ ScriptController::~ScriptController()
         JS_SetContextOpaque(m_context, 0);
         m_script = 0;
 
-        // Free context first - releases all JS variable references
-        JSRuntime* rt = JS_GetRuntime(m_context);
-        JS_SetGCThreshold(rt, (size_t)-1);
-        JS_FreeContext(m_context);
-
-        // Now release DOM cache references - safe because context is gone,
-        // no JS code can run, and GC threshold is disabled
+        // Release DOM cache first - detach C++ pointers from JS wrappers
         if (m_frame && m_frame->document())
             ScriptInterpreter::forgetAllDOMNodesForDocument(m_frame->document());
+
+        // Then free context - releases all JS variable references
+        // With DOM cache detached, GC won't access freed prototypes
+        JSRuntime* rt = JS_GetRuntime(m_context);
+        JS_FreeContext(m_context);
 
         gcController().garbageCollectSoon();
     }
