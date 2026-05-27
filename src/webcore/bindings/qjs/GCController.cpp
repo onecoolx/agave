@@ -70,9 +70,8 @@ void GCController::garbageCollectSoon()
 
 void GCController::gcTimerFired(Timer<GCController>*)
 {
-    // GC cycle detection is disabled (JS_SetGCThreshold(-1)) because
-    // DOM cache holds strong references invisible to GC.
-    // DOM object lifecycle is managed by C++ ref counting + forgetAllDOMNodesForDocument.
+    if (m_runtime)
+        JS_RunGC(m_runtime);
 }
     
 } // namespace WebCore
