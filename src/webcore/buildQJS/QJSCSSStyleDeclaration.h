@@ -61,7 +61,7 @@ public:
     };
 private:
     static JSValue indexGetter(JSContext *ctx, JSValueConst this_obj, uint32_t idx);
-private:
+public:
     static JSValue nameGetter(JSContext *ctx, JSValueConst this_obj, const char* prop);
 };
 

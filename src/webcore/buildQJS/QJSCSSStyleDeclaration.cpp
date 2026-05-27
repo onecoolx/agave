@@ -117,11 +117,40 @@ void JSCSSStyleDeclarationPrototype::initPrototype(JSContext * ctx, JSValue this
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSStyleDeclarationPrototypeFunctions, countof(JSCSSStyleDeclarationPrototypeFunctions));
 }
 
+static int js_cssstyledecl_get_own_property(JSContext *ctx, JSPropertyDescriptor *desc,
+                                             JSValueConst obj, JSAtom prop)
+{
+    CSSStyleDeclaration* impl = (CSSStyleDeclaration*)JS_GetOpaque(obj, JSCSSStyleDeclaration::js_class_id);
+    if (!impl)
+        return 0;
+    const char* str = JS_AtomToCString(ctx, prop);
+    if (!str)
+        return 0;
+    // Skip numbers and known built-in properties
+    if ((str[0] >= '0' && str[0] <= '9') || !strcmp(str, "length") || !strcmp(str, "cssText") || !strcmp(str, "constructor")) {
+        JS_FreeCString(ctx, str);
+        return 0;
+    }
+    if (desc) {
+        desc->flags = JS_PROP_ENUMERABLE | JS_PROP_WRITABLE;
+        desc->value = JSCSSStyleDeclaration::nameGetter(ctx, obj, str);
+        desc->getter = JS_UNDEFINED;
+        desc->setter = JS_UNDEFINED;
+    }
+    JS_FreeCString(ctx, str);
+    return 1;
+}
+
+static JSClassExoticMethods js_cssstyledecl_exotic = {
+    .get_own_property = js_cssstyledecl_get_own_property,
+};
+
 static JSClassDef JSCSSStyleDeclarationClassDefine = 
 {
     "CSSStyleDeclaration",
     .finalizer = JSCSSStyleDeclaration::finalizer,
     .gc_mark = JSCSSStyleDeclaration::mark,
+    .exotic = &js_cssstyledecl_exotic,
 };
 
 JSClassID JSCSSStyleDeclaration::js_class_id = 0;

@@ -105,11 +105,41 @@ void JSNodeListPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSNodeListPrototypeFunctions, countof(JSNodeListPrototypeFunctions));
 }
 
+static int js_nodelist_get_own_property(JSContext *ctx, JSPropertyDescriptor *desc,
+                                         JSValueConst obj, JSAtom prop)
+{
+    NodeList* impl = (NodeList*)JS_GetOpaque(obj, JSNodeList::js_class_id);
+    if (!impl)
+        return 0;
+    const char* str = JS_AtomToCString(ctx, prop);
+    if (!str)
+        return 0;
+    char* end;
+    unsigned long index = strtoul(str, &end, 10);
+    int is_index = (*end == '\0' && str[0] != '\0');
+    JS_FreeCString(ctx, str);
+    if (is_index && index < impl->length()) {
+        if (desc) {
+            desc->flags = JS_PROP_ENUMERABLE;
+            desc->value = toJS(ctx, impl->item(index));
+            desc->getter = JS_UNDEFINED;
+            desc->setter = JS_UNDEFINED;
+        }
+        return 1;
+    }
+    return 0;
+}
+
+static JSClassExoticMethods js_nodelist_exotic = {
+    .get_own_property = js_nodelist_get_own_property,
+};
+
 static JSClassDef JSNodeListClassDefine = 
 {
     "NodeList",
     .finalizer = JSNodeList::finalizer,
     .gc_mark = JSNodeList::mark,
+    .exotic = &js_nodelist_exotic,
 };
 
 JSClassID JSNodeList::js_class_id = 0;

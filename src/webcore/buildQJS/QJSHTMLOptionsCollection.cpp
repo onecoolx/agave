@@ -30,6 +30,7 @@
 
 #include "ExceptionCode.h"
 #include "HTMLOptionsCollection.h"
+#include "QJSHTMLCollection.h"
 #include "QJSHTMLOptionElement.h"
 
 using namespace QJS;
@@ -86,7 +87,7 @@ void JSHTMLOptionsCollection::init(JSContext* ctx)
 {
     if (JSHTMLOptionsCollection::js_class_id == 0) {
         JSNode::init(ctx);
-        JSHTMLOptionsCollection::js_class_id = JSNode::js_class_id;
+        JSHTMLCollection::init(ctx); JSHTMLOptionsCollection::js_class_id = JSHTMLCollection::js_class_id;
     }
 }
 
@@ -94,7 +95,7 @@ JSValue JSHTMLOptionsCollection::create(JSContext* ctx, HTMLOptionsCollection* i
 {
     JSHTMLOptionsCollection::init(ctx);
     JSValue _proto = JSHTMLOptionsCollectionPrototype::self(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSHTMLCollection::js_class_id);
     JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
@@ -106,7 +107,7 @@ JSValue JSHTMLOptionsCollection::create(JSContext* ctx, HTMLOptionsCollection* i
 
 void JSHTMLOptionsCollection::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLOptionsCollection* impl = (HTMLOptionsCollection*)JS_GetOpaque(val, JSNode::js_class_id);
+    HTMLOptionsCollection* impl = (HTMLOptionsCollection*)JS_GetOpaque(val, JSHTMLCollection::js_class_id);
     if (!impl)
         return;
     ScriptInterpreter::forgetDOMObject(impl);
@@ -122,11 +123,11 @@ JSValue JSHTMLOptionsCollection::getValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case SelectedIndexAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSHTMLCollection::js_class_id);
             return JS_NewInt32(ctx, imp->selectedIndex());
         }
         case LengthAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSHTMLCollection::js_class_id);
             return JSHTMLOptionsCollection::length(ctx, this_val, imp);
         }
     }
@@ -137,12 +138,12 @@ JSValue JSHTMLOptionsCollection::putValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case SelectedIndexAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSHTMLCollection::js_class_id);
             imp->setSelectedIndex(valueToInt32(ctx, value));
             break;
         }
         case LengthAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSHTMLCollection::js_class_id);
             JSHTMLOptionsCollection::setLength(ctx, this_val, value, imp);
             break;
         }
@@ -152,7 +153,7 @@ JSValue JSHTMLOptionsCollection::putValueProperty(JSContext *ctx, JSValueConst t
 
 JSValue JSHTMLOptionsCollectionPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
+    HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSHTMLCollection::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 
@@ -184,7 +185,7 @@ JSValue JSHTMLOptionsCollectionPrototypeFunction::callAsFunction(JSContext* ctx,
 HTMLOptionsCollection* toHTMLOptionsCollection(JSValue val)
 {
     if (JS_IsObject(val)) {
-        HTMLOptionsCollection* impl = (HTMLOptionsCollection*)JS_GetOpaque(val, JSHTMLOptionsCollection::js_class_id);
+        HTMLOptionsCollection* impl = (HTMLOptionsCollection*)JS_GetOpaque(val, JSHTMLCollection::js_class_id);
         return impl;
     } else {
         return 0;
