@@ -538,6 +538,22 @@ static JSValue showModalDialog(JSContext* ctx, Window* openerWindow, int argc, J
         return JS_UNDEFINED;
 }
 
+static JSValue qjs_image_constructor(JSContext* c, JSValueConst new_target, int argc, JSValueConst *argv)
+{
+    QJS::Window* w = QJS::Window::retrieveActive(c);
+    if (!w || !w->impl()->frame())
+        return JS_EXCEPTION;
+    Document* doc = w->impl()->frame()->document();
+    if (!doc)
+        return JS_EXCEPTION;
+    HTMLImageElement* image = new HTMLImageElement(doc);
+    if (argc > 0)
+        image->setWidth(valueToInt32(c, argv[0]));
+    if (argc > 1)
+        image->setHeight(valueToInt32(c, argv[1]));
+    return toJS(c, static_cast<Node*>(image));
+}
+
 JSValue Window::getValueProperty(JSContext* ctx, JSValueConst this_val, int token)
 {
     Window * window = (Window*)JS_GetOpaque2(ctx, this_val, Window::js_class_id);
@@ -575,20 +591,7 @@ JSValue Window::getValueProperty(JSContext* ctx, JSValueConst this_val, int toke
            {
                static JSValue imgCtor = JS_UNDEFINED;
                if (JS_IsUndefined(imgCtor)) {
-                   imgCtor = JS_NewCFunction2(ctx, [](JSContext* c, JSValueConst new_target, int argc, JSValueConst *argv) -> JSValue {
-                       QJS::Window* w = QJS::Window::retrieveActive(c);
-                       if (!w || !w->impl()->frame())
-                           return JS_EXCEPTION;
-                       Document* doc = w->impl()->frame()->document();
-                       if (!doc)
-                           return JS_EXCEPTION;
-                       HTMLImageElement* image = new HTMLImageElement(doc);
-                       if (argc > 0)
-                           image->setWidth(valueToInt32(c, argv[0]));
-                       if (argc > 1)
-                           image->setHeight(valueToInt32(c, argv[1]));
-                       return toJS(c, static_cast<Node*>(image));
-                   }, "Image", 2, JS_CFUNC_constructor, 0);
+                   imgCtor = JS_NewCFunction2(ctx, qjs_image_constructor, "Image", 2, JS_CFUNC_constructor, 0);
                }
                return imgCtor;
            }
@@ -996,7 +999,7 @@ bool Window::isSafeScript(JSContext *ctx) const
     return true;
 
   String message = String::format("Unsafe JavaScript attempt to access frame with URL %s from frame with URL %s. Domains, protocols and ports must match.\n", 
-                                  thisURL.url().latin1(), actURL.url().latin1());
+                                  thisURL.url().latin1().data(), actURL.url().latin1().data());
   if (Page* page = frame->page())
       page->chrome()->addMessageToConsole(JSMessageSource, ErrorMessageLevel, message, 1, String());
   

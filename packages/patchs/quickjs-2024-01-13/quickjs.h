@@ -1,3 +1,8 @@
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc99-designator"
+#pragma clang diagnostic ignored "-Wc99-extensions"
+#endif
 /*
  * QuickJS Javascript Engine
  *
@@ -1056,6 +1061,10 @@ int JS_SetModuleExportList(JSContext *ctx, JSModuleDef *m,
 
 #ifdef __cplusplus
 } /* extern "C" { */
+#endif
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* QUICKJS_H */
