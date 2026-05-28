@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLOListElement.h"
 
 #include "HTMLOListElement.h"
@@ -39,13 +41,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLOListElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLOListElementAttributesFunctions[4];
+static bool JSHTMLOListElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLOListElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLOListElement::getValueProperty, NULL, JSHTMLOListElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("start", JSHTMLOListElement::getValueProperty, JSHTMLOListElement::putValueProperty, JSHTMLOListElement::StartAttrNum),
-    JS_CGETSET_MAGIC_DEF("compact", JSHTMLOListElement::getValueProperty, JSHTMLOListElement::putValueProperty, JSHTMLOListElement::CompactAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSHTMLOListElement::getValueProperty, JSHTMLOListElement::putValueProperty, JSHTMLOListElement::TypeAttrNum)
-};
+    if (JSHTMLOListElementAttributesFunctions_initialized) return;
+    JSHTMLOListElementAttributesFunctions_initialized = true;
+    memset(JSHTMLOListElementAttributesFunctions, 0, sizeof(JSHTMLOListElementAttributesFunctions));
+    JSHTMLOListElementAttributesFunctions[0].name = "constructor";
+    JSHTMLOListElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOListElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOListElementAttributesFunctions[0].magic = JSHTMLOListElement::ConstructorAttrNum;
+    JSHTMLOListElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLOListElement::getValueProperty;
+    JSHTMLOListElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLOListElementAttributesFunctions[1].name = "start";
+    JSHTMLOListElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOListElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOListElementAttributesFunctions[1].magic = JSHTMLOListElement::StartAttrNum;
+    JSHTMLOListElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLOListElement::getValueProperty;
+    JSHTMLOListElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLOListElement::putValueProperty;
+    JSHTMLOListElementAttributesFunctions[2].name = "compact";
+    JSHTMLOListElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOListElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOListElementAttributesFunctions[2].magic = JSHTMLOListElement::CompactAttrNum;
+    JSHTMLOListElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLOListElement::getValueProperty;
+    JSHTMLOListElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLOListElement::putValueProperty;
+    JSHTMLOListElementAttributesFunctions[3].name = "type";
+    JSHTMLOListElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOListElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOListElementAttributesFunctions[3].magic = JSHTMLOListElement::TypeAttrNum;
+    JSHTMLOListElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLOListElement::getValueProperty;
+    JSHTMLOListElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLOListElement::putValueProperty;
+}
 
 class JSHTMLOListElementConstructor {
 public:
@@ -94,15 +122,22 @@ JSValue JSHTMLOListElementPrototype::self(JSContext * ctx)
 
 void JSHTMLOListElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLOListElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLOListElementAttributesFunctions, countof(JSHTMLOListElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLOListElementClassDefine = 
+static JSClassDef JSHTMLOListElementClassDefine;
+static bool JSHTMLOListElementClassDefine_initialized = false;
+
+static void init_JSHTMLOListElementClassDefine()
 {
-    "HTMLOListElement",
-    .finalizer = JSHTMLOListElement::finalizer,
-    .gc_mark = JSHTMLOListElement::mark,
-};
+    if (JSHTMLOListElementClassDefine_initialized) return;
+    JSHTMLOListElementClassDefine_initialized = true;
+    memset(&JSHTMLOListElementClassDefine, 0, sizeof(JSHTMLOListElementClassDefine));
+    JSHTMLOListElementClassDefine.class_name = "HTMLOListElement";
+    JSHTMLOListElementClassDefine.finalizer = JSHTMLOListElement::finalizer;
+    JSHTMLOListElementClassDefine.gc_mark = JSHTMLOListElement::mark;
+}
 
 JSClassID JSHTMLOListElement::js_class_id = 0;
 

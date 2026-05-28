@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSDocument.h"
 
 #include "Attr.h"
@@ -91,39 +93,195 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSDocumentAttributesFunctions[] =
+static JSCFunctionListEntry JSDocumentAttributesFunctions[30];
+static bool JSDocumentAttributesFunctions_initialized = false;
+
+static void init_JSDocumentAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("title", JSDocument::getValueProperty, JSDocument::putValueProperty, JSDocument::TitleAttrNum),
-    JS_CGETSET_MAGIC_DEF("anchors", JSDocument::getValueProperty, NULL, JSDocument::AnchorsAttrNum),
-    JS_CGETSET_MAGIC_DEF("domain", JSDocument::getValueProperty, JSDocument::putValueProperty, JSDocument::DomainAttrNum),
-    JS_CGETSET_MAGIC_DEF("documentURI", JSDocument::getValueProperty, JSDocument::putValueProperty, JSDocument::DocumentURIAttrNum),
-    JS_CGETSET_MAGIC_DEF("documentElement", JSDocument::getValueProperty, NULL, JSDocument::DocumentElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("URL", JSDocument::getValueProperty, NULL, JSDocument::URLAttrNum),
-    JS_CGETSET_MAGIC_DEF("async", JSDocument::getValueProperty, JSDocument::putValueProperty, JSDocument::AsyncAttrNum),
-    JS_CGETSET_MAGIC_DEF("doctype", JSDocument::getValueProperty, NULL, JSDocument::DoctypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlEncoding", JSDocument::getValueProperty, NULL, JSDocument::XMLEncodingAttrNum),
-    JS_CGETSET_MAGIC_DEF("applets", JSDocument::getValueProperty, NULL, JSDocument::AppletsAttrNum),
-    JS_CGETSET_MAGIC_DEF("defaultView", JSDocument::getValueProperty, NULL, JSDocument::DefaultViewAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlVersion", JSDocument::getValueProperty, JSDocument::putValueProperty, JSDocument::XMLVersionAttrNum),
-    JS_CGETSET_MAGIC_DEF("implementation", JSDocument::getValueProperty, NULL, JSDocument::ImplementationAttrNum),
-    JS_CGETSET_MAGIC_DEF("cookie", JSDocument::getValueProperty, JSDocument::putValueProperty, JSDocument::CookieAttrNum),
-    JS_CGETSET_MAGIC_DEF("images", JSDocument::getValueProperty, NULL, JSDocument::ImagesAttrNum),
-    JS_CGETSET_MAGIC_DEF("inputEncoding", JSDocument::getValueProperty, NULL, JSDocument::InputEncodingAttrNum),
-    JS_CGETSET_MAGIC_DEF("links", JSDocument::getValueProperty, NULL, JSDocument::LinksAttrNum),
-    JS_CGETSET_MAGIC_DEF("location", JSDocument::getValueProperty, JSDocument::putValueProperty, JSDocument::LocationAttrNum),
-    JS_CGETSET_MAGIC_DEF("defaultCharset", JSDocument::getValueProperty, NULL, JSDocument::DefaultCharsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlStandalone", JSDocument::getValueProperty, JSDocument::putValueProperty, JSDocument::XMLStandaloneAttrNum),
-    JS_CGETSET_MAGIC_DEF("styleSheets", JSDocument::getValueProperty, NULL, JSDocument::StyleSheetsAttrNum),
-    JS_CGETSET_MAGIC_DEF("referrer", JSDocument::getValueProperty, NULL, JSDocument::ReferrerAttrNum),
-    JS_CGETSET_MAGIC_DEF("body", JSDocument::getValueProperty, JSDocument::putValueProperty, JSDocument::BodyAttrNum),
-    JS_CGETSET_MAGIC_DEF("forms", JSDocument::getValueProperty, NULL, JSDocument::FormsAttrNum),
-    JS_CGETSET_MAGIC_DEF("charset", JSDocument::getValueProperty, JSDocument::putValueProperty, JSDocument::CharsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("readyState", JSDocument::getValueProperty, NULL, JSDocument::ReadyStateAttrNum),
-    JS_CGETSET_MAGIC_DEF("characterSet", JSDocument::getValueProperty, NULL, JSDocument::CharacterSetAttrNum),
-    JS_CGETSET_MAGIC_DEF("preferredStylesheetSet", JSDocument::getValueProperty, NULL, JSDocument::PreferredStylesheetSetAttrNum),
-    JS_CGETSET_MAGIC_DEF("selectedStylesheetSet", JSDocument::getValueProperty, JSDocument::putValueProperty, JSDocument::SelectedStylesheetSetAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSDocument::getValueProperty, NULL, JSDocument::ConstructorAttrNum)
-};
+    if (JSDocumentAttributesFunctions_initialized) return;
+    JSDocumentAttributesFunctions_initialized = true;
+    memset(JSDocumentAttributesFunctions, 0, sizeof(JSDocumentAttributesFunctions));
+    JSDocumentAttributesFunctions[0].name = "title";
+    JSDocumentAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[0].magic = JSDocument::TitleAttrNum;
+    JSDocumentAttributesFunctions[0].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[0].u.getset.set.setter_magic = JSDocument::putValueProperty;
+    JSDocumentAttributesFunctions[1].name = "anchors";
+    JSDocumentAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[1].magic = JSDocument::AnchorsAttrNum;
+    JSDocumentAttributesFunctions[1].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[2].name = "domain";
+    JSDocumentAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[2].magic = JSDocument::DomainAttrNum;
+    JSDocumentAttributesFunctions[2].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[2].u.getset.set.setter_magic = JSDocument::putValueProperty;
+    JSDocumentAttributesFunctions[3].name = "documentURI";
+    JSDocumentAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[3].magic = JSDocument::DocumentURIAttrNum;
+    JSDocumentAttributesFunctions[3].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[3].u.getset.set.setter_magic = JSDocument::putValueProperty;
+    JSDocumentAttributesFunctions[4].name = "documentElement";
+    JSDocumentAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[4].magic = JSDocument::DocumentElementAttrNum;
+    JSDocumentAttributesFunctions[4].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[5].name = "URL";
+    JSDocumentAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[5].magic = JSDocument::URLAttrNum;
+    JSDocumentAttributesFunctions[5].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[6].name = "async";
+    JSDocumentAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[6].magic = JSDocument::AsyncAttrNum;
+    JSDocumentAttributesFunctions[6].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[6].u.getset.set.setter_magic = JSDocument::putValueProperty;
+    JSDocumentAttributesFunctions[7].name = "doctype";
+    JSDocumentAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[7].magic = JSDocument::DoctypeAttrNum;
+    JSDocumentAttributesFunctions[7].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[8].name = "xmlEncoding";
+    JSDocumentAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[8].magic = JSDocument::XMLEncodingAttrNum;
+    JSDocumentAttributesFunctions[8].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[9].name = "applets";
+    JSDocumentAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[9].magic = JSDocument::AppletsAttrNum;
+    JSDocumentAttributesFunctions[9].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[10].name = "defaultView";
+    JSDocumentAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[10].magic = JSDocument::DefaultViewAttrNum;
+    JSDocumentAttributesFunctions[10].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[11].name = "xmlVersion";
+    JSDocumentAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[11].magic = JSDocument::XMLVersionAttrNum;
+    JSDocumentAttributesFunctions[11].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[11].u.getset.set.setter_magic = JSDocument::putValueProperty;
+    JSDocumentAttributesFunctions[12].name = "implementation";
+    JSDocumentAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[12].magic = JSDocument::ImplementationAttrNum;
+    JSDocumentAttributesFunctions[12].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[13].name = "cookie";
+    JSDocumentAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[13].magic = JSDocument::CookieAttrNum;
+    JSDocumentAttributesFunctions[13].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[13].u.getset.set.setter_magic = JSDocument::putValueProperty;
+    JSDocumentAttributesFunctions[14].name = "images";
+    JSDocumentAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[14].magic = JSDocument::ImagesAttrNum;
+    JSDocumentAttributesFunctions[14].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[14].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[15].name = "inputEncoding";
+    JSDocumentAttributesFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[15].magic = JSDocument::InputEncodingAttrNum;
+    JSDocumentAttributesFunctions[15].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[15].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[16].name = "links";
+    JSDocumentAttributesFunctions[16].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[16].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[16].magic = JSDocument::LinksAttrNum;
+    JSDocumentAttributesFunctions[16].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[16].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[17].name = "location";
+    JSDocumentAttributesFunctions[17].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[17].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[17].magic = JSDocument::LocationAttrNum;
+    JSDocumentAttributesFunctions[17].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[17].u.getset.set.setter_magic = JSDocument::putValueProperty;
+    JSDocumentAttributesFunctions[18].name = "defaultCharset";
+    JSDocumentAttributesFunctions[18].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[18].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[18].magic = JSDocument::DefaultCharsetAttrNum;
+    JSDocumentAttributesFunctions[18].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[18].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[19].name = "xmlStandalone";
+    JSDocumentAttributesFunctions[19].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[19].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[19].magic = JSDocument::XMLStandaloneAttrNum;
+    JSDocumentAttributesFunctions[19].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[19].u.getset.set.setter_magic = JSDocument::putValueProperty;
+    JSDocumentAttributesFunctions[20].name = "styleSheets";
+    JSDocumentAttributesFunctions[20].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[20].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[20].magic = JSDocument::StyleSheetsAttrNum;
+    JSDocumentAttributesFunctions[20].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[20].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[21].name = "referrer";
+    JSDocumentAttributesFunctions[21].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[21].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[21].magic = JSDocument::ReferrerAttrNum;
+    JSDocumentAttributesFunctions[21].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[21].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[22].name = "body";
+    JSDocumentAttributesFunctions[22].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[22].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[22].magic = JSDocument::BodyAttrNum;
+    JSDocumentAttributesFunctions[22].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[22].u.getset.set.setter_magic = JSDocument::putValueProperty;
+    JSDocumentAttributesFunctions[23].name = "forms";
+    JSDocumentAttributesFunctions[23].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[23].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[23].magic = JSDocument::FormsAttrNum;
+    JSDocumentAttributesFunctions[23].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[23].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[24].name = "charset";
+    JSDocumentAttributesFunctions[24].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[24].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[24].magic = JSDocument::CharsetAttrNum;
+    JSDocumentAttributesFunctions[24].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[24].u.getset.set.setter_magic = JSDocument::putValueProperty;
+    JSDocumentAttributesFunctions[25].name = "readyState";
+    JSDocumentAttributesFunctions[25].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[25].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[25].magic = JSDocument::ReadyStateAttrNum;
+    JSDocumentAttributesFunctions[25].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[25].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[26].name = "characterSet";
+    JSDocumentAttributesFunctions[26].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[26].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[26].magic = JSDocument::CharacterSetAttrNum;
+    JSDocumentAttributesFunctions[26].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[26].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[27].name = "preferredStylesheetSet";
+    JSDocumentAttributesFunctions[27].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[27].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[27].magic = JSDocument::PreferredStylesheetSetAttrNum;
+    JSDocumentAttributesFunctions[27].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[27].u.getset.set.setter_magic = NULL;
+    JSDocumentAttributesFunctions[28].name = "selectedStylesheetSet";
+    JSDocumentAttributesFunctions[28].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[28].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[28].magic = JSDocument::SelectedStylesheetSetAttrNum;
+    JSDocumentAttributesFunctions[28].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[28].u.getset.set.setter_magic = JSDocument::putValueProperty;
+    JSDocumentAttributesFunctions[29].name = "constructor";
+    JSDocumentAttributesFunctions[29].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentAttributesFunctions[29].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentAttributesFunctions[29].magic = JSDocument::ConstructorAttrNum;
+    JSDocumentAttributesFunctions[29].u.getset.get.getter_magic = JSDocument::getValueProperty;
+    JSDocumentAttributesFunctions[29].u.getset.set.setter_magic = NULL;
+}
 
 class JSDocumentConstructor {
 public:
@@ -158,41 +316,239 @@ void JSDocumentConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSDocumentPrototypeFunctions[] =
+static JSCFunctionListEntry JSDocumentPrototypeFunctions[32];
+static bool JSDocumentPrototypeFunctions_initialized = false;
+
+static void init_JSDocumentPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("importNode", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::ImportNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("createProcessingInstruction", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateProcessingInstructionFuncNum),
-    JS_CFUNC_MAGIC_DEF("createElementNS", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateElementNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("createDocumentFragment", 0, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateDocumentFragmentFuncNum),
-    JS_CFUNC_MAGIC_DEF("createComment", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateCommentFuncNum),
-    JS_CFUNC_MAGIC_DEF("createCDATASection", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateCDATASectionFuncNum),
-    JS_CFUNC_MAGIC_DEF("createAttribute", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("queryCommandIndeterm", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::QueryCommandIndetermFuncNum),
-    JS_CFUNC_MAGIC_DEF("adoptNode", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::AdoptNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("queryCommandEnabled", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::QueryCommandEnabledFuncNum),
-    JS_CFUNC_MAGIC_DEF("getElementsByTagNameNS", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetElementsByTagNameNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("getElementsByTagName", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetElementsByTagNameFuncNum),
-    JS_CFUNC_MAGIC_DEF("createEvent", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateEventFuncNum),
-    JS_CFUNC_MAGIC_DEF("createNodeIterator", 4, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateNodeIteratorFuncNum),
-    JS_CFUNC_MAGIC_DEF("createTextNode", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateTextNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("createAttributeNS", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateAttributeNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("createElement", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateElementFuncNum),
-    JS_CFUNC_MAGIC_DEF("createEntityReference", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateEntityReferenceFuncNum),
-    JS_CFUNC_MAGIC_DEF("getElementById", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetElementByIdFuncNum),
-    JS_CFUNC_MAGIC_DEF("load", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::LoadFuncNum),
-    JS_CFUNC_MAGIC_DEF("createRange", 0, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateRangeFuncNum),
-    JS_CFUNC_MAGIC_DEF("createTreeWalker", 4, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateTreeWalkerFuncNum),
-    JS_CFUNC_MAGIC_DEF("getOverrideStyle", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetOverrideStyleFuncNum),
-    JS_CFUNC_MAGIC_DEF("createExpression", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateExpressionFuncNum),
-    JS_CFUNC_MAGIC_DEF("createNSResolver", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::CreateNSResolverFuncNum),
-    JS_CFUNC_MAGIC_DEF("evaluate", 5, JSDocumentPrototypeFunction::callAsFunction, JSDocument::EvaluateFuncNum),
-    JS_CFUNC_MAGIC_DEF("execCommand", 3, JSDocumentPrototypeFunction::callAsFunction, JSDocument::ExecCommandFuncNum),
-    JS_CFUNC_MAGIC_DEF("queryCommandState", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::QueryCommandStateFuncNum),
-    JS_CFUNC_MAGIC_DEF("queryCommandSupported", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::QueryCommandSupportedFuncNum),
-    JS_CFUNC_MAGIC_DEF("queryCommandValue", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::QueryCommandValueFuncNum),
-    JS_CFUNC_MAGIC_DEF("getElementsByName", 1, JSDocumentPrototypeFunction::callAsFunction, JSDocument::GetElementsByNameFuncNum),
-    JS_CFUNC_MAGIC_DEF("elementFromPoint", 2, JSDocumentPrototypeFunction::callAsFunction, JSDocument::ElementFromPointFuncNum)
-};
+    if (JSDocumentPrototypeFunctions_initialized) return;
+    JSDocumentPrototypeFunctions_initialized = true;
+    memset(JSDocumentPrototypeFunctions, 0, sizeof(JSDocumentPrototypeFunctions));
+    JSDocumentPrototypeFunctions[0].name = "importNode";
+    JSDocumentPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[0].magic = JSDocument::ImportNodeFuncNum;
+    JSDocumentPrototypeFunctions[0].u.func.length = 2;
+    JSDocumentPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[0].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[1].name = "createProcessingInstruction";
+    JSDocumentPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[1].magic = JSDocument::CreateProcessingInstructionFuncNum;
+    JSDocumentPrototypeFunctions[1].u.func.length = 2;
+    JSDocumentPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[1].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[2].name = "createElementNS";
+    JSDocumentPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[2].magic = JSDocument::CreateElementNSFuncNum;
+    JSDocumentPrototypeFunctions[2].u.func.length = 2;
+    JSDocumentPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[2].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[3].name = "createDocumentFragment";
+    JSDocumentPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[3].magic = JSDocument::CreateDocumentFragmentFuncNum;
+    JSDocumentPrototypeFunctions[3].u.func.length = 0;
+    JSDocumentPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[3].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[4].name = "createComment";
+    JSDocumentPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[4].magic = JSDocument::CreateCommentFuncNum;
+    JSDocumentPrototypeFunctions[4].u.func.length = 1;
+    JSDocumentPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[4].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[5].name = "createCDATASection";
+    JSDocumentPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[5].magic = JSDocument::CreateCDATASectionFuncNum;
+    JSDocumentPrototypeFunctions[5].u.func.length = 1;
+    JSDocumentPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[5].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[6].name = "createAttribute";
+    JSDocumentPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[6].magic = JSDocument::CreateAttributeFuncNum;
+    JSDocumentPrototypeFunctions[6].u.func.length = 1;
+    JSDocumentPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[6].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[7].name = "queryCommandIndeterm";
+    JSDocumentPrototypeFunctions[7].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[7].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[7].magic = JSDocument::QueryCommandIndetermFuncNum;
+    JSDocumentPrototypeFunctions[7].u.func.length = 1;
+    JSDocumentPrototypeFunctions[7].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[7].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[8].name = "adoptNode";
+    JSDocumentPrototypeFunctions[8].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[8].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[8].magic = JSDocument::AdoptNodeFuncNum;
+    JSDocumentPrototypeFunctions[8].u.func.length = 1;
+    JSDocumentPrototypeFunctions[8].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[8].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[9].name = "queryCommandEnabled";
+    JSDocumentPrototypeFunctions[9].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[9].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[9].magic = JSDocument::QueryCommandEnabledFuncNum;
+    JSDocumentPrototypeFunctions[9].u.func.length = 1;
+    JSDocumentPrototypeFunctions[9].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[9].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[10].name = "getElementsByTagNameNS";
+    JSDocumentPrototypeFunctions[10].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[10].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[10].magic = JSDocument::GetElementsByTagNameNSFuncNum;
+    JSDocumentPrototypeFunctions[10].u.func.length = 2;
+    JSDocumentPrototypeFunctions[10].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[10].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[11].name = "getElementsByTagName";
+    JSDocumentPrototypeFunctions[11].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[11].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[11].magic = JSDocument::GetElementsByTagNameFuncNum;
+    JSDocumentPrototypeFunctions[11].u.func.length = 1;
+    JSDocumentPrototypeFunctions[11].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[11].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[12].name = "createEvent";
+    JSDocumentPrototypeFunctions[12].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[12].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[12].magic = JSDocument::CreateEventFuncNum;
+    JSDocumentPrototypeFunctions[12].u.func.length = 1;
+    JSDocumentPrototypeFunctions[12].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[12].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[13].name = "createNodeIterator";
+    JSDocumentPrototypeFunctions[13].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[13].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[13].magic = JSDocument::CreateNodeIteratorFuncNum;
+    JSDocumentPrototypeFunctions[13].u.func.length = 4;
+    JSDocumentPrototypeFunctions[13].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[13].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[14].name = "createTextNode";
+    JSDocumentPrototypeFunctions[14].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[14].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[14].magic = JSDocument::CreateTextNodeFuncNum;
+    JSDocumentPrototypeFunctions[14].u.func.length = 1;
+    JSDocumentPrototypeFunctions[14].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[14].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[15].name = "createAttributeNS";
+    JSDocumentPrototypeFunctions[15].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[15].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[15].magic = JSDocument::CreateAttributeNSFuncNum;
+    JSDocumentPrototypeFunctions[15].u.func.length = 2;
+    JSDocumentPrototypeFunctions[15].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[15].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[16].name = "createElement";
+    JSDocumentPrototypeFunctions[16].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[16].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[16].magic = JSDocument::CreateElementFuncNum;
+    JSDocumentPrototypeFunctions[16].u.func.length = 1;
+    JSDocumentPrototypeFunctions[16].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[16].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[17].name = "createEntityReference";
+    JSDocumentPrototypeFunctions[17].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[17].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[17].magic = JSDocument::CreateEntityReferenceFuncNum;
+    JSDocumentPrototypeFunctions[17].u.func.length = 1;
+    JSDocumentPrototypeFunctions[17].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[17].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[18].name = "getElementById";
+    JSDocumentPrototypeFunctions[18].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[18].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[18].magic = JSDocument::GetElementByIdFuncNum;
+    JSDocumentPrototypeFunctions[18].u.func.length = 1;
+    JSDocumentPrototypeFunctions[18].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[18].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[19].name = "load";
+    JSDocumentPrototypeFunctions[19].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[19].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[19].magic = JSDocument::LoadFuncNum;
+    JSDocumentPrototypeFunctions[19].u.func.length = 1;
+    JSDocumentPrototypeFunctions[19].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[19].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[20].name = "createRange";
+    JSDocumentPrototypeFunctions[20].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[20].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[20].magic = JSDocument::CreateRangeFuncNum;
+    JSDocumentPrototypeFunctions[20].u.func.length = 0;
+    JSDocumentPrototypeFunctions[20].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[20].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[21].name = "createTreeWalker";
+    JSDocumentPrototypeFunctions[21].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[21].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[21].magic = JSDocument::CreateTreeWalkerFuncNum;
+    JSDocumentPrototypeFunctions[21].u.func.length = 4;
+    JSDocumentPrototypeFunctions[21].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[21].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[22].name = "getOverrideStyle";
+    JSDocumentPrototypeFunctions[22].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[22].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[22].magic = JSDocument::GetOverrideStyleFuncNum;
+    JSDocumentPrototypeFunctions[22].u.func.length = 2;
+    JSDocumentPrototypeFunctions[22].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[22].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[23].name = "createExpression";
+    JSDocumentPrototypeFunctions[23].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[23].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[23].magic = JSDocument::CreateExpressionFuncNum;
+    JSDocumentPrototypeFunctions[23].u.func.length = 2;
+    JSDocumentPrototypeFunctions[23].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[23].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[24].name = "createNSResolver";
+    JSDocumentPrototypeFunctions[24].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[24].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[24].magic = JSDocument::CreateNSResolverFuncNum;
+    JSDocumentPrototypeFunctions[24].u.func.length = 1;
+    JSDocumentPrototypeFunctions[24].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[24].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[25].name = "evaluate";
+    JSDocumentPrototypeFunctions[25].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[25].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[25].magic = JSDocument::EvaluateFuncNum;
+    JSDocumentPrototypeFunctions[25].u.func.length = 5;
+    JSDocumentPrototypeFunctions[25].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[25].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[26].name = "execCommand";
+    JSDocumentPrototypeFunctions[26].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[26].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[26].magic = JSDocument::ExecCommandFuncNum;
+    JSDocumentPrototypeFunctions[26].u.func.length = 3;
+    JSDocumentPrototypeFunctions[26].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[26].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[27].name = "queryCommandState";
+    JSDocumentPrototypeFunctions[27].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[27].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[27].magic = JSDocument::QueryCommandStateFuncNum;
+    JSDocumentPrototypeFunctions[27].u.func.length = 1;
+    JSDocumentPrototypeFunctions[27].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[27].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[28].name = "queryCommandSupported";
+    JSDocumentPrototypeFunctions[28].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[28].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[28].magic = JSDocument::QueryCommandSupportedFuncNum;
+    JSDocumentPrototypeFunctions[28].u.func.length = 1;
+    JSDocumentPrototypeFunctions[28].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[28].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[29].name = "queryCommandValue";
+    JSDocumentPrototypeFunctions[29].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[29].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[29].magic = JSDocument::QueryCommandValueFuncNum;
+    JSDocumentPrototypeFunctions[29].u.func.length = 1;
+    JSDocumentPrototypeFunctions[29].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[29].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[30].name = "getElementsByName";
+    JSDocumentPrototypeFunctions[30].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[30].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[30].magic = JSDocument::GetElementsByNameFuncNum;
+    JSDocumentPrototypeFunctions[30].u.func.length = 1;
+    JSDocumentPrototypeFunctions[30].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[30].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+    JSDocumentPrototypeFunctions[31].name = "elementFromPoint";
+    JSDocumentPrototypeFunctions[31].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDocumentPrototypeFunctions[31].def_type = JS_DEF_CFUNC;
+    JSDocumentPrototypeFunctions[31].magic = JSDocument::ElementFromPointFuncNum;
+    JSDocumentPrototypeFunctions[31].u.func.length = 2;
+    JSDocumentPrototypeFunctions[31].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDocumentPrototypeFunctions[31].u.func.cfunc.generic_magic = JSDocumentPrototypeFunction::callAsFunction;
+}
 
 JSValue JSDocumentPrototype::self(JSContext * ctx)
 {
@@ -210,16 +566,24 @@ JSValue JSDocumentPrototype::self(JSContext * ctx)
 
 void JSDocumentPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSDocumentAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSDocumentAttributesFunctions, countof(JSDocumentAttributesFunctions));
+    init_JSDocumentPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSDocumentPrototypeFunctions, countof(JSDocumentPrototypeFunctions));
 }
 
-static JSClassDef JSDocumentClassDefine = 
+static JSClassDef JSDocumentClassDefine;
+static bool JSDocumentClassDefine_initialized = false;
+
+static void init_JSDocumentClassDefine()
 {
-    "Document",
-    .finalizer = JSDocument::finalizer,
-    .gc_mark = JSDocument::mark,
-};
+    if (JSDocumentClassDefine_initialized) return;
+    JSDocumentClassDefine_initialized = true;
+    memset(&JSDocumentClassDefine, 0, sizeof(JSDocumentClassDefine));
+    JSDocumentClassDefine.class_name = "Document";
+    JSDocumentClassDefine.finalizer = JSDocument::finalizer;
+    JSDocumentClassDefine.gc_mark = JSDocument::mark;
+}
 
 JSClassID JSDocument::js_class_id = 0;
 

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCSSValue.h"
 
 #include "CSSValue.h"
@@ -39,12 +41,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSCSSValueAttributesFunctions[] =
+static JSCFunctionListEntry JSCSSValueAttributesFunctions[3];
+static bool JSCSSValueAttributesFunctions_initialized = false;
+
+static void init_JSCSSValueAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("cssText", JSCSSValue::getValueProperty, JSCSSValue::putValueProperty, JSCSSValue::CssTextAttrNum),
-    JS_CGETSET_MAGIC_DEF("cssValueType", JSCSSValue::getValueProperty, NULL, JSCSSValue::CssValueTypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSCSSValue::getValueProperty, NULL, JSCSSValue::ConstructorAttrNum)
-};
+    if (JSCSSValueAttributesFunctions_initialized) return;
+    JSCSSValueAttributesFunctions_initialized = true;
+    memset(JSCSSValueAttributesFunctions, 0, sizeof(JSCSSValueAttributesFunctions));
+    JSCSSValueAttributesFunctions[0].name = "cssText";
+    JSCSSValueAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSValueAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSValueAttributesFunctions[0].magic = JSCSSValue::CssTextAttrNum;
+    JSCSSValueAttributesFunctions[0].u.getset.get.getter_magic = JSCSSValue::getValueProperty;
+    JSCSSValueAttributesFunctions[0].u.getset.set.setter_magic = JSCSSValue::putValueProperty;
+    JSCSSValueAttributesFunctions[1].name = "cssValueType";
+    JSCSSValueAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSValueAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSValueAttributesFunctions[1].magic = JSCSSValue::CssValueTypeAttrNum;
+    JSCSSValueAttributesFunctions[1].u.getset.get.getter_magic = JSCSSValue::getValueProperty;
+    JSCSSValueAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSCSSValueAttributesFunctions[2].name = "constructor";
+    JSCSSValueAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSValueAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSValueAttributesFunctions[2].magic = JSCSSValue::ConstructorAttrNum;
+    JSCSSValueAttributesFunctions[2].u.getset.get.getter_magic = JSCSSValue::getValueProperty;
+    JSCSSValueAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 class JSCSSValueConstructor {
 public:
@@ -61,13 +84,39 @@ JSValue JSCSSValueConstructor::getValueProperty(JSContext * ctx, JSValueConst th
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSCSSValueConstructorFunctions[] =
+static JSCFunctionListEntry JSCSSValueConstructorFunctions[4];
+static bool JSCSSValueConstructorFunctions_initialized = false;
+
+static void init_JSCSSValueConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("CSS_INHERIT", JSCSSValueConstructor::getValueProperty, NULL, CSSValue::CSS_INHERIT),
-    JS_CGETSET_MAGIC_DEF("CSS_CUSTOM", JSCSSValueConstructor::getValueProperty, NULL, CSSValue::CSS_CUSTOM),
-    JS_CGETSET_MAGIC_DEF("CSS_PRIMITIVE_VALUE", JSCSSValueConstructor::getValueProperty, NULL, CSSValue::CSS_PRIMITIVE_VALUE),
-    JS_CGETSET_MAGIC_DEF("CSS_VALUE_LIST", JSCSSValueConstructor::getValueProperty, NULL, CSSValue::CSS_VALUE_LIST)
-};
+    if (JSCSSValueConstructorFunctions_initialized) return;
+    JSCSSValueConstructorFunctions_initialized = true;
+    memset(JSCSSValueConstructorFunctions, 0, sizeof(JSCSSValueConstructorFunctions));
+    JSCSSValueConstructorFunctions[0].name = "CSS_INHERIT";
+    JSCSSValueConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSValueConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSValueConstructorFunctions[0].magic = CSSValue::CSS_INHERIT;
+    JSCSSValueConstructorFunctions[0].u.getset.get.getter_magic = JSCSSValueConstructor::getValueProperty;
+    JSCSSValueConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSCSSValueConstructorFunctions[1].name = "CSS_CUSTOM";
+    JSCSSValueConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSValueConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSValueConstructorFunctions[1].magic = CSSValue::CSS_CUSTOM;
+    JSCSSValueConstructorFunctions[1].u.getset.get.getter_magic = JSCSSValueConstructor::getValueProperty;
+    JSCSSValueConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSCSSValueConstructorFunctions[2].name = "CSS_PRIMITIVE_VALUE";
+    JSCSSValueConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSValueConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSValueConstructorFunctions[2].magic = CSSValue::CSS_PRIMITIVE_VALUE;
+    JSCSSValueConstructorFunctions[2].u.getset.get.getter_magic = JSCSSValueConstructor::getValueProperty;
+    JSCSSValueConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSCSSValueConstructorFunctions[3].name = "CSS_VALUE_LIST";
+    JSCSSValueConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSValueConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSValueConstructorFunctions[3].magic = CSSValue::CSS_VALUE_LIST;
+    JSCSSValueConstructorFunctions[3].u.getset.get.getter_magic = JSCSSValueConstructor::getValueProperty;
+    JSCSSValueConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSCSSValueConstructor::self(JSContext * ctx)
 {
@@ -85,18 +134,45 @@ JSValue JSCSSValueConstructor::self(JSContext * ctx)
 
 void JSCSSValueConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCSSValueConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSValueConstructorFunctions, countof(JSCSSValueConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSCSSValuePrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSCSSValuePrototypeConstantsFunctions[4];
+static bool JSCSSValuePrototypeConstantsFunctions_initialized = false;
+
+static void init_JSCSSValuePrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("CSS_INHERIT", JSCSSValuePrototype::getValueProperty, NULL, CSSValue::CSS_INHERIT),
-    JS_CGETSET_MAGIC_DEF("CSS_CUSTOM", JSCSSValuePrototype::getValueProperty, NULL, CSSValue::CSS_CUSTOM),
-    JS_CGETSET_MAGIC_DEF("CSS_PRIMITIVE_VALUE", JSCSSValuePrototype::getValueProperty, NULL, CSSValue::CSS_PRIMITIVE_VALUE),
-    JS_CGETSET_MAGIC_DEF("CSS_VALUE_LIST", JSCSSValuePrototype::getValueProperty, NULL, CSSValue::CSS_VALUE_LIST)
-};
+    if (JSCSSValuePrototypeConstantsFunctions_initialized) return;
+    JSCSSValuePrototypeConstantsFunctions_initialized = true;
+    memset(JSCSSValuePrototypeConstantsFunctions, 0, sizeof(JSCSSValuePrototypeConstantsFunctions));
+    JSCSSValuePrototypeConstantsFunctions[0].name = "CSS_INHERIT";
+    JSCSSValuePrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSValuePrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSValuePrototypeConstantsFunctions[0].magic = CSSValue::CSS_INHERIT;
+    JSCSSValuePrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSCSSValuePrototype::getValueProperty;
+    JSCSSValuePrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSCSSValuePrototypeConstantsFunctions[1].name = "CSS_CUSTOM";
+    JSCSSValuePrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSValuePrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSValuePrototypeConstantsFunctions[1].magic = CSSValue::CSS_CUSTOM;
+    JSCSSValuePrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSCSSValuePrototype::getValueProperty;
+    JSCSSValuePrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSCSSValuePrototypeConstantsFunctions[2].name = "CSS_PRIMITIVE_VALUE";
+    JSCSSValuePrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSValuePrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSValuePrototypeConstantsFunctions[2].magic = CSSValue::CSS_PRIMITIVE_VALUE;
+    JSCSSValuePrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSCSSValuePrototype::getValueProperty;
+    JSCSSValuePrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSCSSValuePrototypeConstantsFunctions[3].name = "CSS_VALUE_LIST";
+    JSCSSValuePrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSValuePrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSValuePrototypeConstantsFunctions[3].magic = CSSValue::CSS_VALUE_LIST;
+    JSCSSValuePrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSCSSValuePrototype::getValueProperty;
+    JSCSSValuePrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSCSSValuePrototype::self(JSContext * ctx)
 {
@@ -114,7 +190,9 @@ JSValue JSCSSValuePrototype::self(JSContext * ctx)
 
 void JSCSSValuePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCSSValueAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSValueAttributesFunctions, countof(JSCSSValueAttributesFunctions));
+    init_JSCSSValuePrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSValuePrototypeConstantsFunctions, countof(JSCSSValuePrototypeConstantsFunctions));
 }
 
@@ -124,18 +202,25 @@ JSValue JSCSSValuePrototype::getValueProperty(JSContext * ctx, JSValueConst this
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSCSSValueClassDefine = 
+static JSClassDef JSCSSValueClassDefine;
+static bool JSCSSValueClassDefine_initialized = false;
+
+static void init_JSCSSValueClassDefine()
 {
-    "CSSValue",
-    .finalizer = JSCSSValue::finalizer,
-    .gc_mark = JSCSSValue::mark,
-};
+    if (JSCSSValueClassDefine_initialized) return;
+    JSCSSValueClassDefine_initialized = true;
+    memset(&JSCSSValueClassDefine, 0, sizeof(JSCSSValueClassDefine));
+    JSCSSValueClassDefine.class_name = "CSSValue";
+    JSCSSValueClassDefine.finalizer = JSCSSValue::finalizer;
+    JSCSSValueClassDefine.gc_mark = JSCSSValue::mark;
+}
 
 JSClassID JSCSSValue::js_class_id = 0;
 
 void JSCSSValue::init(JSContext* ctx)
 {
     if (JSCSSValue::js_class_id == 0) {
+        init_JSCSSValueClassDefine();
         JS_NewClassID(&JSCSSValue::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSCSSValue::js_class_id, &JSCSSValueClassDefine);
         JS_SetConstructor(ctx, JSCSSValueConstructor::self(ctx), JSCSSValuePrototype::self(ctx));

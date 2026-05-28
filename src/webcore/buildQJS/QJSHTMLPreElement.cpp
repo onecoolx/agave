@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLPreElement.h"
 
 #include "HTMLPreElement.h"
@@ -38,12 +40,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLPreElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLPreElementAttributesFunctions[3];
+static bool JSHTMLPreElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLPreElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("wrap", JSHTMLPreElement::getValueProperty, JSHTMLPreElement::putValueProperty, JSHTMLPreElement::WrapAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSHTMLPreElement::getValueProperty, JSHTMLPreElement::putValueProperty, JSHTMLPreElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLPreElement::getValueProperty, NULL, JSHTMLPreElement::ConstructorAttrNum)
-};
+    if (JSHTMLPreElementAttributesFunctions_initialized) return;
+    JSHTMLPreElementAttributesFunctions_initialized = true;
+    memset(JSHTMLPreElementAttributesFunctions, 0, sizeof(JSHTMLPreElementAttributesFunctions));
+    JSHTMLPreElementAttributesFunctions[0].name = "wrap";
+    JSHTMLPreElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLPreElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLPreElementAttributesFunctions[0].magic = JSHTMLPreElement::WrapAttrNum;
+    JSHTMLPreElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLPreElement::getValueProperty;
+    JSHTMLPreElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLPreElement::putValueProperty;
+    JSHTMLPreElementAttributesFunctions[1].name = "width";
+    JSHTMLPreElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLPreElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLPreElementAttributesFunctions[1].magic = JSHTMLPreElement::WidthAttrNum;
+    JSHTMLPreElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLPreElement::getValueProperty;
+    JSHTMLPreElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLPreElement::putValueProperty;
+    JSHTMLPreElementAttributesFunctions[2].name = "constructor";
+    JSHTMLPreElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLPreElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLPreElementAttributesFunctions[2].magic = JSHTMLPreElement::ConstructorAttrNum;
+    JSHTMLPreElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLPreElement::getValueProperty;
+    JSHTMLPreElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLPreElementConstructor {
 public:
@@ -92,15 +115,22 @@ JSValue JSHTMLPreElementPrototype::self(JSContext * ctx)
 
 void JSHTMLPreElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLPreElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLPreElementAttributesFunctions, countof(JSHTMLPreElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLPreElementClassDefine = 
+static JSClassDef JSHTMLPreElementClassDefine;
+static bool JSHTMLPreElementClassDefine_initialized = false;
+
+static void init_JSHTMLPreElementClassDefine()
 {
-    "HTMLPreElement",
-    .finalizer = JSHTMLPreElement::finalizer,
-    .gc_mark = JSHTMLPreElement::mark,
-};
+    if (JSHTMLPreElementClassDefine_initialized) return;
+    JSHTMLPreElementClassDefine_initialized = true;
+    memset(&JSHTMLPreElementClassDefine, 0, sizeof(JSHTMLPreElementClassDefine));
+    JSHTMLPreElementClassDefine.class_name = "HTMLPreElement";
+    JSHTMLPreElementClassDefine.finalizer = JSHTMLPreElement::finalizer;
+    JSHTMLPreElementClassDefine.gc_mark = JSHTMLPreElement::mark;
+}
 
 JSClassID JSHTMLPreElement::js_class_id = 0;
 

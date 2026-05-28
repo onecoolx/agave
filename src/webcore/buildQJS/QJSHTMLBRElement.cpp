@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLBRElement.h"
 
 #include "HTMLBRElement.h"
@@ -39,11 +41,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLBRElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLBRElementAttributesFunctions[2];
+static bool JSHTMLBRElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLBRElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("clear", JSHTMLBRElement::getValueProperty, JSHTMLBRElement::putValueProperty, JSHTMLBRElement::ClearAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLBRElement::getValueProperty, NULL, JSHTMLBRElement::ConstructorAttrNum)
-};
+    if (JSHTMLBRElementAttributesFunctions_initialized) return;
+    JSHTMLBRElementAttributesFunctions_initialized = true;
+    memset(JSHTMLBRElementAttributesFunctions, 0, sizeof(JSHTMLBRElementAttributesFunctions));
+    JSHTMLBRElementAttributesFunctions[0].name = "clear";
+    JSHTMLBRElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBRElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBRElementAttributesFunctions[0].magic = JSHTMLBRElement::ClearAttrNum;
+    JSHTMLBRElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLBRElement::getValueProperty;
+    JSHTMLBRElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLBRElement::putValueProperty;
+    JSHTMLBRElementAttributesFunctions[1].name = "constructor";
+    JSHTMLBRElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBRElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBRElementAttributesFunctions[1].magic = JSHTMLBRElement::ConstructorAttrNum;
+    JSHTMLBRElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLBRElement::getValueProperty;
+    JSHTMLBRElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLBRElementConstructor {
 public:
@@ -92,15 +110,22 @@ JSValue JSHTMLBRElementPrototype::self(JSContext * ctx)
 
 void JSHTMLBRElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLBRElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLBRElementAttributesFunctions, countof(JSHTMLBRElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLBRElementClassDefine = 
+static JSClassDef JSHTMLBRElementClassDefine;
+static bool JSHTMLBRElementClassDefine_initialized = false;
+
+static void init_JSHTMLBRElementClassDefine()
 {
-    "HTMLBRElement",
-    .finalizer = JSHTMLBRElement::finalizer,
-    .gc_mark = JSHTMLBRElement::mark,
-};
+    if (JSHTMLBRElementClassDefine_initialized) return;
+    JSHTMLBRElementClassDefine_initialized = true;
+    memset(&JSHTMLBRElementClassDefine, 0, sizeof(JSHTMLBRElementClassDefine));
+    JSHTMLBRElementClassDefine.class_name = "HTMLBRElement";
+    JSHTMLBRElementClassDefine.finalizer = JSHTMLBRElement::finalizer;
+    JSHTMLBRElementClassDefine.gc_mark = JSHTMLBRElement::mark;
+}
 
 JSClassID JSHTMLBRElement::js_class_id = 0;
 

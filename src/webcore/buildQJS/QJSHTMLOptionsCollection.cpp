@@ -26,10 +26,13 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLOptionsCollection.h"
 
 #include "ExceptionCode.h"
 #include "HTMLOptionsCollection.h"
+#include "QJSHTMLCollection.h"
 #include "QJSHTMLOptionElement.h"
 
 using namespace QJS;
@@ -40,18 +43,46 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLOptionsCollectionAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLOptionsCollectionAttributesFunctions[2];
+static bool JSHTMLOptionsCollectionAttributesFunctions_initialized = false;
+
+static void init_JSHTMLOptionsCollectionAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("selectedIndex", JSHTMLOptionsCollection::getValueProperty, JSHTMLOptionsCollection::putValueProperty, JSHTMLOptionsCollection::SelectedIndexAttrNum),
-    JS_CGETSET_MAGIC_DEF("length", JSHTMLOptionsCollection::getValueProperty, JSHTMLOptionsCollection::putValueProperty, JSHTMLOptionsCollection::LengthAttrNum)
-};
+    if (JSHTMLOptionsCollectionAttributesFunctions_initialized) return;
+    JSHTMLOptionsCollectionAttributesFunctions_initialized = true;
+    memset(JSHTMLOptionsCollectionAttributesFunctions, 0, sizeof(JSHTMLOptionsCollectionAttributesFunctions));
+    JSHTMLOptionsCollectionAttributesFunctions[0].name = "selectedIndex";
+    JSHTMLOptionsCollectionAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOptionsCollectionAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOptionsCollectionAttributesFunctions[0].magic = JSHTMLOptionsCollection::SelectedIndexAttrNum;
+    JSHTMLOptionsCollectionAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLOptionsCollection::getValueProperty;
+    JSHTMLOptionsCollectionAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLOptionsCollection::putValueProperty;
+    JSHTMLOptionsCollectionAttributesFunctions[1].name = "length";
+    JSHTMLOptionsCollectionAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOptionsCollectionAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOptionsCollectionAttributesFunctions[1].magic = JSHTMLOptionsCollection::LengthAttrNum;
+    JSHTMLOptionsCollectionAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLOptionsCollection::getValueProperty;
+    JSHTMLOptionsCollectionAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLOptionsCollection::putValueProperty;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHTMLOptionsCollectionPrototypeFunctions[] =
+static JSCFunctionListEntry JSHTMLOptionsCollectionPrototypeFunctions[1];
+static bool JSHTMLOptionsCollectionPrototypeFunctions_initialized = false;
+
+static void init_JSHTMLOptionsCollectionPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("add", 2, JSHTMLOptionsCollectionPrototypeFunction::callAsFunction, JSHTMLOptionsCollection::AddFuncNum)
-};
+    if (JSHTMLOptionsCollectionPrototypeFunctions_initialized) return;
+    JSHTMLOptionsCollectionPrototypeFunctions_initialized = true;
+    memset(JSHTMLOptionsCollectionPrototypeFunctions, 0, sizeof(JSHTMLOptionsCollectionPrototypeFunctions));
+    JSHTMLOptionsCollectionPrototypeFunctions[0].name = "add";
+    JSHTMLOptionsCollectionPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLOptionsCollectionPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHTMLOptionsCollectionPrototypeFunctions[0].magic = JSHTMLOptionsCollection::AddFuncNum;
+    JSHTMLOptionsCollectionPrototypeFunctions[0].u.func.length = 2;
+    JSHTMLOptionsCollectionPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLOptionsCollectionPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLOptionsCollectionPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHTMLOptionsCollectionPrototype::self(JSContext * ctx)
 {
@@ -69,16 +100,24 @@ JSValue JSHTMLOptionsCollectionPrototype::self(JSContext * ctx)
 
 void JSHTMLOptionsCollectionPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLOptionsCollectionAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLOptionsCollectionAttributesFunctions, countof(JSHTMLOptionsCollectionAttributesFunctions));
+    init_JSHTMLOptionsCollectionPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLOptionsCollectionPrototypeFunctions, countof(JSHTMLOptionsCollectionPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLOptionsCollectionClassDefine = 
+static JSClassDef JSHTMLOptionsCollectionClassDefine;
+static bool JSHTMLOptionsCollectionClassDefine_initialized = false;
+
+static void init_JSHTMLOptionsCollectionClassDefine()
 {
-    "HTMLOptionsCollection",
-    .finalizer = JSHTMLOptionsCollection::finalizer,
-    .gc_mark = JSHTMLOptionsCollection::mark,
-};
+    if (JSHTMLOptionsCollectionClassDefine_initialized) return;
+    JSHTMLOptionsCollectionClassDefine_initialized = true;
+    memset(&JSHTMLOptionsCollectionClassDefine, 0, sizeof(JSHTMLOptionsCollectionClassDefine));
+    JSHTMLOptionsCollectionClassDefine.class_name = "HTMLOptionsCollection";
+    JSHTMLOptionsCollectionClassDefine.finalizer = JSHTMLOptionsCollection::finalizer;
+    JSHTMLOptionsCollectionClassDefine.gc_mark = JSHTMLOptionsCollection::mark;
+}
 
 JSClassID JSHTMLOptionsCollection::js_class_id = 0;
 
@@ -86,7 +125,7 @@ void JSHTMLOptionsCollection::init(JSContext* ctx)
 {
     if (JSHTMLOptionsCollection::js_class_id == 0) {
         JSNode::init(ctx);
-        JSHTMLOptionsCollection::js_class_id = JSNode::js_class_id;
+        JSHTMLCollection::init(ctx); JSHTMLOptionsCollection::js_class_id = JSHTMLCollection::js_class_id;
     }
 }
 
@@ -94,7 +133,7 @@ JSValue JSHTMLOptionsCollection::create(JSContext* ctx, HTMLOptionsCollection* i
 {
     JSHTMLOptionsCollection::init(ctx);
     JSValue _proto = JSHTMLOptionsCollectionPrototype::self(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSHTMLCollection::js_class_id);
     JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
@@ -106,7 +145,7 @@ JSValue JSHTMLOptionsCollection::create(JSContext* ctx, HTMLOptionsCollection* i
 
 void JSHTMLOptionsCollection::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLOptionsCollection* impl = (HTMLOptionsCollection*)JS_GetOpaque(val, JSNode::js_class_id);
+    HTMLOptionsCollection* impl = (HTMLOptionsCollection*)JS_GetOpaque(val, JSHTMLCollection::js_class_id);
     if (!impl)
         return;
     ScriptInterpreter::forgetDOMObject(impl);
@@ -122,11 +161,11 @@ JSValue JSHTMLOptionsCollection::getValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case SelectedIndexAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSHTMLCollection::js_class_id);
             return JS_NewInt32(ctx, imp->selectedIndex());
         }
         case LengthAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSHTMLCollection::js_class_id);
             return JSHTMLOptionsCollection::length(ctx, this_val, imp);
         }
     }
@@ -137,12 +176,12 @@ JSValue JSHTMLOptionsCollection::putValueProperty(JSContext *ctx, JSValueConst t
 {
     switch (token) {
         case SelectedIndexAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSHTMLCollection::js_class_id);
             imp->setSelectedIndex(valueToInt32(ctx, value));
             break;
         }
         case LengthAttrNum: {
-            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSHTMLCollection::js_class_id);
             JSHTMLOptionsCollection::setLength(ctx, this_val, value, imp);
             break;
         }
@@ -152,7 +191,7 @@ JSValue JSHTMLOptionsCollection::putValueProperty(JSContext *ctx, JSValueConst t
 
 JSValue JSHTMLOptionsCollectionPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
+    HTMLOptionsCollection* imp = (HTMLOptionsCollection*)JS_GetOpaque(this_val, JSHTMLCollection::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 
@@ -184,7 +223,7 @@ JSValue JSHTMLOptionsCollectionPrototypeFunction::callAsFunction(JSContext* ctx,
 HTMLOptionsCollection* toHTMLOptionsCollection(JSValue val)
 {
     if (JS_IsObject(val)) {
-        HTMLOptionsCollection* impl = (HTMLOptionsCollection*)JS_GetOpaque(val, JSHTMLOptionsCollection::js_class_id);
+        HTMLOptionsCollection* impl = (HTMLOptionsCollection*)JS_GetOpaque(val, JSHTMLCollection::js_class_id);
         return impl;
     } else {
         return 0;

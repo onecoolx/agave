@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLScriptElement.h"
 
 #include "HTMLScriptElement.h"
@@ -39,17 +41,63 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLScriptElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLScriptElementAttributesFunctions[8];
+static bool JSHTMLScriptElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLScriptElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("event", JSHTMLScriptElement::getValueProperty, JSHTMLScriptElement::putValueProperty, JSHTMLScriptElement::EventAttrNum),
-    JS_CGETSET_MAGIC_DEF("htmlFor", JSHTMLScriptElement::getValueProperty, JSHTMLScriptElement::putValueProperty, JSHTMLScriptElement::HtmlForAttrNum),
-    JS_CGETSET_MAGIC_DEF("charset", JSHTMLScriptElement::getValueProperty, JSHTMLScriptElement::putValueProperty, JSHTMLScriptElement::CharsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("src", JSHTMLScriptElement::getValueProperty, JSHTMLScriptElement::putValueProperty, JSHTMLScriptElement::SrcAttrNum),
-    JS_CGETSET_MAGIC_DEF("defer", JSHTMLScriptElement::getValueProperty, JSHTMLScriptElement::putValueProperty, JSHTMLScriptElement::DeferAttrNum),
-    JS_CGETSET_MAGIC_DEF("text", JSHTMLScriptElement::getValueProperty, JSHTMLScriptElement::putValueProperty, JSHTMLScriptElement::TextAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSHTMLScriptElement::getValueProperty, JSHTMLScriptElement::putValueProperty, JSHTMLScriptElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLScriptElement::getValueProperty, NULL, JSHTMLScriptElement::ConstructorAttrNum)
-};
+    if (JSHTMLScriptElementAttributesFunctions_initialized) return;
+    JSHTMLScriptElementAttributesFunctions_initialized = true;
+    memset(JSHTMLScriptElementAttributesFunctions, 0, sizeof(JSHTMLScriptElementAttributesFunctions));
+    JSHTMLScriptElementAttributesFunctions[0].name = "event";
+    JSHTMLScriptElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLScriptElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLScriptElementAttributesFunctions[0].magic = JSHTMLScriptElement::EventAttrNum;
+    JSHTMLScriptElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLScriptElement::getValueProperty;
+    JSHTMLScriptElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLScriptElement::putValueProperty;
+    JSHTMLScriptElementAttributesFunctions[1].name = "htmlFor";
+    JSHTMLScriptElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLScriptElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLScriptElementAttributesFunctions[1].magic = JSHTMLScriptElement::HtmlForAttrNum;
+    JSHTMLScriptElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLScriptElement::getValueProperty;
+    JSHTMLScriptElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLScriptElement::putValueProperty;
+    JSHTMLScriptElementAttributesFunctions[2].name = "charset";
+    JSHTMLScriptElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLScriptElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLScriptElementAttributesFunctions[2].magic = JSHTMLScriptElement::CharsetAttrNum;
+    JSHTMLScriptElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLScriptElement::getValueProperty;
+    JSHTMLScriptElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLScriptElement::putValueProperty;
+    JSHTMLScriptElementAttributesFunctions[3].name = "src";
+    JSHTMLScriptElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLScriptElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLScriptElementAttributesFunctions[3].magic = JSHTMLScriptElement::SrcAttrNum;
+    JSHTMLScriptElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLScriptElement::getValueProperty;
+    JSHTMLScriptElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLScriptElement::putValueProperty;
+    JSHTMLScriptElementAttributesFunctions[4].name = "defer";
+    JSHTMLScriptElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLScriptElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLScriptElementAttributesFunctions[4].magic = JSHTMLScriptElement::DeferAttrNum;
+    JSHTMLScriptElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLScriptElement::getValueProperty;
+    JSHTMLScriptElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLScriptElement::putValueProperty;
+    JSHTMLScriptElementAttributesFunctions[5].name = "text";
+    JSHTMLScriptElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLScriptElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLScriptElementAttributesFunctions[5].magic = JSHTMLScriptElement::TextAttrNum;
+    JSHTMLScriptElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLScriptElement::getValueProperty;
+    JSHTMLScriptElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLScriptElement::putValueProperty;
+    JSHTMLScriptElementAttributesFunctions[6].name = "type";
+    JSHTMLScriptElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLScriptElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLScriptElementAttributesFunctions[6].magic = JSHTMLScriptElement::TypeAttrNum;
+    JSHTMLScriptElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLScriptElement::getValueProperty;
+    JSHTMLScriptElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLScriptElement::putValueProperty;
+    JSHTMLScriptElementAttributesFunctions[7].name = "constructor";
+    JSHTMLScriptElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLScriptElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLScriptElementAttributesFunctions[7].magic = JSHTMLScriptElement::ConstructorAttrNum;
+    JSHTMLScriptElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLScriptElement::getValueProperty;
+    JSHTMLScriptElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLScriptElementConstructor {
 public:
@@ -98,15 +146,22 @@ JSValue JSHTMLScriptElementPrototype::self(JSContext * ctx)
 
 void JSHTMLScriptElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLScriptElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLScriptElementAttributesFunctions, countof(JSHTMLScriptElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLScriptElementClassDefine = 
+static JSClassDef JSHTMLScriptElementClassDefine;
+static bool JSHTMLScriptElementClassDefine_initialized = false;
+
+static void init_JSHTMLScriptElementClassDefine()
 {
-    "HTMLScriptElement",
-    .finalizer = JSHTMLScriptElement::finalizer,
-    .gc_mark = JSHTMLScriptElement::mark,
-};
+    if (JSHTMLScriptElementClassDefine_initialized) return;
+    JSHTMLScriptElementClassDefine_initialized = true;
+    memset(&JSHTMLScriptElementClassDefine, 0, sizeof(JSHTMLScriptElementClassDefine));
+    JSHTMLScriptElementClassDefine.class_name = "HTMLScriptElement";
+    JSHTMLScriptElementClassDefine.finalizer = JSHTMLScriptElement::finalizer;
+    JSHTMLScriptElementClassDefine.gc_mark = JSHTMLScriptElement::mark;
+}
 
 JSClassID JSHTMLScriptElement::js_class_id = 0;
 

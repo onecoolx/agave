@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLElement.h"
 
 #include "HTMLCollection.h"
@@ -41,22 +43,93 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLElementAttributesFunctions[13];
+static bool JSHTMLElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("innerText", JSHTMLElement::getValueProperty, JSHTMLElement::putValueProperty, JSHTMLElement::InnerTextAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLElement::getValueProperty, NULL, JSHTMLElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("outerHTML", JSHTMLElement::getValueProperty, JSHTMLElement::putValueProperty, JSHTMLElement::OuterHTMLAttrNum),
-    JS_CGETSET_MAGIC_DEF("id", JSHTMLElement::getValueProperty, JSHTMLElement::putValueProperty, JSHTMLElement::IdAttrNum),
-    JS_CGETSET_MAGIC_DEF("isContentEditable", JSHTMLElement::getValueProperty, NULL, JSHTMLElement::IsContentEditableAttrNum),
-    JS_CGETSET_MAGIC_DEF("dir", JSHTMLElement::getValueProperty, JSHTMLElement::putValueProperty, JSHTMLElement::DirAttrNum),
-    JS_CGETSET_MAGIC_DEF("title", JSHTMLElement::getValueProperty, JSHTMLElement::putValueProperty, JSHTMLElement::TitleAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSHTMLElement::getValueProperty, JSHTMLElement::putValueProperty, JSHTMLElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("contentEditable", JSHTMLElement::getValueProperty, JSHTMLElement::putValueProperty, JSHTMLElement::ContentEditableAttrNum),
-    JS_CGETSET_MAGIC_DEF("lang", JSHTMLElement::getValueProperty, JSHTMLElement::putValueProperty, JSHTMLElement::LangAttrNum),
-    JS_CGETSET_MAGIC_DEF("innerHTML", JSHTMLElement::getValueProperty, JSHTMLElement::putValueProperty, JSHTMLElement::InnerHTMLAttrNum),
-    JS_CGETSET_MAGIC_DEF("outerText", JSHTMLElement::getValueProperty, JSHTMLElement::putValueProperty, JSHTMLElement::OuterTextAttrNum),
-    JS_CGETSET_MAGIC_DEF("children", JSHTMLElement::getValueProperty, NULL, JSHTMLElement::ChildrenAttrNum)
-};
+    if (JSHTMLElementAttributesFunctions_initialized) return;
+    JSHTMLElementAttributesFunctions_initialized = true;
+    memset(JSHTMLElementAttributesFunctions, 0, sizeof(JSHTMLElementAttributesFunctions));
+    JSHTMLElementAttributesFunctions[0].name = "innerText";
+    JSHTMLElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLElementAttributesFunctions[0].magic = JSHTMLElement::InnerTextAttrNum;
+    JSHTMLElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLElement::getValueProperty;
+    JSHTMLElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLElement::putValueProperty;
+    JSHTMLElementAttributesFunctions[1].name = "constructor";
+    JSHTMLElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLElementAttributesFunctions[1].magic = JSHTMLElement::ConstructorAttrNum;
+    JSHTMLElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLElement::getValueProperty;
+    JSHTMLElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSHTMLElementAttributesFunctions[2].name = "outerHTML";
+    JSHTMLElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLElementAttributesFunctions[2].magic = JSHTMLElement::OuterHTMLAttrNum;
+    JSHTMLElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLElement::getValueProperty;
+    JSHTMLElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLElement::putValueProperty;
+    JSHTMLElementAttributesFunctions[3].name = "id";
+    JSHTMLElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLElementAttributesFunctions[3].magic = JSHTMLElement::IdAttrNum;
+    JSHTMLElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLElement::getValueProperty;
+    JSHTMLElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLElement::putValueProperty;
+    JSHTMLElementAttributesFunctions[4].name = "isContentEditable";
+    JSHTMLElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLElementAttributesFunctions[4].magic = JSHTMLElement::IsContentEditableAttrNum;
+    JSHTMLElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLElement::getValueProperty;
+    JSHTMLElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSHTMLElementAttributesFunctions[5].name = "dir";
+    JSHTMLElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLElementAttributesFunctions[5].magic = JSHTMLElement::DirAttrNum;
+    JSHTMLElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLElement::getValueProperty;
+    JSHTMLElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLElement::putValueProperty;
+    JSHTMLElementAttributesFunctions[6].name = "title";
+    JSHTMLElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLElementAttributesFunctions[6].magic = JSHTMLElement::TitleAttrNum;
+    JSHTMLElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLElement::getValueProperty;
+    JSHTMLElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLElement::putValueProperty;
+    JSHTMLElementAttributesFunctions[7].name = "className";
+    JSHTMLElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLElementAttributesFunctions[7].magic = JSHTMLElement::ClassNameAttrNum;
+    JSHTMLElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLElement::getValueProperty;
+    JSHTMLElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLElement::putValueProperty;
+    JSHTMLElementAttributesFunctions[8].name = "contentEditable";
+    JSHTMLElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLElementAttributesFunctions[8].magic = JSHTMLElement::ContentEditableAttrNum;
+    JSHTMLElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLElement::getValueProperty;
+    JSHTMLElementAttributesFunctions[8].u.getset.set.setter_magic = JSHTMLElement::putValueProperty;
+    JSHTMLElementAttributesFunctions[9].name = "lang";
+    JSHTMLElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLElementAttributesFunctions[9].magic = JSHTMLElement::LangAttrNum;
+    JSHTMLElementAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLElement::getValueProperty;
+    JSHTMLElementAttributesFunctions[9].u.getset.set.setter_magic = JSHTMLElement::putValueProperty;
+    JSHTMLElementAttributesFunctions[10].name = "innerHTML";
+    JSHTMLElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLElementAttributesFunctions[10].magic = JSHTMLElement::InnerHTMLAttrNum;
+    JSHTMLElementAttributesFunctions[10].u.getset.get.getter_magic = JSHTMLElement::getValueProperty;
+    JSHTMLElementAttributesFunctions[10].u.getset.set.setter_magic = JSHTMLElement::putValueProperty;
+    JSHTMLElementAttributesFunctions[11].name = "outerText";
+    JSHTMLElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLElementAttributesFunctions[11].magic = JSHTMLElement::OuterTextAttrNum;
+    JSHTMLElementAttributesFunctions[11].u.getset.get.getter_magic = JSHTMLElement::getValueProperty;
+    JSHTMLElementAttributesFunctions[11].u.getset.set.setter_magic = JSHTMLElement::putValueProperty;
+    JSHTMLElementAttributesFunctions[12].name = "children";
+    JSHTMLElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLElementAttributesFunctions[12].magic = JSHTMLElement::ChildrenAttrNum;
+    JSHTMLElementAttributesFunctions[12].u.getset.get.getter_magic = JSHTMLElement::getValueProperty;
+    JSHTMLElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLElementConstructor {
 public:
@@ -105,15 +178,22 @@ JSValue JSHTMLElementPrototype::self(JSContext * ctx)
 
 void JSHTMLElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLElementAttributesFunctions, countof(JSHTMLElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLElementClassDefine = 
+static JSClassDef JSHTMLElementClassDefine;
+static bool JSHTMLElementClassDefine_initialized = false;
+
+static void init_JSHTMLElementClassDefine()
 {
-    "HTMLElement",
-    .finalizer = JSHTMLElement::finalizer,
-    .gc_mark = JSHTMLElement::mark,
-};
+    if (JSHTMLElementClassDefine_initialized) return;
+    JSHTMLElementClassDefine_initialized = true;
+    memset(&JSHTMLElementClassDefine, 0, sizeof(JSHTMLElementClassDefine));
+    JSHTMLElementClassDefine.class_name = "HTMLElement";
+    JSHTMLElementClassDefine.finalizer = JSHTMLElement::finalizer;
+    JSHTMLElementClassDefine.gc_mark = JSHTMLElement::mark;
+}
 
 JSClassID JSHTMLElement::js_class_id = 0;
 

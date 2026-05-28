@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSEntity.h"
 
 #include "Entity.h"
@@ -39,13 +41,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSEntityAttributesFunctions[] =
+static JSCFunctionListEntry JSEntityAttributesFunctions[4];
+static bool JSEntityAttributesFunctions_initialized = false;
+
+static void init_JSEntityAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("notationName", JSEntity::getValueProperty, NULL, JSEntity::NotationNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("publicId", JSEntity::getValueProperty, NULL, JSEntity::PublicIdAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemId", JSEntity::getValueProperty, NULL, JSEntity::SystemIdAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSEntity::getValueProperty, NULL, JSEntity::ConstructorAttrNum)
-};
+    if (JSEntityAttributesFunctions_initialized) return;
+    JSEntityAttributesFunctions_initialized = true;
+    memset(JSEntityAttributesFunctions, 0, sizeof(JSEntityAttributesFunctions));
+    JSEntityAttributesFunctions[0].name = "notationName";
+    JSEntityAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEntityAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEntityAttributesFunctions[0].magic = JSEntity::NotationNameAttrNum;
+    JSEntityAttributesFunctions[0].u.getset.get.getter_magic = JSEntity::getValueProperty;
+    JSEntityAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSEntityAttributesFunctions[1].name = "publicId";
+    JSEntityAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEntityAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEntityAttributesFunctions[1].magic = JSEntity::PublicIdAttrNum;
+    JSEntityAttributesFunctions[1].u.getset.get.getter_magic = JSEntity::getValueProperty;
+    JSEntityAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSEntityAttributesFunctions[2].name = "systemId";
+    JSEntityAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEntityAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEntityAttributesFunctions[2].magic = JSEntity::SystemIdAttrNum;
+    JSEntityAttributesFunctions[2].u.getset.get.getter_magic = JSEntity::getValueProperty;
+    JSEntityAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSEntityAttributesFunctions[3].name = "constructor";
+    JSEntityAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEntityAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEntityAttributesFunctions[3].magic = JSEntity::ConstructorAttrNum;
+    JSEntityAttributesFunctions[3].u.getset.get.getter_magic = JSEntity::getValueProperty;
+    JSEntityAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 class JSEntityConstructor {
 public:
@@ -94,15 +122,22 @@ JSValue JSEntityPrototype::self(JSContext * ctx)
 
 void JSEntityPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSEntityAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSEntityAttributesFunctions, countof(JSEntityAttributesFunctions));
 }
 
-static JSClassDef JSEntityClassDefine = 
+static JSClassDef JSEntityClassDefine;
+static bool JSEntityClassDefine_initialized = false;
+
+static void init_JSEntityClassDefine()
 {
-    "Entity",
-    .finalizer = JSEntity::finalizer,
-    .gc_mark = JSEntity::mark,
-};
+    if (JSEntityClassDefine_initialized) return;
+    JSEntityClassDefine_initialized = true;
+    memset(&JSEntityClassDefine, 0, sizeof(JSEntityClassDefine));
+    JSEntityClassDefine.class_name = "Entity";
+    JSEntityClassDefine.finalizer = JSEntity::finalizer;
+    JSEntityClassDefine.gc_mark = JSEntity::mark;
+}
 
 JSClassID JSEntity::js_class_id = 0;
 

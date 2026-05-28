@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSMediaList.h"
 
 #include "ExceptionCode.h"
@@ -40,12 +42,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSMediaListAttributesFunctions[] =
+static JSCFunctionListEntry JSMediaListAttributesFunctions[3];
+static bool JSMediaListAttributesFunctions_initialized = false;
+
+static void init_JSMediaListAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSMediaList::getValueProperty, NULL, JSMediaList::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("length", JSMediaList::getValueProperty, NULL, JSMediaList::LengthAttrNum),
-    JS_CGETSET_MAGIC_DEF("mediaText", JSMediaList::getValueProperty, JSMediaList::putValueProperty, JSMediaList::MediaTextAttrNum)
-};
+    if (JSMediaListAttributesFunctions_initialized) return;
+    JSMediaListAttributesFunctions_initialized = true;
+    memset(JSMediaListAttributesFunctions, 0, sizeof(JSMediaListAttributesFunctions));
+    JSMediaListAttributesFunctions[0].name = "constructor";
+    JSMediaListAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMediaListAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMediaListAttributesFunctions[0].magic = JSMediaList::ConstructorAttrNum;
+    JSMediaListAttributesFunctions[0].u.getset.get.getter_magic = JSMediaList::getValueProperty;
+    JSMediaListAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSMediaListAttributesFunctions[1].name = "length";
+    JSMediaListAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMediaListAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMediaListAttributesFunctions[1].magic = JSMediaList::LengthAttrNum;
+    JSMediaListAttributesFunctions[1].u.getset.get.getter_magic = JSMediaList::getValueProperty;
+    JSMediaListAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSMediaListAttributesFunctions[2].name = "mediaText";
+    JSMediaListAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMediaListAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMediaListAttributesFunctions[2].magic = JSMediaList::MediaTextAttrNum;
+    JSMediaListAttributesFunctions[2].u.getset.get.getter_magic = JSMediaList::getValueProperty;
+    JSMediaListAttributesFunctions[2].u.getset.set.setter_magic = JSMediaList::putValueProperty;
+}
 
 class JSMediaListConstructor {
 public:
@@ -80,12 +103,36 @@ void JSMediaListConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSMediaListPrototypeFunctions[] =
+static JSCFunctionListEntry JSMediaListPrototypeFunctions[3];
+static bool JSMediaListPrototypeFunctions_initialized = false;
+
+static void init_JSMediaListPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("deleteMedium", 1, JSMediaListPrototypeFunction::callAsFunction, JSMediaList::DeleteMediumFuncNum),
-    JS_CFUNC_MAGIC_DEF("item", 1, JSMediaListPrototypeFunction::callAsFunction, JSMediaList::ItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("appendMedium", 1, JSMediaListPrototypeFunction::callAsFunction, JSMediaList::AppendMediumFuncNum)
-};
+    if (JSMediaListPrototypeFunctions_initialized) return;
+    JSMediaListPrototypeFunctions_initialized = true;
+    memset(JSMediaListPrototypeFunctions, 0, sizeof(JSMediaListPrototypeFunctions));
+    JSMediaListPrototypeFunctions[0].name = "deleteMedium";
+    JSMediaListPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSMediaListPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSMediaListPrototypeFunctions[0].magic = JSMediaList::DeleteMediumFuncNum;
+    JSMediaListPrototypeFunctions[0].u.func.length = 1;
+    JSMediaListPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSMediaListPrototypeFunctions[0].u.func.cfunc.generic_magic = JSMediaListPrototypeFunction::callAsFunction;
+    JSMediaListPrototypeFunctions[1].name = "item";
+    JSMediaListPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSMediaListPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSMediaListPrototypeFunctions[1].magic = JSMediaList::ItemFuncNum;
+    JSMediaListPrototypeFunctions[1].u.func.length = 1;
+    JSMediaListPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSMediaListPrototypeFunctions[1].u.func.cfunc.generic_magic = JSMediaListPrototypeFunction::callAsFunction;
+    JSMediaListPrototypeFunctions[2].name = "appendMedium";
+    JSMediaListPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSMediaListPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSMediaListPrototypeFunctions[2].magic = JSMediaList::AppendMediumFuncNum;
+    JSMediaListPrototypeFunctions[2].u.func.length = 1;
+    JSMediaListPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSMediaListPrototypeFunctions[2].u.func.cfunc.generic_magic = JSMediaListPrototypeFunction::callAsFunction;
+}
 
 JSValue JSMediaListPrototype::self(JSContext * ctx)
 {
@@ -103,22 +150,31 @@ JSValue JSMediaListPrototype::self(JSContext * ctx)
 
 void JSMediaListPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSMediaListAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSMediaListAttributesFunctions, countof(JSMediaListAttributesFunctions));
+    init_JSMediaListPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSMediaListPrototypeFunctions, countof(JSMediaListPrototypeFunctions));
 }
 
-static JSClassDef JSMediaListClassDefine = 
+static JSClassDef JSMediaListClassDefine;
+static bool JSMediaListClassDefine_initialized = false;
+
+static void init_JSMediaListClassDefine()
 {
-    "MediaList",
-    .finalizer = JSMediaList::finalizer,
-    .gc_mark = JSMediaList::mark,
-};
+    if (JSMediaListClassDefine_initialized) return;
+    JSMediaListClassDefine_initialized = true;
+    memset(&JSMediaListClassDefine, 0, sizeof(JSMediaListClassDefine));
+    JSMediaListClassDefine.class_name = "MediaList";
+    JSMediaListClassDefine.finalizer = JSMediaList::finalizer;
+    JSMediaListClassDefine.gc_mark = JSMediaList::mark;
+}
 
 JSClassID JSMediaList::js_class_id = 0;
 
 void JSMediaList::init(JSContext* ctx)
 {
     if (JSMediaList::js_class_id == 0) {
+        init_JSMediaListClassDefine();
         JS_NewClassID(&JSMediaList::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSMediaList::js_class_id, &JSMediaListClassDefine);
         JS_SetConstructor(ctx, JSMediaListConstructor::self(ctx), JSMediaListPrototype::self(ctx));

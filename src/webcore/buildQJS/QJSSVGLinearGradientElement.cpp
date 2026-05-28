@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -47,13 +49,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGLinearGradientElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGLinearGradientElementAttributesFunctions[4];
+static bool JSSVGLinearGradientElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGLinearGradientElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("x2", JSSVGLinearGradientElement::getValueProperty, NULL, JSSVGLinearGradientElement::X2AttrNum),
-    JS_CGETSET_MAGIC_DEF("x1", JSSVGLinearGradientElement::getValueProperty, NULL, JSSVGLinearGradientElement::X1AttrNum),
-    JS_CGETSET_MAGIC_DEF("y1", JSSVGLinearGradientElement::getValueProperty, NULL, JSSVGLinearGradientElement::Y1AttrNum),
-    JS_CGETSET_MAGIC_DEF("y2", JSSVGLinearGradientElement::getValueProperty, NULL, JSSVGLinearGradientElement::Y2AttrNum)
-};
+    if (JSSVGLinearGradientElementAttributesFunctions_initialized) return;
+    JSSVGLinearGradientElementAttributesFunctions_initialized = true;
+    memset(JSSVGLinearGradientElementAttributesFunctions, 0, sizeof(JSSVGLinearGradientElementAttributesFunctions));
+    JSSVGLinearGradientElementAttributesFunctions[0].name = "x2";
+    JSSVGLinearGradientElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLinearGradientElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLinearGradientElementAttributesFunctions[0].magic = JSSVGLinearGradientElement::X2AttrNum;
+    JSSVGLinearGradientElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGLinearGradientElement::getValueProperty;
+    JSSVGLinearGradientElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGLinearGradientElementAttributesFunctions[1].name = "x1";
+    JSSVGLinearGradientElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLinearGradientElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLinearGradientElementAttributesFunctions[1].magic = JSSVGLinearGradientElement::X1AttrNum;
+    JSSVGLinearGradientElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGLinearGradientElement::getValueProperty;
+    JSSVGLinearGradientElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGLinearGradientElementAttributesFunctions[2].name = "y1";
+    JSSVGLinearGradientElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLinearGradientElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLinearGradientElementAttributesFunctions[2].magic = JSSVGLinearGradientElement::Y1AttrNum;
+    JSSVGLinearGradientElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGLinearGradientElement::getValueProperty;
+    JSSVGLinearGradientElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGLinearGradientElementAttributesFunctions[3].name = "y2";
+    JSSVGLinearGradientElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLinearGradientElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLinearGradientElementAttributesFunctions[3].magic = JSSVGLinearGradientElement::Y2AttrNum;
+    JSSVGLinearGradientElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGLinearGradientElement::getValueProperty;
+    JSSVGLinearGradientElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGLinearGradientElementPrototype::self(JSContext * ctx)
 {
@@ -71,21 +99,29 @@ JSValue JSSVGLinearGradientElementPrototype::self(JSContext * ctx)
 
 void JSSVGLinearGradientElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGLinearGradientElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGLinearGradientElementAttributesFunctions, countof(JSSVGLinearGradientElementAttributesFunctions));
 }
 
-static JSClassDef JSSVGLinearGradientElementClassDefine = 
+static JSClassDef JSSVGLinearGradientElementClassDefine;
+static bool JSSVGLinearGradientElementClassDefine_initialized = false;
+
+static void init_JSSVGLinearGradientElementClassDefine()
 {
-    "SVGLinearGradientElement",
-    .finalizer = JSSVGLinearGradientElement::finalizer,
-    .gc_mark = JSSVGLinearGradientElement::mark,
-};
+    if (JSSVGLinearGradientElementClassDefine_initialized) return;
+    JSSVGLinearGradientElementClassDefine_initialized = true;
+    memset(&JSSVGLinearGradientElementClassDefine, 0, sizeof(JSSVGLinearGradientElementClassDefine));
+    JSSVGLinearGradientElementClassDefine.class_name = "SVGLinearGradientElement";
+    JSSVGLinearGradientElementClassDefine.finalizer = JSSVGLinearGradientElement::finalizer;
+    JSSVGLinearGradientElementClassDefine.gc_mark = JSSVGLinearGradientElement::mark;
+}
 
 JSClassID JSSVGLinearGradientElement::js_class_id = 0;
 
 void JSSVGLinearGradientElement::init(JSContext* ctx)
 {
     if (JSSVGLinearGradientElement::js_class_id == 0) {
+        init_JSSVGLinearGradientElementClassDefine();
         JS_NewClassID(&JSSVGLinearGradientElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGLinearGradientElement::js_class_id, &JSSVGLinearGradientElementClassDefine);
         JS_SetClassProto(ctx, JSSVGLinearGradientElement::js_class_id, JSSVGLinearGradientElementPrototype::self(ctx));

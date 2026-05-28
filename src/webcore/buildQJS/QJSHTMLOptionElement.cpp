@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLOptionElement.h"
 
 #include "HTMLFormElement.h"
@@ -41,17 +43,63 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLOptionElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLOptionElementAttributesFunctions[8];
+static bool JSHTMLOptionElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLOptionElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("disabled", JSHTMLOptionElement::getValueProperty, JSHTMLOptionElement::putValueProperty, JSHTMLOptionElement::DisabledAttrNum),
-    JS_CGETSET_MAGIC_DEF("index", JSHTMLOptionElement::getValueProperty, JSHTMLOptionElement::putValueProperty, JSHTMLOptionElement::IndexAttrNum),
-    JS_CGETSET_MAGIC_DEF("value", JSHTMLOptionElement::getValueProperty, JSHTMLOptionElement::putValueProperty, JSHTMLOptionElement::ValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("form", JSHTMLOptionElement::getValueProperty, NULL, JSHTMLOptionElement::FormAttrNum),
-    JS_CGETSET_MAGIC_DEF("text", JSHTMLOptionElement::getValueProperty, JSHTMLOptionElement::putValueProperty, JSHTMLOptionElement::TextAttrNum),
-    JS_CGETSET_MAGIC_DEF("defaultSelected", JSHTMLOptionElement::getValueProperty, JSHTMLOptionElement::putValueProperty, JSHTMLOptionElement::DefaultSelectedAttrNum),
-    JS_CGETSET_MAGIC_DEF("label", JSHTMLOptionElement::getValueProperty, JSHTMLOptionElement::putValueProperty, JSHTMLOptionElement::LabelAttrNum),
-    JS_CGETSET_MAGIC_DEF("selected", JSHTMLOptionElement::getValueProperty, JSHTMLOptionElement::putValueProperty, JSHTMLOptionElement::SelectedAttrNum)
-};
+    if (JSHTMLOptionElementAttributesFunctions_initialized) return;
+    JSHTMLOptionElementAttributesFunctions_initialized = true;
+    memset(JSHTMLOptionElementAttributesFunctions, 0, sizeof(JSHTMLOptionElementAttributesFunctions));
+    JSHTMLOptionElementAttributesFunctions[0].name = "disabled";
+    JSHTMLOptionElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOptionElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOptionElementAttributesFunctions[0].magic = JSHTMLOptionElement::DisabledAttrNum;
+    JSHTMLOptionElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLOptionElement::getValueProperty;
+    JSHTMLOptionElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLOptionElement::putValueProperty;
+    JSHTMLOptionElementAttributesFunctions[1].name = "index";
+    JSHTMLOptionElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOptionElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOptionElementAttributesFunctions[1].magic = JSHTMLOptionElement::IndexAttrNum;
+    JSHTMLOptionElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLOptionElement::getValueProperty;
+    JSHTMLOptionElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLOptionElement::putValueProperty;
+    JSHTMLOptionElementAttributesFunctions[2].name = "value";
+    JSHTMLOptionElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOptionElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOptionElementAttributesFunctions[2].magic = JSHTMLOptionElement::ValueAttrNum;
+    JSHTMLOptionElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLOptionElement::getValueProperty;
+    JSHTMLOptionElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLOptionElement::putValueProperty;
+    JSHTMLOptionElementAttributesFunctions[3].name = "form";
+    JSHTMLOptionElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOptionElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOptionElementAttributesFunctions[3].magic = JSHTMLOptionElement::FormAttrNum;
+    JSHTMLOptionElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLOptionElement::getValueProperty;
+    JSHTMLOptionElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSHTMLOptionElementAttributesFunctions[4].name = "text";
+    JSHTMLOptionElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOptionElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOptionElementAttributesFunctions[4].magic = JSHTMLOptionElement::TextAttrNum;
+    JSHTMLOptionElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLOptionElement::getValueProperty;
+    JSHTMLOptionElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLOptionElement::putValueProperty;
+    JSHTMLOptionElementAttributesFunctions[5].name = "defaultSelected";
+    JSHTMLOptionElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOptionElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOptionElementAttributesFunctions[5].magic = JSHTMLOptionElement::DefaultSelectedAttrNum;
+    JSHTMLOptionElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLOptionElement::getValueProperty;
+    JSHTMLOptionElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLOptionElement::putValueProperty;
+    JSHTMLOptionElementAttributesFunctions[6].name = "label";
+    JSHTMLOptionElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOptionElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOptionElementAttributesFunctions[6].magic = JSHTMLOptionElement::LabelAttrNum;
+    JSHTMLOptionElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLOptionElement::getValueProperty;
+    JSHTMLOptionElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLOptionElement::putValueProperty;
+    JSHTMLOptionElementAttributesFunctions[7].name = "selected";
+    JSHTMLOptionElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOptionElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOptionElementAttributesFunctions[7].magic = JSHTMLOptionElement::SelectedAttrNum;
+    JSHTMLOptionElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLOptionElement::getValueProperty;
+    JSHTMLOptionElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLOptionElement::putValueProperty;
+}
 
 JSValue JSHTMLOptionElementPrototype::self(JSContext * ctx)
 {
@@ -69,15 +117,22 @@ JSValue JSHTMLOptionElementPrototype::self(JSContext * ctx)
 
 void JSHTMLOptionElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLOptionElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLOptionElementAttributesFunctions, countof(JSHTMLOptionElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLOptionElementClassDefine = 
+static JSClassDef JSHTMLOptionElementClassDefine;
+static bool JSHTMLOptionElementClassDefine_initialized = false;
+
+static void init_JSHTMLOptionElementClassDefine()
 {
-    "HTMLOptionElement",
-    .finalizer = JSHTMLOptionElement::finalizer,
-    .gc_mark = JSHTMLOptionElement::mark,
-};
+    if (JSHTMLOptionElementClassDefine_initialized) return;
+    JSHTMLOptionElementClassDefine_initialized = true;
+    memset(&JSHTMLOptionElementClassDefine, 0, sizeof(JSHTMLOptionElementClassDefine));
+    JSHTMLOptionElementClassDefine.class_name = "HTMLOptionElement";
+    JSHTMLOptionElementClassDefine.finalizer = JSHTMLOptionElement::finalizer;
+    JSHTMLOptionElementClassDefine.gc_mark = JSHTMLOptionElement::mark;
+}
 
 JSClassID JSHTMLOptionElement::js_class_id = 0;
 

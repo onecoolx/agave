@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLEmbedElement.h"
 
 #include "HTMLEmbedElement.h"
@@ -39,16 +41,57 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLEmbedElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLEmbedElementAttributesFunctions[7];
+static bool JSHTMLEmbedElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLEmbedElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("width", JSHTMLEmbedElement::getValueProperty, JSHTMLEmbedElement::putValueProperty, JSHTMLEmbedElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSHTMLEmbedElement::getValueProperty, JSHTMLEmbedElement::putValueProperty, JSHTMLEmbedElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSHTMLEmbedElement::getValueProperty, JSHTMLEmbedElement::putValueProperty, JSHTMLEmbedElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLEmbedElement::getValueProperty, JSHTMLEmbedElement::putValueProperty, JSHTMLEmbedElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("name", JSHTMLEmbedElement::getValueProperty, JSHTMLEmbedElement::putValueProperty, JSHTMLEmbedElement::NameAttrNum),
-    JS_CGETSET_MAGIC_DEF("src", JSHTMLEmbedElement::getValueProperty, JSHTMLEmbedElement::putValueProperty, JSHTMLEmbedElement::SrcAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLEmbedElement::getValueProperty, NULL, JSHTMLEmbedElement::ConstructorAttrNum)
-};
+    if (JSHTMLEmbedElementAttributesFunctions_initialized) return;
+    JSHTMLEmbedElementAttributesFunctions_initialized = true;
+    memset(JSHTMLEmbedElementAttributesFunctions, 0, sizeof(JSHTMLEmbedElementAttributesFunctions));
+    JSHTMLEmbedElementAttributesFunctions[0].name = "width";
+    JSHTMLEmbedElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLEmbedElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLEmbedElementAttributesFunctions[0].magic = JSHTMLEmbedElement::WidthAttrNum;
+    JSHTMLEmbedElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLEmbedElement::getValueProperty;
+    JSHTMLEmbedElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLEmbedElement::putValueProperty;
+    JSHTMLEmbedElementAttributesFunctions[1].name = "height";
+    JSHTMLEmbedElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLEmbedElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLEmbedElementAttributesFunctions[1].magic = JSHTMLEmbedElement::HeightAttrNum;
+    JSHTMLEmbedElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLEmbedElement::getValueProperty;
+    JSHTMLEmbedElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLEmbedElement::putValueProperty;
+    JSHTMLEmbedElementAttributesFunctions[2].name = "type";
+    JSHTMLEmbedElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLEmbedElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLEmbedElementAttributesFunctions[2].magic = JSHTMLEmbedElement::TypeAttrNum;
+    JSHTMLEmbedElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLEmbedElement::getValueProperty;
+    JSHTMLEmbedElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLEmbedElement::putValueProperty;
+    JSHTMLEmbedElementAttributesFunctions[3].name = "align";
+    JSHTMLEmbedElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLEmbedElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLEmbedElementAttributesFunctions[3].magic = JSHTMLEmbedElement::AlignAttrNum;
+    JSHTMLEmbedElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLEmbedElement::getValueProperty;
+    JSHTMLEmbedElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLEmbedElement::putValueProperty;
+    JSHTMLEmbedElementAttributesFunctions[4].name = "name";
+    JSHTMLEmbedElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLEmbedElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLEmbedElementAttributesFunctions[4].magic = JSHTMLEmbedElement::NameAttrNum;
+    JSHTMLEmbedElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLEmbedElement::getValueProperty;
+    JSHTMLEmbedElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLEmbedElement::putValueProperty;
+    JSHTMLEmbedElementAttributesFunctions[5].name = "src";
+    JSHTMLEmbedElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLEmbedElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLEmbedElementAttributesFunctions[5].magic = JSHTMLEmbedElement::SrcAttrNum;
+    JSHTMLEmbedElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLEmbedElement::getValueProperty;
+    JSHTMLEmbedElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLEmbedElement::putValueProperty;
+    JSHTMLEmbedElementAttributesFunctions[6].name = "constructor";
+    JSHTMLEmbedElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLEmbedElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLEmbedElementAttributesFunctions[6].magic = JSHTMLEmbedElement::ConstructorAttrNum;
+    JSHTMLEmbedElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLEmbedElement::getValueProperty;
+    JSHTMLEmbedElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLEmbedElementConstructor {
 public:
@@ -97,15 +140,22 @@ JSValue JSHTMLEmbedElementPrototype::self(JSContext * ctx)
 
 void JSHTMLEmbedElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLEmbedElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLEmbedElementAttributesFunctions, countof(JSHTMLEmbedElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLEmbedElementClassDefine = 
+static JSClassDef JSHTMLEmbedElementClassDefine;
+static bool JSHTMLEmbedElementClassDefine_initialized = false;
+
+static void init_JSHTMLEmbedElementClassDefine()
 {
-    "HTMLEmbedElement",
-    .finalizer = JSHTMLEmbedElement::finalizer,
-    .gc_mark = JSHTMLEmbedElement::mark,
-};
+    if (JSHTMLEmbedElementClassDefine_initialized) return;
+    JSHTMLEmbedElementClassDefine_initialized = true;
+    memset(&JSHTMLEmbedElementClassDefine, 0, sizeof(JSHTMLEmbedElementClassDefine));
+    JSHTMLEmbedElementClassDefine.class_name = "HTMLEmbedElement";
+    JSHTMLEmbedElementClassDefine.finalizer = JSHTMLEmbedElement::finalizer;
+    JSHTMLEmbedElementClassDefine.gc_mark = JSHTMLEmbedElement::mark;
+}
 
 JSClassID JSHTMLEmbedElement::js_class_id = 0;
 

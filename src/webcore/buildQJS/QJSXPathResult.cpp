@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(XPATH)
 
@@ -45,17 +47,63 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSXPathResultAttributesFunctions[] =
+static JSCFunctionListEntry JSXPathResultAttributesFunctions[8];
+static bool JSXPathResultAttributesFunctions_initialized = false;
+
+static void init_JSXPathResultAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("resultType", JSXPathResult::getValueProperty, NULL, JSXPathResult::ResultTypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("singleNodeValue", JSXPathResult::getValueProperty, NULL, JSXPathResult::SingleNodeValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("stringValue", JSXPathResult::getValueProperty, NULL, JSXPathResult::StringValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("booleanValue", JSXPathResult::getValueProperty, NULL, JSXPathResult::BooleanValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("numberValue", JSXPathResult::getValueProperty, NULL, JSXPathResult::NumberValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("invalidIteratorState", JSXPathResult::getValueProperty, NULL, JSXPathResult::InvalidIteratorStateAttrNum),
-    JS_CGETSET_MAGIC_DEF("snapshotLength", JSXPathResult::getValueProperty, NULL, JSXPathResult::SnapshotLengthAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSXPathResult::getValueProperty, NULL, JSXPathResult::ConstructorAttrNum)
-};
+    if (JSXPathResultAttributesFunctions_initialized) return;
+    JSXPathResultAttributesFunctions_initialized = true;
+    memset(JSXPathResultAttributesFunctions, 0, sizeof(JSXPathResultAttributesFunctions));
+    JSXPathResultAttributesFunctions[0].name = "resultType";
+    JSXPathResultAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultAttributesFunctions[0].magic = JSXPathResult::ResultTypeAttrNum;
+    JSXPathResultAttributesFunctions[0].u.getset.get.getter_magic = JSXPathResult::getValueProperty;
+    JSXPathResultAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSXPathResultAttributesFunctions[1].name = "singleNodeValue";
+    JSXPathResultAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultAttributesFunctions[1].magic = JSXPathResult::SingleNodeValueAttrNum;
+    JSXPathResultAttributesFunctions[1].u.getset.get.getter_magic = JSXPathResult::getValueProperty;
+    JSXPathResultAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSXPathResultAttributesFunctions[2].name = "stringValue";
+    JSXPathResultAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultAttributesFunctions[2].magic = JSXPathResult::StringValueAttrNum;
+    JSXPathResultAttributesFunctions[2].u.getset.get.getter_magic = JSXPathResult::getValueProperty;
+    JSXPathResultAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSXPathResultAttributesFunctions[3].name = "booleanValue";
+    JSXPathResultAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultAttributesFunctions[3].magic = JSXPathResult::BooleanValueAttrNum;
+    JSXPathResultAttributesFunctions[3].u.getset.get.getter_magic = JSXPathResult::getValueProperty;
+    JSXPathResultAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSXPathResultAttributesFunctions[4].name = "numberValue";
+    JSXPathResultAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultAttributesFunctions[4].magic = JSXPathResult::NumberValueAttrNum;
+    JSXPathResultAttributesFunctions[4].u.getset.get.getter_magic = JSXPathResult::getValueProperty;
+    JSXPathResultAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSXPathResultAttributesFunctions[5].name = "invalidIteratorState";
+    JSXPathResultAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultAttributesFunctions[5].magic = JSXPathResult::InvalidIteratorStateAttrNum;
+    JSXPathResultAttributesFunctions[5].u.getset.get.getter_magic = JSXPathResult::getValueProperty;
+    JSXPathResultAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSXPathResultAttributesFunctions[6].name = "snapshotLength";
+    JSXPathResultAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultAttributesFunctions[6].magic = JSXPathResult::SnapshotLengthAttrNum;
+    JSXPathResultAttributesFunctions[6].u.getset.get.getter_magic = JSXPathResult::getValueProperty;
+    JSXPathResultAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSXPathResultAttributesFunctions[7].name = "constructor";
+    JSXPathResultAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultAttributesFunctions[7].magic = JSXPathResult::ConstructorAttrNum;
+    JSXPathResultAttributesFunctions[7].u.getset.get.getter_magic = JSXPathResult::getValueProperty;
+    JSXPathResultAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+}
 
 class JSXPathResultConstructor {
 public:
@@ -72,19 +120,75 @@ JSValue JSXPathResultConstructor::getValueProperty(JSContext * ctx, JSValueConst
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSXPathResultConstructorFunctions[] =
+static JSCFunctionListEntry JSXPathResultConstructorFunctions[10];
+static bool JSXPathResultConstructorFunctions_initialized = false;
+
+static void init_JSXPathResultConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("ANY_TYPE", JSXPathResultConstructor::getValueProperty, NULL, XPathResult::ANY_TYPE),
-    JS_CGETSET_MAGIC_DEF("NUMBER_TYPE", JSXPathResultConstructor::getValueProperty, NULL, XPathResult::NUMBER_TYPE),
-    JS_CGETSET_MAGIC_DEF("ORDERED_NODE_SNAPSHOT_TYPE", JSXPathResultConstructor::getValueProperty, NULL, XPathResult::ORDERED_NODE_SNAPSHOT_TYPE),
-    JS_CGETSET_MAGIC_DEF("FIRST_ORDERED_NODE_TYPE", JSXPathResultConstructor::getValueProperty, NULL, XPathResult::FIRST_ORDERED_NODE_TYPE),
-    JS_CGETSET_MAGIC_DEF("BOOLEAN_TYPE", JSXPathResultConstructor::getValueProperty, NULL, XPathResult::BOOLEAN_TYPE),
-    JS_CGETSET_MAGIC_DEF("STRING_TYPE", JSXPathResultConstructor::getValueProperty, NULL, XPathResult::STRING_TYPE),
-    JS_CGETSET_MAGIC_DEF("UNORDERED_NODE_ITERATOR_TYPE", JSXPathResultConstructor::getValueProperty, NULL, XPathResult::UNORDERED_NODE_ITERATOR_TYPE),
-    JS_CGETSET_MAGIC_DEF("ORDERED_NODE_ITERATOR_TYPE", JSXPathResultConstructor::getValueProperty, NULL, XPathResult::ORDERED_NODE_ITERATOR_TYPE),
-    JS_CGETSET_MAGIC_DEF("UNORDERED_NODE_SNAPSHOT_TYPE", JSXPathResultConstructor::getValueProperty, NULL, XPathResult::UNORDERED_NODE_SNAPSHOT_TYPE),
-    JS_CGETSET_MAGIC_DEF("ANY_UNORDERED_NODE_TYPE", JSXPathResultConstructor::getValueProperty, NULL, XPathResult::ANY_UNORDERED_NODE_TYPE)
-};
+    if (JSXPathResultConstructorFunctions_initialized) return;
+    JSXPathResultConstructorFunctions_initialized = true;
+    memset(JSXPathResultConstructorFunctions, 0, sizeof(JSXPathResultConstructorFunctions));
+    JSXPathResultConstructorFunctions[0].name = "ANY_TYPE";
+    JSXPathResultConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultConstructorFunctions[0].magic = XPathResult::ANY_TYPE;
+    JSXPathResultConstructorFunctions[0].u.getset.get.getter_magic = JSXPathResultConstructor::getValueProperty;
+    JSXPathResultConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSXPathResultConstructorFunctions[1].name = "NUMBER_TYPE";
+    JSXPathResultConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultConstructorFunctions[1].magic = XPathResult::NUMBER_TYPE;
+    JSXPathResultConstructorFunctions[1].u.getset.get.getter_magic = JSXPathResultConstructor::getValueProperty;
+    JSXPathResultConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSXPathResultConstructorFunctions[2].name = "ORDERED_NODE_SNAPSHOT_TYPE";
+    JSXPathResultConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultConstructorFunctions[2].magic = XPathResult::ORDERED_NODE_SNAPSHOT_TYPE;
+    JSXPathResultConstructorFunctions[2].u.getset.get.getter_magic = JSXPathResultConstructor::getValueProperty;
+    JSXPathResultConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSXPathResultConstructorFunctions[3].name = "FIRST_ORDERED_NODE_TYPE";
+    JSXPathResultConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultConstructorFunctions[3].magic = XPathResult::FIRST_ORDERED_NODE_TYPE;
+    JSXPathResultConstructorFunctions[3].u.getset.get.getter_magic = JSXPathResultConstructor::getValueProperty;
+    JSXPathResultConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+    JSXPathResultConstructorFunctions[4].name = "BOOLEAN_TYPE";
+    JSXPathResultConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultConstructorFunctions[4].magic = XPathResult::BOOLEAN_TYPE;
+    JSXPathResultConstructorFunctions[4].u.getset.get.getter_magic = JSXPathResultConstructor::getValueProperty;
+    JSXPathResultConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+    JSXPathResultConstructorFunctions[5].name = "STRING_TYPE";
+    JSXPathResultConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultConstructorFunctions[5].magic = XPathResult::STRING_TYPE;
+    JSXPathResultConstructorFunctions[5].u.getset.get.getter_magic = JSXPathResultConstructor::getValueProperty;
+    JSXPathResultConstructorFunctions[5].u.getset.set.setter_magic = NULL;
+    JSXPathResultConstructorFunctions[6].name = "UNORDERED_NODE_ITERATOR_TYPE";
+    JSXPathResultConstructorFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultConstructorFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultConstructorFunctions[6].magic = XPathResult::UNORDERED_NODE_ITERATOR_TYPE;
+    JSXPathResultConstructorFunctions[6].u.getset.get.getter_magic = JSXPathResultConstructor::getValueProperty;
+    JSXPathResultConstructorFunctions[6].u.getset.set.setter_magic = NULL;
+    JSXPathResultConstructorFunctions[7].name = "ORDERED_NODE_ITERATOR_TYPE";
+    JSXPathResultConstructorFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultConstructorFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultConstructorFunctions[7].magic = XPathResult::ORDERED_NODE_ITERATOR_TYPE;
+    JSXPathResultConstructorFunctions[7].u.getset.get.getter_magic = JSXPathResultConstructor::getValueProperty;
+    JSXPathResultConstructorFunctions[7].u.getset.set.setter_magic = NULL;
+    JSXPathResultConstructorFunctions[8].name = "UNORDERED_NODE_SNAPSHOT_TYPE";
+    JSXPathResultConstructorFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultConstructorFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultConstructorFunctions[8].magic = XPathResult::UNORDERED_NODE_SNAPSHOT_TYPE;
+    JSXPathResultConstructorFunctions[8].u.getset.get.getter_magic = JSXPathResultConstructor::getValueProperty;
+    JSXPathResultConstructorFunctions[8].u.getset.set.setter_magic = NULL;
+    JSXPathResultConstructorFunctions[9].name = "ANY_UNORDERED_NODE_TYPE";
+    JSXPathResultConstructorFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultConstructorFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultConstructorFunctions[9].magic = XPathResult::ANY_UNORDERED_NODE_TYPE;
+    JSXPathResultConstructorFunctions[9].u.getset.get.getter_magic = JSXPathResultConstructor::getValueProperty;
+    JSXPathResultConstructorFunctions[9].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSXPathResultConstructor::self(JSContext * ctx)
 {
@@ -102,32 +206,107 @@ JSValue JSXPathResultConstructor::self(JSContext * ctx)
 
 void JSXPathResultConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSXPathResultConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSXPathResultConstructorFunctions, countof(JSXPathResultConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSXPathResultPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSXPathResultPrototypeConstantsFunctions[10];
+static bool JSXPathResultPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSXPathResultPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("ANY_TYPE", JSXPathResultPrototype::getValueProperty, NULL, XPathResult::ANY_TYPE),
-    JS_CGETSET_MAGIC_DEF("NUMBER_TYPE", JSXPathResultPrototype::getValueProperty, NULL, XPathResult::NUMBER_TYPE),
-    JS_CGETSET_MAGIC_DEF("ORDERED_NODE_SNAPSHOT_TYPE", JSXPathResultPrototype::getValueProperty, NULL, XPathResult::ORDERED_NODE_SNAPSHOT_TYPE),
-    JS_CGETSET_MAGIC_DEF("FIRST_ORDERED_NODE_TYPE", JSXPathResultPrototype::getValueProperty, NULL, XPathResult::FIRST_ORDERED_NODE_TYPE),
-    JS_CGETSET_MAGIC_DEF("BOOLEAN_TYPE", JSXPathResultPrototype::getValueProperty, NULL, XPathResult::BOOLEAN_TYPE),
-    JS_CGETSET_MAGIC_DEF("STRING_TYPE", JSXPathResultPrototype::getValueProperty, NULL, XPathResult::STRING_TYPE),
-    JS_CGETSET_MAGIC_DEF("UNORDERED_NODE_ITERATOR_TYPE", JSXPathResultPrototype::getValueProperty, NULL, XPathResult::UNORDERED_NODE_ITERATOR_TYPE),
-    JS_CGETSET_MAGIC_DEF("ORDERED_NODE_ITERATOR_TYPE", JSXPathResultPrototype::getValueProperty, NULL, XPathResult::ORDERED_NODE_ITERATOR_TYPE),
-    JS_CGETSET_MAGIC_DEF("UNORDERED_NODE_SNAPSHOT_TYPE", JSXPathResultPrototype::getValueProperty, NULL, XPathResult::UNORDERED_NODE_SNAPSHOT_TYPE),
-    JS_CGETSET_MAGIC_DEF("ANY_UNORDERED_NODE_TYPE", JSXPathResultPrototype::getValueProperty, NULL, XPathResult::ANY_UNORDERED_NODE_TYPE)
-};
+    if (JSXPathResultPrototypeConstantsFunctions_initialized) return;
+    JSXPathResultPrototypeConstantsFunctions_initialized = true;
+    memset(JSXPathResultPrototypeConstantsFunctions, 0, sizeof(JSXPathResultPrototypeConstantsFunctions));
+    JSXPathResultPrototypeConstantsFunctions[0].name = "ANY_TYPE";
+    JSXPathResultPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultPrototypeConstantsFunctions[0].magic = XPathResult::ANY_TYPE;
+    JSXPathResultPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSXPathResultPrototype::getValueProperty;
+    JSXPathResultPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSXPathResultPrototypeConstantsFunctions[1].name = "NUMBER_TYPE";
+    JSXPathResultPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultPrototypeConstantsFunctions[1].magic = XPathResult::NUMBER_TYPE;
+    JSXPathResultPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSXPathResultPrototype::getValueProperty;
+    JSXPathResultPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSXPathResultPrototypeConstantsFunctions[2].name = "ORDERED_NODE_SNAPSHOT_TYPE";
+    JSXPathResultPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultPrototypeConstantsFunctions[2].magic = XPathResult::ORDERED_NODE_SNAPSHOT_TYPE;
+    JSXPathResultPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSXPathResultPrototype::getValueProperty;
+    JSXPathResultPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSXPathResultPrototypeConstantsFunctions[3].name = "FIRST_ORDERED_NODE_TYPE";
+    JSXPathResultPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultPrototypeConstantsFunctions[3].magic = XPathResult::FIRST_ORDERED_NODE_TYPE;
+    JSXPathResultPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSXPathResultPrototype::getValueProperty;
+    JSXPathResultPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+    JSXPathResultPrototypeConstantsFunctions[4].name = "BOOLEAN_TYPE";
+    JSXPathResultPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultPrototypeConstantsFunctions[4].magic = XPathResult::BOOLEAN_TYPE;
+    JSXPathResultPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSXPathResultPrototype::getValueProperty;
+    JSXPathResultPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+    JSXPathResultPrototypeConstantsFunctions[5].name = "STRING_TYPE";
+    JSXPathResultPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultPrototypeConstantsFunctions[5].magic = XPathResult::STRING_TYPE;
+    JSXPathResultPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSXPathResultPrototype::getValueProperty;
+    JSXPathResultPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
+    JSXPathResultPrototypeConstantsFunctions[6].name = "UNORDERED_NODE_ITERATOR_TYPE";
+    JSXPathResultPrototypeConstantsFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultPrototypeConstantsFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultPrototypeConstantsFunctions[6].magic = XPathResult::UNORDERED_NODE_ITERATOR_TYPE;
+    JSXPathResultPrototypeConstantsFunctions[6].u.getset.get.getter_magic = JSXPathResultPrototype::getValueProperty;
+    JSXPathResultPrototypeConstantsFunctions[6].u.getset.set.setter_magic = NULL;
+    JSXPathResultPrototypeConstantsFunctions[7].name = "ORDERED_NODE_ITERATOR_TYPE";
+    JSXPathResultPrototypeConstantsFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultPrototypeConstantsFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultPrototypeConstantsFunctions[7].magic = XPathResult::ORDERED_NODE_ITERATOR_TYPE;
+    JSXPathResultPrototypeConstantsFunctions[7].u.getset.get.getter_magic = JSXPathResultPrototype::getValueProperty;
+    JSXPathResultPrototypeConstantsFunctions[7].u.getset.set.setter_magic = NULL;
+    JSXPathResultPrototypeConstantsFunctions[8].name = "UNORDERED_NODE_SNAPSHOT_TYPE";
+    JSXPathResultPrototypeConstantsFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultPrototypeConstantsFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultPrototypeConstantsFunctions[8].magic = XPathResult::UNORDERED_NODE_SNAPSHOT_TYPE;
+    JSXPathResultPrototypeConstantsFunctions[8].u.getset.get.getter_magic = JSXPathResultPrototype::getValueProperty;
+    JSXPathResultPrototypeConstantsFunctions[8].u.getset.set.setter_magic = NULL;
+    JSXPathResultPrototypeConstantsFunctions[9].name = "ANY_UNORDERED_NODE_TYPE";
+    JSXPathResultPrototypeConstantsFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathResultPrototypeConstantsFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathResultPrototypeConstantsFunctions[9].magic = XPathResult::ANY_UNORDERED_NODE_TYPE;
+    JSXPathResultPrototypeConstantsFunctions[9].u.getset.get.getter_magic = JSXPathResultPrototype::getValueProperty;
+    JSXPathResultPrototypeConstantsFunctions[9].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSXPathResultPrototypeFunctions[] =
+static JSCFunctionListEntry JSXPathResultPrototypeFunctions[2];
+static bool JSXPathResultPrototypeFunctions_initialized = false;
+
+static void init_JSXPathResultPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("snapshotItem", 1, JSXPathResultPrototypeFunction::callAsFunction, JSXPathResult::SnapshotItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("iterateNext", 0, JSXPathResultPrototypeFunction::callAsFunction, JSXPathResult::IterateNextFuncNum)
-};
+    if (JSXPathResultPrototypeFunctions_initialized) return;
+    JSXPathResultPrototypeFunctions_initialized = true;
+    memset(JSXPathResultPrototypeFunctions, 0, sizeof(JSXPathResultPrototypeFunctions));
+    JSXPathResultPrototypeFunctions[0].name = "snapshotItem";
+    JSXPathResultPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSXPathResultPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSXPathResultPrototypeFunctions[0].magic = JSXPathResult::SnapshotItemFuncNum;
+    JSXPathResultPrototypeFunctions[0].u.func.length = 1;
+    JSXPathResultPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSXPathResultPrototypeFunctions[0].u.func.cfunc.generic_magic = JSXPathResultPrototypeFunction::callAsFunction;
+    JSXPathResultPrototypeFunctions[1].name = "iterateNext";
+    JSXPathResultPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSXPathResultPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSXPathResultPrototypeFunctions[1].magic = JSXPathResult::IterateNextFuncNum;
+    JSXPathResultPrototypeFunctions[1].u.func.length = 0;
+    JSXPathResultPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSXPathResultPrototypeFunctions[1].u.func.cfunc.generic_magic = JSXPathResultPrototypeFunction::callAsFunction;
+}
 
 JSValue JSXPathResultPrototype::self(JSContext * ctx)
 {
@@ -145,8 +324,11 @@ JSValue JSXPathResultPrototype::self(JSContext * ctx)
 
 void JSXPathResultPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSXPathResultAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSXPathResultAttributesFunctions, countof(JSXPathResultAttributesFunctions));
+    init_JSXPathResultPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSXPathResultPrototypeConstantsFunctions, countof(JSXPathResultPrototypeConstantsFunctions));
+    init_JSXPathResultPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSXPathResultPrototypeFunctions, countof(JSXPathResultPrototypeFunctions));
 }
 
@@ -156,18 +338,25 @@ JSValue JSXPathResultPrototype::getValueProperty(JSContext * ctx, JSValueConst t
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSXPathResultClassDefine = 
+static JSClassDef JSXPathResultClassDefine;
+static bool JSXPathResultClassDefine_initialized = false;
+
+static void init_JSXPathResultClassDefine()
 {
-    "XPathResult",
-    .finalizer = JSXPathResult::finalizer,
-    .gc_mark = JSXPathResult::mark,
-};
+    if (JSXPathResultClassDefine_initialized) return;
+    JSXPathResultClassDefine_initialized = true;
+    memset(&JSXPathResultClassDefine, 0, sizeof(JSXPathResultClassDefine));
+    JSXPathResultClassDefine.class_name = "XPathResult";
+    JSXPathResultClassDefine.finalizer = JSXPathResult::finalizer;
+    JSXPathResultClassDefine.gc_mark = JSXPathResult::mark;
+}
 
 JSClassID JSXPathResult::js_class_id = 0;
 
 void JSXPathResult::init(JSContext* ctx)
 {
     if (JSXPathResult::js_class_id == 0) {
+        init_JSXPathResultClassDefine();
         JS_NewClassID(&JSXPathResult::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSXPathResult::js_class_id, &JSXPathResultClassDefine);
         JS_SetConstructor(ctx, JSXPathResultConstructor::self(ctx), JSXPathResultPrototype::self(ctx));

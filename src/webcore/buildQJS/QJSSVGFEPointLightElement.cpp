@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -47,12 +49,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFEPointLightElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFEPointLightElementAttributesFunctions[3];
+static bool JSSVGFEPointLightElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFEPointLightElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("z", JSSVGFEPointLightElement::getValueProperty, NULL, JSSVGFEPointLightElement::ZAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFEPointLightElement::getValueProperty, NULL, JSSVGFEPointLightElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFEPointLightElement::getValueProperty, NULL, JSSVGFEPointLightElement::XAttrNum)
-};
+    if (JSSVGFEPointLightElementAttributesFunctions_initialized) return;
+    JSSVGFEPointLightElementAttributesFunctions_initialized = true;
+    memset(JSSVGFEPointLightElementAttributesFunctions, 0, sizeof(JSSVGFEPointLightElementAttributesFunctions));
+    JSSVGFEPointLightElementAttributesFunctions[0].name = "z";
+    JSSVGFEPointLightElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEPointLightElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEPointLightElementAttributesFunctions[0].magic = JSSVGFEPointLightElement::ZAttrNum;
+    JSSVGFEPointLightElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFEPointLightElement::getValueProperty;
+    JSSVGFEPointLightElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEPointLightElementAttributesFunctions[1].name = "y";
+    JSSVGFEPointLightElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEPointLightElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEPointLightElementAttributesFunctions[1].magic = JSSVGFEPointLightElement::YAttrNum;
+    JSSVGFEPointLightElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFEPointLightElement::getValueProperty;
+    JSSVGFEPointLightElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEPointLightElementAttributesFunctions[2].name = "x";
+    JSSVGFEPointLightElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEPointLightElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEPointLightElementAttributesFunctions[2].magic = JSSVGFEPointLightElement::XAttrNum;
+    JSSVGFEPointLightElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFEPointLightElement::getValueProperty;
+    JSSVGFEPointLightElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGFEPointLightElementPrototype::self(JSContext * ctx)
 {
@@ -70,21 +93,29 @@ JSValue JSSVGFEPointLightElementPrototype::self(JSContext * ctx)
 
 void JSSVGFEPointLightElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFEPointLightElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEPointLightElementAttributesFunctions, countof(JSSVGFEPointLightElementAttributesFunctions));
 }
 
-static JSClassDef JSSVGFEPointLightElementClassDefine = 
+static JSClassDef JSSVGFEPointLightElementClassDefine;
+static bool JSSVGFEPointLightElementClassDefine_initialized = false;
+
+static void init_JSSVGFEPointLightElementClassDefine()
 {
-    "SVGFEPointLightElement",
-    .finalizer = JSSVGFEPointLightElement::finalizer,
-    .gc_mark = JSSVGFEPointLightElement::mark,
-};
+    if (JSSVGFEPointLightElementClassDefine_initialized) return;
+    JSSVGFEPointLightElementClassDefine_initialized = true;
+    memset(&JSSVGFEPointLightElementClassDefine, 0, sizeof(JSSVGFEPointLightElementClassDefine));
+    JSSVGFEPointLightElementClassDefine.class_name = "SVGFEPointLightElement";
+    JSSVGFEPointLightElementClassDefine.finalizer = JSSVGFEPointLightElement::finalizer;
+    JSSVGFEPointLightElementClassDefine.gc_mark = JSSVGFEPointLightElement::mark;
+}
 
 JSClassID JSSVGFEPointLightElement::js_class_id = 0;
 
 void JSSVGFEPointLightElement::init(JSContext* ctx)
 {
     if (JSSVGFEPointLightElement::js_class_id == 0) {
+        init_JSSVGFEPointLightElementClassDefine();
         JS_NewClassID(&JSSVGFEPointLightElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFEPointLightElement::js_class_id, &JSSVGFEPointLightElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFEPointLightElement::js_class_id, JSSVGFEPointLightElementPrototype::self(ctx));

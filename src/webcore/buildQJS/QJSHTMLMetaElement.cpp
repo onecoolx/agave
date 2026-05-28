@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLMetaElement.h"
 
 #include "HTMLMetaElement.h"
@@ -39,14 +41,45 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLMetaElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLMetaElementAttributesFunctions[5];
+static bool JSHTMLMetaElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLMetaElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("name", JSHTMLMetaElement::getValueProperty, JSHTMLMetaElement::putValueProperty, JSHTMLMetaElement::NameAttrNum),
-    JS_CGETSET_MAGIC_DEF("httpEquiv", JSHTMLMetaElement::getValueProperty, JSHTMLMetaElement::putValueProperty, JSHTMLMetaElement::HttpEquivAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLMetaElement::getValueProperty, NULL, JSHTMLMetaElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("content", JSHTMLMetaElement::getValueProperty, JSHTMLMetaElement::putValueProperty, JSHTMLMetaElement::ContentAttrNum),
-    JS_CGETSET_MAGIC_DEF("scheme", JSHTMLMetaElement::getValueProperty, JSHTMLMetaElement::putValueProperty, JSHTMLMetaElement::SchemeAttrNum)
-};
+    if (JSHTMLMetaElementAttributesFunctions_initialized) return;
+    JSHTMLMetaElementAttributesFunctions_initialized = true;
+    memset(JSHTMLMetaElementAttributesFunctions, 0, sizeof(JSHTMLMetaElementAttributesFunctions));
+    JSHTMLMetaElementAttributesFunctions[0].name = "name";
+    JSHTMLMetaElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLMetaElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLMetaElementAttributesFunctions[0].magic = JSHTMLMetaElement::NameAttrNum;
+    JSHTMLMetaElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLMetaElement::getValueProperty;
+    JSHTMLMetaElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLMetaElement::putValueProperty;
+    JSHTMLMetaElementAttributesFunctions[1].name = "httpEquiv";
+    JSHTMLMetaElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLMetaElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLMetaElementAttributesFunctions[1].magic = JSHTMLMetaElement::HttpEquivAttrNum;
+    JSHTMLMetaElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLMetaElement::getValueProperty;
+    JSHTMLMetaElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLMetaElement::putValueProperty;
+    JSHTMLMetaElementAttributesFunctions[2].name = "constructor";
+    JSHTMLMetaElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLMetaElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLMetaElementAttributesFunctions[2].magic = JSHTMLMetaElement::ConstructorAttrNum;
+    JSHTMLMetaElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLMetaElement::getValueProperty;
+    JSHTMLMetaElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSHTMLMetaElementAttributesFunctions[3].name = "content";
+    JSHTMLMetaElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLMetaElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLMetaElementAttributesFunctions[3].magic = JSHTMLMetaElement::ContentAttrNum;
+    JSHTMLMetaElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLMetaElement::getValueProperty;
+    JSHTMLMetaElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLMetaElement::putValueProperty;
+    JSHTMLMetaElementAttributesFunctions[4].name = "scheme";
+    JSHTMLMetaElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLMetaElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLMetaElementAttributesFunctions[4].magic = JSHTMLMetaElement::SchemeAttrNum;
+    JSHTMLMetaElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLMetaElement::getValueProperty;
+    JSHTMLMetaElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLMetaElement::putValueProperty;
+}
 
 class JSHTMLMetaElementConstructor {
 public:
@@ -95,15 +128,22 @@ JSValue JSHTMLMetaElementPrototype::self(JSContext * ctx)
 
 void JSHTMLMetaElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLMetaElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLMetaElementAttributesFunctions, countof(JSHTMLMetaElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLMetaElementClassDefine = 
+static JSClassDef JSHTMLMetaElementClassDefine;
+static bool JSHTMLMetaElementClassDefine_initialized = false;
+
+static void init_JSHTMLMetaElementClassDefine()
 {
-    "HTMLMetaElement",
-    .finalizer = JSHTMLMetaElement::finalizer,
-    .gc_mark = JSHTMLMetaElement::mark,
-};
+    if (JSHTMLMetaElementClassDefine_initialized) return;
+    JSHTMLMetaElementClassDefine_initialized = true;
+    memset(&JSHTMLMetaElementClassDefine, 0, sizeof(JSHTMLMetaElementClassDefine));
+    JSHTMLMetaElementClassDefine.class_name = "HTMLMetaElement";
+    JSHTMLMetaElementClassDefine.finalizer = JSHTMLMetaElement::finalizer;
+    JSHTMLMetaElementClassDefine.gc_mark = JSHTMLMetaElement::mark;
+}
 
 JSClassID JSHTMLMetaElement::js_class_id = 0;
 

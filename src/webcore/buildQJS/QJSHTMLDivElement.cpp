@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLDivElement.h"
 
 #include "HTMLDivElement.h"
@@ -39,11 +41,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLDivElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLDivElementAttributesFunctions[2];
+static bool JSHTMLDivElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLDivElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLDivElement::getValueProperty, JSHTMLDivElement::putValueProperty, JSHTMLDivElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLDivElement::getValueProperty, NULL, JSHTMLDivElement::ConstructorAttrNum)
-};
+    if (JSHTMLDivElementAttributesFunctions_initialized) return;
+    JSHTMLDivElementAttributesFunctions_initialized = true;
+    memset(JSHTMLDivElementAttributesFunctions, 0, sizeof(JSHTMLDivElementAttributesFunctions));
+    JSHTMLDivElementAttributesFunctions[0].name = "align";
+    JSHTMLDivElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDivElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDivElementAttributesFunctions[0].magic = JSHTMLDivElement::AlignAttrNum;
+    JSHTMLDivElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLDivElement::getValueProperty;
+    JSHTMLDivElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLDivElement::putValueProperty;
+    JSHTMLDivElementAttributesFunctions[1].name = "constructor";
+    JSHTMLDivElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDivElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDivElementAttributesFunctions[1].magic = JSHTMLDivElement::ConstructorAttrNum;
+    JSHTMLDivElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLDivElement::getValueProperty;
+    JSHTMLDivElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLDivElementConstructor {
 public:
@@ -92,15 +110,22 @@ JSValue JSHTMLDivElementPrototype::self(JSContext * ctx)
 
 void JSHTMLDivElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLDivElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLDivElementAttributesFunctions, countof(JSHTMLDivElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLDivElementClassDefine = 
+static JSClassDef JSHTMLDivElementClassDefine;
+static bool JSHTMLDivElementClassDefine_initialized = false;
+
+static void init_JSHTMLDivElementClassDefine()
 {
-    "HTMLDivElement",
-    .finalizer = JSHTMLDivElement::finalizer,
-    .gc_mark = JSHTMLDivElement::mark,
-};
+    if (JSHTMLDivElementClassDefine_initialized) return;
+    JSHTMLDivElementClassDefine_initialized = true;
+    memset(&JSHTMLDivElementClassDefine, 0, sizeof(JSHTMLDivElementClassDefine));
+    JSHTMLDivElementClassDefine.class_name = "HTMLDivElement";
+    JSHTMLDivElementClassDefine.finalizer = JSHTMLDivElement::finalizer;
+    JSHTMLDivElementClassDefine.gc_mark = JSHTMLDivElement::mark;
+}
 
 JSClassID JSHTMLDivElement::js_class_id = 0;
 

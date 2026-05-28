@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSDocumentType.h"
 
 #include "DocumentType.h"
@@ -42,16 +44,57 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSDocumentTypeAttributesFunctions[] =
+static JSCFunctionListEntry JSDocumentTypeAttributesFunctions[7];
+static bool JSDocumentTypeAttributesFunctions_initialized = false;
+
+static void init_JSDocumentTypeAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("notations", JSDocumentType::getValueProperty, NULL, JSDocumentType::NotationsAttrNum),
-    JS_CGETSET_MAGIC_DEF("name", JSDocumentType::getValueProperty, NULL, JSDocumentType::NameAttrNum),
-    JS_CGETSET_MAGIC_DEF("entities", JSDocumentType::getValueProperty, NULL, JSDocumentType::EntitiesAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemId", JSDocumentType::getValueProperty, NULL, JSDocumentType::SystemIdAttrNum),
-    JS_CGETSET_MAGIC_DEF("publicId", JSDocumentType::getValueProperty, NULL, JSDocumentType::PublicIdAttrNum),
-    JS_CGETSET_MAGIC_DEF("internalSubset", JSDocumentType::getValueProperty, NULL, JSDocumentType::InternalSubsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSDocumentType::getValueProperty, NULL, JSDocumentType::ConstructorAttrNum)
-};
+    if (JSDocumentTypeAttributesFunctions_initialized) return;
+    JSDocumentTypeAttributesFunctions_initialized = true;
+    memset(JSDocumentTypeAttributesFunctions, 0, sizeof(JSDocumentTypeAttributesFunctions));
+    JSDocumentTypeAttributesFunctions[0].name = "notations";
+    JSDocumentTypeAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentTypeAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentTypeAttributesFunctions[0].magic = JSDocumentType::NotationsAttrNum;
+    JSDocumentTypeAttributesFunctions[0].u.getset.get.getter_magic = JSDocumentType::getValueProperty;
+    JSDocumentTypeAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSDocumentTypeAttributesFunctions[1].name = "name";
+    JSDocumentTypeAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentTypeAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentTypeAttributesFunctions[1].magic = JSDocumentType::NameAttrNum;
+    JSDocumentTypeAttributesFunctions[1].u.getset.get.getter_magic = JSDocumentType::getValueProperty;
+    JSDocumentTypeAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSDocumentTypeAttributesFunctions[2].name = "entities";
+    JSDocumentTypeAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentTypeAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentTypeAttributesFunctions[2].magic = JSDocumentType::EntitiesAttrNum;
+    JSDocumentTypeAttributesFunctions[2].u.getset.get.getter_magic = JSDocumentType::getValueProperty;
+    JSDocumentTypeAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSDocumentTypeAttributesFunctions[3].name = "systemId";
+    JSDocumentTypeAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentTypeAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentTypeAttributesFunctions[3].magic = JSDocumentType::SystemIdAttrNum;
+    JSDocumentTypeAttributesFunctions[3].u.getset.get.getter_magic = JSDocumentType::getValueProperty;
+    JSDocumentTypeAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSDocumentTypeAttributesFunctions[4].name = "publicId";
+    JSDocumentTypeAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentTypeAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentTypeAttributesFunctions[4].magic = JSDocumentType::PublicIdAttrNum;
+    JSDocumentTypeAttributesFunctions[4].u.getset.get.getter_magic = JSDocumentType::getValueProperty;
+    JSDocumentTypeAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSDocumentTypeAttributesFunctions[5].name = "internalSubset";
+    JSDocumentTypeAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentTypeAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentTypeAttributesFunctions[5].magic = JSDocumentType::InternalSubsetAttrNum;
+    JSDocumentTypeAttributesFunctions[5].u.getset.get.getter_magic = JSDocumentType::getValueProperty;
+    JSDocumentTypeAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSDocumentTypeAttributesFunctions[6].name = "constructor";
+    JSDocumentTypeAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentTypeAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentTypeAttributesFunctions[6].magic = JSDocumentType::ConstructorAttrNum;
+    JSDocumentTypeAttributesFunctions[6].u.getset.get.getter_magic = JSDocumentType::getValueProperty;
+    JSDocumentTypeAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+}
 
 class JSDocumentTypeConstructor {
 public:
@@ -100,15 +143,22 @@ JSValue JSDocumentTypePrototype::self(JSContext * ctx)
 
 void JSDocumentTypePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSDocumentTypeAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSDocumentTypeAttributesFunctions, countof(JSDocumentTypeAttributesFunctions));
 }
 
-static JSClassDef JSDocumentTypeClassDefine = 
+static JSClassDef JSDocumentTypeClassDefine;
+static bool JSDocumentTypeClassDefine_initialized = false;
+
+static void init_JSDocumentTypeClassDefine()
 {
-    "DocumentType",
-    .finalizer = JSDocumentType::finalizer,
-    .gc_mark = JSDocumentType::mark,
-};
+    if (JSDocumentTypeClassDefine_initialized) return;
+    JSDocumentTypeClassDefine_initialized = true;
+    memset(&JSDocumentTypeClassDefine, 0, sizeof(JSDocumentTypeClassDefine));
+    JSDocumentTypeClassDefine.class_name = "DocumentType";
+    JSDocumentTypeClassDefine.finalizer = JSDocumentType::finalizer;
+    JSDocumentTypeClassDefine.gc_mark = JSDocumentType::mark;
+}
 
 JSClassID JSDocumentType::js_class_id = 0;
 

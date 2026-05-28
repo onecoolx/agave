@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSNodeList.h"
 
 #include "ExceptionCode.h"
@@ -41,11 +43,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSNodeListAttributesFunctions[] =
+static JSCFunctionListEntry JSNodeListAttributesFunctions[2];
+static bool JSNodeListAttributesFunctions_initialized = false;
+
+static void init_JSNodeListAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("length", JSNodeList::getValueProperty, NULL, JSNodeList::LengthAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSNodeList::getValueProperty, NULL, JSNodeList::ConstructorAttrNum)
-};
+    if (JSNodeListAttributesFunctions_initialized) return;
+    JSNodeListAttributesFunctions_initialized = true;
+    memset(JSNodeListAttributesFunctions, 0, sizeof(JSNodeListAttributesFunctions));
+    JSNodeListAttributesFunctions[0].name = "length";
+    JSNodeListAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeListAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeListAttributesFunctions[0].magic = JSNodeList::LengthAttrNum;
+    JSNodeListAttributesFunctions[0].u.getset.get.getter_magic = JSNodeList::getValueProperty;
+    JSNodeListAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSNodeListAttributesFunctions[1].name = "constructor";
+    JSNodeListAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeListAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeListAttributesFunctions[1].magic = JSNodeList::ConstructorAttrNum;
+    JSNodeListAttributesFunctions[1].u.getset.get.getter_magic = JSNodeList::getValueProperty;
+    JSNodeListAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSNodeListConstructor {
 public:
@@ -80,10 +98,22 @@ void JSNodeListConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSNodeListPrototypeFunctions[] =
+static JSCFunctionListEntry JSNodeListPrototypeFunctions[1];
+static bool JSNodeListPrototypeFunctions_initialized = false;
+
+static void init_JSNodeListPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("item", 1, JSNodeListPrototypeFunction::callAsFunction, JSNodeList::ItemFuncNum)
-};
+    if (JSNodeListPrototypeFunctions_initialized) return;
+    JSNodeListPrototypeFunctions_initialized = true;
+    memset(JSNodeListPrototypeFunctions, 0, sizeof(JSNodeListPrototypeFunctions));
+    JSNodeListPrototypeFunctions[0].name = "item";
+    JSNodeListPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodeListPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSNodeListPrototypeFunctions[0].magic = JSNodeList::ItemFuncNum;
+    JSNodeListPrototypeFunctions[0].u.func.length = 1;
+    JSNodeListPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodeListPrototypeFunctions[0].u.func.cfunc.generic_magic = JSNodeListPrototypeFunction::callAsFunction;
+}
 
 JSValue JSNodeListPrototype::self(JSContext * ctx)
 {
@@ -101,22 +131,69 @@ JSValue JSNodeListPrototype::self(JSContext * ctx)
 
 void JSNodeListPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSNodeListAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNodeListAttributesFunctions, countof(JSNodeListAttributesFunctions));
+    init_JSNodeListPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNodeListPrototypeFunctions, countof(JSNodeListPrototypeFunctions));
 }
 
-static JSClassDef JSNodeListClassDefine = 
+static int js_nodelist_get_own_property(JSContext *ctx, JSPropertyDescriptor *desc,
+                                         JSValueConst obj, JSAtom prop)
 {
-    "NodeList",
-    .finalizer = JSNodeList::finalizer,
-    .gc_mark = JSNodeList::mark,
-};
+    NodeList* impl = (NodeList*)JS_GetOpaque(obj, JSNodeList::js_class_id);
+    if (!impl)
+        return 0;
+    const char* str = JS_AtomToCString(ctx, prop);
+    if (!str)
+        return 0;
+    char* end;
+    unsigned long index = strtoul(str, &end, 10);
+    int is_index = (*end == '\0' && str[0] != '\0');
+    JS_FreeCString(ctx, str);
+    if (is_index && index < impl->length()) {
+        if (desc) {
+            desc->flags = JS_PROP_ENUMERABLE;
+            desc->value = toJS(ctx, impl->item(index));
+            desc->getter = JS_UNDEFINED;
+            desc->setter = JS_UNDEFINED;
+        }
+        return 1;
+    }
+    return 0;
+}
+
+static JSClassExoticMethods js_nodelist_exotic;
+static bool js_nodelist_exotic_initialized = false;
+
+static void init_js_nodelist_exotic()
+{
+    if (js_nodelist_exotic_initialized) return;
+    js_nodelist_exotic_initialized = true;
+    memset(&js_nodelist_exotic, 0, sizeof(js_nodelist_exotic));
+    js_nodelist_exotic.get_own_property = js_nodelist_get_own_property;
+}
+
+static JSClassDef JSNodeListClassDefine;
+static bool JSNodeListClassDefine_initialized = false;
+
+static void init_JSNodeListClassDefine()
+{
+    if (JSNodeListClassDefine_initialized) return;
+    JSNodeListClassDefine_initialized = true;
+    init_js_nodelist_exotic();
+    memset(&JSNodeListClassDefine, 0, sizeof(JSNodeListClassDefine));
+    JSNodeListClassDefine.class_name = "NodeList";
+    JSNodeListClassDefine.finalizer = JSNodeList::finalizer;
+    JSNodeListClassDefine.gc_mark = JSNodeList::mark;
+    JSNodeListClassDefine.exotic = &js_nodelist_exotic;
+}
 
 JSClassID JSNodeList::js_class_id = 0;
 
 void JSNodeList::init(JSContext* ctx)
 {
     if (JSNodeList::js_class_id == 0) {
+        init_JSNodeListClassDefine();
         JS_NewClassID(&JSNodeList::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSNodeList::js_class_id, &JSNodeListClassDefine);
         JS_SetConstructor(ctx, JSNodeListConstructor::self(ctx), JSNodeListPrototype::self(ctx));

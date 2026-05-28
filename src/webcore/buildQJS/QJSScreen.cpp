@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSScreen.h"
 
 #include "Screen.h"
@@ -38,17 +40,63 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSScreenAttributesFunctions[] =
+static JSCFunctionListEntry JSScreenAttributesFunctions[8];
+static bool JSScreenAttributesFunctions_initialized = false;
+
+static void init_JSScreenAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("height", JSScreen::getValueProperty, NULL, JSScreen::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSScreen::getValueProperty, NULL, JSScreen::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("availHeight", JSScreen::getValueProperty, NULL, JSScreen::AvailHeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("availLeft", JSScreen::getValueProperty, NULL, JSScreen::AvailLeftAttrNum),
-    JS_CGETSET_MAGIC_DEF("colorDepth", JSScreen::getValueProperty, NULL, JSScreen::ColorDepthAttrNum),
-    JS_CGETSET_MAGIC_DEF("pixelDepth", JSScreen::getValueProperty, NULL, JSScreen::PixelDepthAttrNum),
-    JS_CGETSET_MAGIC_DEF("availTop", JSScreen::getValueProperty, NULL, JSScreen::AvailTopAttrNum),
-    JS_CGETSET_MAGIC_DEF("availWidth", JSScreen::getValueProperty, NULL, JSScreen::AvailWidthAttrNum)
-};
+    if (JSScreenAttributesFunctions_initialized) return;
+    JSScreenAttributesFunctions_initialized = true;
+    memset(JSScreenAttributesFunctions, 0, sizeof(JSScreenAttributesFunctions));
+    JSScreenAttributesFunctions[0].name = "height";
+    JSScreenAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSScreenAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSScreenAttributesFunctions[0].magic = JSScreen::HeightAttrNum;
+    JSScreenAttributesFunctions[0].u.getset.get.getter_magic = JSScreen::getValueProperty;
+    JSScreenAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSScreenAttributesFunctions[1].name = "width";
+    JSScreenAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSScreenAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSScreenAttributesFunctions[1].magic = JSScreen::WidthAttrNum;
+    JSScreenAttributesFunctions[1].u.getset.get.getter_magic = JSScreen::getValueProperty;
+    JSScreenAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSScreenAttributesFunctions[2].name = "availHeight";
+    JSScreenAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSScreenAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSScreenAttributesFunctions[2].magic = JSScreen::AvailHeightAttrNum;
+    JSScreenAttributesFunctions[2].u.getset.get.getter_magic = JSScreen::getValueProperty;
+    JSScreenAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSScreenAttributesFunctions[3].name = "availLeft";
+    JSScreenAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSScreenAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSScreenAttributesFunctions[3].magic = JSScreen::AvailLeftAttrNum;
+    JSScreenAttributesFunctions[3].u.getset.get.getter_magic = JSScreen::getValueProperty;
+    JSScreenAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSScreenAttributesFunctions[4].name = "colorDepth";
+    JSScreenAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSScreenAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSScreenAttributesFunctions[4].magic = JSScreen::ColorDepthAttrNum;
+    JSScreenAttributesFunctions[4].u.getset.get.getter_magic = JSScreen::getValueProperty;
+    JSScreenAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSScreenAttributesFunctions[5].name = "pixelDepth";
+    JSScreenAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSScreenAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSScreenAttributesFunctions[5].magic = JSScreen::PixelDepthAttrNum;
+    JSScreenAttributesFunctions[5].u.getset.get.getter_magic = JSScreen::getValueProperty;
+    JSScreenAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSScreenAttributesFunctions[6].name = "availTop";
+    JSScreenAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSScreenAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSScreenAttributesFunctions[6].magic = JSScreen::AvailTopAttrNum;
+    JSScreenAttributesFunctions[6].u.getset.get.getter_magic = JSScreen::getValueProperty;
+    JSScreenAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSScreenAttributesFunctions[7].name = "availWidth";
+    JSScreenAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSScreenAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSScreenAttributesFunctions[7].magic = JSScreen::AvailWidthAttrNum;
+    JSScreenAttributesFunctions[7].u.getset.get.getter_magic = JSScreen::getValueProperty;
+    JSScreenAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSScreenPrototype::self(JSContext * ctx)
 {
@@ -66,21 +114,29 @@ JSValue JSScreenPrototype::self(JSContext * ctx)
 
 void JSScreenPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSScreenAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSScreenAttributesFunctions, countof(JSScreenAttributesFunctions));
 }
 
-static JSClassDef JSScreenClassDefine = 
+static JSClassDef JSScreenClassDefine;
+static bool JSScreenClassDefine_initialized = false;
+
+static void init_JSScreenClassDefine()
 {
-    "Screen",
-    .finalizer = JSScreen::finalizer,
-    .gc_mark = JSScreen::mark,
-};
+    if (JSScreenClassDefine_initialized) return;
+    JSScreenClassDefine_initialized = true;
+    memset(&JSScreenClassDefine, 0, sizeof(JSScreenClassDefine));
+    JSScreenClassDefine.class_name = "Screen";
+    JSScreenClassDefine.finalizer = JSScreen::finalizer;
+    JSScreenClassDefine.gc_mark = JSScreen::mark;
+}
 
 JSClassID JSScreen::js_class_id = 0;
 
 void JSScreen::init(JSContext* ctx)
 {
     if (JSScreen::js_class_id == 0) {
+        init_JSScreenClassDefine();
         JS_NewClassID(&JSScreen::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSScreen::js_class_id, &JSScreenClassDefine);
         JS_SetClassProto(ctx, JSScreen::js_class_id, JSScreenPrototype::self(ctx));

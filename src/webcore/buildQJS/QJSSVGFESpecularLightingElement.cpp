@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -54,27 +56,100 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFESpecularLightingElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFESpecularLightingElementAttributesFunctions[11];
+static bool JSSVGFESpecularLightingElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFESpecularLightingElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFESpecularLightingElement::getValueProperty, NULL, JSSVGFESpecularLightingElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("specularConstant", JSSVGFESpecularLightingElement::getValueProperty, NULL, JSSVGFESpecularLightingElement::SpecularConstantAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGFESpecularLightingElement::getValueProperty, NULL, JSSVGFESpecularLightingElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGFESpecularLightingElement::getValueProperty, NULL, JSSVGFESpecularLightingElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("surfaceScale", JSSVGFESpecularLightingElement::getValueProperty, NULL, JSSVGFESpecularLightingElement::SurfaceScaleAttrNum),
-    JS_CGETSET_MAGIC_DEF("in1", JSSVGFESpecularLightingElement::getValueProperty, NULL, JSSVGFESpecularLightingElement::In1AttrNum),
-    JS_CGETSET_MAGIC_DEF("result", JSSVGFESpecularLightingElement::getValueProperty, NULL, JSSVGFESpecularLightingElement::ResultAttrNum),
-    JS_CGETSET_MAGIC_DEF("specularExponent", JSSVGFESpecularLightingElement::getValueProperty, NULL, JSSVGFESpecularLightingElement::SpecularExponentAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFESpecularLightingElement::getValueProperty, NULL, JSSVGFESpecularLightingElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGFESpecularLightingElement::getValueProperty, NULL, JSSVGFESpecularLightingElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGFESpecularLightingElement::getValueProperty, NULL, JSSVGFESpecularLightingElement::StyleAttrNum)
-};
+    if (JSSVGFESpecularLightingElementAttributesFunctions_initialized) return;
+    JSSVGFESpecularLightingElementAttributesFunctions_initialized = true;
+    memset(JSSVGFESpecularLightingElementAttributesFunctions, 0, sizeof(JSSVGFESpecularLightingElementAttributesFunctions));
+    JSSVGFESpecularLightingElementAttributesFunctions[0].name = "x";
+    JSSVGFESpecularLightingElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpecularLightingElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpecularLightingElementAttributesFunctions[0].magic = JSSVGFESpecularLightingElement::XAttrNum;
+    JSSVGFESpecularLightingElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFESpecularLightingElement::getValueProperty;
+    JSSVGFESpecularLightingElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFESpecularLightingElementAttributesFunctions[1].name = "specularConstant";
+    JSSVGFESpecularLightingElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpecularLightingElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpecularLightingElementAttributesFunctions[1].magic = JSSVGFESpecularLightingElement::SpecularConstantAttrNum;
+    JSSVGFESpecularLightingElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFESpecularLightingElement::getValueProperty;
+    JSSVGFESpecularLightingElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFESpecularLightingElementAttributesFunctions[2].name = "height";
+    JSSVGFESpecularLightingElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpecularLightingElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpecularLightingElementAttributesFunctions[2].magic = JSSVGFESpecularLightingElement::HeightAttrNum;
+    JSSVGFESpecularLightingElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFESpecularLightingElement::getValueProperty;
+    JSSVGFESpecularLightingElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFESpecularLightingElementAttributesFunctions[3].name = "className";
+    JSSVGFESpecularLightingElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpecularLightingElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpecularLightingElementAttributesFunctions[3].magic = JSSVGFESpecularLightingElement::ClassNameAttrNum;
+    JSSVGFESpecularLightingElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGFESpecularLightingElement::getValueProperty;
+    JSSVGFESpecularLightingElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFESpecularLightingElementAttributesFunctions[4].name = "surfaceScale";
+    JSSVGFESpecularLightingElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpecularLightingElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpecularLightingElementAttributesFunctions[4].magic = JSSVGFESpecularLightingElement::SurfaceScaleAttrNum;
+    JSSVGFESpecularLightingElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGFESpecularLightingElement::getValueProperty;
+    JSSVGFESpecularLightingElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFESpecularLightingElementAttributesFunctions[5].name = "in1";
+    JSSVGFESpecularLightingElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpecularLightingElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpecularLightingElementAttributesFunctions[5].magic = JSSVGFESpecularLightingElement::In1AttrNum;
+    JSSVGFESpecularLightingElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGFESpecularLightingElement::getValueProperty;
+    JSSVGFESpecularLightingElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFESpecularLightingElementAttributesFunctions[6].name = "result";
+    JSSVGFESpecularLightingElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpecularLightingElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpecularLightingElementAttributesFunctions[6].magic = JSSVGFESpecularLightingElement::ResultAttrNum;
+    JSSVGFESpecularLightingElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGFESpecularLightingElement::getValueProperty;
+    JSSVGFESpecularLightingElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFESpecularLightingElementAttributesFunctions[7].name = "specularExponent";
+    JSSVGFESpecularLightingElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpecularLightingElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpecularLightingElementAttributesFunctions[7].magic = JSSVGFESpecularLightingElement::SpecularExponentAttrNum;
+    JSSVGFESpecularLightingElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGFESpecularLightingElement::getValueProperty;
+    JSSVGFESpecularLightingElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGFESpecularLightingElementAttributesFunctions[8].name = "y";
+    JSSVGFESpecularLightingElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpecularLightingElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpecularLightingElementAttributesFunctions[8].magic = JSSVGFESpecularLightingElement::YAttrNum;
+    JSSVGFESpecularLightingElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGFESpecularLightingElement::getValueProperty;
+    JSSVGFESpecularLightingElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGFESpecularLightingElementAttributesFunctions[9].name = "width";
+    JSSVGFESpecularLightingElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpecularLightingElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpecularLightingElementAttributesFunctions[9].magic = JSSVGFESpecularLightingElement::WidthAttrNum;
+    JSSVGFESpecularLightingElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGFESpecularLightingElement::getValueProperty;
+    JSSVGFESpecularLightingElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGFESpecularLightingElementAttributesFunctions[10].name = "style";
+    JSSVGFESpecularLightingElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpecularLightingElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpecularLightingElementAttributesFunctions[10].magic = JSSVGFESpecularLightingElement::StyleAttrNum;
+    JSSVGFESpecularLightingElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGFESpecularLightingElement::getValueProperty;
+    JSSVGFESpecularLightingElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGFESpecularLightingElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGFESpecularLightingElementPrototypeFunctions[1];
+static bool JSSVGFESpecularLightingElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGFESpecularLightingElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGFESpecularLightingElementPrototypeFunction::callAsFunction, JSSVGFESpecularLightingElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGFESpecularLightingElementPrototypeFunctions_initialized) return;
+    JSSVGFESpecularLightingElementPrototypeFunctions_initialized = true;
+    memset(JSSVGFESpecularLightingElementPrototypeFunctions, 0, sizeof(JSSVGFESpecularLightingElementPrototypeFunctions));
+    JSSVGFESpecularLightingElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGFESpecularLightingElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFESpecularLightingElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGFESpecularLightingElementPrototypeFunctions[0].magic = JSSVGFESpecularLightingElement::GetPresentationAttributeFuncNum;
+    JSSVGFESpecularLightingElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGFESpecularLightingElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFESpecularLightingElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGFESpecularLightingElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGFESpecularLightingElementPrototype::self(JSContext * ctx)
 {
@@ -92,22 +167,31 @@ JSValue JSSVGFESpecularLightingElementPrototype::self(JSContext * ctx)
 
 void JSSVGFESpecularLightingElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFESpecularLightingElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFESpecularLightingElementAttributesFunctions, countof(JSSVGFESpecularLightingElementAttributesFunctions));
+    init_JSSVGFESpecularLightingElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFESpecularLightingElementPrototypeFunctions, countof(JSSVGFESpecularLightingElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGFESpecularLightingElementClassDefine = 
+static JSClassDef JSSVGFESpecularLightingElementClassDefine;
+static bool JSSVGFESpecularLightingElementClassDefine_initialized = false;
+
+static void init_JSSVGFESpecularLightingElementClassDefine()
 {
-    "SVGFESpecularLightingElement",
-    .finalizer = JSSVGFESpecularLightingElement::finalizer,
-    .gc_mark = JSSVGFESpecularLightingElement::mark,
-};
+    if (JSSVGFESpecularLightingElementClassDefine_initialized) return;
+    JSSVGFESpecularLightingElementClassDefine_initialized = true;
+    memset(&JSSVGFESpecularLightingElementClassDefine, 0, sizeof(JSSVGFESpecularLightingElementClassDefine));
+    JSSVGFESpecularLightingElementClassDefine.class_name = "SVGFESpecularLightingElement";
+    JSSVGFESpecularLightingElementClassDefine.finalizer = JSSVGFESpecularLightingElement::finalizer;
+    JSSVGFESpecularLightingElementClassDefine.gc_mark = JSSVGFESpecularLightingElement::mark;
+}
 
 JSClassID JSSVGFESpecularLightingElement::js_class_id = 0;
 
 void JSSVGFESpecularLightingElement::init(JSContext* ctx)
 {
     if (JSSVGFESpecularLightingElement::js_class_id == 0) {
+        init_JSSVGFESpecularLightingElementClassDefine();
         JS_NewClassID(&JSSVGFESpecularLightingElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFESpecularLightingElement::js_class_id, &JSSVGFESpecularLightingElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFESpecularLightingElement::js_class_id, JSSVGFESpecularLightingElementPrototype::self(ctx));

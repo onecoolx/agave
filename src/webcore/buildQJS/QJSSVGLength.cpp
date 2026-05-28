@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -47,14 +49,45 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGLengthAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGLengthAttributesFunctions[5];
+static bool JSSVGLengthAttributesFunctions_initialized = false;
+
+static void init_JSSVGLengthAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("value", JSSVGLength::getValueProperty, JSSVGLength::putValueProperty, JSSVGLength::ValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("valueInSpecifiedUnits", JSSVGLength::getValueProperty, JSSVGLength::putValueProperty, JSSVGLength::ValueInSpecifiedUnitsAttrNum),
-    JS_CGETSET_MAGIC_DEF("unitType", JSSVGLength::getValueProperty, NULL, JSSVGLength::UnitTypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("valueAsString", JSSVGLength::getValueProperty, JSSVGLength::putValueProperty, JSSVGLength::ValueAsStringAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSSVGLength::getValueProperty, NULL, JSSVGLength::ConstructorAttrNum)
-};
+    if (JSSVGLengthAttributesFunctions_initialized) return;
+    JSSVGLengthAttributesFunctions_initialized = true;
+    memset(JSSVGLengthAttributesFunctions, 0, sizeof(JSSVGLengthAttributesFunctions));
+    JSSVGLengthAttributesFunctions[0].name = "value";
+    JSSVGLengthAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthAttributesFunctions[0].magic = JSSVGLength::ValueAttrNum;
+    JSSVGLengthAttributesFunctions[0].u.getset.get.getter_magic = JSSVGLength::getValueProperty;
+    JSSVGLengthAttributesFunctions[0].u.getset.set.setter_magic = JSSVGLength::putValueProperty;
+    JSSVGLengthAttributesFunctions[1].name = "valueInSpecifiedUnits";
+    JSSVGLengthAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthAttributesFunctions[1].magic = JSSVGLength::ValueInSpecifiedUnitsAttrNum;
+    JSSVGLengthAttributesFunctions[1].u.getset.get.getter_magic = JSSVGLength::getValueProperty;
+    JSSVGLengthAttributesFunctions[1].u.getset.set.setter_magic = JSSVGLength::putValueProperty;
+    JSSVGLengthAttributesFunctions[2].name = "unitType";
+    JSSVGLengthAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthAttributesFunctions[2].magic = JSSVGLength::UnitTypeAttrNum;
+    JSSVGLengthAttributesFunctions[2].u.getset.get.getter_magic = JSSVGLength::getValueProperty;
+    JSSVGLengthAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGLengthAttributesFunctions[3].name = "valueAsString";
+    JSSVGLengthAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthAttributesFunctions[3].magic = JSSVGLength::ValueAsStringAttrNum;
+    JSSVGLengthAttributesFunctions[3].u.getset.get.getter_magic = JSSVGLength::getValueProperty;
+    JSSVGLengthAttributesFunctions[3].u.getset.set.setter_magic = JSSVGLength::putValueProperty;
+    JSSVGLengthAttributesFunctions[4].name = "constructor";
+    JSSVGLengthAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthAttributesFunctions[4].magic = JSSVGLength::ConstructorAttrNum;
+    JSSVGLengthAttributesFunctions[4].u.getset.get.getter_magic = JSSVGLength::getValueProperty;
+    JSSVGLengthAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+}
 
 class JSSVGLengthConstructor {
 public:
@@ -71,20 +104,81 @@ JSValue JSSVGLengthConstructor::getValueProperty(JSContext * ctx, JSValueConst t
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSSVGLengthConstructorFunctions[] =
+static JSCFunctionListEntry JSSVGLengthConstructorFunctions[11];
+static bool JSSVGLengthConstructorFunctions_initialized = false;
+
+static void init_JSSVGLengthConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_CM", JSSVGLengthConstructor::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_CM),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_PT", JSSVGLengthConstructor::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_PT),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_EXS", JSSVGLengthConstructor::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_EXS),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_PERCENTAGE", JSSVGLengthConstructor::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_PERCENTAGE),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_EMS", JSSVGLengthConstructor::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_EMS),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_UNKNOWN", JSSVGLengthConstructor::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_MM", JSSVGLengthConstructor::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_MM),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_NUMBER", JSSVGLengthConstructor::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_NUMBER),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_PX", JSSVGLengthConstructor::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_PX),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_IN", JSSVGLengthConstructor::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_IN),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_PC", JSSVGLengthConstructor::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_PC)
-};
+    if (JSSVGLengthConstructorFunctions_initialized) return;
+    JSSVGLengthConstructorFunctions_initialized = true;
+    memset(JSSVGLengthConstructorFunctions, 0, sizeof(JSSVGLengthConstructorFunctions));
+    JSSVGLengthConstructorFunctions[0].name = "SVG_LENGTHTYPE_CM";
+    JSSVGLengthConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthConstructorFunctions[0].magic = SVGLength::SVG_LENGTHTYPE_CM;
+    JSSVGLengthConstructorFunctions[0].u.getset.get.getter_magic = JSSVGLengthConstructor::getValueProperty;
+    JSSVGLengthConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGLengthConstructorFunctions[1].name = "SVG_LENGTHTYPE_PT";
+    JSSVGLengthConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthConstructorFunctions[1].magic = SVGLength::SVG_LENGTHTYPE_PT;
+    JSSVGLengthConstructorFunctions[1].u.getset.get.getter_magic = JSSVGLengthConstructor::getValueProperty;
+    JSSVGLengthConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGLengthConstructorFunctions[2].name = "SVG_LENGTHTYPE_EXS";
+    JSSVGLengthConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthConstructorFunctions[2].magic = SVGLength::SVG_LENGTHTYPE_EXS;
+    JSSVGLengthConstructorFunctions[2].u.getset.get.getter_magic = JSSVGLengthConstructor::getValueProperty;
+    JSSVGLengthConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGLengthConstructorFunctions[3].name = "SVG_LENGTHTYPE_PERCENTAGE";
+    JSSVGLengthConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthConstructorFunctions[3].magic = SVGLength::SVG_LENGTHTYPE_PERCENTAGE;
+    JSSVGLengthConstructorFunctions[3].u.getset.get.getter_magic = JSSVGLengthConstructor::getValueProperty;
+    JSSVGLengthConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGLengthConstructorFunctions[4].name = "SVG_LENGTHTYPE_EMS";
+    JSSVGLengthConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthConstructorFunctions[4].magic = SVGLength::SVG_LENGTHTYPE_EMS;
+    JSSVGLengthConstructorFunctions[4].u.getset.get.getter_magic = JSSVGLengthConstructor::getValueProperty;
+    JSSVGLengthConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGLengthConstructorFunctions[5].name = "SVG_LENGTHTYPE_UNKNOWN";
+    JSSVGLengthConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthConstructorFunctions[5].magic = SVGLength::SVG_LENGTHTYPE_UNKNOWN;
+    JSSVGLengthConstructorFunctions[5].u.getset.get.getter_magic = JSSVGLengthConstructor::getValueProperty;
+    JSSVGLengthConstructorFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGLengthConstructorFunctions[6].name = "SVG_LENGTHTYPE_MM";
+    JSSVGLengthConstructorFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthConstructorFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthConstructorFunctions[6].magic = SVGLength::SVG_LENGTHTYPE_MM;
+    JSSVGLengthConstructorFunctions[6].u.getset.get.getter_magic = JSSVGLengthConstructor::getValueProperty;
+    JSSVGLengthConstructorFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGLengthConstructorFunctions[7].name = "SVG_LENGTHTYPE_NUMBER";
+    JSSVGLengthConstructorFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthConstructorFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthConstructorFunctions[7].magic = SVGLength::SVG_LENGTHTYPE_NUMBER;
+    JSSVGLengthConstructorFunctions[7].u.getset.get.getter_magic = JSSVGLengthConstructor::getValueProperty;
+    JSSVGLengthConstructorFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGLengthConstructorFunctions[8].name = "SVG_LENGTHTYPE_PX";
+    JSSVGLengthConstructorFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthConstructorFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthConstructorFunctions[8].magic = SVGLength::SVG_LENGTHTYPE_PX;
+    JSSVGLengthConstructorFunctions[8].u.getset.get.getter_magic = JSSVGLengthConstructor::getValueProperty;
+    JSSVGLengthConstructorFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGLengthConstructorFunctions[9].name = "SVG_LENGTHTYPE_IN";
+    JSSVGLengthConstructorFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthConstructorFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthConstructorFunctions[9].magic = SVGLength::SVG_LENGTHTYPE_IN;
+    JSSVGLengthConstructorFunctions[9].u.getset.get.getter_magic = JSSVGLengthConstructor::getValueProperty;
+    JSSVGLengthConstructorFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGLengthConstructorFunctions[10].name = "SVG_LENGTHTYPE_PC";
+    JSSVGLengthConstructorFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthConstructorFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthConstructorFunctions[10].magic = SVGLength::SVG_LENGTHTYPE_PC;
+    JSSVGLengthConstructorFunctions[10].u.getset.get.getter_magic = JSSVGLengthConstructor::getValueProperty;
+    JSSVGLengthConstructorFunctions[10].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGLengthConstructor::self(JSContext * ctx)
 {
@@ -102,33 +196,113 @@ JSValue JSSVGLengthConstructor::self(JSContext * ctx)
 
 void JSSVGLengthConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGLengthConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGLengthConstructorFunctions, countof(JSSVGLengthConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGLengthPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSSVGLengthPrototypeConstantsFunctions[11];
+static bool JSSVGLengthPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSSVGLengthPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_CM", JSSVGLengthPrototype::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_CM),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_PT", JSSVGLengthPrototype::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_PT),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_EXS", JSSVGLengthPrototype::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_EXS),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_PERCENTAGE", JSSVGLengthPrototype::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_PERCENTAGE),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_EMS", JSSVGLengthPrototype::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_EMS),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_UNKNOWN", JSSVGLengthPrototype::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_MM", JSSVGLengthPrototype::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_MM),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_NUMBER", JSSVGLengthPrototype::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_NUMBER),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_PX", JSSVGLengthPrototype::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_PX),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_IN", JSSVGLengthPrototype::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_IN),
-    JS_CGETSET_MAGIC_DEF("SVG_LENGTHTYPE_PC", JSSVGLengthPrototype::getValueProperty, NULL, SVGLength::SVG_LENGTHTYPE_PC)
-};
+    if (JSSVGLengthPrototypeConstantsFunctions_initialized) return;
+    JSSVGLengthPrototypeConstantsFunctions_initialized = true;
+    memset(JSSVGLengthPrototypeConstantsFunctions, 0, sizeof(JSSVGLengthPrototypeConstantsFunctions));
+    JSSVGLengthPrototypeConstantsFunctions[0].name = "SVG_LENGTHTYPE_CM";
+    JSSVGLengthPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthPrototypeConstantsFunctions[0].magic = SVGLength::SVG_LENGTHTYPE_CM;
+    JSSVGLengthPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGLengthPrototype::getValueProperty;
+    JSSVGLengthPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGLengthPrototypeConstantsFunctions[1].name = "SVG_LENGTHTYPE_PT";
+    JSSVGLengthPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthPrototypeConstantsFunctions[1].magic = SVGLength::SVG_LENGTHTYPE_PT;
+    JSSVGLengthPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGLengthPrototype::getValueProperty;
+    JSSVGLengthPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGLengthPrototypeConstantsFunctions[2].name = "SVG_LENGTHTYPE_EXS";
+    JSSVGLengthPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthPrototypeConstantsFunctions[2].magic = SVGLength::SVG_LENGTHTYPE_EXS;
+    JSSVGLengthPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGLengthPrototype::getValueProperty;
+    JSSVGLengthPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGLengthPrototypeConstantsFunctions[3].name = "SVG_LENGTHTYPE_PERCENTAGE";
+    JSSVGLengthPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthPrototypeConstantsFunctions[3].magic = SVGLength::SVG_LENGTHTYPE_PERCENTAGE;
+    JSSVGLengthPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGLengthPrototype::getValueProperty;
+    JSSVGLengthPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGLengthPrototypeConstantsFunctions[4].name = "SVG_LENGTHTYPE_EMS";
+    JSSVGLengthPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthPrototypeConstantsFunctions[4].magic = SVGLength::SVG_LENGTHTYPE_EMS;
+    JSSVGLengthPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGLengthPrototype::getValueProperty;
+    JSSVGLengthPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGLengthPrototypeConstantsFunctions[5].name = "SVG_LENGTHTYPE_UNKNOWN";
+    JSSVGLengthPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthPrototypeConstantsFunctions[5].magic = SVGLength::SVG_LENGTHTYPE_UNKNOWN;
+    JSSVGLengthPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSSVGLengthPrototype::getValueProperty;
+    JSSVGLengthPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGLengthPrototypeConstantsFunctions[6].name = "SVG_LENGTHTYPE_MM";
+    JSSVGLengthPrototypeConstantsFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthPrototypeConstantsFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthPrototypeConstantsFunctions[6].magic = SVGLength::SVG_LENGTHTYPE_MM;
+    JSSVGLengthPrototypeConstantsFunctions[6].u.getset.get.getter_magic = JSSVGLengthPrototype::getValueProperty;
+    JSSVGLengthPrototypeConstantsFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGLengthPrototypeConstantsFunctions[7].name = "SVG_LENGTHTYPE_NUMBER";
+    JSSVGLengthPrototypeConstantsFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthPrototypeConstantsFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthPrototypeConstantsFunctions[7].magic = SVGLength::SVG_LENGTHTYPE_NUMBER;
+    JSSVGLengthPrototypeConstantsFunctions[7].u.getset.get.getter_magic = JSSVGLengthPrototype::getValueProperty;
+    JSSVGLengthPrototypeConstantsFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGLengthPrototypeConstantsFunctions[8].name = "SVG_LENGTHTYPE_PX";
+    JSSVGLengthPrototypeConstantsFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthPrototypeConstantsFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthPrototypeConstantsFunctions[8].magic = SVGLength::SVG_LENGTHTYPE_PX;
+    JSSVGLengthPrototypeConstantsFunctions[8].u.getset.get.getter_magic = JSSVGLengthPrototype::getValueProperty;
+    JSSVGLengthPrototypeConstantsFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGLengthPrototypeConstantsFunctions[9].name = "SVG_LENGTHTYPE_IN";
+    JSSVGLengthPrototypeConstantsFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthPrototypeConstantsFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthPrototypeConstantsFunctions[9].magic = SVGLength::SVG_LENGTHTYPE_IN;
+    JSSVGLengthPrototypeConstantsFunctions[9].u.getset.get.getter_magic = JSSVGLengthPrototype::getValueProperty;
+    JSSVGLengthPrototypeConstantsFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGLengthPrototypeConstantsFunctions[10].name = "SVG_LENGTHTYPE_PC";
+    JSSVGLengthPrototypeConstantsFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLengthPrototypeConstantsFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLengthPrototypeConstantsFunctions[10].magic = SVGLength::SVG_LENGTHTYPE_PC;
+    JSSVGLengthPrototypeConstantsFunctions[10].u.getset.get.getter_magic = JSSVGLengthPrototype::getValueProperty;
+    JSSVGLengthPrototypeConstantsFunctions[10].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGLengthPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGLengthPrototypeFunctions[2];
+static bool JSSVGLengthPrototypeFunctions_initialized = false;
+
+static void init_JSSVGLengthPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("newValueSpecifiedUnits", 2, JSSVGLengthPrototypeFunction::callAsFunction, JSSVGLength::NewValueSpecifiedUnitsFuncNum),
-    JS_CFUNC_MAGIC_DEF("convertToSpecifiedUnits", 1, JSSVGLengthPrototypeFunction::callAsFunction, JSSVGLength::ConvertToSpecifiedUnitsFuncNum)
-};
+    if (JSSVGLengthPrototypeFunctions_initialized) return;
+    JSSVGLengthPrototypeFunctions_initialized = true;
+    memset(JSSVGLengthPrototypeFunctions, 0, sizeof(JSSVGLengthPrototypeFunctions));
+    JSSVGLengthPrototypeFunctions[0].name = "newValueSpecifiedUnits";
+    JSSVGLengthPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGLengthPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGLengthPrototypeFunctions[0].magic = JSSVGLength::NewValueSpecifiedUnitsFuncNum;
+    JSSVGLengthPrototypeFunctions[0].u.func.length = 2;
+    JSSVGLengthPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGLengthPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGLengthPrototypeFunction::callAsFunction;
+    JSSVGLengthPrototypeFunctions[1].name = "convertToSpecifiedUnits";
+    JSSVGLengthPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGLengthPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGLengthPrototypeFunctions[1].magic = JSSVGLength::ConvertToSpecifiedUnitsFuncNum;
+    JSSVGLengthPrototypeFunctions[1].u.func.length = 1;
+    JSSVGLengthPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGLengthPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGLengthPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGLengthPrototype::self(JSContext * ctx)
 {
@@ -146,8 +320,11 @@ JSValue JSSVGLengthPrototype::self(JSContext * ctx)
 
 void JSSVGLengthPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGLengthAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGLengthAttributesFunctions, countof(JSSVGLengthAttributesFunctions));
+    init_JSSVGLengthPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGLengthPrototypeConstantsFunctions, countof(JSSVGLengthPrototypeConstantsFunctions));
+    init_JSSVGLengthPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGLengthPrototypeFunctions, countof(JSSVGLengthPrototypeFunctions));
 }
 
@@ -157,18 +334,25 @@ JSValue JSSVGLengthPrototype::getValueProperty(JSContext * ctx, JSValueConst thi
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSSVGLengthClassDefine = 
+static JSClassDef JSSVGLengthClassDefine;
+static bool JSSVGLengthClassDefine_initialized = false;
+
+static void init_JSSVGLengthClassDefine()
 {
-    "SVGLength",
-    .finalizer = JSSVGLength::finalizer,
-    .gc_mark = JSSVGLength::mark,
-};
+    if (JSSVGLengthClassDefine_initialized) return;
+    JSSVGLengthClassDefine_initialized = true;
+    memset(&JSSVGLengthClassDefine, 0, sizeof(JSSVGLengthClassDefine));
+    JSSVGLengthClassDefine.class_name = "SVGLength";
+    JSSVGLengthClassDefine.finalizer = JSSVGLength::finalizer;
+    JSSVGLengthClassDefine.gc_mark = JSSVGLength::mark;
+}
 
 JSClassID JSSVGLength::js_class_id = 0;
 
 void JSSVGLength::init(JSContext* ctx)
 {
     if (JSSVGLength::js_class_id == 0) {
+        init_JSSVGLengthClassDefine();
         JS_NewClassID(&JSSVGLength::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGLength::js_class_id, &JSSVGLengthClassDefine);
         JS_SetConstructor(ctx, JSSVGLengthConstructor::self(ctx), JSSVGLengthPrototype::self(ctx));

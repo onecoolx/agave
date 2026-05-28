@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLFrameSetElement.h"
 
 #include "HTMLFrameSetElement.h"
@@ -39,12 +41,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLFrameSetElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLFrameSetElementAttributesFunctions[3];
+static bool JSHTMLFrameSetElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLFrameSetElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("cols", JSHTMLFrameSetElement::getValueProperty, JSHTMLFrameSetElement::putValueProperty, JSHTMLFrameSetElement::ColsAttrNum),
-    JS_CGETSET_MAGIC_DEF("rows", JSHTMLFrameSetElement::getValueProperty, JSHTMLFrameSetElement::putValueProperty, JSHTMLFrameSetElement::RowsAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLFrameSetElement::getValueProperty, NULL, JSHTMLFrameSetElement::ConstructorAttrNum)
-};
+    if (JSHTMLFrameSetElementAttributesFunctions_initialized) return;
+    JSHTMLFrameSetElementAttributesFunctions_initialized = true;
+    memset(JSHTMLFrameSetElementAttributesFunctions, 0, sizeof(JSHTMLFrameSetElementAttributesFunctions));
+    JSHTMLFrameSetElementAttributesFunctions[0].name = "cols";
+    JSHTMLFrameSetElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameSetElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameSetElementAttributesFunctions[0].magic = JSHTMLFrameSetElement::ColsAttrNum;
+    JSHTMLFrameSetElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLFrameSetElement::getValueProperty;
+    JSHTMLFrameSetElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLFrameSetElement::putValueProperty;
+    JSHTMLFrameSetElementAttributesFunctions[1].name = "rows";
+    JSHTMLFrameSetElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameSetElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameSetElementAttributesFunctions[1].magic = JSHTMLFrameSetElement::RowsAttrNum;
+    JSHTMLFrameSetElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLFrameSetElement::getValueProperty;
+    JSHTMLFrameSetElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLFrameSetElement::putValueProperty;
+    JSHTMLFrameSetElementAttributesFunctions[2].name = "constructor";
+    JSHTMLFrameSetElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameSetElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameSetElementAttributesFunctions[2].magic = JSHTMLFrameSetElement::ConstructorAttrNum;
+    JSHTMLFrameSetElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLFrameSetElement::getValueProperty;
+    JSHTMLFrameSetElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLFrameSetElementConstructor {
 public:
@@ -93,15 +116,22 @@ JSValue JSHTMLFrameSetElementPrototype::self(JSContext * ctx)
 
 void JSHTMLFrameSetElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLFrameSetElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLFrameSetElementAttributesFunctions, countof(JSHTMLFrameSetElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLFrameSetElementClassDefine = 
+static JSClassDef JSHTMLFrameSetElementClassDefine;
+static bool JSHTMLFrameSetElementClassDefine_initialized = false;
+
+static void init_JSHTMLFrameSetElementClassDefine()
 {
-    "HTMLFrameSetElement",
-    .finalizer = JSHTMLFrameSetElement::finalizer,
-    .gc_mark = JSHTMLFrameSetElement::mark,
-};
+    if (JSHTMLFrameSetElementClassDefine_initialized) return;
+    JSHTMLFrameSetElementClassDefine_initialized = true;
+    memset(&JSHTMLFrameSetElementClassDefine, 0, sizeof(JSHTMLFrameSetElementClassDefine));
+    JSHTMLFrameSetElementClassDefine.class_name = "HTMLFrameSetElement";
+    JSHTMLFrameSetElementClassDefine.finalizer = JSHTMLFrameSetElement::finalizer;
+    JSHTMLFrameSetElementClassDefine.gc_mark = JSHTMLFrameSetElement::mark;
+}
 
 JSClassID JSHTMLFrameSetElement::js_class_id = 0;
 

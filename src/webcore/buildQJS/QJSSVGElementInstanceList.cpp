@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -49,17 +51,40 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGElementInstanceListAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGElementInstanceListAttributesFunctions[1];
+static bool JSSVGElementInstanceListAttributesFunctions_initialized = false;
+
+static void init_JSSVGElementInstanceListAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("length", JSSVGElementInstanceList::getValueProperty, NULL, JSSVGElementInstanceList::LengthAttrNum)
-};
+    if (JSSVGElementInstanceListAttributesFunctions_initialized) return;
+    JSSVGElementInstanceListAttributesFunctions_initialized = true;
+    memset(JSSVGElementInstanceListAttributesFunctions, 0, sizeof(JSSVGElementInstanceListAttributesFunctions));
+    JSSVGElementInstanceListAttributesFunctions[0].name = "length";
+    JSSVGElementInstanceListAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGElementInstanceListAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGElementInstanceListAttributesFunctions[0].magic = JSSVGElementInstanceList::LengthAttrNum;
+    JSSVGElementInstanceListAttributesFunctions[0].u.getset.get.getter_magic = JSSVGElementInstanceList::getValueProperty;
+    JSSVGElementInstanceListAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGElementInstanceListPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGElementInstanceListPrototypeFunctions[1];
+static bool JSSVGElementInstanceListPrototypeFunctions_initialized = false;
+
+static void init_JSSVGElementInstanceListPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("item", 1, JSSVGElementInstanceListPrototypeFunction::callAsFunction, JSSVGElementInstanceList::ItemFuncNum)
-};
+    if (JSSVGElementInstanceListPrototypeFunctions_initialized) return;
+    JSSVGElementInstanceListPrototypeFunctions_initialized = true;
+    memset(JSSVGElementInstanceListPrototypeFunctions, 0, sizeof(JSSVGElementInstanceListPrototypeFunctions));
+    JSSVGElementInstanceListPrototypeFunctions[0].name = "item";
+    JSSVGElementInstanceListPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGElementInstanceListPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGElementInstanceListPrototypeFunctions[0].magic = JSSVGElementInstanceList::ItemFuncNum;
+    JSSVGElementInstanceListPrototypeFunctions[0].u.func.length = 1;
+    JSSVGElementInstanceListPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGElementInstanceListPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGElementInstanceListPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGElementInstanceListPrototype::self(JSContext * ctx)
 {
@@ -77,22 +102,31 @@ JSValue JSSVGElementInstanceListPrototype::self(JSContext * ctx)
 
 void JSSVGElementInstanceListPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGElementInstanceListAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGElementInstanceListAttributesFunctions, countof(JSSVGElementInstanceListAttributesFunctions));
+    init_JSSVGElementInstanceListPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGElementInstanceListPrototypeFunctions, countof(JSSVGElementInstanceListPrototypeFunctions));
 }
 
-static JSClassDef JSSVGElementInstanceListClassDefine = 
+static JSClassDef JSSVGElementInstanceListClassDefine;
+static bool JSSVGElementInstanceListClassDefine_initialized = false;
+
+static void init_JSSVGElementInstanceListClassDefine()
 {
-    "SVGElementInstanceList",
-    .finalizer = JSSVGElementInstanceList::finalizer,
-    .gc_mark = JSSVGElementInstanceList::mark,
-};
+    if (JSSVGElementInstanceListClassDefine_initialized) return;
+    JSSVGElementInstanceListClassDefine_initialized = true;
+    memset(&JSSVGElementInstanceListClassDefine, 0, sizeof(JSSVGElementInstanceListClassDefine));
+    JSSVGElementInstanceListClassDefine.class_name = "SVGElementInstanceList";
+    JSSVGElementInstanceListClassDefine.finalizer = JSSVGElementInstanceList::finalizer;
+    JSSVGElementInstanceListClassDefine.gc_mark = JSSVGElementInstanceList::mark;
+}
 
 JSClassID JSSVGElementInstanceList::js_class_id = 0;
 
 void JSSVGElementInstanceList::init(JSContext* ctx)
 {
     if (JSSVGElementInstanceList::js_class_id == 0) {
+        init_JSSVGElementInstanceListClassDefine();
         JS_NewClassID(&JSSVGElementInstanceList::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGElementInstanceList::js_class_id, &JSSVGElementInstanceListClassDefine);
         JS_SetClassProto(ctx, JSSVGElementInstanceList::js_class_id, JSSVGElementInstanceListPrototype::self(ctx));

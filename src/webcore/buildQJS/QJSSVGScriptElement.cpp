@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -49,12 +51,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGScriptElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGScriptElementAttributesFunctions[3];
+static bool JSSVGScriptElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGScriptElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("type", JSSVGScriptElement::getValueProperty, JSSVGScriptElement::putValueProperty, JSSVGScriptElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGScriptElement::getValueProperty, NULL, JSSVGScriptElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("href", JSSVGScriptElement::getValueProperty, NULL, JSSVGScriptElement::HrefAttrNum)
-};
+    if (JSSVGScriptElementAttributesFunctions_initialized) return;
+    JSSVGScriptElementAttributesFunctions_initialized = true;
+    memset(JSSVGScriptElementAttributesFunctions, 0, sizeof(JSSVGScriptElementAttributesFunctions));
+    JSSVGScriptElementAttributesFunctions[0].name = "type";
+    JSSVGScriptElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGScriptElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGScriptElementAttributesFunctions[0].magic = JSSVGScriptElement::TypeAttrNum;
+    JSSVGScriptElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGScriptElement::getValueProperty;
+    JSSVGScriptElementAttributesFunctions[0].u.getset.set.setter_magic = JSSVGScriptElement::putValueProperty;
+    JSSVGScriptElementAttributesFunctions[1].name = "externalResourcesRequired";
+    JSSVGScriptElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGScriptElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGScriptElementAttributesFunctions[1].magic = JSSVGScriptElement::ExternalResourcesRequiredAttrNum;
+    JSSVGScriptElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGScriptElement::getValueProperty;
+    JSSVGScriptElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGScriptElementAttributesFunctions[2].name = "href";
+    JSSVGScriptElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGScriptElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGScriptElementAttributesFunctions[2].magic = JSSVGScriptElement::HrefAttrNum;
+    JSSVGScriptElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGScriptElement::getValueProperty;
+    JSSVGScriptElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGScriptElementPrototype::self(JSContext * ctx)
 {
@@ -72,21 +95,29 @@ JSValue JSSVGScriptElementPrototype::self(JSContext * ctx)
 
 void JSSVGScriptElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGScriptElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGScriptElementAttributesFunctions, countof(JSSVGScriptElementAttributesFunctions));
 }
 
-static JSClassDef JSSVGScriptElementClassDefine = 
+static JSClassDef JSSVGScriptElementClassDefine;
+static bool JSSVGScriptElementClassDefine_initialized = false;
+
+static void init_JSSVGScriptElementClassDefine()
 {
-    "SVGScriptElement",
-    .finalizer = JSSVGScriptElement::finalizer,
-    .gc_mark = JSSVGScriptElement::mark,
-};
+    if (JSSVGScriptElementClassDefine_initialized) return;
+    JSSVGScriptElementClassDefine_initialized = true;
+    memset(&JSSVGScriptElementClassDefine, 0, sizeof(JSSVGScriptElementClassDefine));
+    JSSVGScriptElementClassDefine.class_name = "SVGScriptElement";
+    JSSVGScriptElementClassDefine.finalizer = JSSVGScriptElement::finalizer;
+    JSSVGScriptElementClassDefine.gc_mark = JSSVGScriptElement::mark;
+}
 
 JSClassID JSSVGScriptElement::js_class_id = 0;
 
 void JSSVGScriptElement::init(JSContext* ctx)
 {
     if (JSSVGScriptElement::js_class_id == 0) {
+        init_JSSVGScriptElementClassDefine();
         JS_NewClassID(&JSSVGScriptElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGScriptElement::js_class_id, &JSSVGScriptElementClassDefine);
         JS_SetClassProto(ctx, JSSVGScriptElement::js_class_id, JSSVGScriptElementPrototype::self(ctx));

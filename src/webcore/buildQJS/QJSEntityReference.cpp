@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSEntityReference.h"
 
 #include "EntityReference.h"
@@ -38,10 +40,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSEntityReferenceAttributesFunctions[] =
+static JSCFunctionListEntry JSEntityReferenceAttributesFunctions[1];
+static bool JSEntityReferenceAttributesFunctions_initialized = false;
+
+static void init_JSEntityReferenceAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSEntityReference::getValueProperty, NULL, JSEntityReference::ConstructorAttrNum)
-};
+    if (JSEntityReferenceAttributesFunctions_initialized) return;
+    JSEntityReferenceAttributesFunctions_initialized = true;
+    memset(JSEntityReferenceAttributesFunctions, 0, sizeof(JSEntityReferenceAttributesFunctions));
+    JSEntityReferenceAttributesFunctions[0].name = "constructor";
+    JSEntityReferenceAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEntityReferenceAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEntityReferenceAttributesFunctions[0].magic = JSEntityReference::ConstructorAttrNum;
+    JSEntityReferenceAttributesFunctions[0].u.getset.get.getter_magic = JSEntityReference::getValueProperty;
+    JSEntityReferenceAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 class JSEntityReferenceConstructor {
 public:
@@ -90,15 +103,22 @@ JSValue JSEntityReferencePrototype::self(JSContext * ctx)
 
 void JSEntityReferencePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSEntityReferenceAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSEntityReferenceAttributesFunctions, countof(JSEntityReferenceAttributesFunctions));
 }
 
-static JSClassDef JSEntityReferenceClassDefine = 
+static JSClassDef JSEntityReferenceClassDefine;
+static bool JSEntityReferenceClassDefine_initialized = false;
+
+static void init_JSEntityReferenceClassDefine()
 {
-    "EntityReference",
-    .finalizer = JSEntityReference::finalizer,
-    .gc_mark = JSEntityReference::mark,
-};
+    if (JSEntityReferenceClassDefine_initialized) return;
+    JSEntityReferenceClassDefine_initialized = true;
+    memset(&JSEntityReferenceClassDefine, 0, sizeof(JSEntityReferenceClassDefine));
+    JSEntityReferenceClassDefine.class_name = "EntityReference";
+    JSEntityReferenceClassDefine.finalizer = JSEntityReference::finalizer;
+    JSEntityReferenceClassDefine.gc_mark = JSEntityReference::mark;
+}
 
 JSClassID JSEntityReference::js_class_id = 0;
 

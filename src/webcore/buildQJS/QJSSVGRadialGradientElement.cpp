@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -47,14 +49,45 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGRadialGradientElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGRadialGradientElementAttributesFunctions[5];
+static bool JSSVGRadialGradientElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGRadialGradientElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("fx", JSSVGRadialGradientElement::getValueProperty, NULL, JSSVGRadialGradientElement::FxAttrNum),
-    JS_CGETSET_MAGIC_DEF("cy", JSSVGRadialGradientElement::getValueProperty, NULL, JSSVGRadialGradientElement::CyAttrNum),
-    JS_CGETSET_MAGIC_DEF("cx", JSSVGRadialGradientElement::getValueProperty, NULL, JSSVGRadialGradientElement::CxAttrNum),
-    JS_CGETSET_MAGIC_DEF("r", JSSVGRadialGradientElement::getValueProperty, NULL, JSSVGRadialGradientElement::RAttrNum),
-    JS_CGETSET_MAGIC_DEF("fy", JSSVGRadialGradientElement::getValueProperty, NULL, JSSVGRadialGradientElement::FyAttrNum)
-};
+    if (JSSVGRadialGradientElementAttributesFunctions_initialized) return;
+    JSSVGRadialGradientElementAttributesFunctions_initialized = true;
+    memset(JSSVGRadialGradientElementAttributesFunctions, 0, sizeof(JSSVGRadialGradientElementAttributesFunctions));
+    JSSVGRadialGradientElementAttributesFunctions[0].name = "fx";
+    JSSVGRadialGradientElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRadialGradientElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRadialGradientElementAttributesFunctions[0].magic = JSSVGRadialGradientElement::FxAttrNum;
+    JSSVGRadialGradientElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGRadialGradientElement::getValueProperty;
+    JSSVGRadialGradientElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGRadialGradientElementAttributesFunctions[1].name = "cy";
+    JSSVGRadialGradientElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRadialGradientElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRadialGradientElementAttributesFunctions[1].magic = JSSVGRadialGradientElement::CyAttrNum;
+    JSSVGRadialGradientElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGRadialGradientElement::getValueProperty;
+    JSSVGRadialGradientElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGRadialGradientElementAttributesFunctions[2].name = "cx";
+    JSSVGRadialGradientElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRadialGradientElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRadialGradientElementAttributesFunctions[2].magic = JSSVGRadialGradientElement::CxAttrNum;
+    JSSVGRadialGradientElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGRadialGradientElement::getValueProperty;
+    JSSVGRadialGradientElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGRadialGradientElementAttributesFunctions[3].name = "r";
+    JSSVGRadialGradientElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRadialGradientElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRadialGradientElementAttributesFunctions[3].magic = JSSVGRadialGradientElement::RAttrNum;
+    JSSVGRadialGradientElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGRadialGradientElement::getValueProperty;
+    JSSVGRadialGradientElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGRadialGradientElementAttributesFunctions[4].name = "fy";
+    JSSVGRadialGradientElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRadialGradientElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRadialGradientElementAttributesFunctions[4].magic = JSSVGRadialGradientElement::FyAttrNum;
+    JSSVGRadialGradientElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGRadialGradientElement::getValueProperty;
+    JSSVGRadialGradientElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGRadialGradientElementPrototype::self(JSContext * ctx)
 {
@@ -72,21 +105,29 @@ JSValue JSSVGRadialGradientElementPrototype::self(JSContext * ctx)
 
 void JSSVGRadialGradientElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGRadialGradientElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGRadialGradientElementAttributesFunctions, countof(JSSVGRadialGradientElementAttributesFunctions));
 }
 
-static JSClassDef JSSVGRadialGradientElementClassDefine = 
+static JSClassDef JSSVGRadialGradientElementClassDefine;
+static bool JSSVGRadialGradientElementClassDefine_initialized = false;
+
+static void init_JSSVGRadialGradientElementClassDefine()
 {
-    "SVGRadialGradientElement",
-    .finalizer = JSSVGRadialGradientElement::finalizer,
-    .gc_mark = JSSVGRadialGradientElement::mark,
-};
+    if (JSSVGRadialGradientElementClassDefine_initialized) return;
+    JSSVGRadialGradientElementClassDefine_initialized = true;
+    memset(&JSSVGRadialGradientElementClassDefine, 0, sizeof(JSSVGRadialGradientElementClassDefine));
+    JSSVGRadialGradientElementClassDefine.class_name = "SVGRadialGradientElement";
+    JSSVGRadialGradientElementClassDefine.finalizer = JSSVGRadialGradientElement::finalizer;
+    JSSVGRadialGradientElementClassDefine.gc_mark = JSSVGRadialGradientElement::mark;
+}
 
 JSClassID JSSVGRadialGradientElement::js_class_id = 0;
 
 void JSSVGRadialGradientElement::init(JSContext* ctx)
 {
     if (JSSVGRadialGradientElement::js_class_id == 0) {
+        init_JSSVGRadialGradientElementClassDefine();
         JS_NewClassID(&JSSVGRadialGradientElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGRadialGradientElement::js_class_id, &JSSVGRadialGradientElementClassDefine);
         JS_SetClassProto(ctx, JSSVGRadialGradientElement::js_class_id, JSSVGRadialGradientElementPrototype::self(ctx));

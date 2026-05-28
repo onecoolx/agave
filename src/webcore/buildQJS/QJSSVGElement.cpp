@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -50,13 +52,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGElementAttributesFunctions[4];
+static bool JSSVGElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("id", JSSVGElement::getValueProperty, JSSVGElement::putValueProperty, JSSVGElement::IdAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlbase", JSSVGElement::getValueProperty, JSSVGElement::putValueProperty, JSSVGElement::XmlbaseAttrNum),
-    JS_CGETSET_MAGIC_DEF("ownerSVGElement", JSSVGElement::getValueProperty, NULL, JSSVGElement::OwnerSVGElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("viewportElement", JSSVGElement::getValueProperty, NULL, JSSVGElement::ViewportElementAttrNum)
-};
+    if (JSSVGElementAttributesFunctions_initialized) return;
+    JSSVGElementAttributesFunctions_initialized = true;
+    memset(JSSVGElementAttributesFunctions, 0, sizeof(JSSVGElementAttributesFunctions));
+    JSSVGElementAttributesFunctions[0].name = "id";
+    JSSVGElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGElementAttributesFunctions[0].magic = JSSVGElement::IdAttrNum;
+    JSSVGElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGElement::getValueProperty;
+    JSSVGElementAttributesFunctions[0].u.getset.set.setter_magic = JSSVGElement::putValueProperty;
+    JSSVGElementAttributesFunctions[1].name = "xmlbase";
+    JSSVGElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGElementAttributesFunctions[1].magic = JSSVGElement::XmlbaseAttrNum;
+    JSSVGElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGElement::getValueProperty;
+    JSSVGElementAttributesFunctions[1].u.getset.set.setter_magic = JSSVGElement::putValueProperty;
+    JSSVGElementAttributesFunctions[2].name = "ownerSVGElement";
+    JSSVGElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGElementAttributesFunctions[2].magic = JSSVGElement::OwnerSVGElementAttrNum;
+    JSSVGElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGElement::getValueProperty;
+    JSSVGElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGElementAttributesFunctions[3].name = "viewportElement";
+    JSSVGElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGElementAttributesFunctions[3].magic = JSSVGElement::ViewportElementAttrNum;
+    JSSVGElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGElement::getValueProperty;
+    JSSVGElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGElementPrototype::self(JSContext * ctx)
 {
@@ -74,21 +102,29 @@ JSValue JSSVGElementPrototype::self(JSContext * ctx)
 
 void JSSVGElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGElementAttributesFunctions, countof(JSSVGElementAttributesFunctions));
 }
 
-static JSClassDef JSSVGElementClassDefine = 
+static JSClassDef JSSVGElementClassDefine;
+static bool JSSVGElementClassDefine_initialized = false;
+
+static void init_JSSVGElementClassDefine()
 {
-    "SVGElement",
-    .finalizer = JSSVGElement::finalizer,
-    .gc_mark = JSSVGElement::mark,
-};
+    if (JSSVGElementClassDefine_initialized) return;
+    JSSVGElementClassDefine_initialized = true;
+    memset(&JSSVGElementClassDefine, 0, sizeof(JSSVGElementClassDefine));
+    JSSVGElementClassDefine.class_name = "SVGElement";
+    JSSVGElementClassDefine.finalizer = JSSVGElement::finalizer;
+    JSSVGElementClassDefine.gc_mark = JSSVGElement::mark;
+}
 
 JSClassID JSSVGElement::js_class_id = 0;
 
 void JSSVGElement::init(JSContext* ctx)
 {
     if (JSSVGElement::js_class_id == 0) {
+        init_JSSVGElementClassDefine();
         JS_NewClassID(&JSSVGElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGElement::js_class_id, &JSSVGElementClassDefine);
         JS_SetClassProto(ctx, JSSVGElement::js_class_id, JSSVGElementPrototype::self(ctx));

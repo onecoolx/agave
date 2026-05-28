@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLTextAreaElement.h"
 
 #include "ExceptionCode.h"
@@ -42,23 +44,99 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLTextAreaElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLTextAreaElementAttributesFunctions[14];
+static bool JSHTMLTextAreaElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLTextAreaElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("tabIndex", JSHTMLTextAreaElement::getValueProperty, JSHTMLTextAreaElement::putValueProperty, JSHTMLTextAreaElement::TabIndexAttrNum),
-    JS_CGETSET_MAGIC_DEF("defaultValue", JSHTMLTextAreaElement::getValueProperty, JSHTMLTextAreaElement::putValueProperty, JSHTMLTextAreaElement::DefaultValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("rows", JSHTMLTextAreaElement::getValueProperty, JSHTMLTextAreaElement::putValueProperty, JSHTMLTextAreaElement::RowsAttrNum),
-    JS_CGETSET_MAGIC_DEF("accessKey", JSHTMLTextAreaElement::getValueProperty, JSHTMLTextAreaElement::putValueProperty, JSHTMLTextAreaElement::AccessKeyAttrNum),
-    JS_CGETSET_MAGIC_DEF("form", JSHTMLTextAreaElement::getValueProperty, NULL, JSHTMLTextAreaElement::FormAttrNum),
-    JS_CGETSET_MAGIC_DEF("disabled", JSHTMLTextAreaElement::getValueProperty, JSHTMLTextAreaElement::putValueProperty, JSHTMLTextAreaElement::DisabledAttrNum),
-    JS_CGETSET_MAGIC_DEF("readOnly", JSHTMLTextAreaElement::getValueProperty, JSHTMLTextAreaElement::putValueProperty, JSHTMLTextAreaElement::ReadOnlyAttrNum),
-    JS_CGETSET_MAGIC_DEF("cols", JSHTMLTextAreaElement::getValueProperty, JSHTMLTextAreaElement::putValueProperty, JSHTMLTextAreaElement::ColsAttrNum),
-    JS_CGETSET_MAGIC_DEF("name", JSHTMLTextAreaElement::getValueProperty, JSHTMLTextAreaElement::putValueProperty, JSHTMLTextAreaElement::NameAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSHTMLTextAreaElement::getValueProperty, NULL, JSHTMLTextAreaElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("value", JSHTMLTextAreaElement::getValueProperty, JSHTMLTextAreaElement::putValueProperty, JSHTMLTextAreaElement::ValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("selectionStart", JSHTMLTextAreaElement::getValueProperty, JSHTMLTextAreaElement::putValueProperty, JSHTMLTextAreaElement::SelectionStartAttrNum),
-    JS_CGETSET_MAGIC_DEF("selectionEnd", JSHTMLTextAreaElement::getValueProperty, JSHTMLTextAreaElement::putValueProperty, JSHTMLTextAreaElement::SelectionEndAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLTextAreaElement::getValueProperty, NULL, JSHTMLTextAreaElement::ConstructorAttrNum)
-};
+    if (JSHTMLTextAreaElementAttributesFunctions_initialized) return;
+    JSHTMLTextAreaElementAttributesFunctions_initialized = true;
+    memset(JSHTMLTextAreaElementAttributesFunctions, 0, sizeof(JSHTMLTextAreaElementAttributesFunctions));
+    JSHTMLTextAreaElementAttributesFunctions[0].name = "tabIndex";
+    JSHTMLTextAreaElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTextAreaElementAttributesFunctions[0].magic = JSHTMLTextAreaElement::TabIndexAttrNum;
+    JSHTMLTextAreaElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLTextAreaElement::getValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLTextAreaElement::putValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[1].name = "defaultValue";
+    JSHTMLTextAreaElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTextAreaElementAttributesFunctions[1].magic = JSHTMLTextAreaElement::DefaultValueAttrNum;
+    JSHTMLTextAreaElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLTextAreaElement::getValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLTextAreaElement::putValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[2].name = "rows";
+    JSHTMLTextAreaElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTextAreaElementAttributesFunctions[2].magic = JSHTMLTextAreaElement::RowsAttrNum;
+    JSHTMLTextAreaElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLTextAreaElement::getValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLTextAreaElement::putValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[3].name = "accessKey";
+    JSHTMLTextAreaElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTextAreaElementAttributesFunctions[3].magic = JSHTMLTextAreaElement::AccessKeyAttrNum;
+    JSHTMLTextAreaElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLTextAreaElement::getValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLTextAreaElement::putValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[4].name = "form";
+    JSHTMLTextAreaElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTextAreaElementAttributesFunctions[4].magic = JSHTMLTextAreaElement::FormAttrNum;
+    JSHTMLTextAreaElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLTextAreaElement::getValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSHTMLTextAreaElementAttributesFunctions[5].name = "disabled";
+    JSHTMLTextAreaElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTextAreaElementAttributesFunctions[5].magic = JSHTMLTextAreaElement::DisabledAttrNum;
+    JSHTMLTextAreaElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLTextAreaElement::getValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLTextAreaElement::putValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[6].name = "readOnly";
+    JSHTMLTextAreaElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTextAreaElementAttributesFunctions[6].magic = JSHTMLTextAreaElement::ReadOnlyAttrNum;
+    JSHTMLTextAreaElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLTextAreaElement::getValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLTextAreaElement::putValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[7].name = "cols";
+    JSHTMLTextAreaElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTextAreaElementAttributesFunctions[7].magic = JSHTMLTextAreaElement::ColsAttrNum;
+    JSHTMLTextAreaElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLTextAreaElement::getValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLTextAreaElement::putValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[8].name = "name";
+    JSHTMLTextAreaElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTextAreaElementAttributesFunctions[8].magic = JSHTMLTextAreaElement::NameAttrNum;
+    JSHTMLTextAreaElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLTextAreaElement::getValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[8].u.getset.set.setter_magic = JSHTMLTextAreaElement::putValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[9].name = "type";
+    JSHTMLTextAreaElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTextAreaElementAttributesFunctions[9].magic = JSHTMLTextAreaElement::TypeAttrNum;
+    JSHTMLTextAreaElementAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLTextAreaElement::getValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSHTMLTextAreaElementAttributesFunctions[10].name = "value";
+    JSHTMLTextAreaElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTextAreaElementAttributesFunctions[10].magic = JSHTMLTextAreaElement::ValueAttrNum;
+    JSHTMLTextAreaElementAttributesFunctions[10].u.getset.get.getter_magic = JSHTMLTextAreaElement::getValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[10].u.getset.set.setter_magic = JSHTMLTextAreaElement::putValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[11].name = "selectionStart";
+    JSHTMLTextAreaElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTextAreaElementAttributesFunctions[11].magic = JSHTMLTextAreaElement::SelectionStartAttrNum;
+    JSHTMLTextAreaElementAttributesFunctions[11].u.getset.get.getter_magic = JSHTMLTextAreaElement::getValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[11].u.getset.set.setter_magic = JSHTMLTextAreaElement::putValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[12].name = "selectionEnd";
+    JSHTMLTextAreaElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTextAreaElementAttributesFunctions[12].magic = JSHTMLTextAreaElement::SelectionEndAttrNum;
+    JSHTMLTextAreaElementAttributesFunctions[12].u.getset.get.getter_magic = JSHTMLTextAreaElement::getValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[12].u.getset.set.setter_magic = JSHTMLTextAreaElement::putValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[13].name = "constructor";
+    JSHTMLTextAreaElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTextAreaElementAttributesFunctions[13].magic = JSHTMLTextAreaElement::ConstructorAttrNum;
+    JSHTMLTextAreaElementAttributesFunctions[13].u.getset.get.getter_magic = JSHTMLTextAreaElement::getValueProperty;
+    JSHTMLTextAreaElementAttributesFunctions[13].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLTextAreaElementConstructor {
 public:
@@ -93,13 +171,43 @@ void JSHTMLTextAreaElementConstructor::initConstructor(JSContext * ctx, JSValue 
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHTMLTextAreaElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSHTMLTextAreaElementPrototypeFunctions[4];
+static bool JSHTMLTextAreaElementPrototypeFunctions_initialized = false;
+
+static void init_JSHTMLTextAreaElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("focus", 0, JSHTMLTextAreaElementPrototypeFunction::callAsFunction, JSHTMLTextAreaElement::FocusFuncNum),
-    JS_CFUNC_MAGIC_DEF("blur", 0, JSHTMLTextAreaElementPrototypeFunction::callAsFunction, JSHTMLTextAreaElement::BlurFuncNum),
-    JS_CFUNC_MAGIC_DEF("select", 0, JSHTMLTextAreaElementPrototypeFunction::callAsFunction, JSHTMLTextAreaElement::SelectFuncNum),
-    JS_CFUNC_MAGIC_DEF("setSelectionRange", 2, JSHTMLTextAreaElementPrototypeFunction::callAsFunction, JSHTMLTextAreaElement::SetSelectionRangeFuncNum)
-};
+    if (JSHTMLTextAreaElementPrototypeFunctions_initialized) return;
+    JSHTMLTextAreaElementPrototypeFunctions_initialized = true;
+    memset(JSHTMLTextAreaElementPrototypeFunctions, 0, sizeof(JSHTMLTextAreaElementPrototypeFunctions));
+    JSHTMLTextAreaElementPrototypeFunctions[0].name = "focus";
+    JSHTMLTextAreaElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHTMLTextAreaElementPrototypeFunctions[0].magic = JSHTMLTextAreaElement::FocusFuncNum;
+    JSHTMLTextAreaElementPrototypeFunctions[0].u.func.length = 0;
+    JSHTMLTextAreaElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTextAreaElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLTextAreaElementPrototypeFunction::callAsFunction;
+    JSHTMLTextAreaElementPrototypeFunctions[1].name = "blur";
+    JSHTMLTextAreaElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSHTMLTextAreaElementPrototypeFunctions[1].magic = JSHTMLTextAreaElement::BlurFuncNum;
+    JSHTMLTextAreaElementPrototypeFunctions[1].u.func.length = 0;
+    JSHTMLTextAreaElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTextAreaElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSHTMLTextAreaElementPrototypeFunction::callAsFunction;
+    JSHTMLTextAreaElementPrototypeFunctions[2].name = "select";
+    JSHTMLTextAreaElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSHTMLTextAreaElementPrototypeFunctions[2].magic = JSHTMLTextAreaElement::SelectFuncNum;
+    JSHTMLTextAreaElementPrototypeFunctions[2].u.func.length = 0;
+    JSHTMLTextAreaElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTextAreaElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSHTMLTextAreaElementPrototypeFunction::callAsFunction;
+    JSHTMLTextAreaElementPrototypeFunctions[3].name = "setSelectionRange";
+    JSHTMLTextAreaElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTextAreaElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSHTMLTextAreaElementPrototypeFunctions[3].magic = JSHTMLTextAreaElement::SetSelectionRangeFuncNum;
+    JSHTMLTextAreaElementPrototypeFunctions[3].u.func.length = 2;
+    JSHTMLTextAreaElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTextAreaElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSHTMLTextAreaElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHTMLTextAreaElementPrototype::self(JSContext * ctx)
 {
@@ -117,16 +225,24 @@ JSValue JSHTMLTextAreaElementPrototype::self(JSContext * ctx)
 
 void JSHTMLTextAreaElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLTextAreaElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTextAreaElementAttributesFunctions, countof(JSHTMLTextAreaElementAttributesFunctions));
+    init_JSHTMLTextAreaElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTextAreaElementPrototypeFunctions, countof(JSHTMLTextAreaElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLTextAreaElementClassDefine = 
+static JSClassDef JSHTMLTextAreaElementClassDefine;
+static bool JSHTMLTextAreaElementClassDefine_initialized = false;
+
+static void init_JSHTMLTextAreaElementClassDefine()
 {
-    "HTMLTextAreaElement",
-    .finalizer = JSHTMLTextAreaElement::finalizer,
-    .gc_mark = JSHTMLTextAreaElement::mark,
-};
+    if (JSHTMLTextAreaElementClassDefine_initialized) return;
+    JSHTMLTextAreaElementClassDefine_initialized = true;
+    memset(&JSHTMLTextAreaElementClassDefine, 0, sizeof(JSHTMLTextAreaElementClassDefine));
+    JSHTMLTextAreaElementClassDefine.class_name = "HTMLTextAreaElement";
+    JSHTMLTextAreaElementClassDefine.finalizer = JSHTMLTextAreaElement::finalizer;
+    JSHTMLTextAreaElementClassDefine.gc_mark = JSHTMLTextAreaElement::mark;
+}
 
 JSClassID JSHTMLTextAreaElement::js_class_id = 0;
 

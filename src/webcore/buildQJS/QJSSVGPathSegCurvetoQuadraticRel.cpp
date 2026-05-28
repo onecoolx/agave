@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,13 +48,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[4];
+static bool JSSVGPathSegCurvetoQuadraticRelAttributesFunctions_initialized = false;
+
+static void init_JSSVGPathSegCurvetoQuadraticRelAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("y", JSSVGPathSegCurvetoQuadraticRel::getValueProperty, JSSVGPathSegCurvetoQuadraticRel::putValueProperty, JSSVGPathSegCurvetoQuadraticRel::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGPathSegCurvetoQuadraticRel::getValueProperty, JSSVGPathSegCurvetoQuadraticRel::putValueProperty, JSSVGPathSegCurvetoQuadraticRel::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("x1", JSSVGPathSegCurvetoQuadraticRel::getValueProperty, JSSVGPathSegCurvetoQuadraticRel::putValueProperty, JSSVGPathSegCurvetoQuadraticRel::X1AttrNum),
-    JS_CGETSET_MAGIC_DEF("y1", JSSVGPathSegCurvetoQuadraticRel::getValueProperty, JSSVGPathSegCurvetoQuadraticRel::putValueProperty, JSSVGPathSegCurvetoQuadraticRel::Y1AttrNum)
-};
+    if (JSSVGPathSegCurvetoQuadraticRelAttributesFunctions_initialized) return;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions_initialized = true;
+    memset(JSSVGPathSegCurvetoQuadraticRelAttributesFunctions, 0, sizeof(JSSVGPathSegCurvetoQuadraticRelAttributesFunctions));
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[0].name = "y";
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[0].magic = JSSVGPathSegCurvetoQuadraticRel::YAttrNum;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegCurvetoQuadraticRel::getValueProperty;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegCurvetoQuadraticRel::putValueProperty;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[1].name = "x";
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[1].magic = JSSVGPathSegCurvetoQuadraticRel::XAttrNum;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegCurvetoQuadraticRel::getValueProperty;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegCurvetoQuadraticRel::putValueProperty;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[2].name = "x1";
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[2].magic = JSSVGPathSegCurvetoQuadraticRel::X1AttrNum;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[2].u.getset.get.getter_magic = JSSVGPathSegCurvetoQuadraticRel::getValueProperty;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[2].u.getset.set.setter_magic = JSSVGPathSegCurvetoQuadraticRel::putValueProperty;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[3].name = "y1";
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[3].magic = JSSVGPathSegCurvetoQuadraticRel::Y1AttrNum;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[3].u.getset.get.getter_magic = JSSVGPathSegCurvetoQuadraticRel::getValueProperty;
+    JSSVGPathSegCurvetoQuadraticRelAttributesFunctions[3].u.getset.set.setter_magic = JSSVGPathSegCurvetoQuadraticRel::putValueProperty;
+}
 
 JSValue JSSVGPathSegCurvetoQuadraticRelPrototype::self(JSContext * ctx)
 {
@@ -70,21 +98,29 @@ JSValue JSSVGPathSegCurvetoQuadraticRelPrototype::self(JSContext * ctx)
 
 void JSSVGPathSegCurvetoQuadraticRelPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPathSegCurvetoQuadraticRelAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathSegCurvetoQuadraticRelAttributesFunctions, countof(JSSVGPathSegCurvetoQuadraticRelAttributesFunctions));
 }
 
-static JSClassDef JSSVGPathSegCurvetoQuadraticRelClassDefine = 
+static JSClassDef JSSVGPathSegCurvetoQuadraticRelClassDefine;
+static bool JSSVGPathSegCurvetoQuadraticRelClassDefine_initialized = false;
+
+static void init_JSSVGPathSegCurvetoQuadraticRelClassDefine()
 {
-    "SVGPathSegCurvetoQuadraticRel",
-    .finalizer = JSSVGPathSegCurvetoQuadraticRel::finalizer,
-    .gc_mark = JSSVGPathSegCurvetoQuadraticRel::mark,
-};
+    if (JSSVGPathSegCurvetoQuadraticRelClassDefine_initialized) return;
+    JSSVGPathSegCurvetoQuadraticRelClassDefine_initialized = true;
+    memset(&JSSVGPathSegCurvetoQuadraticRelClassDefine, 0, sizeof(JSSVGPathSegCurvetoQuadraticRelClassDefine));
+    JSSVGPathSegCurvetoQuadraticRelClassDefine.class_name = "SVGPathSegCurvetoQuadraticRel";
+    JSSVGPathSegCurvetoQuadraticRelClassDefine.finalizer = JSSVGPathSegCurvetoQuadraticRel::finalizer;
+    JSSVGPathSegCurvetoQuadraticRelClassDefine.gc_mark = JSSVGPathSegCurvetoQuadraticRel::mark;
+}
 
 JSClassID JSSVGPathSegCurvetoQuadraticRel::js_class_id = 0;
 
 void JSSVGPathSegCurvetoQuadraticRel::init(JSContext* ctx)
 {
     if (JSSVGPathSegCurvetoQuadraticRel::js_class_id == 0) {
+        init_JSSVGPathSegCurvetoQuadraticRelClassDefine();
         JS_NewClassID(&JSSVGPathSegCurvetoQuadraticRel::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathSegCurvetoQuadraticRel::js_class_id, &JSSVGPathSegCurvetoQuadraticRelClassDefine);
         JS_SetClassProto(ctx, JSSVGPathSegCurvetoQuadraticRel::js_class_id, JSSVGPathSegCurvetoQuadraticRelPrototype::self(ctx));

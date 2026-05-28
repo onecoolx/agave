@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLTableCaptionElement.h"
 
 #include "HTMLTableCaptionElement.h"
@@ -39,11 +41,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLTableCaptionElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLTableCaptionElementAttributesFunctions[2];
+static bool JSHTMLTableCaptionElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLTableCaptionElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLTableCaptionElement::getValueProperty, JSHTMLTableCaptionElement::putValueProperty, JSHTMLTableCaptionElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLTableCaptionElement::getValueProperty, NULL, JSHTMLTableCaptionElement::ConstructorAttrNum)
-};
+    if (JSHTMLTableCaptionElementAttributesFunctions_initialized) return;
+    JSHTMLTableCaptionElementAttributesFunctions_initialized = true;
+    memset(JSHTMLTableCaptionElementAttributesFunctions, 0, sizeof(JSHTMLTableCaptionElementAttributesFunctions));
+    JSHTMLTableCaptionElementAttributesFunctions[0].name = "align";
+    JSHTMLTableCaptionElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableCaptionElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableCaptionElementAttributesFunctions[0].magic = JSHTMLTableCaptionElement::AlignAttrNum;
+    JSHTMLTableCaptionElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLTableCaptionElement::getValueProperty;
+    JSHTMLTableCaptionElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLTableCaptionElement::putValueProperty;
+    JSHTMLTableCaptionElementAttributesFunctions[1].name = "constructor";
+    JSHTMLTableCaptionElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableCaptionElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableCaptionElementAttributesFunctions[1].magic = JSHTMLTableCaptionElement::ConstructorAttrNum;
+    JSHTMLTableCaptionElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLTableCaptionElement::getValueProperty;
+    JSHTMLTableCaptionElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLTableCaptionElementConstructor {
 public:
@@ -92,15 +110,22 @@ JSValue JSHTMLTableCaptionElementPrototype::self(JSContext * ctx)
 
 void JSHTMLTableCaptionElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLTableCaptionElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTableCaptionElementAttributesFunctions, countof(JSHTMLTableCaptionElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLTableCaptionElementClassDefine = 
+static JSClassDef JSHTMLTableCaptionElementClassDefine;
+static bool JSHTMLTableCaptionElementClassDefine_initialized = false;
+
+static void init_JSHTMLTableCaptionElementClassDefine()
 {
-    "HTMLTableCaptionElement",
-    .finalizer = JSHTMLTableCaptionElement::finalizer,
-    .gc_mark = JSHTMLTableCaptionElement::mark,
-};
+    if (JSHTMLTableCaptionElementClassDefine_initialized) return;
+    JSHTMLTableCaptionElementClassDefine_initialized = true;
+    memset(&JSHTMLTableCaptionElementClassDefine, 0, sizeof(JSHTMLTableCaptionElementClassDefine));
+    JSHTMLTableCaptionElementClassDefine.class_name = "HTMLTableCaptionElement";
+    JSHTMLTableCaptionElementClassDefine.finalizer = JSHTMLTableCaptionElement::finalizer;
+    JSHTMLTableCaptionElementClassDefine.gc_mark = JSHTMLTableCaptionElement::mark;
+}
 
 JSClassID JSHTMLTableCaptionElement::js_class_id = 0;
 

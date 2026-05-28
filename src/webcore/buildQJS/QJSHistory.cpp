@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHistory.h"
 
 #include "ExceptionCode.h"
@@ -39,19 +41,54 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHistoryAttributesFunctions[] =
+static JSCFunctionListEntry JSHistoryAttributesFunctions[1];
+static bool JSHistoryAttributesFunctions_initialized = false;
+
+static void init_JSHistoryAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("length", JSHistory::getValueProperty, NULL, JSHistory::LengthAttrNum)
-};
+    if (JSHistoryAttributesFunctions_initialized) return;
+    JSHistoryAttributesFunctions_initialized = true;
+    memset(JSHistoryAttributesFunctions, 0, sizeof(JSHistoryAttributesFunctions));
+    JSHistoryAttributesFunctions[0].name = "length";
+    JSHistoryAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHistoryAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHistoryAttributesFunctions[0].magic = JSHistory::LengthAttrNum;
+    JSHistoryAttributesFunctions[0].u.getset.get.getter_magic = JSHistory::getValueProperty;
+    JSHistoryAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHistoryPrototypeFunctions[] =
+static JSCFunctionListEntry JSHistoryPrototypeFunctions[3];
+static bool JSHistoryPrototypeFunctions_initialized = false;
+
+static void init_JSHistoryPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("forward", 0, JSHistoryPrototypeFunction::callAsFunction, JSHistory::ForwardFuncNum),
-    JS_CFUNC_MAGIC_DEF("back", 0, JSHistoryPrototypeFunction::callAsFunction, JSHistory::BackFuncNum),
-    JS_CFUNC_MAGIC_DEF("go", 1, JSHistoryPrototypeFunction::callAsFunction, JSHistory::GoFuncNum)
-};
+    if (JSHistoryPrototypeFunctions_initialized) return;
+    JSHistoryPrototypeFunctions_initialized = true;
+    memset(JSHistoryPrototypeFunctions, 0, sizeof(JSHistoryPrototypeFunctions));
+    JSHistoryPrototypeFunctions[0].name = "forward";
+    JSHistoryPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHistoryPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHistoryPrototypeFunctions[0].magic = JSHistory::ForwardFuncNum;
+    JSHistoryPrototypeFunctions[0].u.func.length = 0;
+    JSHistoryPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHistoryPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHistoryPrototypeFunction::callAsFunction;
+    JSHistoryPrototypeFunctions[1].name = "back";
+    JSHistoryPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHistoryPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSHistoryPrototypeFunctions[1].magic = JSHistory::BackFuncNum;
+    JSHistoryPrototypeFunctions[1].u.func.length = 0;
+    JSHistoryPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHistoryPrototypeFunctions[1].u.func.cfunc.generic_magic = JSHistoryPrototypeFunction::callAsFunction;
+    JSHistoryPrototypeFunctions[2].name = "go";
+    JSHistoryPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHistoryPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSHistoryPrototypeFunctions[2].magic = JSHistory::GoFuncNum;
+    JSHistoryPrototypeFunctions[2].u.func.length = 1;
+    JSHistoryPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHistoryPrototypeFunctions[2].u.func.cfunc.generic_magic = JSHistoryPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHistoryPrototype::self(JSContext * ctx)
 {
@@ -69,22 +106,31 @@ JSValue JSHistoryPrototype::self(JSContext * ctx)
 
 void JSHistoryPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHistoryAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHistoryAttributesFunctions, countof(JSHistoryAttributesFunctions));
+    init_JSHistoryPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHistoryPrototypeFunctions, countof(JSHistoryPrototypeFunctions));
 }
 
-static JSClassDef JSHistoryClassDefine = 
+static JSClassDef JSHistoryClassDefine;
+static bool JSHistoryClassDefine_initialized = false;
+
+static void init_JSHistoryClassDefine()
 {
-    "History",
-    .finalizer = JSHistory::finalizer,
-    .gc_mark = JSHistory::mark,
-};
+    if (JSHistoryClassDefine_initialized) return;
+    JSHistoryClassDefine_initialized = true;
+    memset(&JSHistoryClassDefine, 0, sizeof(JSHistoryClassDefine));
+    JSHistoryClassDefine.class_name = "History";
+    JSHistoryClassDefine.finalizer = JSHistory::finalizer;
+    JSHistoryClassDefine.gc_mark = JSHistory::mark;
+}
 
 JSClassID JSHistory::js_class_id = 0;
 
 void JSHistory::init(JSContext* ctx)
 {
     if (JSHistory::js_class_id == 0) {
+        init_JSHistoryClassDefine();
         JS_NewClassID(&JSHistory::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSHistory::js_class_id, &JSHistoryClassDefine);
         JS_SetClassProto(ctx, JSHistory::js_class_id, JSHistoryPrototype::self(ctx));

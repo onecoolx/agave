@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -62,18 +64,25 @@ void JSSVGTSpanElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj
 {
 }
 
-static JSClassDef JSSVGTSpanElementClassDefine = 
+static JSClassDef JSSVGTSpanElementClassDefine;
+static bool JSSVGTSpanElementClassDefine_initialized = false;
+
+static void init_JSSVGTSpanElementClassDefine()
 {
-    "SVGTSpanElement",
-    .finalizer = JSSVGTSpanElement::finalizer,
-    .gc_mark = JSSVGTSpanElement::mark,
-};
+    if (JSSVGTSpanElementClassDefine_initialized) return;
+    JSSVGTSpanElementClassDefine_initialized = true;
+    memset(&JSSVGTSpanElementClassDefine, 0, sizeof(JSSVGTSpanElementClassDefine));
+    JSSVGTSpanElementClassDefine.class_name = "SVGTSpanElement";
+    JSSVGTSpanElementClassDefine.finalizer = JSSVGTSpanElement::finalizer;
+    JSSVGTSpanElementClassDefine.gc_mark = JSSVGTSpanElement::mark;
+}
 
 JSClassID JSSVGTSpanElement::js_class_id = 0;
 
 void JSSVGTSpanElement::init(JSContext* ctx)
 {
     if (JSSVGTSpanElement::js_class_id == 0) {
+        init_JSSVGTSpanElementClassDefine();
         JS_NewClassID(&JSSVGTSpanElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGTSpanElement::js_class_id, &JSSVGTSpanElementClassDefine);
         JS_SetClassProto(ctx, JSSVGTSpanElement::js_class_id, JSSVGTSpanElementPrototype::self(ctx));

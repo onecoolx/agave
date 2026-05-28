@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLHeadElement.h"
 
 #include "HTMLHeadElement.h"
@@ -39,11 +41,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLHeadElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLHeadElementAttributesFunctions[2];
+static bool JSHTMLHeadElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLHeadElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("profile", JSHTMLHeadElement::getValueProperty, JSHTMLHeadElement::putValueProperty, JSHTMLHeadElement::ProfileAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLHeadElement::getValueProperty, NULL, JSHTMLHeadElement::ConstructorAttrNum)
-};
+    if (JSHTMLHeadElementAttributesFunctions_initialized) return;
+    JSHTMLHeadElementAttributesFunctions_initialized = true;
+    memset(JSHTMLHeadElementAttributesFunctions, 0, sizeof(JSHTMLHeadElementAttributesFunctions));
+    JSHTMLHeadElementAttributesFunctions[0].name = "profile";
+    JSHTMLHeadElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLHeadElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLHeadElementAttributesFunctions[0].magic = JSHTMLHeadElement::ProfileAttrNum;
+    JSHTMLHeadElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLHeadElement::getValueProperty;
+    JSHTMLHeadElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLHeadElement::putValueProperty;
+    JSHTMLHeadElementAttributesFunctions[1].name = "constructor";
+    JSHTMLHeadElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLHeadElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLHeadElementAttributesFunctions[1].magic = JSHTMLHeadElement::ConstructorAttrNum;
+    JSHTMLHeadElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLHeadElement::getValueProperty;
+    JSHTMLHeadElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLHeadElementConstructor {
 public:
@@ -92,15 +110,22 @@ JSValue JSHTMLHeadElementPrototype::self(JSContext * ctx)
 
 void JSHTMLHeadElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLHeadElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLHeadElementAttributesFunctions, countof(JSHTMLHeadElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLHeadElementClassDefine = 
+static JSClassDef JSHTMLHeadElementClassDefine;
+static bool JSHTMLHeadElementClassDefine_initialized = false;
+
+static void init_JSHTMLHeadElementClassDefine()
 {
-    "HTMLHeadElement",
-    .finalizer = JSHTMLHeadElement::finalizer,
-    .gc_mark = JSHTMLHeadElement::mark,
-};
+    if (JSHTMLHeadElementClassDefine_initialized) return;
+    JSHTMLHeadElementClassDefine_initialized = true;
+    memset(&JSHTMLHeadElementClassDefine, 0, sizeof(JSHTMLHeadElementClassDefine));
+    JSHTMLHeadElementClassDefine.class_name = "HTMLHeadElement";
+    JSHTMLHeadElementClassDefine.finalizer = JSHTMLHeadElement::finalizer;
+    JSHTMLHeadElementClassDefine.gc_mark = JSHTMLHeadElement::mark;
+}
 
 JSClassID JSHTMLHeadElement::js_class_id = 0;
 

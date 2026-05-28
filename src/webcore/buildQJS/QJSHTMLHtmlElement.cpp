@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLHtmlElement.h"
 
 #include "HTMLHtmlElement.h"
@@ -39,11 +41,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLHtmlElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLHtmlElementAttributesFunctions[2];
+static bool JSHTMLHtmlElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLHtmlElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("version", JSHTMLHtmlElement::getValueProperty, JSHTMLHtmlElement::putValueProperty, JSHTMLHtmlElement::VersionAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLHtmlElement::getValueProperty, NULL, JSHTMLHtmlElement::ConstructorAttrNum)
-};
+    if (JSHTMLHtmlElementAttributesFunctions_initialized) return;
+    JSHTMLHtmlElementAttributesFunctions_initialized = true;
+    memset(JSHTMLHtmlElementAttributesFunctions, 0, sizeof(JSHTMLHtmlElementAttributesFunctions));
+    JSHTMLHtmlElementAttributesFunctions[0].name = "version";
+    JSHTMLHtmlElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLHtmlElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLHtmlElementAttributesFunctions[0].magic = JSHTMLHtmlElement::VersionAttrNum;
+    JSHTMLHtmlElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLHtmlElement::getValueProperty;
+    JSHTMLHtmlElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLHtmlElement::putValueProperty;
+    JSHTMLHtmlElementAttributesFunctions[1].name = "constructor";
+    JSHTMLHtmlElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLHtmlElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLHtmlElementAttributesFunctions[1].magic = JSHTMLHtmlElement::ConstructorAttrNum;
+    JSHTMLHtmlElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLHtmlElement::getValueProperty;
+    JSHTMLHtmlElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLHtmlElementConstructor {
 public:
@@ -92,15 +110,22 @@ JSValue JSHTMLHtmlElementPrototype::self(JSContext * ctx)
 
 void JSHTMLHtmlElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLHtmlElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLHtmlElementAttributesFunctions, countof(JSHTMLHtmlElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLHtmlElementClassDefine = 
+static JSClassDef JSHTMLHtmlElementClassDefine;
+static bool JSHTMLHtmlElementClassDefine_initialized = false;
+
+static void init_JSHTMLHtmlElementClassDefine()
 {
-    "HTMLHtmlElement",
-    .finalizer = JSHTMLHtmlElement::finalizer,
-    .gc_mark = JSHTMLHtmlElement::mark,
-};
+    if (JSHTMLHtmlElementClassDefine_initialized) return;
+    JSHTMLHtmlElementClassDefine_initialized = true;
+    memset(&JSHTMLHtmlElementClassDefine, 0, sizeof(JSHTMLHtmlElementClassDefine));
+    JSHTMLHtmlElementClassDefine.class_name = "HTMLHtmlElement";
+    JSHTMLHtmlElementClassDefine.finalizer = JSHTMLHtmlElement::finalizer;
+    JSHTMLHtmlElementClassDefine.gc_mark = JSHTMLHtmlElement::mark;
+}
 
 JSClassID JSHTMLHtmlElement::js_class_id = 0;
 

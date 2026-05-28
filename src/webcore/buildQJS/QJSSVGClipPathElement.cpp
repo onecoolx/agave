@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -62,33 +64,141 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGClipPathElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGClipPathElementAttributesFunctions[12];
+static bool JSSVGClipPathElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGClipPathElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGClipPathElement::getValueProperty, NULL, JSSVGClipPathElement::SystemLanguageAttrNum),
-    JS_CGETSET_MAGIC_DEF("clipPathUnits", JSSVGClipPathElement::getValueProperty, NULL, JSSVGClipPathElement::ClipPathUnitsAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGClipPathElement::getValueProperty, NULL, JSSVGClipPathElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGClipPathElement::getValueProperty, NULL, JSSVGClipPathElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGClipPathElement::getValueProperty, NULL, JSSVGClipPathElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("transform", JSSVGClipPathElement::getValueProperty, NULL, JSSVGClipPathElement::TransformAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGClipPathElement::getValueProperty, JSSVGClipPathElement::putValueProperty, JSSVGClipPathElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("nearestViewportElement", JSSVGClipPathElement::getValueProperty, NULL, JSSVGClipPathElement::NearestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGClipPathElement::getValueProperty, JSSVGClipPathElement::putValueProperty, JSSVGClipPathElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGClipPathElement::getValueProperty, NULL, JSSVGClipPathElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGClipPathElement::getValueProperty, NULL, JSSVGClipPathElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("farthestViewportElement", JSSVGClipPathElement::getValueProperty, NULL, JSSVGClipPathElement::FarthestViewportElementAttrNum)
-};
+    if (JSSVGClipPathElementAttributesFunctions_initialized) return;
+    JSSVGClipPathElementAttributesFunctions_initialized = true;
+    memset(JSSVGClipPathElementAttributesFunctions, 0, sizeof(JSSVGClipPathElementAttributesFunctions));
+    JSSVGClipPathElementAttributesFunctions[0].name = "systemLanguage";
+    JSSVGClipPathElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGClipPathElementAttributesFunctions[0].magic = JSSVGClipPathElement::SystemLanguageAttrNum;
+    JSSVGClipPathElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGClipPathElement::getValueProperty;
+    JSSVGClipPathElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGClipPathElementAttributesFunctions[1].name = "clipPathUnits";
+    JSSVGClipPathElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGClipPathElementAttributesFunctions[1].magic = JSSVGClipPathElement::ClipPathUnitsAttrNum;
+    JSSVGClipPathElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGClipPathElement::getValueProperty;
+    JSSVGClipPathElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGClipPathElementAttributesFunctions[2].name = "requiredFeatures";
+    JSSVGClipPathElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGClipPathElementAttributesFunctions[2].magic = JSSVGClipPathElement::RequiredFeaturesAttrNum;
+    JSSVGClipPathElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGClipPathElement::getValueProperty;
+    JSSVGClipPathElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGClipPathElementAttributesFunctions[3].name = "requiredExtensions";
+    JSSVGClipPathElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGClipPathElementAttributesFunctions[3].magic = JSSVGClipPathElement::RequiredExtensionsAttrNum;
+    JSSVGClipPathElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGClipPathElement::getValueProperty;
+    JSSVGClipPathElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGClipPathElementAttributesFunctions[4].name = "className";
+    JSSVGClipPathElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGClipPathElementAttributesFunctions[4].magic = JSSVGClipPathElement::ClassNameAttrNum;
+    JSSVGClipPathElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGClipPathElement::getValueProperty;
+    JSSVGClipPathElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGClipPathElementAttributesFunctions[5].name = "transform";
+    JSSVGClipPathElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGClipPathElementAttributesFunctions[5].magic = JSSVGClipPathElement::TransformAttrNum;
+    JSSVGClipPathElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGClipPathElement::getValueProperty;
+    JSSVGClipPathElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGClipPathElementAttributesFunctions[6].name = "xmlspace";
+    JSSVGClipPathElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGClipPathElementAttributesFunctions[6].magic = JSSVGClipPathElement::XmlspaceAttrNum;
+    JSSVGClipPathElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGClipPathElement::getValueProperty;
+    JSSVGClipPathElementAttributesFunctions[6].u.getset.set.setter_magic = JSSVGClipPathElement::putValueProperty;
+    JSSVGClipPathElementAttributesFunctions[7].name = "nearestViewportElement";
+    JSSVGClipPathElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGClipPathElementAttributesFunctions[7].magic = JSSVGClipPathElement::NearestViewportElementAttrNum;
+    JSSVGClipPathElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGClipPathElement::getValueProperty;
+    JSSVGClipPathElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGClipPathElementAttributesFunctions[8].name = "xmllang";
+    JSSVGClipPathElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGClipPathElementAttributesFunctions[8].magic = JSSVGClipPathElement::XmllangAttrNum;
+    JSSVGClipPathElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGClipPathElement::getValueProperty;
+    JSSVGClipPathElementAttributesFunctions[8].u.getset.set.setter_magic = JSSVGClipPathElement::putValueProperty;
+    JSSVGClipPathElementAttributesFunctions[9].name = "externalResourcesRequired";
+    JSSVGClipPathElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGClipPathElementAttributesFunctions[9].magic = JSSVGClipPathElement::ExternalResourcesRequiredAttrNum;
+    JSSVGClipPathElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGClipPathElement::getValueProperty;
+    JSSVGClipPathElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGClipPathElementAttributesFunctions[10].name = "style";
+    JSSVGClipPathElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGClipPathElementAttributesFunctions[10].magic = JSSVGClipPathElement::StyleAttrNum;
+    JSSVGClipPathElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGClipPathElement::getValueProperty;
+    JSSVGClipPathElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSSVGClipPathElementAttributesFunctions[11].name = "farthestViewportElement";
+    JSSVGClipPathElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGClipPathElementAttributesFunctions[11].magic = JSSVGClipPathElement::FarthestViewportElementAttrNum;
+    JSSVGClipPathElementAttributesFunctions[11].u.getset.get.getter_magic = JSSVGClipPathElement::getValueProperty;
+    JSSVGClipPathElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGClipPathElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGClipPathElementPrototypeFunctions[6];
+static bool JSSVGClipPathElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGClipPathElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGClipPathElementPrototypeFunction::callAsFunction, JSSVGClipPathElement::GetPresentationAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGClipPathElementPrototypeFunction::callAsFunction, JSSVGClipPathElement::HasExtensionFuncNum),
-    JS_CFUNC_MAGIC_DEF("getCTM", 0, JSSVGClipPathElementPrototypeFunction::callAsFunction, JSSVGClipPathElement::GetCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getScreenCTM", 0, JSSVGClipPathElementPrototypeFunction::callAsFunction, JSSVGClipPathElement::GetScreenCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getTransformToElement", 1, JSSVGClipPathElementPrototypeFunction::callAsFunction, JSSVGClipPathElement::GetTransformToElementFuncNum),
-    JS_CFUNC_MAGIC_DEF("getBBox", 0, JSSVGClipPathElementPrototypeFunction::callAsFunction, JSSVGClipPathElement::GetBBoxFuncNum)
-};
+    if (JSSVGClipPathElementPrototypeFunctions_initialized) return;
+    JSSVGClipPathElementPrototypeFunctions_initialized = true;
+    memset(JSSVGClipPathElementPrototypeFunctions, 0, sizeof(JSSVGClipPathElementPrototypeFunctions));
+    JSSVGClipPathElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGClipPathElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGClipPathElementPrototypeFunctions[0].magic = JSSVGClipPathElement::GetPresentationAttributeFuncNum;
+    JSSVGClipPathElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGClipPathElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGClipPathElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGClipPathElementPrototypeFunction::callAsFunction;
+    JSSVGClipPathElementPrototypeFunctions[1].name = "hasExtension";
+    JSSVGClipPathElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGClipPathElementPrototypeFunctions[1].magic = JSSVGClipPathElement::HasExtensionFuncNum;
+    JSSVGClipPathElementPrototypeFunctions[1].u.func.length = 1;
+    JSSVGClipPathElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGClipPathElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGClipPathElementPrototypeFunction::callAsFunction;
+    JSSVGClipPathElementPrototypeFunctions[2].name = "getCTM";
+    JSSVGClipPathElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGClipPathElementPrototypeFunctions[2].magic = JSSVGClipPathElement::GetCTMFuncNum;
+    JSSVGClipPathElementPrototypeFunctions[2].u.func.length = 0;
+    JSSVGClipPathElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGClipPathElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGClipPathElementPrototypeFunction::callAsFunction;
+    JSSVGClipPathElementPrototypeFunctions[3].name = "getScreenCTM";
+    JSSVGClipPathElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGClipPathElementPrototypeFunctions[3].magic = JSSVGClipPathElement::GetScreenCTMFuncNum;
+    JSSVGClipPathElementPrototypeFunctions[3].u.func.length = 0;
+    JSSVGClipPathElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGClipPathElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGClipPathElementPrototypeFunction::callAsFunction;
+    JSSVGClipPathElementPrototypeFunctions[4].name = "getTransformToElement";
+    JSSVGClipPathElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGClipPathElementPrototypeFunctions[4].magic = JSSVGClipPathElement::GetTransformToElementFuncNum;
+    JSSVGClipPathElementPrototypeFunctions[4].u.func.length = 1;
+    JSSVGClipPathElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGClipPathElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGClipPathElementPrototypeFunction::callAsFunction;
+    JSSVGClipPathElementPrototypeFunctions[5].name = "getBBox";
+    JSSVGClipPathElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGClipPathElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGClipPathElementPrototypeFunctions[5].magic = JSSVGClipPathElement::GetBBoxFuncNum;
+    JSSVGClipPathElementPrototypeFunctions[5].u.func.length = 0;
+    JSSVGClipPathElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGClipPathElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGClipPathElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGClipPathElementPrototype::self(JSContext * ctx)
 {
@@ -106,22 +216,31 @@ JSValue JSSVGClipPathElementPrototype::self(JSContext * ctx)
 
 void JSSVGClipPathElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGClipPathElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGClipPathElementAttributesFunctions, countof(JSSVGClipPathElementAttributesFunctions));
+    init_JSSVGClipPathElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGClipPathElementPrototypeFunctions, countof(JSSVGClipPathElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGClipPathElementClassDefine = 
+static JSClassDef JSSVGClipPathElementClassDefine;
+static bool JSSVGClipPathElementClassDefine_initialized = false;
+
+static void init_JSSVGClipPathElementClassDefine()
 {
-    "SVGClipPathElement",
-    .finalizer = JSSVGClipPathElement::finalizer,
-    .gc_mark = JSSVGClipPathElement::mark,
-};
+    if (JSSVGClipPathElementClassDefine_initialized) return;
+    JSSVGClipPathElementClassDefine_initialized = true;
+    memset(&JSSVGClipPathElementClassDefine, 0, sizeof(JSSVGClipPathElementClassDefine));
+    JSSVGClipPathElementClassDefine.class_name = "SVGClipPathElement";
+    JSSVGClipPathElementClassDefine.finalizer = JSSVGClipPathElement::finalizer;
+    JSSVGClipPathElementClassDefine.gc_mark = JSSVGClipPathElement::mark;
+}
 
 JSClassID JSSVGClipPathElement::js_class_id = 0;
 
 void JSSVGClipPathElement::init(JSContext* ctx)
 {
     if (JSSVGClipPathElement::js_class_id == 0) {
+        init_JSSVGClipPathElementClassDefine();
         JS_NewClassID(&JSSVGClipPathElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGClipPathElement::js_class_id, &JSSVGClipPathElementClassDefine);
         JS_SetClassProto(ctx, JSSVGClipPathElement::js_class_id, JSSVGClipPathElementPrototype::self(ctx));

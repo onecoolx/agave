@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -47,11 +49,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAnimatedAngleAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGAnimatedAngleAttributesFunctions[2];
+static bool JSSVGAnimatedAngleAttributesFunctions_initialized = false;
+
+static void init_JSSVGAnimatedAngleAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("baseVal", JSSVGAnimatedAngle::getValueProperty, NULL, JSSVGAnimatedAngle::BaseValAttrNum),
-    JS_CGETSET_MAGIC_DEF("animVal", JSSVGAnimatedAngle::getValueProperty, NULL, JSSVGAnimatedAngle::AnimValAttrNum)
-};
+    if (JSSVGAnimatedAngleAttributesFunctions_initialized) return;
+    JSSVGAnimatedAngleAttributesFunctions_initialized = true;
+    memset(JSSVGAnimatedAngleAttributesFunctions, 0, sizeof(JSSVGAnimatedAngleAttributesFunctions));
+    JSSVGAnimatedAngleAttributesFunctions[0].name = "baseVal";
+    JSSVGAnimatedAngleAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedAngleAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedAngleAttributesFunctions[0].magic = JSSVGAnimatedAngle::BaseValAttrNum;
+    JSSVGAnimatedAngleAttributesFunctions[0].u.getset.get.getter_magic = JSSVGAnimatedAngle::getValueProperty;
+    JSSVGAnimatedAngleAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGAnimatedAngleAttributesFunctions[1].name = "animVal";
+    JSSVGAnimatedAngleAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedAngleAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedAngleAttributesFunctions[1].magic = JSSVGAnimatedAngle::AnimValAttrNum;
+    JSSVGAnimatedAngleAttributesFunctions[1].u.getset.get.getter_magic = JSSVGAnimatedAngle::getValueProperty;
+    JSSVGAnimatedAngleAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGAnimatedAnglePrototype::self(JSContext * ctx)
 {
@@ -69,21 +87,29 @@ JSValue JSSVGAnimatedAnglePrototype::self(JSContext * ctx)
 
 void JSSVGAnimatedAnglePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAnimatedAngleAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnimatedAngleAttributesFunctions, countof(JSSVGAnimatedAngleAttributesFunctions));
 }
 
-static JSClassDef JSSVGAnimatedAngleClassDefine = 
+static JSClassDef JSSVGAnimatedAngleClassDefine;
+static bool JSSVGAnimatedAngleClassDefine_initialized = false;
+
+static void init_JSSVGAnimatedAngleClassDefine()
 {
-    "SVGAnimatedAngle",
-    .finalizer = JSSVGAnimatedAngle::finalizer,
-    .gc_mark = JSSVGAnimatedAngle::mark,
-};
+    if (JSSVGAnimatedAngleClassDefine_initialized) return;
+    JSSVGAnimatedAngleClassDefine_initialized = true;
+    memset(&JSSVGAnimatedAngleClassDefine, 0, sizeof(JSSVGAnimatedAngleClassDefine));
+    JSSVGAnimatedAngleClassDefine.class_name = "SVGAnimatedAngle";
+    JSSVGAnimatedAngleClassDefine.finalizer = JSSVGAnimatedAngle::finalizer;
+    JSSVGAnimatedAngleClassDefine.gc_mark = JSSVGAnimatedAngle::mark;
+}
 
 JSClassID JSSVGAnimatedAngle::js_class_id = 0;
 
 void JSSVGAnimatedAngle::init(JSContext* ctx)
 {
     if (JSSVGAnimatedAngle::js_class_id == 0) {
+        init_JSSVGAnimatedAngleClassDefine();
         JS_NewClassID(&JSSVGAnimatedAngle::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimatedAngle::js_class_id, &JSSVGAnimatedAngleClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimatedAngle::js_class_id, JSSVGAnimatedAnglePrototype::self(ctx));

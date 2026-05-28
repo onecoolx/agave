@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLTableElement.h"
 
 #include "ExceptionCode.h"
@@ -48,24 +50,105 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLTableElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLTableElementAttributesFunctions[15];
+static bool JSHTMLTableElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLTableElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("bgColor", JSHTMLTableElement::getValueProperty, JSHTMLTableElement::putValueProperty, JSHTMLTableElement::BgColorAttrNum),
-    JS_CGETSET_MAGIC_DEF("tFoot", JSHTMLTableElement::getValueProperty, JSHTMLTableElement::putValueProperty, JSHTMLTableElement::TFootAttrNum),
-    JS_CGETSET_MAGIC_DEF("summary", JSHTMLTableElement::getValueProperty, JSHTMLTableElement::putValueProperty, JSHTMLTableElement::SummaryAttrNum),
-    JS_CGETSET_MAGIC_DEF("cellPadding", JSHTMLTableElement::getValueProperty, JSHTMLTableElement::putValueProperty, JSHTMLTableElement::CellPaddingAttrNum),
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLTableElement::getValueProperty, JSHTMLTableElement::putValueProperty, JSHTMLTableElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("caption", JSHTMLTableElement::getValueProperty, JSHTMLTableElement::putValueProperty, JSHTMLTableElement::CaptionAttrNum),
-    JS_CGETSET_MAGIC_DEF("tBodies", JSHTMLTableElement::getValueProperty, NULL, JSHTMLTableElement::TBodiesAttrNum),
-    JS_CGETSET_MAGIC_DEF("tHead", JSHTMLTableElement::getValueProperty, JSHTMLTableElement::putValueProperty, JSHTMLTableElement::THeadAttrNum),
-    JS_CGETSET_MAGIC_DEF("frame", JSHTMLTableElement::getValueProperty, JSHTMLTableElement::putValueProperty, JSHTMLTableElement::FrameAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLTableElement::getValueProperty, NULL, JSHTMLTableElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("rules", JSHTMLTableElement::getValueProperty, JSHTMLTableElement::putValueProperty, JSHTMLTableElement::RulesAttrNum),
-    JS_CGETSET_MAGIC_DEF("rows", JSHTMLTableElement::getValueProperty, NULL, JSHTMLTableElement::RowsAttrNum),
-    JS_CGETSET_MAGIC_DEF("border", JSHTMLTableElement::getValueProperty, JSHTMLTableElement::putValueProperty, JSHTMLTableElement::BorderAttrNum),
-    JS_CGETSET_MAGIC_DEF("cellSpacing", JSHTMLTableElement::getValueProperty, JSHTMLTableElement::putValueProperty, JSHTMLTableElement::CellSpacingAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSHTMLTableElement::getValueProperty, JSHTMLTableElement::putValueProperty, JSHTMLTableElement::WidthAttrNum)
-};
+    if (JSHTMLTableElementAttributesFunctions_initialized) return;
+    JSHTMLTableElementAttributesFunctions_initialized = true;
+    memset(JSHTMLTableElementAttributesFunctions, 0, sizeof(JSHTMLTableElementAttributesFunctions));
+    JSHTMLTableElementAttributesFunctions[0].name = "bgColor";
+    JSHTMLTableElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[0].magic = JSHTMLTableElement::BgColorAttrNum;
+    JSHTMLTableElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLTableElement::putValueProperty;
+    JSHTMLTableElementAttributesFunctions[1].name = "tFoot";
+    JSHTMLTableElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[1].magic = JSHTMLTableElement::TFootAttrNum;
+    JSHTMLTableElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLTableElement::putValueProperty;
+    JSHTMLTableElementAttributesFunctions[2].name = "summary";
+    JSHTMLTableElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[2].magic = JSHTMLTableElement::SummaryAttrNum;
+    JSHTMLTableElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLTableElement::putValueProperty;
+    JSHTMLTableElementAttributesFunctions[3].name = "cellPadding";
+    JSHTMLTableElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[3].magic = JSHTMLTableElement::CellPaddingAttrNum;
+    JSHTMLTableElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLTableElement::putValueProperty;
+    JSHTMLTableElementAttributesFunctions[4].name = "align";
+    JSHTMLTableElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[4].magic = JSHTMLTableElement::AlignAttrNum;
+    JSHTMLTableElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLTableElement::putValueProperty;
+    JSHTMLTableElementAttributesFunctions[5].name = "caption";
+    JSHTMLTableElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[5].magic = JSHTMLTableElement::CaptionAttrNum;
+    JSHTMLTableElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLTableElement::putValueProperty;
+    JSHTMLTableElementAttributesFunctions[6].name = "tBodies";
+    JSHTMLTableElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[6].magic = JSHTMLTableElement::TBodiesAttrNum;
+    JSHTMLTableElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSHTMLTableElementAttributesFunctions[7].name = "tHead";
+    JSHTMLTableElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[7].magic = JSHTMLTableElement::THeadAttrNum;
+    JSHTMLTableElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLTableElement::putValueProperty;
+    JSHTMLTableElementAttributesFunctions[8].name = "frame";
+    JSHTMLTableElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[8].magic = JSHTMLTableElement::FrameAttrNum;
+    JSHTMLTableElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[8].u.getset.set.setter_magic = JSHTMLTableElement::putValueProperty;
+    JSHTMLTableElementAttributesFunctions[9].name = "constructor";
+    JSHTMLTableElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[9].magic = JSHTMLTableElement::ConstructorAttrNum;
+    JSHTMLTableElementAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSHTMLTableElementAttributesFunctions[10].name = "rules";
+    JSHTMLTableElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[10].magic = JSHTMLTableElement::RulesAttrNum;
+    JSHTMLTableElementAttributesFunctions[10].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[10].u.getset.set.setter_magic = JSHTMLTableElement::putValueProperty;
+    JSHTMLTableElementAttributesFunctions[11].name = "rows";
+    JSHTMLTableElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[11].magic = JSHTMLTableElement::RowsAttrNum;
+    JSHTMLTableElementAttributesFunctions[11].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSHTMLTableElementAttributesFunctions[12].name = "border";
+    JSHTMLTableElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[12].magic = JSHTMLTableElement::BorderAttrNum;
+    JSHTMLTableElementAttributesFunctions[12].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[12].u.getset.set.setter_magic = JSHTMLTableElement::putValueProperty;
+    JSHTMLTableElementAttributesFunctions[13].name = "cellSpacing";
+    JSHTMLTableElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[13].magic = JSHTMLTableElement::CellSpacingAttrNum;
+    JSHTMLTableElementAttributesFunctions[13].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[13].u.getset.set.setter_magic = JSHTMLTableElement::putValueProperty;
+    JSHTMLTableElementAttributesFunctions[14].name = "width";
+    JSHTMLTableElementAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableElementAttributesFunctions[14].magic = JSHTMLTableElement::WidthAttrNum;
+    JSHTMLTableElementAttributesFunctions[14].u.getset.get.getter_magic = JSHTMLTableElement::getValueProperty;
+    JSHTMLTableElementAttributesFunctions[14].u.getset.set.setter_magic = JSHTMLTableElement::putValueProperty;
+}
 
 class JSHTMLTableElementConstructor {
 public:
@@ -100,17 +183,71 @@ void JSHTMLTableElementConstructor::initConstructor(JSContext * ctx, JSValue thi
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHTMLTableElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSHTMLTableElementPrototypeFunctions[8];
+static bool JSHTMLTableElementPrototypeFunctions_initialized = false;
+
+static void init_JSHTMLTableElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("deleteTFoot", 0, JSHTMLTableElementPrototypeFunction::callAsFunction, JSHTMLTableElement::DeleteTFootFuncNum),
-    JS_CFUNC_MAGIC_DEF("createTHead", 0, JSHTMLTableElementPrototypeFunction::callAsFunction, JSHTMLTableElement::CreateTHeadFuncNum),
-    JS_CFUNC_MAGIC_DEF("createCaption", 0, JSHTMLTableElementPrototypeFunction::callAsFunction, JSHTMLTableElement::CreateCaptionFuncNum),
-    JS_CFUNC_MAGIC_DEF("createTFoot", 0, JSHTMLTableElementPrototypeFunction::callAsFunction, JSHTMLTableElement::CreateTFootFuncNum),
-    JS_CFUNC_MAGIC_DEF("deleteTHead", 0, JSHTMLTableElementPrototypeFunction::callAsFunction, JSHTMLTableElement::DeleteTHeadFuncNum),
-    JS_CFUNC_MAGIC_DEF("deleteCaption", 0, JSHTMLTableElementPrototypeFunction::callAsFunction, JSHTMLTableElement::DeleteCaptionFuncNum),
-    JS_CFUNC_MAGIC_DEF("insertRow", 1, JSHTMLTableElementPrototypeFunction::callAsFunction, JSHTMLTableElement::InsertRowFuncNum),
-    JS_CFUNC_MAGIC_DEF("deleteRow", 1, JSHTMLTableElementPrototypeFunction::callAsFunction, JSHTMLTableElement::DeleteRowFuncNum)
-};
+    if (JSHTMLTableElementPrototypeFunctions_initialized) return;
+    JSHTMLTableElementPrototypeFunctions_initialized = true;
+    memset(JSHTMLTableElementPrototypeFunctions, 0, sizeof(JSHTMLTableElementPrototypeFunctions));
+    JSHTMLTableElementPrototypeFunctions[0].name = "deleteTFoot";
+    JSHTMLTableElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHTMLTableElementPrototypeFunctions[0].magic = JSHTMLTableElement::DeleteTFootFuncNum;
+    JSHTMLTableElementPrototypeFunctions[0].u.func.length = 0;
+    JSHTMLTableElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTableElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLTableElementPrototypeFunction::callAsFunction;
+    JSHTMLTableElementPrototypeFunctions[1].name = "createTHead";
+    JSHTMLTableElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSHTMLTableElementPrototypeFunctions[1].magic = JSHTMLTableElement::CreateTHeadFuncNum;
+    JSHTMLTableElementPrototypeFunctions[1].u.func.length = 0;
+    JSHTMLTableElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTableElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSHTMLTableElementPrototypeFunction::callAsFunction;
+    JSHTMLTableElementPrototypeFunctions[2].name = "createCaption";
+    JSHTMLTableElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSHTMLTableElementPrototypeFunctions[2].magic = JSHTMLTableElement::CreateCaptionFuncNum;
+    JSHTMLTableElementPrototypeFunctions[2].u.func.length = 0;
+    JSHTMLTableElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTableElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSHTMLTableElementPrototypeFunction::callAsFunction;
+    JSHTMLTableElementPrototypeFunctions[3].name = "createTFoot";
+    JSHTMLTableElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSHTMLTableElementPrototypeFunctions[3].magic = JSHTMLTableElement::CreateTFootFuncNum;
+    JSHTMLTableElementPrototypeFunctions[3].u.func.length = 0;
+    JSHTMLTableElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTableElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSHTMLTableElementPrototypeFunction::callAsFunction;
+    JSHTMLTableElementPrototypeFunctions[4].name = "deleteTHead";
+    JSHTMLTableElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSHTMLTableElementPrototypeFunctions[4].magic = JSHTMLTableElement::DeleteTHeadFuncNum;
+    JSHTMLTableElementPrototypeFunctions[4].u.func.length = 0;
+    JSHTMLTableElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTableElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSHTMLTableElementPrototypeFunction::callAsFunction;
+    JSHTMLTableElementPrototypeFunctions[5].name = "deleteCaption";
+    JSHTMLTableElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSHTMLTableElementPrototypeFunctions[5].magic = JSHTMLTableElement::DeleteCaptionFuncNum;
+    JSHTMLTableElementPrototypeFunctions[5].u.func.length = 0;
+    JSHTMLTableElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTableElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSHTMLTableElementPrototypeFunction::callAsFunction;
+    JSHTMLTableElementPrototypeFunctions[6].name = "insertRow";
+    JSHTMLTableElementPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSHTMLTableElementPrototypeFunctions[6].magic = JSHTMLTableElement::InsertRowFuncNum;
+    JSHTMLTableElementPrototypeFunctions[6].u.func.length = 1;
+    JSHTMLTableElementPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTableElementPrototypeFunctions[6].u.func.cfunc.generic_magic = JSHTMLTableElementPrototypeFunction::callAsFunction;
+    JSHTMLTableElementPrototypeFunctions[7].name = "deleteRow";
+    JSHTMLTableElementPrototypeFunctions[7].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTableElementPrototypeFunctions[7].def_type = JS_DEF_CFUNC;
+    JSHTMLTableElementPrototypeFunctions[7].magic = JSHTMLTableElement::DeleteRowFuncNum;
+    JSHTMLTableElementPrototypeFunctions[7].u.func.length = 1;
+    JSHTMLTableElementPrototypeFunctions[7].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTableElementPrototypeFunctions[7].u.func.cfunc.generic_magic = JSHTMLTableElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHTMLTableElementPrototype::self(JSContext * ctx)
 {
@@ -128,16 +265,24 @@ JSValue JSHTMLTableElementPrototype::self(JSContext * ctx)
 
 void JSHTMLTableElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLTableElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTableElementAttributesFunctions, countof(JSHTMLTableElementAttributesFunctions));
+    init_JSHTMLTableElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTableElementPrototypeFunctions, countof(JSHTMLTableElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLTableElementClassDefine = 
+static JSClassDef JSHTMLTableElementClassDefine;
+static bool JSHTMLTableElementClassDefine_initialized = false;
+
+static void init_JSHTMLTableElementClassDefine()
 {
-    "HTMLTableElement",
-    .finalizer = JSHTMLTableElement::finalizer,
-    .gc_mark = JSHTMLTableElement::mark,
-};
+    if (JSHTMLTableElementClassDefine_initialized) return;
+    JSHTMLTableElementClassDefine_initialized = true;
+    memset(&JSHTMLTableElementClassDefine, 0, sizeof(JSHTMLTableElementClassDefine));
+    JSHTMLTableElementClassDefine.class_name = "HTMLTableElement";
+    JSHTMLTableElementClassDefine.finalizer = JSHTMLTableElement::finalizer;
+    JSHTMLTableElementClassDefine.gc_mark = JSHTMLTableElement::mark;
+}
 
 JSClassID JSHTMLTableElement::js_class_id = 0;
 

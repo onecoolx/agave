@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,23 +48,82 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPointListAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPointListAttributesFunctions[1];
+static bool JSSVGPointListAttributesFunctions_initialized = false;
+
+static void init_JSSVGPointListAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("numberOfItems", JSSVGPointList::getValueProperty, NULL, JSSVGPointList::NumberOfItemsAttrNum)
-};
+    if (JSSVGPointListAttributesFunctions_initialized) return;
+    JSSVGPointListAttributesFunctions_initialized = true;
+    memset(JSSVGPointListAttributesFunctions, 0, sizeof(JSSVGPointListAttributesFunctions));
+    JSSVGPointListAttributesFunctions[0].name = "numberOfItems";
+    JSSVGPointListAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPointListAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPointListAttributesFunctions[0].magic = JSSVGPointList::NumberOfItemsAttrNum;
+    JSSVGPointListAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPointList::getValueProperty;
+    JSSVGPointListAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGPointListPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGPointListPrototypeFunctions[7];
+static bool JSSVGPointListPrototypeFunctions_initialized = false;
+
+static void init_JSSVGPointListPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("clear", 0, JSSVGPointListPrototypeFunction::callAsFunction, JSSVGPointList::ClearFuncNum),
-    JS_CFUNC_MAGIC_DEF("getItem", 1, JSSVGPointListPrototypeFunction::callAsFunction, JSSVGPointList::GetItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("insertItemBefore", 2, JSSVGPointListPrototypeFunction::callAsFunction, JSSVGPointList::InsertItemBeforeFuncNum),
-    JS_CFUNC_MAGIC_DEF("initialize", 1, JSSVGPointListPrototypeFunction::callAsFunction, JSSVGPointList::InitializeFuncNum),
-    JS_CFUNC_MAGIC_DEF("replaceItem", 2, JSSVGPointListPrototypeFunction::callAsFunction, JSSVGPointList::ReplaceItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("removeItem", 1, JSSVGPointListPrototypeFunction::callAsFunction, JSSVGPointList::RemoveItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("appendItem", 1, JSSVGPointListPrototypeFunction::callAsFunction, JSSVGPointList::AppendItemFuncNum)
-};
+    if (JSSVGPointListPrototypeFunctions_initialized) return;
+    JSSVGPointListPrototypeFunctions_initialized = true;
+    memset(JSSVGPointListPrototypeFunctions, 0, sizeof(JSSVGPointListPrototypeFunctions));
+    JSSVGPointListPrototypeFunctions[0].name = "clear";
+    JSSVGPointListPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPointListPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGPointListPrototypeFunctions[0].magic = JSSVGPointList::ClearFuncNum;
+    JSSVGPointListPrototypeFunctions[0].u.func.length = 0;
+    JSSVGPointListPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPointListPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGPointListPrototypeFunction::callAsFunction;
+    JSSVGPointListPrototypeFunctions[1].name = "getItem";
+    JSSVGPointListPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPointListPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGPointListPrototypeFunctions[1].magic = JSSVGPointList::GetItemFuncNum;
+    JSSVGPointListPrototypeFunctions[1].u.func.length = 1;
+    JSSVGPointListPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPointListPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGPointListPrototypeFunction::callAsFunction;
+    JSSVGPointListPrototypeFunctions[2].name = "insertItemBefore";
+    JSSVGPointListPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPointListPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGPointListPrototypeFunctions[2].magic = JSSVGPointList::InsertItemBeforeFuncNum;
+    JSSVGPointListPrototypeFunctions[2].u.func.length = 2;
+    JSSVGPointListPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPointListPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGPointListPrototypeFunction::callAsFunction;
+    JSSVGPointListPrototypeFunctions[3].name = "initialize";
+    JSSVGPointListPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPointListPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGPointListPrototypeFunctions[3].magic = JSSVGPointList::InitializeFuncNum;
+    JSSVGPointListPrototypeFunctions[3].u.func.length = 1;
+    JSSVGPointListPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPointListPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGPointListPrototypeFunction::callAsFunction;
+    JSSVGPointListPrototypeFunctions[4].name = "replaceItem";
+    JSSVGPointListPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPointListPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGPointListPrototypeFunctions[4].magic = JSSVGPointList::ReplaceItemFuncNum;
+    JSSVGPointListPrototypeFunctions[4].u.func.length = 2;
+    JSSVGPointListPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPointListPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGPointListPrototypeFunction::callAsFunction;
+    JSSVGPointListPrototypeFunctions[5].name = "removeItem";
+    JSSVGPointListPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPointListPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGPointListPrototypeFunctions[5].magic = JSSVGPointList::RemoveItemFuncNum;
+    JSSVGPointListPrototypeFunctions[5].u.func.length = 1;
+    JSSVGPointListPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPointListPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGPointListPrototypeFunction::callAsFunction;
+    JSSVGPointListPrototypeFunctions[6].name = "appendItem";
+    JSSVGPointListPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPointListPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSSVGPointListPrototypeFunctions[6].magic = JSSVGPointList::AppendItemFuncNum;
+    JSSVGPointListPrototypeFunctions[6].u.func.length = 1;
+    JSSVGPointListPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPointListPrototypeFunctions[6].u.func.cfunc.generic_magic = JSSVGPointListPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGPointListPrototype::self(JSContext * ctx)
 {
@@ -80,22 +141,31 @@ JSValue JSSVGPointListPrototype::self(JSContext * ctx)
 
 void JSSVGPointListPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPointListAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPointListAttributesFunctions, countof(JSSVGPointListAttributesFunctions));
+    init_JSSVGPointListPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPointListPrototypeFunctions, countof(JSSVGPointListPrototypeFunctions));
 }
 
-static JSClassDef JSSVGPointListClassDefine = 
+static JSClassDef JSSVGPointListClassDefine;
+static bool JSSVGPointListClassDefine_initialized = false;
+
+static void init_JSSVGPointListClassDefine()
 {
-    "SVGPointList",
-    .finalizer = JSSVGPointList::finalizer,
-    .gc_mark = JSSVGPointList::mark,
-};
+    if (JSSVGPointListClassDefine_initialized) return;
+    JSSVGPointListClassDefine_initialized = true;
+    memset(&JSSVGPointListClassDefine, 0, sizeof(JSSVGPointListClassDefine));
+    JSSVGPointListClassDefine.class_name = "SVGPointList";
+    JSSVGPointListClassDefine.finalizer = JSSVGPointList::finalizer;
+    JSSVGPointListClassDefine.gc_mark = JSSVGPointList::mark;
+}
 
 JSClassID JSSVGPointList::js_class_id = 0;
 
 void JSSVGPointList::init(JSContext* ctx)
 {
     if (JSSVGPointList::js_class_id == 0) {
+        init_JSSVGPointListClassDefine();
         JS_NewClassID(&JSSVGPointList::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPointList::js_class_id, &JSSVGPointListClassDefine);
         JS_SetClassProto(ctx, JSSVGPointList::js_class_id, JSSVGPointListPrototype::self(ctx));

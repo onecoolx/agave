@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -63,34 +65,147 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPolylineElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPolylineElementAttributesFunctions[13];
+static bool JSSVGPolylineElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGPolylineElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("transform", JSSVGPolylineElement::getValueProperty, NULL, JSSVGPolylineElement::TransformAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGPolylineElement::getValueProperty, JSSVGPolylineElement::putValueProperty, JSSVGPolylineElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGPolylineElement::getValueProperty, NULL, JSSVGPolylineElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("farthestViewportElement", JSSVGPolylineElement::getValueProperty, NULL, JSSVGPolylineElement::FarthestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGPolylineElement::getValueProperty, NULL, JSSVGPolylineElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGPolylineElement::getValueProperty, NULL, JSSVGPolylineElement::SystemLanguageAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGPolylineElement::getValueProperty, NULL, JSSVGPolylineElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGPolylineElement::getValueProperty, NULL, JSSVGPolylineElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGPolylineElement::getValueProperty, NULL, JSSVGPolylineElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGPolylineElement::getValueProperty, JSSVGPolylineElement::putValueProperty, JSSVGPolylineElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("nearestViewportElement", JSSVGPolylineElement::getValueProperty, NULL, JSSVGPolylineElement::NearestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("points", JSSVGPolylineElement::getValueProperty, NULL, JSSVGPolylineElement::PointsAttrNum),
-    JS_CGETSET_MAGIC_DEF("animatedPoints", JSSVGPolylineElement::getValueProperty, NULL, JSSVGPolylineElement::AnimatedPointsAttrNum)
-};
+    if (JSSVGPolylineElementAttributesFunctions_initialized) return;
+    JSSVGPolylineElementAttributesFunctions_initialized = true;
+    memset(JSSVGPolylineElementAttributesFunctions, 0, sizeof(JSSVGPolylineElementAttributesFunctions));
+    JSSVGPolylineElementAttributesFunctions[0].name = "transform";
+    JSSVGPolylineElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolylineElementAttributesFunctions[0].magic = JSSVGPolylineElement::TransformAttrNum;
+    JSSVGPolylineElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPolylineElement::getValueProperty;
+    JSSVGPolylineElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGPolylineElementAttributesFunctions[1].name = "xmlspace";
+    JSSVGPolylineElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolylineElementAttributesFunctions[1].magic = JSSVGPolylineElement::XmlspaceAttrNum;
+    JSSVGPolylineElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPolylineElement::getValueProperty;
+    JSSVGPolylineElementAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPolylineElement::putValueProperty;
+    JSSVGPolylineElementAttributesFunctions[2].name = "requiredFeatures";
+    JSSVGPolylineElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolylineElementAttributesFunctions[2].magic = JSSVGPolylineElement::RequiredFeaturesAttrNum;
+    JSSVGPolylineElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGPolylineElement::getValueProperty;
+    JSSVGPolylineElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGPolylineElementAttributesFunctions[3].name = "farthestViewportElement";
+    JSSVGPolylineElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolylineElementAttributesFunctions[3].magic = JSSVGPolylineElement::FarthestViewportElementAttrNum;
+    JSSVGPolylineElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGPolylineElement::getValueProperty;
+    JSSVGPolylineElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGPolylineElementAttributesFunctions[4].name = "style";
+    JSSVGPolylineElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolylineElementAttributesFunctions[4].magic = JSSVGPolylineElement::StyleAttrNum;
+    JSSVGPolylineElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGPolylineElement::getValueProperty;
+    JSSVGPolylineElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGPolylineElementAttributesFunctions[5].name = "systemLanguage";
+    JSSVGPolylineElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolylineElementAttributesFunctions[5].magic = JSSVGPolylineElement::SystemLanguageAttrNum;
+    JSSVGPolylineElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGPolylineElement::getValueProperty;
+    JSSVGPolylineElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGPolylineElementAttributesFunctions[6].name = "className";
+    JSSVGPolylineElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolylineElementAttributesFunctions[6].magic = JSSVGPolylineElement::ClassNameAttrNum;
+    JSSVGPolylineElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGPolylineElement::getValueProperty;
+    JSSVGPolylineElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGPolylineElementAttributesFunctions[7].name = "externalResourcesRequired";
+    JSSVGPolylineElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolylineElementAttributesFunctions[7].magic = JSSVGPolylineElement::ExternalResourcesRequiredAttrNum;
+    JSSVGPolylineElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGPolylineElement::getValueProperty;
+    JSSVGPolylineElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGPolylineElementAttributesFunctions[8].name = "requiredExtensions";
+    JSSVGPolylineElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolylineElementAttributesFunctions[8].magic = JSSVGPolylineElement::RequiredExtensionsAttrNum;
+    JSSVGPolylineElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGPolylineElement::getValueProperty;
+    JSSVGPolylineElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGPolylineElementAttributesFunctions[9].name = "xmllang";
+    JSSVGPolylineElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolylineElementAttributesFunctions[9].magic = JSSVGPolylineElement::XmllangAttrNum;
+    JSSVGPolylineElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGPolylineElement::getValueProperty;
+    JSSVGPolylineElementAttributesFunctions[9].u.getset.set.setter_magic = JSSVGPolylineElement::putValueProperty;
+    JSSVGPolylineElementAttributesFunctions[10].name = "nearestViewportElement";
+    JSSVGPolylineElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolylineElementAttributesFunctions[10].magic = JSSVGPolylineElement::NearestViewportElementAttrNum;
+    JSSVGPolylineElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGPolylineElement::getValueProperty;
+    JSSVGPolylineElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSSVGPolylineElementAttributesFunctions[11].name = "points";
+    JSSVGPolylineElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolylineElementAttributesFunctions[11].magic = JSSVGPolylineElement::PointsAttrNum;
+    JSSVGPolylineElementAttributesFunctions[11].u.getset.get.getter_magic = JSSVGPolylineElement::getValueProperty;
+    JSSVGPolylineElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSSVGPolylineElementAttributesFunctions[12].name = "animatedPoints";
+    JSSVGPolylineElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolylineElementAttributesFunctions[12].magic = JSSVGPolylineElement::AnimatedPointsAttrNum;
+    JSSVGPolylineElementAttributesFunctions[12].u.getset.get.getter_magic = JSSVGPolylineElement::getValueProperty;
+    JSSVGPolylineElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGPolylineElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGPolylineElementPrototypeFunctions[6];
+static bool JSSVGPolylineElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGPolylineElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGPolylineElementPrototypeFunction::callAsFunction, JSSVGPolylineElement::GetPresentationAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGPolylineElementPrototypeFunction::callAsFunction, JSSVGPolylineElement::HasExtensionFuncNum),
-    JS_CFUNC_MAGIC_DEF("getCTM", 0, JSSVGPolylineElementPrototypeFunction::callAsFunction, JSSVGPolylineElement::GetCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getScreenCTM", 0, JSSVGPolylineElementPrototypeFunction::callAsFunction, JSSVGPolylineElement::GetScreenCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getTransformToElement", 1, JSSVGPolylineElementPrototypeFunction::callAsFunction, JSSVGPolylineElement::GetTransformToElementFuncNum),
-    JS_CFUNC_MAGIC_DEF("getBBox", 0, JSSVGPolylineElementPrototypeFunction::callAsFunction, JSSVGPolylineElement::GetBBoxFuncNum)
-};
+    if (JSSVGPolylineElementPrototypeFunctions_initialized) return;
+    JSSVGPolylineElementPrototypeFunctions_initialized = true;
+    memset(JSSVGPolylineElementPrototypeFunctions, 0, sizeof(JSSVGPolylineElementPrototypeFunctions));
+    JSSVGPolylineElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGPolylineElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGPolylineElementPrototypeFunctions[0].magic = JSSVGPolylineElement::GetPresentationAttributeFuncNum;
+    JSSVGPolylineElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGPolylineElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPolylineElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGPolylineElementPrototypeFunction::callAsFunction;
+    JSSVGPolylineElementPrototypeFunctions[1].name = "hasExtension";
+    JSSVGPolylineElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGPolylineElementPrototypeFunctions[1].magic = JSSVGPolylineElement::HasExtensionFuncNum;
+    JSSVGPolylineElementPrototypeFunctions[1].u.func.length = 1;
+    JSSVGPolylineElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPolylineElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGPolylineElementPrototypeFunction::callAsFunction;
+    JSSVGPolylineElementPrototypeFunctions[2].name = "getCTM";
+    JSSVGPolylineElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGPolylineElementPrototypeFunctions[2].magic = JSSVGPolylineElement::GetCTMFuncNum;
+    JSSVGPolylineElementPrototypeFunctions[2].u.func.length = 0;
+    JSSVGPolylineElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPolylineElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGPolylineElementPrototypeFunction::callAsFunction;
+    JSSVGPolylineElementPrototypeFunctions[3].name = "getScreenCTM";
+    JSSVGPolylineElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGPolylineElementPrototypeFunctions[3].magic = JSSVGPolylineElement::GetScreenCTMFuncNum;
+    JSSVGPolylineElementPrototypeFunctions[3].u.func.length = 0;
+    JSSVGPolylineElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPolylineElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGPolylineElementPrototypeFunction::callAsFunction;
+    JSSVGPolylineElementPrototypeFunctions[4].name = "getTransformToElement";
+    JSSVGPolylineElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGPolylineElementPrototypeFunctions[4].magic = JSSVGPolylineElement::GetTransformToElementFuncNum;
+    JSSVGPolylineElementPrototypeFunctions[4].u.func.length = 1;
+    JSSVGPolylineElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPolylineElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGPolylineElementPrototypeFunction::callAsFunction;
+    JSSVGPolylineElementPrototypeFunctions[5].name = "getBBox";
+    JSSVGPolylineElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPolylineElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGPolylineElementPrototypeFunctions[5].magic = JSSVGPolylineElement::GetBBoxFuncNum;
+    JSSVGPolylineElementPrototypeFunctions[5].u.func.length = 0;
+    JSSVGPolylineElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPolylineElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGPolylineElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGPolylineElementPrototype::self(JSContext * ctx)
 {
@@ -108,22 +223,31 @@ JSValue JSSVGPolylineElementPrototype::self(JSContext * ctx)
 
 void JSSVGPolylineElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPolylineElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPolylineElementAttributesFunctions, countof(JSSVGPolylineElementAttributesFunctions));
+    init_JSSVGPolylineElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPolylineElementPrototypeFunctions, countof(JSSVGPolylineElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGPolylineElementClassDefine = 
+static JSClassDef JSSVGPolylineElementClassDefine;
+static bool JSSVGPolylineElementClassDefine_initialized = false;
+
+static void init_JSSVGPolylineElementClassDefine()
 {
-    "SVGPolylineElement",
-    .finalizer = JSSVGPolylineElement::finalizer,
-    .gc_mark = JSSVGPolylineElement::mark,
-};
+    if (JSSVGPolylineElementClassDefine_initialized) return;
+    JSSVGPolylineElementClassDefine_initialized = true;
+    memset(&JSSVGPolylineElementClassDefine, 0, sizeof(JSSVGPolylineElementClassDefine));
+    JSSVGPolylineElementClassDefine.class_name = "SVGPolylineElement";
+    JSSVGPolylineElementClassDefine.finalizer = JSSVGPolylineElement::finalizer;
+    JSSVGPolylineElementClassDefine.gc_mark = JSSVGPolylineElement::mark;
+}
 
 JSClassID JSSVGPolylineElement::js_class_id = 0;
 
 void JSSVGPolylineElement::init(JSContext* ctx)
 {
     if (JSSVGPolylineElement::js_class_id == 0) {
+        init_JSSVGPolylineElementClassDefine();
         JS_NewClassID(&JSSVGPolylineElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPolylineElement::js_class_id, &JSSVGPolylineElementClassDefine);
         JS_SetClassProto(ctx, JSSVGPolylineElement::js_class_id, JSSVGPolylineElementPrototype::self(ctx));

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -53,23 +55,76 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFEMergeElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFEMergeElementAttributesFunctions[7];
+static bool JSSVGFEMergeElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFEMergeElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("width", JSSVGFEMergeElement::getValueProperty, NULL, JSSVGFEMergeElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFEMergeElement::getValueProperty, NULL, JSSVGFEMergeElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFEMergeElement::getValueProperty, NULL, JSSVGFEMergeElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("result", JSSVGFEMergeElement::getValueProperty, NULL, JSSVGFEMergeElement::ResultAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGFEMergeElement::getValueProperty, NULL, JSSVGFEMergeElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGFEMergeElement::getValueProperty, NULL, JSSVGFEMergeElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGFEMergeElement::getValueProperty, NULL, JSSVGFEMergeElement::StyleAttrNum)
-};
+    if (JSSVGFEMergeElementAttributesFunctions_initialized) return;
+    JSSVGFEMergeElementAttributesFunctions_initialized = true;
+    memset(JSSVGFEMergeElementAttributesFunctions, 0, sizeof(JSSVGFEMergeElementAttributesFunctions));
+    JSSVGFEMergeElementAttributesFunctions[0].name = "width";
+    JSSVGFEMergeElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEMergeElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEMergeElementAttributesFunctions[0].magic = JSSVGFEMergeElement::WidthAttrNum;
+    JSSVGFEMergeElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFEMergeElement::getValueProperty;
+    JSSVGFEMergeElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEMergeElementAttributesFunctions[1].name = "x";
+    JSSVGFEMergeElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEMergeElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEMergeElementAttributesFunctions[1].magic = JSSVGFEMergeElement::XAttrNum;
+    JSSVGFEMergeElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFEMergeElement::getValueProperty;
+    JSSVGFEMergeElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEMergeElementAttributesFunctions[2].name = "y";
+    JSSVGFEMergeElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEMergeElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEMergeElementAttributesFunctions[2].magic = JSSVGFEMergeElement::YAttrNum;
+    JSSVGFEMergeElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFEMergeElement::getValueProperty;
+    JSSVGFEMergeElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEMergeElementAttributesFunctions[3].name = "result";
+    JSSVGFEMergeElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEMergeElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEMergeElementAttributesFunctions[3].magic = JSSVGFEMergeElement::ResultAttrNum;
+    JSSVGFEMergeElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGFEMergeElement::getValueProperty;
+    JSSVGFEMergeElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFEMergeElementAttributesFunctions[4].name = "height";
+    JSSVGFEMergeElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEMergeElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEMergeElementAttributesFunctions[4].magic = JSSVGFEMergeElement::HeightAttrNum;
+    JSSVGFEMergeElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGFEMergeElement::getValueProperty;
+    JSSVGFEMergeElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFEMergeElementAttributesFunctions[5].name = "className";
+    JSSVGFEMergeElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEMergeElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEMergeElementAttributesFunctions[5].magic = JSSVGFEMergeElement::ClassNameAttrNum;
+    JSSVGFEMergeElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGFEMergeElement::getValueProperty;
+    JSSVGFEMergeElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFEMergeElementAttributesFunctions[6].name = "style";
+    JSSVGFEMergeElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEMergeElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEMergeElementAttributesFunctions[6].magic = JSSVGFEMergeElement::StyleAttrNum;
+    JSSVGFEMergeElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGFEMergeElement::getValueProperty;
+    JSSVGFEMergeElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGFEMergeElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGFEMergeElementPrototypeFunctions[1];
+static bool JSSVGFEMergeElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGFEMergeElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGFEMergeElementPrototypeFunction::callAsFunction, JSSVGFEMergeElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGFEMergeElementPrototypeFunctions_initialized) return;
+    JSSVGFEMergeElementPrototypeFunctions_initialized = true;
+    memset(JSSVGFEMergeElementPrototypeFunctions, 0, sizeof(JSSVGFEMergeElementPrototypeFunctions));
+    JSSVGFEMergeElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGFEMergeElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFEMergeElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGFEMergeElementPrototypeFunctions[0].magic = JSSVGFEMergeElement::GetPresentationAttributeFuncNum;
+    JSSVGFEMergeElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGFEMergeElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFEMergeElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGFEMergeElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGFEMergeElementPrototype::self(JSContext * ctx)
 {
@@ -87,22 +142,31 @@ JSValue JSSVGFEMergeElementPrototype::self(JSContext * ctx)
 
 void JSSVGFEMergeElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFEMergeElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEMergeElementAttributesFunctions, countof(JSSVGFEMergeElementAttributesFunctions));
+    init_JSSVGFEMergeElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEMergeElementPrototypeFunctions, countof(JSSVGFEMergeElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGFEMergeElementClassDefine = 
+static JSClassDef JSSVGFEMergeElementClassDefine;
+static bool JSSVGFEMergeElementClassDefine_initialized = false;
+
+static void init_JSSVGFEMergeElementClassDefine()
 {
-    "SVGFEMergeElement",
-    .finalizer = JSSVGFEMergeElement::finalizer,
-    .gc_mark = JSSVGFEMergeElement::mark,
-};
+    if (JSSVGFEMergeElementClassDefine_initialized) return;
+    JSSVGFEMergeElementClassDefine_initialized = true;
+    memset(&JSSVGFEMergeElementClassDefine, 0, sizeof(JSSVGFEMergeElementClassDefine));
+    JSSVGFEMergeElementClassDefine.class_name = "SVGFEMergeElement";
+    JSSVGFEMergeElementClassDefine.finalizer = JSSVGFEMergeElement::finalizer;
+    JSSVGFEMergeElementClassDefine.gc_mark = JSSVGFEMergeElement::mark;
+}
 
 JSClassID JSSVGFEMergeElement::js_class_id = 0;
 
 void JSSVGFEMergeElement::init(JSContext* ctx)
 {
     if (JSSVGFEMergeElement::js_class_id == 0) {
+        init_JSSVGFEMergeElementClassDefine();
         JS_NewClassID(&JSSVGFEMergeElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFEMergeElement::js_class_id, &JSSVGFEMergeElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFEMergeElement::js_class_id, JSSVGFEMergeElementPrototype::self(ctx));

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -94,59 +96,319 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPathElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPathElementAttributesFunctions[16];
+static bool JSSVGPathElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGPathElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGPathElement::getValueProperty, NULL, JSSVGPathElement::SystemLanguageAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGPathElement::getValueProperty, NULL, JSSVGPathElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGPathElement::getValueProperty, NULL, JSSVGPathElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGPathElement::getValueProperty, NULL, JSSVGPathElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("farthestViewportElement", JSSVGPathElement::getValueProperty, NULL, JSSVGPathElement::FarthestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGPathElement::getValueProperty, JSSVGPathElement::putValueProperty, JSSVGPathElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGPathElement::getValueProperty, NULL, JSSVGPathElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("pathLength", JSSVGPathElement::getValueProperty, NULL, JSSVGPathElement::PathLengthAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGPathElement::getValueProperty, NULL, JSSVGPathElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("pathSegList", JSSVGPathElement::getValueProperty, NULL, JSSVGPathElement::PathSegListAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGPathElement::getValueProperty, JSSVGPathElement::putValueProperty, JSSVGPathElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("transform", JSSVGPathElement::getValueProperty, NULL, JSSVGPathElement::TransformAttrNum),
-    JS_CGETSET_MAGIC_DEF("nearestViewportElement", JSSVGPathElement::getValueProperty, NULL, JSSVGPathElement::NearestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("normalizedPathSegList", JSSVGPathElement::getValueProperty, NULL, JSSVGPathElement::NormalizedPathSegListAttrNum),
-    JS_CGETSET_MAGIC_DEF("animatedPathSegList", JSSVGPathElement::getValueProperty, NULL, JSSVGPathElement::AnimatedPathSegListAttrNum),
-    JS_CGETSET_MAGIC_DEF("animatedNormalizedPathSegList", JSSVGPathElement::getValueProperty, NULL, JSSVGPathElement::AnimatedNormalizedPathSegListAttrNum)
-};
+    if (JSSVGPathElementAttributesFunctions_initialized) return;
+    JSSVGPathElementAttributesFunctions_initialized = true;
+    memset(JSSVGPathElementAttributesFunctions, 0, sizeof(JSSVGPathElementAttributesFunctions));
+    JSSVGPathElementAttributesFunctions[0].name = "systemLanguage";
+    JSSVGPathElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[0].magic = JSSVGPathElement::SystemLanguageAttrNum;
+    JSSVGPathElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGPathElementAttributesFunctions[1].name = "externalResourcesRequired";
+    JSSVGPathElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[1].magic = JSSVGPathElement::ExternalResourcesRequiredAttrNum;
+    JSSVGPathElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGPathElementAttributesFunctions[2].name = "className";
+    JSSVGPathElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[2].magic = JSSVGPathElement::ClassNameAttrNum;
+    JSSVGPathElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGPathElementAttributesFunctions[3].name = "requiredFeatures";
+    JSSVGPathElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[3].magic = JSSVGPathElement::RequiredFeaturesAttrNum;
+    JSSVGPathElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGPathElementAttributesFunctions[4].name = "farthestViewportElement";
+    JSSVGPathElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[4].magic = JSSVGPathElement::FarthestViewportElementAttrNum;
+    JSSVGPathElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGPathElementAttributesFunctions[5].name = "xmllang";
+    JSSVGPathElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[5].magic = JSSVGPathElement::XmllangAttrNum;
+    JSSVGPathElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[5].u.getset.set.setter_magic = JSSVGPathElement::putValueProperty;
+    JSSVGPathElementAttributesFunctions[6].name = "requiredExtensions";
+    JSSVGPathElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[6].magic = JSSVGPathElement::RequiredExtensionsAttrNum;
+    JSSVGPathElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGPathElementAttributesFunctions[7].name = "pathLength";
+    JSSVGPathElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[7].magic = JSSVGPathElement::PathLengthAttrNum;
+    JSSVGPathElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGPathElementAttributesFunctions[8].name = "style";
+    JSSVGPathElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[8].magic = JSSVGPathElement::StyleAttrNum;
+    JSSVGPathElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGPathElementAttributesFunctions[9].name = "pathSegList";
+    JSSVGPathElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[9].magic = JSSVGPathElement::PathSegListAttrNum;
+    JSSVGPathElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGPathElementAttributesFunctions[10].name = "xmlspace";
+    JSSVGPathElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[10].magic = JSSVGPathElement::XmlspaceAttrNum;
+    JSSVGPathElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[10].u.getset.set.setter_magic = JSSVGPathElement::putValueProperty;
+    JSSVGPathElementAttributesFunctions[11].name = "transform";
+    JSSVGPathElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[11].magic = JSSVGPathElement::TransformAttrNum;
+    JSSVGPathElementAttributesFunctions[11].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSSVGPathElementAttributesFunctions[12].name = "nearestViewportElement";
+    JSSVGPathElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[12].magic = JSSVGPathElement::NearestViewportElementAttrNum;
+    JSSVGPathElementAttributesFunctions[12].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSSVGPathElementAttributesFunctions[13].name = "normalizedPathSegList";
+    JSSVGPathElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[13].magic = JSSVGPathElement::NormalizedPathSegListAttrNum;
+    JSSVGPathElementAttributesFunctions[13].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[13].u.getset.set.setter_magic = NULL;
+    JSSVGPathElementAttributesFunctions[14].name = "animatedPathSegList";
+    JSSVGPathElementAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[14].magic = JSSVGPathElement::AnimatedPathSegListAttrNum;
+    JSSVGPathElementAttributesFunctions[14].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[14].u.getset.set.setter_magic = NULL;
+    JSSVGPathElementAttributesFunctions[15].name = "animatedNormalizedPathSegList";
+    JSSVGPathElementAttributesFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathElementAttributesFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathElementAttributesFunctions[15].magic = JSSVGPathElement::AnimatedNormalizedPathSegListAttrNum;
+    JSSVGPathElementAttributesFunctions[15].u.getset.get.getter_magic = JSSVGPathElement::getValueProperty;
+    JSSVGPathElementAttributesFunctions[15].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGPathElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGPathElementPrototypeFunctions[28];
+static bool JSSVGPathElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGPathElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegMovetoAbs", 2, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegMovetoAbsFuncNum),
-    JS_CFUNC_MAGIC_DEF("getTotalLength", 0, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::GetTotalLengthFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegMovetoRel", 2, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegMovetoRelFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegCurvetoCubicRel", 6, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegCurvetoCubicRelFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegClosePath", 0, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegClosePathFuncNum),
-    JS_CFUNC_MAGIC_DEF("getPathSegAtLength", 1, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::GetPathSegAtLengthFuncNum),
-    JS_CFUNC_MAGIC_DEF("getTransformToElement", 1, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::GetTransformToElementFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegCurvetoQuadraticSmoothRel", 2, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegCurvetoQuadraticSmoothRelFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegLinetoHorizontalAbs", 1, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegLinetoHorizontalAbsFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegCurvetoCubicAbs", 6, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegCurvetoCubicAbsFuncNum),
-    JS_CFUNC_MAGIC_DEF("getScreenCTM", 0, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::GetScreenCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegCurvetoCubicSmoothRel", 4, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegCurvetoCubicSmoothRelFuncNum),
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::GetPresentationAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegCurvetoQuadraticAbs", 4, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegCurvetoQuadraticAbsFuncNum),
-    JS_CFUNC_MAGIC_DEF("getPointAtLength", 1, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::GetPointAtLengthFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegArcAbs", 7, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegArcAbsFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegLinetoRel", 2, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegLinetoRelFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::HasExtensionFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegCurvetoQuadraticSmoothAbs", 2, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegCurvetoQuadraticSmoothAbsFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegCurvetoCubicSmoothAbs", 4, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegCurvetoCubicSmoothAbsFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegLinetoAbs", 2, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegLinetoAbsFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegCurvetoQuadraticRel", 4, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegCurvetoQuadraticRelFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegArcRel", 7, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegArcRelFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegLinetoHorizontalRel", 1, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegLinetoHorizontalRelFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegLinetoVerticalAbs", 1, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegLinetoVerticalAbsFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGPathSegLinetoVerticalRel", 1, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::CreateSVGPathSegLinetoVerticalRelFuncNum),
-    JS_CFUNC_MAGIC_DEF("getBBox", 0, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::GetBBoxFuncNum),
-    JS_CFUNC_MAGIC_DEF("getCTM", 0, JSSVGPathElementPrototypeFunction::callAsFunction, JSSVGPathElement::GetCTMFuncNum)
-};
+    if (JSSVGPathElementPrototypeFunctions_initialized) return;
+    JSSVGPathElementPrototypeFunctions_initialized = true;
+    memset(JSSVGPathElementPrototypeFunctions, 0, sizeof(JSSVGPathElementPrototypeFunctions));
+    JSSVGPathElementPrototypeFunctions[0].name = "createSVGPathSegMovetoAbs";
+    JSSVGPathElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[0].magic = JSSVGPathElement::CreateSVGPathSegMovetoAbsFuncNum;
+    JSSVGPathElementPrototypeFunctions[0].u.func.length = 2;
+    JSSVGPathElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[1].name = "getTotalLength";
+    JSSVGPathElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[1].magic = JSSVGPathElement::GetTotalLengthFuncNum;
+    JSSVGPathElementPrototypeFunctions[1].u.func.length = 0;
+    JSSVGPathElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[2].name = "createSVGPathSegMovetoRel";
+    JSSVGPathElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[2].magic = JSSVGPathElement::CreateSVGPathSegMovetoRelFuncNum;
+    JSSVGPathElementPrototypeFunctions[2].u.func.length = 2;
+    JSSVGPathElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[3].name = "createSVGPathSegCurvetoCubicRel";
+    JSSVGPathElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[3].magic = JSSVGPathElement::CreateSVGPathSegCurvetoCubicRelFuncNum;
+    JSSVGPathElementPrototypeFunctions[3].u.func.length = 6;
+    JSSVGPathElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[4].name = "createSVGPathSegClosePath";
+    JSSVGPathElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[4].magic = JSSVGPathElement::CreateSVGPathSegClosePathFuncNum;
+    JSSVGPathElementPrototypeFunctions[4].u.func.length = 0;
+    JSSVGPathElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[5].name = "getPathSegAtLength";
+    JSSVGPathElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[5].magic = JSSVGPathElement::GetPathSegAtLengthFuncNum;
+    JSSVGPathElementPrototypeFunctions[5].u.func.length = 1;
+    JSSVGPathElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[6].name = "getTransformToElement";
+    JSSVGPathElementPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[6].magic = JSSVGPathElement::GetTransformToElementFuncNum;
+    JSSVGPathElementPrototypeFunctions[6].u.func.length = 1;
+    JSSVGPathElementPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[6].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[7].name = "createSVGPathSegCurvetoQuadraticSmoothRel";
+    JSSVGPathElementPrototypeFunctions[7].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[7].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[7].magic = JSSVGPathElement::CreateSVGPathSegCurvetoQuadraticSmoothRelFuncNum;
+    JSSVGPathElementPrototypeFunctions[7].u.func.length = 2;
+    JSSVGPathElementPrototypeFunctions[7].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[7].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[8].name = "createSVGPathSegLinetoHorizontalAbs";
+    JSSVGPathElementPrototypeFunctions[8].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[8].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[8].magic = JSSVGPathElement::CreateSVGPathSegLinetoHorizontalAbsFuncNum;
+    JSSVGPathElementPrototypeFunctions[8].u.func.length = 1;
+    JSSVGPathElementPrototypeFunctions[8].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[8].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[9].name = "createSVGPathSegCurvetoCubicAbs";
+    JSSVGPathElementPrototypeFunctions[9].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[9].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[9].magic = JSSVGPathElement::CreateSVGPathSegCurvetoCubicAbsFuncNum;
+    JSSVGPathElementPrototypeFunctions[9].u.func.length = 6;
+    JSSVGPathElementPrototypeFunctions[9].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[9].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[10].name = "getScreenCTM";
+    JSSVGPathElementPrototypeFunctions[10].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[10].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[10].magic = JSSVGPathElement::GetScreenCTMFuncNum;
+    JSSVGPathElementPrototypeFunctions[10].u.func.length = 0;
+    JSSVGPathElementPrototypeFunctions[10].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[10].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[11].name = "createSVGPathSegCurvetoCubicSmoothRel";
+    JSSVGPathElementPrototypeFunctions[11].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[11].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[11].magic = JSSVGPathElement::CreateSVGPathSegCurvetoCubicSmoothRelFuncNum;
+    JSSVGPathElementPrototypeFunctions[11].u.func.length = 4;
+    JSSVGPathElementPrototypeFunctions[11].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[11].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[12].name = "getPresentationAttribute";
+    JSSVGPathElementPrototypeFunctions[12].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[12].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[12].magic = JSSVGPathElement::GetPresentationAttributeFuncNum;
+    JSSVGPathElementPrototypeFunctions[12].u.func.length = 1;
+    JSSVGPathElementPrototypeFunctions[12].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[12].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[13].name = "createSVGPathSegCurvetoQuadraticAbs";
+    JSSVGPathElementPrototypeFunctions[13].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[13].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[13].magic = JSSVGPathElement::CreateSVGPathSegCurvetoQuadraticAbsFuncNum;
+    JSSVGPathElementPrototypeFunctions[13].u.func.length = 4;
+    JSSVGPathElementPrototypeFunctions[13].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[13].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[14].name = "getPointAtLength";
+    JSSVGPathElementPrototypeFunctions[14].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[14].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[14].magic = JSSVGPathElement::GetPointAtLengthFuncNum;
+    JSSVGPathElementPrototypeFunctions[14].u.func.length = 1;
+    JSSVGPathElementPrototypeFunctions[14].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[14].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[15].name = "createSVGPathSegArcAbs";
+    JSSVGPathElementPrototypeFunctions[15].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[15].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[15].magic = JSSVGPathElement::CreateSVGPathSegArcAbsFuncNum;
+    JSSVGPathElementPrototypeFunctions[15].u.func.length = 7;
+    JSSVGPathElementPrototypeFunctions[15].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[15].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[16].name = "createSVGPathSegLinetoRel";
+    JSSVGPathElementPrototypeFunctions[16].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[16].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[16].magic = JSSVGPathElement::CreateSVGPathSegLinetoRelFuncNum;
+    JSSVGPathElementPrototypeFunctions[16].u.func.length = 2;
+    JSSVGPathElementPrototypeFunctions[16].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[16].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[17].name = "hasExtension";
+    JSSVGPathElementPrototypeFunctions[17].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[17].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[17].magic = JSSVGPathElement::HasExtensionFuncNum;
+    JSSVGPathElementPrototypeFunctions[17].u.func.length = 1;
+    JSSVGPathElementPrototypeFunctions[17].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[17].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[18].name = "createSVGPathSegCurvetoQuadraticSmoothAbs";
+    JSSVGPathElementPrototypeFunctions[18].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[18].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[18].magic = JSSVGPathElement::CreateSVGPathSegCurvetoQuadraticSmoothAbsFuncNum;
+    JSSVGPathElementPrototypeFunctions[18].u.func.length = 2;
+    JSSVGPathElementPrototypeFunctions[18].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[18].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[19].name = "createSVGPathSegCurvetoCubicSmoothAbs";
+    JSSVGPathElementPrototypeFunctions[19].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[19].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[19].magic = JSSVGPathElement::CreateSVGPathSegCurvetoCubicSmoothAbsFuncNum;
+    JSSVGPathElementPrototypeFunctions[19].u.func.length = 4;
+    JSSVGPathElementPrototypeFunctions[19].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[19].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[20].name = "createSVGPathSegLinetoAbs";
+    JSSVGPathElementPrototypeFunctions[20].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[20].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[20].magic = JSSVGPathElement::CreateSVGPathSegLinetoAbsFuncNum;
+    JSSVGPathElementPrototypeFunctions[20].u.func.length = 2;
+    JSSVGPathElementPrototypeFunctions[20].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[20].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[21].name = "createSVGPathSegCurvetoQuadraticRel";
+    JSSVGPathElementPrototypeFunctions[21].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[21].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[21].magic = JSSVGPathElement::CreateSVGPathSegCurvetoQuadraticRelFuncNum;
+    JSSVGPathElementPrototypeFunctions[21].u.func.length = 4;
+    JSSVGPathElementPrototypeFunctions[21].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[21].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[22].name = "createSVGPathSegArcRel";
+    JSSVGPathElementPrototypeFunctions[22].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[22].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[22].magic = JSSVGPathElement::CreateSVGPathSegArcRelFuncNum;
+    JSSVGPathElementPrototypeFunctions[22].u.func.length = 7;
+    JSSVGPathElementPrototypeFunctions[22].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[22].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[23].name = "createSVGPathSegLinetoHorizontalRel";
+    JSSVGPathElementPrototypeFunctions[23].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[23].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[23].magic = JSSVGPathElement::CreateSVGPathSegLinetoHorizontalRelFuncNum;
+    JSSVGPathElementPrototypeFunctions[23].u.func.length = 1;
+    JSSVGPathElementPrototypeFunctions[23].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[23].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[24].name = "createSVGPathSegLinetoVerticalAbs";
+    JSSVGPathElementPrototypeFunctions[24].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[24].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[24].magic = JSSVGPathElement::CreateSVGPathSegLinetoVerticalAbsFuncNum;
+    JSSVGPathElementPrototypeFunctions[24].u.func.length = 1;
+    JSSVGPathElementPrototypeFunctions[24].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[24].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[25].name = "createSVGPathSegLinetoVerticalRel";
+    JSSVGPathElementPrototypeFunctions[25].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[25].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[25].magic = JSSVGPathElement::CreateSVGPathSegLinetoVerticalRelFuncNum;
+    JSSVGPathElementPrototypeFunctions[25].u.func.length = 1;
+    JSSVGPathElementPrototypeFunctions[25].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[25].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[26].name = "getBBox";
+    JSSVGPathElementPrototypeFunctions[26].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[26].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[26].magic = JSSVGPathElement::GetBBoxFuncNum;
+    JSSVGPathElementPrototypeFunctions[26].u.func.length = 0;
+    JSSVGPathElementPrototypeFunctions[26].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[26].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+    JSSVGPathElementPrototypeFunctions[27].name = "getCTM";
+    JSSVGPathElementPrototypeFunctions[27].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathElementPrototypeFunctions[27].def_type = JS_DEF_CFUNC;
+    JSSVGPathElementPrototypeFunctions[27].magic = JSSVGPathElement::GetCTMFuncNum;
+    JSSVGPathElementPrototypeFunctions[27].u.func.length = 0;
+    JSSVGPathElementPrototypeFunctions[27].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathElementPrototypeFunctions[27].u.func.cfunc.generic_magic = JSSVGPathElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGPathElementPrototype::self(JSContext * ctx)
 {
@@ -164,22 +426,31 @@ JSValue JSSVGPathElementPrototype::self(JSContext * ctx)
 
 void JSSVGPathElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPathElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathElementAttributesFunctions, countof(JSSVGPathElementAttributesFunctions));
+    init_JSSVGPathElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathElementPrototypeFunctions, countof(JSSVGPathElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGPathElementClassDefine = 
+static JSClassDef JSSVGPathElementClassDefine;
+static bool JSSVGPathElementClassDefine_initialized = false;
+
+static void init_JSSVGPathElementClassDefine()
 {
-    "SVGPathElement",
-    .finalizer = JSSVGPathElement::finalizer,
-    .gc_mark = JSSVGPathElement::mark,
-};
+    if (JSSVGPathElementClassDefine_initialized) return;
+    JSSVGPathElementClassDefine_initialized = true;
+    memset(&JSSVGPathElementClassDefine, 0, sizeof(JSSVGPathElementClassDefine));
+    JSSVGPathElementClassDefine.class_name = "SVGPathElement";
+    JSSVGPathElementClassDefine.finalizer = JSSVGPathElement::finalizer;
+    JSSVGPathElementClassDefine.gc_mark = JSSVGPathElement::mark;
+}
 
 JSClassID JSSVGPathElement::js_class_id = 0;
 
 void JSSVGPathElement::init(JSContext* ctx)
 {
     if (JSSVGPathElement::js_class_id == 0) {
+        init_JSSVGPathElementClassDefine();
         JS_NewClassID(&JSSVGPathElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathElement::js_class_id, &JSSVGPathElementClassDefine);
         JS_SetClassProto(ctx, JSSVGPathElement::js_class_id, JSSVGPathElementPrototype::self(ctx));

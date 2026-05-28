@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,11 +48,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAnimatedLengthAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGAnimatedLengthAttributesFunctions[2];
+static bool JSSVGAnimatedLengthAttributesFunctions_initialized = false;
+
+static void init_JSSVGAnimatedLengthAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("baseVal", JSSVGAnimatedLength::getValueProperty, NULL, JSSVGAnimatedLength::BaseValAttrNum),
-    JS_CGETSET_MAGIC_DEF("animVal", JSSVGAnimatedLength::getValueProperty, NULL, JSSVGAnimatedLength::AnimValAttrNum)
-};
+    if (JSSVGAnimatedLengthAttributesFunctions_initialized) return;
+    JSSVGAnimatedLengthAttributesFunctions_initialized = true;
+    memset(JSSVGAnimatedLengthAttributesFunctions, 0, sizeof(JSSVGAnimatedLengthAttributesFunctions));
+    JSSVGAnimatedLengthAttributesFunctions[0].name = "baseVal";
+    JSSVGAnimatedLengthAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedLengthAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedLengthAttributesFunctions[0].magic = JSSVGAnimatedLength::BaseValAttrNum;
+    JSSVGAnimatedLengthAttributesFunctions[0].u.getset.get.getter_magic = JSSVGAnimatedLength::getValueProperty;
+    JSSVGAnimatedLengthAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGAnimatedLengthAttributesFunctions[1].name = "animVal";
+    JSSVGAnimatedLengthAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedLengthAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedLengthAttributesFunctions[1].magic = JSSVGAnimatedLength::AnimValAttrNum;
+    JSSVGAnimatedLengthAttributesFunctions[1].u.getset.get.getter_magic = JSSVGAnimatedLength::getValueProperty;
+    JSSVGAnimatedLengthAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGAnimatedLengthPrototype::self(JSContext * ctx)
 {
@@ -68,21 +86,29 @@ JSValue JSSVGAnimatedLengthPrototype::self(JSContext * ctx)
 
 void JSSVGAnimatedLengthPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAnimatedLengthAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnimatedLengthAttributesFunctions, countof(JSSVGAnimatedLengthAttributesFunctions));
 }
 
-static JSClassDef JSSVGAnimatedLengthClassDefine = 
+static JSClassDef JSSVGAnimatedLengthClassDefine;
+static bool JSSVGAnimatedLengthClassDefine_initialized = false;
+
+static void init_JSSVGAnimatedLengthClassDefine()
 {
-    "SVGAnimatedLength",
-    .finalizer = JSSVGAnimatedLength::finalizer,
-    .gc_mark = JSSVGAnimatedLength::mark,
-};
+    if (JSSVGAnimatedLengthClassDefine_initialized) return;
+    JSSVGAnimatedLengthClassDefine_initialized = true;
+    memset(&JSSVGAnimatedLengthClassDefine, 0, sizeof(JSSVGAnimatedLengthClassDefine));
+    JSSVGAnimatedLengthClassDefine.class_name = "SVGAnimatedLength";
+    JSSVGAnimatedLengthClassDefine.finalizer = JSSVGAnimatedLength::finalizer;
+    JSSVGAnimatedLengthClassDefine.gc_mark = JSSVGAnimatedLength::mark;
+}
 
 JSClassID JSSVGAnimatedLength::js_class_id = 0;
 
 void JSSVGAnimatedLength::init(JSContext* ctx)
 {
     if (JSSVGAnimatedLength::js_class_id == 0) {
+        init_JSSVGAnimatedLengthClassDefine();
         JS_NewClassID(&JSSVGAnimatedLength::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimatedLength::js_class_id, &JSSVGAnimatedLengthClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimatedLength::js_class_id, JSSVGAnimatedLengthPrototype::self(ctx));

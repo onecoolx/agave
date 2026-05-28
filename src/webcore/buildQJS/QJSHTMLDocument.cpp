@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLDocument.h"
 
 #include "Element.h"
@@ -43,24 +45,105 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLDocumentAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLDocumentAttributesFunctions[15];
+static bool JSHTMLDocumentAttributesFunctions_initialized = false;
+
+static void init_JSHTMLDocumentAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("bgColor", JSHTMLDocument::getValueProperty, JSHTMLDocument::putValueProperty, JSHTMLDocument::BgColorAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSHTMLDocument::getValueProperty, NULL, JSHTMLDocument::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSHTMLDocument::getValueProperty, NULL, JSHTMLDocument::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("plugins", JSHTMLDocument::getValueProperty, NULL, JSHTMLDocument::PluginsAttrNum),
-    JS_CGETSET_MAGIC_DEF("dir", JSHTMLDocument::getValueProperty, JSHTMLDocument::putValueProperty, JSHTMLDocument::DirAttrNum),
-    JS_CGETSET_MAGIC_DEF("embeds", JSHTMLDocument::getValueProperty, NULL, JSHTMLDocument::EmbedsAttrNum),
-    JS_CGETSET_MAGIC_DEF("vlinkColor", JSHTMLDocument::getValueProperty, JSHTMLDocument::putValueProperty, JSHTMLDocument::VlinkColorAttrNum),
-    JS_CGETSET_MAGIC_DEF("alinkColor", JSHTMLDocument::getValueProperty, JSHTMLDocument::putValueProperty, JSHTMLDocument::AlinkColorAttrNum),
-    JS_CGETSET_MAGIC_DEF("compatMode", JSHTMLDocument::getValueProperty, NULL, JSHTMLDocument::CompatModeAttrNum),
-    JS_CGETSET_MAGIC_DEF("scripts", JSHTMLDocument::getValueProperty, NULL, JSHTMLDocument::ScriptsAttrNum),
-    JS_CGETSET_MAGIC_DEF("all", JSHTMLDocument::getValueProperty, JSHTMLDocument::putValueProperty, JSHTMLDocument::AllAttrNum),
-    JS_CGETSET_MAGIC_DEF("designMode", JSHTMLDocument::getValueProperty, JSHTMLDocument::putValueProperty, JSHTMLDocument::DesignModeAttrNum),
-    JS_CGETSET_MAGIC_DEF("fgColor", JSHTMLDocument::getValueProperty, JSHTMLDocument::putValueProperty, JSHTMLDocument::FgColorAttrNum),
-    JS_CGETSET_MAGIC_DEF("linkColor", JSHTMLDocument::getValueProperty, JSHTMLDocument::putValueProperty, JSHTMLDocument::LinkColorAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLDocument::getValueProperty, NULL, JSHTMLDocument::ConstructorAttrNum)
-};
+    if (JSHTMLDocumentAttributesFunctions_initialized) return;
+    JSHTMLDocumentAttributesFunctions_initialized = true;
+    memset(JSHTMLDocumentAttributesFunctions, 0, sizeof(JSHTMLDocumentAttributesFunctions));
+    JSHTMLDocumentAttributesFunctions[0].name = "bgColor";
+    JSHTMLDocumentAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[0].magic = JSHTMLDocument::BgColorAttrNum;
+    JSHTMLDocumentAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLDocument::putValueProperty;
+    JSHTMLDocumentAttributesFunctions[1].name = "width";
+    JSHTMLDocumentAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[1].magic = JSHTMLDocument::WidthAttrNum;
+    JSHTMLDocumentAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSHTMLDocumentAttributesFunctions[2].name = "height";
+    JSHTMLDocumentAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[2].magic = JSHTMLDocument::HeightAttrNum;
+    JSHTMLDocumentAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSHTMLDocumentAttributesFunctions[3].name = "plugins";
+    JSHTMLDocumentAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[3].magic = JSHTMLDocument::PluginsAttrNum;
+    JSHTMLDocumentAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSHTMLDocumentAttributesFunctions[4].name = "dir";
+    JSHTMLDocumentAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[4].magic = JSHTMLDocument::DirAttrNum;
+    JSHTMLDocumentAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLDocument::putValueProperty;
+    JSHTMLDocumentAttributesFunctions[5].name = "embeds";
+    JSHTMLDocumentAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[5].magic = JSHTMLDocument::EmbedsAttrNum;
+    JSHTMLDocumentAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSHTMLDocumentAttributesFunctions[6].name = "vlinkColor";
+    JSHTMLDocumentAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[6].magic = JSHTMLDocument::VlinkColorAttrNum;
+    JSHTMLDocumentAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLDocument::putValueProperty;
+    JSHTMLDocumentAttributesFunctions[7].name = "alinkColor";
+    JSHTMLDocumentAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[7].magic = JSHTMLDocument::AlinkColorAttrNum;
+    JSHTMLDocumentAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLDocument::putValueProperty;
+    JSHTMLDocumentAttributesFunctions[8].name = "compatMode";
+    JSHTMLDocumentAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[8].magic = JSHTMLDocument::CompatModeAttrNum;
+    JSHTMLDocumentAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSHTMLDocumentAttributesFunctions[9].name = "scripts";
+    JSHTMLDocumentAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[9].magic = JSHTMLDocument::ScriptsAttrNum;
+    JSHTMLDocumentAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSHTMLDocumentAttributesFunctions[10].name = "all";
+    JSHTMLDocumentAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[10].magic = JSHTMLDocument::AllAttrNum;
+    JSHTMLDocumentAttributesFunctions[10].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[10].u.getset.set.setter_magic = JSHTMLDocument::putValueProperty;
+    JSHTMLDocumentAttributesFunctions[11].name = "designMode";
+    JSHTMLDocumentAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[11].magic = JSHTMLDocument::DesignModeAttrNum;
+    JSHTMLDocumentAttributesFunctions[11].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[11].u.getset.set.setter_magic = JSHTMLDocument::putValueProperty;
+    JSHTMLDocumentAttributesFunctions[12].name = "fgColor";
+    JSHTMLDocumentAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[12].magic = JSHTMLDocument::FgColorAttrNum;
+    JSHTMLDocumentAttributesFunctions[12].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[12].u.getset.set.setter_magic = JSHTMLDocument::putValueProperty;
+    JSHTMLDocumentAttributesFunctions[13].name = "linkColor";
+    JSHTMLDocumentAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[13].magic = JSHTMLDocument::LinkColorAttrNum;
+    JSHTMLDocumentAttributesFunctions[13].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[13].u.getset.set.setter_magic = JSHTMLDocument::putValueProperty;
+    JSHTMLDocumentAttributesFunctions[14].name = "constructor";
+    JSHTMLDocumentAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDocumentAttributesFunctions[14].magic = JSHTMLDocument::ConstructorAttrNum;
+    JSHTMLDocumentAttributesFunctions[14].u.getset.get.getter_magic = JSHTMLDocument::getValueProperty;
+    JSHTMLDocumentAttributesFunctions[14].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLDocumentConstructor {
 public:
@@ -95,17 +178,71 @@ void JSHTMLDocumentConstructor::initConstructor(JSContext * ctx, JSValue this_ob
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHTMLDocumentPrototypeFunctions[] =
+static JSCFunctionListEntry JSHTMLDocumentPrototypeFunctions[8];
+static bool JSHTMLDocumentPrototypeFunctions_initialized = false;
+
+static void init_JSHTMLDocumentPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getElementById", 1, JSHTMLDocumentPrototypeFunction::callAsFunction, JSHTMLDocument::GetElementByIdFuncNum),
-    JS_CFUNC_MAGIC_DEF("close", 0, JSHTMLDocumentPrototypeFunction::callAsFunction, JSHTMLDocument::CloseFuncNum),
-    JS_CFUNC_MAGIC_DEF("clear", 0, JSHTMLDocumentPrototypeFunction::callAsFunction, JSHTMLDocument::ClearFuncNum),
-    JS_CFUNC_MAGIC_DEF("releaseEvents", 0, JSHTMLDocumentPrototypeFunction::callAsFunction, JSHTMLDocument::ReleaseEventsFuncNum),
-    JS_CFUNC_MAGIC_DEF("open", 0, JSHTMLDocumentPrototypeFunction::callAsFunction, JSHTMLDocument::OpenFuncNum),
-    JS_CFUNC_MAGIC_DEF("write", 1, JSHTMLDocumentPrototypeFunction::callAsFunction, JSHTMLDocument::WriteFuncNum),
-    JS_CFUNC_MAGIC_DEF("writeln", 1, JSHTMLDocumentPrototypeFunction::callAsFunction, JSHTMLDocument::WritelnFuncNum),
-    JS_CFUNC_MAGIC_DEF("captureEvents", 0, JSHTMLDocumentPrototypeFunction::callAsFunction, JSHTMLDocument::CaptureEventsFuncNum)
-};
+    if (JSHTMLDocumentPrototypeFunctions_initialized) return;
+    JSHTMLDocumentPrototypeFunctions_initialized = true;
+    memset(JSHTMLDocumentPrototypeFunctions, 0, sizeof(JSHTMLDocumentPrototypeFunctions));
+    JSHTMLDocumentPrototypeFunctions[0].name = "getElementById";
+    JSHTMLDocumentPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHTMLDocumentPrototypeFunctions[0].magic = JSHTMLDocument::GetElementByIdFuncNum;
+    JSHTMLDocumentPrototypeFunctions[0].u.func.length = 1;
+    JSHTMLDocumentPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLDocumentPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLDocumentPrototypeFunction::callAsFunction;
+    JSHTMLDocumentPrototypeFunctions[1].name = "close";
+    JSHTMLDocumentPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSHTMLDocumentPrototypeFunctions[1].magic = JSHTMLDocument::CloseFuncNum;
+    JSHTMLDocumentPrototypeFunctions[1].u.func.length = 0;
+    JSHTMLDocumentPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLDocumentPrototypeFunctions[1].u.func.cfunc.generic_magic = JSHTMLDocumentPrototypeFunction::callAsFunction;
+    JSHTMLDocumentPrototypeFunctions[2].name = "clear";
+    JSHTMLDocumentPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSHTMLDocumentPrototypeFunctions[2].magic = JSHTMLDocument::ClearFuncNum;
+    JSHTMLDocumentPrototypeFunctions[2].u.func.length = 0;
+    JSHTMLDocumentPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLDocumentPrototypeFunctions[2].u.func.cfunc.generic_magic = JSHTMLDocumentPrototypeFunction::callAsFunction;
+    JSHTMLDocumentPrototypeFunctions[3].name = "releaseEvents";
+    JSHTMLDocumentPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSHTMLDocumentPrototypeFunctions[3].magic = JSHTMLDocument::ReleaseEventsFuncNum;
+    JSHTMLDocumentPrototypeFunctions[3].u.func.length = 0;
+    JSHTMLDocumentPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLDocumentPrototypeFunctions[3].u.func.cfunc.generic_magic = JSHTMLDocumentPrototypeFunction::callAsFunction;
+    JSHTMLDocumentPrototypeFunctions[4].name = "open";
+    JSHTMLDocumentPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSHTMLDocumentPrototypeFunctions[4].magic = JSHTMLDocument::OpenFuncNum;
+    JSHTMLDocumentPrototypeFunctions[4].u.func.length = 0;
+    JSHTMLDocumentPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLDocumentPrototypeFunctions[4].u.func.cfunc.generic_magic = JSHTMLDocumentPrototypeFunction::callAsFunction;
+    JSHTMLDocumentPrototypeFunctions[5].name = "write";
+    JSHTMLDocumentPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSHTMLDocumentPrototypeFunctions[5].magic = JSHTMLDocument::WriteFuncNum;
+    JSHTMLDocumentPrototypeFunctions[5].u.func.length = 1;
+    JSHTMLDocumentPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLDocumentPrototypeFunctions[5].u.func.cfunc.generic_magic = JSHTMLDocumentPrototypeFunction::callAsFunction;
+    JSHTMLDocumentPrototypeFunctions[6].name = "writeln";
+    JSHTMLDocumentPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSHTMLDocumentPrototypeFunctions[6].magic = JSHTMLDocument::WritelnFuncNum;
+    JSHTMLDocumentPrototypeFunctions[6].u.func.length = 1;
+    JSHTMLDocumentPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLDocumentPrototypeFunctions[6].u.func.cfunc.generic_magic = JSHTMLDocumentPrototypeFunction::callAsFunction;
+    JSHTMLDocumentPrototypeFunctions[7].name = "captureEvents";
+    JSHTMLDocumentPrototypeFunctions[7].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLDocumentPrototypeFunctions[7].def_type = JS_DEF_CFUNC;
+    JSHTMLDocumentPrototypeFunctions[7].magic = JSHTMLDocument::CaptureEventsFuncNum;
+    JSHTMLDocumentPrototypeFunctions[7].u.func.length = 0;
+    JSHTMLDocumentPrototypeFunctions[7].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLDocumentPrototypeFunctions[7].u.func.cfunc.generic_magic = JSHTMLDocumentPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHTMLDocumentPrototype::self(JSContext * ctx)
 {
@@ -123,16 +260,24 @@ JSValue JSHTMLDocumentPrototype::self(JSContext * ctx)
 
 void JSHTMLDocumentPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLDocumentAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLDocumentAttributesFunctions, countof(JSHTMLDocumentAttributesFunctions));
+    init_JSHTMLDocumentPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLDocumentPrototypeFunctions, countof(JSHTMLDocumentPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLDocumentClassDefine = 
+static JSClassDef JSHTMLDocumentClassDefine;
+static bool JSHTMLDocumentClassDefine_initialized = false;
+
+static void init_JSHTMLDocumentClassDefine()
 {
-    "HTMLDocument",
-    .finalizer = JSHTMLDocument::finalizer,
-    .gc_mark = JSHTMLDocument::mark,
-};
+    if (JSHTMLDocumentClassDefine_initialized) return;
+    JSHTMLDocumentClassDefine_initialized = true;
+    memset(&JSHTMLDocumentClassDefine, 0, sizeof(JSHTMLDocumentClassDefine));
+    JSHTMLDocumentClassDefine.class_name = "HTMLDocument";
+    JSHTMLDocumentClassDefine.finalizer = JSHTMLDocument::finalizer;
+    JSHTMLDocumentClassDefine.gc_mark = JSHTMLDocument::mark;
+}
 
 JSClassID JSHTMLDocument::js_class_id = 0;
 

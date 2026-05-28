@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLModElement.h"
 
 #include "HTMLModElement.h"
@@ -39,12 +41,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLModElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLModElementAttributesFunctions[3];
+static bool JSHTMLModElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLModElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLModElement::getValueProperty, NULL, JSHTMLModElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("cite", JSHTMLModElement::getValueProperty, JSHTMLModElement::putValueProperty, JSHTMLModElement::CiteAttrNum),
-    JS_CGETSET_MAGIC_DEF("dateTime", JSHTMLModElement::getValueProperty, JSHTMLModElement::putValueProperty, JSHTMLModElement::DateTimeAttrNum)
-};
+    if (JSHTMLModElementAttributesFunctions_initialized) return;
+    JSHTMLModElementAttributesFunctions_initialized = true;
+    memset(JSHTMLModElementAttributesFunctions, 0, sizeof(JSHTMLModElementAttributesFunctions));
+    JSHTMLModElementAttributesFunctions[0].name = "constructor";
+    JSHTMLModElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLModElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLModElementAttributesFunctions[0].magic = JSHTMLModElement::ConstructorAttrNum;
+    JSHTMLModElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLModElement::getValueProperty;
+    JSHTMLModElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLModElementAttributesFunctions[1].name = "cite";
+    JSHTMLModElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLModElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLModElementAttributesFunctions[1].magic = JSHTMLModElement::CiteAttrNum;
+    JSHTMLModElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLModElement::getValueProperty;
+    JSHTMLModElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLModElement::putValueProperty;
+    JSHTMLModElementAttributesFunctions[2].name = "dateTime";
+    JSHTMLModElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLModElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLModElementAttributesFunctions[2].magic = JSHTMLModElement::DateTimeAttrNum;
+    JSHTMLModElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLModElement::getValueProperty;
+    JSHTMLModElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLModElement::putValueProperty;
+}
 
 class JSHTMLModElementConstructor {
 public:
@@ -93,15 +116,22 @@ JSValue JSHTMLModElementPrototype::self(JSContext * ctx)
 
 void JSHTMLModElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLModElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLModElementAttributesFunctions, countof(JSHTMLModElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLModElementClassDefine = 
+static JSClassDef JSHTMLModElementClassDefine;
+static bool JSHTMLModElementClassDefine_initialized = false;
+
+static void init_JSHTMLModElementClassDefine()
 {
-    "HTMLModElement",
-    .finalizer = JSHTMLModElement::finalizer,
-    .gc_mark = JSHTMLModElement::mark,
-};
+    if (JSHTMLModElementClassDefine_initialized) return;
+    JSHTMLModElementClassDefine_initialized = true;
+    memset(&JSHTMLModElementClassDefine, 0, sizeof(JSHTMLModElementClassDefine));
+    JSHTMLModElementClassDefine.class_name = "HTMLModElement";
+    JSHTMLModElementClassDefine.finalizer = JSHTMLModElement::finalizer;
+    JSHTMLModElementClassDefine.gc_mark = JSHTMLModElement::mark;
+}
 
 JSClassID JSHTMLModElement::js_class_id = 0;
 

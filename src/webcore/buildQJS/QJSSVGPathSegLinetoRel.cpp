@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,11 +48,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPathSegLinetoRelAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPathSegLinetoRelAttributesFunctions[2];
+static bool JSSVGPathSegLinetoRelAttributesFunctions_initialized = false;
+
+static void init_JSSVGPathSegLinetoRelAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("y", JSSVGPathSegLinetoRel::getValueProperty, JSSVGPathSegLinetoRel::putValueProperty, JSSVGPathSegLinetoRel::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGPathSegLinetoRel::getValueProperty, JSSVGPathSegLinetoRel::putValueProperty, JSSVGPathSegLinetoRel::XAttrNum)
-};
+    if (JSSVGPathSegLinetoRelAttributesFunctions_initialized) return;
+    JSSVGPathSegLinetoRelAttributesFunctions_initialized = true;
+    memset(JSSVGPathSegLinetoRelAttributesFunctions, 0, sizeof(JSSVGPathSegLinetoRelAttributesFunctions));
+    JSSVGPathSegLinetoRelAttributesFunctions[0].name = "y";
+    JSSVGPathSegLinetoRelAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegLinetoRelAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegLinetoRelAttributesFunctions[0].magic = JSSVGPathSegLinetoRel::YAttrNum;
+    JSSVGPathSegLinetoRelAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegLinetoRel::getValueProperty;
+    JSSVGPathSegLinetoRelAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegLinetoRel::putValueProperty;
+    JSSVGPathSegLinetoRelAttributesFunctions[1].name = "x";
+    JSSVGPathSegLinetoRelAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegLinetoRelAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegLinetoRelAttributesFunctions[1].magic = JSSVGPathSegLinetoRel::XAttrNum;
+    JSSVGPathSegLinetoRelAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegLinetoRel::getValueProperty;
+    JSSVGPathSegLinetoRelAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegLinetoRel::putValueProperty;
+}
 
 JSValue JSSVGPathSegLinetoRelPrototype::self(JSContext * ctx)
 {
@@ -68,21 +86,29 @@ JSValue JSSVGPathSegLinetoRelPrototype::self(JSContext * ctx)
 
 void JSSVGPathSegLinetoRelPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPathSegLinetoRelAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathSegLinetoRelAttributesFunctions, countof(JSSVGPathSegLinetoRelAttributesFunctions));
 }
 
-static JSClassDef JSSVGPathSegLinetoRelClassDefine = 
+static JSClassDef JSSVGPathSegLinetoRelClassDefine;
+static bool JSSVGPathSegLinetoRelClassDefine_initialized = false;
+
+static void init_JSSVGPathSegLinetoRelClassDefine()
 {
-    "SVGPathSegLinetoRel",
-    .finalizer = JSSVGPathSegLinetoRel::finalizer,
-    .gc_mark = JSSVGPathSegLinetoRel::mark,
-};
+    if (JSSVGPathSegLinetoRelClassDefine_initialized) return;
+    JSSVGPathSegLinetoRelClassDefine_initialized = true;
+    memset(&JSSVGPathSegLinetoRelClassDefine, 0, sizeof(JSSVGPathSegLinetoRelClassDefine));
+    JSSVGPathSegLinetoRelClassDefine.class_name = "SVGPathSegLinetoRel";
+    JSSVGPathSegLinetoRelClassDefine.finalizer = JSSVGPathSegLinetoRel::finalizer;
+    JSSVGPathSegLinetoRelClassDefine.gc_mark = JSSVGPathSegLinetoRel::mark;
+}
 
 JSClassID JSSVGPathSegLinetoRel::js_class_id = 0;
 
 void JSSVGPathSegLinetoRel::init(JSContext* ctx)
 {
     if (JSSVGPathSegLinetoRel::js_class_id == 0) {
+        init_JSSVGPathSegLinetoRelClassDefine();
         JS_NewClassID(&JSSVGPathSegLinetoRel::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathSegLinetoRel::js_class_id, &JSSVGPathSegLinetoRelClassDefine);
         JS_SetClassProto(ctx, JSSVGPathSegLinetoRel::js_class_id, JSSVGPathSegLinetoRelPrototype::self(ctx));

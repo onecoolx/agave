@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,15 +48,51 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPathSegCurvetoCubicAbsAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPathSegCurvetoCubicAbsAttributesFunctions[6];
+static bool JSSVGPathSegCurvetoCubicAbsAttributesFunctions_initialized = false;
+
+static void init_JSSVGPathSegCurvetoCubicAbsAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("x1", JSSVGPathSegCurvetoCubicAbs::getValueProperty, JSSVGPathSegCurvetoCubicAbs::putValueProperty, JSSVGPathSegCurvetoCubicAbs::X1AttrNum),
-    JS_CGETSET_MAGIC_DEF("x2", JSSVGPathSegCurvetoCubicAbs::getValueProperty, JSSVGPathSegCurvetoCubicAbs::putValueProperty, JSSVGPathSegCurvetoCubicAbs::X2AttrNum),
-    JS_CGETSET_MAGIC_DEF("y1", JSSVGPathSegCurvetoCubicAbs::getValueProperty, JSSVGPathSegCurvetoCubicAbs::putValueProperty, JSSVGPathSegCurvetoCubicAbs::Y1AttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGPathSegCurvetoCubicAbs::getValueProperty, JSSVGPathSegCurvetoCubicAbs::putValueProperty, JSSVGPathSegCurvetoCubicAbs::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGPathSegCurvetoCubicAbs::getValueProperty, JSSVGPathSegCurvetoCubicAbs::putValueProperty, JSSVGPathSegCurvetoCubicAbs::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("y2", JSSVGPathSegCurvetoCubicAbs::getValueProperty, JSSVGPathSegCurvetoCubicAbs::putValueProperty, JSSVGPathSegCurvetoCubicAbs::Y2AttrNum)
-};
+    if (JSSVGPathSegCurvetoCubicAbsAttributesFunctions_initialized) return;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions_initialized = true;
+    memset(JSSVGPathSegCurvetoCubicAbsAttributesFunctions, 0, sizeof(JSSVGPathSegCurvetoCubicAbsAttributesFunctions));
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[0].name = "x1";
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[0].magic = JSSVGPathSegCurvetoCubicAbs::X1AttrNum;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegCurvetoCubicAbs::getValueProperty;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegCurvetoCubicAbs::putValueProperty;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[1].name = "x2";
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[1].magic = JSSVGPathSegCurvetoCubicAbs::X2AttrNum;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegCurvetoCubicAbs::getValueProperty;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegCurvetoCubicAbs::putValueProperty;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[2].name = "y1";
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[2].magic = JSSVGPathSegCurvetoCubicAbs::Y1AttrNum;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[2].u.getset.get.getter_magic = JSSVGPathSegCurvetoCubicAbs::getValueProperty;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[2].u.getset.set.setter_magic = JSSVGPathSegCurvetoCubicAbs::putValueProperty;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[3].name = "y";
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[3].magic = JSSVGPathSegCurvetoCubicAbs::YAttrNum;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[3].u.getset.get.getter_magic = JSSVGPathSegCurvetoCubicAbs::getValueProperty;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[3].u.getset.set.setter_magic = JSSVGPathSegCurvetoCubicAbs::putValueProperty;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[4].name = "x";
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[4].magic = JSSVGPathSegCurvetoCubicAbs::XAttrNum;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[4].u.getset.get.getter_magic = JSSVGPathSegCurvetoCubicAbs::getValueProperty;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[4].u.getset.set.setter_magic = JSSVGPathSegCurvetoCubicAbs::putValueProperty;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[5].name = "y2";
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[5].magic = JSSVGPathSegCurvetoCubicAbs::Y2AttrNum;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[5].u.getset.get.getter_magic = JSSVGPathSegCurvetoCubicAbs::getValueProperty;
+    JSSVGPathSegCurvetoCubicAbsAttributesFunctions[5].u.getset.set.setter_magic = JSSVGPathSegCurvetoCubicAbs::putValueProperty;
+}
 
 JSValue JSSVGPathSegCurvetoCubicAbsPrototype::self(JSContext * ctx)
 {
@@ -72,21 +110,29 @@ JSValue JSSVGPathSegCurvetoCubicAbsPrototype::self(JSContext * ctx)
 
 void JSSVGPathSegCurvetoCubicAbsPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPathSegCurvetoCubicAbsAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathSegCurvetoCubicAbsAttributesFunctions, countof(JSSVGPathSegCurvetoCubicAbsAttributesFunctions));
 }
 
-static JSClassDef JSSVGPathSegCurvetoCubicAbsClassDefine = 
+static JSClassDef JSSVGPathSegCurvetoCubicAbsClassDefine;
+static bool JSSVGPathSegCurvetoCubicAbsClassDefine_initialized = false;
+
+static void init_JSSVGPathSegCurvetoCubicAbsClassDefine()
 {
-    "SVGPathSegCurvetoCubicAbs",
-    .finalizer = JSSVGPathSegCurvetoCubicAbs::finalizer,
-    .gc_mark = JSSVGPathSegCurvetoCubicAbs::mark,
-};
+    if (JSSVGPathSegCurvetoCubicAbsClassDefine_initialized) return;
+    JSSVGPathSegCurvetoCubicAbsClassDefine_initialized = true;
+    memset(&JSSVGPathSegCurvetoCubicAbsClassDefine, 0, sizeof(JSSVGPathSegCurvetoCubicAbsClassDefine));
+    JSSVGPathSegCurvetoCubicAbsClassDefine.class_name = "SVGPathSegCurvetoCubicAbs";
+    JSSVGPathSegCurvetoCubicAbsClassDefine.finalizer = JSSVGPathSegCurvetoCubicAbs::finalizer;
+    JSSVGPathSegCurvetoCubicAbsClassDefine.gc_mark = JSSVGPathSegCurvetoCubicAbs::mark;
+}
 
 JSClassID JSSVGPathSegCurvetoCubicAbs::js_class_id = 0;
 
 void JSSVGPathSegCurvetoCubicAbs::init(JSContext* ctx)
 {
     if (JSSVGPathSegCurvetoCubicAbs::js_class_id == 0) {
+        init_JSSVGPathSegCurvetoCubicAbsClassDefine();
         JS_NewClassID(&JSSVGPathSegCurvetoCubicAbs::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathSegCurvetoCubicAbs::js_class_id, &JSSVGPathSegCurvetoCubicAbsClassDefine);
         JS_SetClassProto(ctx, JSSVGPathSegCurvetoCubicAbs::js_class_id, JSSVGPathSegCurvetoCubicAbsPrototype::self(ctx));

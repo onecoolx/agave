@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSDocumentFragment.h"
 
 #include "DocumentFragment.h"
@@ -38,10 +40,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSDocumentFragmentAttributesFunctions[] =
+static JSCFunctionListEntry JSDocumentFragmentAttributesFunctions[1];
+static bool JSDocumentFragmentAttributesFunctions_initialized = false;
+
+static void init_JSDocumentFragmentAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSDocumentFragment::getValueProperty, NULL, JSDocumentFragment::ConstructorAttrNum)
-};
+    if (JSDocumentFragmentAttributesFunctions_initialized) return;
+    JSDocumentFragmentAttributesFunctions_initialized = true;
+    memset(JSDocumentFragmentAttributesFunctions, 0, sizeof(JSDocumentFragmentAttributesFunctions));
+    JSDocumentFragmentAttributesFunctions[0].name = "constructor";
+    JSDocumentFragmentAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDocumentFragmentAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDocumentFragmentAttributesFunctions[0].magic = JSDocumentFragment::ConstructorAttrNum;
+    JSDocumentFragmentAttributesFunctions[0].u.getset.get.getter_magic = JSDocumentFragment::getValueProperty;
+    JSDocumentFragmentAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 class JSDocumentFragmentConstructor {
 public:
@@ -90,15 +103,22 @@ JSValue JSDocumentFragmentPrototype::self(JSContext * ctx)
 
 void JSDocumentFragmentPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSDocumentFragmentAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSDocumentFragmentAttributesFunctions, countof(JSDocumentFragmentAttributesFunctions));
 }
 
-static JSClassDef JSDocumentFragmentClassDefine = 
+static JSClassDef JSDocumentFragmentClassDefine;
+static bool JSDocumentFragmentClassDefine_initialized = false;
+
+static void init_JSDocumentFragmentClassDefine()
 {
-    "DocumentFragment",
-    .finalizer = JSDocumentFragment::finalizer,
-    .gc_mark = JSDocumentFragment::mark,
-};
+    if (JSDocumentFragmentClassDefine_initialized) return;
+    JSDocumentFragmentClassDefine_initialized = true;
+    memset(&JSDocumentFragmentClassDefine, 0, sizeof(JSDocumentFragmentClassDefine));
+    JSDocumentFragmentClassDefine.class_name = "DocumentFragment";
+    JSDocumentFragmentClassDefine.finalizer = JSDocumentFragment::finalizer;
+    JSDocumentFragmentClassDefine.gc_mark = JSDocumentFragment::mark;
+}
 
 JSClassID JSDocumentFragment::js_class_id = 0;
 

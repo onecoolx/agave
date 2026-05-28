@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLTableSectionElement.h"
 
 #include "ExceptionCode.h"
@@ -44,15 +46,51 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLTableSectionElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLTableSectionElementAttributesFunctions[6];
+static bool JSHTMLTableSectionElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLTableSectionElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("ch", JSHTMLTableSectionElement::getValueProperty, JSHTMLTableSectionElement::putValueProperty, JSHTMLTableSectionElement::ChAttrNum),
-    JS_CGETSET_MAGIC_DEF("rows", JSHTMLTableSectionElement::getValueProperty, NULL, JSHTMLTableSectionElement::RowsAttrNum),
-    JS_CGETSET_MAGIC_DEF("vAlign", JSHTMLTableSectionElement::getValueProperty, JSHTMLTableSectionElement::putValueProperty, JSHTMLTableSectionElement::VAlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLTableSectionElement::getValueProperty, NULL, JSHTMLTableSectionElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLTableSectionElement::getValueProperty, JSHTMLTableSectionElement::putValueProperty, JSHTMLTableSectionElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("chOff", JSHTMLTableSectionElement::getValueProperty, JSHTMLTableSectionElement::putValueProperty, JSHTMLTableSectionElement::ChOffAttrNum)
-};
+    if (JSHTMLTableSectionElementAttributesFunctions_initialized) return;
+    JSHTMLTableSectionElementAttributesFunctions_initialized = true;
+    memset(JSHTMLTableSectionElementAttributesFunctions, 0, sizeof(JSHTMLTableSectionElementAttributesFunctions));
+    JSHTMLTableSectionElementAttributesFunctions[0].name = "ch";
+    JSHTMLTableSectionElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableSectionElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableSectionElementAttributesFunctions[0].magic = JSHTMLTableSectionElement::ChAttrNum;
+    JSHTMLTableSectionElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLTableSectionElement::getValueProperty;
+    JSHTMLTableSectionElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLTableSectionElement::putValueProperty;
+    JSHTMLTableSectionElementAttributesFunctions[1].name = "rows";
+    JSHTMLTableSectionElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableSectionElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableSectionElementAttributesFunctions[1].magic = JSHTMLTableSectionElement::RowsAttrNum;
+    JSHTMLTableSectionElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLTableSectionElement::getValueProperty;
+    JSHTMLTableSectionElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSHTMLTableSectionElementAttributesFunctions[2].name = "vAlign";
+    JSHTMLTableSectionElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableSectionElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableSectionElementAttributesFunctions[2].magic = JSHTMLTableSectionElement::VAlignAttrNum;
+    JSHTMLTableSectionElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLTableSectionElement::getValueProperty;
+    JSHTMLTableSectionElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLTableSectionElement::putValueProperty;
+    JSHTMLTableSectionElementAttributesFunctions[3].name = "constructor";
+    JSHTMLTableSectionElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableSectionElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableSectionElementAttributesFunctions[3].magic = JSHTMLTableSectionElement::ConstructorAttrNum;
+    JSHTMLTableSectionElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLTableSectionElement::getValueProperty;
+    JSHTMLTableSectionElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSHTMLTableSectionElementAttributesFunctions[4].name = "align";
+    JSHTMLTableSectionElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableSectionElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableSectionElementAttributesFunctions[4].magic = JSHTMLTableSectionElement::AlignAttrNum;
+    JSHTMLTableSectionElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLTableSectionElement::getValueProperty;
+    JSHTMLTableSectionElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLTableSectionElement::putValueProperty;
+    JSHTMLTableSectionElementAttributesFunctions[5].name = "chOff";
+    JSHTMLTableSectionElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableSectionElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableSectionElementAttributesFunctions[5].magic = JSHTMLTableSectionElement::ChOffAttrNum;
+    JSHTMLTableSectionElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLTableSectionElement::getValueProperty;
+    JSHTMLTableSectionElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLTableSectionElement::putValueProperty;
+}
 
 class JSHTMLTableSectionElementConstructor {
 public:
@@ -87,11 +125,29 @@ void JSHTMLTableSectionElementConstructor::initConstructor(JSContext * ctx, JSVa
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHTMLTableSectionElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSHTMLTableSectionElementPrototypeFunctions[2];
+static bool JSHTMLTableSectionElementPrototypeFunctions_initialized = false;
+
+static void init_JSHTMLTableSectionElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("insertRow", 1, JSHTMLTableSectionElementPrototypeFunction::callAsFunction, JSHTMLTableSectionElement::InsertRowFuncNum),
-    JS_CFUNC_MAGIC_DEF("deleteRow", 1, JSHTMLTableSectionElementPrototypeFunction::callAsFunction, JSHTMLTableSectionElement::DeleteRowFuncNum)
-};
+    if (JSHTMLTableSectionElementPrototypeFunctions_initialized) return;
+    JSHTMLTableSectionElementPrototypeFunctions_initialized = true;
+    memset(JSHTMLTableSectionElementPrototypeFunctions, 0, sizeof(JSHTMLTableSectionElementPrototypeFunctions));
+    JSHTMLTableSectionElementPrototypeFunctions[0].name = "insertRow";
+    JSHTMLTableSectionElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTableSectionElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHTMLTableSectionElementPrototypeFunctions[0].magic = JSHTMLTableSectionElement::InsertRowFuncNum;
+    JSHTMLTableSectionElementPrototypeFunctions[0].u.func.length = 1;
+    JSHTMLTableSectionElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTableSectionElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLTableSectionElementPrototypeFunction::callAsFunction;
+    JSHTMLTableSectionElementPrototypeFunctions[1].name = "deleteRow";
+    JSHTMLTableSectionElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTableSectionElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSHTMLTableSectionElementPrototypeFunctions[1].magic = JSHTMLTableSectionElement::DeleteRowFuncNum;
+    JSHTMLTableSectionElementPrototypeFunctions[1].u.func.length = 1;
+    JSHTMLTableSectionElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTableSectionElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSHTMLTableSectionElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHTMLTableSectionElementPrototype::self(JSContext * ctx)
 {
@@ -109,16 +165,24 @@ JSValue JSHTMLTableSectionElementPrototype::self(JSContext * ctx)
 
 void JSHTMLTableSectionElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLTableSectionElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTableSectionElementAttributesFunctions, countof(JSHTMLTableSectionElementAttributesFunctions));
+    init_JSHTMLTableSectionElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTableSectionElementPrototypeFunctions, countof(JSHTMLTableSectionElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLTableSectionElementClassDefine = 
+static JSClassDef JSHTMLTableSectionElementClassDefine;
+static bool JSHTMLTableSectionElementClassDefine_initialized = false;
+
+static void init_JSHTMLTableSectionElementClassDefine()
 {
-    "HTMLTableSectionElement",
-    .finalizer = JSHTMLTableSectionElement::finalizer,
-    .gc_mark = JSHTMLTableSectionElement::mark,
-};
+    if (JSHTMLTableSectionElementClassDefine_initialized) return;
+    JSHTMLTableSectionElementClassDefine_initialized = true;
+    memset(&JSHTMLTableSectionElementClassDefine, 0, sizeof(JSHTMLTableSectionElementClassDefine));
+    JSHTMLTableSectionElementClassDefine.class_name = "HTMLTableSectionElement";
+    JSHTMLTableSectionElementClassDefine.finalizer = JSHTMLTableSectionElement::finalizer;
+    JSHTMLTableSectionElementClassDefine.gc_mark = JSHTMLTableSectionElement::mark;
+}
 
 JSClassID JSHTMLTableSectionElement::js_class_id = 0;
 

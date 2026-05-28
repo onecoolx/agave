@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLStyleElement.h"
 
 #include "HTMLStyleElement.h"
@@ -41,14 +43,45 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLStyleElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLStyleElementAttributesFunctions[5];
+static bool JSHTMLStyleElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLStyleElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("sheet", JSHTMLStyleElement::getValueProperty, NULL, JSHTMLStyleElement::SheetAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLStyleElement::getValueProperty, NULL, JSHTMLStyleElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("disabled", JSHTMLStyleElement::getValueProperty, JSHTMLStyleElement::putValueProperty, JSHTMLStyleElement::DisabledAttrNum),
-    JS_CGETSET_MAGIC_DEF("media", JSHTMLStyleElement::getValueProperty, JSHTMLStyleElement::putValueProperty, JSHTMLStyleElement::MediaAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSHTMLStyleElement::getValueProperty, JSHTMLStyleElement::putValueProperty, JSHTMLStyleElement::TypeAttrNum)
-};
+    if (JSHTMLStyleElementAttributesFunctions_initialized) return;
+    JSHTMLStyleElementAttributesFunctions_initialized = true;
+    memset(JSHTMLStyleElementAttributesFunctions, 0, sizeof(JSHTMLStyleElementAttributesFunctions));
+    JSHTMLStyleElementAttributesFunctions[0].name = "sheet";
+    JSHTMLStyleElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLStyleElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLStyleElementAttributesFunctions[0].magic = JSHTMLStyleElement::SheetAttrNum;
+    JSHTMLStyleElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLStyleElement::getValueProperty;
+    JSHTMLStyleElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLStyleElementAttributesFunctions[1].name = "constructor";
+    JSHTMLStyleElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLStyleElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLStyleElementAttributesFunctions[1].magic = JSHTMLStyleElement::ConstructorAttrNum;
+    JSHTMLStyleElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLStyleElement::getValueProperty;
+    JSHTMLStyleElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSHTMLStyleElementAttributesFunctions[2].name = "disabled";
+    JSHTMLStyleElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLStyleElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLStyleElementAttributesFunctions[2].magic = JSHTMLStyleElement::DisabledAttrNum;
+    JSHTMLStyleElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLStyleElement::getValueProperty;
+    JSHTMLStyleElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLStyleElement::putValueProperty;
+    JSHTMLStyleElementAttributesFunctions[3].name = "media";
+    JSHTMLStyleElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLStyleElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLStyleElementAttributesFunctions[3].magic = JSHTMLStyleElement::MediaAttrNum;
+    JSHTMLStyleElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLStyleElement::getValueProperty;
+    JSHTMLStyleElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLStyleElement::putValueProperty;
+    JSHTMLStyleElementAttributesFunctions[4].name = "type";
+    JSHTMLStyleElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLStyleElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLStyleElementAttributesFunctions[4].magic = JSHTMLStyleElement::TypeAttrNum;
+    JSHTMLStyleElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLStyleElement::getValueProperty;
+    JSHTMLStyleElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLStyleElement::putValueProperty;
+}
 
 class JSHTMLStyleElementConstructor {
 public:
@@ -97,15 +130,22 @@ JSValue JSHTMLStyleElementPrototype::self(JSContext * ctx)
 
 void JSHTMLStyleElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLStyleElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLStyleElementAttributesFunctions, countof(JSHTMLStyleElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLStyleElementClassDefine = 
+static JSClassDef JSHTMLStyleElementClassDefine;
+static bool JSHTMLStyleElementClassDefine_initialized = false;
+
+static void init_JSHTMLStyleElementClassDefine()
 {
-    "HTMLStyleElement",
-    .finalizer = JSHTMLStyleElement::finalizer,
-    .gc_mark = JSHTMLStyleElement::mark,
-};
+    if (JSHTMLStyleElementClassDefine_initialized) return;
+    JSHTMLStyleElementClassDefine_initialized = true;
+    memset(&JSHTMLStyleElementClassDefine, 0, sizeof(JSHTMLStyleElementClassDefine));
+    JSHTMLStyleElementClassDefine.class_name = "HTMLStyleElement";
+    JSHTMLStyleElementClassDefine.finalizer = JSHTMLStyleElement::finalizer;
+    JSHTMLStyleElementClassDefine.gc_mark = JSHTMLStyleElement::mark;
+}
 
 JSClassID JSHTMLStyleElement::js_class_id = 0;
 

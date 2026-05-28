@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -50,17 +52,40 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGDocumentAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGDocumentAttributesFunctions[1];
+static bool JSSVGDocumentAttributesFunctions_initialized = false;
+
+static void init_JSSVGDocumentAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("rootElement", JSSVGDocument::getValueProperty, NULL, JSSVGDocument::RootElementAttrNum)
-};
+    if (JSSVGDocumentAttributesFunctions_initialized) return;
+    JSSVGDocumentAttributesFunctions_initialized = true;
+    memset(JSSVGDocumentAttributesFunctions, 0, sizeof(JSSVGDocumentAttributesFunctions));
+    JSSVGDocumentAttributesFunctions[0].name = "rootElement";
+    JSSVGDocumentAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDocumentAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDocumentAttributesFunctions[0].magic = JSSVGDocument::RootElementAttrNum;
+    JSSVGDocumentAttributesFunctions[0].u.getset.get.getter_magic = JSSVGDocument::getValueProperty;
+    JSSVGDocumentAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGDocumentPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGDocumentPrototypeFunctions[1];
+static bool JSSVGDocumentPrototypeFunctions_initialized = false;
+
+static void init_JSSVGDocumentPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("createEvent", 1, JSSVGDocumentPrototypeFunction::callAsFunction, JSSVGDocument::CreateEventFuncNum)
-};
+    if (JSSVGDocumentPrototypeFunctions_initialized) return;
+    JSSVGDocumentPrototypeFunctions_initialized = true;
+    memset(JSSVGDocumentPrototypeFunctions, 0, sizeof(JSSVGDocumentPrototypeFunctions));
+    JSSVGDocumentPrototypeFunctions[0].name = "createEvent";
+    JSSVGDocumentPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGDocumentPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGDocumentPrototypeFunctions[0].magic = JSSVGDocument::CreateEventFuncNum;
+    JSSVGDocumentPrototypeFunctions[0].u.func.length = 1;
+    JSSVGDocumentPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGDocumentPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGDocumentPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGDocumentPrototype::self(JSContext * ctx)
 {
@@ -78,22 +103,31 @@ JSValue JSSVGDocumentPrototype::self(JSContext * ctx)
 
 void JSSVGDocumentPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGDocumentAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGDocumentAttributesFunctions, countof(JSSVGDocumentAttributesFunctions));
+    init_JSSVGDocumentPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGDocumentPrototypeFunctions, countof(JSSVGDocumentPrototypeFunctions));
 }
 
-static JSClassDef JSSVGDocumentClassDefine = 
+static JSClassDef JSSVGDocumentClassDefine;
+static bool JSSVGDocumentClassDefine_initialized = false;
+
+static void init_JSSVGDocumentClassDefine()
 {
-    "SVGDocument",
-    .finalizer = JSSVGDocument::finalizer,
-    .gc_mark = JSSVGDocument::mark,
-};
+    if (JSSVGDocumentClassDefine_initialized) return;
+    JSSVGDocumentClassDefine_initialized = true;
+    memset(&JSSVGDocumentClassDefine, 0, sizeof(JSSVGDocumentClassDefine));
+    JSSVGDocumentClassDefine.class_name = "SVGDocument";
+    JSSVGDocumentClassDefine.finalizer = JSSVGDocument::finalizer;
+    JSSVGDocumentClassDefine.gc_mark = JSSVGDocument::mark;
+}
 
 JSClassID JSSVGDocument::js_class_id = 0;
 
 void JSSVGDocument::init(JSContext* ctx)
 {
     if (JSSVGDocument::js_class_id == 0) {
+        init_JSSVGDocumentClassDefine();
         JS_NewClassID(&JSSVGDocument::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGDocument::js_class_id, &JSSVGDocumentClassDefine);
         JS_SetClassProto(ctx, JSSVGDocument::js_class_id, JSSVGDocumentPrototype::self(ctx));

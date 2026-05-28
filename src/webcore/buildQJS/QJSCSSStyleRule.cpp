@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCSSStyleRule.h"
 
 #include "CSSMutableStyleDeclaration.h"
@@ -42,12 +44,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSCSSStyleRuleAttributesFunctions[] =
+static JSCFunctionListEntry JSCSSStyleRuleAttributesFunctions[3];
+static bool JSCSSStyleRuleAttributesFunctions_initialized = false;
+
+static void init_JSCSSStyleRuleAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("selectorText", JSCSSStyleRule::getValueProperty, JSCSSStyleRule::putValueProperty, JSCSSStyleRule::SelectorTextAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSCSSStyleRule::getValueProperty, NULL, JSCSSStyleRule::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSCSSStyleRule::getValueProperty, NULL, JSCSSStyleRule::ConstructorAttrNum)
-};
+    if (JSCSSStyleRuleAttributesFunctions_initialized) return;
+    JSCSSStyleRuleAttributesFunctions_initialized = true;
+    memset(JSCSSStyleRuleAttributesFunctions, 0, sizeof(JSCSSStyleRuleAttributesFunctions));
+    JSCSSStyleRuleAttributesFunctions[0].name = "selectorText";
+    JSCSSStyleRuleAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSStyleRuleAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSStyleRuleAttributesFunctions[0].magic = JSCSSStyleRule::SelectorTextAttrNum;
+    JSCSSStyleRuleAttributesFunctions[0].u.getset.get.getter_magic = JSCSSStyleRule::getValueProperty;
+    JSCSSStyleRuleAttributesFunctions[0].u.getset.set.setter_magic = JSCSSStyleRule::putValueProperty;
+    JSCSSStyleRuleAttributesFunctions[1].name = "style";
+    JSCSSStyleRuleAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSStyleRuleAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSStyleRuleAttributesFunctions[1].magic = JSCSSStyleRule::StyleAttrNum;
+    JSCSSStyleRuleAttributesFunctions[1].u.getset.get.getter_magic = JSCSSStyleRule::getValueProperty;
+    JSCSSStyleRuleAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSCSSStyleRuleAttributesFunctions[2].name = "constructor";
+    JSCSSStyleRuleAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSStyleRuleAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSStyleRuleAttributesFunctions[2].magic = JSCSSStyleRule::ConstructorAttrNum;
+    JSCSSStyleRuleAttributesFunctions[2].u.getset.get.getter_magic = JSCSSStyleRule::getValueProperty;
+    JSCSSStyleRuleAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 class JSCSSStyleRuleConstructor {
 public:
@@ -96,21 +119,29 @@ JSValue JSCSSStyleRulePrototype::self(JSContext * ctx)
 
 void JSCSSStyleRulePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCSSStyleRuleAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSStyleRuleAttributesFunctions, countof(JSCSSStyleRuleAttributesFunctions));
 }
 
-static JSClassDef JSCSSStyleRuleClassDefine = 
+static JSClassDef JSCSSStyleRuleClassDefine;
+static bool JSCSSStyleRuleClassDefine_initialized = false;
+
+static void init_JSCSSStyleRuleClassDefine()
 {
-    "CSSStyleRule",
-    .finalizer = JSCSSStyleRule::finalizer,
-    .gc_mark = JSCSSStyleRule::mark,
-};
+    if (JSCSSStyleRuleClassDefine_initialized) return;
+    JSCSSStyleRuleClassDefine_initialized = true;
+    memset(&JSCSSStyleRuleClassDefine, 0, sizeof(JSCSSStyleRuleClassDefine));
+    JSCSSStyleRuleClassDefine.class_name = "CSSStyleRule";
+    JSCSSStyleRuleClassDefine.finalizer = JSCSSStyleRule::finalizer;
+    JSCSSStyleRuleClassDefine.gc_mark = JSCSSStyleRule::mark;
+}
 
 JSClassID JSCSSStyleRule::js_class_id = 0;
 
 void JSCSSStyleRule::init(JSContext* ctx)
 {
     if (JSCSSStyleRule::js_class_id == 0) {
+        init_JSCSSStyleRuleClassDefine();
         JS_NewClassID(&JSCSSStyleRule::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSCSSStyleRule::js_class_id, &JSCSSStyleRuleClassDefine);
         JS_SetConstructor(ctx, JSCSSStyleRuleConstructor::self(ctx), JSCSSStyleRulePrototype::self(ctx));

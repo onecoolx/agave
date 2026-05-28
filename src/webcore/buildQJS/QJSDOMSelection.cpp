@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSDOMSelection.h"
 
 #include "DOMSelection.h"
@@ -44,37 +46,170 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSDOMSelectionAttributesFunctions[] =
+static JSCFunctionListEntry JSDOMSelectionAttributesFunctions[11];
+static bool JSDOMSelectionAttributesFunctions_initialized = false;
+
+static void init_JSDOMSelectionAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("anchorOffset", JSDOMSelection::getValueProperty, NULL, JSDOMSelection::AnchorOffsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("baseOffset", JSDOMSelection::getValueProperty, NULL, JSDOMSelection::BaseOffsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("extentOffset", JSDOMSelection::getValueProperty, NULL, JSDOMSelection::ExtentOffsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("focusNode", JSDOMSelection::getValueProperty, NULL, JSDOMSelection::FocusNodeAttrNum),
-    JS_CGETSET_MAGIC_DEF("anchorNode", JSDOMSelection::getValueProperty, NULL, JSDOMSelection::AnchorNodeAttrNum),
-    JS_CGETSET_MAGIC_DEF("focusOffset", JSDOMSelection::getValueProperty, NULL, JSDOMSelection::FocusOffsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("baseNode", JSDOMSelection::getValueProperty, NULL, JSDOMSelection::BaseNodeAttrNum),
-    JS_CGETSET_MAGIC_DEF("extentNode", JSDOMSelection::getValueProperty, NULL, JSDOMSelection::ExtentNodeAttrNum),
-    JS_CGETSET_MAGIC_DEF("isCollapsed", JSDOMSelection::getValueProperty, NULL, JSDOMSelection::IsCollapsedAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSDOMSelection::getValueProperty, NULL, JSDOMSelection::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("rangeCount", JSDOMSelection::getValueProperty, NULL, JSDOMSelection::RangeCountAttrNum)
-};
+    if (JSDOMSelectionAttributesFunctions_initialized) return;
+    JSDOMSelectionAttributesFunctions_initialized = true;
+    memset(JSDOMSelectionAttributesFunctions, 0, sizeof(JSDOMSelectionAttributesFunctions));
+    JSDOMSelectionAttributesFunctions[0].name = "anchorOffset";
+    JSDOMSelectionAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDOMSelectionAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDOMSelectionAttributesFunctions[0].magic = JSDOMSelection::AnchorOffsetAttrNum;
+    JSDOMSelectionAttributesFunctions[0].u.getset.get.getter_magic = JSDOMSelection::getValueProperty;
+    JSDOMSelectionAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSDOMSelectionAttributesFunctions[1].name = "baseOffset";
+    JSDOMSelectionAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDOMSelectionAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDOMSelectionAttributesFunctions[1].magic = JSDOMSelection::BaseOffsetAttrNum;
+    JSDOMSelectionAttributesFunctions[1].u.getset.get.getter_magic = JSDOMSelection::getValueProperty;
+    JSDOMSelectionAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSDOMSelectionAttributesFunctions[2].name = "extentOffset";
+    JSDOMSelectionAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDOMSelectionAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDOMSelectionAttributesFunctions[2].magic = JSDOMSelection::ExtentOffsetAttrNum;
+    JSDOMSelectionAttributesFunctions[2].u.getset.get.getter_magic = JSDOMSelection::getValueProperty;
+    JSDOMSelectionAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSDOMSelectionAttributesFunctions[3].name = "focusNode";
+    JSDOMSelectionAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDOMSelectionAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDOMSelectionAttributesFunctions[3].magic = JSDOMSelection::FocusNodeAttrNum;
+    JSDOMSelectionAttributesFunctions[3].u.getset.get.getter_magic = JSDOMSelection::getValueProperty;
+    JSDOMSelectionAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSDOMSelectionAttributesFunctions[4].name = "anchorNode";
+    JSDOMSelectionAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDOMSelectionAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDOMSelectionAttributesFunctions[4].magic = JSDOMSelection::AnchorNodeAttrNum;
+    JSDOMSelectionAttributesFunctions[4].u.getset.get.getter_magic = JSDOMSelection::getValueProperty;
+    JSDOMSelectionAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSDOMSelectionAttributesFunctions[5].name = "focusOffset";
+    JSDOMSelectionAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDOMSelectionAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDOMSelectionAttributesFunctions[5].magic = JSDOMSelection::FocusOffsetAttrNum;
+    JSDOMSelectionAttributesFunctions[5].u.getset.get.getter_magic = JSDOMSelection::getValueProperty;
+    JSDOMSelectionAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSDOMSelectionAttributesFunctions[6].name = "baseNode";
+    JSDOMSelectionAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDOMSelectionAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDOMSelectionAttributesFunctions[6].magic = JSDOMSelection::BaseNodeAttrNum;
+    JSDOMSelectionAttributesFunctions[6].u.getset.get.getter_magic = JSDOMSelection::getValueProperty;
+    JSDOMSelectionAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSDOMSelectionAttributesFunctions[7].name = "extentNode";
+    JSDOMSelectionAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDOMSelectionAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDOMSelectionAttributesFunctions[7].magic = JSDOMSelection::ExtentNodeAttrNum;
+    JSDOMSelectionAttributesFunctions[7].u.getset.get.getter_magic = JSDOMSelection::getValueProperty;
+    JSDOMSelectionAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSDOMSelectionAttributesFunctions[8].name = "isCollapsed";
+    JSDOMSelectionAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDOMSelectionAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDOMSelectionAttributesFunctions[8].magic = JSDOMSelection::IsCollapsedAttrNum;
+    JSDOMSelectionAttributesFunctions[8].u.getset.get.getter_magic = JSDOMSelection::getValueProperty;
+    JSDOMSelectionAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSDOMSelectionAttributesFunctions[9].name = "type";
+    JSDOMSelectionAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDOMSelectionAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDOMSelectionAttributesFunctions[9].magic = JSDOMSelection::TypeAttrNum;
+    JSDOMSelectionAttributesFunctions[9].u.getset.get.getter_magic = JSDOMSelection::getValueProperty;
+    JSDOMSelectionAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSDOMSelectionAttributesFunctions[10].name = "rangeCount";
+    JSDOMSelectionAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDOMSelectionAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDOMSelectionAttributesFunctions[10].magic = JSDOMSelection::RangeCountAttrNum;
+    JSDOMSelectionAttributesFunctions[10].u.getset.get.getter_magic = JSDOMSelection::getValueProperty;
+    JSDOMSelectionAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSDOMSelectionPrototypeFunctions[] =
+static JSCFunctionListEntry JSDOMSelectionPrototypeFunctions[11];
+static bool JSDOMSelectionPrototypeFunctions_initialized = false;
+
+static void init_JSDOMSelectionPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("toString", 0, JSDOMSelectionPrototypeFunction::callAsFunction, JSDOMSelection::ToStringFuncNum),
-    JS_CFUNC_MAGIC_DEF("modify", 3, JSDOMSelectionPrototypeFunction::callAsFunction, JSDOMSelection::ModifyFuncNum),
-    JS_CFUNC_MAGIC_DEF("collapse", 2, JSDOMSelectionPrototypeFunction::callAsFunction, JSDOMSelection::CollapseFuncNum),
-    JS_CFUNC_MAGIC_DEF("removeAllRanges", 0, JSDOMSelectionPrototypeFunction::callAsFunction, JSDOMSelection::RemoveAllRangesFuncNum),
-    JS_CFUNC_MAGIC_DEF("addRange", 1, JSDOMSelectionPrototypeFunction::callAsFunction, JSDOMSelection::AddRangeFuncNum),
-    JS_CFUNC_MAGIC_DEF("setBaseAndExtent", 4, JSDOMSelectionPrototypeFunction::callAsFunction, JSDOMSelection::SetBaseAndExtentFuncNum),
-    JS_CFUNC_MAGIC_DEF("empty", 0, JSDOMSelectionPrototypeFunction::callAsFunction, JSDOMSelection::EmptyFuncNum),
-    JS_CFUNC_MAGIC_DEF("setPosition", 2, JSDOMSelectionPrototypeFunction::callAsFunction, JSDOMSelection::SetPositionFuncNum),
-    JS_CFUNC_MAGIC_DEF("collapseToEnd", 0, JSDOMSelectionPrototypeFunction::callAsFunction, JSDOMSelection::CollapseToEndFuncNum),
-    JS_CFUNC_MAGIC_DEF("collapseToStart", 0, JSDOMSelectionPrototypeFunction::callAsFunction, JSDOMSelection::CollapseToStartFuncNum),
-    JS_CFUNC_MAGIC_DEF("getRangeAt", 1, JSDOMSelectionPrototypeFunction::callAsFunction, JSDOMSelection::GetRangeAtFuncNum)
-};
+    if (JSDOMSelectionPrototypeFunctions_initialized) return;
+    JSDOMSelectionPrototypeFunctions_initialized = true;
+    memset(JSDOMSelectionPrototypeFunctions, 0, sizeof(JSDOMSelectionPrototypeFunctions));
+    JSDOMSelectionPrototypeFunctions[0].name = "toString";
+    JSDOMSelectionPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMSelectionPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSDOMSelectionPrototypeFunctions[0].magic = JSDOMSelection::ToStringFuncNum;
+    JSDOMSelectionPrototypeFunctions[0].u.func.length = 0;
+    JSDOMSelectionPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMSelectionPrototypeFunctions[0].u.func.cfunc.generic_magic = JSDOMSelectionPrototypeFunction::callAsFunction;
+    JSDOMSelectionPrototypeFunctions[1].name = "modify";
+    JSDOMSelectionPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMSelectionPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSDOMSelectionPrototypeFunctions[1].magic = JSDOMSelection::ModifyFuncNum;
+    JSDOMSelectionPrototypeFunctions[1].u.func.length = 3;
+    JSDOMSelectionPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMSelectionPrototypeFunctions[1].u.func.cfunc.generic_magic = JSDOMSelectionPrototypeFunction::callAsFunction;
+    JSDOMSelectionPrototypeFunctions[2].name = "collapse";
+    JSDOMSelectionPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMSelectionPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSDOMSelectionPrototypeFunctions[2].magic = JSDOMSelection::CollapseFuncNum;
+    JSDOMSelectionPrototypeFunctions[2].u.func.length = 2;
+    JSDOMSelectionPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMSelectionPrototypeFunctions[2].u.func.cfunc.generic_magic = JSDOMSelectionPrototypeFunction::callAsFunction;
+    JSDOMSelectionPrototypeFunctions[3].name = "removeAllRanges";
+    JSDOMSelectionPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMSelectionPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSDOMSelectionPrototypeFunctions[3].magic = JSDOMSelection::RemoveAllRangesFuncNum;
+    JSDOMSelectionPrototypeFunctions[3].u.func.length = 0;
+    JSDOMSelectionPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMSelectionPrototypeFunctions[3].u.func.cfunc.generic_magic = JSDOMSelectionPrototypeFunction::callAsFunction;
+    JSDOMSelectionPrototypeFunctions[4].name = "addRange";
+    JSDOMSelectionPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMSelectionPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSDOMSelectionPrototypeFunctions[4].magic = JSDOMSelection::AddRangeFuncNum;
+    JSDOMSelectionPrototypeFunctions[4].u.func.length = 1;
+    JSDOMSelectionPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMSelectionPrototypeFunctions[4].u.func.cfunc.generic_magic = JSDOMSelectionPrototypeFunction::callAsFunction;
+    JSDOMSelectionPrototypeFunctions[5].name = "setBaseAndExtent";
+    JSDOMSelectionPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMSelectionPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSDOMSelectionPrototypeFunctions[5].magic = JSDOMSelection::SetBaseAndExtentFuncNum;
+    JSDOMSelectionPrototypeFunctions[5].u.func.length = 4;
+    JSDOMSelectionPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMSelectionPrototypeFunctions[5].u.func.cfunc.generic_magic = JSDOMSelectionPrototypeFunction::callAsFunction;
+    JSDOMSelectionPrototypeFunctions[6].name = "empty";
+    JSDOMSelectionPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMSelectionPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSDOMSelectionPrototypeFunctions[6].magic = JSDOMSelection::EmptyFuncNum;
+    JSDOMSelectionPrototypeFunctions[6].u.func.length = 0;
+    JSDOMSelectionPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMSelectionPrototypeFunctions[6].u.func.cfunc.generic_magic = JSDOMSelectionPrototypeFunction::callAsFunction;
+    JSDOMSelectionPrototypeFunctions[7].name = "setPosition";
+    JSDOMSelectionPrototypeFunctions[7].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMSelectionPrototypeFunctions[7].def_type = JS_DEF_CFUNC;
+    JSDOMSelectionPrototypeFunctions[7].magic = JSDOMSelection::SetPositionFuncNum;
+    JSDOMSelectionPrototypeFunctions[7].u.func.length = 2;
+    JSDOMSelectionPrototypeFunctions[7].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMSelectionPrototypeFunctions[7].u.func.cfunc.generic_magic = JSDOMSelectionPrototypeFunction::callAsFunction;
+    JSDOMSelectionPrototypeFunctions[8].name = "collapseToEnd";
+    JSDOMSelectionPrototypeFunctions[8].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMSelectionPrototypeFunctions[8].def_type = JS_DEF_CFUNC;
+    JSDOMSelectionPrototypeFunctions[8].magic = JSDOMSelection::CollapseToEndFuncNum;
+    JSDOMSelectionPrototypeFunctions[8].u.func.length = 0;
+    JSDOMSelectionPrototypeFunctions[8].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMSelectionPrototypeFunctions[8].u.func.cfunc.generic_magic = JSDOMSelectionPrototypeFunction::callAsFunction;
+    JSDOMSelectionPrototypeFunctions[9].name = "collapseToStart";
+    JSDOMSelectionPrototypeFunctions[9].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMSelectionPrototypeFunctions[9].def_type = JS_DEF_CFUNC;
+    JSDOMSelectionPrototypeFunctions[9].magic = JSDOMSelection::CollapseToStartFuncNum;
+    JSDOMSelectionPrototypeFunctions[9].u.func.length = 0;
+    JSDOMSelectionPrototypeFunctions[9].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMSelectionPrototypeFunctions[9].u.func.cfunc.generic_magic = JSDOMSelectionPrototypeFunction::callAsFunction;
+    JSDOMSelectionPrototypeFunctions[10].name = "getRangeAt";
+    JSDOMSelectionPrototypeFunctions[10].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMSelectionPrototypeFunctions[10].def_type = JS_DEF_CFUNC;
+    JSDOMSelectionPrototypeFunctions[10].magic = JSDOMSelection::GetRangeAtFuncNum;
+    JSDOMSelectionPrototypeFunctions[10].u.func.length = 1;
+    JSDOMSelectionPrototypeFunctions[10].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMSelectionPrototypeFunctions[10].u.func.cfunc.generic_magic = JSDOMSelectionPrototypeFunction::callAsFunction;
+}
 
 JSValue JSDOMSelectionPrototype::self(JSContext * ctx)
 {
@@ -92,22 +227,31 @@ JSValue JSDOMSelectionPrototype::self(JSContext * ctx)
 
 void JSDOMSelectionPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSDOMSelectionAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSDOMSelectionAttributesFunctions, countof(JSDOMSelectionAttributesFunctions));
+    init_JSDOMSelectionPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSDOMSelectionPrototypeFunctions, countof(JSDOMSelectionPrototypeFunctions));
 }
 
-static JSClassDef JSDOMSelectionClassDefine = 
+static JSClassDef JSDOMSelectionClassDefine;
+static bool JSDOMSelectionClassDefine_initialized = false;
+
+static void init_JSDOMSelectionClassDefine()
 {
-    "DOMSelection",
-    .finalizer = JSDOMSelection::finalizer,
-    .gc_mark = JSDOMSelection::mark,
-};
+    if (JSDOMSelectionClassDefine_initialized) return;
+    JSDOMSelectionClassDefine_initialized = true;
+    memset(&JSDOMSelectionClassDefine, 0, sizeof(JSDOMSelectionClassDefine));
+    JSDOMSelectionClassDefine.class_name = "DOMSelection";
+    JSDOMSelectionClassDefine.finalizer = JSDOMSelection::finalizer;
+    JSDOMSelectionClassDefine.gc_mark = JSDOMSelection::mark;
+}
 
 JSClassID JSDOMSelection::js_class_id = 0;
 
 void JSDOMSelection::init(JSContext* ctx)
 {
     if (JSDOMSelection::js_class_id == 0) {
+        init_JSDOMSelectionClassDefine();
         JS_NewClassID(&JSDOMSelection::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSDOMSelection::js_class_id, &JSDOMSelectionClassDefine);
         JS_SetClassProto(ctx, JSDOMSelection::js_class_id, JSDOMSelectionPrototype::self(ctx));

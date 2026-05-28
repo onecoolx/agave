@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -58,31 +60,125 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFilterElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFilterElementAttributesFunctions[14];
+static bool JSSVGFilterElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFilterElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGFilterElement::getValueProperty, JSSVGFilterElement::putValueProperty, JSSVGFilterElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGFilterElement::getValueProperty, NULL, JSSVGFilterElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGFilterElement::getValueProperty, NULL, JSSVGFilterElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("filterResY", JSSVGFilterElement::getValueProperty, NULL, JSSVGFilterElement::FilterResYAttrNum),
-    JS_CGETSET_MAGIC_DEF("filterUnits", JSSVGFilterElement::getValueProperty, NULL, JSSVGFilterElement::FilterUnitsAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGFilterElement::getValueProperty, NULL, JSSVGFilterElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFilterElement::getValueProperty, NULL, JSSVGFilterElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("primitiveUnits", JSSVGFilterElement::getValueProperty, NULL, JSSVGFilterElement::PrimitiveUnitsAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFilterElement::getValueProperty, NULL, JSSVGFilterElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("filterResX", JSSVGFilterElement::getValueProperty, NULL, JSSVGFilterElement::FilterResXAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGFilterElement::getValueProperty, NULL, JSSVGFilterElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("href", JSSVGFilterElement::getValueProperty, NULL, JSSVGFilterElement::HrefAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGFilterElement::getValueProperty, JSSVGFilterElement::putValueProperty, JSSVGFilterElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGFilterElement::getValueProperty, NULL, JSSVGFilterElement::ExternalResourcesRequiredAttrNum)
-};
+    if (JSSVGFilterElementAttributesFunctions_initialized) return;
+    JSSVGFilterElementAttributesFunctions_initialized = true;
+    memset(JSSVGFilterElementAttributesFunctions, 0, sizeof(JSSVGFilterElementAttributesFunctions));
+    JSSVGFilterElementAttributesFunctions[0].name = "xmlspace";
+    JSSVGFilterElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFilterElementAttributesFunctions[0].magic = JSSVGFilterElement::XmlspaceAttrNum;
+    JSSVGFilterElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFilterElement::getValueProperty;
+    JSSVGFilterElementAttributesFunctions[0].u.getset.set.setter_magic = JSSVGFilterElement::putValueProperty;
+    JSSVGFilterElementAttributesFunctions[1].name = "width";
+    JSSVGFilterElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFilterElementAttributesFunctions[1].magic = JSSVGFilterElement::WidthAttrNum;
+    JSSVGFilterElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFilterElement::getValueProperty;
+    JSSVGFilterElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFilterElementAttributesFunctions[2].name = "style";
+    JSSVGFilterElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFilterElementAttributesFunctions[2].magic = JSSVGFilterElement::StyleAttrNum;
+    JSSVGFilterElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFilterElement::getValueProperty;
+    JSSVGFilterElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFilterElementAttributesFunctions[3].name = "filterResY";
+    JSSVGFilterElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFilterElementAttributesFunctions[3].magic = JSSVGFilterElement::FilterResYAttrNum;
+    JSSVGFilterElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGFilterElement::getValueProperty;
+    JSSVGFilterElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFilterElementAttributesFunctions[4].name = "filterUnits";
+    JSSVGFilterElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFilterElementAttributesFunctions[4].magic = JSSVGFilterElement::FilterUnitsAttrNum;
+    JSSVGFilterElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGFilterElement::getValueProperty;
+    JSSVGFilterElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFilterElementAttributesFunctions[5].name = "className";
+    JSSVGFilterElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFilterElementAttributesFunctions[5].magic = JSSVGFilterElement::ClassNameAttrNum;
+    JSSVGFilterElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGFilterElement::getValueProperty;
+    JSSVGFilterElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFilterElementAttributesFunctions[6].name = "x";
+    JSSVGFilterElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFilterElementAttributesFunctions[6].magic = JSSVGFilterElement::XAttrNum;
+    JSSVGFilterElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGFilterElement::getValueProperty;
+    JSSVGFilterElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFilterElementAttributesFunctions[7].name = "primitiveUnits";
+    JSSVGFilterElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFilterElementAttributesFunctions[7].magic = JSSVGFilterElement::PrimitiveUnitsAttrNum;
+    JSSVGFilterElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGFilterElement::getValueProperty;
+    JSSVGFilterElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGFilterElementAttributesFunctions[8].name = "y";
+    JSSVGFilterElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFilterElementAttributesFunctions[8].magic = JSSVGFilterElement::YAttrNum;
+    JSSVGFilterElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGFilterElement::getValueProperty;
+    JSSVGFilterElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGFilterElementAttributesFunctions[9].name = "filterResX";
+    JSSVGFilterElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFilterElementAttributesFunctions[9].magic = JSSVGFilterElement::FilterResXAttrNum;
+    JSSVGFilterElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGFilterElement::getValueProperty;
+    JSSVGFilterElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGFilterElementAttributesFunctions[10].name = "height";
+    JSSVGFilterElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFilterElementAttributesFunctions[10].magic = JSSVGFilterElement::HeightAttrNum;
+    JSSVGFilterElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGFilterElement::getValueProperty;
+    JSSVGFilterElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSSVGFilterElementAttributesFunctions[11].name = "href";
+    JSSVGFilterElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFilterElementAttributesFunctions[11].magic = JSSVGFilterElement::HrefAttrNum;
+    JSSVGFilterElementAttributesFunctions[11].u.getset.get.getter_magic = JSSVGFilterElement::getValueProperty;
+    JSSVGFilterElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSSVGFilterElementAttributesFunctions[12].name = "xmllang";
+    JSSVGFilterElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFilterElementAttributesFunctions[12].magic = JSSVGFilterElement::XmllangAttrNum;
+    JSSVGFilterElementAttributesFunctions[12].u.getset.get.getter_magic = JSSVGFilterElement::getValueProperty;
+    JSSVGFilterElementAttributesFunctions[12].u.getset.set.setter_magic = JSSVGFilterElement::putValueProperty;
+    JSSVGFilterElementAttributesFunctions[13].name = "externalResourcesRequired";
+    JSSVGFilterElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFilterElementAttributesFunctions[13].magic = JSSVGFilterElement::ExternalResourcesRequiredAttrNum;
+    JSSVGFilterElementAttributesFunctions[13].u.getset.get.getter_magic = JSSVGFilterElement::getValueProperty;
+    JSSVGFilterElementAttributesFunctions[13].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGFilterElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGFilterElementPrototypeFunctions[2];
+static bool JSSVGFilterElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGFilterElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("setFilterRes", 2, JSSVGFilterElementPrototypeFunction::callAsFunction, JSSVGFilterElement::SetFilterResFuncNum),
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGFilterElementPrototypeFunction::callAsFunction, JSSVGFilterElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGFilterElementPrototypeFunctions_initialized) return;
+    JSSVGFilterElementPrototypeFunctions_initialized = true;
+    memset(JSSVGFilterElementPrototypeFunctions, 0, sizeof(JSSVGFilterElementPrototypeFunctions));
+    JSSVGFilterElementPrototypeFunctions[0].name = "setFilterRes";
+    JSSVGFilterElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGFilterElementPrototypeFunctions[0].magic = JSSVGFilterElement::SetFilterResFuncNum;
+    JSSVGFilterElementPrototypeFunctions[0].u.func.length = 2;
+    JSSVGFilterElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFilterElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGFilterElementPrototypeFunction::callAsFunction;
+    JSSVGFilterElementPrototypeFunctions[1].name = "getPresentationAttribute";
+    JSSVGFilterElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFilterElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGFilterElementPrototypeFunctions[1].magic = JSSVGFilterElement::GetPresentationAttributeFuncNum;
+    JSSVGFilterElementPrototypeFunctions[1].u.func.length = 1;
+    JSSVGFilterElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFilterElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGFilterElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGFilterElementPrototype::self(JSContext * ctx)
 {
@@ -100,22 +196,31 @@ JSValue JSSVGFilterElementPrototype::self(JSContext * ctx)
 
 void JSSVGFilterElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFilterElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFilterElementAttributesFunctions, countof(JSSVGFilterElementAttributesFunctions));
+    init_JSSVGFilterElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFilterElementPrototypeFunctions, countof(JSSVGFilterElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGFilterElementClassDefine = 
+static JSClassDef JSSVGFilterElementClassDefine;
+static bool JSSVGFilterElementClassDefine_initialized = false;
+
+static void init_JSSVGFilterElementClassDefine()
 {
-    "SVGFilterElement",
-    .finalizer = JSSVGFilterElement::finalizer,
-    .gc_mark = JSSVGFilterElement::mark,
-};
+    if (JSSVGFilterElementClassDefine_initialized) return;
+    JSSVGFilterElementClassDefine_initialized = true;
+    memset(&JSSVGFilterElementClassDefine, 0, sizeof(JSSVGFilterElementClassDefine));
+    JSSVGFilterElementClassDefine.class_name = "SVGFilterElement";
+    JSSVGFilterElementClassDefine.finalizer = JSSVGFilterElement::finalizer;
+    JSSVGFilterElementClassDefine.gc_mark = JSSVGFilterElement::mark;
+}
 
 JSClassID JSSVGFilterElement::js_class_id = 0;
 
 void JSSVGFilterElement::init(JSContext* ctx)
 {
     if (JSSVGFilterElement::js_class_id == 0) {
+        init_JSSVGFilterElementClassDefine();
         JS_NewClassID(&JSSVGFilterElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFilterElement::js_class_id, &JSSVGFilterElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFilterElement::js_class_id, JSSVGFilterElementPrototype::self(ctx));

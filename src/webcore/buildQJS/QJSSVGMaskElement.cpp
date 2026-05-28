@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -58,31 +60,125 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGMaskElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGMaskElementAttributesFunctions[14];
+static bool JSSVGMaskElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGMaskElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGMaskElement::getValueProperty, JSSVGMaskElement::putValueProperty, JSSVGMaskElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGMaskElement::getValueProperty, NULL, JSSVGMaskElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGMaskElement::getValueProperty, NULL, JSSVGMaskElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("maskContentUnits", JSSVGMaskElement::getValueProperty, NULL, JSSVGMaskElement::MaskContentUnitsAttrNum),
-    JS_CGETSET_MAGIC_DEF("maskUnits", JSSVGMaskElement::getValueProperty, NULL, JSSVGMaskElement::MaskUnitsAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGMaskElement::getValueProperty, JSSVGMaskElement::putValueProperty, JSSVGMaskElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGMaskElement::getValueProperty, NULL, JSSVGMaskElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGMaskElement::getValueProperty, NULL, JSSVGMaskElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGMaskElement::getValueProperty, NULL, JSSVGMaskElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGMaskElement::getValueProperty, NULL, JSSVGMaskElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGMaskElement::getValueProperty, NULL, JSSVGMaskElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGMaskElement::getValueProperty, NULL, JSSVGMaskElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGMaskElement::getValueProperty, NULL, JSSVGMaskElement::SystemLanguageAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGMaskElement::getValueProperty, NULL, JSSVGMaskElement::ExternalResourcesRequiredAttrNum)
-};
+    if (JSSVGMaskElementAttributesFunctions_initialized) return;
+    JSSVGMaskElementAttributesFunctions_initialized = true;
+    memset(JSSVGMaskElementAttributesFunctions, 0, sizeof(JSSVGMaskElementAttributesFunctions));
+    JSSVGMaskElementAttributesFunctions[0].name = "xmlspace";
+    JSSVGMaskElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMaskElementAttributesFunctions[0].magic = JSSVGMaskElement::XmlspaceAttrNum;
+    JSSVGMaskElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGMaskElement::getValueProperty;
+    JSSVGMaskElementAttributesFunctions[0].u.getset.set.setter_magic = JSSVGMaskElement::putValueProperty;
+    JSSVGMaskElementAttributesFunctions[1].name = "width";
+    JSSVGMaskElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMaskElementAttributesFunctions[1].magic = JSSVGMaskElement::WidthAttrNum;
+    JSSVGMaskElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGMaskElement::getValueProperty;
+    JSSVGMaskElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGMaskElementAttributesFunctions[2].name = "style";
+    JSSVGMaskElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMaskElementAttributesFunctions[2].magic = JSSVGMaskElement::StyleAttrNum;
+    JSSVGMaskElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGMaskElement::getValueProperty;
+    JSSVGMaskElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGMaskElementAttributesFunctions[3].name = "maskContentUnits";
+    JSSVGMaskElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMaskElementAttributesFunctions[3].magic = JSSVGMaskElement::MaskContentUnitsAttrNum;
+    JSSVGMaskElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGMaskElement::getValueProperty;
+    JSSVGMaskElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGMaskElementAttributesFunctions[4].name = "maskUnits";
+    JSSVGMaskElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMaskElementAttributesFunctions[4].magic = JSSVGMaskElement::MaskUnitsAttrNum;
+    JSSVGMaskElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGMaskElement::getValueProperty;
+    JSSVGMaskElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGMaskElementAttributesFunctions[5].name = "xmllang";
+    JSSVGMaskElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMaskElementAttributesFunctions[5].magic = JSSVGMaskElement::XmllangAttrNum;
+    JSSVGMaskElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGMaskElement::getValueProperty;
+    JSSVGMaskElementAttributesFunctions[5].u.getset.set.setter_magic = JSSVGMaskElement::putValueProperty;
+    JSSVGMaskElementAttributesFunctions[6].name = "className";
+    JSSVGMaskElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMaskElementAttributesFunctions[6].magic = JSSVGMaskElement::ClassNameAttrNum;
+    JSSVGMaskElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGMaskElement::getValueProperty;
+    JSSVGMaskElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGMaskElementAttributesFunctions[7].name = "x";
+    JSSVGMaskElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMaskElementAttributesFunctions[7].magic = JSSVGMaskElement::XAttrNum;
+    JSSVGMaskElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGMaskElement::getValueProperty;
+    JSSVGMaskElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGMaskElementAttributesFunctions[8].name = "requiredExtensions";
+    JSSVGMaskElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMaskElementAttributesFunctions[8].magic = JSSVGMaskElement::RequiredExtensionsAttrNum;
+    JSSVGMaskElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGMaskElement::getValueProperty;
+    JSSVGMaskElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGMaskElementAttributesFunctions[9].name = "y";
+    JSSVGMaskElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMaskElementAttributesFunctions[9].magic = JSSVGMaskElement::YAttrNum;
+    JSSVGMaskElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGMaskElement::getValueProperty;
+    JSSVGMaskElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGMaskElementAttributesFunctions[10].name = "height";
+    JSSVGMaskElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMaskElementAttributesFunctions[10].magic = JSSVGMaskElement::HeightAttrNum;
+    JSSVGMaskElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGMaskElement::getValueProperty;
+    JSSVGMaskElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSSVGMaskElementAttributesFunctions[11].name = "requiredFeatures";
+    JSSVGMaskElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMaskElementAttributesFunctions[11].magic = JSSVGMaskElement::RequiredFeaturesAttrNum;
+    JSSVGMaskElementAttributesFunctions[11].u.getset.get.getter_magic = JSSVGMaskElement::getValueProperty;
+    JSSVGMaskElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSSVGMaskElementAttributesFunctions[12].name = "systemLanguage";
+    JSSVGMaskElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMaskElementAttributesFunctions[12].magic = JSSVGMaskElement::SystemLanguageAttrNum;
+    JSSVGMaskElementAttributesFunctions[12].u.getset.get.getter_magic = JSSVGMaskElement::getValueProperty;
+    JSSVGMaskElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSSVGMaskElementAttributesFunctions[13].name = "externalResourcesRequired";
+    JSSVGMaskElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMaskElementAttributesFunctions[13].magic = JSSVGMaskElement::ExternalResourcesRequiredAttrNum;
+    JSSVGMaskElementAttributesFunctions[13].u.getset.get.getter_magic = JSSVGMaskElement::getValueProperty;
+    JSSVGMaskElementAttributesFunctions[13].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGMaskElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGMaskElementPrototypeFunctions[2];
+static bool JSSVGMaskElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGMaskElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGMaskElementPrototypeFunction::callAsFunction, JSSVGMaskElement::GetPresentationAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGMaskElementPrototypeFunction::callAsFunction, JSSVGMaskElement::HasExtensionFuncNum)
-};
+    if (JSSVGMaskElementPrototypeFunctions_initialized) return;
+    JSSVGMaskElementPrototypeFunctions_initialized = true;
+    memset(JSSVGMaskElementPrototypeFunctions, 0, sizeof(JSSVGMaskElementPrototypeFunctions));
+    JSSVGMaskElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGMaskElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGMaskElementPrototypeFunctions[0].magic = JSSVGMaskElement::GetPresentationAttributeFuncNum;
+    JSSVGMaskElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGMaskElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGMaskElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGMaskElementPrototypeFunction::callAsFunction;
+    JSSVGMaskElementPrototypeFunctions[1].name = "hasExtension";
+    JSSVGMaskElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGMaskElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGMaskElementPrototypeFunctions[1].magic = JSSVGMaskElement::HasExtensionFuncNum;
+    JSSVGMaskElementPrototypeFunctions[1].u.func.length = 1;
+    JSSVGMaskElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGMaskElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGMaskElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGMaskElementPrototype::self(JSContext * ctx)
 {
@@ -100,22 +196,31 @@ JSValue JSSVGMaskElementPrototype::self(JSContext * ctx)
 
 void JSSVGMaskElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGMaskElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGMaskElementAttributesFunctions, countof(JSSVGMaskElementAttributesFunctions));
+    init_JSSVGMaskElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGMaskElementPrototypeFunctions, countof(JSSVGMaskElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGMaskElementClassDefine = 
+static JSClassDef JSSVGMaskElementClassDefine;
+static bool JSSVGMaskElementClassDefine_initialized = false;
+
+static void init_JSSVGMaskElementClassDefine()
 {
-    "SVGMaskElement",
-    .finalizer = JSSVGMaskElement::finalizer,
-    .gc_mark = JSSVGMaskElement::mark,
-};
+    if (JSSVGMaskElementClassDefine_initialized) return;
+    JSSVGMaskElementClassDefine_initialized = true;
+    memset(&JSSVGMaskElementClassDefine, 0, sizeof(JSSVGMaskElementClassDefine));
+    JSSVGMaskElementClassDefine.class_name = "SVGMaskElement";
+    JSSVGMaskElementClassDefine.finalizer = JSSVGMaskElement::finalizer;
+    JSSVGMaskElementClassDefine.gc_mark = JSSVGMaskElement::mark;
+}
 
 JSClassID JSSVGMaskElement::js_class_id = 0;
 
 void JSSVGMaskElement::init(JSContext* ctx)
 {
     if (JSSVGMaskElement::js_class_id == 0) {
+        init_JSSVGMaskElementClassDefine();
         JS_NewClassID(&JSSVGMaskElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGMaskElement::js_class_id, &JSSVGMaskElementClassDefine);
         JS_SetClassProto(ctx, JSSVGMaskElement::js_class_id, JSSVGMaskElementPrototype::self(ctx));

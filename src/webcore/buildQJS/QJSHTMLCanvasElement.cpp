@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLCanvasElement.h"
 
 #include "HTMLCanvasElement.h"
@@ -39,12 +41,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLCanvasElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLCanvasElementAttributesFunctions[3];
+static bool JSHTMLCanvasElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLCanvasElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLCanvasElement::getValueProperty, NULL, JSHTMLCanvasElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSHTMLCanvasElement::getValueProperty, JSHTMLCanvasElement::putValueProperty, JSHTMLCanvasElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSHTMLCanvasElement::getValueProperty, JSHTMLCanvasElement::putValueProperty, JSHTMLCanvasElement::HeightAttrNum)
-};
+    if (JSHTMLCanvasElementAttributesFunctions_initialized) return;
+    JSHTMLCanvasElementAttributesFunctions_initialized = true;
+    memset(JSHTMLCanvasElementAttributesFunctions, 0, sizeof(JSHTMLCanvasElementAttributesFunctions));
+    JSHTMLCanvasElementAttributesFunctions[0].name = "constructor";
+    JSHTMLCanvasElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLCanvasElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLCanvasElementAttributesFunctions[0].magic = JSHTMLCanvasElement::ConstructorAttrNum;
+    JSHTMLCanvasElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLCanvasElement::getValueProperty;
+    JSHTMLCanvasElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLCanvasElementAttributesFunctions[1].name = "width";
+    JSHTMLCanvasElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLCanvasElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLCanvasElementAttributesFunctions[1].magic = JSHTMLCanvasElement::WidthAttrNum;
+    JSHTMLCanvasElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLCanvasElement::getValueProperty;
+    JSHTMLCanvasElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLCanvasElement::putValueProperty;
+    JSHTMLCanvasElementAttributesFunctions[2].name = "height";
+    JSHTMLCanvasElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLCanvasElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLCanvasElementAttributesFunctions[2].magic = JSHTMLCanvasElement::HeightAttrNum;
+    JSHTMLCanvasElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLCanvasElement::getValueProperty;
+    JSHTMLCanvasElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLCanvasElement::putValueProperty;
+}
 
 class JSHTMLCanvasElementConstructor {
 public:
@@ -79,10 +102,22 @@ void JSHTMLCanvasElementConstructor::initConstructor(JSContext * ctx, JSValue th
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHTMLCanvasElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSHTMLCanvasElementPrototypeFunctions[1];
+static bool JSHTMLCanvasElementPrototypeFunctions_initialized = false;
+
+static void init_JSHTMLCanvasElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getContext", 1, JSHTMLCanvasElementPrototypeFunction::callAsFunction, JSHTMLCanvasElement::GetContextFuncNum)
-};
+    if (JSHTMLCanvasElementPrototypeFunctions_initialized) return;
+    JSHTMLCanvasElementPrototypeFunctions_initialized = true;
+    memset(JSHTMLCanvasElementPrototypeFunctions, 0, sizeof(JSHTMLCanvasElementPrototypeFunctions));
+    JSHTMLCanvasElementPrototypeFunctions[0].name = "getContext";
+    JSHTMLCanvasElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLCanvasElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHTMLCanvasElementPrototypeFunctions[0].magic = JSHTMLCanvasElement::GetContextFuncNum;
+    JSHTMLCanvasElementPrototypeFunctions[0].u.func.length = 1;
+    JSHTMLCanvasElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLCanvasElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLCanvasElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHTMLCanvasElementPrototype::self(JSContext * ctx)
 {
@@ -100,16 +135,24 @@ JSValue JSHTMLCanvasElementPrototype::self(JSContext * ctx)
 
 void JSHTMLCanvasElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLCanvasElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLCanvasElementAttributesFunctions, countof(JSHTMLCanvasElementAttributesFunctions));
+    init_JSHTMLCanvasElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLCanvasElementPrototypeFunctions, countof(JSHTMLCanvasElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLCanvasElementClassDefine = 
+static JSClassDef JSHTMLCanvasElementClassDefine;
+static bool JSHTMLCanvasElementClassDefine_initialized = false;
+
+static void init_JSHTMLCanvasElementClassDefine()
 {
-    "HTMLCanvasElement",
-    .finalizer = JSHTMLCanvasElement::finalizer,
-    .gc_mark = JSHTMLCanvasElement::mark,
-};
+    if (JSHTMLCanvasElementClassDefine_initialized) return;
+    JSHTMLCanvasElementClassDefine_initialized = true;
+    memset(&JSHTMLCanvasElementClassDefine, 0, sizeof(JSHTMLCanvasElementClassDefine));
+    JSHTMLCanvasElementClassDefine.class_name = "HTMLCanvasElement";
+    JSHTMLCanvasElementClassDefine.finalizer = JSHTMLCanvasElement::finalizer;
+    JSHTMLCanvasElementClassDefine.gc_mark = JSHTMLCanvasElement::mark;
+}
 
 JSClassID JSHTMLCanvasElement::js_class_id = 0;
 

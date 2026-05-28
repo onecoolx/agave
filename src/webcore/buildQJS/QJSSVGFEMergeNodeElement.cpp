@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -47,10 +49,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFEMergeNodeElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFEMergeNodeElementAttributesFunctions[1];
+static bool JSSVGFEMergeNodeElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFEMergeNodeElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("in1", JSSVGFEMergeNodeElement::getValueProperty, NULL, JSSVGFEMergeNodeElement::In1AttrNum)
-};
+    if (JSSVGFEMergeNodeElementAttributesFunctions_initialized) return;
+    JSSVGFEMergeNodeElementAttributesFunctions_initialized = true;
+    memset(JSSVGFEMergeNodeElementAttributesFunctions, 0, sizeof(JSSVGFEMergeNodeElementAttributesFunctions));
+    JSSVGFEMergeNodeElementAttributesFunctions[0].name = "in1";
+    JSSVGFEMergeNodeElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEMergeNodeElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEMergeNodeElementAttributesFunctions[0].magic = JSSVGFEMergeNodeElement::In1AttrNum;
+    JSSVGFEMergeNodeElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFEMergeNodeElement::getValueProperty;
+    JSSVGFEMergeNodeElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGFEMergeNodeElementPrototype::self(JSContext * ctx)
 {
@@ -68,21 +81,29 @@ JSValue JSSVGFEMergeNodeElementPrototype::self(JSContext * ctx)
 
 void JSSVGFEMergeNodeElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFEMergeNodeElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEMergeNodeElementAttributesFunctions, countof(JSSVGFEMergeNodeElementAttributesFunctions));
 }
 
-static JSClassDef JSSVGFEMergeNodeElementClassDefine = 
+static JSClassDef JSSVGFEMergeNodeElementClassDefine;
+static bool JSSVGFEMergeNodeElementClassDefine_initialized = false;
+
+static void init_JSSVGFEMergeNodeElementClassDefine()
 {
-    "SVGFEMergeNodeElement",
-    .finalizer = JSSVGFEMergeNodeElement::finalizer,
-    .gc_mark = JSSVGFEMergeNodeElement::mark,
-};
+    if (JSSVGFEMergeNodeElementClassDefine_initialized) return;
+    JSSVGFEMergeNodeElementClassDefine_initialized = true;
+    memset(&JSSVGFEMergeNodeElementClassDefine, 0, sizeof(JSSVGFEMergeNodeElementClassDefine));
+    JSSVGFEMergeNodeElementClassDefine.class_name = "SVGFEMergeNodeElement";
+    JSSVGFEMergeNodeElementClassDefine.finalizer = JSSVGFEMergeNodeElement::finalizer;
+    JSSVGFEMergeNodeElementClassDefine.gc_mark = JSSVGFEMergeNodeElement::mark;
+}
 
 JSClassID JSSVGFEMergeNodeElement::js_class_id = 0;
 
 void JSSVGFEMergeNodeElement::init(JSContext* ctx)
 {
     if (JSSVGFEMergeNodeElement::js_class_id == 0) {
+        init_JSSVGFEMergeNodeElementClassDefine();
         JS_NewClassID(&JSSVGFEMergeNodeElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFEMergeNodeElement::js_class_id, &JSSVGFEMergeNodeElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFEMergeNodeElement::js_class_id, JSSVGFEMergeNodeElementPrototype::self(ctx));

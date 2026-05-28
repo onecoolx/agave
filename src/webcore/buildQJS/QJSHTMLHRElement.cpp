@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLHRElement.h"
 
 #include "HTMLHRElement.h"
@@ -39,14 +41,45 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLHRElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLHRElementAttributesFunctions[5];
+static bool JSHTMLHRElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLHRElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLHRElement::getValueProperty, JSHTMLHRElement::putValueProperty, JSHTMLHRElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSHTMLHRElement::getValueProperty, JSHTMLHRElement::putValueProperty, JSHTMLHRElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLHRElement::getValueProperty, NULL, JSHTMLHRElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("size", JSHTMLHRElement::getValueProperty, JSHTMLHRElement::putValueProperty, JSHTMLHRElement::SizeAttrNum),
-    JS_CGETSET_MAGIC_DEF("noShade", JSHTMLHRElement::getValueProperty, JSHTMLHRElement::putValueProperty, JSHTMLHRElement::NoShadeAttrNum)
-};
+    if (JSHTMLHRElementAttributesFunctions_initialized) return;
+    JSHTMLHRElementAttributesFunctions_initialized = true;
+    memset(JSHTMLHRElementAttributesFunctions, 0, sizeof(JSHTMLHRElementAttributesFunctions));
+    JSHTMLHRElementAttributesFunctions[0].name = "align";
+    JSHTMLHRElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLHRElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLHRElementAttributesFunctions[0].magic = JSHTMLHRElement::AlignAttrNum;
+    JSHTMLHRElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLHRElement::getValueProperty;
+    JSHTMLHRElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLHRElement::putValueProperty;
+    JSHTMLHRElementAttributesFunctions[1].name = "width";
+    JSHTMLHRElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLHRElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLHRElementAttributesFunctions[1].magic = JSHTMLHRElement::WidthAttrNum;
+    JSHTMLHRElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLHRElement::getValueProperty;
+    JSHTMLHRElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLHRElement::putValueProperty;
+    JSHTMLHRElementAttributesFunctions[2].name = "constructor";
+    JSHTMLHRElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLHRElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLHRElementAttributesFunctions[2].magic = JSHTMLHRElement::ConstructorAttrNum;
+    JSHTMLHRElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLHRElement::getValueProperty;
+    JSHTMLHRElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSHTMLHRElementAttributesFunctions[3].name = "size";
+    JSHTMLHRElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLHRElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLHRElementAttributesFunctions[3].magic = JSHTMLHRElement::SizeAttrNum;
+    JSHTMLHRElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLHRElement::getValueProperty;
+    JSHTMLHRElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLHRElement::putValueProperty;
+    JSHTMLHRElementAttributesFunctions[4].name = "noShade";
+    JSHTMLHRElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLHRElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLHRElementAttributesFunctions[4].magic = JSHTMLHRElement::NoShadeAttrNum;
+    JSHTMLHRElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLHRElement::getValueProperty;
+    JSHTMLHRElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLHRElement::putValueProperty;
+}
 
 class JSHTMLHRElementConstructor {
 public:
@@ -95,15 +128,22 @@ JSValue JSHTMLHRElementPrototype::self(JSContext * ctx)
 
 void JSHTMLHRElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLHRElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLHRElementAttributesFunctions, countof(JSHTMLHRElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLHRElementClassDefine = 
+static JSClassDef JSHTMLHRElementClassDefine;
+static bool JSHTMLHRElementClassDefine_initialized = false;
+
+static void init_JSHTMLHRElementClassDefine()
 {
-    "HTMLHRElement",
-    .finalizer = JSHTMLHRElement::finalizer,
-    .gc_mark = JSHTMLHRElement::mark,
-};
+    if (JSHTMLHRElementClassDefine_initialized) return;
+    JSHTMLHRElementClassDefine_initialized = true;
+    memset(&JSHTMLHRElementClassDefine, 0, sizeof(JSHTMLHRElementClassDefine));
+    JSHTMLHRElementClassDefine.class_name = "HTMLHRElement";
+    JSHTMLHRElementClassDefine.finalizer = JSHTMLHRElement::finalizer;
+    JSHTMLHRElementClassDefine.gc_mark = JSHTMLHRElement::mark;
+}
 
 JSClassID JSHTMLHRElement::js_class_id = 0;
 

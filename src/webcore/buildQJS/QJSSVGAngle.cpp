@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -47,14 +49,45 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAngleAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGAngleAttributesFunctions[5];
+static bool JSSVGAngleAttributesFunctions_initialized = false;
+
+static void init_JSSVGAngleAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("value", JSSVGAngle::getValueProperty, JSSVGAngle::putValueProperty, JSSVGAngle::ValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("valueInSpecifiedUnits", JSSVGAngle::getValueProperty, JSSVGAngle::putValueProperty, JSSVGAngle::ValueInSpecifiedUnitsAttrNum),
-    JS_CGETSET_MAGIC_DEF("unitType", JSSVGAngle::getValueProperty, NULL, JSSVGAngle::UnitTypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("valueAsString", JSSVGAngle::getValueProperty, JSSVGAngle::putValueProperty, JSSVGAngle::ValueAsStringAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSSVGAngle::getValueProperty, NULL, JSSVGAngle::ConstructorAttrNum)
-};
+    if (JSSVGAngleAttributesFunctions_initialized) return;
+    JSSVGAngleAttributesFunctions_initialized = true;
+    memset(JSSVGAngleAttributesFunctions, 0, sizeof(JSSVGAngleAttributesFunctions));
+    JSSVGAngleAttributesFunctions[0].name = "value";
+    JSSVGAngleAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAngleAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAngleAttributesFunctions[0].magic = JSSVGAngle::ValueAttrNum;
+    JSSVGAngleAttributesFunctions[0].u.getset.get.getter_magic = JSSVGAngle::getValueProperty;
+    JSSVGAngleAttributesFunctions[0].u.getset.set.setter_magic = JSSVGAngle::putValueProperty;
+    JSSVGAngleAttributesFunctions[1].name = "valueInSpecifiedUnits";
+    JSSVGAngleAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAngleAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAngleAttributesFunctions[1].magic = JSSVGAngle::ValueInSpecifiedUnitsAttrNum;
+    JSSVGAngleAttributesFunctions[1].u.getset.get.getter_magic = JSSVGAngle::getValueProperty;
+    JSSVGAngleAttributesFunctions[1].u.getset.set.setter_magic = JSSVGAngle::putValueProperty;
+    JSSVGAngleAttributesFunctions[2].name = "unitType";
+    JSSVGAngleAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAngleAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAngleAttributesFunctions[2].magic = JSSVGAngle::UnitTypeAttrNum;
+    JSSVGAngleAttributesFunctions[2].u.getset.get.getter_magic = JSSVGAngle::getValueProperty;
+    JSSVGAngleAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGAngleAttributesFunctions[3].name = "valueAsString";
+    JSSVGAngleAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAngleAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAngleAttributesFunctions[3].magic = JSSVGAngle::ValueAsStringAttrNum;
+    JSSVGAngleAttributesFunctions[3].u.getset.get.getter_magic = JSSVGAngle::getValueProperty;
+    JSSVGAngleAttributesFunctions[3].u.getset.set.setter_magic = JSSVGAngle::putValueProperty;
+    JSSVGAngleAttributesFunctions[4].name = "constructor";
+    JSSVGAngleAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAngleAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAngleAttributesFunctions[4].magic = JSSVGAngle::ConstructorAttrNum;
+    JSSVGAngleAttributesFunctions[4].u.getset.get.getter_magic = JSSVGAngle::getValueProperty;
+    JSSVGAngleAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+}
 
 class JSSVGAngleConstructor {
 public:
@@ -71,14 +104,45 @@ JSValue JSSVGAngleConstructor::getValueProperty(JSContext * ctx, JSValueConst th
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSSVGAngleConstructorFunctions[] =
+static JSCFunctionListEntry JSSVGAngleConstructorFunctions[5];
+static bool JSSVGAngleConstructorFunctions_initialized = false;
+
+static void init_JSSVGAngleConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_ANGLETYPE_UNSPECIFIED", JSSVGAngleConstructor::getValueProperty, NULL, SVGAngle::SVG_ANGLETYPE_UNSPECIFIED),
-    JS_CGETSET_MAGIC_DEF("SVG_ANGLETYPE_DEG", JSSVGAngleConstructor::getValueProperty, NULL, SVGAngle::SVG_ANGLETYPE_DEG),
-    JS_CGETSET_MAGIC_DEF("SVG_ANGLETYPE_UNKNOWN", JSSVGAngleConstructor::getValueProperty, NULL, SVGAngle::SVG_ANGLETYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_ANGLETYPE_RAD", JSSVGAngleConstructor::getValueProperty, NULL, SVGAngle::SVG_ANGLETYPE_RAD),
-    JS_CGETSET_MAGIC_DEF("SVG_ANGLETYPE_GRAD", JSSVGAngleConstructor::getValueProperty, NULL, SVGAngle::SVG_ANGLETYPE_GRAD)
-};
+    if (JSSVGAngleConstructorFunctions_initialized) return;
+    JSSVGAngleConstructorFunctions_initialized = true;
+    memset(JSSVGAngleConstructorFunctions, 0, sizeof(JSSVGAngleConstructorFunctions));
+    JSSVGAngleConstructorFunctions[0].name = "SVG_ANGLETYPE_UNSPECIFIED";
+    JSSVGAngleConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAngleConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAngleConstructorFunctions[0].magic = SVGAngle::SVG_ANGLETYPE_UNSPECIFIED;
+    JSSVGAngleConstructorFunctions[0].u.getset.get.getter_magic = JSSVGAngleConstructor::getValueProperty;
+    JSSVGAngleConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGAngleConstructorFunctions[1].name = "SVG_ANGLETYPE_DEG";
+    JSSVGAngleConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAngleConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAngleConstructorFunctions[1].magic = SVGAngle::SVG_ANGLETYPE_DEG;
+    JSSVGAngleConstructorFunctions[1].u.getset.get.getter_magic = JSSVGAngleConstructor::getValueProperty;
+    JSSVGAngleConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGAngleConstructorFunctions[2].name = "SVG_ANGLETYPE_UNKNOWN";
+    JSSVGAngleConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAngleConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAngleConstructorFunctions[2].magic = SVGAngle::SVG_ANGLETYPE_UNKNOWN;
+    JSSVGAngleConstructorFunctions[2].u.getset.get.getter_magic = JSSVGAngleConstructor::getValueProperty;
+    JSSVGAngleConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGAngleConstructorFunctions[3].name = "SVG_ANGLETYPE_RAD";
+    JSSVGAngleConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAngleConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAngleConstructorFunctions[3].magic = SVGAngle::SVG_ANGLETYPE_RAD;
+    JSSVGAngleConstructorFunctions[3].u.getset.get.getter_magic = JSSVGAngleConstructor::getValueProperty;
+    JSSVGAngleConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGAngleConstructorFunctions[4].name = "SVG_ANGLETYPE_GRAD";
+    JSSVGAngleConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAngleConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAngleConstructorFunctions[4].magic = SVGAngle::SVG_ANGLETYPE_GRAD;
+    JSSVGAngleConstructorFunctions[4].u.getset.get.getter_magic = JSSVGAngleConstructor::getValueProperty;
+    JSSVGAngleConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGAngleConstructor::self(JSContext * ctx)
 {
@@ -96,27 +160,77 @@ JSValue JSSVGAngleConstructor::self(JSContext * ctx)
 
 void JSSVGAngleConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAngleConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAngleConstructorFunctions, countof(JSSVGAngleConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAnglePrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSSVGAnglePrototypeConstantsFunctions[5];
+static bool JSSVGAnglePrototypeConstantsFunctions_initialized = false;
+
+static void init_JSSVGAnglePrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_ANGLETYPE_UNSPECIFIED", JSSVGAnglePrototype::getValueProperty, NULL, SVGAngle::SVG_ANGLETYPE_UNSPECIFIED),
-    JS_CGETSET_MAGIC_DEF("SVG_ANGLETYPE_DEG", JSSVGAnglePrototype::getValueProperty, NULL, SVGAngle::SVG_ANGLETYPE_DEG),
-    JS_CGETSET_MAGIC_DEF("SVG_ANGLETYPE_UNKNOWN", JSSVGAnglePrototype::getValueProperty, NULL, SVGAngle::SVG_ANGLETYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_ANGLETYPE_RAD", JSSVGAnglePrototype::getValueProperty, NULL, SVGAngle::SVG_ANGLETYPE_RAD),
-    JS_CGETSET_MAGIC_DEF("SVG_ANGLETYPE_GRAD", JSSVGAnglePrototype::getValueProperty, NULL, SVGAngle::SVG_ANGLETYPE_GRAD)
-};
+    if (JSSVGAnglePrototypeConstantsFunctions_initialized) return;
+    JSSVGAnglePrototypeConstantsFunctions_initialized = true;
+    memset(JSSVGAnglePrototypeConstantsFunctions, 0, sizeof(JSSVGAnglePrototypeConstantsFunctions));
+    JSSVGAnglePrototypeConstantsFunctions[0].name = "SVG_ANGLETYPE_UNSPECIFIED";
+    JSSVGAnglePrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnglePrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnglePrototypeConstantsFunctions[0].magic = SVGAngle::SVG_ANGLETYPE_UNSPECIFIED;
+    JSSVGAnglePrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGAnglePrototype::getValueProperty;
+    JSSVGAnglePrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGAnglePrototypeConstantsFunctions[1].name = "SVG_ANGLETYPE_DEG";
+    JSSVGAnglePrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnglePrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnglePrototypeConstantsFunctions[1].magic = SVGAngle::SVG_ANGLETYPE_DEG;
+    JSSVGAnglePrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGAnglePrototype::getValueProperty;
+    JSSVGAnglePrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGAnglePrototypeConstantsFunctions[2].name = "SVG_ANGLETYPE_UNKNOWN";
+    JSSVGAnglePrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnglePrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnglePrototypeConstantsFunctions[2].magic = SVGAngle::SVG_ANGLETYPE_UNKNOWN;
+    JSSVGAnglePrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGAnglePrototype::getValueProperty;
+    JSSVGAnglePrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGAnglePrototypeConstantsFunctions[3].name = "SVG_ANGLETYPE_RAD";
+    JSSVGAnglePrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnglePrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnglePrototypeConstantsFunctions[3].magic = SVGAngle::SVG_ANGLETYPE_RAD;
+    JSSVGAnglePrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGAnglePrototype::getValueProperty;
+    JSSVGAnglePrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGAnglePrototypeConstantsFunctions[4].name = "SVG_ANGLETYPE_GRAD";
+    JSSVGAnglePrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnglePrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnglePrototypeConstantsFunctions[4].magic = SVGAngle::SVG_ANGLETYPE_GRAD;
+    JSSVGAnglePrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGAnglePrototype::getValueProperty;
+    JSSVGAnglePrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGAnglePrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGAnglePrototypeFunctions[2];
+static bool JSSVGAnglePrototypeFunctions_initialized = false;
+
+static void init_JSSVGAnglePrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("newValueSpecifiedUnits", 2, JSSVGAnglePrototypeFunction::callAsFunction, JSSVGAngle::NewValueSpecifiedUnitsFuncNum),
-    JS_CFUNC_MAGIC_DEF("convertToSpecifiedUnits", 1, JSSVGAnglePrototypeFunction::callAsFunction, JSSVGAngle::ConvertToSpecifiedUnitsFuncNum)
-};
+    if (JSSVGAnglePrototypeFunctions_initialized) return;
+    JSSVGAnglePrototypeFunctions_initialized = true;
+    memset(JSSVGAnglePrototypeFunctions, 0, sizeof(JSSVGAnglePrototypeFunctions));
+    JSSVGAnglePrototypeFunctions[0].name = "newValueSpecifiedUnits";
+    JSSVGAnglePrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGAnglePrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGAnglePrototypeFunctions[0].magic = JSSVGAngle::NewValueSpecifiedUnitsFuncNum;
+    JSSVGAnglePrototypeFunctions[0].u.func.length = 2;
+    JSSVGAnglePrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGAnglePrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGAnglePrototypeFunction::callAsFunction;
+    JSSVGAnglePrototypeFunctions[1].name = "convertToSpecifiedUnits";
+    JSSVGAnglePrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGAnglePrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGAnglePrototypeFunctions[1].magic = JSSVGAngle::ConvertToSpecifiedUnitsFuncNum;
+    JSSVGAnglePrototypeFunctions[1].u.func.length = 1;
+    JSSVGAnglePrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGAnglePrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGAnglePrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGAnglePrototype::self(JSContext * ctx)
 {
@@ -134,8 +248,11 @@ JSValue JSSVGAnglePrototype::self(JSContext * ctx)
 
 void JSSVGAnglePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAngleAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAngleAttributesFunctions, countof(JSSVGAngleAttributesFunctions));
+    init_JSSVGAnglePrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnglePrototypeConstantsFunctions, countof(JSSVGAnglePrototypeConstantsFunctions));
+    init_JSSVGAnglePrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnglePrototypeFunctions, countof(JSSVGAnglePrototypeFunctions));
 }
 
@@ -145,18 +262,25 @@ JSValue JSSVGAnglePrototype::getValueProperty(JSContext * ctx, JSValueConst this
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSSVGAngleClassDefine = 
+static JSClassDef JSSVGAngleClassDefine;
+static bool JSSVGAngleClassDefine_initialized = false;
+
+static void init_JSSVGAngleClassDefine()
 {
-    "SVGAngle",
-    .finalizer = JSSVGAngle::finalizer,
-    .gc_mark = JSSVGAngle::mark,
-};
+    if (JSSVGAngleClassDefine_initialized) return;
+    JSSVGAngleClassDefine_initialized = true;
+    memset(&JSSVGAngleClassDefine, 0, sizeof(JSSVGAngleClassDefine));
+    JSSVGAngleClassDefine.class_name = "SVGAngle";
+    JSSVGAngleClassDefine.finalizer = JSSVGAngle::finalizer;
+    JSSVGAngleClassDefine.gc_mark = JSSVGAngle::mark;
+}
 
 JSClassID JSSVGAngle::js_class_id = 0;
 
 void JSSVGAngle::init(JSContext* ctx)
 {
     if (JSSVGAngle::js_class_id == 0) {
+        init_JSSVGAngleClassDefine();
         JS_NewClassID(&JSSVGAngle::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAngle::js_class_id, &JSSVGAngleClassDefine);
         JS_SetConstructor(ctx, JSSVGAngleConstructor::self(ctx), JSSVGAnglePrototype::self(ctx));

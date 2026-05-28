@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -62,36 +64,159 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGEllipseElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGEllipseElementAttributesFunctions[15];
+static bool JSSVGEllipseElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGEllipseElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGEllipseElement::getValueProperty, JSSVGEllipseElement::putValueProperty, JSSVGEllipseElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("rx", JSSVGEllipseElement::getValueProperty, NULL, JSSVGEllipseElement::RxAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGEllipseElement::getValueProperty, JSSVGEllipseElement::putValueProperty, JSSVGEllipseElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("cy", JSSVGEllipseElement::getValueProperty, NULL, JSSVGEllipseElement::CyAttrNum),
-    JS_CGETSET_MAGIC_DEF("ry", JSSVGEllipseElement::getValueProperty, NULL, JSSVGEllipseElement::RyAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGEllipseElement::getValueProperty, NULL, JSSVGEllipseElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGEllipseElement::getValueProperty, NULL, JSSVGEllipseElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGEllipseElement::getValueProperty, NULL, JSSVGEllipseElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("cx", JSSVGEllipseElement::getValueProperty, NULL, JSSVGEllipseElement::CxAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGEllipseElement::getValueProperty, NULL, JSSVGEllipseElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("farthestViewportElement", JSSVGEllipseElement::getValueProperty, NULL, JSSVGEllipseElement::FarthestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGEllipseElement::getValueProperty, NULL, JSSVGEllipseElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGEllipseElement::getValueProperty, NULL, JSSVGEllipseElement::SystemLanguageAttrNum),
-    JS_CGETSET_MAGIC_DEF("transform", JSSVGEllipseElement::getValueProperty, NULL, JSSVGEllipseElement::TransformAttrNum),
-    JS_CGETSET_MAGIC_DEF("nearestViewportElement", JSSVGEllipseElement::getValueProperty, NULL, JSSVGEllipseElement::NearestViewportElementAttrNum)
-};
+    if (JSSVGEllipseElementAttributesFunctions_initialized) return;
+    JSSVGEllipseElementAttributesFunctions_initialized = true;
+    memset(JSSVGEllipseElementAttributesFunctions, 0, sizeof(JSSVGEllipseElementAttributesFunctions));
+    JSSVGEllipseElementAttributesFunctions[0].name = "xmllang";
+    JSSVGEllipseElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[0].magic = JSSVGEllipseElement::XmllangAttrNum;
+    JSSVGEllipseElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[0].u.getset.set.setter_magic = JSSVGEllipseElement::putValueProperty;
+    JSSVGEllipseElementAttributesFunctions[1].name = "rx";
+    JSSVGEllipseElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[1].magic = JSSVGEllipseElement::RxAttrNum;
+    JSSVGEllipseElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGEllipseElementAttributesFunctions[2].name = "xmlspace";
+    JSSVGEllipseElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[2].magic = JSSVGEllipseElement::XmlspaceAttrNum;
+    JSSVGEllipseElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[2].u.getset.set.setter_magic = JSSVGEllipseElement::putValueProperty;
+    JSSVGEllipseElementAttributesFunctions[3].name = "cy";
+    JSSVGEllipseElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[3].magic = JSSVGEllipseElement::CyAttrNum;
+    JSSVGEllipseElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGEllipseElementAttributesFunctions[4].name = "ry";
+    JSSVGEllipseElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[4].magic = JSSVGEllipseElement::RyAttrNum;
+    JSSVGEllipseElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGEllipseElementAttributesFunctions[5].name = "externalResourcesRequired";
+    JSSVGEllipseElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[5].magic = JSSVGEllipseElement::ExternalResourcesRequiredAttrNum;
+    JSSVGEllipseElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGEllipseElementAttributesFunctions[6].name = "className";
+    JSSVGEllipseElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[6].magic = JSSVGEllipseElement::ClassNameAttrNum;
+    JSSVGEllipseElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGEllipseElementAttributesFunctions[7].name = "requiredExtensions";
+    JSSVGEllipseElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[7].magic = JSSVGEllipseElement::RequiredExtensionsAttrNum;
+    JSSVGEllipseElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGEllipseElementAttributesFunctions[8].name = "cx";
+    JSSVGEllipseElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[8].magic = JSSVGEllipseElement::CxAttrNum;
+    JSSVGEllipseElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGEllipseElementAttributesFunctions[9].name = "style";
+    JSSVGEllipseElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[9].magic = JSSVGEllipseElement::StyleAttrNum;
+    JSSVGEllipseElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGEllipseElementAttributesFunctions[10].name = "farthestViewportElement";
+    JSSVGEllipseElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[10].magic = JSSVGEllipseElement::FarthestViewportElementAttrNum;
+    JSSVGEllipseElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSSVGEllipseElementAttributesFunctions[11].name = "requiredFeatures";
+    JSSVGEllipseElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[11].magic = JSSVGEllipseElement::RequiredFeaturesAttrNum;
+    JSSVGEllipseElementAttributesFunctions[11].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSSVGEllipseElementAttributesFunctions[12].name = "systemLanguage";
+    JSSVGEllipseElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[12].magic = JSSVGEllipseElement::SystemLanguageAttrNum;
+    JSSVGEllipseElementAttributesFunctions[12].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSSVGEllipseElementAttributesFunctions[13].name = "transform";
+    JSSVGEllipseElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[13].magic = JSSVGEllipseElement::TransformAttrNum;
+    JSSVGEllipseElementAttributesFunctions[13].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[13].u.getset.set.setter_magic = NULL;
+    JSSVGEllipseElementAttributesFunctions[14].name = "nearestViewportElement";
+    JSSVGEllipseElementAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGEllipseElementAttributesFunctions[14].magic = JSSVGEllipseElement::NearestViewportElementAttrNum;
+    JSSVGEllipseElementAttributesFunctions[14].u.getset.get.getter_magic = JSSVGEllipseElement::getValueProperty;
+    JSSVGEllipseElementAttributesFunctions[14].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGEllipseElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGEllipseElementPrototypeFunctions[6];
+static bool JSSVGEllipseElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGEllipseElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGEllipseElementPrototypeFunction::callAsFunction, JSSVGEllipseElement::GetPresentationAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGEllipseElementPrototypeFunction::callAsFunction, JSSVGEllipseElement::HasExtensionFuncNum),
-    JS_CFUNC_MAGIC_DEF("getCTM", 0, JSSVGEllipseElementPrototypeFunction::callAsFunction, JSSVGEllipseElement::GetCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getScreenCTM", 0, JSSVGEllipseElementPrototypeFunction::callAsFunction, JSSVGEllipseElement::GetScreenCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getTransformToElement", 1, JSSVGEllipseElementPrototypeFunction::callAsFunction, JSSVGEllipseElement::GetTransformToElementFuncNum),
-    JS_CFUNC_MAGIC_DEF("getBBox", 0, JSSVGEllipseElementPrototypeFunction::callAsFunction, JSSVGEllipseElement::GetBBoxFuncNum)
-};
+    if (JSSVGEllipseElementPrototypeFunctions_initialized) return;
+    JSSVGEllipseElementPrototypeFunctions_initialized = true;
+    memset(JSSVGEllipseElementPrototypeFunctions, 0, sizeof(JSSVGEllipseElementPrototypeFunctions));
+    JSSVGEllipseElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGEllipseElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGEllipseElementPrototypeFunctions[0].magic = JSSVGEllipseElement::GetPresentationAttributeFuncNum;
+    JSSVGEllipseElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGEllipseElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGEllipseElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGEllipseElementPrototypeFunction::callAsFunction;
+    JSSVGEllipseElementPrototypeFunctions[1].name = "hasExtension";
+    JSSVGEllipseElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGEllipseElementPrototypeFunctions[1].magic = JSSVGEllipseElement::HasExtensionFuncNum;
+    JSSVGEllipseElementPrototypeFunctions[1].u.func.length = 1;
+    JSSVGEllipseElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGEllipseElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGEllipseElementPrototypeFunction::callAsFunction;
+    JSSVGEllipseElementPrototypeFunctions[2].name = "getCTM";
+    JSSVGEllipseElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGEllipseElementPrototypeFunctions[2].magic = JSSVGEllipseElement::GetCTMFuncNum;
+    JSSVGEllipseElementPrototypeFunctions[2].u.func.length = 0;
+    JSSVGEllipseElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGEllipseElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGEllipseElementPrototypeFunction::callAsFunction;
+    JSSVGEllipseElementPrototypeFunctions[3].name = "getScreenCTM";
+    JSSVGEllipseElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGEllipseElementPrototypeFunctions[3].magic = JSSVGEllipseElement::GetScreenCTMFuncNum;
+    JSSVGEllipseElementPrototypeFunctions[3].u.func.length = 0;
+    JSSVGEllipseElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGEllipseElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGEllipseElementPrototypeFunction::callAsFunction;
+    JSSVGEllipseElementPrototypeFunctions[4].name = "getTransformToElement";
+    JSSVGEllipseElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGEllipseElementPrototypeFunctions[4].magic = JSSVGEllipseElement::GetTransformToElementFuncNum;
+    JSSVGEllipseElementPrototypeFunctions[4].u.func.length = 1;
+    JSSVGEllipseElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGEllipseElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGEllipseElementPrototypeFunction::callAsFunction;
+    JSSVGEllipseElementPrototypeFunctions[5].name = "getBBox";
+    JSSVGEllipseElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGEllipseElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGEllipseElementPrototypeFunctions[5].magic = JSSVGEllipseElement::GetBBoxFuncNum;
+    JSSVGEllipseElementPrototypeFunctions[5].u.func.length = 0;
+    JSSVGEllipseElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGEllipseElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGEllipseElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGEllipseElementPrototype::self(JSContext * ctx)
 {
@@ -109,22 +234,31 @@ JSValue JSSVGEllipseElementPrototype::self(JSContext * ctx)
 
 void JSSVGEllipseElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGEllipseElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGEllipseElementAttributesFunctions, countof(JSSVGEllipseElementAttributesFunctions));
+    init_JSSVGEllipseElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGEllipseElementPrototypeFunctions, countof(JSSVGEllipseElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGEllipseElementClassDefine = 
+static JSClassDef JSSVGEllipseElementClassDefine;
+static bool JSSVGEllipseElementClassDefine_initialized = false;
+
+static void init_JSSVGEllipseElementClassDefine()
 {
-    "SVGEllipseElement",
-    .finalizer = JSSVGEllipseElement::finalizer,
-    .gc_mark = JSSVGEllipseElement::mark,
-};
+    if (JSSVGEllipseElementClassDefine_initialized) return;
+    JSSVGEllipseElementClassDefine_initialized = true;
+    memset(&JSSVGEllipseElementClassDefine, 0, sizeof(JSSVGEllipseElementClassDefine));
+    JSSVGEllipseElementClassDefine.class_name = "SVGEllipseElement";
+    JSSVGEllipseElementClassDefine.finalizer = JSSVGEllipseElement::finalizer;
+    JSSVGEllipseElementClassDefine.gc_mark = JSSVGEllipseElement::mark;
+}
 
 JSClassID JSSVGEllipseElement::js_class_id = 0;
 
 void JSSVGEllipseElement::init(JSContext* ctx)
 {
     if (JSSVGEllipseElement::js_class_id == 0) {
+        init_JSSVGEllipseElementClassDefine();
         JS_NewClassID(&JSSVGEllipseElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGEllipseElement::js_class_id, &JSSVGEllipseElementClassDefine);
         JS_SetClassProto(ctx, JSSVGEllipseElement::js_class_id, JSSVGEllipseElementPrototype::self(ctx));

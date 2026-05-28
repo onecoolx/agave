@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,10 +48,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPathSegLinetoHorizontalRelAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPathSegLinetoHorizontalRelAttributesFunctions[1];
+static bool JSSVGPathSegLinetoHorizontalRelAttributesFunctions_initialized = false;
+
+static void init_JSSVGPathSegLinetoHorizontalRelAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("x", JSSVGPathSegLinetoHorizontalRel::getValueProperty, JSSVGPathSegLinetoHorizontalRel::putValueProperty, JSSVGPathSegLinetoHorizontalRel::XAttrNum)
-};
+    if (JSSVGPathSegLinetoHorizontalRelAttributesFunctions_initialized) return;
+    JSSVGPathSegLinetoHorizontalRelAttributesFunctions_initialized = true;
+    memset(JSSVGPathSegLinetoHorizontalRelAttributesFunctions, 0, sizeof(JSSVGPathSegLinetoHorizontalRelAttributesFunctions));
+    JSSVGPathSegLinetoHorizontalRelAttributesFunctions[0].name = "x";
+    JSSVGPathSegLinetoHorizontalRelAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegLinetoHorizontalRelAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegLinetoHorizontalRelAttributesFunctions[0].magic = JSSVGPathSegLinetoHorizontalRel::XAttrNum;
+    JSSVGPathSegLinetoHorizontalRelAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegLinetoHorizontalRel::getValueProperty;
+    JSSVGPathSegLinetoHorizontalRelAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegLinetoHorizontalRel::putValueProperty;
+}
 
 JSValue JSSVGPathSegLinetoHorizontalRelPrototype::self(JSContext * ctx)
 {
@@ -67,21 +80,29 @@ JSValue JSSVGPathSegLinetoHorizontalRelPrototype::self(JSContext * ctx)
 
 void JSSVGPathSegLinetoHorizontalRelPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPathSegLinetoHorizontalRelAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathSegLinetoHorizontalRelAttributesFunctions, countof(JSSVGPathSegLinetoHorizontalRelAttributesFunctions));
 }
 
-static JSClassDef JSSVGPathSegLinetoHorizontalRelClassDefine = 
+static JSClassDef JSSVGPathSegLinetoHorizontalRelClassDefine;
+static bool JSSVGPathSegLinetoHorizontalRelClassDefine_initialized = false;
+
+static void init_JSSVGPathSegLinetoHorizontalRelClassDefine()
 {
-    "SVGPathSegLinetoHorizontalRel",
-    .finalizer = JSSVGPathSegLinetoHorizontalRel::finalizer,
-    .gc_mark = JSSVGPathSegLinetoHorizontalRel::mark,
-};
+    if (JSSVGPathSegLinetoHorizontalRelClassDefine_initialized) return;
+    JSSVGPathSegLinetoHorizontalRelClassDefine_initialized = true;
+    memset(&JSSVGPathSegLinetoHorizontalRelClassDefine, 0, sizeof(JSSVGPathSegLinetoHorizontalRelClassDefine));
+    JSSVGPathSegLinetoHorizontalRelClassDefine.class_name = "SVGPathSegLinetoHorizontalRel";
+    JSSVGPathSegLinetoHorizontalRelClassDefine.finalizer = JSSVGPathSegLinetoHorizontalRel::finalizer;
+    JSSVGPathSegLinetoHorizontalRelClassDefine.gc_mark = JSSVGPathSegLinetoHorizontalRel::mark;
+}
 
 JSClassID JSSVGPathSegLinetoHorizontalRel::js_class_id = 0;
 
 void JSSVGPathSegLinetoHorizontalRel::init(JSContext* ctx)
 {
     if (JSSVGPathSegLinetoHorizontalRel::js_class_id == 0) {
+        init_JSSVGPathSegLinetoHorizontalRelClassDefine();
         JS_NewClassID(&JSSVGPathSegLinetoHorizontalRel::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathSegLinetoHorizontalRel::js_class_id, &JSSVGPathSegLinetoHorizontalRelClassDefine);
         JS_SetClassProto(ctx, JSSVGPathSegLinetoHorizontalRel::js_class_id, JSSVGPathSegLinetoHorizontalRelPrototype::self(ctx));

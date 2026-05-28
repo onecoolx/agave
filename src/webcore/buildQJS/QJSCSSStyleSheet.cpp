@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCSSStyleSheet.h"
 
 #include "CSSRule.h"
@@ -43,22 +45,73 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSCSSStyleSheetAttributesFunctions[] =
+static JSCFunctionListEntry JSCSSStyleSheetAttributesFunctions[3];
+static bool JSCSSStyleSheetAttributesFunctions_initialized = false;
+
+static void init_JSCSSStyleSheetAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("cssRules", JSCSSStyleSheet::getValueProperty, NULL, JSCSSStyleSheet::CssRulesAttrNum),
-    JS_CGETSET_MAGIC_DEF("ownerRule", JSCSSStyleSheet::getValueProperty, NULL, JSCSSStyleSheet::OwnerRuleAttrNum),
-    JS_CGETSET_MAGIC_DEF("rules", JSCSSStyleSheet::getValueProperty, NULL, JSCSSStyleSheet::RulesAttrNum)
-};
+    if (JSCSSStyleSheetAttributesFunctions_initialized) return;
+    JSCSSStyleSheetAttributesFunctions_initialized = true;
+    memset(JSCSSStyleSheetAttributesFunctions, 0, sizeof(JSCSSStyleSheetAttributesFunctions));
+    JSCSSStyleSheetAttributesFunctions[0].name = "cssRules";
+    JSCSSStyleSheetAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSStyleSheetAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSStyleSheetAttributesFunctions[0].magic = JSCSSStyleSheet::CssRulesAttrNum;
+    JSCSSStyleSheetAttributesFunctions[0].u.getset.get.getter_magic = JSCSSStyleSheet::getValueProperty;
+    JSCSSStyleSheetAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSCSSStyleSheetAttributesFunctions[1].name = "ownerRule";
+    JSCSSStyleSheetAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSStyleSheetAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSStyleSheetAttributesFunctions[1].magic = JSCSSStyleSheet::OwnerRuleAttrNum;
+    JSCSSStyleSheetAttributesFunctions[1].u.getset.get.getter_magic = JSCSSStyleSheet::getValueProperty;
+    JSCSSStyleSheetAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSCSSStyleSheetAttributesFunctions[2].name = "rules";
+    JSCSSStyleSheetAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSStyleSheetAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSStyleSheetAttributesFunctions[2].magic = JSCSSStyleSheet::RulesAttrNum;
+    JSCSSStyleSheetAttributesFunctions[2].u.getset.get.getter_magic = JSCSSStyleSheet::getValueProperty;
+    JSCSSStyleSheetAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSCSSStyleSheetPrototypeFunctions[] =
+static JSCFunctionListEntry JSCSSStyleSheetPrototypeFunctions[4];
+static bool JSCSSStyleSheetPrototypeFunctions_initialized = false;
+
+static void init_JSCSSStyleSheetPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("deleteRule", 1, JSCSSStyleSheetPrototypeFunction::callAsFunction, JSCSSStyleSheet::DeleteRuleFuncNum),
-    JS_CFUNC_MAGIC_DEF("insertRule", 2, JSCSSStyleSheetPrototypeFunction::callAsFunction, JSCSSStyleSheet::InsertRuleFuncNum),
-    JS_CFUNC_MAGIC_DEF("removeRule", 1, JSCSSStyleSheetPrototypeFunction::callAsFunction, JSCSSStyleSheet::RemoveRuleFuncNum),
-    JS_CFUNC_MAGIC_DEF("addRule", 3, JSCSSStyleSheetPrototypeFunction::callAsFunction, JSCSSStyleSheet::AddRuleFuncNum)
-};
+    if (JSCSSStyleSheetPrototypeFunctions_initialized) return;
+    JSCSSStyleSheetPrototypeFunctions_initialized = true;
+    memset(JSCSSStyleSheetPrototypeFunctions, 0, sizeof(JSCSSStyleSheetPrototypeFunctions));
+    JSCSSStyleSheetPrototypeFunctions[0].name = "deleteRule";
+    JSCSSStyleSheetPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCSSStyleSheetPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSCSSStyleSheetPrototypeFunctions[0].magic = JSCSSStyleSheet::DeleteRuleFuncNum;
+    JSCSSStyleSheetPrototypeFunctions[0].u.func.length = 1;
+    JSCSSStyleSheetPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCSSStyleSheetPrototypeFunctions[0].u.func.cfunc.generic_magic = JSCSSStyleSheetPrototypeFunction::callAsFunction;
+    JSCSSStyleSheetPrototypeFunctions[1].name = "insertRule";
+    JSCSSStyleSheetPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCSSStyleSheetPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSCSSStyleSheetPrototypeFunctions[1].magic = JSCSSStyleSheet::InsertRuleFuncNum;
+    JSCSSStyleSheetPrototypeFunctions[1].u.func.length = 2;
+    JSCSSStyleSheetPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCSSStyleSheetPrototypeFunctions[1].u.func.cfunc.generic_magic = JSCSSStyleSheetPrototypeFunction::callAsFunction;
+    JSCSSStyleSheetPrototypeFunctions[2].name = "removeRule";
+    JSCSSStyleSheetPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCSSStyleSheetPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSCSSStyleSheetPrototypeFunctions[2].magic = JSCSSStyleSheet::RemoveRuleFuncNum;
+    JSCSSStyleSheetPrototypeFunctions[2].u.func.length = 1;
+    JSCSSStyleSheetPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCSSStyleSheetPrototypeFunctions[2].u.func.cfunc.generic_magic = JSCSSStyleSheetPrototypeFunction::callAsFunction;
+    JSCSSStyleSheetPrototypeFunctions[3].name = "addRule";
+    JSCSSStyleSheetPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCSSStyleSheetPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSCSSStyleSheetPrototypeFunctions[3].magic = JSCSSStyleSheet::AddRuleFuncNum;
+    JSCSSStyleSheetPrototypeFunctions[3].u.func.length = 3;
+    JSCSSStyleSheetPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCSSStyleSheetPrototypeFunctions[3].u.func.cfunc.generic_magic = JSCSSStyleSheetPrototypeFunction::callAsFunction;
+}
 
 JSValue JSCSSStyleSheetPrototype::self(JSContext * ctx)
 {
@@ -76,22 +129,31 @@ JSValue JSCSSStyleSheetPrototype::self(JSContext * ctx)
 
 void JSCSSStyleSheetPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCSSStyleSheetAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSStyleSheetAttributesFunctions, countof(JSCSSStyleSheetAttributesFunctions));
+    init_JSCSSStyleSheetPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSStyleSheetPrototypeFunctions, countof(JSCSSStyleSheetPrototypeFunctions));
 }
 
-static JSClassDef JSCSSStyleSheetClassDefine = 
+static JSClassDef JSCSSStyleSheetClassDefine;
+static bool JSCSSStyleSheetClassDefine_initialized = false;
+
+static void init_JSCSSStyleSheetClassDefine()
 {
-    "CSSStyleSheet",
-    .finalizer = JSCSSStyleSheet::finalizer,
-    .gc_mark = JSCSSStyleSheet::mark,
-};
+    if (JSCSSStyleSheetClassDefine_initialized) return;
+    JSCSSStyleSheetClassDefine_initialized = true;
+    memset(&JSCSSStyleSheetClassDefine, 0, sizeof(JSCSSStyleSheetClassDefine));
+    JSCSSStyleSheetClassDefine.class_name = "CSSStyleSheet";
+    JSCSSStyleSheetClassDefine.finalizer = JSCSSStyleSheet::finalizer;
+    JSCSSStyleSheetClassDefine.gc_mark = JSCSSStyleSheet::mark;
+}
 
 JSClassID JSCSSStyleSheet::js_class_id = 0;
 
 void JSCSSStyleSheet::init(JSContext* ctx)
 {
     if (JSCSSStyleSheet::js_class_id == 0) {
+        init_JSCSSStyleSheetClassDefine();
         JS_NewClassID(&JSCSSStyleSheet::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSCSSStyleSheet::js_class_id, &JSCSSStyleSheetClassDefine);
         JS_SetClassProto(ctx, JSCSSStyleSheet::js_class_id, JSCSSStyleSheetPrototype::self(ctx));

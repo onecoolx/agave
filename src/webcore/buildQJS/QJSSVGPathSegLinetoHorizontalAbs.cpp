@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,10 +48,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPathSegLinetoHorizontalAbsAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPathSegLinetoHorizontalAbsAttributesFunctions[1];
+static bool JSSVGPathSegLinetoHorizontalAbsAttributesFunctions_initialized = false;
+
+static void init_JSSVGPathSegLinetoHorizontalAbsAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("x", JSSVGPathSegLinetoHorizontalAbs::getValueProperty, JSSVGPathSegLinetoHorizontalAbs::putValueProperty, JSSVGPathSegLinetoHorizontalAbs::XAttrNum)
-};
+    if (JSSVGPathSegLinetoHorizontalAbsAttributesFunctions_initialized) return;
+    JSSVGPathSegLinetoHorizontalAbsAttributesFunctions_initialized = true;
+    memset(JSSVGPathSegLinetoHorizontalAbsAttributesFunctions, 0, sizeof(JSSVGPathSegLinetoHorizontalAbsAttributesFunctions));
+    JSSVGPathSegLinetoHorizontalAbsAttributesFunctions[0].name = "x";
+    JSSVGPathSegLinetoHorizontalAbsAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegLinetoHorizontalAbsAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegLinetoHorizontalAbsAttributesFunctions[0].magic = JSSVGPathSegLinetoHorizontalAbs::XAttrNum;
+    JSSVGPathSegLinetoHorizontalAbsAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegLinetoHorizontalAbs::getValueProperty;
+    JSSVGPathSegLinetoHorizontalAbsAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegLinetoHorizontalAbs::putValueProperty;
+}
 
 JSValue JSSVGPathSegLinetoHorizontalAbsPrototype::self(JSContext * ctx)
 {
@@ -67,21 +80,29 @@ JSValue JSSVGPathSegLinetoHorizontalAbsPrototype::self(JSContext * ctx)
 
 void JSSVGPathSegLinetoHorizontalAbsPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPathSegLinetoHorizontalAbsAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathSegLinetoHorizontalAbsAttributesFunctions, countof(JSSVGPathSegLinetoHorizontalAbsAttributesFunctions));
 }
 
-static JSClassDef JSSVGPathSegLinetoHorizontalAbsClassDefine = 
+static JSClassDef JSSVGPathSegLinetoHorizontalAbsClassDefine;
+static bool JSSVGPathSegLinetoHorizontalAbsClassDefine_initialized = false;
+
+static void init_JSSVGPathSegLinetoHorizontalAbsClassDefine()
 {
-    "SVGPathSegLinetoHorizontalAbs",
-    .finalizer = JSSVGPathSegLinetoHorizontalAbs::finalizer,
-    .gc_mark = JSSVGPathSegLinetoHorizontalAbs::mark,
-};
+    if (JSSVGPathSegLinetoHorizontalAbsClassDefine_initialized) return;
+    JSSVGPathSegLinetoHorizontalAbsClassDefine_initialized = true;
+    memset(&JSSVGPathSegLinetoHorizontalAbsClassDefine, 0, sizeof(JSSVGPathSegLinetoHorizontalAbsClassDefine));
+    JSSVGPathSegLinetoHorizontalAbsClassDefine.class_name = "SVGPathSegLinetoHorizontalAbs";
+    JSSVGPathSegLinetoHorizontalAbsClassDefine.finalizer = JSSVGPathSegLinetoHorizontalAbs::finalizer;
+    JSSVGPathSegLinetoHorizontalAbsClassDefine.gc_mark = JSSVGPathSegLinetoHorizontalAbs::mark;
+}
 
 JSClassID JSSVGPathSegLinetoHorizontalAbs::js_class_id = 0;
 
 void JSSVGPathSegLinetoHorizontalAbs::init(JSContext* ctx)
 {
     if (JSSVGPathSegLinetoHorizontalAbs::js_class_id == 0) {
+        init_JSSVGPathSegLinetoHorizontalAbsClassDefine();
         JS_NewClassID(&JSSVGPathSegLinetoHorizontalAbs::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathSegLinetoHorizontalAbs::js_class_id, &JSSVGPathSegLinetoHorizontalAbsClassDefine);
         JS_SetClassProto(ctx, JSSVGPathSegLinetoHorizontalAbs::js_class_id, JSSVGPathSegLinetoHorizontalAbsPrototype::self(ctx));

@@ -596,6 +596,7 @@ sub GenerateImplementation
     # - Add default header template
     @implContentHeader = split("\r", $headerTemplate);
     push(@implContentHeader, "\n#include \"config.h\"\n\n");
+    push(@implContentHeader, "#include <string.h>\n\n");
     my $conditionalString;
     if ($conditional) {
         $conditionalString = "ENABLE(" . join(") && ENABLE(", split(/&/, $conditional)) . ")";
@@ -724,6 +725,7 @@ sub GenerateImplementation
 
         push(@implContent, "void ${className}Constructor::initConstructor(JSContext * ctx, JSValue this_obj)\n{\n");
         if ($numConstants > 0) {
+            push(@implContent, "    init_${className}ConstructorFunctions();\n");
             push(@implContent, "    JS_SetPropertyFunctionList(ctx, this_obj, ${className}ConstructorFunctions, countof(${className}ConstructorFunctions));\n");
         }
         push(@implContent, "}\n\n");
@@ -829,12 +831,15 @@ sub GenerateImplementation
     }
     push(@implContent, "void ${className}Prototype::initPrototype(JSContext * ctx, JSValue this_obj)\n{\n");
     if ($numAttributes > 0) {
+        push(@implContent, "    init_${className}AttributesFunctions();\n");
         push(@implContent, "    JS_SetPropertyFunctionList(ctx, this_obj, ${className}AttributesFunctions, countof(${className}AttributesFunctions));\n");
     }
     if ($numConstants > 0) {
+        push(@implContent, "    init_${className}PrototypeConstantsFunctions();\n");
         push(@implContent, "    JS_SetPropertyFunctionList(ctx, this_obj, ${className}PrototypeConstantsFunctions, countof(${className}PrototypeConstantsFunctions));\n");
     }
     if ($numFunctions > 0) {
+        push(@implContent, "    init_${className}PrototypeFunctions();\n");
         push(@implContent, "    JS_SetPropertyFunctionList(ctx, this_obj, ${className}PrototypeFunctions, countof(${className}PrototypeFunctions));\n");
     }
     push(@implContent, "}\n\n");
@@ -860,11 +865,16 @@ sub GenerateImplementation
     #push(@implContent, "0 };\n\n");
 
 
-    push(@implContent, "static JSClassDef ${className}ClassDefine = \n\{\n");
-    push(@implContent, "    \"${interfaceName}\",\n");
-    push(@implContent, "    .finalizer = ${className}::finalizer,\n");
-    push(@implContent, "    .gc_mark = ${className}::mark,\n");
-    push(@implContent, "};\n\n");
+    push(@implContent, "static JSClassDef ${className}ClassDefine;\n");
+    push(@implContent, "static bool ${className}ClassDefine_initialized = false;\n\n");
+    push(@implContent, "static void init_${className}ClassDefine()\n{\n");
+    push(@implContent, "    if (${className}ClassDefine_initialized) return;\n");
+    push(@implContent, "    ${className}ClassDefine_initialized = true;\n");
+    push(@implContent, "    memset(\&${className}ClassDefine, 0, sizeof(${className}ClassDefine));\n");
+    push(@implContent, "    ${className}ClassDefine.class_name = \"${interfaceName}\";\n");
+    push(@implContent, "    ${className}ClassDefine.finalizer = ${className}::finalizer;\n");
+    push(@implContent, "    ${className}ClassDefine.gc_mark = ${className}::mark;\n");
+    push(@implContent, "}\n\n");
 
     push(@implContent, "JSClassID ${className}::js_class_id = 0;\n\n");
 
@@ -876,6 +886,7 @@ sub GenerateImplementation
         push(@implContent, "    }\n");
     } else {
         push(@implContent, "    if (${className}::js_class_id == 0) {\n");
+        push(@implContent, "        init_${className}ClassDefine();\n");
         push(@implContent, "        JS_NewClassID(\&${className}::js_class_id);\n");
         push(@implContent, "        JS_NewClass(JS_GetRuntime(ctx), ${className}::js_class_id, \&${className}ClassDefine);\n");
         if (!$dataNode->extendedAttributes->{"DoNotCache"}) {
@@ -1729,41 +1740,43 @@ sub GenerateAttributesTable
         $maxDepth = $depth if ($depth > $maxDepth);
     }
 
-    # Ensure table is big enough (in case of undef entries at the end)
     if ($#table + 1 < $size) {
         $#table = $size - 1;
     }
 
-    # Start outputing the hashtables
     my $nameEntries = "". ${name}.${type}."Functions";
     $nameEntries =~ s/:/_/g;
 
+    my $actualCount = 0;
+    foreach $entry (@table) {
+        $actualCount++ if defined($entry);
+    }
+
     push(@implContent, "/* Functions table */\n");
+    push(@implContent, "\nstatic JSCFunctionListEntry $nameEntries\[$actualCount\];\n");
+    push(@implContent, "static bool ${nameEntries}_initialized = false;\n\n");
+    push(@implContent, "static void init_${nameEntries}()\n{\n");
+    push(@implContent, "    if (${nameEntries}_initialized) return;\n");
+    push(@implContent, "    ${nameEntries}_initialized = true;\n");
+    push(@implContent, "    memset($nameEntries, 0, sizeof($nameEntries));\n");
 
-    # Dump the hash table
-    push(@implContent, "\nstatic const JSCFunctionListEntry $nameEntries\[\] =\n\{\n");
-
-    $i = 0;
+    my $idx = 0;
     foreach $entry (@table) {
         if (defined($entry)) {
             my $key = @$keys[$entry];
+            my $setter = (@$readonly[$entry] eq "1") ? "NULL" : "${name}::putValueProperty";
 
-            push(@implContent, "    JS_CGETSET_MAGIC_DEF(\"" . $key . "\"");
-            push(@implContent, ", " . $name . "::" . "getValueProperty");
-            if (@$readonly[$entry] eq "1") {
-                push(@implContent, ", NULL");
-            } else {
-                push(@implContent, ", " . $name . "::" . "putValueProperty");
-            }
-            push(@implContent, ", " . @$values[$entry]);
-            push(@implContent, ")");
-
-            push(@implContent, ",") unless($i eq $size - 1);
-            push(@implContent, "\n");
-        } 
-        $i++;
+            push(@implContent, "    $nameEntries\[$idx\].name = \"$key\";\n");
+            push(@implContent, "    $nameEntries\[$idx\].prop_flags = JS_PROP_CONFIGURABLE;\n");
+            push(@implContent, "    $nameEntries\[$idx\].def_type = JS_DEF_CGETSET_MAGIC;\n");
+            push(@implContent, "    $nameEntries\[$idx\].magic = @$values[$entry];\n");
+            push(@implContent, "    $nameEntries\[$idx\].u.getset.get.getter_magic = ${name}::getValueProperty;\n");
+            push(@implContent, "    $nameEntries\[$idx\].u.getset.set.setter_magic = $setter;\n");
+            $idx++;
+        }
     }
-    push(@implContent, "};\n\n");
+
+    push(@implContent, "}\n\n");
 }
 
 # proto functions table
@@ -1785,7 +1798,6 @@ sub GeneratePrototypeFuncTable
     my $collisions = 0;
     my $numEntries = $size;
 
-    # Collect hashtable information
     my $i = 0;
     foreach (@{$keys}) {
         my $depth = 0;
@@ -1809,36 +1821,43 @@ sub GeneratePrototypeFuncTable
         $maxDepth = $depth if ($depth > $maxDepth);
     }
 
-    # Ensure table is big enough (in case of undef entries at the end)
     if ($#table + 1 < $size) {
         $#table = $size - 1;
     }
 
-    # Start outputing the hashtables
     my $nameEntries = "${name}Functions";
     $nameEntries =~ s/:/_/g;
 
+    my $actualCount = 0;
+    foreach $entry (@table) {
+        $actualCount++ if defined($entry);
+    }
+
     push(@implContent, "/* Prototype functions table */\n");
+    push(@implContent, "\nstatic JSCFunctionListEntry $nameEntries\[$actualCount\];\n");
+    push(@implContent, "static bool ${nameEntries}_initialized = false;\n\n");
+    push(@implContent, "static void init_${nameEntries}()\n{\n");
+    push(@implContent, "    if (${nameEntries}_initialized) return;\n");
+    push(@implContent, "    ${nameEntries}_initialized = true;\n");
+    push(@implContent, "    memset($nameEntries, 0, sizeof($nameEntries));\n");
 
-    # Dump the hash table
-    push(@implContent, "\nstatic const JSCFunctionListEntry $nameEntries\[\] =\n\{\n");
-
-    $i = 0;
+    my $idx = 0;
     foreach $entry (@table) {
         if (defined($entry)) {
             my $key = @$keys[$entry];
 
-            push(@implContent, "    JS_CFUNC_MAGIC_DEF(\"" . $key . "\"");
-            push(@implContent, ", " . @$parameters[$entry]);
-            push(@implContent, ", " . $name . "Function::" . "callAsFunction");
-            push(@implContent, ", " . @$values[$entry]);
-            push(@implContent, ")");
-            push(@implContent, ",") unless($i eq $size - 1);
-            push(@implContent, "\n");
-        } 
-        $i++;
+            push(@implContent, "    $nameEntries\[$idx\].name = \"$key\";\n");
+            push(@implContent, "    $nameEntries\[$idx\].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;\n");
+            push(@implContent, "    $nameEntries\[$idx\].def_type = JS_DEF_CFUNC;\n");
+            push(@implContent, "    $nameEntries\[$idx\].magic = @$values[$entry];\n");
+            push(@implContent, "    $nameEntries\[$idx\].u.func.length = @$parameters[$entry];\n");
+            push(@implContent, "    $nameEntries\[$idx\].u.func.cproto = JS_CFUNC_generic_magic;\n");
+            push(@implContent, "    $nameEntries\[$idx\].u.func.cfunc.generic_magic = ${name}Function::callAsFunction;\n");
+            $idx++;
+        }
     }
-    push(@implContent, "};\n\n");
+
+    push(@implContent, "}\n\n");
 }
 
 
@@ -1861,7 +1880,6 @@ sub GenerateHashTable
     my $collisions = 0;
     my $numEntries = $size;
 
-    # Collect hashtable information
     my $i = 0;
     foreach (@{$keys}) {
         my $depth = 0;
@@ -1885,16 +1903,13 @@ sub GenerateHashTable
         $maxDepth = $depth if ($depth > $maxDepth);
     }
 
-    # Ensure table is big enough (in case of undef entries at the end)
     if ($#table + 1 < $size) {
         $#table = $size - 1;
     }
 
-    # Start outputing the hashtables
     my $nameEntries = "${name}Functions";
     $nameEntries =~ s/:/_/g;
 
-    # first, build the string table
     my %soffset = ();
     if (($name =~ /Prototype/) or ($name =~ /Constructor/)) {
         my $type = $name;
@@ -1913,30 +1928,35 @@ sub GenerateHashTable
         push(@implContent, "/* Functions table */\n");
     }
 
-    # Dump the hash table
-    push(@implContent, "\nstatic const JSCFunctionListEntry $nameEntries\[\] =\n\{\n");
+    my $actualCount = 0;
+    foreach $entry (@table) {
+        $actualCount++ if defined($entry);
+    }
 
-    $i = 0;
+    push(@implContent, "\nstatic JSCFunctionListEntry $nameEntries\[$actualCount\];\n");
+    push(@implContent, "static bool ${nameEntries}_initialized = false;\n\n");
+    push(@implContent, "static void init_${nameEntries}()\n{\n");
+    push(@implContent, "    if (${nameEntries}_initialized) return;\n");
+    push(@implContent, "    ${nameEntries}_initialized = true;\n");
+    push(@implContent, "    memset($nameEntries, 0, sizeof($nameEntries));\n");
+
+    my $idx = 0;
     foreach $entry (@table) {
         if (defined($entry)) {
             my $key = @$keys[$entry];
+            my $setter = (@$readonly[$entry] eq "1") ? "NULL" : "${name}::putValueProperty";
 
-            push(@implContent, "    JS_CGETSET_MAGIC_DEF(\"" . $key . "\"");
-            push(@implContent, ", " . $name . "::" . "getValueProperty");
-            if (@$readonly[$entry] eq "1") {
-                push(@implContent, ", NULL");
-            } else {
-                push(@implContent, ", " . $name . "::" . "putValueProperty");
-            }
-            push(@implContent, ", " . @$values[$entry]);
-            push(@implContent, ")");
-
-            push(@implContent, ",") unless($i eq $size - 1);
-            push(@implContent, "\n");
-        } 
-        $i++;
+            push(@implContent, "    $nameEntries\[$idx\].name = \"$key\";\n");
+            push(@implContent, "    $nameEntries\[$idx\].prop_flags = JS_PROP_CONFIGURABLE;\n");
+            push(@implContent, "    $nameEntries\[$idx\].def_type = JS_DEF_CGETSET_MAGIC;\n");
+            push(@implContent, "    $nameEntries\[$idx\].magic = @$values[$entry];\n");
+            push(@implContent, "    $nameEntries\[$idx\].u.getset.get.getter_magic = ${name}::getValueProperty;\n");
+            push(@implContent, "    $nameEntries\[$idx\].u.getset.set.setter_magic = $setter;\n");
+            $idx++;
+        }
     }
-    push(@implContent, "};\n\n");
+
+    push(@implContent, "}\n\n");
 }
 
 # Internal helper

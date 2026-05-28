@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -53,24 +55,82 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFEComponentTransferElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFEComponentTransferElementAttributesFunctions[8];
+static bool JSSVGFEComponentTransferElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFEComponentTransferElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFEComponentTransferElement::getValueProperty, NULL, JSSVGFEComponentTransferElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGFEComponentTransferElement::getValueProperty, NULL, JSSVGFEComponentTransferElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGFEComponentTransferElement::getValueProperty, NULL, JSSVGFEComponentTransferElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFEComponentTransferElement::getValueProperty, NULL, JSSVGFEComponentTransferElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("in1", JSSVGFEComponentTransferElement::getValueProperty, NULL, JSSVGFEComponentTransferElement::In1AttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGFEComponentTransferElement::getValueProperty, NULL, JSSVGFEComponentTransferElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("result", JSSVGFEComponentTransferElement::getValueProperty, NULL, JSSVGFEComponentTransferElement::ResultAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGFEComponentTransferElement::getValueProperty, NULL, JSSVGFEComponentTransferElement::StyleAttrNum)
-};
+    if (JSSVGFEComponentTransferElementAttributesFunctions_initialized) return;
+    JSSVGFEComponentTransferElementAttributesFunctions_initialized = true;
+    memset(JSSVGFEComponentTransferElementAttributesFunctions, 0, sizeof(JSSVGFEComponentTransferElementAttributesFunctions));
+    JSSVGFEComponentTransferElementAttributesFunctions[0].name = "x";
+    JSSVGFEComponentTransferElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEComponentTransferElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEComponentTransferElementAttributesFunctions[0].magic = JSSVGFEComponentTransferElement::XAttrNum;
+    JSSVGFEComponentTransferElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFEComponentTransferElement::getValueProperty;
+    JSSVGFEComponentTransferElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEComponentTransferElementAttributesFunctions[1].name = "className";
+    JSSVGFEComponentTransferElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEComponentTransferElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEComponentTransferElementAttributesFunctions[1].magic = JSSVGFEComponentTransferElement::ClassNameAttrNum;
+    JSSVGFEComponentTransferElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFEComponentTransferElement::getValueProperty;
+    JSSVGFEComponentTransferElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEComponentTransferElementAttributesFunctions[2].name = "width";
+    JSSVGFEComponentTransferElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEComponentTransferElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEComponentTransferElementAttributesFunctions[2].magic = JSSVGFEComponentTransferElement::WidthAttrNum;
+    JSSVGFEComponentTransferElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFEComponentTransferElement::getValueProperty;
+    JSSVGFEComponentTransferElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEComponentTransferElementAttributesFunctions[3].name = "y";
+    JSSVGFEComponentTransferElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEComponentTransferElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEComponentTransferElementAttributesFunctions[3].magic = JSSVGFEComponentTransferElement::YAttrNum;
+    JSSVGFEComponentTransferElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGFEComponentTransferElement::getValueProperty;
+    JSSVGFEComponentTransferElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFEComponentTransferElementAttributesFunctions[4].name = "in1";
+    JSSVGFEComponentTransferElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEComponentTransferElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEComponentTransferElementAttributesFunctions[4].magic = JSSVGFEComponentTransferElement::In1AttrNum;
+    JSSVGFEComponentTransferElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGFEComponentTransferElement::getValueProperty;
+    JSSVGFEComponentTransferElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFEComponentTransferElementAttributesFunctions[5].name = "height";
+    JSSVGFEComponentTransferElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEComponentTransferElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEComponentTransferElementAttributesFunctions[5].magic = JSSVGFEComponentTransferElement::HeightAttrNum;
+    JSSVGFEComponentTransferElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGFEComponentTransferElement::getValueProperty;
+    JSSVGFEComponentTransferElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFEComponentTransferElementAttributesFunctions[6].name = "result";
+    JSSVGFEComponentTransferElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEComponentTransferElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEComponentTransferElementAttributesFunctions[6].magic = JSSVGFEComponentTransferElement::ResultAttrNum;
+    JSSVGFEComponentTransferElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGFEComponentTransferElement::getValueProperty;
+    JSSVGFEComponentTransferElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFEComponentTransferElementAttributesFunctions[7].name = "style";
+    JSSVGFEComponentTransferElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEComponentTransferElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEComponentTransferElementAttributesFunctions[7].magic = JSSVGFEComponentTransferElement::StyleAttrNum;
+    JSSVGFEComponentTransferElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGFEComponentTransferElement::getValueProperty;
+    JSSVGFEComponentTransferElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGFEComponentTransferElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGFEComponentTransferElementPrototypeFunctions[1];
+static bool JSSVGFEComponentTransferElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGFEComponentTransferElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGFEComponentTransferElementPrototypeFunction::callAsFunction, JSSVGFEComponentTransferElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGFEComponentTransferElementPrototypeFunctions_initialized) return;
+    JSSVGFEComponentTransferElementPrototypeFunctions_initialized = true;
+    memset(JSSVGFEComponentTransferElementPrototypeFunctions, 0, sizeof(JSSVGFEComponentTransferElementPrototypeFunctions));
+    JSSVGFEComponentTransferElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGFEComponentTransferElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFEComponentTransferElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGFEComponentTransferElementPrototypeFunctions[0].magic = JSSVGFEComponentTransferElement::GetPresentationAttributeFuncNum;
+    JSSVGFEComponentTransferElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGFEComponentTransferElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFEComponentTransferElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGFEComponentTransferElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGFEComponentTransferElementPrototype::self(JSContext * ctx)
 {
@@ -88,22 +148,31 @@ JSValue JSSVGFEComponentTransferElementPrototype::self(JSContext * ctx)
 
 void JSSVGFEComponentTransferElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFEComponentTransferElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEComponentTransferElementAttributesFunctions, countof(JSSVGFEComponentTransferElementAttributesFunctions));
+    init_JSSVGFEComponentTransferElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEComponentTransferElementPrototypeFunctions, countof(JSSVGFEComponentTransferElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGFEComponentTransferElementClassDefine = 
+static JSClassDef JSSVGFEComponentTransferElementClassDefine;
+static bool JSSVGFEComponentTransferElementClassDefine_initialized = false;
+
+static void init_JSSVGFEComponentTransferElementClassDefine()
 {
-    "SVGFEComponentTransferElement",
-    .finalizer = JSSVGFEComponentTransferElement::finalizer,
-    .gc_mark = JSSVGFEComponentTransferElement::mark,
-};
+    if (JSSVGFEComponentTransferElementClassDefine_initialized) return;
+    JSSVGFEComponentTransferElementClassDefine_initialized = true;
+    memset(&JSSVGFEComponentTransferElementClassDefine, 0, sizeof(JSSVGFEComponentTransferElementClassDefine));
+    JSSVGFEComponentTransferElementClassDefine.class_name = "SVGFEComponentTransferElement";
+    JSSVGFEComponentTransferElementClassDefine.finalizer = JSSVGFEComponentTransferElement::finalizer;
+    JSSVGFEComponentTransferElementClassDefine.gc_mark = JSSVGFEComponentTransferElement::mark;
+}
 
 JSClassID JSSVGFEComponentTransferElement::js_class_id = 0;
 
 void JSSVGFEComponentTransferElement::init(JSContext* ctx)
 {
     if (JSSVGFEComponentTransferElement::js_class_id == 0) {
+        init_JSSVGFEComponentTransferElementClassDefine();
         JS_NewClassID(&JSSVGFEComponentTransferElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFEComponentTransferElement::js_class_id, &JSSVGFEComponentTransferElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFEComponentTransferElement::js_class_id, JSSVGFEComponentTransferElementPrototype::self(ctx));

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSNodeIterator.h"
 
 #include "Node.h"
@@ -42,24 +44,84 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSNodeIteratorAttributesFunctions[] =
+static JSCFunctionListEntry JSNodeIteratorAttributesFunctions[6];
+static bool JSNodeIteratorAttributesFunctions_initialized = false;
+
+static void init_JSNodeIteratorAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("root", JSNodeIterator::getValueProperty, NULL, JSNodeIterator::RootAttrNum),
-    JS_CGETSET_MAGIC_DEF("whatToShow", JSNodeIterator::getValueProperty, NULL, JSNodeIterator::WhatToShowAttrNum),
-    JS_CGETSET_MAGIC_DEF("referenceNode", JSNodeIterator::getValueProperty, NULL, JSNodeIterator::ReferenceNodeAttrNum),
-    JS_CGETSET_MAGIC_DEF("filter", JSNodeIterator::getValueProperty, NULL, JSNodeIterator::FilterAttrNum),
-    JS_CGETSET_MAGIC_DEF("expandEntityReferences", JSNodeIterator::getValueProperty, NULL, JSNodeIterator::ExpandEntityReferencesAttrNum),
-    JS_CGETSET_MAGIC_DEF("pointerBeforeReferenceNode", JSNodeIterator::getValueProperty, NULL, JSNodeIterator::PointerBeforeReferenceNodeAttrNum)
-};
+    if (JSNodeIteratorAttributesFunctions_initialized) return;
+    JSNodeIteratorAttributesFunctions_initialized = true;
+    memset(JSNodeIteratorAttributesFunctions, 0, sizeof(JSNodeIteratorAttributesFunctions));
+    JSNodeIteratorAttributesFunctions[0].name = "root";
+    JSNodeIteratorAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeIteratorAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeIteratorAttributesFunctions[0].magic = JSNodeIterator::RootAttrNum;
+    JSNodeIteratorAttributesFunctions[0].u.getset.get.getter_magic = JSNodeIterator::getValueProperty;
+    JSNodeIteratorAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSNodeIteratorAttributesFunctions[1].name = "whatToShow";
+    JSNodeIteratorAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeIteratorAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeIteratorAttributesFunctions[1].magic = JSNodeIterator::WhatToShowAttrNum;
+    JSNodeIteratorAttributesFunctions[1].u.getset.get.getter_magic = JSNodeIterator::getValueProperty;
+    JSNodeIteratorAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSNodeIteratorAttributesFunctions[2].name = "referenceNode";
+    JSNodeIteratorAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeIteratorAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeIteratorAttributesFunctions[2].magic = JSNodeIterator::ReferenceNodeAttrNum;
+    JSNodeIteratorAttributesFunctions[2].u.getset.get.getter_magic = JSNodeIterator::getValueProperty;
+    JSNodeIteratorAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSNodeIteratorAttributesFunctions[3].name = "filter";
+    JSNodeIteratorAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeIteratorAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeIteratorAttributesFunctions[3].magic = JSNodeIterator::FilterAttrNum;
+    JSNodeIteratorAttributesFunctions[3].u.getset.get.getter_magic = JSNodeIterator::getValueProperty;
+    JSNodeIteratorAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSNodeIteratorAttributesFunctions[4].name = "expandEntityReferences";
+    JSNodeIteratorAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeIteratorAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeIteratorAttributesFunctions[4].magic = JSNodeIterator::ExpandEntityReferencesAttrNum;
+    JSNodeIteratorAttributesFunctions[4].u.getset.get.getter_magic = JSNodeIterator::getValueProperty;
+    JSNodeIteratorAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSNodeIteratorAttributesFunctions[5].name = "pointerBeforeReferenceNode";
+    JSNodeIteratorAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeIteratorAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeIteratorAttributesFunctions[5].magic = JSNodeIterator::PointerBeforeReferenceNodeAttrNum;
+    JSNodeIteratorAttributesFunctions[5].u.getset.get.getter_magic = JSNodeIterator::getValueProperty;
+    JSNodeIteratorAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSNodeIteratorPrototypeFunctions[] =
+static JSCFunctionListEntry JSNodeIteratorPrototypeFunctions[3];
+static bool JSNodeIteratorPrototypeFunctions_initialized = false;
+
+static void init_JSNodeIteratorPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("nextNode", 0, JSNodeIteratorPrototypeFunction::callAsFunction, JSNodeIterator::NextNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("previousNode", 0, JSNodeIteratorPrototypeFunction::callAsFunction, JSNodeIterator::PreviousNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("detach", 0, JSNodeIteratorPrototypeFunction::callAsFunction, JSNodeIterator::DetachFuncNum)
-};
+    if (JSNodeIteratorPrototypeFunctions_initialized) return;
+    JSNodeIteratorPrototypeFunctions_initialized = true;
+    memset(JSNodeIteratorPrototypeFunctions, 0, sizeof(JSNodeIteratorPrototypeFunctions));
+    JSNodeIteratorPrototypeFunctions[0].name = "nextNode";
+    JSNodeIteratorPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodeIteratorPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSNodeIteratorPrototypeFunctions[0].magic = JSNodeIterator::NextNodeFuncNum;
+    JSNodeIteratorPrototypeFunctions[0].u.func.length = 0;
+    JSNodeIteratorPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodeIteratorPrototypeFunctions[0].u.func.cfunc.generic_magic = JSNodeIteratorPrototypeFunction::callAsFunction;
+    JSNodeIteratorPrototypeFunctions[1].name = "previousNode";
+    JSNodeIteratorPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodeIteratorPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSNodeIteratorPrototypeFunctions[1].magic = JSNodeIterator::PreviousNodeFuncNum;
+    JSNodeIteratorPrototypeFunctions[1].u.func.length = 0;
+    JSNodeIteratorPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodeIteratorPrototypeFunctions[1].u.func.cfunc.generic_magic = JSNodeIteratorPrototypeFunction::callAsFunction;
+    JSNodeIteratorPrototypeFunctions[2].name = "detach";
+    JSNodeIteratorPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodeIteratorPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSNodeIteratorPrototypeFunctions[2].magic = JSNodeIterator::DetachFuncNum;
+    JSNodeIteratorPrototypeFunctions[2].u.func.length = 0;
+    JSNodeIteratorPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodeIteratorPrototypeFunctions[2].u.func.cfunc.generic_magic = JSNodeIteratorPrototypeFunction::callAsFunction;
+}
 
 JSValue JSNodeIteratorPrototype::self(JSContext * ctx)
 {
@@ -77,22 +139,31 @@ JSValue JSNodeIteratorPrototype::self(JSContext * ctx)
 
 void JSNodeIteratorPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSNodeIteratorAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNodeIteratorAttributesFunctions, countof(JSNodeIteratorAttributesFunctions));
+    init_JSNodeIteratorPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNodeIteratorPrototypeFunctions, countof(JSNodeIteratorPrototypeFunctions));
 }
 
-static JSClassDef JSNodeIteratorClassDefine = 
+static JSClassDef JSNodeIteratorClassDefine;
+static bool JSNodeIteratorClassDefine_initialized = false;
+
+static void init_JSNodeIteratorClassDefine()
 {
-    "NodeIterator",
-    .finalizer = JSNodeIterator::finalizer,
-    .gc_mark = JSNodeIterator::mark,
-};
+    if (JSNodeIteratorClassDefine_initialized) return;
+    JSNodeIteratorClassDefine_initialized = true;
+    memset(&JSNodeIteratorClassDefine, 0, sizeof(JSNodeIteratorClassDefine));
+    JSNodeIteratorClassDefine.class_name = "NodeIterator";
+    JSNodeIteratorClassDefine.finalizer = JSNodeIterator::finalizer;
+    JSNodeIteratorClassDefine.gc_mark = JSNodeIterator::mark;
+}
 
 JSClassID JSNodeIterator::js_class_id = 0;
 
 void JSNodeIterator::init(JSContext* ctx)
 {
     if (JSNodeIterator::js_class_id == 0) {
+        init_JSNodeIteratorClassDefine();
         JS_NewClassID(&JSNodeIterator::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSNodeIterator::js_class_id, &JSNodeIteratorClassDefine);
         JS_SetClassProto(ctx, JSNodeIterator::js_class_id, JSNodeIteratorPrototype::self(ctx));

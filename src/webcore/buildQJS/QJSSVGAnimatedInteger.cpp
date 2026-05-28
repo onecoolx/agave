@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -45,11 +47,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAnimatedIntegerAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGAnimatedIntegerAttributesFunctions[2];
+static bool JSSVGAnimatedIntegerAttributesFunctions_initialized = false;
+
+static void init_JSSVGAnimatedIntegerAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("baseVal", JSSVGAnimatedInteger::getValueProperty, JSSVGAnimatedInteger::putValueProperty, JSSVGAnimatedInteger::BaseValAttrNum),
-    JS_CGETSET_MAGIC_DEF("animVal", JSSVGAnimatedInteger::getValueProperty, NULL, JSSVGAnimatedInteger::AnimValAttrNum)
-};
+    if (JSSVGAnimatedIntegerAttributesFunctions_initialized) return;
+    JSSVGAnimatedIntegerAttributesFunctions_initialized = true;
+    memset(JSSVGAnimatedIntegerAttributesFunctions, 0, sizeof(JSSVGAnimatedIntegerAttributesFunctions));
+    JSSVGAnimatedIntegerAttributesFunctions[0].name = "baseVal";
+    JSSVGAnimatedIntegerAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedIntegerAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedIntegerAttributesFunctions[0].magic = JSSVGAnimatedInteger::BaseValAttrNum;
+    JSSVGAnimatedIntegerAttributesFunctions[0].u.getset.get.getter_magic = JSSVGAnimatedInteger::getValueProperty;
+    JSSVGAnimatedIntegerAttributesFunctions[0].u.getset.set.setter_magic = JSSVGAnimatedInteger::putValueProperty;
+    JSSVGAnimatedIntegerAttributesFunctions[1].name = "animVal";
+    JSSVGAnimatedIntegerAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedIntegerAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedIntegerAttributesFunctions[1].magic = JSSVGAnimatedInteger::AnimValAttrNum;
+    JSSVGAnimatedIntegerAttributesFunctions[1].u.getset.get.getter_magic = JSSVGAnimatedInteger::getValueProperty;
+    JSSVGAnimatedIntegerAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGAnimatedIntegerPrototype::self(JSContext * ctx)
 {
@@ -67,21 +85,29 @@ JSValue JSSVGAnimatedIntegerPrototype::self(JSContext * ctx)
 
 void JSSVGAnimatedIntegerPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAnimatedIntegerAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnimatedIntegerAttributesFunctions, countof(JSSVGAnimatedIntegerAttributesFunctions));
 }
 
-static JSClassDef JSSVGAnimatedIntegerClassDefine = 
+static JSClassDef JSSVGAnimatedIntegerClassDefine;
+static bool JSSVGAnimatedIntegerClassDefine_initialized = false;
+
+static void init_JSSVGAnimatedIntegerClassDefine()
 {
-    "SVGAnimatedInteger",
-    .finalizer = JSSVGAnimatedInteger::finalizer,
-    .gc_mark = JSSVGAnimatedInteger::mark,
-};
+    if (JSSVGAnimatedIntegerClassDefine_initialized) return;
+    JSSVGAnimatedIntegerClassDefine_initialized = true;
+    memset(&JSSVGAnimatedIntegerClassDefine, 0, sizeof(JSSVGAnimatedIntegerClassDefine));
+    JSSVGAnimatedIntegerClassDefine.class_name = "SVGAnimatedInteger";
+    JSSVGAnimatedIntegerClassDefine.finalizer = JSSVGAnimatedInteger::finalizer;
+    JSSVGAnimatedIntegerClassDefine.gc_mark = JSSVGAnimatedInteger::mark;
+}
 
 JSClassID JSSVGAnimatedInteger::js_class_id = 0;
 
 void JSSVGAnimatedInteger::init(JSContext* ctx)
 {
     if (JSSVGAnimatedInteger::js_class_id == 0) {
+        init_JSSVGAnimatedIntegerClassDefine();
         JS_NewClassID(&JSSVGAnimatedInteger::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimatedInteger::js_class_id, &JSSVGAnimatedIntegerClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimatedInteger::js_class_id, JSSVGAnimatedIntegerPrototype::self(ctx));

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,11 +48,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[2];
+static bool JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions_initialized = false;
+
+static void init_JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("y", JSSVGPathSegCurvetoQuadraticSmoothAbs::getValueProperty, JSSVGPathSegCurvetoQuadraticSmoothAbs::putValueProperty, JSSVGPathSegCurvetoQuadraticSmoothAbs::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGPathSegCurvetoQuadraticSmoothAbs::getValueProperty, JSSVGPathSegCurvetoQuadraticSmoothAbs::putValueProperty, JSSVGPathSegCurvetoQuadraticSmoothAbs::XAttrNum)
-};
+    if (JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions_initialized) return;
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions_initialized = true;
+    memset(JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions, 0, sizeof(JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions));
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[0].name = "y";
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[0].magic = JSSVGPathSegCurvetoQuadraticSmoothAbs::YAttrNum;
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegCurvetoQuadraticSmoothAbs::getValueProperty;
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegCurvetoQuadraticSmoothAbs::putValueProperty;
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[1].name = "x";
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[1].magic = JSSVGPathSegCurvetoQuadraticSmoothAbs::XAttrNum;
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegCurvetoQuadraticSmoothAbs::getValueProperty;
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegCurvetoQuadraticSmoothAbs::putValueProperty;
+}
 
 JSValue JSSVGPathSegCurvetoQuadraticSmoothAbsPrototype::self(JSContext * ctx)
 {
@@ -68,21 +86,29 @@ JSValue JSSVGPathSegCurvetoQuadraticSmoothAbsPrototype::self(JSContext * ctx)
 
 void JSSVGPathSegCurvetoQuadraticSmoothAbsPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions, countof(JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions));
 }
 
-static JSClassDef JSSVGPathSegCurvetoQuadraticSmoothAbsClassDefine = 
+static JSClassDef JSSVGPathSegCurvetoQuadraticSmoothAbsClassDefine;
+static bool JSSVGPathSegCurvetoQuadraticSmoothAbsClassDefine_initialized = false;
+
+static void init_JSSVGPathSegCurvetoQuadraticSmoothAbsClassDefine()
 {
-    "SVGPathSegCurvetoQuadraticSmoothAbs",
-    .finalizer = JSSVGPathSegCurvetoQuadraticSmoothAbs::finalizer,
-    .gc_mark = JSSVGPathSegCurvetoQuadraticSmoothAbs::mark,
-};
+    if (JSSVGPathSegCurvetoQuadraticSmoothAbsClassDefine_initialized) return;
+    JSSVGPathSegCurvetoQuadraticSmoothAbsClassDefine_initialized = true;
+    memset(&JSSVGPathSegCurvetoQuadraticSmoothAbsClassDefine, 0, sizeof(JSSVGPathSegCurvetoQuadraticSmoothAbsClassDefine));
+    JSSVGPathSegCurvetoQuadraticSmoothAbsClassDefine.class_name = "SVGPathSegCurvetoQuadraticSmoothAbs";
+    JSSVGPathSegCurvetoQuadraticSmoothAbsClassDefine.finalizer = JSSVGPathSegCurvetoQuadraticSmoothAbs::finalizer;
+    JSSVGPathSegCurvetoQuadraticSmoothAbsClassDefine.gc_mark = JSSVGPathSegCurvetoQuadraticSmoothAbs::mark;
+}
 
 JSClassID JSSVGPathSegCurvetoQuadraticSmoothAbs::js_class_id = 0;
 
 void JSSVGPathSegCurvetoQuadraticSmoothAbs::init(JSContext* ctx)
 {
     if (JSSVGPathSegCurvetoQuadraticSmoothAbs::js_class_id == 0) {
+        init_JSSVGPathSegCurvetoQuadraticSmoothAbsClassDefine();
         JS_NewClassID(&JSSVGPathSegCurvetoQuadraticSmoothAbs::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathSegCurvetoQuadraticSmoothAbs::js_class_id, &JSSVGPathSegCurvetoQuadraticSmoothAbsClassDefine);
         JS_SetClassProto(ctx, JSSVGPathSegCurvetoQuadraticSmoothAbs::js_class_id, JSSVGPathSegCurvetoQuadraticSmoothAbsPrototype::self(ctx));

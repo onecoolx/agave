@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSOverflowEvent.h"
 
 #include "OverflowEvent.h"
@@ -38,28 +40,82 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSOverflowEventAttributesFunctions[] =
+static JSCFunctionListEntry JSOverflowEventAttributesFunctions[3];
+static bool JSOverflowEventAttributesFunctions_initialized = false;
+
+static void init_JSOverflowEventAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("orient", JSOverflowEvent::getValueProperty, NULL, JSOverflowEvent::OrientAttrNum),
-    JS_CGETSET_MAGIC_DEF("verticalOverflow", JSOverflowEvent::getValueProperty, NULL, JSOverflowEvent::VerticalOverflowAttrNum),
-    JS_CGETSET_MAGIC_DEF("horizontalOverflow", JSOverflowEvent::getValueProperty, NULL, JSOverflowEvent::HorizontalOverflowAttrNum)
-};
+    if (JSOverflowEventAttributesFunctions_initialized) return;
+    JSOverflowEventAttributesFunctions_initialized = true;
+    memset(JSOverflowEventAttributesFunctions, 0, sizeof(JSOverflowEventAttributesFunctions));
+    JSOverflowEventAttributesFunctions[0].name = "orient";
+    JSOverflowEventAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSOverflowEventAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSOverflowEventAttributesFunctions[0].magic = JSOverflowEvent::OrientAttrNum;
+    JSOverflowEventAttributesFunctions[0].u.getset.get.getter_magic = JSOverflowEvent::getValueProperty;
+    JSOverflowEventAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSOverflowEventAttributesFunctions[1].name = "verticalOverflow";
+    JSOverflowEventAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSOverflowEventAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSOverflowEventAttributesFunctions[1].magic = JSOverflowEvent::VerticalOverflowAttrNum;
+    JSOverflowEventAttributesFunctions[1].u.getset.get.getter_magic = JSOverflowEvent::getValueProperty;
+    JSOverflowEventAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSOverflowEventAttributesFunctions[2].name = "horizontalOverflow";
+    JSOverflowEventAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSOverflowEventAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSOverflowEventAttributesFunctions[2].magic = JSOverflowEvent::HorizontalOverflowAttrNum;
+    JSOverflowEventAttributesFunctions[2].u.getset.get.getter_magic = JSOverflowEvent::getValueProperty;
+    JSOverflowEventAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSOverflowEventPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSOverflowEventPrototypeConstantsFunctions[3];
+static bool JSOverflowEventPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSOverflowEventPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("BOTH", JSOverflowEventPrototype::getValueProperty, NULL, OverflowEvent::BOTH),
-    JS_CGETSET_MAGIC_DEF("HORIZONTAL", JSOverflowEventPrototype::getValueProperty, NULL, OverflowEvent::HORIZONTAL),
-    JS_CGETSET_MAGIC_DEF("VERTICAL", JSOverflowEventPrototype::getValueProperty, NULL, OverflowEvent::VERTICAL)
-};
+    if (JSOverflowEventPrototypeConstantsFunctions_initialized) return;
+    JSOverflowEventPrototypeConstantsFunctions_initialized = true;
+    memset(JSOverflowEventPrototypeConstantsFunctions, 0, sizeof(JSOverflowEventPrototypeConstantsFunctions));
+    JSOverflowEventPrototypeConstantsFunctions[0].name = "BOTH";
+    JSOverflowEventPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSOverflowEventPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSOverflowEventPrototypeConstantsFunctions[0].magic = OverflowEvent::BOTH;
+    JSOverflowEventPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSOverflowEventPrototype::getValueProperty;
+    JSOverflowEventPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSOverflowEventPrototypeConstantsFunctions[1].name = "HORIZONTAL";
+    JSOverflowEventPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSOverflowEventPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSOverflowEventPrototypeConstantsFunctions[1].magic = OverflowEvent::HORIZONTAL;
+    JSOverflowEventPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSOverflowEventPrototype::getValueProperty;
+    JSOverflowEventPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSOverflowEventPrototypeConstantsFunctions[2].name = "VERTICAL";
+    JSOverflowEventPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSOverflowEventPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSOverflowEventPrototypeConstantsFunctions[2].magic = OverflowEvent::VERTICAL;
+    JSOverflowEventPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSOverflowEventPrototype::getValueProperty;
+    JSOverflowEventPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSOverflowEventPrototypeFunctions[] =
+static JSCFunctionListEntry JSOverflowEventPrototypeFunctions[1];
+static bool JSOverflowEventPrototypeFunctions_initialized = false;
+
+static void init_JSOverflowEventPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("initOverflowEvent", 3, JSOverflowEventPrototypeFunction::callAsFunction, JSOverflowEvent::InitOverflowEventFuncNum)
-};
+    if (JSOverflowEventPrototypeFunctions_initialized) return;
+    JSOverflowEventPrototypeFunctions_initialized = true;
+    memset(JSOverflowEventPrototypeFunctions, 0, sizeof(JSOverflowEventPrototypeFunctions));
+    JSOverflowEventPrototypeFunctions[0].name = "initOverflowEvent";
+    JSOverflowEventPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSOverflowEventPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSOverflowEventPrototypeFunctions[0].magic = JSOverflowEvent::InitOverflowEventFuncNum;
+    JSOverflowEventPrototypeFunctions[0].u.func.length = 3;
+    JSOverflowEventPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSOverflowEventPrototypeFunctions[0].u.func.cfunc.generic_magic = JSOverflowEventPrototypeFunction::callAsFunction;
+}
 
 JSValue JSOverflowEventPrototype::self(JSContext * ctx)
 {
@@ -77,8 +133,11 @@ JSValue JSOverflowEventPrototype::self(JSContext * ctx)
 
 void JSOverflowEventPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSOverflowEventAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSOverflowEventAttributesFunctions, countof(JSOverflowEventAttributesFunctions));
+    init_JSOverflowEventPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSOverflowEventPrototypeConstantsFunctions, countof(JSOverflowEventPrototypeConstantsFunctions));
+    init_JSOverflowEventPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSOverflowEventPrototypeFunctions, countof(JSOverflowEventPrototypeFunctions));
 }
 
@@ -88,18 +147,25 @@ JSValue JSOverflowEventPrototype::getValueProperty(JSContext * ctx, JSValueConst
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSOverflowEventClassDefine = 
+static JSClassDef JSOverflowEventClassDefine;
+static bool JSOverflowEventClassDefine_initialized = false;
+
+static void init_JSOverflowEventClassDefine()
 {
-    "OverflowEvent",
-    .finalizer = JSOverflowEvent::finalizer,
-    .gc_mark = JSOverflowEvent::mark,
-};
+    if (JSOverflowEventClassDefine_initialized) return;
+    JSOverflowEventClassDefine_initialized = true;
+    memset(&JSOverflowEventClassDefine, 0, sizeof(JSOverflowEventClassDefine));
+    JSOverflowEventClassDefine.class_name = "OverflowEvent";
+    JSOverflowEventClassDefine.finalizer = JSOverflowEvent::finalizer;
+    JSOverflowEventClassDefine.gc_mark = JSOverflowEvent::mark;
+}
 
 JSClassID JSOverflowEvent::js_class_id = 0;
 
 void JSOverflowEvent::init(JSContext* ctx)
 {
     if (JSOverflowEvent::js_class_id == 0) {
+        init_JSOverflowEventClassDefine();
         JS_NewClassID(&JSOverflowEvent::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSOverflowEvent::js_class_id, &JSOverflowEventClassDefine);
         JS_SetClassProto(ctx, JSOverflowEvent::js_class_id, JSOverflowEventPrototype::self(ctx));

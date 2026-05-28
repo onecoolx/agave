@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -62,20 +64,81 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGTextContentElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGTextContentElementAttributesFunctions[11];
+static bool JSSVGTextContentElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGTextContentElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSSVGTextContentElement::getValueProperty, NULL, JSSVGTextContentElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGTextContentElement::getValueProperty, NULL, JSSVGTextContentElement::SystemLanguageAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGTextContentElement::getValueProperty, JSSVGTextContentElement::putValueProperty, JSSVGTextContentElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGTextContentElement::getValueProperty, NULL, JSSVGTextContentElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGTextContentElement::getValueProperty, NULL, JSSVGTextContentElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("textLength", JSSVGTextContentElement::getValueProperty, NULL, JSSVGTextContentElement::TextLengthAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGTextContentElement::getValueProperty, NULL, JSSVGTextContentElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("lengthAdjust", JSSVGTextContentElement::getValueProperty, NULL, JSSVGTextContentElement::LengthAdjustAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGTextContentElement::getValueProperty, JSSVGTextContentElement::putValueProperty, JSSVGTextContentElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGTextContentElement::getValueProperty, NULL, JSSVGTextContentElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGTextContentElement::getValueProperty, NULL, JSSVGTextContentElement::ClassNameAttrNum)
-};
+    if (JSSVGTextContentElementAttributesFunctions_initialized) return;
+    JSSVGTextContentElementAttributesFunctions_initialized = true;
+    memset(JSSVGTextContentElementAttributesFunctions, 0, sizeof(JSSVGTextContentElementAttributesFunctions));
+    JSSVGTextContentElementAttributesFunctions[0].name = "constructor";
+    JSSVGTextContentElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementAttributesFunctions[0].magic = JSSVGTextContentElement::ConstructorAttrNum;
+    JSSVGTextContentElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGTextContentElement::getValueProperty;
+    JSSVGTextContentElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementAttributesFunctions[1].name = "systemLanguage";
+    JSSVGTextContentElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementAttributesFunctions[1].magic = JSSVGTextContentElement::SystemLanguageAttrNum;
+    JSSVGTextContentElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGTextContentElement::getValueProperty;
+    JSSVGTextContentElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementAttributesFunctions[2].name = "xmlspace";
+    JSSVGTextContentElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementAttributesFunctions[2].magic = JSSVGTextContentElement::XmlspaceAttrNum;
+    JSSVGTextContentElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGTextContentElement::getValueProperty;
+    JSSVGTextContentElementAttributesFunctions[2].u.getset.set.setter_magic = JSSVGTextContentElement::putValueProperty;
+    JSSVGTextContentElementAttributesFunctions[3].name = "requiredExtensions";
+    JSSVGTextContentElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementAttributesFunctions[3].magic = JSSVGTextContentElement::RequiredExtensionsAttrNum;
+    JSSVGTextContentElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGTextContentElement::getValueProperty;
+    JSSVGTextContentElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementAttributesFunctions[4].name = "style";
+    JSSVGTextContentElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementAttributesFunctions[4].magic = JSSVGTextContentElement::StyleAttrNum;
+    JSSVGTextContentElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGTextContentElement::getValueProperty;
+    JSSVGTextContentElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementAttributesFunctions[5].name = "textLength";
+    JSSVGTextContentElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementAttributesFunctions[5].magic = JSSVGTextContentElement::TextLengthAttrNum;
+    JSSVGTextContentElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGTextContentElement::getValueProperty;
+    JSSVGTextContentElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementAttributesFunctions[6].name = "requiredFeatures";
+    JSSVGTextContentElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementAttributesFunctions[6].magic = JSSVGTextContentElement::RequiredFeaturesAttrNum;
+    JSSVGTextContentElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGTextContentElement::getValueProperty;
+    JSSVGTextContentElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementAttributesFunctions[7].name = "lengthAdjust";
+    JSSVGTextContentElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementAttributesFunctions[7].magic = JSSVGTextContentElement::LengthAdjustAttrNum;
+    JSSVGTextContentElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGTextContentElement::getValueProperty;
+    JSSVGTextContentElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementAttributesFunctions[8].name = "xmllang";
+    JSSVGTextContentElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementAttributesFunctions[8].magic = JSSVGTextContentElement::XmllangAttrNum;
+    JSSVGTextContentElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGTextContentElement::getValueProperty;
+    JSSVGTextContentElementAttributesFunctions[8].u.getset.set.setter_magic = JSSVGTextContentElement::putValueProperty;
+    JSSVGTextContentElementAttributesFunctions[9].name = "externalResourcesRequired";
+    JSSVGTextContentElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementAttributesFunctions[9].magic = JSSVGTextContentElement::ExternalResourcesRequiredAttrNum;
+    JSSVGTextContentElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGTextContentElement::getValueProperty;
+    JSSVGTextContentElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementAttributesFunctions[10].name = "className";
+    JSSVGTextContentElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementAttributesFunctions[10].magic = JSSVGTextContentElement::ClassNameAttrNum;
+    JSSVGTextContentElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGTextContentElement::getValueProperty;
+    JSSVGTextContentElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+}
 
 class JSSVGTextContentElementConstructor {
 public:
@@ -92,12 +155,33 @@ JSValue JSSVGTextContentElementConstructor::getValueProperty(JSContext * ctx, JS
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSSVGTextContentElementConstructorFunctions[] =
+static JSCFunctionListEntry JSSVGTextContentElementConstructorFunctions[3];
+static bool JSSVGTextContentElementConstructorFunctions_initialized = false;
+
+static void init_JSSVGTextContentElementConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("LENGTHADJUST_SPACING", JSSVGTextContentElementConstructor::getValueProperty, NULL, SVGTextContentElement::LENGTHADJUST_SPACING),
-    JS_CGETSET_MAGIC_DEF("LENGTHADJUST_UNKNOWN", JSSVGTextContentElementConstructor::getValueProperty, NULL, SVGTextContentElement::LENGTHADJUST_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("LENGTHADJUST_SPACINGANDGLYPHS", JSSVGTextContentElementConstructor::getValueProperty, NULL, SVGTextContentElement::LENGTHADJUST_SPACINGANDGLYPHS)
-};
+    if (JSSVGTextContentElementConstructorFunctions_initialized) return;
+    JSSVGTextContentElementConstructorFunctions_initialized = true;
+    memset(JSSVGTextContentElementConstructorFunctions, 0, sizeof(JSSVGTextContentElementConstructorFunctions));
+    JSSVGTextContentElementConstructorFunctions[0].name = "LENGTHADJUST_SPACING";
+    JSSVGTextContentElementConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementConstructorFunctions[0].magic = SVGTextContentElement::LENGTHADJUST_SPACING;
+    JSSVGTextContentElementConstructorFunctions[0].u.getset.get.getter_magic = JSSVGTextContentElementConstructor::getValueProperty;
+    JSSVGTextContentElementConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementConstructorFunctions[1].name = "LENGTHADJUST_UNKNOWN";
+    JSSVGTextContentElementConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementConstructorFunctions[1].magic = SVGTextContentElement::LENGTHADJUST_UNKNOWN;
+    JSSVGTextContentElementConstructorFunctions[1].u.getset.get.getter_magic = JSSVGTextContentElementConstructor::getValueProperty;
+    JSSVGTextContentElementConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementConstructorFunctions[2].name = "LENGTHADJUST_SPACINGANDGLYPHS";
+    JSSVGTextContentElementConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementConstructorFunctions[2].magic = SVGTextContentElement::LENGTHADJUST_SPACINGANDGLYPHS;
+    JSSVGTextContentElementConstructorFunctions[2].u.getset.get.getter_magic = JSSVGTextContentElementConstructor::getValueProperty;
+    JSSVGTextContentElementConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGTextContentElementConstructor::self(JSContext * ctx)
 {
@@ -115,34 +199,128 @@ JSValue JSSVGTextContentElementConstructor::self(JSContext * ctx)
 
 void JSSVGTextContentElementConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGTextContentElementConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTextContentElementConstructorFunctions, countof(JSSVGTextContentElementConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGTextContentElementPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSSVGTextContentElementPrototypeConstantsFunctions[3];
+static bool JSSVGTextContentElementPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSSVGTextContentElementPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("LENGTHADJUST_SPACING", JSSVGTextContentElementPrototype::getValueProperty, NULL, SVGTextContentElement::LENGTHADJUST_SPACING),
-    JS_CGETSET_MAGIC_DEF("LENGTHADJUST_UNKNOWN", JSSVGTextContentElementPrototype::getValueProperty, NULL, SVGTextContentElement::LENGTHADJUST_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("LENGTHADJUST_SPACINGANDGLYPHS", JSSVGTextContentElementPrototype::getValueProperty, NULL, SVGTextContentElement::LENGTHADJUST_SPACINGANDGLYPHS)
-};
+    if (JSSVGTextContentElementPrototypeConstantsFunctions_initialized) return;
+    JSSVGTextContentElementPrototypeConstantsFunctions_initialized = true;
+    memset(JSSVGTextContentElementPrototypeConstantsFunctions, 0, sizeof(JSSVGTextContentElementPrototypeConstantsFunctions));
+    JSSVGTextContentElementPrototypeConstantsFunctions[0].name = "LENGTHADJUST_SPACING";
+    JSSVGTextContentElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementPrototypeConstantsFunctions[0].magic = SVGTextContentElement::LENGTHADJUST_SPACING;
+    JSSVGTextContentElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGTextContentElementPrototype::getValueProperty;
+    JSSVGTextContentElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementPrototypeConstantsFunctions[1].name = "LENGTHADJUST_UNKNOWN";
+    JSSVGTextContentElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementPrototypeConstantsFunctions[1].magic = SVGTextContentElement::LENGTHADJUST_UNKNOWN;
+    JSSVGTextContentElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGTextContentElementPrototype::getValueProperty;
+    JSSVGTextContentElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementPrototypeConstantsFunctions[2].name = "LENGTHADJUST_SPACINGANDGLYPHS";
+    JSSVGTextContentElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextContentElementPrototypeConstantsFunctions[2].magic = SVGTextContentElement::LENGTHADJUST_SPACINGANDGLYPHS;
+    JSSVGTextContentElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGTextContentElementPrototype::getValueProperty;
+    JSSVGTextContentElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGTextContentElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGTextContentElementPrototypeFunctions[11];
+static bool JSSVGTextContentElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGTextContentElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getCharNumAtPosition", 1, JSSVGTextContentElementPrototypeFunction::callAsFunction, JSSVGTextContentElement::GetCharNumAtPositionFuncNum),
-    JS_CFUNC_MAGIC_DEF("getExtentOfChar", 1, JSSVGTextContentElementPrototypeFunction::callAsFunction, JSSVGTextContentElement::GetExtentOfCharFuncNum),
-    JS_CFUNC_MAGIC_DEF("getEndPositionOfChar", 1, JSSVGTextContentElementPrototypeFunction::callAsFunction, JSSVGTextContentElement::GetEndPositionOfCharFuncNum),
-    JS_CFUNC_MAGIC_DEF("getRotationOfChar", 1, JSSVGTextContentElementPrototypeFunction::callAsFunction, JSSVGTextContentElement::GetRotationOfCharFuncNum),
-    JS_CFUNC_MAGIC_DEF("getComputedTextLength", 0, JSSVGTextContentElementPrototypeFunction::callAsFunction, JSSVGTextContentElement::GetComputedTextLengthFuncNum),
-    JS_CFUNC_MAGIC_DEF("getNumberOfChars", 0, JSSVGTextContentElementPrototypeFunction::callAsFunction, JSSVGTextContentElement::GetNumberOfCharsFuncNum),
-    JS_CFUNC_MAGIC_DEF("getSubStringLength", 2, JSSVGTextContentElementPrototypeFunction::callAsFunction, JSSVGTextContentElement::GetSubStringLengthFuncNum),
-    JS_CFUNC_MAGIC_DEF("getStartPositionOfChar", 1, JSSVGTextContentElementPrototypeFunction::callAsFunction, JSSVGTextContentElement::GetStartPositionOfCharFuncNum),
-    JS_CFUNC_MAGIC_DEF("selectSubString", 2, JSSVGTextContentElementPrototypeFunction::callAsFunction, JSSVGTextContentElement::SelectSubStringFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGTextContentElementPrototypeFunction::callAsFunction, JSSVGTextContentElement::HasExtensionFuncNum),
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGTextContentElementPrototypeFunction::callAsFunction, JSSVGTextContentElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGTextContentElementPrototypeFunctions_initialized) return;
+    JSSVGTextContentElementPrototypeFunctions_initialized = true;
+    memset(JSSVGTextContentElementPrototypeFunctions, 0, sizeof(JSSVGTextContentElementPrototypeFunctions));
+    JSSVGTextContentElementPrototypeFunctions[0].name = "getCharNumAtPosition";
+    JSSVGTextContentElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGTextContentElementPrototypeFunctions[0].magic = JSSVGTextContentElement::GetCharNumAtPositionFuncNum;
+    JSSVGTextContentElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGTextContentElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextContentElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGTextContentElementPrototypeFunction::callAsFunction;
+    JSSVGTextContentElementPrototypeFunctions[1].name = "getExtentOfChar";
+    JSSVGTextContentElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGTextContentElementPrototypeFunctions[1].magic = JSSVGTextContentElement::GetExtentOfCharFuncNum;
+    JSSVGTextContentElementPrototypeFunctions[1].u.func.length = 1;
+    JSSVGTextContentElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextContentElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGTextContentElementPrototypeFunction::callAsFunction;
+    JSSVGTextContentElementPrototypeFunctions[2].name = "getEndPositionOfChar";
+    JSSVGTextContentElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGTextContentElementPrototypeFunctions[2].magic = JSSVGTextContentElement::GetEndPositionOfCharFuncNum;
+    JSSVGTextContentElementPrototypeFunctions[2].u.func.length = 1;
+    JSSVGTextContentElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextContentElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGTextContentElementPrototypeFunction::callAsFunction;
+    JSSVGTextContentElementPrototypeFunctions[3].name = "getRotationOfChar";
+    JSSVGTextContentElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGTextContentElementPrototypeFunctions[3].magic = JSSVGTextContentElement::GetRotationOfCharFuncNum;
+    JSSVGTextContentElementPrototypeFunctions[3].u.func.length = 1;
+    JSSVGTextContentElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextContentElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGTextContentElementPrototypeFunction::callAsFunction;
+    JSSVGTextContentElementPrototypeFunctions[4].name = "getComputedTextLength";
+    JSSVGTextContentElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGTextContentElementPrototypeFunctions[4].magic = JSSVGTextContentElement::GetComputedTextLengthFuncNum;
+    JSSVGTextContentElementPrototypeFunctions[4].u.func.length = 0;
+    JSSVGTextContentElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextContentElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGTextContentElementPrototypeFunction::callAsFunction;
+    JSSVGTextContentElementPrototypeFunctions[5].name = "getNumberOfChars";
+    JSSVGTextContentElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGTextContentElementPrototypeFunctions[5].magic = JSSVGTextContentElement::GetNumberOfCharsFuncNum;
+    JSSVGTextContentElementPrototypeFunctions[5].u.func.length = 0;
+    JSSVGTextContentElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextContentElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGTextContentElementPrototypeFunction::callAsFunction;
+    JSSVGTextContentElementPrototypeFunctions[6].name = "getSubStringLength";
+    JSSVGTextContentElementPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSSVGTextContentElementPrototypeFunctions[6].magic = JSSVGTextContentElement::GetSubStringLengthFuncNum;
+    JSSVGTextContentElementPrototypeFunctions[6].u.func.length = 2;
+    JSSVGTextContentElementPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextContentElementPrototypeFunctions[6].u.func.cfunc.generic_magic = JSSVGTextContentElementPrototypeFunction::callAsFunction;
+    JSSVGTextContentElementPrototypeFunctions[7].name = "getStartPositionOfChar";
+    JSSVGTextContentElementPrototypeFunctions[7].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementPrototypeFunctions[7].def_type = JS_DEF_CFUNC;
+    JSSVGTextContentElementPrototypeFunctions[7].magic = JSSVGTextContentElement::GetStartPositionOfCharFuncNum;
+    JSSVGTextContentElementPrototypeFunctions[7].u.func.length = 1;
+    JSSVGTextContentElementPrototypeFunctions[7].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextContentElementPrototypeFunctions[7].u.func.cfunc.generic_magic = JSSVGTextContentElementPrototypeFunction::callAsFunction;
+    JSSVGTextContentElementPrototypeFunctions[8].name = "selectSubString";
+    JSSVGTextContentElementPrototypeFunctions[8].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementPrototypeFunctions[8].def_type = JS_DEF_CFUNC;
+    JSSVGTextContentElementPrototypeFunctions[8].magic = JSSVGTextContentElement::SelectSubStringFuncNum;
+    JSSVGTextContentElementPrototypeFunctions[8].u.func.length = 2;
+    JSSVGTextContentElementPrototypeFunctions[8].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextContentElementPrototypeFunctions[8].u.func.cfunc.generic_magic = JSSVGTextContentElementPrototypeFunction::callAsFunction;
+    JSSVGTextContentElementPrototypeFunctions[9].name = "hasExtension";
+    JSSVGTextContentElementPrototypeFunctions[9].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementPrototypeFunctions[9].def_type = JS_DEF_CFUNC;
+    JSSVGTextContentElementPrototypeFunctions[9].magic = JSSVGTextContentElement::HasExtensionFuncNum;
+    JSSVGTextContentElementPrototypeFunctions[9].u.func.length = 1;
+    JSSVGTextContentElementPrototypeFunctions[9].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextContentElementPrototypeFunctions[9].u.func.cfunc.generic_magic = JSSVGTextContentElementPrototypeFunction::callAsFunction;
+    JSSVGTextContentElementPrototypeFunctions[10].name = "getPresentationAttribute";
+    JSSVGTextContentElementPrototypeFunctions[10].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextContentElementPrototypeFunctions[10].def_type = JS_DEF_CFUNC;
+    JSSVGTextContentElementPrototypeFunctions[10].magic = JSSVGTextContentElement::GetPresentationAttributeFuncNum;
+    JSSVGTextContentElementPrototypeFunctions[10].u.func.length = 1;
+    JSSVGTextContentElementPrototypeFunctions[10].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextContentElementPrototypeFunctions[10].u.func.cfunc.generic_magic = JSSVGTextContentElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGTextContentElementPrototype::self(JSContext * ctx)
 {
@@ -160,8 +338,11 @@ JSValue JSSVGTextContentElementPrototype::self(JSContext * ctx)
 
 void JSSVGTextContentElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGTextContentElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTextContentElementAttributesFunctions, countof(JSSVGTextContentElementAttributesFunctions));
+    init_JSSVGTextContentElementPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTextContentElementPrototypeConstantsFunctions, countof(JSSVGTextContentElementPrototypeConstantsFunctions));
+    init_JSSVGTextContentElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTextContentElementPrototypeFunctions, countof(JSSVGTextContentElementPrototypeFunctions));
 }
 
@@ -171,18 +352,25 @@ JSValue JSSVGTextContentElementPrototype::getValueProperty(JSContext * ctx, JSVa
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSSVGTextContentElementClassDefine = 
+static JSClassDef JSSVGTextContentElementClassDefine;
+static bool JSSVGTextContentElementClassDefine_initialized = false;
+
+static void init_JSSVGTextContentElementClassDefine()
 {
-    "SVGTextContentElement",
-    .finalizer = JSSVGTextContentElement::finalizer,
-    .gc_mark = JSSVGTextContentElement::mark,
-};
+    if (JSSVGTextContentElementClassDefine_initialized) return;
+    JSSVGTextContentElementClassDefine_initialized = true;
+    memset(&JSSVGTextContentElementClassDefine, 0, sizeof(JSSVGTextContentElementClassDefine));
+    JSSVGTextContentElementClassDefine.class_name = "SVGTextContentElement";
+    JSSVGTextContentElementClassDefine.finalizer = JSSVGTextContentElement::finalizer;
+    JSSVGTextContentElementClassDefine.gc_mark = JSSVGTextContentElement::mark;
+}
 
 JSClassID JSSVGTextContentElement::js_class_id = 0;
 
 void JSSVGTextContentElement::init(JSContext* ctx)
 {
     if (JSSVGTextContentElement::js_class_id == 0) {
+        init_JSSVGTextContentElementClassDefine();
         JS_NewClassID(&JSSVGTextContentElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGTextContentElement::js_class_id, &JSSVGTextContentElementClassDefine);
         JS_SetConstructor(ctx, JSSVGTextContentElementConstructor::self(ctx), JSSVGTextContentElementPrototype::self(ctx));

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -45,13 +47,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGRectAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGRectAttributesFunctions[4];
+static bool JSSVGRectAttributesFunctions_initialized = false;
+
+static void init_JSSVGRectAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("y", JSSVGRect::getValueProperty, JSSVGRect::putValueProperty, JSSVGRect::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGRect::getValueProperty, JSSVGRect::putValueProperty, JSSVGRect::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGRect::getValueProperty, JSSVGRect::putValueProperty, JSSVGRect::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGRect::getValueProperty, JSSVGRect::putValueProperty, JSSVGRect::HeightAttrNum)
-};
+    if (JSSVGRectAttributesFunctions_initialized) return;
+    JSSVGRectAttributesFunctions_initialized = true;
+    memset(JSSVGRectAttributesFunctions, 0, sizeof(JSSVGRectAttributesFunctions));
+    JSSVGRectAttributesFunctions[0].name = "y";
+    JSSVGRectAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectAttributesFunctions[0].magic = JSSVGRect::YAttrNum;
+    JSSVGRectAttributesFunctions[0].u.getset.get.getter_magic = JSSVGRect::getValueProperty;
+    JSSVGRectAttributesFunctions[0].u.getset.set.setter_magic = JSSVGRect::putValueProperty;
+    JSSVGRectAttributesFunctions[1].name = "x";
+    JSSVGRectAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectAttributesFunctions[1].magic = JSSVGRect::XAttrNum;
+    JSSVGRectAttributesFunctions[1].u.getset.get.getter_magic = JSSVGRect::getValueProperty;
+    JSSVGRectAttributesFunctions[1].u.getset.set.setter_magic = JSSVGRect::putValueProperty;
+    JSSVGRectAttributesFunctions[2].name = "width";
+    JSSVGRectAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectAttributesFunctions[2].magic = JSSVGRect::WidthAttrNum;
+    JSSVGRectAttributesFunctions[2].u.getset.get.getter_magic = JSSVGRect::getValueProperty;
+    JSSVGRectAttributesFunctions[2].u.getset.set.setter_magic = JSSVGRect::putValueProperty;
+    JSSVGRectAttributesFunctions[3].name = "height";
+    JSSVGRectAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectAttributesFunctions[3].magic = JSSVGRect::HeightAttrNum;
+    JSSVGRectAttributesFunctions[3].u.getset.get.getter_magic = JSSVGRect::getValueProperty;
+    JSSVGRectAttributesFunctions[3].u.getset.set.setter_magic = JSSVGRect::putValueProperty;
+}
 
 JSValue JSSVGRectPrototype::self(JSContext * ctx)
 {
@@ -69,21 +97,29 @@ JSValue JSSVGRectPrototype::self(JSContext * ctx)
 
 void JSSVGRectPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGRectAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGRectAttributesFunctions, countof(JSSVGRectAttributesFunctions));
 }
 
-static JSClassDef JSSVGRectClassDefine = 
+static JSClassDef JSSVGRectClassDefine;
+static bool JSSVGRectClassDefine_initialized = false;
+
+static void init_JSSVGRectClassDefine()
 {
-    "SVGRect",
-    .finalizer = JSSVGRect::finalizer,
-    .gc_mark = JSSVGRect::mark,
-};
+    if (JSSVGRectClassDefine_initialized) return;
+    JSSVGRectClassDefine_initialized = true;
+    memset(&JSSVGRectClassDefine, 0, sizeof(JSSVGRectClassDefine));
+    JSSVGRectClassDefine.class_name = "SVGRect";
+    JSSVGRectClassDefine.finalizer = JSSVGRect::finalizer;
+    JSSVGRectClassDefine.gc_mark = JSSVGRect::mark;
+}
 
 JSClassID JSSVGRect::js_class_id = 0;
 
 void JSSVGRect::init(JSContext* ctx)
 {
     if (JSSVGRect::js_class_id == 0) {
+        init_JSSVGRectClassDefine();
         JS_NewClassID(&JSSVGRect::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGRect::js_class_id, &JSSVGRectClassDefine);
         JS_SetClassProto(ctx, JSSVGRect::js_class_id, JSSVGRectPrototype::self(ctx));

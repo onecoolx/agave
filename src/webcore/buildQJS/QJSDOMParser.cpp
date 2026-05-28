@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSDOMParser.h"
 
 #include "DOMParser.h"
@@ -40,10 +42,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSDOMParserAttributesFunctions[] =
+static JSCFunctionListEntry JSDOMParserAttributesFunctions[1];
+static bool JSDOMParserAttributesFunctions_initialized = false;
+
+static void init_JSDOMParserAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSDOMParser::getValueProperty, NULL, JSDOMParser::ConstructorAttrNum)
-};
+    if (JSDOMParserAttributesFunctions_initialized) return;
+    JSDOMParserAttributesFunctions_initialized = true;
+    memset(JSDOMParserAttributesFunctions, 0, sizeof(JSDOMParserAttributesFunctions));
+    JSDOMParserAttributesFunctions[0].name = "constructor";
+    JSDOMParserAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDOMParserAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDOMParserAttributesFunctions[0].magic = JSDOMParser::ConstructorAttrNum;
+    JSDOMParserAttributesFunctions[0].u.getset.get.getter_magic = JSDOMParser::getValueProperty;
+    JSDOMParserAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 class JSDOMParserConstructor {
 public:
@@ -84,10 +97,22 @@ JSValue JSDOMParserConstructor::construct(JSContext *ctx, JSValueConst new_targe
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSDOMParserPrototypeFunctions[] =
+static JSCFunctionListEntry JSDOMParserPrototypeFunctions[1];
+static bool JSDOMParserPrototypeFunctions_initialized = false;
+
+static void init_JSDOMParserPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("parseFromString", 2, JSDOMParserPrototypeFunction::callAsFunction, JSDOMParser::ParseFromStringFuncNum)
-};
+    if (JSDOMParserPrototypeFunctions_initialized) return;
+    JSDOMParserPrototypeFunctions_initialized = true;
+    memset(JSDOMParserPrototypeFunctions, 0, sizeof(JSDOMParserPrototypeFunctions));
+    JSDOMParserPrototypeFunctions[0].name = "parseFromString";
+    JSDOMParserPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMParserPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSDOMParserPrototypeFunctions[0].magic = JSDOMParser::ParseFromStringFuncNum;
+    JSDOMParserPrototypeFunctions[0].u.func.length = 2;
+    JSDOMParserPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMParserPrototypeFunctions[0].u.func.cfunc.generic_magic = JSDOMParserPrototypeFunction::callAsFunction;
+}
 
 JSValue JSDOMParserPrototype::self(JSContext * ctx)
 {
@@ -105,22 +130,31 @@ JSValue JSDOMParserPrototype::self(JSContext * ctx)
 
 void JSDOMParserPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSDOMParserAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSDOMParserAttributesFunctions, countof(JSDOMParserAttributesFunctions));
+    init_JSDOMParserPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSDOMParserPrototypeFunctions, countof(JSDOMParserPrototypeFunctions));
 }
 
-static JSClassDef JSDOMParserClassDefine = 
+static JSClassDef JSDOMParserClassDefine;
+static bool JSDOMParserClassDefine_initialized = false;
+
+static void init_JSDOMParserClassDefine()
 {
-    "DOMParser",
-    .finalizer = JSDOMParser::finalizer,
-    .gc_mark = JSDOMParser::mark,
-};
+    if (JSDOMParserClassDefine_initialized) return;
+    JSDOMParserClassDefine_initialized = true;
+    memset(&JSDOMParserClassDefine, 0, sizeof(JSDOMParserClassDefine));
+    JSDOMParserClassDefine.class_name = "DOMParser";
+    JSDOMParserClassDefine.finalizer = JSDOMParser::finalizer;
+    JSDOMParserClassDefine.gc_mark = JSDOMParser::mark;
+}
 
 JSClassID JSDOMParser::js_class_id = 0;
 
 void JSDOMParser::init(JSContext* ctx)
 {
     if (JSDOMParser::js_class_id == 0) {
+        init_JSDOMParserClassDefine();
         JS_NewClassID(&JSDOMParser::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSDOMParser::js_class_id, &JSDOMParserClassDefine);
         JS_SetConstructor(ctx, JSDOMParserConstructor::self(ctx), JSDOMParserPrototype::self(ctx));

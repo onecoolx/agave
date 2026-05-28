@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLAppletElement.h"
 
 #include "HTMLAppletElement.h"
@@ -39,21 +41,87 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLAppletElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLAppletElementAttributesFunctions[12];
+static bool JSHTMLAppletElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLAppletElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("hspace", JSHTMLAppletElement::getValueProperty, JSHTMLAppletElement::putValueProperty, JSHTMLAppletElement::HspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("alt", JSHTMLAppletElement::getValueProperty, JSHTMLAppletElement::putValueProperty, JSHTMLAppletElement::AltAttrNum),
-    JS_CGETSET_MAGIC_DEF("object", JSHTMLAppletElement::getValueProperty, JSHTMLAppletElement::putValueProperty, JSHTMLAppletElement::ObjectAttrNum),
-    JS_CGETSET_MAGIC_DEF("vspace", JSHTMLAppletElement::getValueProperty, JSHTMLAppletElement::putValueProperty, JSHTMLAppletElement::VspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLAppletElement::getValueProperty, JSHTMLAppletElement::putValueProperty, JSHTMLAppletElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("codeBase", JSHTMLAppletElement::getValueProperty, JSHTMLAppletElement::putValueProperty, JSHTMLAppletElement::CodeBaseAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSHTMLAppletElement::getValueProperty, JSHTMLAppletElement::putValueProperty, JSHTMLAppletElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLAppletElement::getValueProperty, NULL, JSHTMLAppletElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("archive", JSHTMLAppletElement::getValueProperty, JSHTMLAppletElement::putValueProperty, JSHTMLAppletElement::ArchiveAttrNum),
-    JS_CGETSET_MAGIC_DEF("code", JSHTMLAppletElement::getValueProperty, JSHTMLAppletElement::putValueProperty, JSHTMLAppletElement::CodeAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSHTMLAppletElement::getValueProperty, JSHTMLAppletElement::putValueProperty, JSHTMLAppletElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("name", JSHTMLAppletElement::getValueProperty, JSHTMLAppletElement::putValueProperty, JSHTMLAppletElement::NameAttrNum)
-};
+    if (JSHTMLAppletElementAttributesFunctions_initialized) return;
+    JSHTMLAppletElementAttributesFunctions_initialized = true;
+    memset(JSHTMLAppletElementAttributesFunctions, 0, sizeof(JSHTMLAppletElementAttributesFunctions));
+    JSHTMLAppletElementAttributesFunctions[0].name = "hspace";
+    JSHTMLAppletElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAppletElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAppletElementAttributesFunctions[0].magic = JSHTMLAppletElement::HspaceAttrNum;
+    JSHTMLAppletElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLAppletElement::getValueProperty;
+    JSHTMLAppletElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLAppletElement::putValueProperty;
+    JSHTMLAppletElementAttributesFunctions[1].name = "alt";
+    JSHTMLAppletElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAppletElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAppletElementAttributesFunctions[1].magic = JSHTMLAppletElement::AltAttrNum;
+    JSHTMLAppletElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLAppletElement::getValueProperty;
+    JSHTMLAppletElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLAppletElement::putValueProperty;
+    JSHTMLAppletElementAttributesFunctions[2].name = "object";
+    JSHTMLAppletElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAppletElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAppletElementAttributesFunctions[2].magic = JSHTMLAppletElement::ObjectAttrNum;
+    JSHTMLAppletElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLAppletElement::getValueProperty;
+    JSHTMLAppletElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLAppletElement::putValueProperty;
+    JSHTMLAppletElementAttributesFunctions[3].name = "vspace";
+    JSHTMLAppletElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAppletElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAppletElementAttributesFunctions[3].magic = JSHTMLAppletElement::VspaceAttrNum;
+    JSHTMLAppletElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLAppletElement::getValueProperty;
+    JSHTMLAppletElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLAppletElement::putValueProperty;
+    JSHTMLAppletElementAttributesFunctions[4].name = "align";
+    JSHTMLAppletElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAppletElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAppletElementAttributesFunctions[4].magic = JSHTMLAppletElement::AlignAttrNum;
+    JSHTMLAppletElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLAppletElement::getValueProperty;
+    JSHTMLAppletElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLAppletElement::putValueProperty;
+    JSHTMLAppletElementAttributesFunctions[5].name = "codeBase";
+    JSHTMLAppletElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAppletElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAppletElementAttributesFunctions[5].magic = JSHTMLAppletElement::CodeBaseAttrNum;
+    JSHTMLAppletElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLAppletElement::getValueProperty;
+    JSHTMLAppletElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLAppletElement::putValueProperty;
+    JSHTMLAppletElementAttributesFunctions[6].name = "width";
+    JSHTMLAppletElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAppletElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAppletElementAttributesFunctions[6].magic = JSHTMLAppletElement::WidthAttrNum;
+    JSHTMLAppletElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLAppletElement::getValueProperty;
+    JSHTMLAppletElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLAppletElement::putValueProperty;
+    JSHTMLAppletElementAttributesFunctions[7].name = "constructor";
+    JSHTMLAppletElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAppletElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAppletElementAttributesFunctions[7].magic = JSHTMLAppletElement::ConstructorAttrNum;
+    JSHTMLAppletElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLAppletElement::getValueProperty;
+    JSHTMLAppletElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSHTMLAppletElementAttributesFunctions[8].name = "archive";
+    JSHTMLAppletElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAppletElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAppletElementAttributesFunctions[8].magic = JSHTMLAppletElement::ArchiveAttrNum;
+    JSHTMLAppletElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLAppletElement::getValueProperty;
+    JSHTMLAppletElementAttributesFunctions[8].u.getset.set.setter_magic = JSHTMLAppletElement::putValueProperty;
+    JSHTMLAppletElementAttributesFunctions[9].name = "code";
+    JSHTMLAppletElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAppletElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAppletElementAttributesFunctions[9].magic = JSHTMLAppletElement::CodeAttrNum;
+    JSHTMLAppletElementAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLAppletElement::getValueProperty;
+    JSHTMLAppletElementAttributesFunctions[9].u.getset.set.setter_magic = JSHTMLAppletElement::putValueProperty;
+    JSHTMLAppletElementAttributesFunctions[10].name = "height";
+    JSHTMLAppletElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAppletElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAppletElementAttributesFunctions[10].magic = JSHTMLAppletElement::HeightAttrNum;
+    JSHTMLAppletElementAttributesFunctions[10].u.getset.get.getter_magic = JSHTMLAppletElement::getValueProperty;
+    JSHTMLAppletElementAttributesFunctions[10].u.getset.set.setter_magic = JSHTMLAppletElement::putValueProperty;
+    JSHTMLAppletElementAttributesFunctions[11].name = "name";
+    JSHTMLAppletElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAppletElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAppletElementAttributesFunctions[11].magic = JSHTMLAppletElement::NameAttrNum;
+    JSHTMLAppletElementAttributesFunctions[11].u.getset.get.getter_magic = JSHTMLAppletElement::getValueProperty;
+    JSHTMLAppletElementAttributesFunctions[11].u.getset.set.setter_magic = JSHTMLAppletElement::putValueProperty;
+}
 
 class JSHTMLAppletElementConstructor {
 public:
@@ -102,15 +170,22 @@ JSValue JSHTMLAppletElementPrototype::self(JSContext * ctx)
 
 void JSHTMLAppletElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLAppletElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLAppletElementAttributesFunctions, countof(JSHTMLAppletElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLAppletElementClassDefine = 
+static JSClassDef JSHTMLAppletElementClassDefine;
+static bool JSHTMLAppletElementClassDefine_initialized = false;
+
+static void init_JSHTMLAppletElementClassDefine()
 {
-    "HTMLAppletElement",
-    .finalizer = JSHTMLAppletElement::finalizer,
-    .gc_mark = JSHTMLAppletElement::mark,
-};
+    if (JSHTMLAppletElementClassDefine_initialized) return;
+    JSHTMLAppletElementClassDefine_initialized = true;
+    memset(&JSHTMLAppletElementClassDefine, 0, sizeof(JSHTMLAppletElementClassDefine));
+    JSHTMLAppletElementClassDefine.class_name = "HTMLAppletElement";
+    JSHTMLAppletElementClassDefine.finalizer = JSHTMLAppletElement::finalizer;
+    JSHTMLAppletElementClassDefine.gc_mark = JSHTMLAppletElement::mark;
+}
 
 JSClassID JSHTMLAppletElement::js_class_id = 0;
 

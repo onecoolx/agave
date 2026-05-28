@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,13 +48,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[4];
+static bool JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions_initialized = false;
+
+static void init_JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("y", JSSVGPathSegCurvetoCubicSmoothRel::getValueProperty, JSSVGPathSegCurvetoCubicSmoothRel::putValueProperty, JSSVGPathSegCurvetoCubicSmoothRel::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGPathSegCurvetoCubicSmoothRel::getValueProperty, JSSVGPathSegCurvetoCubicSmoothRel::putValueProperty, JSSVGPathSegCurvetoCubicSmoothRel::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("y2", JSSVGPathSegCurvetoCubicSmoothRel::getValueProperty, JSSVGPathSegCurvetoCubicSmoothRel::putValueProperty, JSSVGPathSegCurvetoCubicSmoothRel::Y2AttrNum),
-    JS_CGETSET_MAGIC_DEF("x2", JSSVGPathSegCurvetoCubicSmoothRel::getValueProperty, JSSVGPathSegCurvetoCubicSmoothRel::putValueProperty, JSSVGPathSegCurvetoCubicSmoothRel::X2AttrNum)
-};
+    if (JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions_initialized) return;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions_initialized = true;
+    memset(JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions, 0, sizeof(JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions));
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[0].name = "y";
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[0].magic = JSSVGPathSegCurvetoCubicSmoothRel::YAttrNum;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegCurvetoCubicSmoothRel::getValueProperty;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegCurvetoCubicSmoothRel::putValueProperty;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[1].name = "x";
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[1].magic = JSSVGPathSegCurvetoCubicSmoothRel::XAttrNum;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegCurvetoCubicSmoothRel::getValueProperty;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegCurvetoCubicSmoothRel::putValueProperty;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[2].name = "y2";
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[2].magic = JSSVGPathSegCurvetoCubicSmoothRel::Y2AttrNum;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[2].u.getset.get.getter_magic = JSSVGPathSegCurvetoCubicSmoothRel::getValueProperty;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[2].u.getset.set.setter_magic = JSSVGPathSegCurvetoCubicSmoothRel::putValueProperty;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[3].name = "x2";
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[3].magic = JSSVGPathSegCurvetoCubicSmoothRel::X2AttrNum;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[3].u.getset.get.getter_magic = JSSVGPathSegCurvetoCubicSmoothRel::getValueProperty;
+    JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions[3].u.getset.set.setter_magic = JSSVGPathSegCurvetoCubicSmoothRel::putValueProperty;
+}
 
 JSValue JSSVGPathSegCurvetoCubicSmoothRelPrototype::self(JSContext * ctx)
 {
@@ -70,21 +98,29 @@ JSValue JSSVGPathSegCurvetoCubicSmoothRelPrototype::self(JSContext * ctx)
 
 void JSSVGPathSegCurvetoCubicSmoothRelPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions, countof(JSSVGPathSegCurvetoCubicSmoothRelAttributesFunctions));
 }
 
-static JSClassDef JSSVGPathSegCurvetoCubicSmoothRelClassDefine = 
+static JSClassDef JSSVGPathSegCurvetoCubicSmoothRelClassDefine;
+static bool JSSVGPathSegCurvetoCubicSmoothRelClassDefine_initialized = false;
+
+static void init_JSSVGPathSegCurvetoCubicSmoothRelClassDefine()
 {
-    "SVGPathSegCurvetoCubicSmoothRel",
-    .finalizer = JSSVGPathSegCurvetoCubicSmoothRel::finalizer,
-    .gc_mark = JSSVGPathSegCurvetoCubicSmoothRel::mark,
-};
+    if (JSSVGPathSegCurvetoCubicSmoothRelClassDefine_initialized) return;
+    JSSVGPathSegCurvetoCubicSmoothRelClassDefine_initialized = true;
+    memset(&JSSVGPathSegCurvetoCubicSmoothRelClassDefine, 0, sizeof(JSSVGPathSegCurvetoCubicSmoothRelClassDefine));
+    JSSVGPathSegCurvetoCubicSmoothRelClassDefine.class_name = "SVGPathSegCurvetoCubicSmoothRel";
+    JSSVGPathSegCurvetoCubicSmoothRelClassDefine.finalizer = JSSVGPathSegCurvetoCubicSmoothRel::finalizer;
+    JSSVGPathSegCurvetoCubicSmoothRelClassDefine.gc_mark = JSSVGPathSegCurvetoCubicSmoothRel::mark;
+}
 
 JSClassID JSSVGPathSegCurvetoCubicSmoothRel::js_class_id = 0;
 
 void JSSVGPathSegCurvetoCubicSmoothRel::init(JSContext* ctx)
 {
     if (JSSVGPathSegCurvetoCubicSmoothRel::js_class_id == 0) {
+        init_JSSVGPathSegCurvetoCubicSmoothRelClassDefine();
         JS_NewClassID(&JSSVGPathSegCurvetoCubicSmoothRel::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathSegCurvetoCubicSmoothRel::js_class_id, &JSSVGPathSegCurvetoCubicSmoothRelClassDefine);
         JS_SetClassProto(ctx, JSSVGPathSegCurvetoCubicSmoothRel::js_class_id, JSSVGPathSegCurvetoCubicSmoothRelPrototype::self(ctx));

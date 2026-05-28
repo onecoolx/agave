@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -48,14 +50,45 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGZoomEventAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGZoomEventAttributesFunctions[5];
+static bool JSSVGZoomEventAttributesFunctions_initialized = false;
+
+static void init_JSSVGZoomEventAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("previousScale", JSSVGZoomEvent::getValueProperty, NULL, JSSVGZoomEvent::PreviousScaleAttrNum),
-    JS_CGETSET_MAGIC_DEF("zoomRectScreen", JSSVGZoomEvent::getValueProperty, NULL, JSSVGZoomEvent::ZoomRectScreenAttrNum),
-    JS_CGETSET_MAGIC_DEF("newTranslate", JSSVGZoomEvent::getValueProperty, NULL, JSSVGZoomEvent::NewTranslateAttrNum),
-    JS_CGETSET_MAGIC_DEF("previousTranslate", JSSVGZoomEvent::getValueProperty, NULL, JSSVGZoomEvent::PreviousTranslateAttrNum),
-    JS_CGETSET_MAGIC_DEF("newScale", JSSVGZoomEvent::getValueProperty, NULL, JSSVGZoomEvent::NewScaleAttrNum)
-};
+    if (JSSVGZoomEventAttributesFunctions_initialized) return;
+    JSSVGZoomEventAttributesFunctions_initialized = true;
+    memset(JSSVGZoomEventAttributesFunctions, 0, sizeof(JSSVGZoomEventAttributesFunctions));
+    JSSVGZoomEventAttributesFunctions[0].name = "previousScale";
+    JSSVGZoomEventAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGZoomEventAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGZoomEventAttributesFunctions[0].magic = JSSVGZoomEvent::PreviousScaleAttrNum;
+    JSSVGZoomEventAttributesFunctions[0].u.getset.get.getter_magic = JSSVGZoomEvent::getValueProperty;
+    JSSVGZoomEventAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGZoomEventAttributesFunctions[1].name = "zoomRectScreen";
+    JSSVGZoomEventAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGZoomEventAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGZoomEventAttributesFunctions[1].magic = JSSVGZoomEvent::ZoomRectScreenAttrNum;
+    JSSVGZoomEventAttributesFunctions[1].u.getset.get.getter_magic = JSSVGZoomEvent::getValueProperty;
+    JSSVGZoomEventAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGZoomEventAttributesFunctions[2].name = "newTranslate";
+    JSSVGZoomEventAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGZoomEventAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGZoomEventAttributesFunctions[2].magic = JSSVGZoomEvent::NewTranslateAttrNum;
+    JSSVGZoomEventAttributesFunctions[2].u.getset.get.getter_magic = JSSVGZoomEvent::getValueProperty;
+    JSSVGZoomEventAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGZoomEventAttributesFunctions[3].name = "previousTranslate";
+    JSSVGZoomEventAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGZoomEventAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGZoomEventAttributesFunctions[3].magic = JSSVGZoomEvent::PreviousTranslateAttrNum;
+    JSSVGZoomEventAttributesFunctions[3].u.getset.get.getter_magic = JSSVGZoomEvent::getValueProperty;
+    JSSVGZoomEventAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGZoomEventAttributesFunctions[4].name = "newScale";
+    JSSVGZoomEventAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGZoomEventAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGZoomEventAttributesFunctions[4].magic = JSSVGZoomEvent::NewScaleAttrNum;
+    JSSVGZoomEventAttributesFunctions[4].u.getset.get.getter_magic = JSSVGZoomEvent::getValueProperty;
+    JSSVGZoomEventAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGZoomEventPrototype::self(JSContext * ctx)
 {
@@ -73,21 +106,29 @@ JSValue JSSVGZoomEventPrototype::self(JSContext * ctx)
 
 void JSSVGZoomEventPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGZoomEventAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGZoomEventAttributesFunctions, countof(JSSVGZoomEventAttributesFunctions));
 }
 
-static JSClassDef JSSVGZoomEventClassDefine = 
+static JSClassDef JSSVGZoomEventClassDefine;
+static bool JSSVGZoomEventClassDefine_initialized = false;
+
+static void init_JSSVGZoomEventClassDefine()
 {
-    "SVGZoomEvent",
-    .finalizer = JSSVGZoomEvent::finalizer,
-    .gc_mark = JSSVGZoomEvent::mark,
-};
+    if (JSSVGZoomEventClassDefine_initialized) return;
+    JSSVGZoomEventClassDefine_initialized = true;
+    memset(&JSSVGZoomEventClassDefine, 0, sizeof(JSSVGZoomEventClassDefine));
+    JSSVGZoomEventClassDefine.class_name = "SVGZoomEvent";
+    JSSVGZoomEventClassDefine.finalizer = JSSVGZoomEvent::finalizer;
+    JSSVGZoomEventClassDefine.gc_mark = JSSVGZoomEvent::mark;
+}
 
 JSClassID JSSVGZoomEvent::js_class_id = 0;
 
 void JSSVGZoomEvent::init(JSContext* ctx)
 {
     if (JSSVGZoomEvent::js_class_id == 0) {
+        init_JSSVGZoomEventClassDefine();
         JS_NewClassID(&JSSVGZoomEvent::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGZoomEvent::js_class_id, &JSSVGZoomEventClassDefine);
         JS_SetClassProto(ctx, JSSVGZoomEvent::js_class_id, JSSVGZoomEventPrototype::self(ctx));

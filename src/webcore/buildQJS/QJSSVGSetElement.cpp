@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -62,18 +64,25 @@ void JSSVGSetElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
 }
 
-static JSClassDef JSSVGSetElementClassDefine = 
+static JSClassDef JSSVGSetElementClassDefine;
+static bool JSSVGSetElementClassDefine_initialized = false;
+
+static void init_JSSVGSetElementClassDefine()
 {
-    "SVGSetElement",
-    .finalizer = JSSVGSetElement::finalizer,
-    .gc_mark = JSSVGSetElement::mark,
-};
+    if (JSSVGSetElementClassDefine_initialized) return;
+    JSSVGSetElementClassDefine_initialized = true;
+    memset(&JSSVGSetElementClassDefine, 0, sizeof(JSSVGSetElementClassDefine));
+    JSSVGSetElementClassDefine.class_name = "SVGSetElement";
+    JSSVGSetElementClassDefine.finalizer = JSSVGSetElement::finalizer;
+    JSSVGSetElementClassDefine.gc_mark = JSSVGSetElement::mark;
+}
 
 JSClassID JSSVGSetElement::js_class_id = 0;
 
 void JSSVGSetElement::init(JSContext* ctx)
 {
     if (JSSVGSetElement::js_class_id == 0) {
+        init_JSSVGSetElementClassDefine();
         JS_NewClassID(&JSSVGSetElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGSetElement::js_class_id, &JSSVGSetElementClassDefine);
         JS_SetClassProto(ctx, JSSVGSetElement::js_class_id, JSSVGSetElementPrototype::self(ctx));

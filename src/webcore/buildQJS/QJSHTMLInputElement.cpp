@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLInputElement.h"
 
 #include "HTMLFormElement.h"
@@ -41,29 +43,135 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLInputElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLInputElementAttributesFunctions[20];
+static bool JSHTMLInputElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLInputElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("defaultChecked", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::DefaultCheckedAttrNum),
-    JS_CGETSET_MAGIC_DEF("indeterminate", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::IndeterminateAttrNum),
-    JS_CGETSET_MAGIC_DEF("defaultValue", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::DefaultValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("value", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::ValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("size", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::SizeAttrNum),
-    JS_CGETSET_MAGIC_DEF("accept", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::AcceptAttrNum),
-    JS_CGETSET_MAGIC_DEF("accessKey", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::AccessKeyAttrNum),
-    JS_CGETSET_MAGIC_DEF("maxLength", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::MaxLengthAttrNum),
-    JS_CGETSET_MAGIC_DEF("readOnly", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::ReadOnlyAttrNum),
-    JS_CGETSET_MAGIC_DEF("alt", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::AltAttrNum),
-    JS_CGETSET_MAGIC_DEF("checked", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::CheckedAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLInputElement::getValueProperty, NULL, JSHTMLInputElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("form", JSHTMLInputElement::getValueProperty, NULL, JSHTMLInputElement::FormAttrNum),
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("disabled", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::DisabledAttrNum),
-    JS_CGETSET_MAGIC_DEF("name", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::NameAttrNum),
-    JS_CGETSET_MAGIC_DEF("src", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::SrcAttrNum),
-    JS_CGETSET_MAGIC_DEF("tabIndex", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::TabIndexAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("useMap", JSHTMLInputElement::getValueProperty, JSHTMLInputElement::putValueProperty, JSHTMLInputElement::UseMapAttrNum)
-};
+    if (JSHTMLInputElementAttributesFunctions_initialized) return;
+    JSHTMLInputElementAttributesFunctions_initialized = true;
+    memset(JSHTMLInputElementAttributesFunctions, 0, sizeof(JSHTMLInputElementAttributesFunctions));
+    JSHTMLInputElementAttributesFunctions[0].name = "defaultChecked";
+    JSHTMLInputElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[0].magic = JSHTMLInputElement::DefaultCheckedAttrNum;
+    JSHTMLInputElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[1].name = "indeterminate";
+    JSHTMLInputElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[1].magic = JSHTMLInputElement::IndeterminateAttrNum;
+    JSHTMLInputElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[2].name = "defaultValue";
+    JSHTMLInputElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[2].magic = JSHTMLInputElement::DefaultValueAttrNum;
+    JSHTMLInputElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[3].name = "value";
+    JSHTMLInputElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[3].magic = JSHTMLInputElement::ValueAttrNum;
+    JSHTMLInputElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[4].name = "size";
+    JSHTMLInputElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[4].magic = JSHTMLInputElement::SizeAttrNum;
+    JSHTMLInputElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[5].name = "accept";
+    JSHTMLInputElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[5].magic = JSHTMLInputElement::AcceptAttrNum;
+    JSHTMLInputElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[6].name = "accessKey";
+    JSHTMLInputElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[6].magic = JSHTMLInputElement::AccessKeyAttrNum;
+    JSHTMLInputElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[7].name = "maxLength";
+    JSHTMLInputElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[7].magic = JSHTMLInputElement::MaxLengthAttrNum;
+    JSHTMLInputElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[8].name = "readOnly";
+    JSHTMLInputElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[8].magic = JSHTMLInputElement::ReadOnlyAttrNum;
+    JSHTMLInputElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[8].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[9].name = "alt";
+    JSHTMLInputElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[9].magic = JSHTMLInputElement::AltAttrNum;
+    JSHTMLInputElementAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[9].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[10].name = "checked";
+    JSHTMLInputElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[10].magic = JSHTMLInputElement::CheckedAttrNum;
+    JSHTMLInputElementAttributesFunctions[10].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[10].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[11].name = "constructor";
+    JSHTMLInputElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[11].magic = JSHTMLInputElement::ConstructorAttrNum;
+    JSHTMLInputElementAttributesFunctions[11].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSHTMLInputElementAttributesFunctions[12].name = "form";
+    JSHTMLInputElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[12].magic = JSHTMLInputElement::FormAttrNum;
+    JSHTMLInputElementAttributesFunctions[12].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSHTMLInputElementAttributesFunctions[13].name = "align";
+    JSHTMLInputElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[13].magic = JSHTMLInputElement::AlignAttrNum;
+    JSHTMLInputElementAttributesFunctions[13].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[13].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[14].name = "disabled";
+    JSHTMLInputElementAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[14].magic = JSHTMLInputElement::DisabledAttrNum;
+    JSHTMLInputElementAttributesFunctions[14].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[14].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[15].name = "name";
+    JSHTMLInputElementAttributesFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[15].magic = JSHTMLInputElement::NameAttrNum;
+    JSHTMLInputElementAttributesFunctions[15].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[15].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[16].name = "src";
+    JSHTMLInputElementAttributesFunctions[16].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[16].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[16].magic = JSHTMLInputElement::SrcAttrNum;
+    JSHTMLInputElementAttributesFunctions[16].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[16].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[17].name = "tabIndex";
+    JSHTMLInputElementAttributesFunctions[17].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[17].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[17].magic = JSHTMLInputElement::TabIndexAttrNum;
+    JSHTMLInputElementAttributesFunctions[17].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[17].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[18].name = "type";
+    JSHTMLInputElementAttributesFunctions[18].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[18].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[18].magic = JSHTMLInputElement::TypeAttrNum;
+    JSHTMLInputElementAttributesFunctions[18].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[18].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[19].name = "useMap";
+    JSHTMLInputElementAttributesFunctions[19].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[19].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[19].magic = JSHTMLInputElement::UseMapAttrNum;
+    JSHTMLInputElementAttributesFunctions[19].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[19].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+}
 
 class JSHTMLInputElementConstructor {
 public:
@@ -98,13 +206,43 @@ void JSHTMLInputElementConstructor::initConstructor(JSContext * ctx, JSValue thi
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHTMLInputElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSHTMLInputElementPrototypeFunctions[4];
+static bool JSHTMLInputElementPrototypeFunctions_initialized = false;
+
+static void init_JSHTMLInputElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("click", 0, JSHTMLInputElementPrototypeFunction::callAsFunction, JSHTMLInputElement::ClickFuncNum),
-    JS_CFUNC_MAGIC_DEF("focus", 0, JSHTMLInputElementPrototypeFunction::callAsFunction, JSHTMLInputElement::FocusFuncNum),
-    JS_CFUNC_MAGIC_DEF("blur", 0, JSHTMLInputElementPrototypeFunction::callAsFunction, JSHTMLInputElement::BlurFuncNum),
-    JS_CFUNC_MAGIC_DEF("select", 0, JSHTMLInputElementPrototypeFunction::callAsFunction, JSHTMLInputElement::SelectFuncNum)
-};
+    if (JSHTMLInputElementPrototypeFunctions_initialized) return;
+    JSHTMLInputElementPrototypeFunctions_initialized = true;
+    memset(JSHTMLInputElementPrototypeFunctions, 0, sizeof(JSHTMLInputElementPrototypeFunctions));
+    JSHTMLInputElementPrototypeFunctions[0].name = "click";
+    JSHTMLInputElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHTMLInputElementPrototypeFunctions[0].magic = JSHTMLInputElement::ClickFuncNum;
+    JSHTMLInputElementPrototypeFunctions[0].u.func.length = 0;
+    JSHTMLInputElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLInputElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLInputElementPrototypeFunction::callAsFunction;
+    JSHTMLInputElementPrototypeFunctions[1].name = "focus";
+    JSHTMLInputElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSHTMLInputElementPrototypeFunctions[1].magic = JSHTMLInputElement::FocusFuncNum;
+    JSHTMLInputElementPrototypeFunctions[1].u.func.length = 0;
+    JSHTMLInputElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLInputElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSHTMLInputElementPrototypeFunction::callAsFunction;
+    JSHTMLInputElementPrototypeFunctions[2].name = "blur";
+    JSHTMLInputElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSHTMLInputElementPrototypeFunctions[2].magic = JSHTMLInputElement::BlurFuncNum;
+    JSHTMLInputElementPrototypeFunctions[2].u.func.length = 0;
+    JSHTMLInputElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLInputElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSHTMLInputElementPrototypeFunction::callAsFunction;
+    JSHTMLInputElementPrototypeFunctions[3].name = "select";
+    JSHTMLInputElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSHTMLInputElementPrototypeFunctions[3].magic = JSHTMLInputElement::SelectFuncNum;
+    JSHTMLInputElementPrototypeFunctions[3].u.func.length = 0;
+    JSHTMLInputElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLInputElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSHTMLInputElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHTMLInputElementPrototype::self(JSContext * ctx)
 {
@@ -122,16 +260,24 @@ JSValue JSHTMLInputElementPrototype::self(JSContext * ctx)
 
 void JSHTMLInputElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLInputElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLInputElementAttributesFunctions, countof(JSHTMLInputElementAttributesFunctions));
+    init_JSHTMLInputElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLInputElementPrototypeFunctions, countof(JSHTMLInputElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLInputElementClassDefine = 
+static JSClassDef JSHTMLInputElementClassDefine;
+static bool JSHTMLInputElementClassDefine_initialized = false;
+
+static void init_JSHTMLInputElementClassDefine()
 {
-    "HTMLInputElement",
-    .finalizer = JSHTMLInputElement::finalizer,
-    .gc_mark = JSHTMLInputElement::mark,
-};
+    if (JSHTMLInputElementClassDefine_initialized) return;
+    JSHTMLInputElementClassDefine_initialized = true;
+    memset(&JSHTMLInputElementClassDefine, 0, sizeof(JSHTMLInputElementClassDefine));
+    JSHTMLInputElementClassDefine.class_name = "HTMLInputElement";
+    JSHTMLInputElementClassDefine.finalizer = JSHTMLInputElement::finalizer;
+    JSHTMLInputElementClassDefine.gc_mark = JSHTMLInputElement::mark;
+}
 
 JSClassID JSHTMLInputElement::js_class_id = 0;
 

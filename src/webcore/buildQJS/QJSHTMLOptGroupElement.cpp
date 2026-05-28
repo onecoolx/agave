@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLOptGroupElement.h"
 
 #include "HTMLOptGroupElement.h"
@@ -39,12 +41,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLOptGroupElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLOptGroupElementAttributesFunctions[3];
+static bool JSHTMLOptGroupElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLOptGroupElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLOptGroupElement::getValueProperty, NULL, JSHTMLOptGroupElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("disabled", JSHTMLOptGroupElement::getValueProperty, JSHTMLOptGroupElement::putValueProperty, JSHTMLOptGroupElement::DisabledAttrNum),
-    JS_CGETSET_MAGIC_DEF("label", JSHTMLOptGroupElement::getValueProperty, JSHTMLOptGroupElement::putValueProperty, JSHTMLOptGroupElement::LabelAttrNum)
-};
+    if (JSHTMLOptGroupElementAttributesFunctions_initialized) return;
+    JSHTMLOptGroupElementAttributesFunctions_initialized = true;
+    memset(JSHTMLOptGroupElementAttributesFunctions, 0, sizeof(JSHTMLOptGroupElementAttributesFunctions));
+    JSHTMLOptGroupElementAttributesFunctions[0].name = "constructor";
+    JSHTMLOptGroupElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOptGroupElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOptGroupElementAttributesFunctions[0].magic = JSHTMLOptGroupElement::ConstructorAttrNum;
+    JSHTMLOptGroupElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLOptGroupElement::getValueProperty;
+    JSHTMLOptGroupElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLOptGroupElementAttributesFunctions[1].name = "disabled";
+    JSHTMLOptGroupElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOptGroupElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOptGroupElementAttributesFunctions[1].magic = JSHTMLOptGroupElement::DisabledAttrNum;
+    JSHTMLOptGroupElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLOptGroupElement::getValueProperty;
+    JSHTMLOptGroupElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLOptGroupElement::putValueProperty;
+    JSHTMLOptGroupElementAttributesFunctions[2].name = "label";
+    JSHTMLOptGroupElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLOptGroupElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLOptGroupElementAttributesFunctions[2].magic = JSHTMLOptGroupElement::LabelAttrNum;
+    JSHTMLOptGroupElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLOptGroupElement::getValueProperty;
+    JSHTMLOptGroupElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLOptGroupElement::putValueProperty;
+}
 
 class JSHTMLOptGroupElementConstructor {
 public:
@@ -93,15 +116,22 @@ JSValue JSHTMLOptGroupElementPrototype::self(JSContext * ctx)
 
 void JSHTMLOptGroupElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLOptGroupElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLOptGroupElementAttributesFunctions, countof(JSHTMLOptGroupElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLOptGroupElementClassDefine = 
+static JSClassDef JSHTMLOptGroupElementClassDefine;
+static bool JSHTMLOptGroupElementClassDefine_initialized = false;
+
+static void init_JSHTMLOptGroupElementClassDefine()
 {
-    "HTMLOptGroupElement",
-    .finalizer = JSHTMLOptGroupElement::finalizer,
-    .gc_mark = JSHTMLOptGroupElement::mark,
-};
+    if (JSHTMLOptGroupElementClassDefine_initialized) return;
+    JSHTMLOptGroupElementClassDefine_initialized = true;
+    memset(&JSHTMLOptGroupElementClassDefine, 0, sizeof(JSHTMLOptGroupElementClassDefine));
+    JSHTMLOptGroupElementClassDefine.class_name = "HTMLOptGroupElement";
+    JSHTMLOptGroupElementClassDefine.finalizer = JSHTMLOptGroupElement::finalizer;
+    JSHTMLOptGroupElementClassDefine.gc_mark = JSHTMLOptGroupElement::mark;
+}
 
 JSClassID JSHTMLOptGroupElement::js_class_id = 0;
 

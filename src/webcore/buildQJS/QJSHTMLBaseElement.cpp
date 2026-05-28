@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLBaseElement.h"
 
 #include "HTMLBaseElement.h"
@@ -39,12 +41,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLBaseElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLBaseElementAttributesFunctions[3];
+static bool JSHTMLBaseElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLBaseElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLBaseElement::getValueProperty, NULL, JSHTMLBaseElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("href", JSHTMLBaseElement::getValueProperty, JSHTMLBaseElement::putValueProperty, JSHTMLBaseElement::HrefAttrNum),
-    JS_CGETSET_MAGIC_DEF("target", JSHTMLBaseElement::getValueProperty, JSHTMLBaseElement::putValueProperty, JSHTMLBaseElement::TargetAttrNum)
-};
+    if (JSHTMLBaseElementAttributesFunctions_initialized) return;
+    JSHTMLBaseElementAttributesFunctions_initialized = true;
+    memset(JSHTMLBaseElementAttributesFunctions, 0, sizeof(JSHTMLBaseElementAttributesFunctions));
+    JSHTMLBaseElementAttributesFunctions[0].name = "constructor";
+    JSHTMLBaseElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBaseElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBaseElementAttributesFunctions[0].magic = JSHTMLBaseElement::ConstructorAttrNum;
+    JSHTMLBaseElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLBaseElement::getValueProperty;
+    JSHTMLBaseElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLBaseElementAttributesFunctions[1].name = "href";
+    JSHTMLBaseElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBaseElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBaseElementAttributesFunctions[1].magic = JSHTMLBaseElement::HrefAttrNum;
+    JSHTMLBaseElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLBaseElement::getValueProperty;
+    JSHTMLBaseElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLBaseElement::putValueProperty;
+    JSHTMLBaseElementAttributesFunctions[2].name = "target";
+    JSHTMLBaseElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBaseElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBaseElementAttributesFunctions[2].magic = JSHTMLBaseElement::TargetAttrNum;
+    JSHTMLBaseElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLBaseElement::getValueProperty;
+    JSHTMLBaseElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLBaseElement::putValueProperty;
+}
 
 class JSHTMLBaseElementConstructor {
 public:
@@ -93,15 +116,22 @@ JSValue JSHTMLBaseElementPrototype::self(JSContext * ctx)
 
 void JSHTMLBaseElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLBaseElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLBaseElementAttributesFunctions, countof(JSHTMLBaseElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLBaseElementClassDefine = 
+static JSClassDef JSHTMLBaseElementClassDefine;
+static bool JSHTMLBaseElementClassDefine_initialized = false;
+
+static void init_JSHTMLBaseElementClassDefine()
 {
-    "HTMLBaseElement",
-    .finalizer = JSHTMLBaseElement::finalizer,
-    .gc_mark = JSHTMLBaseElement::mark,
-};
+    if (JSHTMLBaseElementClassDefine_initialized) return;
+    JSHTMLBaseElementClassDefine_initialized = true;
+    memset(&JSHTMLBaseElementClassDefine, 0, sizeof(JSHTMLBaseElementClassDefine));
+    JSHTMLBaseElementClassDefine.class_name = "HTMLBaseElement";
+    JSHTMLBaseElementClassDefine.finalizer = JSHTMLBaseElement::finalizer;
+    JSHTMLBaseElementClassDefine.gc_mark = JSHTMLBaseElement::mark;
+}
 
 JSClassID JSHTMLBaseElement::js_class_id = 0;
 

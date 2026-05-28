@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLMarqueeElement.h"
 
 #include "HTMLMarqueeElement.h"
@@ -38,10 +40,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLMarqueeElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLMarqueeElementAttributesFunctions[1];
+static bool JSHTMLMarqueeElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLMarqueeElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLMarqueeElement::getValueProperty, NULL, JSHTMLMarqueeElement::ConstructorAttrNum)
-};
+    if (JSHTMLMarqueeElementAttributesFunctions_initialized) return;
+    JSHTMLMarqueeElementAttributesFunctions_initialized = true;
+    memset(JSHTMLMarqueeElementAttributesFunctions, 0, sizeof(JSHTMLMarqueeElementAttributesFunctions));
+    JSHTMLMarqueeElementAttributesFunctions[0].name = "constructor";
+    JSHTMLMarqueeElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLMarqueeElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLMarqueeElementAttributesFunctions[0].magic = JSHTMLMarqueeElement::ConstructorAttrNum;
+    JSHTMLMarqueeElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLMarqueeElement::getValueProperty;
+    JSHTMLMarqueeElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLMarqueeElementConstructor {
 public:
@@ -76,11 +89,29 @@ void JSHTMLMarqueeElementConstructor::initConstructor(JSContext * ctx, JSValue t
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHTMLMarqueeElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSHTMLMarqueeElementPrototypeFunctions[2];
+static bool JSHTMLMarqueeElementPrototypeFunctions_initialized = false;
+
+static void init_JSHTMLMarqueeElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("start", 0, JSHTMLMarqueeElementPrototypeFunction::callAsFunction, JSHTMLMarqueeElement::StartFuncNum),
-    JS_CFUNC_MAGIC_DEF("stop", 0, JSHTMLMarqueeElementPrototypeFunction::callAsFunction, JSHTMLMarqueeElement::StopFuncNum)
-};
+    if (JSHTMLMarqueeElementPrototypeFunctions_initialized) return;
+    JSHTMLMarqueeElementPrototypeFunctions_initialized = true;
+    memset(JSHTMLMarqueeElementPrototypeFunctions, 0, sizeof(JSHTMLMarqueeElementPrototypeFunctions));
+    JSHTMLMarqueeElementPrototypeFunctions[0].name = "start";
+    JSHTMLMarqueeElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLMarqueeElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHTMLMarqueeElementPrototypeFunctions[0].magic = JSHTMLMarqueeElement::StartFuncNum;
+    JSHTMLMarqueeElementPrototypeFunctions[0].u.func.length = 0;
+    JSHTMLMarqueeElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLMarqueeElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLMarqueeElementPrototypeFunction::callAsFunction;
+    JSHTMLMarqueeElementPrototypeFunctions[1].name = "stop";
+    JSHTMLMarqueeElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLMarqueeElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSHTMLMarqueeElementPrototypeFunctions[1].magic = JSHTMLMarqueeElement::StopFuncNum;
+    JSHTMLMarqueeElementPrototypeFunctions[1].u.func.length = 0;
+    JSHTMLMarqueeElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLMarqueeElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSHTMLMarqueeElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHTMLMarqueeElementPrototype::self(JSContext * ctx)
 {
@@ -98,16 +129,24 @@ JSValue JSHTMLMarqueeElementPrototype::self(JSContext * ctx)
 
 void JSHTMLMarqueeElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLMarqueeElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLMarqueeElementAttributesFunctions, countof(JSHTMLMarqueeElementAttributesFunctions));
+    init_JSHTMLMarqueeElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLMarqueeElementPrototypeFunctions, countof(JSHTMLMarqueeElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLMarqueeElementClassDefine = 
+static JSClassDef JSHTMLMarqueeElementClassDefine;
+static bool JSHTMLMarqueeElementClassDefine_initialized = false;
+
+static void init_JSHTMLMarqueeElementClassDefine()
 {
-    "HTMLMarqueeElement",
-    .finalizer = JSHTMLMarqueeElement::finalizer,
-    .gc_mark = JSHTMLMarqueeElement::mark,
-};
+    if (JSHTMLMarqueeElementClassDefine_initialized) return;
+    JSHTMLMarqueeElementClassDefine_initialized = true;
+    memset(&JSHTMLMarqueeElementClassDefine, 0, sizeof(JSHTMLMarqueeElementClassDefine));
+    JSHTMLMarqueeElementClassDefine.class_name = "HTMLMarqueeElement";
+    JSHTMLMarqueeElementClassDefine.finalizer = JSHTMLMarqueeElement::finalizer;
+    JSHTMLMarqueeElementClassDefine.gc_mark = JSHTMLMarqueeElement::mark;
+}
 
 JSClassID JSHTMLMarqueeElement::js_class_id = 0;
 

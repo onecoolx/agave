@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLIsIndexElement.h"
 
 #include "HTMLFormElement.h"
@@ -41,12 +43,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLIsIndexElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLIsIndexElementAttributesFunctions[3];
+static bool JSHTMLIsIndexElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLIsIndexElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLIsIndexElement::getValueProperty, NULL, JSHTMLIsIndexElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("form", JSHTMLIsIndexElement::getValueProperty, NULL, JSHTMLIsIndexElement::FormAttrNum),
-    JS_CGETSET_MAGIC_DEF("prompt", JSHTMLIsIndexElement::getValueProperty, JSHTMLIsIndexElement::putValueProperty, JSHTMLIsIndexElement::PromptAttrNum)
-};
+    if (JSHTMLIsIndexElementAttributesFunctions_initialized) return;
+    JSHTMLIsIndexElementAttributesFunctions_initialized = true;
+    memset(JSHTMLIsIndexElementAttributesFunctions, 0, sizeof(JSHTMLIsIndexElementAttributesFunctions));
+    JSHTMLIsIndexElementAttributesFunctions[0].name = "constructor";
+    JSHTMLIsIndexElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLIsIndexElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLIsIndexElementAttributesFunctions[0].magic = JSHTMLIsIndexElement::ConstructorAttrNum;
+    JSHTMLIsIndexElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLIsIndexElement::getValueProperty;
+    JSHTMLIsIndexElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLIsIndexElementAttributesFunctions[1].name = "form";
+    JSHTMLIsIndexElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLIsIndexElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLIsIndexElementAttributesFunctions[1].magic = JSHTMLIsIndexElement::FormAttrNum;
+    JSHTMLIsIndexElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLIsIndexElement::getValueProperty;
+    JSHTMLIsIndexElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSHTMLIsIndexElementAttributesFunctions[2].name = "prompt";
+    JSHTMLIsIndexElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLIsIndexElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLIsIndexElementAttributesFunctions[2].magic = JSHTMLIsIndexElement::PromptAttrNum;
+    JSHTMLIsIndexElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLIsIndexElement::getValueProperty;
+    JSHTMLIsIndexElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLIsIndexElement::putValueProperty;
+}
 
 class JSHTMLIsIndexElementConstructor {
 public:
@@ -95,15 +118,22 @@ JSValue JSHTMLIsIndexElementPrototype::self(JSContext * ctx)
 
 void JSHTMLIsIndexElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLIsIndexElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLIsIndexElementAttributesFunctions, countof(JSHTMLIsIndexElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLIsIndexElementClassDefine = 
+static JSClassDef JSHTMLIsIndexElementClassDefine;
+static bool JSHTMLIsIndexElementClassDefine_initialized = false;
+
+static void init_JSHTMLIsIndexElementClassDefine()
 {
-    "HTMLIsIndexElement",
-    .finalizer = JSHTMLIsIndexElement::finalizer,
-    .gc_mark = JSHTMLIsIndexElement::mark,
-};
+    if (JSHTMLIsIndexElementClassDefine_initialized) return;
+    JSHTMLIsIndexElementClassDefine_initialized = true;
+    memset(&JSHTMLIsIndexElementClassDefine, 0, sizeof(JSHTMLIsIndexElementClassDefine));
+    JSHTMLIsIndexElementClassDefine.class_name = "HTMLIsIndexElement";
+    JSHTMLIsIndexElementClassDefine.finalizer = JSHTMLIsIndexElement::finalizer;
+    JSHTMLIsIndexElementClassDefine.gc_mark = JSHTMLIsIndexElement::mark;
+}
 
 JSClassID JSHTMLIsIndexElement::js_class_id = 0;
 

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSNode.h"
 
 #include "Document.h"
@@ -48,27 +50,123 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSNodeAttributesFunctions[] =
+static JSCFunctionListEntry JSNodeAttributesFunctions[18];
+static bool JSNodeAttributesFunctions_initialized = false;
+
+static void init_JSNodeAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("ownerDocument", JSNode::getValueProperty, NULL, JSNode::OwnerDocumentAttrNum),
-    JS_CGETSET_MAGIC_DEF("firstChild", JSNode::getValueProperty, NULL, JSNode::FirstChildAttrNum),
-    JS_CGETSET_MAGIC_DEF("previousSibling", JSNode::getValueProperty, NULL, JSNode::PreviousSiblingAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSNode::getValueProperty, NULL, JSNode::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("nodeName", JSNode::getValueProperty, NULL, JSNode::NodeNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("nodeValue", JSNode::getValueProperty, JSNode::putValueProperty, JSNode::NodeValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("lastChild", JSNode::getValueProperty, NULL, JSNode::LastChildAttrNum),
-    JS_CGETSET_MAGIC_DEF("localName", JSNode::getValueProperty, NULL, JSNode::LocalNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("nextSibling", JSNode::getValueProperty, NULL, JSNode::NextSiblingAttrNum),
-    JS_CGETSET_MAGIC_DEF("nodeType", JSNode::getValueProperty, NULL, JSNode::NodeTypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("childNodes", JSNode::getValueProperty, NULL, JSNode::ChildNodesAttrNum),
-    JS_CGETSET_MAGIC_DEF("textContent", JSNode::getValueProperty, JSNode::putValueProperty, JSNode::TextContentAttrNum),
-    JS_CGETSET_MAGIC_DEF("baseURI", JSNode::getValueProperty, NULL, JSNode::BaseURIAttrNum),
-    JS_CGETSET_MAGIC_DEF("parentNode", JSNode::getValueProperty, NULL, JSNode::ParentNodeAttrNum),
-    JS_CGETSET_MAGIC_DEF("attributes", JSNode::getValueProperty, NULL, JSNode::AttributesAttrNum),
-    JS_CGETSET_MAGIC_DEF("namespaceURI", JSNode::getValueProperty, NULL, JSNode::NamespaceURIAttrNum),
-    JS_CGETSET_MAGIC_DEF("prefix", JSNode::getValueProperty, JSNode::putValueProperty, JSNode::PrefixAttrNum),
-    JS_CGETSET_MAGIC_DEF("parentElement", JSNode::getValueProperty, NULL, JSNode::ParentElementAttrNum)
-};
+    if (JSNodeAttributesFunctions_initialized) return;
+    JSNodeAttributesFunctions_initialized = true;
+    memset(JSNodeAttributesFunctions, 0, sizeof(JSNodeAttributesFunctions));
+    JSNodeAttributesFunctions[0].name = "ownerDocument";
+    JSNodeAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[0].magic = JSNode::OwnerDocumentAttrNum;
+    JSNodeAttributesFunctions[0].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSNodeAttributesFunctions[1].name = "firstChild";
+    JSNodeAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[1].magic = JSNode::FirstChildAttrNum;
+    JSNodeAttributesFunctions[1].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSNodeAttributesFunctions[2].name = "previousSibling";
+    JSNodeAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[2].magic = JSNode::PreviousSiblingAttrNum;
+    JSNodeAttributesFunctions[2].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSNodeAttributesFunctions[3].name = "constructor";
+    JSNodeAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[3].magic = JSNode::ConstructorAttrNum;
+    JSNodeAttributesFunctions[3].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSNodeAttributesFunctions[4].name = "nodeName";
+    JSNodeAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[4].magic = JSNode::NodeNameAttrNum;
+    JSNodeAttributesFunctions[4].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSNodeAttributesFunctions[5].name = "nodeValue";
+    JSNodeAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[5].magic = JSNode::NodeValueAttrNum;
+    JSNodeAttributesFunctions[5].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[5].u.getset.set.setter_magic = JSNode::putValueProperty;
+    JSNodeAttributesFunctions[6].name = "lastChild";
+    JSNodeAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[6].magic = JSNode::LastChildAttrNum;
+    JSNodeAttributesFunctions[6].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSNodeAttributesFunctions[7].name = "localName";
+    JSNodeAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[7].magic = JSNode::LocalNameAttrNum;
+    JSNodeAttributesFunctions[7].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSNodeAttributesFunctions[8].name = "nextSibling";
+    JSNodeAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[8].magic = JSNode::NextSiblingAttrNum;
+    JSNodeAttributesFunctions[8].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSNodeAttributesFunctions[9].name = "nodeType";
+    JSNodeAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[9].magic = JSNode::NodeTypeAttrNum;
+    JSNodeAttributesFunctions[9].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSNodeAttributesFunctions[10].name = "childNodes";
+    JSNodeAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[10].magic = JSNode::ChildNodesAttrNum;
+    JSNodeAttributesFunctions[10].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSNodeAttributesFunctions[11].name = "textContent";
+    JSNodeAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[11].magic = JSNode::TextContentAttrNum;
+    JSNodeAttributesFunctions[11].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[11].u.getset.set.setter_magic = JSNode::putValueProperty;
+    JSNodeAttributesFunctions[12].name = "baseURI";
+    JSNodeAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[12].magic = JSNode::BaseURIAttrNum;
+    JSNodeAttributesFunctions[12].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSNodeAttributesFunctions[13].name = "parentNode";
+    JSNodeAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[13].magic = JSNode::ParentNodeAttrNum;
+    JSNodeAttributesFunctions[13].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[13].u.getset.set.setter_magic = NULL;
+    JSNodeAttributesFunctions[14].name = "attributes";
+    JSNodeAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[14].magic = JSNode::AttributesAttrNum;
+    JSNodeAttributesFunctions[14].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[14].u.getset.set.setter_magic = NULL;
+    JSNodeAttributesFunctions[15].name = "namespaceURI";
+    JSNodeAttributesFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[15].magic = JSNode::NamespaceURIAttrNum;
+    JSNodeAttributesFunctions[15].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[15].u.getset.set.setter_magic = NULL;
+    JSNodeAttributesFunctions[16].name = "prefix";
+    JSNodeAttributesFunctions[16].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[16].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[16].magic = JSNode::PrefixAttrNum;
+    JSNodeAttributesFunctions[16].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[16].u.getset.set.setter_magic = JSNode::putValueProperty;
+    JSNodeAttributesFunctions[17].name = "parentElement";
+    JSNodeAttributesFunctions[17].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeAttributesFunctions[17].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeAttributesFunctions[17].magic = JSNode::ParentElementAttrNum;
+    JSNodeAttributesFunctions[17].u.getset.get.getter_magic = JSNode::getValueProperty;
+    JSNodeAttributesFunctions[17].u.getset.set.setter_magic = NULL;
+}
 
 class JSNodeConstructor {
 public:
@@ -85,21 +183,87 @@ JSValue JSNodeConstructor::getValueProperty(JSContext * ctx, JSValueConst this_v
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSNodeConstructorFunctions[] =
+static JSCFunctionListEntry JSNodeConstructorFunctions[12];
+static bool JSNodeConstructorFunctions_initialized = false;
+
+static void init_JSNodeConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("DOCUMENT_FRAGMENT_NODE", JSNodeConstructor::getValueProperty, NULL, Node::DOCUMENT_FRAGMENT_NODE),
-    JS_CGETSET_MAGIC_DEF("ENTITY_REFERENCE_NODE", JSNodeConstructor::getValueProperty, NULL, Node::ENTITY_REFERENCE_NODE),
-    JS_CGETSET_MAGIC_DEF("CDATA_SECTION_NODE", JSNodeConstructor::getValueProperty, NULL, Node::CDATA_SECTION_NODE),
-    JS_CGETSET_MAGIC_DEF("TEXT_NODE", JSNodeConstructor::getValueProperty, NULL, Node::TEXT_NODE),
-    JS_CGETSET_MAGIC_DEF("COMMENT_NODE", JSNodeConstructor::getValueProperty, NULL, Node::COMMENT_NODE),
-    JS_CGETSET_MAGIC_DEF("ELEMENT_NODE", JSNodeConstructor::getValueProperty, NULL, Node::ELEMENT_NODE),
-    JS_CGETSET_MAGIC_DEF("ATTRIBUTE_NODE", JSNodeConstructor::getValueProperty, NULL, Node::ATTRIBUTE_NODE),
-    JS_CGETSET_MAGIC_DEF("ENTITY_NODE", JSNodeConstructor::getValueProperty, NULL, Node::ENTITY_NODE),
-    JS_CGETSET_MAGIC_DEF("PROCESSING_INSTRUCTION_NODE", JSNodeConstructor::getValueProperty, NULL, Node::PROCESSING_INSTRUCTION_NODE),
-    JS_CGETSET_MAGIC_DEF("DOCUMENT_NODE", JSNodeConstructor::getValueProperty, NULL, Node::DOCUMENT_NODE),
-    JS_CGETSET_MAGIC_DEF("DOCUMENT_TYPE_NODE", JSNodeConstructor::getValueProperty, NULL, Node::DOCUMENT_TYPE_NODE),
-    JS_CGETSET_MAGIC_DEF("NOTATION_NODE", JSNodeConstructor::getValueProperty, NULL, Node::NOTATION_NODE)
-};
+    if (JSNodeConstructorFunctions_initialized) return;
+    JSNodeConstructorFunctions_initialized = true;
+    memset(JSNodeConstructorFunctions, 0, sizeof(JSNodeConstructorFunctions));
+    JSNodeConstructorFunctions[0].name = "DOCUMENT_FRAGMENT_NODE";
+    JSNodeConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeConstructorFunctions[0].magic = Node::DOCUMENT_FRAGMENT_NODE;
+    JSNodeConstructorFunctions[0].u.getset.get.getter_magic = JSNodeConstructor::getValueProperty;
+    JSNodeConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSNodeConstructorFunctions[1].name = "ENTITY_REFERENCE_NODE";
+    JSNodeConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeConstructorFunctions[1].magic = Node::ENTITY_REFERENCE_NODE;
+    JSNodeConstructorFunctions[1].u.getset.get.getter_magic = JSNodeConstructor::getValueProperty;
+    JSNodeConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSNodeConstructorFunctions[2].name = "CDATA_SECTION_NODE";
+    JSNodeConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeConstructorFunctions[2].magic = Node::CDATA_SECTION_NODE;
+    JSNodeConstructorFunctions[2].u.getset.get.getter_magic = JSNodeConstructor::getValueProperty;
+    JSNodeConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSNodeConstructorFunctions[3].name = "TEXT_NODE";
+    JSNodeConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeConstructorFunctions[3].magic = Node::TEXT_NODE;
+    JSNodeConstructorFunctions[3].u.getset.get.getter_magic = JSNodeConstructor::getValueProperty;
+    JSNodeConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+    JSNodeConstructorFunctions[4].name = "COMMENT_NODE";
+    JSNodeConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeConstructorFunctions[4].magic = Node::COMMENT_NODE;
+    JSNodeConstructorFunctions[4].u.getset.get.getter_magic = JSNodeConstructor::getValueProperty;
+    JSNodeConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+    JSNodeConstructorFunctions[5].name = "ELEMENT_NODE";
+    JSNodeConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeConstructorFunctions[5].magic = Node::ELEMENT_NODE;
+    JSNodeConstructorFunctions[5].u.getset.get.getter_magic = JSNodeConstructor::getValueProperty;
+    JSNodeConstructorFunctions[5].u.getset.set.setter_magic = NULL;
+    JSNodeConstructorFunctions[6].name = "ATTRIBUTE_NODE";
+    JSNodeConstructorFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeConstructorFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeConstructorFunctions[6].magic = Node::ATTRIBUTE_NODE;
+    JSNodeConstructorFunctions[6].u.getset.get.getter_magic = JSNodeConstructor::getValueProperty;
+    JSNodeConstructorFunctions[6].u.getset.set.setter_magic = NULL;
+    JSNodeConstructorFunctions[7].name = "ENTITY_NODE";
+    JSNodeConstructorFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeConstructorFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeConstructorFunctions[7].magic = Node::ENTITY_NODE;
+    JSNodeConstructorFunctions[7].u.getset.get.getter_magic = JSNodeConstructor::getValueProperty;
+    JSNodeConstructorFunctions[7].u.getset.set.setter_magic = NULL;
+    JSNodeConstructorFunctions[8].name = "PROCESSING_INSTRUCTION_NODE";
+    JSNodeConstructorFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeConstructorFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeConstructorFunctions[8].magic = Node::PROCESSING_INSTRUCTION_NODE;
+    JSNodeConstructorFunctions[8].u.getset.get.getter_magic = JSNodeConstructor::getValueProperty;
+    JSNodeConstructorFunctions[8].u.getset.set.setter_magic = NULL;
+    JSNodeConstructorFunctions[9].name = "DOCUMENT_NODE";
+    JSNodeConstructorFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeConstructorFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeConstructorFunctions[9].magic = Node::DOCUMENT_NODE;
+    JSNodeConstructorFunctions[9].u.getset.get.getter_magic = JSNodeConstructor::getValueProperty;
+    JSNodeConstructorFunctions[9].u.getset.set.setter_magic = NULL;
+    JSNodeConstructorFunctions[10].name = "DOCUMENT_TYPE_NODE";
+    JSNodeConstructorFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeConstructorFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeConstructorFunctions[10].magic = Node::DOCUMENT_TYPE_NODE;
+    JSNodeConstructorFunctions[10].u.getset.get.getter_magic = JSNodeConstructor::getValueProperty;
+    JSNodeConstructorFunctions[10].u.getset.set.setter_magic = NULL;
+    JSNodeConstructorFunctions[11].name = "NOTATION_NODE";
+    JSNodeConstructorFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeConstructorFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeConstructorFunctions[11].magic = Node::NOTATION_NODE;
+    JSNodeConstructorFunctions[11].u.getset.get.getter_magic = JSNodeConstructor::getValueProperty;
+    JSNodeConstructorFunctions[11].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSNodeConstructor::self(JSContext * ctx)
 {
@@ -117,46 +281,203 @@ JSValue JSNodeConstructor::self(JSContext * ctx)
 
 void JSNodeConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSNodeConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNodeConstructorFunctions, countof(JSNodeConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSNodePrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSNodePrototypeConstantsFunctions[12];
+static bool JSNodePrototypeConstantsFunctions_initialized = false;
+
+static void init_JSNodePrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("DOCUMENT_FRAGMENT_NODE", JSNodePrototype::getValueProperty, NULL, Node::DOCUMENT_FRAGMENT_NODE),
-    JS_CGETSET_MAGIC_DEF("ENTITY_REFERENCE_NODE", JSNodePrototype::getValueProperty, NULL, Node::ENTITY_REFERENCE_NODE),
-    JS_CGETSET_MAGIC_DEF("CDATA_SECTION_NODE", JSNodePrototype::getValueProperty, NULL, Node::CDATA_SECTION_NODE),
-    JS_CGETSET_MAGIC_DEF("TEXT_NODE", JSNodePrototype::getValueProperty, NULL, Node::TEXT_NODE),
-    JS_CGETSET_MAGIC_DEF("COMMENT_NODE", JSNodePrototype::getValueProperty, NULL, Node::COMMENT_NODE),
-    JS_CGETSET_MAGIC_DEF("ELEMENT_NODE", JSNodePrototype::getValueProperty, NULL, Node::ELEMENT_NODE),
-    JS_CGETSET_MAGIC_DEF("ATTRIBUTE_NODE", JSNodePrototype::getValueProperty, NULL, Node::ATTRIBUTE_NODE),
-    JS_CGETSET_MAGIC_DEF("ENTITY_NODE", JSNodePrototype::getValueProperty, NULL, Node::ENTITY_NODE),
-    JS_CGETSET_MAGIC_DEF("PROCESSING_INSTRUCTION_NODE", JSNodePrototype::getValueProperty, NULL, Node::PROCESSING_INSTRUCTION_NODE),
-    JS_CGETSET_MAGIC_DEF("DOCUMENT_NODE", JSNodePrototype::getValueProperty, NULL, Node::DOCUMENT_NODE),
-    JS_CGETSET_MAGIC_DEF("DOCUMENT_TYPE_NODE", JSNodePrototype::getValueProperty, NULL, Node::DOCUMENT_TYPE_NODE),
-    JS_CGETSET_MAGIC_DEF("NOTATION_NODE", JSNodePrototype::getValueProperty, NULL, Node::NOTATION_NODE)
-};
+    if (JSNodePrototypeConstantsFunctions_initialized) return;
+    JSNodePrototypeConstantsFunctions_initialized = true;
+    memset(JSNodePrototypeConstantsFunctions, 0, sizeof(JSNodePrototypeConstantsFunctions));
+    JSNodePrototypeConstantsFunctions[0].name = "DOCUMENT_FRAGMENT_NODE";
+    JSNodePrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodePrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodePrototypeConstantsFunctions[0].magic = Node::DOCUMENT_FRAGMENT_NODE;
+    JSNodePrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSNodePrototype::getValueProperty;
+    JSNodePrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSNodePrototypeConstantsFunctions[1].name = "ENTITY_REFERENCE_NODE";
+    JSNodePrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodePrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodePrototypeConstantsFunctions[1].magic = Node::ENTITY_REFERENCE_NODE;
+    JSNodePrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSNodePrototype::getValueProperty;
+    JSNodePrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSNodePrototypeConstantsFunctions[2].name = "CDATA_SECTION_NODE";
+    JSNodePrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodePrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodePrototypeConstantsFunctions[2].magic = Node::CDATA_SECTION_NODE;
+    JSNodePrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSNodePrototype::getValueProperty;
+    JSNodePrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSNodePrototypeConstantsFunctions[3].name = "TEXT_NODE";
+    JSNodePrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodePrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodePrototypeConstantsFunctions[3].magic = Node::TEXT_NODE;
+    JSNodePrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSNodePrototype::getValueProperty;
+    JSNodePrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+    JSNodePrototypeConstantsFunctions[4].name = "COMMENT_NODE";
+    JSNodePrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodePrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodePrototypeConstantsFunctions[4].magic = Node::COMMENT_NODE;
+    JSNodePrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSNodePrototype::getValueProperty;
+    JSNodePrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+    JSNodePrototypeConstantsFunctions[5].name = "ELEMENT_NODE";
+    JSNodePrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodePrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodePrototypeConstantsFunctions[5].magic = Node::ELEMENT_NODE;
+    JSNodePrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSNodePrototype::getValueProperty;
+    JSNodePrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
+    JSNodePrototypeConstantsFunctions[6].name = "ATTRIBUTE_NODE";
+    JSNodePrototypeConstantsFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodePrototypeConstantsFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodePrototypeConstantsFunctions[6].magic = Node::ATTRIBUTE_NODE;
+    JSNodePrototypeConstantsFunctions[6].u.getset.get.getter_magic = JSNodePrototype::getValueProperty;
+    JSNodePrototypeConstantsFunctions[6].u.getset.set.setter_magic = NULL;
+    JSNodePrototypeConstantsFunctions[7].name = "ENTITY_NODE";
+    JSNodePrototypeConstantsFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodePrototypeConstantsFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodePrototypeConstantsFunctions[7].magic = Node::ENTITY_NODE;
+    JSNodePrototypeConstantsFunctions[7].u.getset.get.getter_magic = JSNodePrototype::getValueProperty;
+    JSNodePrototypeConstantsFunctions[7].u.getset.set.setter_magic = NULL;
+    JSNodePrototypeConstantsFunctions[8].name = "PROCESSING_INSTRUCTION_NODE";
+    JSNodePrototypeConstantsFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodePrototypeConstantsFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodePrototypeConstantsFunctions[8].magic = Node::PROCESSING_INSTRUCTION_NODE;
+    JSNodePrototypeConstantsFunctions[8].u.getset.get.getter_magic = JSNodePrototype::getValueProperty;
+    JSNodePrototypeConstantsFunctions[8].u.getset.set.setter_magic = NULL;
+    JSNodePrototypeConstantsFunctions[9].name = "DOCUMENT_NODE";
+    JSNodePrototypeConstantsFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodePrototypeConstantsFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodePrototypeConstantsFunctions[9].magic = Node::DOCUMENT_NODE;
+    JSNodePrototypeConstantsFunctions[9].u.getset.get.getter_magic = JSNodePrototype::getValueProperty;
+    JSNodePrototypeConstantsFunctions[9].u.getset.set.setter_magic = NULL;
+    JSNodePrototypeConstantsFunctions[10].name = "DOCUMENT_TYPE_NODE";
+    JSNodePrototypeConstantsFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodePrototypeConstantsFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodePrototypeConstantsFunctions[10].magic = Node::DOCUMENT_TYPE_NODE;
+    JSNodePrototypeConstantsFunctions[10].u.getset.get.getter_magic = JSNodePrototype::getValueProperty;
+    JSNodePrototypeConstantsFunctions[10].u.getset.set.setter_magic = NULL;
+    JSNodePrototypeConstantsFunctions[11].name = "NOTATION_NODE";
+    JSNodePrototypeConstantsFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodePrototypeConstantsFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodePrototypeConstantsFunctions[11].magic = Node::NOTATION_NODE;
+    JSNodePrototypeConstantsFunctions[11].u.getset.get.getter_magic = JSNodePrototype::getValueProperty;
+    JSNodePrototypeConstantsFunctions[11].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSNodePrototypeFunctions[] =
+static JSCFunctionListEntry JSNodePrototypeFunctions[14];
+static bool JSNodePrototypeFunctions_initialized = false;
+
+static void init_JSNodePrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("removeChild", 1, JSNodePrototypeFunction::callAsFunction, JSNode::RemoveChildFuncNum),
-    JS_CFUNC_MAGIC_DEF("replaceChild", 2, JSNodePrototypeFunction::callAsFunction, JSNode::ReplaceChildFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasAttributes", 0, JSNodePrototypeFunction::callAsFunction, JSNode::HasAttributesFuncNum),
-    JS_CFUNC_MAGIC_DEF("cloneNode", 1, JSNodePrototypeFunction::callAsFunction, JSNode::CloneNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasChildNodes", 0, JSNodePrototypeFunction::callAsFunction, JSNode::HasChildNodesFuncNum),
-    JS_CFUNC_MAGIC_DEF("appendChild", 1, JSNodePrototypeFunction::callAsFunction, JSNode::AppendChildFuncNum),
-    JS_CFUNC_MAGIC_DEF("isEqualNode", 1, JSNodePrototypeFunction::callAsFunction, JSNode::IsEqualNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("insertBefore", 2, JSNodePrototypeFunction::callAsFunction, JSNode::InsertBeforeFuncNum),
-    JS_CFUNC_MAGIC_DEF("normalize", 0, JSNodePrototypeFunction::callAsFunction, JSNode::NormalizeFuncNum),
-    JS_CFUNC_MAGIC_DEF("isSupported", 2, JSNodePrototypeFunction::callAsFunction, JSNode::IsSupportedFuncNum),
-    JS_CFUNC_MAGIC_DEF("isSameNode", 1, JSNodePrototypeFunction::callAsFunction, JSNode::IsSameNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("lookupPrefix", 1, JSNodePrototypeFunction::callAsFunction, JSNode::LookupPrefixFuncNum),
-    JS_CFUNC_MAGIC_DEF("isDefaultNamespace", 1, JSNodePrototypeFunction::callAsFunction, JSNode::IsDefaultNamespaceFuncNum),
-    JS_CFUNC_MAGIC_DEF("lookupNamespaceURI", 1, JSNodePrototypeFunction::callAsFunction, JSNode::LookupNamespaceURIFuncNum)
-};
+    if (JSNodePrototypeFunctions_initialized) return;
+    JSNodePrototypeFunctions_initialized = true;
+    memset(JSNodePrototypeFunctions, 0, sizeof(JSNodePrototypeFunctions));
+    JSNodePrototypeFunctions[0].name = "removeChild";
+    JSNodePrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[0].magic = JSNode::RemoveChildFuncNum;
+    JSNodePrototypeFunctions[0].u.func.length = 1;
+    JSNodePrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[0].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[1].name = "replaceChild";
+    JSNodePrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[1].magic = JSNode::ReplaceChildFuncNum;
+    JSNodePrototypeFunctions[1].u.func.length = 2;
+    JSNodePrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[1].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[2].name = "hasAttributes";
+    JSNodePrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[2].magic = JSNode::HasAttributesFuncNum;
+    JSNodePrototypeFunctions[2].u.func.length = 0;
+    JSNodePrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[2].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[3].name = "cloneNode";
+    JSNodePrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[3].magic = JSNode::CloneNodeFuncNum;
+    JSNodePrototypeFunctions[3].u.func.length = 1;
+    JSNodePrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[3].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[4].name = "hasChildNodes";
+    JSNodePrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[4].magic = JSNode::HasChildNodesFuncNum;
+    JSNodePrototypeFunctions[4].u.func.length = 0;
+    JSNodePrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[4].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[5].name = "appendChild";
+    JSNodePrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[5].magic = JSNode::AppendChildFuncNum;
+    JSNodePrototypeFunctions[5].u.func.length = 1;
+    JSNodePrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[5].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[6].name = "isEqualNode";
+    JSNodePrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[6].magic = JSNode::IsEqualNodeFuncNum;
+    JSNodePrototypeFunctions[6].u.func.length = 1;
+    JSNodePrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[6].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[7].name = "insertBefore";
+    JSNodePrototypeFunctions[7].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[7].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[7].magic = JSNode::InsertBeforeFuncNum;
+    JSNodePrototypeFunctions[7].u.func.length = 2;
+    JSNodePrototypeFunctions[7].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[7].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[8].name = "normalize";
+    JSNodePrototypeFunctions[8].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[8].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[8].magic = JSNode::NormalizeFuncNum;
+    JSNodePrototypeFunctions[8].u.func.length = 0;
+    JSNodePrototypeFunctions[8].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[8].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[9].name = "isSupported";
+    JSNodePrototypeFunctions[9].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[9].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[9].magic = JSNode::IsSupportedFuncNum;
+    JSNodePrototypeFunctions[9].u.func.length = 2;
+    JSNodePrototypeFunctions[9].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[9].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[10].name = "isSameNode";
+    JSNodePrototypeFunctions[10].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[10].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[10].magic = JSNode::IsSameNodeFuncNum;
+    JSNodePrototypeFunctions[10].u.func.length = 1;
+    JSNodePrototypeFunctions[10].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[10].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[11].name = "lookupPrefix";
+    JSNodePrototypeFunctions[11].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[11].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[11].magic = JSNode::LookupPrefixFuncNum;
+    JSNodePrototypeFunctions[11].u.func.length = 1;
+    JSNodePrototypeFunctions[11].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[11].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[12].name = "isDefaultNamespace";
+    JSNodePrototypeFunctions[12].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[12].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[12].magic = JSNode::IsDefaultNamespaceFuncNum;
+    JSNodePrototypeFunctions[12].u.func.length = 1;
+    JSNodePrototypeFunctions[12].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[12].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[13].name = "lookupNamespaceURI";
+    JSNodePrototypeFunctions[13].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[13].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[13].magic = JSNode::LookupNamespaceURIFuncNum;
+    JSNodePrototypeFunctions[13].u.func.length = 1;
+    JSNodePrototypeFunctions[13].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[13].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+}
 
 JSValue JSNodePrototype::self(JSContext * ctx)
 {
@@ -174,8 +495,11 @@ JSValue JSNodePrototype::self(JSContext * ctx)
 
 void JSNodePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSNodeAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNodeAttributesFunctions, countof(JSNodeAttributesFunctions));
+    init_JSNodePrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNodePrototypeConstantsFunctions, countof(JSNodePrototypeConstantsFunctions));
+    init_JSNodePrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNodePrototypeFunctions, countof(JSNodePrototypeFunctions));
 }
 
@@ -185,18 +509,25 @@ JSValue JSNodePrototype::getValueProperty(JSContext * ctx, JSValueConst this_val
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSNodeClassDefine = 
+static JSClassDef JSNodeClassDefine;
+static bool JSNodeClassDefine_initialized = false;
+
+static void init_JSNodeClassDefine()
 {
-    "Node",
-    .finalizer = JSNode::finalizer,
-    .gc_mark = JSNode::mark,
-};
+    if (JSNodeClassDefine_initialized) return;
+    JSNodeClassDefine_initialized = true;
+    memset(&JSNodeClassDefine, 0, sizeof(JSNodeClassDefine));
+    JSNodeClassDefine.class_name = "Node";
+    JSNodeClassDefine.finalizer = JSNode::finalizer;
+    JSNodeClassDefine.gc_mark = JSNode::mark;
+}
 
 JSClassID JSNode::js_class_id = 0;
 
 void JSNode::init(JSContext* ctx)
 {
     if (JSNode::js_class_id == 0) {
+        init_JSNodeClassDefine();
         JS_NewClassID(&JSNode::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSNode::js_class_id, &JSNodeClassDefine);
         JS_SetConstructor(ctx, JSNodeConstructor::self(ctx), JSNodePrototype::self(ctx));

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -48,23 +50,82 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGNumberListAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGNumberListAttributesFunctions[1];
+static bool JSSVGNumberListAttributesFunctions_initialized = false;
+
+static void init_JSSVGNumberListAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("numberOfItems", JSSVGNumberList::getValueProperty, NULL, JSSVGNumberList::NumberOfItemsAttrNum)
-};
+    if (JSSVGNumberListAttributesFunctions_initialized) return;
+    JSSVGNumberListAttributesFunctions_initialized = true;
+    memset(JSSVGNumberListAttributesFunctions, 0, sizeof(JSSVGNumberListAttributesFunctions));
+    JSSVGNumberListAttributesFunctions[0].name = "numberOfItems";
+    JSSVGNumberListAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGNumberListAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGNumberListAttributesFunctions[0].magic = JSSVGNumberList::NumberOfItemsAttrNum;
+    JSSVGNumberListAttributesFunctions[0].u.getset.get.getter_magic = JSSVGNumberList::getValueProperty;
+    JSSVGNumberListAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGNumberListPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGNumberListPrototypeFunctions[7];
+static bool JSSVGNumberListPrototypeFunctions_initialized = false;
+
+static void init_JSSVGNumberListPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("clear", 0, JSSVGNumberListPrototypeFunction::callAsFunction, JSSVGNumberList::ClearFuncNum),
-    JS_CFUNC_MAGIC_DEF("getItem", 1, JSSVGNumberListPrototypeFunction::callAsFunction, JSSVGNumberList::GetItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("insertItemBefore", 2, JSSVGNumberListPrototypeFunction::callAsFunction, JSSVGNumberList::InsertItemBeforeFuncNum),
-    JS_CFUNC_MAGIC_DEF("initialize", 1, JSSVGNumberListPrototypeFunction::callAsFunction, JSSVGNumberList::InitializeFuncNum),
-    JS_CFUNC_MAGIC_DEF("replaceItem", 2, JSSVGNumberListPrototypeFunction::callAsFunction, JSSVGNumberList::ReplaceItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("removeItem", 1, JSSVGNumberListPrototypeFunction::callAsFunction, JSSVGNumberList::RemoveItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("appendItem", 1, JSSVGNumberListPrototypeFunction::callAsFunction, JSSVGNumberList::AppendItemFuncNum)
-};
+    if (JSSVGNumberListPrototypeFunctions_initialized) return;
+    JSSVGNumberListPrototypeFunctions_initialized = true;
+    memset(JSSVGNumberListPrototypeFunctions, 0, sizeof(JSSVGNumberListPrototypeFunctions));
+    JSSVGNumberListPrototypeFunctions[0].name = "clear";
+    JSSVGNumberListPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGNumberListPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGNumberListPrototypeFunctions[0].magic = JSSVGNumberList::ClearFuncNum;
+    JSSVGNumberListPrototypeFunctions[0].u.func.length = 0;
+    JSSVGNumberListPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGNumberListPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGNumberListPrototypeFunction::callAsFunction;
+    JSSVGNumberListPrototypeFunctions[1].name = "getItem";
+    JSSVGNumberListPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGNumberListPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGNumberListPrototypeFunctions[1].magic = JSSVGNumberList::GetItemFuncNum;
+    JSSVGNumberListPrototypeFunctions[1].u.func.length = 1;
+    JSSVGNumberListPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGNumberListPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGNumberListPrototypeFunction::callAsFunction;
+    JSSVGNumberListPrototypeFunctions[2].name = "insertItemBefore";
+    JSSVGNumberListPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGNumberListPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGNumberListPrototypeFunctions[2].magic = JSSVGNumberList::InsertItemBeforeFuncNum;
+    JSSVGNumberListPrototypeFunctions[2].u.func.length = 2;
+    JSSVGNumberListPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGNumberListPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGNumberListPrototypeFunction::callAsFunction;
+    JSSVGNumberListPrototypeFunctions[3].name = "initialize";
+    JSSVGNumberListPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGNumberListPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGNumberListPrototypeFunctions[3].magic = JSSVGNumberList::InitializeFuncNum;
+    JSSVGNumberListPrototypeFunctions[3].u.func.length = 1;
+    JSSVGNumberListPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGNumberListPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGNumberListPrototypeFunction::callAsFunction;
+    JSSVGNumberListPrototypeFunctions[4].name = "replaceItem";
+    JSSVGNumberListPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGNumberListPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGNumberListPrototypeFunctions[4].magic = JSSVGNumberList::ReplaceItemFuncNum;
+    JSSVGNumberListPrototypeFunctions[4].u.func.length = 2;
+    JSSVGNumberListPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGNumberListPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGNumberListPrototypeFunction::callAsFunction;
+    JSSVGNumberListPrototypeFunctions[5].name = "removeItem";
+    JSSVGNumberListPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGNumberListPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGNumberListPrototypeFunctions[5].magic = JSSVGNumberList::RemoveItemFuncNum;
+    JSSVGNumberListPrototypeFunctions[5].u.func.length = 1;
+    JSSVGNumberListPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGNumberListPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGNumberListPrototypeFunction::callAsFunction;
+    JSSVGNumberListPrototypeFunctions[6].name = "appendItem";
+    JSSVGNumberListPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGNumberListPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSSVGNumberListPrototypeFunctions[6].magic = JSSVGNumberList::AppendItemFuncNum;
+    JSSVGNumberListPrototypeFunctions[6].u.func.length = 1;
+    JSSVGNumberListPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGNumberListPrototypeFunctions[6].u.func.cfunc.generic_magic = JSSVGNumberListPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGNumberListPrototype::self(JSContext * ctx)
 {
@@ -82,22 +143,31 @@ JSValue JSSVGNumberListPrototype::self(JSContext * ctx)
 
 void JSSVGNumberListPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGNumberListAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGNumberListAttributesFunctions, countof(JSSVGNumberListAttributesFunctions));
+    init_JSSVGNumberListPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGNumberListPrototypeFunctions, countof(JSSVGNumberListPrototypeFunctions));
 }
 
-static JSClassDef JSSVGNumberListClassDefine = 
+static JSClassDef JSSVGNumberListClassDefine;
+static bool JSSVGNumberListClassDefine_initialized = false;
+
+static void init_JSSVGNumberListClassDefine()
 {
-    "SVGNumberList",
-    .finalizer = JSSVGNumberList::finalizer,
-    .gc_mark = JSSVGNumberList::mark,
-};
+    if (JSSVGNumberListClassDefine_initialized) return;
+    JSSVGNumberListClassDefine_initialized = true;
+    memset(&JSSVGNumberListClassDefine, 0, sizeof(JSSVGNumberListClassDefine));
+    JSSVGNumberListClassDefine.class_name = "SVGNumberList";
+    JSSVGNumberListClassDefine.finalizer = JSSVGNumberList::finalizer;
+    JSSVGNumberListClassDefine.gc_mark = JSSVGNumberList::mark;
+}
 
 JSClassID JSSVGNumberList::js_class_id = 0;
 
 void JSSVGNumberList::init(JSContext* ctx)
 {
     if (JSSVGNumberList::js_class_id == 0) {
+        init_JSSVGNumberListClassDefine();
         JS_NewClassID(&JSSVGNumberList::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGNumberList::js_class_id, &JSSVGNumberListClassDefine);
         JS_SetClassProto(ctx, JSSVGNumberList::js_class_id, JSSVGNumberListPrototype::self(ctx));

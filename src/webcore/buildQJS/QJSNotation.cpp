@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSNotation.h"
 
 #include "Notation.h"
@@ -39,12 +41,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSNotationAttributesFunctions[] =
+static JSCFunctionListEntry JSNotationAttributesFunctions[3];
+static bool JSNotationAttributesFunctions_initialized = false;
+
+static void init_JSNotationAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("publicId", JSNotation::getValueProperty, NULL, JSNotation::PublicIdAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemId", JSNotation::getValueProperty, NULL, JSNotation::SystemIdAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSNotation::getValueProperty, NULL, JSNotation::ConstructorAttrNum)
-};
+    if (JSNotationAttributesFunctions_initialized) return;
+    JSNotationAttributesFunctions_initialized = true;
+    memset(JSNotationAttributesFunctions, 0, sizeof(JSNotationAttributesFunctions));
+    JSNotationAttributesFunctions[0].name = "publicId";
+    JSNotationAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNotationAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNotationAttributesFunctions[0].magic = JSNotation::PublicIdAttrNum;
+    JSNotationAttributesFunctions[0].u.getset.get.getter_magic = JSNotation::getValueProperty;
+    JSNotationAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSNotationAttributesFunctions[1].name = "systemId";
+    JSNotationAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNotationAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNotationAttributesFunctions[1].magic = JSNotation::SystemIdAttrNum;
+    JSNotationAttributesFunctions[1].u.getset.get.getter_magic = JSNotation::getValueProperty;
+    JSNotationAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSNotationAttributesFunctions[2].name = "constructor";
+    JSNotationAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNotationAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNotationAttributesFunctions[2].magic = JSNotation::ConstructorAttrNum;
+    JSNotationAttributesFunctions[2].u.getset.get.getter_magic = JSNotation::getValueProperty;
+    JSNotationAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 class JSNotationConstructor {
 public:
@@ -93,15 +116,22 @@ JSValue JSNotationPrototype::self(JSContext * ctx)
 
 void JSNotationPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSNotationAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNotationAttributesFunctions, countof(JSNotationAttributesFunctions));
 }
 
-static JSClassDef JSNotationClassDefine = 
+static JSClassDef JSNotationClassDefine;
+static bool JSNotationClassDefine_initialized = false;
+
+static void init_JSNotationClassDefine()
 {
-    "Notation",
-    .finalizer = JSNotation::finalizer,
-    .gc_mark = JSNotation::mark,
-};
+    if (JSNotationClassDefine_initialized) return;
+    JSNotationClassDefine_initialized = true;
+    memset(&JSNotationClassDefine, 0, sizeof(JSNotationClassDefine));
+    JSNotationClassDefine.class_name = "Notation";
+    JSNotationClassDefine.finalizer = JSNotation::finalizer;
+    JSNotationClassDefine.gc_mark = JSNotation::mark;
+}
 
 JSClassID JSNotation::js_class_id = 0;
 

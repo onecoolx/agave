@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -53,20 +55,58 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGDescElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGDescElementAttributesFunctions[4];
+static bool JSSVGDescElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGDescElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGDescElement::getValueProperty, JSSVGDescElement::putValueProperty, JSSVGDescElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGDescElement::getValueProperty, NULL, JSSVGDescElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGDescElement::getValueProperty, JSSVGDescElement::putValueProperty, JSSVGDescElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGDescElement::getValueProperty, NULL, JSSVGDescElement::StyleAttrNum)
-};
+    if (JSSVGDescElementAttributesFunctions_initialized) return;
+    JSSVGDescElementAttributesFunctions_initialized = true;
+    memset(JSSVGDescElementAttributesFunctions, 0, sizeof(JSSVGDescElementAttributesFunctions));
+    JSSVGDescElementAttributesFunctions[0].name = "xmllang";
+    JSSVGDescElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDescElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDescElementAttributesFunctions[0].magic = JSSVGDescElement::XmllangAttrNum;
+    JSSVGDescElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGDescElement::getValueProperty;
+    JSSVGDescElementAttributesFunctions[0].u.getset.set.setter_magic = JSSVGDescElement::putValueProperty;
+    JSSVGDescElementAttributesFunctions[1].name = "className";
+    JSSVGDescElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDescElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDescElementAttributesFunctions[1].magic = JSSVGDescElement::ClassNameAttrNum;
+    JSSVGDescElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGDescElement::getValueProperty;
+    JSSVGDescElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGDescElementAttributesFunctions[2].name = "xmlspace";
+    JSSVGDescElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDescElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDescElementAttributesFunctions[2].magic = JSSVGDescElement::XmlspaceAttrNum;
+    JSSVGDescElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGDescElement::getValueProperty;
+    JSSVGDescElementAttributesFunctions[2].u.getset.set.setter_magic = JSSVGDescElement::putValueProperty;
+    JSSVGDescElementAttributesFunctions[3].name = "style";
+    JSSVGDescElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDescElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDescElementAttributesFunctions[3].magic = JSSVGDescElement::StyleAttrNum;
+    JSSVGDescElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGDescElement::getValueProperty;
+    JSSVGDescElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGDescElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGDescElementPrototypeFunctions[1];
+static bool JSSVGDescElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGDescElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGDescElementPrototypeFunction::callAsFunction, JSSVGDescElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGDescElementPrototypeFunctions_initialized) return;
+    JSSVGDescElementPrototypeFunctions_initialized = true;
+    memset(JSSVGDescElementPrototypeFunctions, 0, sizeof(JSSVGDescElementPrototypeFunctions));
+    JSSVGDescElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGDescElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGDescElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGDescElementPrototypeFunctions[0].magic = JSSVGDescElement::GetPresentationAttributeFuncNum;
+    JSSVGDescElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGDescElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGDescElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGDescElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGDescElementPrototype::self(JSContext * ctx)
 {
@@ -84,22 +124,31 @@ JSValue JSSVGDescElementPrototype::self(JSContext * ctx)
 
 void JSSVGDescElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGDescElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGDescElementAttributesFunctions, countof(JSSVGDescElementAttributesFunctions));
+    init_JSSVGDescElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGDescElementPrototypeFunctions, countof(JSSVGDescElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGDescElementClassDefine = 
+static JSClassDef JSSVGDescElementClassDefine;
+static bool JSSVGDescElementClassDefine_initialized = false;
+
+static void init_JSSVGDescElementClassDefine()
 {
-    "SVGDescElement",
-    .finalizer = JSSVGDescElement::finalizer,
-    .gc_mark = JSSVGDescElement::mark,
-};
+    if (JSSVGDescElementClassDefine_initialized) return;
+    JSSVGDescElementClassDefine_initialized = true;
+    memset(&JSSVGDescElementClassDefine, 0, sizeof(JSSVGDescElementClassDefine));
+    JSSVGDescElementClassDefine.class_name = "SVGDescElement";
+    JSSVGDescElementClassDefine.finalizer = JSSVGDescElement::finalizer;
+    JSSVGDescElementClassDefine.gc_mark = JSSVGDescElement::mark;
+}
 
 JSClassID JSSVGDescElement::js_class_id = 0;
 
 void JSSVGDescElement::init(JSContext* ctx)
 {
     if (JSSVGDescElement::js_class_id == 0) {
+        init_JSSVGDescElementClassDefine();
         JS_NewClassID(&JSSVGDescElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGDescElement::js_class_id, &JSSVGDescElementClassDefine);
         JS_SetClassProto(ctx, JSSVGDescElement::js_class_id, JSSVGDescElementPrototype::self(ctx));

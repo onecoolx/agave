@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCanvasPattern.h"
 
 #include "CanvasPattern.h"
@@ -54,18 +56,25 @@ void JSCanvasPatternPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
 }
 
-static JSClassDef JSCanvasPatternClassDefine = 
+static JSClassDef JSCanvasPatternClassDefine;
+static bool JSCanvasPatternClassDefine_initialized = false;
+
+static void init_JSCanvasPatternClassDefine()
 {
-    "CanvasPattern",
-    .finalizer = JSCanvasPattern::finalizer,
-    .gc_mark = JSCanvasPattern::mark,
-};
+    if (JSCanvasPatternClassDefine_initialized) return;
+    JSCanvasPatternClassDefine_initialized = true;
+    memset(&JSCanvasPatternClassDefine, 0, sizeof(JSCanvasPatternClassDefine));
+    JSCanvasPatternClassDefine.class_name = "CanvasPattern";
+    JSCanvasPatternClassDefine.finalizer = JSCanvasPattern::finalizer;
+    JSCanvasPatternClassDefine.gc_mark = JSCanvasPattern::mark;
+}
 
 JSClassID JSCanvasPattern::js_class_id = 0;
 
 void JSCanvasPattern::init(JSContext* ctx)
 {
     if (JSCanvasPattern::js_class_id == 0) {
+        init_JSCanvasPatternClassDefine();
         JS_NewClassID(&JSCanvasPattern::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSCanvasPattern::js_class_id, &JSCanvasPatternClassDefine);
         JS_SetClassProto(ctx, JSCanvasPattern::js_class_id, JSCanvasPatternPrototype::self(ctx));

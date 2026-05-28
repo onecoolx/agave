@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSRange.h"
 
 #include "DocumentFragment.h"
@@ -45,16 +47,57 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSRangeAttributesFunctions[] =
+static JSCFunctionListEntry JSRangeAttributesFunctions[7];
+static bool JSRangeAttributesFunctions_initialized = false;
+
+static void init_JSRangeAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("endOffset", JSRange::getValueProperty, NULL, JSRange::EndOffsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("startOffset", JSRange::getValueProperty, NULL, JSRange::StartOffsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("endContainer", JSRange::getValueProperty, NULL, JSRange::EndContainerAttrNum),
-    JS_CGETSET_MAGIC_DEF("startContainer", JSRange::getValueProperty, NULL, JSRange::StartContainerAttrNum),
-    JS_CGETSET_MAGIC_DEF("collapsed", JSRange::getValueProperty, NULL, JSRange::CollapsedAttrNum),
-    JS_CGETSET_MAGIC_DEF("commonAncestorContainer", JSRange::getValueProperty, NULL, JSRange::CommonAncestorContainerAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSRange::getValueProperty, NULL, JSRange::ConstructorAttrNum)
-};
+    if (JSRangeAttributesFunctions_initialized) return;
+    JSRangeAttributesFunctions_initialized = true;
+    memset(JSRangeAttributesFunctions, 0, sizeof(JSRangeAttributesFunctions));
+    JSRangeAttributesFunctions[0].name = "endOffset";
+    JSRangeAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeAttributesFunctions[0].magic = JSRange::EndOffsetAttrNum;
+    JSRangeAttributesFunctions[0].u.getset.get.getter_magic = JSRange::getValueProperty;
+    JSRangeAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSRangeAttributesFunctions[1].name = "startOffset";
+    JSRangeAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeAttributesFunctions[1].magic = JSRange::StartOffsetAttrNum;
+    JSRangeAttributesFunctions[1].u.getset.get.getter_magic = JSRange::getValueProperty;
+    JSRangeAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSRangeAttributesFunctions[2].name = "endContainer";
+    JSRangeAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeAttributesFunctions[2].magic = JSRange::EndContainerAttrNum;
+    JSRangeAttributesFunctions[2].u.getset.get.getter_magic = JSRange::getValueProperty;
+    JSRangeAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSRangeAttributesFunctions[3].name = "startContainer";
+    JSRangeAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeAttributesFunctions[3].magic = JSRange::StartContainerAttrNum;
+    JSRangeAttributesFunctions[3].u.getset.get.getter_magic = JSRange::getValueProperty;
+    JSRangeAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSRangeAttributesFunctions[4].name = "collapsed";
+    JSRangeAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeAttributesFunctions[4].magic = JSRange::CollapsedAttrNum;
+    JSRangeAttributesFunctions[4].u.getset.get.getter_magic = JSRange::getValueProperty;
+    JSRangeAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSRangeAttributesFunctions[5].name = "commonAncestorContainer";
+    JSRangeAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeAttributesFunctions[5].magic = JSRange::CommonAncestorContainerAttrNum;
+    JSRangeAttributesFunctions[5].u.getset.get.getter_magic = JSRange::getValueProperty;
+    JSRangeAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSRangeAttributesFunctions[6].name = "constructor";
+    JSRangeAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeAttributesFunctions[6].magic = JSRange::ConstructorAttrNum;
+    JSRangeAttributesFunctions[6].u.getset.get.getter_magic = JSRange::getValueProperty;
+    JSRangeAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+}
 
 class JSRangeConstructor {
 public:
@@ -71,17 +114,63 @@ JSValue JSRangeConstructor::getValueProperty(JSContext * ctx, JSValueConst this_
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSRangeConstructorFunctions[] =
+static JSCFunctionListEntry JSRangeConstructorFunctions[8];
+static bool JSRangeConstructorFunctions_initialized = false;
+
+static void init_JSRangeConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("START_TO_START", JSRangeConstructor::getValueProperty, NULL, Range::START_TO_START),
-    JS_CGETSET_MAGIC_DEF("NODE_AFTER", JSRangeConstructor::getValueProperty, NULL, Range::NODE_AFTER),
-    JS_CGETSET_MAGIC_DEF("NODE_BEFORE", JSRangeConstructor::getValueProperty, NULL, Range::NODE_BEFORE),
-    JS_CGETSET_MAGIC_DEF("START_TO_END", JSRangeConstructor::getValueProperty, NULL, Range::START_TO_END),
-    JS_CGETSET_MAGIC_DEF("END_TO_END", JSRangeConstructor::getValueProperty, NULL, Range::END_TO_END),
-    JS_CGETSET_MAGIC_DEF("END_TO_START", JSRangeConstructor::getValueProperty, NULL, Range::END_TO_START),
-    JS_CGETSET_MAGIC_DEF("NODE_BEFORE_AND_AFTER", JSRangeConstructor::getValueProperty, NULL, Range::NODE_BEFORE_AND_AFTER),
-    JS_CGETSET_MAGIC_DEF("NODE_INSIDE", JSRangeConstructor::getValueProperty, NULL, Range::NODE_INSIDE)
-};
+    if (JSRangeConstructorFunctions_initialized) return;
+    JSRangeConstructorFunctions_initialized = true;
+    memset(JSRangeConstructorFunctions, 0, sizeof(JSRangeConstructorFunctions));
+    JSRangeConstructorFunctions[0].name = "START_TO_START";
+    JSRangeConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeConstructorFunctions[0].magic = Range::START_TO_START;
+    JSRangeConstructorFunctions[0].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
+    JSRangeConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSRangeConstructorFunctions[1].name = "NODE_AFTER";
+    JSRangeConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeConstructorFunctions[1].magic = Range::NODE_AFTER;
+    JSRangeConstructorFunctions[1].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
+    JSRangeConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSRangeConstructorFunctions[2].name = "NODE_BEFORE";
+    JSRangeConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeConstructorFunctions[2].magic = Range::NODE_BEFORE;
+    JSRangeConstructorFunctions[2].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
+    JSRangeConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSRangeConstructorFunctions[3].name = "START_TO_END";
+    JSRangeConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeConstructorFunctions[3].magic = Range::START_TO_END;
+    JSRangeConstructorFunctions[3].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
+    JSRangeConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+    JSRangeConstructorFunctions[4].name = "END_TO_END";
+    JSRangeConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeConstructorFunctions[4].magic = Range::END_TO_END;
+    JSRangeConstructorFunctions[4].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
+    JSRangeConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+    JSRangeConstructorFunctions[5].name = "END_TO_START";
+    JSRangeConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeConstructorFunctions[5].magic = Range::END_TO_START;
+    JSRangeConstructorFunctions[5].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
+    JSRangeConstructorFunctions[5].u.getset.set.setter_magic = NULL;
+    JSRangeConstructorFunctions[6].name = "NODE_BEFORE_AND_AFTER";
+    JSRangeConstructorFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeConstructorFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeConstructorFunctions[6].magic = Range::NODE_BEFORE_AND_AFTER;
+    JSRangeConstructorFunctions[6].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
+    JSRangeConstructorFunctions[6].u.getset.set.setter_magic = NULL;
+    JSRangeConstructorFunctions[7].name = "NODE_INSIDE";
+    JSRangeConstructorFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeConstructorFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeConstructorFunctions[7].magic = Range::NODE_INSIDE;
+    JSRangeConstructorFunctions[7].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
+    JSRangeConstructorFunctions[7].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSRangeConstructor::self(JSContext * ctx)
 {
@@ -99,51 +188,242 @@ JSValue JSRangeConstructor::self(JSContext * ctx)
 
 void JSRangeConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSRangeConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSRangeConstructorFunctions, countof(JSRangeConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSRangePrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSRangePrototypeConstantsFunctions[8];
+static bool JSRangePrototypeConstantsFunctions_initialized = false;
+
+static void init_JSRangePrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("START_TO_START", JSRangePrototype::getValueProperty, NULL, Range::START_TO_START),
-    JS_CGETSET_MAGIC_DEF("NODE_AFTER", JSRangePrototype::getValueProperty, NULL, Range::NODE_AFTER),
-    JS_CGETSET_MAGIC_DEF("NODE_BEFORE", JSRangePrototype::getValueProperty, NULL, Range::NODE_BEFORE),
-    JS_CGETSET_MAGIC_DEF("START_TO_END", JSRangePrototype::getValueProperty, NULL, Range::START_TO_END),
-    JS_CGETSET_MAGIC_DEF("END_TO_END", JSRangePrototype::getValueProperty, NULL, Range::END_TO_END),
-    JS_CGETSET_MAGIC_DEF("END_TO_START", JSRangePrototype::getValueProperty, NULL, Range::END_TO_START),
-    JS_CGETSET_MAGIC_DEF("NODE_BEFORE_AND_AFTER", JSRangePrototype::getValueProperty, NULL, Range::NODE_BEFORE_AND_AFTER),
-    JS_CGETSET_MAGIC_DEF("NODE_INSIDE", JSRangePrototype::getValueProperty, NULL, Range::NODE_INSIDE)
-};
+    if (JSRangePrototypeConstantsFunctions_initialized) return;
+    JSRangePrototypeConstantsFunctions_initialized = true;
+    memset(JSRangePrototypeConstantsFunctions, 0, sizeof(JSRangePrototypeConstantsFunctions));
+    JSRangePrototypeConstantsFunctions[0].name = "START_TO_START";
+    JSRangePrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangePrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangePrototypeConstantsFunctions[0].magic = Range::START_TO_START;
+    JSRangePrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
+    JSRangePrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSRangePrototypeConstantsFunctions[1].name = "NODE_AFTER";
+    JSRangePrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangePrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangePrototypeConstantsFunctions[1].magic = Range::NODE_AFTER;
+    JSRangePrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
+    JSRangePrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSRangePrototypeConstantsFunctions[2].name = "NODE_BEFORE";
+    JSRangePrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangePrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangePrototypeConstantsFunctions[2].magic = Range::NODE_BEFORE;
+    JSRangePrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
+    JSRangePrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSRangePrototypeConstantsFunctions[3].name = "START_TO_END";
+    JSRangePrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangePrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangePrototypeConstantsFunctions[3].magic = Range::START_TO_END;
+    JSRangePrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
+    JSRangePrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+    JSRangePrototypeConstantsFunctions[4].name = "END_TO_END";
+    JSRangePrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangePrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangePrototypeConstantsFunctions[4].magic = Range::END_TO_END;
+    JSRangePrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
+    JSRangePrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+    JSRangePrototypeConstantsFunctions[5].name = "END_TO_START";
+    JSRangePrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangePrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangePrototypeConstantsFunctions[5].magic = Range::END_TO_START;
+    JSRangePrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
+    JSRangePrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
+    JSRangePrototypeConstantsFunctions[6].name = "NODE_BEFORE_AND_AFTER";
+    JSRangePrototypeConstantsFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangePrototypeConstantsFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangePrototypeConstantsFunctions[6].magic = Range::NODE_BEFORE_AND_AFTER;
+    JSRangePrototypeConstantsFunctions[6].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
+    JSRangePrototypeConstantsFunctions[6].u.getset.set.setter_magic = NULL;
+    JSRangePrototypeConstantsFunctions[7].name = "NODE_INSIDE";
+    JSRangePrototypeConstantsFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangePrototypeConstantsFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangePrototypeConstantsFunctions[7].magic = Range::NODE_INSIDE;
+    JSRangePrototypeConstantsFunctions[7].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
+    JSRangePrototypeConstantsFunctions[7].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSRangePrototypeFunctions[] =
+static JSCFunctionListEntry JSRangePrototypeFunctions[23];
+static bool JSRangePrototypeFunctions_initialized = false;
+
+static void init_JSRangePrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("toString", 0, JSRangePrototypeFunction::callAsFunction, JSRange::ToStringFuncNum),
-    JS_CFUNC_MAGIC_DEF("setEnd", 2, JSRangePrototypeFunction::callAsFunction, JSRange::SetEndFuncNum),
-    JS_CFUNC_MAGIC_DEF("setEndBefore", 1, JSRangePrototypeFunction::callAsFunction, JSRange::SetEndBeforeFuncNum),
-    JS_CFUNC_MAGIC_DEF("setStart", 2, JSRangePrototypeFunction::callAsFunction, JSRange::SetStartFuncNum),
-    JS_CFUNC_MAGIC_DEF("intersectsNode", 1, JSRangePrototypeFunction::callAsFunction, JSRange::IntersectsNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("surroundContents", 1, JSRangePrototypeFunction::callAsFunction, JSRange::SurroundContentsFuncNum),
-    JS_CFUNC_MAGIC_DEF("selectNode", 1, JSRangePrototypeFunction::callAsFunction, JSRange::SelectNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("setEndAfter", 1, JSRangePrototypeFunction::callAsFunction, JSRange::SetEndAfterFuncNum),
-    JS_CFUNC_MAGIC_DEF("collapse", 1, JSRangePrototypeFunction::callAsFunction, JSRange::CollapseFuncNum),
-    JS_CFUNC_MAGIC_DEF("setStartBefore", 1, JSRangePrototypeFunction::callAsFunction, JSRange::SetStartBeforeFuncNum),
-    JS_CFUNC_MAGIC_DEF("insertNode", 1, JSRangePrototypeFunction::callAsFunction, JSRange::InsertNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("setStartAfter", 1, JSRangePrototypeFunction::callAsFunction, JSRange::SetStartAfterFuncNum),
-    JS_CFUNC_MAGIC_DEF("compareBoundaryPoints", 2, JSRangePrototypeFunction::callAsFunction, JSRange::CompareBoundaryPointsFuncNum),
-    JS_CFUNC_MAGIC_DEF("selectNodeContents", 1, JSRangePrototypeFunction::callAsFunction, JSRange::SelectNodeContentsFuncNum),
-    JS_CFUNC_MAGIC_DEF("deleteContents", 0, JSRangePrototypeFunction::callAsFunction, JSRange::DeleteContentsFuncNum),
-    JS_CFUNC_MAGIC_DEF("extractContents", 0, JSRangePrototypeFunction::callAsFunction, JSRange::ExtractContentsFuncNum),
-    JS_CFUNC_MAGIC_DEF("cloneContents", 0, JSRangePrototypeFunction::callAsFunction, JSRange::CloneContentsFuncNum),
-    JS_CFUNC_MAGIC_DEF("cloneRange", 0, JSRangePrototypeFunction::callAsFunction, JSRange::CloneRangeFuncNum),
-    JS_CFUNC_MAGIC_DEF("detach", 0, JSRangePrototypeFunction::callAsFunction, JSRange::DetachFuncNum),
-    JS_CFUNC_MAGIC_DEF("createContextualFragment", 1, JSRangePrototypeFunction::callAsFunction, JSRange::CreateContextualFragmentFuncNum),
-    JS_CFUNC_MAGIC_DEF("compareNode", 1, JSRangePrototypeFunction::callAsFunction, JSRange::CompareNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("comparePoint", 2, JSRangePrototypeFunction::callAsFunction, JSRange::ComparePointFuncNum),
-    JS_CFUNC_MAGIC_DEF("isPointInRange", 2, JSRangePrototypeFunction::callAsFunction, JSRange::IsPointInRangeFuncNum)
-};
+    if (JSRangePrototypeFunctions_initialized) return;
+    JSRangePrototypeFunctions_initialized = true;
+    memset(JSRangePrototypeFunctions, 0, sizeof(JSRangePrototypeFunctions));
+    JSRangePrototypeFunctions[0].name = "toString";
+    JSRangePrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[0].magic = JSRange::ToStringFuncNum;
+    JSRangePrototypeFunctions[0].u.func.length = 0;
+    JSRangePrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[0].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[1].name = "setEnd";
+    JSRangePrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[1].magic = JSRange::SetEndFuncNum;
+    JSRangePrototypeFunctions[1].u.func.length = 2;
+    JSRangePrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[1].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[2].name = "setEndBefore";
+    JSRangePrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[2].magic = JSRange::SetEndBeforeFuncNum;
+    JSRangePrototypeFunctions[2].u.func.length = 1;
+    JSRangePrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[2].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[3].name = "setStart";
+    JSRangePrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[3].magic = JSRange::SetStartFuncNum;
+    JSRangePrototypeFunctions[3].u.func.length = 2;
+    JSRangePrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[3].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[4].name = "intersectsNode";
+    JSRangePrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[4].magic = JSRange::IntersectsNodeFuncNum;
+    JSRangePrototypeFunctions[4].u.func.length = 1;
+    JSRangePrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[4].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[5].name = "surroundContents";
+    JSRangePrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[5].magic = JSRange::SurroundContentsFuncNum;
+    JSRangePrototypeFunctions[5].u.func.length = 1;
+    JSRangePrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[5].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[6].name = "selectNode";
+    JSRangePrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[6].magic = JSRange::SelectNodeFuncNum;
+    JSRangePrototypeFunctions[6].u.func.length = 1;
+    JSRangePrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[6].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[7].name = "setEndAfter";
+    JSRangePrototypeFunctions[7].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[7].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[7].magic = JSRange::SetEndAfterFuncNum;
+    JSRangePrototypeFunctions[7].u.func.length = 1;
+    JSRangePrototypeFunctions[7].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[7].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[8].name = "collapse";
+    JSRangePrototypeFunctions[8].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[8].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[8].magic = JSRange::CollapseFuncNum;
+    JSRangePrototypeFunctions[8].u.func.length = 1;
+    JSRangePrototypeFunctions[8].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[8].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[9].name = "setStartBefore";
+    JSRangePrototypeFunctions[9].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[9].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[9].magic = JSRange::SetStartBeforeFuncNum;
+    JSRangePrototypeFunctions[9].u.func.length = 1;
+    JSRangePrototypeFunctions[9].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[9].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[10].name = "insertNode";
+    JSRangePrototypeFunctions[10].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[10].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[10].magic = JSRange::InsertNodeFuncNum;
+    JSRangePrototypeFunctions[10].u.func.length = 1;
+    JSRangePrototypeFunctions[10].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[10].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[11].name = "setStartAfter";
+    JSRangePrototypeFunctions[11].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[11].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[11].magic = JSRange::SetStartAfterFuncNum;
+    JSRangePrototypeFunctions[11].u.func.length = 1;
+    JSRangePrototypeFunctions[11].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[11].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[12].name = "compareBoundaryPoints";
+    JSRangePrototypeFunctions[12].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[12].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[12].magic = JSRange::CompareBoundaryPointsFuncNum;
+    JSRangePrototypeFunctions[12].u.func.length = 2;
+    JSRangePrototypeFunctions[12].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[12].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[13].name = "selectNodeContents";
+    JSRangePrototypeFunctions[13].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[13].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[13].magic = JSRange::SelectNodeContentsFuncNum;
+    JSRangePrototypeFunctions[13].u.func.length = 1;
+    JSRangePrototypeFunctions[13].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[13].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[14].name = "deleteContents";
+    JSRangePrototypeFunctions[14].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[14].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[14].magic = JSRange::DeleteContentsFuncNum;
+    JSRangePrototypeFunctions[14].u.func.length = 0;
+    JSRangePrototypeFunctions[14].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[14].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[15].name = "extractContents";
+    JSRangePrototypeFunctions[15].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[15].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[15].magic = JSRange::ExtractContentsFuncNum;
+    JSRangePrototypeFunctions[15].u.func.length = 0;
+    JSRangePrototypeFunctions[15].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[15].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[16].name = "cloneContents";
+    JSRangePrototypeFunctions[16].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[16].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[16].magic = JSRange::CloneContentsFuncNum;
+    JSRangePrototypeFunctions[16].u.func.length = 0;
+    JSRangePrototypeFunctions[16].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[16].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[17].name = "cloneRange";
+    JSRangePrototypeFunctions[17].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[17].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[17].magic = JSRange::CloneRangeFuncNum;
+    JSRangePrototypeFunctions[17].u.func.length = 0;
+    JSRangePrototypeFunctions[17].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[17].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[18].name = "detach";
+    JSRangePrototypeFunctions[18].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[18].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[18].magic = JSRange::DetachFuncNum;
+    JSRangePrototypeFunctions[18].u.func.length = 0;
+    JSRangePrototypeFunctions[18].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[18].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[19].name = "createContextualFragment";
+    JSRangePrototypeFunctions[19].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[19].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[19].magic = JSRange::CreateContextualFragmentFuncNum;
+    JSRangePrototypeFunctions[19].u.func.length = 1;
+    JSRangePrototypeFunctions[19].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[19].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[20].name = "compareNode";
+    JSRangePrototypeFunctions[20].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[20].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[20].magic = JSRange::CompareNodeFuncNum;
+    JSRangePrototypeFunctions[20].u.func.length = 1;
+    JSRangePrototypeFunctions[20].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[20].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[21].name = "comparePoint";
+    JSRangePrototypeFunctions[21].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[21].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[21].magic = JSRange::ComparePointFuncNum;
+    JSRangePrototypeFunctions[21].u.func.length = 2;
+    JSRangePrototypeFunctions[21].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[21].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+    JSRangePrototypeFunctions[22].name = "isPointInRange";
+    JSRangePrototypeFunctions[22].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSRangePrototypeFunctions[22].def_type = JS_DEF_CFUNC;
+    JSRangePrototypeFunctions[22].magic = JSRange::IsPointInRangeFuncNum;
+    JSRangePrototypeFunctions[22].u.func.length = 2;
+    JSRangePrototypeFunctions[22].u.func.cproto = JS_CFUNC_generic_magic;
+    JSRangePrototypeFunctions[22].u.func.cfunc.generic_magic = JSRangePrototypeFunction::callAsFunction;
+}
 
 JSValue JSRangePrototype::self(JSContext * ctx)
 {
@@ -161,8 +441,11 @@ JSValue JSRangePrototype::self(JSContext * ctx)
 
 void JSRangePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSRangeAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSRangeAttributesFunctions, countof(JSRangeAttributesFunctions));
+    init_JSRangePrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSRangePrototypeConstantsFunctions, countof(JSRangePrototypeConstantsFunctions));
+    init_JSRangePrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSRangePrototypeFunctions, countof(JSRangePrototypeFunctions));
 }
 
@@ -172,18 +455,25 @@ JSValue JSRangePrototype::getValueProperty(JSContext * ctx, JSValueConst this_va
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSRangeClassDefine = 
+static JSClassDef JSRangeClassDefine;
+static bool JSRangeClassDefine_initialized = false;
+
+static void init_JSRangeClassDefine()
 {
-    "Range",
-    .finalizer = JSRange::finalizer,
-    .gc_mark = JSRange::mark,
-};
+    if (JSRangeClassDefine_initialized) return;
+    JSRangeClassDefine_initialized = true;
+    memset(&JSRangeClassDefine, 0, sizeof(JSRangeClassDefine));
+    JSRangeClassDefine.class_name = "Range";
+    JSRangeClassDefine.finalizer = JSRange::finalizer;
+    JSRangeClassDefine.gc_mark = JSRange::mark;
+}
 
 JSClassID JSRange::js_class_id = 0;
 
 void JSRange::init(JSContext* ctx)
 {
     if (JSRange::js_class_id == 0) {
+        init_JSRangeClassDefine();
         JS_NewClassID(&JSRange::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSRange::js_class_id, &JSRangeClassDefine);
         JS_SetConstructor(ctx, JSRangeConstructor::self(ctx), JSRangePrototype::self(ctx));

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLParagraphElement.h"
 
 #include "HTMLParagraphElement.h"
@@ -39,11 +41,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLParagraphElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLParagraphElementAttributesFunctions[2];
+static bool JSHTMLParagraphElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLParagraphElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLParagraphElement::getValueProperty, JSHTMLParagraphElement::putValueProperty, JSHTMLParagraphElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLParagraphElement::getValueProperty, NULL, JSHTMLParagraphElement::ConstructorAttrNum)
-};
+    if (JSHTMLParagraphElementAttributesFunctions_initialized) return;
+    JSHTMLParagraphElementAttributesFunctions_initialized = true;
+    memset(JSHTMLParagraphElementAttributesFunctions, 0, sizeof(JSHTMLParagraphElementAttributesFunctions));
+    JSHTMLParagraphElementAttributesFunctions[0].name = "align";
+    JSHTMLParagraphElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLParagraphElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLParagraphElementAttributesFunctions[0].magic = JSHTMLParagraphElement::AlignAttrNum;
+    JSHTMLParagraphElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLParagraphElement::getValueProperty;
+    JSHTMLParagraphElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLParagraphElement::putValueProperty;
+    JSHTMLParagraphElementAttributesFunctions[1].name = "constructor";
+    JSHTMLParagraphElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLParagraphElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLParagraphElementAttributesFunctions[1].magic = JSHTMLParagraphElement::ConstructorAttrNum;
+    JSHTMLParagraphElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLParagraphElement::getValueProperty;
+    JSHTMLParagraphElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLParagraphElementConstructor {
 public:
@@ -92,15 +110,22 @@ JSValue JSHTMLParagraphElementPrototype::self(JSContext * ctx)
 
 void JSHTMLParagraphElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLParagraphElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLParagraphElementAttributesFunctions, countof(JSHTMLParagraphElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLParagraphElementClassDefine = 
+static JSClassDef JSHTMLParagraphElementClassDefine;
+static bool JSHTMLParagraphElementClassDefine_initialized = false;
+
+static void init_JSHTMLParagraphElementClassDefine()
 {
-    "HTMLParagraphElement",
-    .finalizer = JSHTMLParagraphElement::finalizer,
-    .gc_mark = JSHTMLParagraphElement::mark,
-};
+    if (JSHTMLParagraphElementClassDefine_initialized) return;
+    JSHTMLParagraphElementClassDefine_initialized = true;
+    memset(&JSHTMLParagraphElementClassDefine, 0, sizeof(JSHTMLParagraphElementClassDefine));
+    JSHTMLParagraphElementClassDefine.class_name = "HTMLParagraphElement";
+    JSHTMLParagraphElementClassDefine.finalizer = JSHTMLParagraphElement::finalizer;
+    JSHTMLParagraphElementClassDefine.gc_mark = JSHTMLParagraphElement::mark;
+}
 
 JSClassID JSHTMLParagraphElement::js_class_id = 0;
 

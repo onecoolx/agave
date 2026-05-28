@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -62,18 +64,25 @@ void JSSVGAnimateTransformElementPrototype::initPrototype(JSContext * ctx, JSVal
 {
 }
 
-static JSClassDef JSSVGAnimateTransformElementClassDefine = 
+static JSClassDef JSSVGAnimateTransformElementClassDefine;
+static bool JSSVGAnimateTransformElementClassDefine_initialized = false;
+
+static void init_JSSVGAnimateTransformElementClassDefine()
 {
-    "SVGAnimateTransformElement",
-    .finalizer = JSSVGAnimateTransformElement::finalizer,
-    .gc_mark = JSSVGAnimateTransformElement::mark,
-};
+    if (JSSVGAnimateTransformElementClassDefine_initialized) return;
+    JSSVGAnimateTransformElementClassDefine_initialized = true;
+    memset(&JSSVGAnimateTransformElementClassDefine, 0, sizeof(JSSVGAnimateTransformElementClassDefine));
+    JSSVGAnimateTransformElementClassDefine.class_name = "SVGAnimateTransformElement";
+    JSSVGAnimateTransformElementClassDefine.finalizer = JSSVGAnimateTransformElement::finalizer;
+    JSSVGAnimateTransformElementClassDefine.gc_mark = JSSVGAnimateTransformElement::mark;
+}
 
 JSClassID JSSVGAnimateTransformElement::js_class_id = 0;
 
 void JSSVGAnimateTransformElement::init(JSContext* ctx)
 {
     if (JSSVGAnimateTransformElement::js_class_id == 0) {
+        init_JSSVGAnimateTransformElementClassDefine();
         JS_NewClassID(&JSSVGAnimateTransformElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimateTransformElement::js_class_id, &JSSVGAnimateTransformElementClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimateTransformElement::js_class_id, JSSVGAnimateTransformElementPrototype::self(ctx));

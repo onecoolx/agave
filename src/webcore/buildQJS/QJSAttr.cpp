@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSAttr.h"
 
 #include "Attr.h"
@@ -44,15 +46,51 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSAttrAttributesFunctions[] =
+static JSCFunctionListEntry JSAttrAttributesFunctions[6];
+static bool JSAttrAttributesFunctions_initialized = false;
+
+static void init_JSAttrAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("name", JSAttr::getValueProperty, NULL, JSAttr::NameAttrNum),
-    JS_CGETSET_MAGIC_DEF("ownerElement", JSAttr::getValueProperty, NULL, JSAttr::OwnerElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSAttr::getValueProperty, NULL, JSAttr::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("value", JSAttr::getValueProperty, JSAttr::putValueProperty, JSAttr::ValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("specified", JSAttr::getValueProperty, NULL, JSAttr::SpecifiedAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSAttr::getValueProperty, NULL, JSAttr::StyleAttrNum)
-};
+    if (JSAttrAttributesFunctions_initialized) return;
+    JSAttrAttributesFunctions_initialized = true;
+    memset(JSAttrAttributesFunctions, 0, sizeof(JSAttrAttributesFunctions));
+    JSAttrAttributesFunctions[0].name = "name";
+    JSAttrAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSAttrAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSAttrAttributesFunctions[0].magic = JSAttr::NameAttrNum;
+    JSAttrAttributesFunctions[0].u.getset.get.getter_magic = JSAttr::getValueProperty;
+    JSAttrAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSAttrAttributesFunctions[1].name = "ownerElement";
+    JSAttrAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSAttrAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSAttrAttributesFunctions[1].magic = JSAttr::OwnerElementAttrNum;
+    JSAttrAttributesFunctions[1].u.getset.get.getter_magic = JSAttr::getValueProperty;
+    JSAttrAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSAttrAttributesFunctions[2].name = "constructor";
+    JSAttrAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSAttrAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSAttrAttributesFunctions[2].magic = JSAttr::ConstructorAttrNum;
+    JSAttrAttributesFunctions[2].u.getset.get.getter_magic = JSAttr::getValueProperty;
+    JSAttrAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSAttrAttributesFunctions[3].name = "value";
+    JSAttrAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSAttrAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSAttrAttributesFunctions[3].magic = JSAttr::ValueAttrNum;
+    JSAttrAttributesFunctions[3].u.getset.get.getter_magic = JSAttr::getValueProperty;
+    JSAttrAttributesFunctions[3].u.getset.set.setter_magic = JSAttr::putValueProperty;
+    JSAttrAttributesFunctions[4].name = "specified";
+    JSAttrAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSAttrAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSAttrAttributesFunctions[4].magic = JSAttr::SpecifiedAttrNum;
+    JSAttrAttributesFunctions[4].u.getset.get.getter_magic = JSAttr::getValueProperty;
+    JSAttrAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSAttrAttributesFunctions[5].name = "style";
+    JSAttrAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSAttrAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSAttrAttributesFunctions[5].magic = JSAttr::StyleAttrNum;
+    JSAttrAttributesFunctions[5].u.getset.get.getter_magic = JSAttr::getValueProperty;
+    JSAttrAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+}
 
 class JSAttrConstructor {
 public:
@@ -101,15 +139,22 @@ JSValue JSAttrPrototype::self(JSContext * ctx)
 
 void JSAttrPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSAttrAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSAttrAttributesFunctions, countof(JSAttrAttributesFunctions));
 }
 
-static JSClassDef JSAttrClassDefine = 
+static JSClassDef JSAttrClassDefine;
+static bool JSAttrClassDefine_initialized = false;
+
+static void init_JSAttrClassDefine()
 {
-    "Attr",
-    .finalizer = JSAttr::finalizer,
-    .gc_mark = JSAttr::mark,
-};
+    if (JSAttrClassDefine_initialized) return;
+    JSAttrClassDefine_initialized = true;
+    memset(&JSAttrClassDefine, 0, sizeof(JSAttrClassDefine));
+    JSAttrClassDefine.class_name = "Attr";
+    JSAttrClassDefine.finalizer = JSAttr::finalizer;
+    JSAttrClassDefine.gc_mark = JSAttr::mark;
+}
 
 JSClassID JSAttr::js_class_id = 0;
 

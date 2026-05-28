@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLSelectElement.h"
 
 #include "ExceptionCode.h"
@@ -47,21 +49,87 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLSelectElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLSelectElementAttributesFunctions[12];
+static bool JSHTMLSelectElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLSelectElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("length", JSHTMLSelectElement::getValueProperty, JSHTMLSelectElement::putValueProperty, JSHTMLSelectElement::LengthAttrNum),
-    JS_CGETSET_MAGIC_DEF("size", JSHTMLSelectElement::getValueProperty, JSHTMLSelectElement::putValueProperty, JSHTMLSelectElement::SizeAttrNum),
-    JS_CGETSET_MAGIC_DEF("form", JSHTMLSelectElement::getValueProperty, NULL, JSHTMLSelectElement::FormAttrNum),
-    JS_CGETSET_MAGIC_DEF("multiple", JSHTMLSelectElement::getValueProperty, JSHTMLSelectElement::putValueProperty, JSHTMLSelectElement::MultipleAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSHTMLSelectElement::getValueProperty, NULL, JSHTMLSelectElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("options", JSHTMLSelectElement::getValueProperty, NULL, JSHTMLSelectElement::OptionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("tabIndex", JSHTMLSelectElement::getValueProperty, JSHTMLSelectElement::putValueProperty, JSHTMLSelectElement::TabIndexAttrNum),
-    JS_CGETSET_MAGIC_DEF("value", JSHTMLSelectElement::getValueProperty, JSHTMLSelectElement::putValueProperty, JSHTMLSelectElement::ValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("selectedIndex", JSHTMLSelectElement::getValueProperty, JSHTMLSelectElement::putValueProperty, JSHTMLSelectElement::SelectedIndexAttrNum),
-    JS_CGETSET_MAGIC_DEF("disabled", JSHTMLSelectElement::getValueProperty, JSHTMLSelectElement::putValueProperty, JSHTMLSelectElement::DisabledAttrNum),
-    JS_CGETSET_MAGIC_DEF("name", JSHTMLSelectElement::getValueProperty, JSHTMLSelectElement::putValueProperty, JSHTMLSelectElement::NameAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLSelectElement::getValueProperty, NULL, JSHTMLSelectElement::ConstructorAttrNum)
-};
+    if (JSHTMLSelectElementAttributesFunctions_initialized) return;
+    JSHTMLSelectElementAttributesFunctions_initialized = true;
+    memset(JSHTMLSelectElementAttributesFunctions, 0, sizeof(JSHTMLSelectElementAttributesFunctions));
+    JSHTMLSelectElementAttributesFunctions[0].name = "length";
+    JSHTMLSelectElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLSelectElementAttributesFunctions[0].magic = JSHTMLSelectElement::LengthAttrNum;
+    JSHTMLSelectElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLSelectElement::getValueProperty;
+    JSHTMLSelectElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLSelectElement::putValueProperty;
+    JSHTMLSelectElementAttributesFunctions[1].name = "size";
+    JSHTMLSelectElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLSelectElementAttributesFunctions[1].magic = JSHTMLSelectElement::SizeAttrNum;
+    JSHTMLSelectElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLSelectElement::getValueProperty;
+    JSHTMLSelectElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLSelectElement::putValueProperty;
+    JSHTMLSelectElementAttributesFunctions[2].name = "form";
+    JSHTMLSelectElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLSelectElementAttributesFunctions[2].magic = JSHTMLSelectElement::FormAttrNum;
+    JSHTMLSelectElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLSelectElement::getValueProperty;
+    JSHTMLSelectElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSHTMLSelectElementAttributesFunctions[3].name = "multiple";
+    JSHTMLSelectElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLSelectElementAttributesFunctions[3].magic = JSHTMLSelectElement::MultipleAttrNum;
+    JSHTMLSelectElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLSelectElement::getValueProperty;
+    JSHTMLSelectElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLSelectElement::putValueProperty;
+    JSHTMLSelectElementAttributesFunctions[4].name = "type";
+    JSHTMLSelectElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLSelectElementAttributesFunctions[4].magic = JSHTMLSelectElement::TypeAttrNum;
+    JSHTMLSelectElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLSelectElement::getValueProperty;
+    JSHTMLSelectElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSHTMLSelectElementAttributesFunctions[5].name = "options";
+    JSHTMLSelectElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLSelectElementAttributesFunctions[5].magic = JSHTMLSelectElement::OptionsAttrNum;
+    JSHTMLSelectElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLSelectElement::getValueProperty;
+    JSHTMLSelectElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSHTMLSelectElementAttributesFunctions[6].name = "tabIndex";
+    JSHTMLSelectElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLSelectElementAttributesFunctions[6].magic = JSHTMLSelectElement::TabIndexAttrNum;
+    JSHTMLSelectElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLSelectElement::getValueProperty;
+    JSHTMLSelectElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLSelectElement::putValueProperty;
+    JSHTMLSelectElementAttributesFunctions[7].name = "value";
+    JSHTMLSelectElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLSelectElementAttributesFunctions[7].magic = JSHTMLSelectElement::ValueAttrNum;
+    JSHTMLSelectElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLSelectElement::getValueProperty;
+    JSHTMLSelectElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLSelectElement::putValueProperty;
+    JSHTMLSelectElementAttributesFunctions[8].name = "selectedIndex";
+    JSHTMLSelectElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLSelectElementAttributesFunctions[8].magic = JSHTMLSelectElement::SelectedIndexAttrNum;
+    JSHTMLSelectElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLSelectElement::getValueProperty;
+    JSHTMLSelectElementAttributesFunctions[8].u.getset.set.setter_magic = JSHTMLSelectElement::putValueProperty;
+    JSHTMLSelectElementAttributesFunctions[9].name = "disabled";
+    JSHTMLSelectElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLSelectElementAttributesFunctions[9].magic = JSHTMLSelectElement::DisabledAttrNum;
+    JSHTMLSelectElementAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLSelectElement::getValueProperty;
+    JSHTMLSelectElementAttributesFunctions[9].u.getset.set.setter_magic = JSHTMLSelectElement::putValueProperty;
+    JSHTMLSelectElementAttributesFunctions[10].name = "name";
+    JSHTMLSelectElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLSelectElementAttributesFunctions[10].magic = JSHTMLSelectElement::NameAttrNum;
+    JSHTMLSelectElementAttributesFunctions[10].u.getset.get.getter_magic = JSHTMLSelectElement::getValueProperty;
+    JSHTMLSelectElementAttributesFunctions[10].u.getset.set.setter_magic = JSHTMLSelectElement::putValueProperty;
+    JSHTMLSelectElementAttributesFunctions[11].name = "constructor";
+    JSHTMLSelectElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLSelectElementAttributesFunctions[11].magic = JSHTMLSelectElement::ConstructorAttrNum;
+    JSHTMLSelectElementAttributesFunctions[11].u.getset.get.getter_magic = JSHTMLSelectElement::getValueProperty;
+    JSHTMLSelectElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLSelectElementConstructor {
 public:
@@ -96,15 +164,57 @@ void JSHTMLSelectElementConstructor::initConstructor(JSContext * ctx, JSValue th
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHTMLSelectElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSHTMLSelectElementPrototypeFunctions[6];
+static bool JSHTMLSelectElementPrototypeFunctions_initialized = false;
+
+static void init_JSHTMLSelectElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("remove", 0, JSHTMLSelectElementPrototypeFunction::callAsFunction, JSHTMLSelectElement::RemoveFuncNum),
-    JS_CFUNC_MAGIC_DEF("add", 2, JSHTMLSelectElementPrototypeFunction::callAsFunction, JSHTMLSelectElement::AddFuncNum),
-    JS_CFUNC_MAGIC_DEF("blur", 0, JSHTMLSelectElementPrototypeFunction::callAsFunction, JSHTMLSelectElement::BlurFuncNum),
-    JS_CFUNC_MAGIC_DEF("focus", 0, JSHTMLSelectElementPrototypeFunction::callAsFunction, JSHTMLSelectElement::FocusFuncNum),
-    JS_CFUNC_MAGIC_DEF("item", 1, JSHTMLSelectElementPrototypeFunction::callAsFunction, JSHTMLSelectElement::ItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("namedItem", 1, JSHTMLSelectElementPrototypeFunction::callAsFunction, JSHTMLSelectElement::NamedItemFuncNum)
-};
+    if (JSHTMLSelectElementPrototypeFunctions_initialized) return;
+    JSHTMLSelectElementPrototypeFunctions_initialized = true;
+    memset(JSHTMLSelectElementPrototypeFunctions, 0, sizeof(JSHTMLSelectElementPrototypeFunctions));
+    JSHTMLSelectElementPrototypeFunctions[0].name = "remove";
+    JSHTMLSelectElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHTMLSelectElementPrototypeFunctions[0].magic = JSHTMLSelectElement::RemoveFuncNum;
+    JSHTMLSelectElementPrototypeFunctions[0].u.func.length = 0;
+    JSHTMLSelectElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLSelectElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLSelectElementPrototypeFunction::callAsFunction;
+    JSHTMLSelectElementPrototypeFunctions[1].name = "add";
+    JSHTMLSelectElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSHTMLSelectElementPrototypeFunctions[1].magic = JSHTMLSelectElement::AddFuncNum;
+    JSHTMLSelectElementPrototypeFunctions[1].u.func.length = 2;
+    JSHTMLSelectElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLSelectElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSHTMLSelectElementPrototypeFunction::callAsFunction;
+    JSHTMLSelectElementPrototypeFunctions[2].name = "blur";
+    JSHTMLSelectElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSHTMLSelectElementPrototypeFunctions[2].magic = JSHTMLSelectElement::BlurFuncNum;
+    JSHTMLSelectElementPrototypeFunctions[2].u.func.length = 0;
+    JSHTMLSelectElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLSelectElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSHTMLSelectElementPrototypeFunction::callAsFunction;
+    JSHTMLSelectElementPrototypeFunctions[3].name = "focus";
+    JSHTMLSelectElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSHTMLSelectElementPrototypeFunctions[3].magic = JSHTMLSelectElement::FocusFuncNum;
+    JSHTMLSelectElementPrototypeFunctions[3].u.func.length = 0;
+    JSHTMLSelectElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLSelectElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSHTMLSelectElementPrototypeFunction::callAsFunction;
+    JSHTMLSelectElementPrototypeFunctions[4].name = "item";
+    JSHTMLSelectElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSHTMLSelectElementPrototypeFunctions[4].magic = JSHTMLSelectElement::ItemFuncNum;
+    JSHTMLSelectElementPrototypeFunctions[4].u.func.length = 1;
+    JSHTMLSelectElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLSelectElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSHTMLSelectElementPrototypeFunction::callAsFunction;
+    JSHTMLSelectElementPrototypeFunctions[5].name = "namedItem";
+    JSHTMLSelectElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLSelectElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSHTMLSelectElementPrototypeFunctions[5].magic = JSHTMLSelectElement::NamedItemFuncNum;
+    JSHTMLSelectElementPrototypeFunctions[5].u.func.length = 1;
+    JSHTMLSelectElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLSelectElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSHTMLSelectElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHTMLSelectElementPrototype::self(JSContext * ctx)
 {
@@ -122,16 +232,24 @@ JSValue JSHTMLSelectElementPrototype::self(JSContext * ctx)
 
 void JSHTMLSelectElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLSelectElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLSelectElementAttributesFunctions, countof(JSHTMLSelectElementAttributesFunctions));
+    init_JSHTMLSelectElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLSelectElementPrototypeFunctions, countof(JSHTMLSelectElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLSelectElementClassDefine = 
+static JSClassDef JSHTMLSelectElementClassDefine;
+static bool JSHTMLSelectElementClassDefine_initialized = false;
+
+static void init_JSHTMLSelectElementClassDefine()
 {
-    "HTMLSelectElement",
-    .finalizer = JSHTMLSelectElement::finalizer,
-    .gc_mark = JSHTMLSelectElement::mark,
-};
+    if (JSHTMLSelectElementClassDefine_initialized) return;
+    JSHTMLSelectElementClassDefine_initialized = true;
+    memset(&JSHTMLSelectElementClassDefine, 0, sizeof(JSHTMLSelectElementClassDefine));
+    JSHTMLSelectElementClassDefine.class_name = "HTMLSelectElement";
+    JSHTMLSelectElementClassDefine.finalizer = JSHTMLSelectElement::finalizer;
+    JSHTMLSelectElementClassDefine.gc_mark = JSHTMLSelectElement::mark;
+}
 
 JSClassID JSHTMLSelectElement::js_class_id = 0;
 

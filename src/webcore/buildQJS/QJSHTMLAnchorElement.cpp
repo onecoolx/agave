@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLAnchorElement.h"
 
 #include "HTMLAnchorElement.h"
@@ -39,30 +41,141 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLAnchorElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLAnchorElementAttributesFunctions[21];
+static bool JSHTMLAnchorElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLAnchorElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("protocol", JSHTMLAnchorElement::getValueProperty, NULL, JSHTMLAnchorElement::ProtocolAttrNum),
-    JS_CGETSET_MAGIC_DEF("hash", JSHTMLAnchorElement::getValueProperty, NULL, JSHTMLAnchorElement::HashAttrNum),
-    JS_CGETSET_MAGIC_DEF("charset", JSHTMLAnchorElement::getValueProperty, JSHTMLAnchorElement::putValueProperty, JSHTMLAnchorElement::CharsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("hreflang", JSHTMLAnchorElement::getValueProperty, JSHTMLAnchorElement::putValueProperty, JSHTMLAnchorElement::HreflangAttrNum),
-    JS_CGETSET_MAGIC_DEF("host", JSHTMLAnchorElement::getValueProperty, NULL, JSHTMLAnchorElement::HostAttrNum),
-    JS_CGETSET_MAGIC_DEF("accessKey", JSHTMLAnchorElement::getValueProperty, JSHTMLAnchorElement::putValueProperty, JSHTMLAnchorElement::AccessKeyAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLAnchorElement::getValueProperty, NULL, JSHTMLAnchorElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("rev", JSHTMLAnchorElement::getValueProperty, JSHTMLAnchorElement::putValueProperty, JSHTMLAnchorElement::RevAttrNum),
-    JS_CGETSET_MAGIC_DEF("coords", JSHTMLAnchorElement::getValueProperty, JSHTMLAnchorElement::putValueProperty, JSHTMLAnchorElement::CoordsAttrNum),
-    JS_CGETSET_MAGIC_DEF("port", JSHTMLAnchorElement::getValueProperty, NULL, JSHTMLAnchorElement::PortAttrNum),
-    JS_CGETSET_MAGIC_DEF("href", JSHTMLAnchorElement::getValueProperty, JSHTMLAnchorElement::putValueProperty, JSHTMLAnchorElement::HrefAttrNum),
-    JS_CGETSET_MAGIC_DEF("search", JSHTMLAnchorElement::getValueProperty, NULL, JSHTMLAnchorElement::SearchAttrNum),
-    JS_CGETSET_MAGIC_DEF("tabIndex", JSHTMLAnchorElement::getValueProperty, JSHTMLAnchorElement::putValueProperty, JSHTMLAnchorElement::TabIndexAttrNum),
-    JS_CGETSET_MAGIC_DEF("name", JSHTMLAnchorElement::getValueProperty, JSHTMLAnchorElement::putValueProperty, JSHTMLAnchorElement::NameAttrNum),
-    JS_CGETSET_MAGIC_DEF("shape", JSHTMLAnchorElement::getValueProperty, JSHTMLAnchorElement::putValueProperty, JSHTMLAnchorElement::ShapeAttrNum),
-    JS_CGETSET_MAGIC_DEF("hostname", JSHTMLAnchorElement::getValueProperty, NULL, JSHTMLAnchorElement::HostnameAttrNum),
-    JS_CGETSET_MAGIC_DEF("target", JSHTMLAnchorElement::getValueProperty, JSHTMLAnchorElement::putValueProperty, JSHTMLAnchorElement::TargetAttrNum),
-    JS_CGETSET_MAGIC_DEF("rel", JSHTMLAnchorElement::getValueProperty, JSHTMLAnchorElement::putValueProperty, JSHTMLAnchorElement::RelAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSHTMLAnchorElement::getValueProperty, JSHTMLAnchorElement::putValueProperty, JSHTMLAnchorElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("pathname", JSHTMLAnchorElement::getValueProperty, NULL, JSHTMLAnchorElement::PathnameAttrNum),
-    JS_CGETSET_MAGIC_DEF("text", JSHTMLAnchorElement::getValueProperty, NULL, JSHTMLAnchorElement::TextAttrNum)
-};
+    if (JSHTMLAnchorElementAttributesFunctions_initialized) return;
+    JSHTMLAnchorElementAttributesFunctions_initialized = true;
+    memset(JSHTMLAnchorElementAttributesFunctions, 0, sizeof(JSHTMLAnchorElementAttributesFunctions));
+    JSHTMLAnchorElementAttributesFunctions[0].name = "protocol";
+    JSHTMLAnchorElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[0].magic = JSHTMLAnchorElement::ProtocolAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLAnchorElementAttributesFunctions[1].name = "hash";
+    JSHTMLAnchorElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[1].magic = JSHTMLAnchorElement::HashAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSHTMLAnchorElementAttributesFunctions[2].name = "charset";
+    JSHTMLAnchorElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[2].magic = JSHTMLAnchorElement::CharsetAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLAnchorElement::putValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[3].name = "hreflang";
+    JSHTMLAnchorElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[3].magic = JSHTMLAnchorElement::HreflangAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLAnchorElement::putValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[4].name = "host";
+    JSHTMLAnchorElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[4].magic = JSHTMLAnchorElement::HostAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSHTMLAnchorElementAttributesFunctions[5].name = "accessKey";
+    JSHTMLAnchorElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[5].magic = JSHTMLAnchorElement::AccessKeyAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLAnchorElement::putValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[6].name = "constructor";
+    JSHTMLAnchorElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[6].magic = JSHTMLAnchorElement::ConstructorAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSHTMLAnchorElementAttributesFunctions[7].name = "rev";
+    JSHTMLAnchorElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[7].magic = JSHTMLAnchorElement::RevAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLAnchorElement::putValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[8].name = "coords";
+    JSHTMLAnchorElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[8].magic = JSHTMLAnchorElement::CoordsAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[8].u.getset.set.setter_magic = JSHTMLAnchorElement::putValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[9].name = "port";
+    JSHTMLAnchorElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[9].magic = JSHTMLAnchorElement::PortAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSHTMLAnchorElementAttributesFunctions[10].name = "href";
+    JSHTMLAnchorElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[10].magic = JSHTMLAnchorElement::HrefAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[10].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[10].u.getset.set.setter_magic = JSHTMLAnchorElement::putValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[11].name = "search";
+    JSHTMLAnchorElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[11].magic = JSHTMLAnchorElement::SearchAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[11].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSHTMLAnchorElementAttributesFunctions[12].name = "tabIndex";
+    JSHTMLAnchorElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[12].magic = JSHTMLAnchorElement::TabIndexAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[12].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[12].u.getset.set.setter_magic = JSHTMLAnchorElement::putValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[13].name = "name";
+    JSHTMLAnchorElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[13].magic = JSHTMLAnchorElement::NameAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[13].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[13].u.getset.set.setter_magic = JSHTMLAnchorElement::putValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[14].name = "shape";
+    JSHTMLAnchorElementAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[14].magic = JSHTMLAnchorElement::ShapeAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[14].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[14].u.getset.set.setter_magic = JSHTMLAnchorElement::putValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[15].name = "hostname";
+    JSHTMLAnchorElementAttributesFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[15].magic = JSHTMLAnchorElement::HostnameAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[15].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[15].u.getset.set.setter_magic = NULL;
+    JSHTMLAnchorElementAttributesFunctions[16].name = "target";
+    JSHTMLAnchorElementAttributesFunctions[16].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[16].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[16].magic = JSHTMLAnchorElement::TargetAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[16].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[16].u.getset.set.setter_magic = JSHTMLAnchorElement::putValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[17].name = "rel";
+    JSHTMLAnchorElementAttributesFunctions[17].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[17].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[17].magic = JSHTMLAnchorElement::RelAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[17].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[17].u.getset.set.setter_magic = JSHTMLAnchorElement::putValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[18].name = "type";
+    JSHTMLAnchorElementAttributesFunctions[18].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[18].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[18].magic = JSHTMLAnchorElement::TypeAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[18].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[18].u.getset.set.setter_magic = JSHTMLAnchorElement::putValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[19].name = "pathname";
+    JSHTMLAnchorElementAttributesFunctions[19].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[19].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[19].magic = JSHTMLAnchorElement::PathnameAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[19].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[19].u.getset.set.setter_magic = NULL;
+    JSHTMLAnchorElementAttributesFunctions[20].name = "text";
+    JSHTMLAnchorElementAttributesFunctions[20].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementAttributesFunctions[20].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAnchorElementAttributesFunctions[20].magic = JSHTMLAnchorElement::TextAttrNum;
+    JSHTMLAnchorElementAttributesFunctions[20].u.getset.get.getter_magic = JSHTMLAnchorElement::getValueProperty;
+    JSHTMLAnchorElementAttributesFunctions[20].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLAnchorElementConstructor {
 public:
@@ -97,12 +210,36 @@ void JSHTMLAnchorElementConstructor::initConstructor(JSContext * ctx, JSValue th
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHTMLAnchorElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSHTMLAnchorElementPrototypeFunctions[3];
+static bool JSHTMLAnchorElementPrototypeFunctions_initialized = false;
+
+static void init_JSHTMLAnchorElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("blur", 0, JSHTMLAnchorElementPrototypeFunction::callAsFunction, JSHTMLAnchorElement::BlurFuncNum),
-    JS_CFUNC_MAGIC_DEF("focus", 0, JSHTMLAnchorElementPrototypeFunction::callAsFunction, JSHTMLAnchorElement::FocusFuncNum),
-    JS_CFUNC_MAGIC_DEF("toString", 0, JSHTMLAnchorElementPrototypeFunction::callAsFunction, JSHTMLAnchorElement::ToStringFuncNum)
-};
+    if (JSHTMLAnchorElementPrototypeFunctions_initialized) return;
+    JSHTMLAnchorElementPrototypeFunctions_initialized = true;
+    memset(JSHTMLAnchorElementPrototypeFunctions, 0, sizeof(JSHTMLAnchorElementPrototypeFunctions));
+    JSHTMLAnchorElementPrototypeFunctions[0].name = "blur";
+    JSHTMLAnchorElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHTMLAnchorElementPrototypeFunctions[0].magic = JSHTMLAnchorElement::BlurFuncNum;
+    JSHTMLAnchorElementPrototypeFunctions[0].u.func.length = 0;
+    JSHTMLAnchorElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLAnchorElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLAnchorElementPrototypeFunction::callAsFunction;
+    JSHTMLAnchorElementPrototypeFunctions[1].name = "focus";
+    JSHTMLAnchorElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSHTMLAnchorElementPrototypeFunctions[1].magic = JSHTMLAnchorElement::FocusFuncNum;
+    JSHTMLAnchorElementPrototypeFunctions[1].u.func.length = 0;
+    JSHTMLAnchorElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLAnchorElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSHTMLAnchorElementPrototypeFunction::callAsFunction;
+    JSHTMLAnchorElementPrototypeFunctions[2].name = "toString";
+    JSHTMLAnchorElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLAnchorElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSHTMLAnchorElementPrototypeFunctions[2].magic = JSHTMLAnchorElement::ToStringFuncNum;
+    JSHTMLAnchorElementPrototypeFunctions[2].u.func.length = 0;
+    JSHTMLAnchorElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLAnchorElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSHTMLAnchorElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHTMLAnchorElementPrototype::self(JSContext * ctx)
 {
@@ -120,16 +257,24 @@ JSValue JSHTMLAnchorElementPrototype::self(JSContext * ctx)
 
 void JSHTMLAnchorElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLAnchorElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLAnchorElementAttributesFunctions, countof(JSHTMLAnchorElementAttributesFunctions));
+    init_JSHTMLAnchorElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLAnchorElementPrototypeFunctions, countof(JSHTMLAnchorElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLAnchorElementClassDefine = 
+static JSClassDef JSHTMLAnchorElementClassDefine;
+static bool JSHTMLAnchorElementClassDefine_initialized = false;
+
+static void init_JSHTMLAnchorElementClassDefine()
 {
-    "HTMLAnchorElement",
-    .finalizer = JSHTMLAnchorElement::finalizer,
-    .gc_mark = JSHTMLAnchorElement::mark,
-};
+    if (JSHTMLAnchorElementClassDefine_initialized) return;
+    JSHTMLAnchorElementClassDefine_initialized = true;
+    memset(&JSHTMLAnchorElementClassDefine, 0, sizeof(JSHTMLAnchorElementClassDefine));
+    JSHTMLAnchorElementClassDefine.class_name = "HTMLAnchorElement";
+    JSHTMLAnchorElementClassDefine.finalizer = JSHTMLAnchorElement::finalizer;
+    JSHTMLAnchorElementClassDefine.gc_mark = JSHTMLAnchorElement::mark;
+}
 
 JSClassID JSHTMLAnchorElement::js_class_id = 0;
 

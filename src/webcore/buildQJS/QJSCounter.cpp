@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCounter.h"
 
 #include "Counter.h"
@@ -39,13 +41,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSCounterAttributesFunctions[] =
+static JSCFunctionListEntry JSCounterAttributesFunctions[4];
+static bool JSCounterAttributesFunctions_initialized = false;
+
+static void init_JSCounterAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("identifier", JSCounter::getValueProperty, NULL, JSCounter::IdentifierAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSCounter::getValueProperty, NULL, JSCounter::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("separator", JSCounter::getValueProperty, NULL, JSCounter::SeparatorAttrNum),
-    JS_CGETSET_MAGIC_DEF("listStyle", JSCounter::getValueProperty, NULL, JSCounter::ListStyleAttrNum)
-};
+    if (JSCounterAttributesFunctions_initialized) return;
+    JSCounterAttributesFunctions_initialized = true;
+    memset(JSCounterAttributesFunctions, 0, sizeof(JSCounterAttributesFunctions));
+    JSCounterAttributesFunctions[0].name = "identifier";
+    JSCounterAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCounterAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCounterAttributesFunctions[0].magic = JSCounter::IdentifierAttrNum;
+    JSCounterAttributesFunctions[0].u.getset.get.getter_magic = JSCounter::getValueProperty;
+    JSCounterAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSCounterAttributesFunctions[1].name = "constructor";
+    JSCounterAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCounterAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCounterAttributesFunctions[1].magic = JSCounter::ConstructorAttrNum;
+    JSCounterAttributesFunctions[1].u.getset.get.getter_magic = JSCounter::getValueProperty;
+    JSCounterAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSCounterAttributesFunctions[2].name = "separator";
+    JSCounterAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCounterAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCounterAttributesFunctions[2].magic = JSCounter::SeparatorAttrNum;
+    JSCounterAttributesFunctions[2].u.getset.get.getter_magic = JSCounter::getValueProperty;
+    JSCounterAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSCounterAttributesFunctions[3].name = "listStyle";
+    JSCounterAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCounterAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCounterAttributesFunctions[3].magic = JSCounter::ListStyleAttrNum;
+    JSCounterAttributesFunctions[3].u.getset.get.getter_magic = JSCounter::getValueProperty;
+    JSCounterAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 class JSCounterConstructor {
 public:
@@ -94,21 +122,29 @@ JSValue JSCounterPrototype::self(JSContext * ctx)
 
 void JSCounterPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCounterAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCounterAttributesFunctions, countof(JSCounterAttributesFunctions));
 }
 
-static JSClassDef JSCounterClassDefine = 
+static JSClassDef JSCounterClassDefine;
+static bool JSCounterClassDefine_initialized = false;
+
+static void init_JSCounterClassDefine()
 {
-    "Counter",
-    .finalizer = JSCounter::finalizer,
-    .gc_mark = JSCounter::mark,
-};
+    if (JSCounterClassDefine_initialized) return;
+    JSCounterClassDefine_initialized = true;
+    memset(&JSCounterClassDefine, 0, sizeof(JSCounterClassDefine));
+    JSCounterClassDefine.class_name = "Counter";
+    JSCounterClassDefine.finalizer = JSCounter::finalizer;
+    JSCounterClassDefine.gc_mark = JSCounter::mark;
+}
 
 JSClassID JSCounter::js_class_id = 0;
 
 void JSCounter::init(JSContext* ctx)
 {
     if (JSCounter::js_class_id == 0) {
+        init_JSCounterClassDefine();
         JS_NewClassID(&JSCounter::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSCounter::js_class_id, &JSCounterClassDefine);
         JS_SetConstructor(ctx, JSCounterConstructor::self(ctx), JSCounterPrototype::self(ctx));

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSMouseEvent.h"
 
 #include "Clipboard.h"
@@ -47,33 +49,136 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSMouseEventAttributesFunctions[] =
+static JSCFunctionListEntry JSMouseEventAttributesFunctions[17];
+static bool JSMouseEventAttributesFunctions_initialized = false;
+
+static void init_JSMouseEventAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("metaKey", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::MetaKeyAttrNum),
-    JS_CGETSET_MAGIC_DEF("toElement", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::ToElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("relatedTarget", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::RelatedTargetAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("clientY", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::ClientYAttrNum),
-    JS_CGETSET_MAGIC_DEF("screenX", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::ScreenXAttrNum),
-    JS_CGETSET_MAGIC_DEF("screenY", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::ScreenYAttrNum),
-    JS_CGETSET_MAGIC_DEF("dataTransfer", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::DataTransferAttrNum),
-    JS_CGETSET_MAGIC_DEF("offsetY", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::OffsetYAttrNum),
-    JS_CGETSET_MAGIC_DEF("clientX", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::ClientXAttrNum),
-    JS_CGETSET_MAGIC_DEF("ctrlKey", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::CtrlKeyAttrNum),
-    JS_CGETSET_MAGIC_DEF("shiftKey", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::ShiftKeyAttrNum),
-    JS_CGETSET_MAGIC_DEF("altKey", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::AltKeyAttrNum),
-    JS_CGETSET_MAGIC_DEF("button", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::ButtonAttrNum),
-    JS_CGETSET_MAGIC_DEF("offsetX", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::OffsetXAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("fromElement", JSMouseEvent::getValueProperty, NULL, JSMouseEvent::FromElementAttrNum)
-};
+    if (JSMouseEventAttributesFunctions_initialized) return;
+    JSMouseEventAttributesFunctions_initialized = true;
+    memset(JSMouseEventAttributesFunctions, 0, sizeof(JSMouseEventAttributesFunctions));
+    JSMouseEventAttributesFunctions[0].name = "metaKey";
+    JSMouseEventAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[0].magic = JSMouseEvent::MetaKeyAttrNum;
+    JSMouseEventAttributesFunctions[0].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[1].name = "toElement";
+    JSMouseEventAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[1].magic = JSMouseEvent::ToElementAttrNum;
+    JSMouseEventAttributesFunctions[1].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[2].name = "relatedTarget";
+    JSMouseEventAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[2].magic = JSMouseEvent::RelatedTargetAttrNum;
+    JSMouseEventAttributesFunctions[2].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[3].name = "x";
+    JSMouseEventAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[3].magic = JSMouseEvent::XAttrNum;
+    JSMouseEventAttributesFunctions[3].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[4].name = "clientY";
+    JSMouseEventAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[4].magic = JSMouseEvent::ClientYAttrNum;
+    JSMouseEventAttributesFunctions[4].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[5].name = "screenX";
+    JSMouseEventAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[5].magic = JSMouseEvent::ScreenXAttrNum;
+    JSMouseEventAttributesFunctions[5].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[6].name = "screenY";
+    JSMouseEventAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[6].magic = JSMouseEvent::ScreenYAttrNum;
+    JSMouseEventAttributesFunctions[6].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[7].name = "dataTransfer";
+    JSMouseEventAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[7].magic = JSMouseEvent::DataTransferAttrNum;
+    JSMouseEventAttributesFunctions[7].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[8].name = "offsetY";
+    JSMouseEventAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[8].magic = JSMouseEvent::OffsetYAttrNum;
+    JSMouseEventAttributesFunctions[8].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[9].name = "clientX";
+    JSMouseEventAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[9].magic = JSMouseEvent::ClientXAttrNum;
+    JSMouseEventAttributesFunctions[9].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[10].name = "ctrlKey";
+    JSMouseEventAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[10].magic = JSMouseEvent::CtrlKeyAttrNum;
+    JSMouseEventAttributesFunctions[10].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[11].name = "shiftKey";
+    JSMouseEventAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[11].magic = JSMouseEvent::ShiftKeyAttrNum;
+    JSMouseEventAttributesFunctions[11].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[12].name = "altKey";
+    JSMouseEventAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[12].magic = JSMouseEvent::AltKeyAttrNum;
+    JSMouseEventAttributesFunctions[12].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[13].name = "button";
+    JSMouseEventAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[13].magic = JSMouseEvent::ButtonAttrNum;
+    JSMouseEventAttributesFunctions[13].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[13].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[14].name = "offsetX";
+    JSMouseEventAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[14].magic = JSMouseEvent::OffsetXAttrNum;
+    JSMouseEventAttributesFunctions[14].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[14].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[15].name = "y";
+    JSMouseEventAttributesFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[15].magic = JSMouseEvent::YAttrNum;
+    JSMouseEventAttributesFunctions[15].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[15].u.getset.set.setter_magic = NULL;
+    JSMouseEventAttributesFunctions[16].name = "fromElement";
+    JSMouseEventAttributesFunctions[16].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMouseEventAttributesFunctions[16].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMouseEventAttributesFunctions[16].magic = JSMouseEvent::FromElementAttrNum;
+    JSMouseEventAttributesFunctions[16].u.getset.get.getter_magic = JSMouseEvent::getValueProperty;
+    JSMouseEventAttributesFunctions[16].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSMouseEventPrototypeFunctions[] =
+static JSCFunctionListEntry JSMouseEventPrototypeFunctions[1];
+static bool JSMouseEventPrototypeFunctions_initialized = false;
+
+static void init_JSMouseEventPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("initMouseEvent", 15, JSMouseEventPrototypeFunction::callAsFunction, JSMouseEvent::InitMouseEventFuncNum)
-};
+    if (JSMouseEventPrototypeFunctions_initialized) return;
+    JSMouseEventPrototypeFunctions_initialized = true;
+    memset(JSMouseEventPrototypeFunctions, 0, sizeof(JSMouseEventPrototypeFunctions));
+    JSMouseEventPrototypeFunctions[0].name = "initMouseEvent";
+    JSMouseEventPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSMouseEventPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSMouseEventPrototypeFunctions[0].magic = JSMouseEvent::InitMouseEventFuncNum;
+    JSMouseEventPrototypeFunctions[0].u.func.length = 15;
+    JSMouseEventPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSMouseEventPrototypeFunctions[0].u.func.cfunc.generic_magic = JSMouseEventPrototypeFunction::callAsFunction;
+}
 
 JSValue JSMouseEventPrototype::self(JSContext * ctx)
 {
@@ -91,22 +196,31 @@ JSValue JSMouseEventPrototype::self(JSContext * ctx)
 
 void JSMouseEventPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSMouseEventAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSMouseEventAttributesFunctions, countof(JSMouseEventAttributesFunctions));
+    init_JSMouseEventPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSMouseEventPrototypeFunctions, countof(JSMouseEventPrototypeFunctions));
 }
 
-static JSClassDef JSMouseEventClassDefine = 
+static JSClassDef JSMouseEventClassDefine;
+static bool JSMouseEventClassDefine_initialized = false;
+
+static void init_JSMouseEventClassDefine()
 {
-    "MouseEvent",
-    .finalizer = JSMouseEvent::finalizer,
-    .gc_mark = JSMouseEvent::mark,
-};
+    if (JSMouseEventClassDefine_initialized) return;
+    JSMouseEventClassDefine_initialized = true;
+    memset(&JSMouseEventClassDefine, 0, sizeof(JSMouseEventClassDefine));
+    JSMouseEventClassDefine.class_name = "MouseEvent";
+    JSMouseEventClassDefine.finalizer = JSMouseEvent::finalizer;
+    JSMouseEventClassDefine.gc_mark = JSMouseEvent::mark;
+}
 
 JSClassID JSMouseEvent::js_class_id = 0;
 
 void JSMouseEvent::init(JSContext* ctx)
 {
     if (JSMouseEvent::js_class_id == 0) {
+        init_JSMouseEventClassDefine();
         JS_NewClassID(&JSMouseEvent::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSMouseEvent::js_class_id, &JSMouseEventClassDefine);
         JS_SetClassProto(ctx, JSMouseEvent::js_class_id, JSMouseEventPrototype::self(ctx));

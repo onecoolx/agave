@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSStyleSheet.h"
 
 #include "MediaList.h"
@@ -44,17 +46,63 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSStyleSheetAttributesFunctions[] =
+static JSCFunctionListEntry JSStyleSheetAttributesFunctions[8];
+static bool JSStyleSheetAttributesFunctions_initialized = false;
+
+static void init_JSStyleSheetAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("href", JSStyleSheet::getValueProperty, NULL, JSStyleSheet::HrefAttrNum),
-    JS_CGETSET_MAGIC_DEF("disabled", JSStyleSheet::getValueProperty, JSStyleSheet::putValueProperty, JSStyleSheet::DisabledAttrNum),
-    JS_CGETSET_MAGIC_DEF("parentStyleSheet", JSStyleSheet::getValueProperty, NULL, JSStyleSheet::ParentStyleSheetAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSStyleSheet::getValueProperty, NULL, JSStyleSheet::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("ownerNode", JSStyleSheet::getValueProperty, NULL, JSStyleSheet::OwnerNodeAttrNum),
-    JS_CGETSET_MAGIC_DEF("media", JSStyleSheet::getValueProperty, NULL, JSStyleSheet::MediaAttrNum),
-    JS_CGETSET_MAGIC_DEF("title", JSStyleSheet::getValueProperty, NULL, JSStyleSheet::TitleAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSStyleSheet::getValueProperty, NULL, JSStyleSheet::ConstructorAttrNum)
-};
+    if (JSStyleSheetAttributesFunctions_initialized) return;
+    JSStyleSheetAttributesFunctions_initialized = true;
+    memset(JSStyleSheetAttributesFunctions, 0, sizeof(JSStyleSheetAttributesFunctions));
+    JSStyleSheetAttributesFunctions[0].name = "href";
+    JSStyleSheetAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSStyleSheetAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSStyleSheetAttributesFunctions[0].magic = JSStyleSheet::HrefAttrNum;
+    JSStyleSheetAttributesFunctions[0].u.getset.get.getter_magic = JSStyleSheet::getValueProperty;
+    JSStyleSheetAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSStyleSheetAttributesFunctions[1].name = "disabled";
+    JSStyleSheetAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSStyleSheetAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSStyleSheetAttributesFunctions[1].magic = JSStyleSheet::DisabledAttrNum;
+    JSStyleSheetAttributesFunctions[1].u.getset.get.getter_magic = JSStyleSheet::getValueProperty;
+    JSStyleSheetAttributesFunctions[1].u.getset.set.setter_magic = JSStyleSheet::putValueProperty;
+    JSStyleSheetAttributesFunctions[2].name = "parentStyleSheet";
+    JSStyleSheetAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSStyleSheetAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSStyleSheetAttributesFunctions[2].magic = JSStyleSheet::ParentStyleSheetAttrNum;
+    JSStyleSheetAttributesFunctions[2].u.getset.get.getter_magic = JSStyleSheet::getValueProperty;
+    JSStyleSheetAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSStyleSheetAttributesFunctions[3].name = "type";
+    JSStyleSheetAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSStyleSheetAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSStyleSheetAttributesFunctions[3].magic = JSStyleSheet::TypeAttrNum;
+    JSStyleSheetAttributesFunctions[3].u.getset.get.getter_magic = JSStyleSheet::getValueProperty;
+    JSStyleSheetAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSStyleSheetAttributesFunctions[4].name = "ownerNode";
+    JSStyleSheetAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSStyleSheetAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSStyleSheetAttributesFunctions[4].magic = JSStyleSheet::OwnerNodeAttrNum;
+    JSStyleSheetAttributesFunctions[4].u.getset.get.getter_magic = JSStyleSheet::getValueProperty;
+    JSStyleSheetAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSStyleSheetAttributesFunctions[5].name = "media";
+    JSStyleSheetAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSStyleSheetAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSStyleSheetAttributesFunctions[5].magic = JSStyleSheet::MediaAttrNum;
+    JSStyleSheetAttributesFunctions[5].u.getset.get.getter_magic = JSStyleSheet::getValueProperty;
+    JSStyleSheetAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSStyleSheetAttributesFunctions[6].name = "title";
+    JSStyleSheetAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSStyleSheetAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSStyleSheetAttributesFunctions[6].magic = JSStyleSheet::TitleAttrNum;
+    JSStyleSheetAttributesFunctions[6].u.getset.get.getter_magic = JSStyleSheet::getValueProperty;
+    JSStyleSheetAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSStyleSheetAttributesFunctions[7].name = "constructor";
+    JSStyleSheetAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSStyleSheetAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSStyleSheetAttributesFunctions[7].magic = JSStyleSheet::ConstructorAttrNum;
+    JSStyleSheetAttributesFunctions[7].u.getset.get.getter_magic = JSStyleSheet::getValueProperty;
+    JSStyleSheetAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+}
 
 class JSStyleSheetConstructor {
 public:
@@ -103,21 +151,29 @@ JSValue JSStyleSheetPrototype::self(JSContext * ctx)
 
 void JSStyleSheetPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSStyleSheetAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSStyleSheetAttributesFunctions, countof(JSStyleSheetAttributesFunctions));
 }
 
-static JSClassDef JSStyleSheetClassDefine = 
+static JSClassDef JSStyleSheetClassDefine;
+static bool JSStyleSheetClassDefine_initialized = false;
+
+static void init_JSStyleSheetClassDefine()
 {
-    "StyleSheet",
-    .finalizer = JSStyleSheet::finalizer,
-    .gc_mark = JSStyleSheet::mark,
-};
+    if (JSStyleSheetClassDefine_initialized) return;
+    JSStyleSheetClassDefine_initialized = true;
+    memset(&JSStyleSheetClassDefine, 0, sizeof(JSStyleSheetClassDefine));
+    JSStyleSheetClassDefine.class_name = "StyleSheet";
+    JSStyleSheetClassDefine.finalizer = JSStyleSheet::finalizer;
+    JSStyleSheetClassDefine.gc_mark = JSStyleSheet::mark;
+}
 
 JSClassID JSStyleSheet::js_class_id = 0;
 
 void JSStyleSheet::init(JSContext* ctx)
 {
     if (JSStyleSheet::js_class_id == 0) {
+        init_JSStyleSheetClassDefine();
         JS_NewClassID(&JSStyleSheet::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSStyleSheet::js_class_id, &JSStyleSheetClassDefine);
         JS_SetConstructor(ctx, JSStyleSheetConstructor::self(ctx), JSStyleSheetPrototype::self(ctx));

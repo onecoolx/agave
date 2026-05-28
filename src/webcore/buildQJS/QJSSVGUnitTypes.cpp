@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,10 +48,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGUnitTypesAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGUnitTypesAttributesFunctions[1];
+static bool JSSVGUnitTypesAttributesFunctions_initialized = false;
+
+static void init_JSSVGUnitTypesAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSSVGUnitTypes::getValueProperty, NULL, JSSVGUnitTypes::ConstructorAttrNum)
-};
+    if (JSSVGUnitTypesAttributesFunctions_initialized) return;
+    JSSVGUnitTypesAttributesFunctions_initialized = true;
+    memset(JSSVGUnitTypesAttributesFunctions, 0, sizeof(JSSVGUnitTypesAttributesFunctions));
+    JSSVGUnitTypesAttributesFunctions[0].name = "constructor";
+    JSSVGUnitTypesAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGUnitTypesAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGUnitTypesAttributesFunctions[0].magic = JSSVGUnitTypes::ConstructorAttrNum;
+    JSSVGUnitTypesAttributesFunctions[0].u.getset.get.getter_magic = JSSVGUnitTypes::getValueProperty;
+    JSSVGUnitTypesAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 class JSSVGUnitTypesConstructor {
 public:
@@ -66,12 +79,33 @@ JSValue JSSVGUnitTypesConstructor::getValueProperty(JSContext * ctx, JSValueCons
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSSVGUnitTypesConstructorFunctions[] =
+static JSCFunctionListEntry JSSVGUnitTypesConstructorFunctions[3];
+static bool JSSVGUnitTypesConstructorFunctions_initialized = false;
+
+static void init_JSSVGUnitTypesConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_UNIT_TYPE_UNKNOWN", JSSVGUnitTypesConstructor::getValueProperty, NULL, SVGUnitTypes::SVG_UNIT_TYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_UNIT_TYPE_USERSPACEONUSE", JSSVGUnitTypesConstructor::getValueProperty, NULL, SVGUnitTypes::SVG_UNIT_TYPE_USERSPACEONUSE),
-    JS_CGETSET_MAGIC_DEF("SVG_UNIT_TYPE_OBJECTBOUNDINGBOX", JSSVGUnitTypesConstructor::getValueProperty, NULL, SVGUnitTypes::SVG_UNIT_TYPE_OBJECTBOUNDINGBOX)
-};
+    if (JSSVGUnitTypesConstructorFunctions_initialized) return;
+    JSSVGUnitTypesConstructorFunctions_initialized = true;
+    memset(JSSVGUnitTypesConstructorFunctions, 0, sizeof(JSSVGUnitTypesConstructorFunctions));
+    JSSVGUnitTypesConstructorFunctions[0].name = "SVG_UNIT_TYPE_UNKNOWN";
+    JSSVGUnitTypesConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGUnitTypesConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGUnitTypesConstructorFunctions[0].magic = SVGUnitTypes::SVG_UNIT_TYPE_UNKNOWN;
+    JSSVGUnitTypesConstructorFunctions[0].u.getset.get.getter_magic = JSSVGUnitTypesConstructor::getValueProperty;
+    JSSVGUnitTypesConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGUnitTypesConstructorFunctions[1].name = "SVG_UNIT_TYPE_USERSPACEONUSE";
+    JSSVGUnitTypesConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGUnitTypesConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGUnitTypesConstructorFunctions[1].magic = SVGUnitTypes::SVG_UNIT_TYPE_USERSPACEONUSE;
+    JSSVGUnitTypesConstructorFunctions[1].u.getset.get.getter_magic = JSSVGUnitTypesConstructor::getValueProperty;
+    JSSVGUnitTypesConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGUnitTypesConstructorFunctions[2].name = "SVG_UNIT_TYPE_OBJECTBOUNDINGBOX";
+    JSSVGUnitTypesConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGUnitTypesConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGUnitTypesConstructorFunctions[2].magic = SVGUnitTypes::SVG_UNIT_TYPE_OBJECTBOUNDINGBOX;
+    JSSVGUnitTypesConstructorFunctions[2].u.getset.get.getter_magic = JSSVGUnitTypesConstructor::getValueProperty;
+    JSSVGUnitTypesConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGUnitTypesConstructor::self(JSContext * ctx)
 {
@@ -89,17 +123,39 @@ JSValue JSSVGUnitTypesConstructor::self(JSContext * ctx)
 
 void JSSVGUnitTypesConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGUnitTypesConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGUnitTypesConstructorFunctions, countof(JSSVGUnitTypesConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGUnitTypesPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSSVGUnitTypesPrototypeConstantsFunctions[3];
+static bool JSSVGUnitTypesPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSSVGUnitTypesPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_UNIT_TYPE_UNKNOWN", JSSVGUnitTypesPrototype::getValueProperty, NULL, SVGUnitTypes::SVG_UNIT_TYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_UNIT_TYPE_USERSPACEONUSE", JSSVGUnitTypesPrototype::getValueProperty, NULL, SVGUnitTypes::SVG_UNIT_TYPE_USERSPACEONUSE),
-    JS_CGETSET_MAGIC_DEF("SVG_UNIT_TYPE_OBJECTBOUNDINGBOX", JSSVGUnitTypesPrototype::getValueProperty, NULL, SVGUnitTypes::SVG_UNIT_TYPE_OBJECTBOUNDINGBOX)
-};
+    if (JSSVGUnitTypesPrototypeConstantsFunctions_initialized) return;
+    JSSVGUnitTypesPrototypeConstantsFunctions_initialized = true;
+    memset(JSSVGUnitTypesPrototypeConstantsFunctions, 0, sizeof(JSSVGUnitTypesPrototypeConstantsFunctions));
+    JSSVGUnitTypesPrototypeConstantsFunctions[0].name = "SVG_UNIT_TYPE_UNKNOWN";
+    JSSVGUnitTypesPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGUnitTypesPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGUnitTypesPrototypeConstantsFunctions[0].magic = SVGUnitTypes::SVG_UNIT_TYPE_UNKNOWN;
+    JSSVGUnitTypesPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGUnitTypesPrototype::getValueProperty;
+    JSSVGUnitTypesPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGUnitTypesPrototypeConstantsFunctions[1].name = "SVG_UNIT_TYPE_USERSPACEONUSE";
+    JSSVGUnitTypesPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGUnitTypesPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGUnitTypesPrototypeConstantsFunctions[1].magic = SVGUnitTypes::SVG_UNIT_TYPE_USERSPACEONUSE;
+    JSSVGUnitTypesPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGUnitTypesPrototype::getValueProperty;
+    JSSVGUnitTypesPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGUnitTypesPrototypeConstantsFunctions[2].name = "SVG_UNIT_TYPE_OBJECTBOUNDINGBOX";
+    JSSVGUnitTypesPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGUnitTypesPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGUnitTypesPrototypeConstantsFunctions[2].magic = SVGUnitTypes::SVG_UNIT_TYPE_OBJECTBOUNDINGBOX;
+    JSSVGUnitTypesPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGUnitTypesPrototype::getValueProperty;
+    JSSVGUnitTypesPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGUnitTypesPrototype::self(JSContext * ctx)
 {
@@ -117,7 +173,9 @@ JSValue JSSVGUnitTypesPrototype::self(JSContext * ctx)
 
 void JSSVGUnitTypesPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGUnitTypesAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGUnitTypesAttributesFunctions, countof(JSSVGUnitTypesAttributesFunctions));
+    init_JSSVGUnitTypesPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGUnitTypesPrototypeConstantsFunctions, countof(JSSVGUnitTypesPrototypeConstantsFunctions));
 }
 
@@ -127,18 +185,25 @@ JSValue JSSVGUnitTypesPrototype::getValueProperty(JSContext * ctx, JSValueConst 
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSSVGUnitTypesClassDefine = 
+static JSClassDef JSSVGUnitTypesClassDefine;
+static bool JSSVGUnitTypesClassDefine_initialized = false;
+
+static void init_JSSVGUnitTypesClassDefine()
 {
-    "SVGUnitTypes",
-    .finalizer = JSSVGUnitTypes::finalizer,
-    .gc_mark = JSSVGUnitTypes::mark,
-};
+    if (JSSVGUnitTypesClassDefine_initialized) return;
+    JSSVGUnitTypesClassDefine_initialized = true;
+    memset(&JSSVGUnitTypesClassDefine, 0, sizeof(JSSVGUnitTypesClassDefine));
+    JSSVGUnitTypesClassDefine.class_name = "SVGUnitTypes";
+    JSSVGUnitTypesClassDefine.finalizer = JSSVGUnitTypes::finalizer;
+    JSSVGUnitTypesClassDefine.gc_mark = JSSVGUnitTypes::mark;
+}
 
 JSClassID JSSVGUnitTypes::js_class_id = 0;
 
 void JSSVGUnitTypes::init(JSContext* ctx)
 {
     if (JSSVGUnitTypes::js_class_id == 0) {
+        init_JSSVGUnitTypesClassDefine();
         JS_NewClassID(&JSSVGUnitTypes::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGUnitTypes::js_class_id, &JSSVGUnitTypesClassDefine);
         JS_SetConstructor(ctx, JSSVGUnitTypesConstructor::self(ctx), JSSVGUnitTypesPrototype::self(ctx));

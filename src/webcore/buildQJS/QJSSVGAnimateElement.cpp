@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -62,18 +64,25 @@ void JSSVGAnimateElementPrototype::initPrototype(JSContext * ctx, JSValue this_o
 {
 }
 
-static JSClassDef JSSVGAnimateElementClassDefine = 
+static JSClassDef JSSVGAnimateElementClassDefine;
+static bool JSSVGAnimateElementClassDefine_initialized = false;
+
+static void init_JSSVGAnimateElementClassDefine()
 {
-    "SVGAnimateElement",
-    .finalizer = JSSVGAnimateElement::finalizer,
-    .gc_mark = JSSVGAnimateElement::mark,
-};
+    if (JSSVGAnimateElementClassDefine_initialized) return;
+    JSSVGAnimateElementClassDefine_initialized = true;
+    memset(&JSSVGAnimateElementClassDefine, 0, sizeof(JSSVGAnimateElementClassDefine));
+    JSSVGAnimateElementClassDefine.class_name = "SVGAnimateElement";
+    JSSVGAnimateElementClassDefine.finalizer = JSSVGAnimateElement::finalizer;
+    JSSVGAnimateElementClassDefine.gc_mark = JSSVGAnimateElement::mark;
+}
 
 JSClassID JSSVGAnimateElement::js_class_id = 0;
 
 void JSSVGAnimateElement::init(JSContext* ctx)
 {
     if (JSSVGAnimateElement::js_class_id == 0) {
+        init_JSSVGAnimateElementClassDefine();
         JS_NewClassID(&JSSVGAnimateElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimateElement::js_class_id, &JSSVGAnimateElementClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimateElement::js_class_id, JSSVGAnimateElementPrototype::self(ctx));

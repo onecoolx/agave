@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCSSCharsetRule.h"
 
 #include "CSSCharsetRule.h"
@@ -39,11 +41,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSCSSCharsetRuleAttributesFunctions[] =
+static JSCFunctionListEntry JSCSSCharsetRuleAttributesFunctions[2];
+static bool JSCSSCharsetRuleAttributesFunctions_initialized = false;
+
+static void init_JSCSSCharsetRuleAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("encoding", JSCSSCharsetRule::getValueProperty, JSCSSCharsetRule::putValueProperty, JSCSSCharsetRule::EncodingAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSCSSCharsetRule::getValueProperty, NULL, JSCSSCharsetRule::ConstructorAttrNum)
-};
+    if (JSCSSCharsetRuleAttributesFunctions_initialized) return;
+    JSCSSCharsetRuleAttributesFunctions_initialized = true;
+    memset(JSCSSCharsetRuleAttributesFunctions, 0, sizeof(JSCSSCharsetRuleAttributesFunctions));
+    JSCSSCharsetRuleAttributesFunctions[0].name = "encoding";
+    JSCSSCharsetRuleAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSCharsetRuleAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSCharsetRuleAttributesFunctions[0].magic = JSCSSCharsetRule::EncodingAttrNum;
+    JSCSSCharsetRuleAttributesFunctions[0].u.getset.get.getter_magic = JSCSSCharsetRule::getValueProperty;
+    JSCSSCharsetRuleAttributesFunctions[0].u.getset.set.setter_magic = JSCSSCharsetRule::putValueProperty;
+    JSCSSCharsetRuleAttributesFunctions[1].name = "constructor";
+    JSCSSCharsetRuleAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSCharsetRuleAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSCharsetRuleAttributesFunctions[1].magic = JSCSSCharsetRule::ConstructorAttrNum;
+    JSCSSCharsetRuleAttributesFunctions[1].u.getset.get.getter_magic = JSCSSCharsetRule::getValueProperty;
+    JSCSSCharsetRuleAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSCSSCharsetRuleConstructor {
 public:
@@ -92,21 +110,29 @@ JSValue JSCSSCharsetRulePrototype::self(JSContext * ctx)
 
 void JSCSSCharsetRulePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCSSCharsetRuleAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSCharsetRuleAttributesFunctions, countof(JSCSSCharsetRuleAttributesFunctions));
 }
 
-static JSClassDef JSCSSCharsetRuleClassDefine = 
+static JSClassDef JSCSSCharsetRuleClassDefine;
+static bool JSCSSCharsetRuleClassDefine_initialized = false;
+
+static void init_JSCSSCharsetRuleClassDefine()
 {
-    "CSSCharsetRule",
-    .finalizer = JSCSSCharsetRule::finalizer,
-    .gc_mark = JSCSSCharsetRule::mark,
-};
+    if (JSCSSCharsetRuleClassDefine_initialized) return;
+    JSCSSCharsetRuleClassDefine_initialized = true;
+    memset(&JSCSSCharsetRuleClassDefine, 0, sizeof(JSCSSCharsetRuleClassDefine));
+    JSCSSCharsetRuleClassDefine.class_name = "CSSCharsetRule";
+    JSCSSCharsetRuleClassDefine.finalizer = JSCSSCharsetRule::finalizer;
+    JSCSSCharsetRuleClassDefine.gc_mark = JSCSSCharsetRule::mark;
+}
 
 JSClassID JSCSSCharsetRule::js_class_id = 0;
 
 void JSCSSCharsetRule::init(JSContext* ctx)
 {
     if (JSCSSCharsetRule::js_class_id == 0) {
+        init_JSCSSCharsetRuleClassDefine();
         JS_NewClassID(&JSCSSCharsetRule::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSCSSCharsetRule::js_class_id, &JSCSSCharsetRuleClassDefine);
         JS_SetConstructor(ctx, JSCSSCharsetRuleConstructor::self(ctx), JSCSSCharsetRulePrototype::self(ctx));

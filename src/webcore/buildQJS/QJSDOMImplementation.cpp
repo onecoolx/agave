@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSDOMImplementation.h"
 
 #include "CSSStyleSheet.h"
@@ -46,10 +48,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSDOMImplementationAttributesFunctions[] =
+static JSCFunctionListEntry JSDOMImplementationAttributesFunctions[1];
+static bool JSDOMImplementationAttributesFunctions_initialized = false;
+
+static void init_JSDOMImplementationAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSDOMImplementation::getValueProperty, NULL, JSDOMImplementation::ConstructorAttrNum)
-};
+    if (JSDOMImplementationAttributesFunctions_initialized) return;
+    JSDOMImplementationAttributesFunctions_initialized = true;
+    memset(JSDOMImplementationAttributesFunctions, 0, sizeof(JSDOMImplementationAttributesFunctions));
+    JSDOMImplementationAttributesFunctions[0].name = "constructor";
+    JSDOMImplementationAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSDOMImplementationAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSDOMImplementationAttributesFunctions[0].magic = JSDOMImplementation::ConstructorAttrNum;
+    JSDOMImplementationAttributesFunctions[0].u.getset.get.getter_magic = JSDOMImplementation::getValueProperty;
+    JSDOMImplementationAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 class JSDOMImplementationConstructor {
 public:
@@ -84,14 +97,50 @@ void JSDOMImplementationConstructor::initConstructor(JSContext * ctx, JSValue th
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSDOMImplementationPrototypeFunctions[] =
+static JSCFunctionListEntry JSDOMImplementationPrototypeFunctions[5];
+static bool JSDOMImplementationPrototypeFunctions_initialized = false;
+
+static void init_JSDOMImplementationPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("createDocumentType", 3, JSDOMImplementationPrototypeFunction::callAsFunction, JSDOMImplementation::CreateDocumentTypeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasFeature", 2, JSDOMImplementationPrototypeFunction::callAsFunction, JSDOMImplementation::HasFeatureFuncNum),
-    JS_CFUNC_MAGIC_DEF("createDocument", 3, JSDOMImplementationPrototypeFunction::callAsFunction, JSDOMImplementation::CreateDocumentFuncNum),
-    JS_CFUNC_MAGIC_DEF("createCSSStyleSheet", 2, JSDOMImplementationPrototypeFunction::callAsFunction, JSDOMImplementation::CreateCSSStyleSheetFuncNum),
-    JS_CFUNC_MAGIC_DEF("createHTMLDocument", 1, JSDOMImplementationPrototypeFunction::callAsFunction, JSDOMImplementation::CreateHTMLDocumentFuncNum)
-};
+    if (JSDOMImplementationPrototypeFunctions_initialized) return;
+    JSDOMImplementationPrototypeFunctions_initialized = true;
+    memset(JSDOMImplementationPrototypeFunctions, 0, sizeof(JSDOMImplementationPrototypeFunctions));
+    JSDOMImplementationPrototypeFunctions[0].name = "createDocumentType";
+    JSDOMImplementationPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMImplementationPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSDOMImplementationPrototypeFunctions[0].magic = JSDOMImplementation::CreateDocumentTypeFuncNum;
+    JSDOMImplementationPrototypeFunctions[0].u.func.length = 3;
+    JSDOMImplementationPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMImplementationPrototypeFunctions[0].u.func.cfunc.generic_magic = JSDOMImplementationPrototypeFunction::callAsFunction;
+    JSDOMImplementationPrototypeFunctions[1].name = "hasFeature";
+    JSDOMImplementationPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMImplementationPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSDOMImplementationPrototypeFunctions[1].magic = JSDOMImplementation::HasFeatureFuncNum;
+    JSDOMImplementationPrototypeFunctions[1].u.func.length = 2;
+    JSDOMImplementationPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMImplementationPrototypeFunctions[1].u.func.cfunc.generic_magic = JSDOMImplementationPrototypeFunction::callAsFunction;
+    JSDOMImplementationPrototypeFunctions[2].name = "createDocument";
+    JSDOMImplementationPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMImplementationPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSDOMImplementationPrototypeFunctions[2].magic = JSDOMImplementation::CreateDocumentFuncNum;
+    JSDOMImplementationPrototypeFunctions[2].u.func.length = 3;
+    JSDOMImplementationPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMImplementationPrototypeFunctions[2].u.func.cfunc.generic_magic = JSDOMImplementationPrototypeFunction::callAsFunction;
+    JSDOMImplementationPrototypeFunctions[3].name = "createCSSStyleSheet";
+    JSDOMImplementationPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMImplementationPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSDOMImplementationPrototypeFunctions[3].magic = JSDOMImplementation::CreateCSSStyleSheetFuncNum;
+    JSDOMImplementationPrototypeFunctions[3].u.func.length = 2;
+    JSDOMImplementationPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMImplementationPrototypeFunctions[3].u.func.cfunc.generic_magic = JSDOMImplementationPrototypeFunction::callAsFunction;
+    JSDOMImplementationPrototypeFunctions[4].name = "createHTMLDocument";
+    JSDOMImplementationPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSDOMImplementationPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSDOMImplementationPrototypeFunctions[4].magic = JSDOMImplementation::CreateHTMLDocumentFuncNum;
+    JSDOMImplementationPrototypeFunctions[4].u.func.length = 1;
+    JSDOMImplementationPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSDOMImplementationPrototypeFunctions[4].u.func.cfunc.generic_magic = JSDOMImplementationPrototypeFunction::callAsFunction;
+}
 
 JSValue JSDOMImplementationPrototype::self(JSContext * ctx)
 {
@@ -109,22 +158,31 @@ JSValue JSDOMImplementationPrototype::self(JSContext * ctx)
 
 void JSDOMImplementationPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSDOMImplementationAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSDOMImplementationAttributesFunctions, countof(JSDOMImplementationAttributesFunctions));
+    init_JSDOMImplementationPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSDOMImplementationPrototypeFunctions, countof(JSDOMImplementationPrototypeFunctions));
 }
 
-static JSClassDef JSDOMImplementationClassDefine = 
+static JSClassDef JSDOMImplementationClassDefine;
+static bool JSDOMImplementationClassDefine_initialized = false;
+
+static void init_JSDOMImplementationClassDefine()
 {
-    "DOMImplementation",
-    .finalizer = JSDOMImplementation::finalizer,
-    .gc_mark = JSDOMImplementation::mark,
-};
+    if (JSDOMImplementationClassDefine_initialized) return;
+    JSDOMImplementationClassDefine_initialized = true;
+    memset(&JSDOMImplementationClassDefine, 0, sizeof(JSDOMImplementationClassDefine));
+    JSDOMImplementationClassDefine.class_name = "DOMImplementation";
+    JSDOMImplementationClassDefine.finalizer = JSDOMImplementation::finalizer;
+    JSDOMImplementationClassDefine.gc_mark = JSDOMImplementation::mark;
+}
 
 JSClassID JSDOMImplementation::js_class_id = 0;
 
 void JSDOMImplementation::init(JSContext* ctx)
 {
     if (JSDOMImplementation::js_class_id == 0) {
+        init_JSDOMImplementationClassDefine();
         JS_NewClassID(&JSDOMImplementation::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSDOMImplementation::js_class_id, &JSDOMImplementationClassDefine);
         JS_SetConstructor(ctx, JSDOMImplementationConstructor::self(ctx), JSDOMImplementationPrototype::self(ctx));

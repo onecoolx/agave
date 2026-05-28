@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -53,24 +55,82 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFEFloodElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFEFloodElementAttributesFunctions[8];
+static bool JSSVGFEFloodElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFEFloodElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFEFloodElement::getValueProperty, NULL, JSSVGFEFloodElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGFEFloodElement::getValueProperty, NULL, JSSVGFEFloodElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGFEFloodElement::getValueProperty, NULL, JSSVGFEFloodElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFEFloodElement::getValueProperty, NULL, JSSVGFEFloodElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("in1", JSSVGFEFloodElement::getValueProperty, NULL, JSSVGFEFloodElement::In1AttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGFEFloodElement::getValueProperty, NULL, JSSVGFEFloodElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("result", JSSVGFEFloodElement::getValueProperty, NULL, JSSVGFEFloodElement::ResultAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGFEFloodElement::getValueProperty, NULL, JSSVGFEFloodElement::StyleAttrNum)
-};
+    if (JSSVGFEFloodElementAttributesFunctions_initialized) return;
+    JSSVGFEFloodElementAttributesFunctions_initialized = true;
+    memset(JSSVGFEFloodElementAttributesFunctions, 0, sizeof(JSSVGFEFloodElementAttributesFunctions));
+    JSSVGFEFloodElementAttributesFunctions[0].name = "x";
+    JSSVGFEFloodElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEFloodElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEFloodElementAttributesFunctions[0].magic = JSSVGFEFloodElement::XAttrNum;
+    JSSVGFEFloodElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFEFloodElement::getValueProperty;
+    JSSVGFEFloodElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEFloodElementAttributesFunctions[1].name = "className";
+    JSSVGFEFloodElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEFloodElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEFloodElementAttributesFunctions[1].magic = JSSVGFEFloodElement::ClassNameAttrNum;
+    JSSVGFEFloodElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFEFloodElement::getValueProperty;
+    JSSVGFEFloodElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEFloodElementAttributesFunctions[2].name = "width";
+    JSSVGFEFloodElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEFloodElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEFloodElementAttributesFunctions[2].magic = JSSVGFEFloodElement::WidthAttrNum;
+    JSSVGFEFloodElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFEFloodElement::getValueProperty;
+    JSSVGFEFloodElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEFloodElementAttributesFunctions[3].name = "y";
+    JSSVGFEFloodElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEFloodElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEFloodElementAttributesFunctions[3].magic = JSSVGFEFloodElement::YAttrNum;
+    JSSVGFEFloodElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGFEFloodElement::getValueProperty;
+    JSSVGFEFloodElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFEFloodElementAttributesFunctions[4].name = "in1";
+    JSSVGFEFloodElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEFloodElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEFloodElementAttributesFunctions[4].magic = JSSVGFEFloodElement::In1AttrNum;
+    JSSVGFEFloodElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGFEFloodElement::getValueProperty;
+    JSSVGFEFloodElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFEFloodElementAttributesFunctions[5].name = "height";
+    JSSVGFEFloodElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEFloodElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEFloodElementAttributesFunctions[5].magic = JSSVGFEFloodElement::HeightAttrNum;
+    JSSVGFEFloodElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGFEFloodElement::getValueProperty;
+    JSSVGFEFloodElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFEFloodElementAttributesFunctions[6].name = "result";
+    JSSVGFEFloodElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEFloodElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEFloodElementAttributesFunctions[6].magic = JSSVGFEFloodElement::ResultAttrNum;
+    JSSVGFEFloodElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGFEFloodElement::getValueProperty;
+    JSSVGFEFloodElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFEFloodElementAttributesFunctions[7].name = "style";
+    JSSVGFEFloodElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEFloodElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEFloodElementAttributesFunctions[7].magic = JSSVGFEFloodElement::StyleAttrNum;
+    JSSVGFEFloodElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGFEFloodElement::getValueProperty;
+    JSSVGFEFloodElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGFEFloodElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGFEFloodElementPrototypeFunctions[1];
+static bool JSSVGFEFloodElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGFEFloodElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGFEFloodElementPrototypeFunction::callAsFunction, JSSVGFEFloodElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGFEFloodElementPrototypeFunctions_initialized) return;
+    JSSVGFEFloodElementPrototypeFunctions_initialized = true;
+    memset(JSSVGFEFloodElementPrototypeFunctions, 0, sizeof(JSSVGFEFloodElementPrototypeFunctions));
+    JSSVGFEFloodElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGFEFloodElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFEFloodElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGFEFloodElementPrototypeFunctions[0].magic = JSSVGFEFloodElement::GetPresentationAttributeFuncNum;
+    JSSVGFEFloodElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGFEFloodElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFEFloodElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGFEFloodElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGFEFloodElementPrototype::self(JSContext * ctx)
 {
@@ -88,22 +148,31 @@ JSValue JSSVGFEFloodElementPrototype::self(JSContext * ctx)
 
 void JSSVGFEFloodElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFEFloodElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEFloodElementAttributesFunctions, countof(JSSVGFEFloodElementAttributesFunctions));
+    init_JSSVGFEFloodElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEFloodElementPrototypeFunctions, countof(JSSVGFEFloodElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGFEFloodElementClassDefine = 
+static JSClassDef JSSVGFEFloodElementClassDefine;
+static bool JSSVGFEFloodElementClassDefine_initialized = false;
+
+static void init_JSSVGFEFloodElementClassDefine()
 {
-    "SVGFEFloodElement",
-    .finalizer = JSSVGFEFloodElement::finalizer,
-    .gc_mark = JSSVGFEFloodElement::mark,
-};
+    if (JSSVGFEFloodElementClassDefine_initialized) return;
+    JSSVGFEFloodElementClassDefine_initialized = true;
+    memset(&JSSVGFEFloodElementClassDefine, 0, sizeof(JSSVGFEFloodElementClassDefine));
+    JSSVGFEFloodElementClassDefine.class_name = "SVGFEFloodElement";
+    JSSVGFEFloodElementClassDefine.finalizer = JSSVGFEFloodElement::finalizer;
+    JSSVGFEFloodElementClassDefine.gc_mark = JSSVGFEFloodElement::mark;
+}
 
 JSClassID JSSVGFEFloodElement::js_class_id = 0;
 
 void JSSVGFEFloodElement::init(JSContext* ctx)
 {
     if (JSSVGFEFloodElement::js_class_id == 0) {
+        init_JSSVGFEFloodElementClassDefine();
         JS_NewClassID(&JSSVGFEFloodElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFEFloodElement::js_class_id, &JSSVGFEFloodElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFEFloodElement::js_class_id, JSSVGFEFloodElementPrototype::self(ctx));

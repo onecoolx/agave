@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLFormElement.h"
 
 #include "HTMLCollection.h"
@@ -41,19 +43,75 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLFormElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLFormElementAttributesFunctions[10];
+static bool JSHTMLFormElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLFormElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("action", JSHTMLFormElement::getValueProperty, JSHTMLFormElement::putValueProperty, JSHTMLFormElement::ActionAttrNum),
-    JS_CGETSET_MAGIC_DEF("target", JSHTMLFormElement::getValueProperty, JSHTMLFormElement::putValueProperty, JSHTMLFormElement::TargetAttrNum),
-    JS_CGETSET_MAGIC_DEF("method", JSHTMLFormElement::getValueProperty, JSHTMLFormElement::putValueProperty, JSHTMLFormElement::MethodAttrNum),
-    JS_CGETSET_MAGIC_DEF("length", JSHTMLFormElement::getValueProperty, NULL, JSHTMLFormElement::LengthAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLFormElement::getValueProperty, NULL, JSHTMLFormElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("elements", JSHTMLFormElement::getValueProperty, NULL, JSHTMLFormElement::ElementsAttrNum),
-    JS_CGETSET_MAGIC_DEF("name", JSHTMLFormElement::getValueProperty, JSHTMLFormElement::putValueProperty, JSHTMLFormElement::NameAttrNum),
-    JS_CGETSET_MAGIC_DEF("acceptCharset", JSHTMLFormElement::getValueProperty, JSHTMLFormElement::putValueProperty, JSHTMLFormElement::AcceptCharsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("encoding", JSHTMLFormElement::getValueProperty, JSHTMLFormElement::putValueProperty, JSHTMLFormElement::EncodingAttrNum),
-    JS_CGETSET_MAGIC_DEF("enctype", JSHTMLFormElement::getValueProperty, JSHTMLFormElement::putValueProperty, JSHTMLFormElement::EnctypeAttrNum)
-};
+    if (JSHTMLFormElementAttributesFunctions_initialized) return;
+    JSHTMLFormElementAttributesFunctions_initialized = true;
+    memset(JSHTMLFormElementAttributesFunctions, 0, sizeof(JSHTMLFormElementAttributesFunctions));
+    JSHTMLFormElementAttributesFunctions[0].name = "action";
+    JSHTMLFormElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFormElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFormElementAttributesFunctions[0].magic = JSHTMLFormElement::ActionAttrNum;
+    JSHTMLFormElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLFormElement::getValueProperty;
+    JSHTMLFormElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLFormElement::putValueProperty;
+    JSHTMLFormElementAttributesFunctions[1].name = "target";
+    JSHTMLFormElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFormElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFormElementAttributesFunctions[1].magic = JSHTMLFormElement::TargetAttrNum;
+    JSHTMLFormElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLFormElement::getValueProperty;
+    JSHTMLFormElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLFormElement::putValueProperty;
+    JSHTMLFormElementAttributesFunctions[2].name = "method";
+    JSHTMLFormElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFormElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFormElementAttributesFunctions[2].magic = JSHTMLFormElement::MethodAttrNum;
+    JSHTMLFormElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLFormElement::getValueProperty;
+    JSHTMLFormElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLFormElement::putValueProperty;
+    JSHTMLFormElementAttributesFunctions[3].name = "length";
+    JSHTMLFormElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFormElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFormElementAttributesFunctions[3].magic = JSHTMLFormElement::LengthAttrNum;
+    JSHTMLFormElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLFormElement::getValueProperty;
+    JSHTMLFormElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSHTMLFormElementAttributesFunctions[4].name = "constructor";
+    JSHTMLFormElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFormElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFormElementAttributesFunctions[4].magic = JSHTMLFormElement::ConstructorAttrNum;
+    JSHTMLFormElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLFormElement::getValueProperty;
+    JSHTMLFormElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSHTMLFormElementAttributesFunctions[5].name = "elements";
+    JSHTMLFormElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFormElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFormElementAttributesFunctions[5].magic = JSHTMLFormElement::ElementsAttrNum;
+    JSHTMLFormElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLFormElement::getValueProperty;
+    JSHTMLFormElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSHTMLFormElementAttributesFunctions[6].name = "name";
+    JSHTMLFormElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFormElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFormElementAttributesFunctions[6].magic = JSHTMLFormElement::NameAttrNum;
+    JSHTMLFormElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLFormElement::getValueProperty;
+    JSHTMLFormElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLFormElement::putValueProperty;
+    JSHTMLFormElementAttributesFunctions[7].name = "acceptCharset";
+    JSHTMLFormElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFormElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFormElementAttributesFunctions[7].magic = JSHTMLFormElement::AcceptCharsetAttrNum;
+    JSHTMLFormElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLFormElement::getValueProperty;
+    JSHTMLFormElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLFormElement::putValueProperty;
+    JSHTMLFormElementAttributesFunctions[8].name = "encoding";
+    JSHTMLFormElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFormElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFormElementAttributesFunctions[8].magic = JSHTMLFormElement::EncodingAttrNum;
+    JSHTMLFormElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLFormElement::getValueProperty;
+    JSHTMLFormElementAttributesFunctions[8].u.getset.set.setter_magic = JSHTMLFormElement::putValueProperty;
+    JSHTMLFormElementAttributesFunctions[9].name = "enctype";
+    JSHTMLFormElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFormElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFormElementAttributesFunctions[9].magic = JSHTMLFormElement::EnctypeAttrNum;
+    JSHTMLFormElementAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLFormElement::getValueProperty;
+    JSHTMLFormElementAttributesFunctions[9].u.getset.set.setter_magic = JSHTMLFormElement::putValueProperty;
+}
 
 class JSHTMLFormElementConstructor {
 public:
@@ -88,11 +146,29 @@ void JSHTMLFormElementConstructor::initConstructor(JSContext * ctx, JSValue this
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHTMLFormElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSHTMLFormElementPrototypeFunctions[2];
+static bool JSHTMLFormElementPrototypeFunctions_initialized = false;
+
+static void init_JSHTMLFormElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("submit", 0, JSHTMLFormElementPrototypeFunction::callAsFunction, JSHTMLFormElement::SubmitFuncNum),
-    JS_CFUNC_MAGIC_DEF("reset", 0, JSHTMLFormElementPrototypeFunction::callAsFunction, JSHTMLFormElement::ResetFuncNum)
-};
+    if (JSHTMLFormElementPrototypeFunctions_initialized) return;
+    JSHTMLFormElementPrototypeFunctions_initialized = true;
+    memset(JSHTMLFormElementPrototypeFunctions, 0, sizeof(JSHTMLFormElementPrototypeFunctions));
+    JSHTMLFormElementPrototypeFunctions[0].name = "submit";
+    JSHTMLFormElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLFormElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHTMLFormElementPrototypeFunctions[0].magic = JSHTMLFormElement::SubmitFuncNum;
+    JSHTMLFormElementPrototypeFunctions[0].u.func.length = 0;
+    JSHTMLFormElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLFormElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLFormElementPrototypeFunction::callAsFunction;
+    JSHTMLFormElementPrototypeFunctions[1].name = "reset";
+    JSHTMLFormElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLFormElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSHTMLFormElementPrototypeFunctions[1].magic = JSHTMLFormElement::ResetFuncNum;
+    JSHTMLFormElementPrototypeFunctions[1].u.func.length = 0;
+    JSHTMLFormElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLFormElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSHTMLFormElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHTMLFormElementPrototype::self(JSContext * ctx)
 {
@@ -110,16 +186,24 @@ JSValue JSHTMLFormElementPrototype::self(JSContext * ctx)
 
 void JSHTMLFormElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLFormElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLFormElementAttributesFunctions, countof(JSHTMLFormElementAttributesFunctions));
+    init_JSHTMLFormElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLFormElementPrototypeFunctions, countof(JSHTMLFormElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLFormElementClassDefine = 
+static JSClassDef JSHTMLFormElementClassDefine;
+static bool JSHTMLFormElementClassDefine_initialized = false;
+
+static void init_JSHTMLFormElementClassDefine()
 {
-    "HTMLFormElement",
-    .finalizer = JSHTMLFormElement::finalizer,
-    .gc_mark = JSHTMLFormElement::mark,
-};
+    if (JSHTMLFormElementClassDefine_initialized) return;
+    JSHTMLFormElementClassDefine_initialized = true;
+    memset(&JSHTMLFormElementClassDefine, 0, sizeof(JSHTMLFormElementClassDefine));
+    JSHTMLFormElementClassDefine.class_name = "HTMLFormElement";
+    JSHTMLFormElementClassDefine.finalizer = JSHTMLFormElement::finalizer;
+    JSHTMLFormElementClassDefine.gc_mark = JSHTMLFormElement::mark;
+}
 
 JSClassID JSHTMLFormElement::js_class_id = 0;
 

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSMutationEvent.h"
 
 #include "MutationEvent.h"
@@ -41,15 +43,51 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSMutationEventAttributesFunctions[] =
+static JSCFunctionListEntry JSMutationEventAttributesFunctions[6];
+static bool JSMutationEventAttributesFunctions_initialized = false;
+
+static void init_JSMutationEventAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("prevValue", JSMutationEvent::getValueProperty, NULL, JSMutationEvent::PrevValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSMutationEvent::getValueProperty, NULL, JSMutationEvent::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("attrName", JSMutationEvent::getValueProperty, NULL, JSMutationEvent::AttrNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("relatedNode", JSMutationEvent::getValueProperty, NULL, JSMutationEvent::RelatedNodeAttrNum),
-    JS_CGETSET_MAGIC_DEF("newValue", JSMutationEvent::getValueProperty, NULL, JSMutationEvent::NewValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("attrChange", JSMutationEvent::getValueProperty, NULL, JSMutationEvent::AttrChangeAttrNum)
-};
+    if (JSMutationEventAttributesFunctions_initialized) return;
+    JSMutationEventAttributesFunctions_initialized = true;
+    memset(JSMutationEventAttributesFunctions, 0, sizeof(JSMutationEventAttributesFunctions));
+    JSMutationEventAttributesFunctions[0].name = "prevValue";
+    JSMutationEventAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMutationEventAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMutationEventAttributesFunctions[0].magic = JSMutationEvent::PrevValueAttrNum;
+    JSMutationEventAttributesFunctions[0].u.getset.get.getter_magic = JSMutationEvent::getValueProperty;
+    JSMutationEventAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSMutationEventAttributesFunctions[1].name = "constructor";
+    JSMutationEventAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMutationEventAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMutationEventAttributesFunctions[1].magic = JSMutationEvent::ConstructorAttrNum;
+    JSMutationEventAttributesFunctions[1].u.getset.get.getter_magic = JSMutationEvent::getValueProperty;
+    JSMutationEventAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSMutationEventAttributesFunctions[2].name = "attrName";
+    JSMutationEventAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMutationEventAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMutationEventAttributesFunctions[2].magic = JSMutationEvent::AttrNameAttrNum;
+    JSMutationEventAttributesFunctions[2].u.getset.get.getter_magic = JSMutationEvent::getValueProperty;
+    JSMutationEventAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSMutationEventAttributesFunctions[3].name = "relatedNode";
+    JSMutationEventAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMutationEventAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMutationEventAttributesFunctions[3].magic = JSMutationEvent::RelatedNodeAttrNum;
+    JSMutationEventAttributesFunctions[3].u.getset.get.getter_magic = JSMutationEvent::getValueProperty;
+    JSMutationEventAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSMutationEventAttributesFunctions[4].name = "newValue";
+    JSMutationEventAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMutationEventAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMutationEventAttributesFunctions[4].magic = JSMutationEvent::NewValueAttrNum;
+    JSMutationEventAttributesFunctions[4].u.getset.get.getter_magic = JSMutationEvent::getValueProperty;
+    JSMutationEventAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSMutationEventAttributesFunctions[5].name = "attrChange";
+    JSMutationEventAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMutationEventAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMutationEventAttributesFunctions[5].magic = JSMutationEvent::AttrChangeAttrNum;
+    JSMutationEventAttributesFunctions[5].u.getset.get.getter_magic = JSMutationEvent::getValueProperty;
+    JSMutationEventAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+}
 
 class JSMutationEventConstructor {
 public:
@@ -66,12 +104,33 @@ JSValue JSMutationEventConstructor::getValueProperty(JSContext * ctx, JSValueCon
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSMutationEventConstructorFunctions[] =
+static JSCFunctionListEntry JSMutationEventConstructorFunctions[3];
+static bool JSMutationEventConstructorFunctions_initialized = false;
+
+static void init_JSMutationEventConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("MODIFICATION", JSMutationEventConstructor::getValueProperty, NULL, MutationEvent::MODIFICATION),
-    JS_CGETSET_MAGIC_DEF("ADDITION", JSMutationEventConstructor::getValueProperty, NULL, MutationEvent::ADDITION),
-    JS_CGETSET_MAGIC_DEF("REMOVAL", JSMutationEventConstructor::getValueProperty, NULL, MutationEvent::REMOVAL)
-};
+    if (JSMutationEventConstructorFunctions_initialized) return;
+    JSMutationEventConstructorFunctions_initialized = true;
+    memset(JSMutationEventConstructorFunctions, 0, sizeof(JSMutationEventConstructorFunctions));
+    JSMutationEventConstructorFunctions[0].name = "MODIFICATION";
+    JSMutationEventConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMutationEventConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMutationEventConstructorFunctions[0].magic = MutationEvent::MODIFICATION;
+    JSMutationEventConstructorFunctions[0].u.getset.get.getter_magic = JSMutationEventConstructor::getValueProperty;
+    JSMutationEventConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSMutationEventConstructorFunctions[1].name = "ADDITION";
+    JSMutationEventConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMutationEventConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMutationEventConstructorFunctions[1].magic = MutationEvent::ADDITION;
+    JSMutationEventConstructorFunctions[1].u.getset.get.getter_magic = JSMutationEventConstructor::getValueProperty;
+    JSMutationEventConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSMutationEventConstructorFunctions[2].name = "REMOVAL";
+    JSMutationEventConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMutationEventConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMutationEventConstructorFunctions[2].magic = MutationEvent::REMOVAL;
+    JSMutationEventConstructorFunctions[2].u.getset.get.getter_magic = JSMutationEventConstructor::getValueProperty;
+    JSMutationEventConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSMutationEventConstructor::self(JSContext * ctx)
 {
@@ -89,24 +148,58 @@ JSValue JSMutationEventConstructor::self(JSContext * ctx)
 
 void JSMutationEventConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSMutationEventConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSMutationEventConstructorFunctions, countof(JSMutationEventConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSMutationEventPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSMutationEventPrototypeConstantsFunctions[3];
+static bool JSMutationEventPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSMutationEventPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("MODIFICATION", JSMutationEventPrototype::getValueProperty, NULL, MutationEvent::MODIFICATION),
-    JS_CGETSET_MAGIC_DEF("ADDITION", JSMutationEventPrototype::getValueProperty, NULL, MutationEvent::ADDITION),
-    JS_CGETSET_MAGIC_DEF("REMOVAL", JSMutationEventPrototype::getValueProperty, NULL, MutationEvent::REMOVAL)
-};
+    if (JSMutationEventPrototypeConstantsFunctions_initialized) return;
+    JSMutationEventPrototypeConstantsFunctions_initialized = true;
+    memset(JSMutationEventPrototypeConstantsFunctions, 0, sizeof(JSMutationEventPrototypeConstantsFunctions));
+    JSMutationEventPrototypeConstantsFunctions[0].name = "MODIFICATION";
+    JSMutationEventPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMutationEventPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMutationEventPrototypeConstantsFunctions[0].magic = MutationEvent::MODIFICATION;
+    JSMutationEventPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSMutationEventPrototype::getValueProperty;
+    JSMutationEventPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSMutationEventPrototypeConstantsFunctions[1].name = "ADDITION";
+    JSMutationEventPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMutationEventPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMutationEventPrototypeConstantsFunctions[1].magic = MutationEvent::ADDITION;
+    JSMutationEventPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSMutationEventPrototype::getValueProperty;
+    JSMutationEventPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSMutationEventPrototypeConstantsFunctions[2].name = "REMOVAL";
+    JSMutationEventPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSMutationEventPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSMutationEventPrototypeConstantsFunctions[2].magic = MutationEvent::REMOVAL;
+    JSMutationEventPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSMutationEventPrototype::getValueProperty;
+    JSMutationEventPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSMutationEventPrototypeFunctions[] =
+static JSCFunctionListEntry JSMutationEventPrototypeFunctions[1];
+static bool JSMutationEventPrototypeFunctions_initialized = false;
+
+static void init_JSMutationEventPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("initMutationEvent", 8, JSMutationEventPrototypeFunction::callAsFunction, JSMutationEvent::InitMutationEventFuncNum)
-};
+    if (JSMutationEventPrototypeFunctions_initialized) return;
+    JSMutationEventPrototypeFunctions_initialized = true;
+    memset(JSMutationEventPrototypeFunctions, 0, sizeof(JSMutationEventPrototypeFunctions));
+    JSMutationEventPrototypeFunctions[0].name = "initMutationEvent";
+    JSMutationEventPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSMutationEventPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSMutationEventPrototypeFunctions[0].magic = JSMutationEvent::InitMutationEventFuncNum;
+    JSMutationEventPrototypeFunctions[0].u.func.length = 8;
+    JSMutationEventPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSMutationEventPrototypeFunctions[0].u.func.cfunc.generic_magic = JSMutationEventPrototypeFunction::callAsFunction;
+}
 
 JSValue JSMutationEventPrototype::self(JSContext * ctx)
 {
@@ -124,8 +217,11 @@ JSValue JSMutationEventPrototype::self(JSContext * ctx)
 
 void JSMutationEventPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSMutationEventAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSMutationEventAttributesFunctions, countof(JSMutationEventAttributesFunctions));
+    init_JSMutationEventPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSMutationEventPrototypeConstantsFunctions, countof(JSMutationEventPrototypeConstantsFunctions));
+    init_JSMutationEventPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSMutationEventPrototypeFunctions, countof(JSMutationEventPrototypeFunctions));
 }
 
@@ -135,18 +231,25 @@ JSValue JSMutationEventPrototype::getValueProperty(JSContext * ctx, JSValueConst
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSMutationEventClassDefine = 
+static JSClassDef JSMutationEventClassDefine;
+static bool JSMutationEventClassDefine_initialized = false;
+
+static void init_JSMutationEventClassDefine()
 {
-    "MutationEvent",
-    .finalizer = JSMutationEvent::finalizer,
-    .gc_mark = JSMutationEvent::mark,
-};
+    if (JSMutationEventClassDefine_initialized) return;
+    JSMutationEventClassDefine_initialized = true;
+    memset(&JSMutationEventClassDefine, 0, sizeof(JSMutationEventClassDefine));
+    JSMutationEventClassDefine.class_name = "MutationEvent";
+    JSMutationEventClassDefine.finalizer = JSMutationEvent::finalizer;
+    JSMutationEventClassDefine.gc_mark = JSMutationEvent::mark;
+}
 
 JSClassID JSMutationEvent::js_class_id = 0;
 
 void JSMutationEvent::init(JSContext* ctx)
 {
     if (JSMutationEvent::js_class_id == 0) {
+        init_JSMutationEventClassDefine();
         JS_NewClassID(&JSMutationEvent::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSMutationEvent::js_class_id, &JSMutationEventClassDefine);
         JS_SetConstructor(ctx, JSMutationEventConstructor::self(ctx), JSMutationEventPrototype::self(ctx));

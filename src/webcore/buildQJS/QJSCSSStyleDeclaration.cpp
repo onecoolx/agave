@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCSSStyleDeclaration.h"
 
 #include "CSSRule.h"
@@ -44,13 +46,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSCSSStyleDeclarationAttributesFunctions[] =
+static JSCFunctionListEntry JSCSSStyleDeclarationAttributesFunctions[4];
+static bool JSCSSStyleDeclarationAttributesFunctions_initialized = false;
+
+static void init_JSCSSStyleDeclarationAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("cssText", JSCSSStyleDeclaration::getValueProperty, JSCSSStyleDeclaration::putValueProperty, JSCSSStyleDeclaration::CssTextAttrNum),
-    JS_CGETSET_MAGIC_DEF("length", JSCSSStyleDeclaration::getValueProperty, NULL, JSCSSStyleDeclaration::LengthAttrNum),
-    JS_CGETSET_MAGIC_DEF("parentRule", JSCSSStyleDeclaration::getValueProperty, NULL, JSCSSStyleDeclaration::ParentRuleAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSCSSStyleDeclaration::getValueProperty, NULL, JSCSSStyleDeclaration::ConstructorAttrNum)
-};
+    if (JSCSSStyleDeclarationAttributesFunctions_initialized) return;
+    JSCSSStyleDeclarationAttributesFunctions_initialized = true;
+    memset(JSCSSStyleDeclarationAttributesFunctions, 0, sizeof(JSCSSStyleDeclarationAttributesFunctions));
+    JSCSSStyleDeclarationAttributesFunctions[0].name = "cssText";
+    JSCSSStyleDeclarationAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSStyleDeclarationAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSStyleDeclarationAttributesFunctions[0].magic = JSCSSStyleDeclaration::CssTextAttrNum;
+    JSCSSStyleDeclarationAttributesFunctions[0].u.getset.get.getter_magic = JSCSSStyleDeclaration::getValueProperty;
+    JSCSSStyleDeclarationAttributesFunctions[0].u.getset.set.setter_magic = JSCSSStyleDeclaration::putValueProperty;
+    JSCSSStyleDeclarationAttributesFunctions[1].name = "length";
+    JSCSSStyleDeclarationAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSStyleDeclarationAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSStyleDeclarationAttributesFunctions[1].magic = JSCSSStyleDeclaration::LengthAttrNum;
+    JSCSSStyleDeclarationAttributesFunctions[1].u.getset.get.getter_magic = JSCSSStyleDeclaration::getValueProperty;
+    JSCSSStyleDeclarationAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSCSSStyleDeclarationAttributesFunctions[2].name = "parentRule";
+    JSCSSStyleDeclarationAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSStyleDeclarationAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSStyleDeclarationAttributesFunctions[2].magic = JSCSSStyleDeclaration::ParentRuleAttrNum;
+    JSCSSStyleDeclarationAttributesFunctions[2].u.getset.get.getter_magic = JSCSSStyleDeclaration::getValueProperty;
+    JSCSSStyleDeclarationAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSCSSStyleDeclarationAttributesFunctions[3].name = "constructor";
+    JSCSSStyleDeclarationAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSStyleDeclarationAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSStyleDeclarationAttributesFunctions[3].magic = JSCSSStyleDeclaration::ConstructorAttrNum;
+    JSCSSStyleDeclarationAttributesFunctions[3].u.getset.get.getter_magic = JSCSSStyleDeclaration::getValueProperty;
+    JSCSSStyleDeclarationAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 class JSCSSStyleDeclarationConstructor {
 public:
@@ -85,17 +113,71 @@ void JSCSSStyleDeclarationConstructor::initConstructor(JSContext * ctx, JSValue 
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSCSSStyleDeclarationPrototypeFunctions[] =
+static JSCFunctionListEntry JSCSSStyleDeclarationPrototypeFunctions[8];
+static bool JSCSSStyleDeclarationPrototypeFunctions_initialized = false;
+
+static void init_JSCSSStyleDeclarationPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("removeProperty", 1, JSCSSStyleDeclarationPrototypeFunction::callAsFunction, JSCSSStyleDeclaration::RemovePropertyFuncNum),
-    JS_CFUNC_MAGIC_DEF("getPropertyPriority", 1, JSCSSStyleDeclarationPrototypeFunction::callAsFunction, JSCSSStyleDeclaration::GetPropertyPriorityFuncNum),
-    JS_CFUNC_MAGIC_DEF("getPropertyValue", 1, JSCSSStyleDeclarationPrototypeFunction::callAsFunction, JSCSSStyleDeclaration::GetPropertyValueFuncNum),
-    JS_CFUNC_MAGIC_DEF("getPropertyShorthand", 1, JSCSSStyleDeclarationPrototypeFunction::callAsFunction, JSCSSStyleDeclaration::GetPropertyShorthandFuncNum),
-    JS_CFUNC_MAGIC_DEF("getPropertyCSSValue", 1, JSCSSStyleDeclarationPrototypeFunction::callAsFunction, JSCSSStyleDeclaration::GetPropertyCSSValueFuncNum),
-    JS_CFUNC_MAGIC_DEF("item", 1, JSCSSStyleDeclarationPrototypeFunction::callAsFunction, JSCSSStyleDeclaration::ItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("setProperty", 3, JSCSSStyleDeclarationPrototypeFunction::callAsFunction, JSCSSStyleDeclaration::SetPropertyFuncNum),
-    JS_CFUNC_MAGIC_DEF("isPropertyImplicit", 1, JSCSSStyleDeclarationPrototypeFunction::callAsFunction, JSCSSStyleDeclaration::IsPropertyImplicitFuncNum)
-};
+    if (JSCSSStyleDeclarationPrototypeFunctions_initialized) return;
+    JSCSSStyleDeclarationPrototypeFunctions_initialized = true;
+    memset(JSCSSStyleDeclarationPrototypeFunctions, 0, sizeof(JSCSSStyleDeclarationPrototypeFunctions));
+    JSCSSStyleDeclarationPrototypeFunctions[0].name = "removeProperty";
+    JSCSSStyleDeclarationPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCSSStyleDeclarationPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSCSSStyleDeclarationPrototypeFunctions[0].magic = JSCSSStyleDeclaration::RemovePropertyFuncNum;
+    JSCSSStyleDeclarationPrototypeFunctions[0].u.func.length = 1;
+    JSCSSStyleDeclarationPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCSSStyleDeclarationPrototypeFunctions[0].u.func.cfunc.generic_magic = JSCSSStyleDeclarationPrototypeFunction::callAsFunction;
+    JSCSSStyleDeclarationPrototypeFunctions[1].name = "getPropertyPriority";
+    JSCSSStyleDeclarationPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCSSStyleDeclarationPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSCSSStyleDeclarationPrototypeFunctions[1].magic = JSCSSStyleDeclaration::GetPropertyPriorityFuncNum;
+    JSCSSStyleDeclarationPrototypeFunctions[1].u.func.length = 1;
+    JSCSSStyleDeclarationPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCSSStyleDeclarationPrototypeFunctions[1].u.func.cfunc.generic_magic = JSCSSStyleDeclarationPrototypeFunction::callAsFunction;
+    JSCSSStyleDeclarationPrototypeFunctions[2].name = "getPropertyValue";
+    JSCSSStyleDeclarationPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCSSStyleDeclarationPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSCSSStyleDeclarationPrototypeFunctions[2].magic = JSCSSStyleDeclaration::GetPropertyValueFuncNum;
+    JSCSSStyleDeclarationPrototypeFunctions[2].u.func.length = 1;
+    JSCSSStyleDeclarationPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCSSStyleDeclarationPrototypeFunctions[2].u.func.cfunc.generic_magic = JSCSSStyleDeclarationPrototypeFunction::callAsFunction;
+    JSCSSStyleDeclarationPrototypeFunctions[3].name = "getPropertyShorthand";
+    JSCSSStyleDeclarationPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCSSStyleDeclarationPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSCSSStyleDeclarationPrototypeFunctions[3].magic = JSCSSStyleDeclaration::GetPropertyShorthandFuncNum;
+    JSCSSStyleDeclarationPrototypeFunctions[3].u.func.length = 1;
+    JSCSSStyleDeclarationPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCSSStyleDeclarationPrototypeFunctions[3].u.func.cfunc.generic_magic = JSCSSStyleDeclarationPrototypeFunction::callAsFunction;
+    JSCSSStyleDeclarationPrototypeFunctions[4].name = "getPropertyCSSValue";
+    JSCSSStyleDeclarationPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCSSStyleDeclarationPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSCSSStyleDeclarationPrototypeFunctions[4].magic = JSCSSStyleDeclaration::GetPropertyCSSValueFuncNum;
+    JSCSSStyleDeclarationPrototypeFunctions[4].u.func.length = 1;
+    JSCSSStyleDeclarationPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCSSStyleDeclarationPrototypeFunctions[4].u.func.cfunc.generic_magic = JSCSSStyleDeclarationPrototypeFunction::callAsFunction;
+    JSCSSStyleDeclarationPrototypeFunctions[5].name = "item";
+    JSCSSStyleDeclarationPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCSSStyleDeclarationPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSCSSStyleDeclarationPrototypeFunctions[5].magic = JSCSSStyleDeclaration::ItemFuncNum;
+    JSCSSStyleDeclarationPrototypeFunctions[5].u.func.length = 1;
+    JSCSSStyleDeclarationPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCSSStyleDeclarationPrototypeFunctions[5].u.func.cfunc.generic_magic = JSCSSStyleDeclarationPrototypeFunction::callAsFunction;
+    JSCSSStyleDeclarationPrototypeFunctions[6].name = "setProperty";
+    JSCSSStyleDeclarationPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCSSStyleDeclarationPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSCSSStyleDeclarationPrototypeFunctions[6].magic = JSCSSStyleDeclaration::SetPropertyFuncNum;
+    JSCSSStyleDeclarationPrototypeFunctions[6].u.func.length = 3;
+    JSCSSStyleDeclarationPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCSSStyleDeclarationPrototypeFunctions[6].u.func.cfunc.generic_magic = JSCSSStyleDeclarationPrototypeFunction::callAsFunction;
+    JSCSSStyleDeclarationPrototypeFunctions[7].name = "isPropertyImplicit";
+    JSCSSStyleDeclarationPrototypeFunctions[7].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCSSStyleDeclarationPrototypeFunctions[7].def_type = JS_DEF_CFUNC;
+    JSCSSStyleDeclarationPrototypeFunctions[7].magic = JSCSSStyleDeclaration::IsPropertyImplicitFuncNum;
+    JSCSSStyleDeclarationPrototypeFunctions[7].u.func.length = 1;
+    JSCSSStyleDeclarationPrototypeFunctions[7].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCSSStyleDeclarationPrototypeFunctions[7].u.func.cfunc.generic_magic = JSCSSStyleDeclarationPrototypeFunction::callAsFunction;
+}
 
 JSValue JSCSSStyleDeclarationPrototype::self(JSContext * ctx)
 {
@@ -113,7 +195,9 @@ JSValue JSCSSStyleDeclarationPrototype::self(JSContext * ctx)
 
 void JSCSSStyleDeclarationPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCSSStyleDeclarationAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSStyleDeclarationAttributesFunctions, countof(JSCSSStyleDeclarationAttributesFunctions));
+    init_JSCSSStyleDeclarationPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSStyleDeclarationPrototypeFunctions, countof(JSCSSStyleDeclarationPrototypeFunctions));
 }
 
@@ -126,7 +210,6 @@ static int js_cssstyledecl_get_own_property(JSContext *ctx, JSPropertyDescriptor
     const char* str = JS_AtomToCString(ctx, prop);
     if (!str)
         return 0;
-    // Skip numbers and known built-in properties
     if ((str[0] >= '0' && str[0] <= '9') || !strcmp(str, "length") || !strcmp(str, "cssText") || !strcmp(str, "constructor")) {
         JS_FreeCString(ctx, str);
         return 0;
@@ -141,23 +224,38 @@ static int js_cssstyledecl_get_own_property(JSContext *ctx, JSPropertyDescriptor
     return 1;
 }
 
-static JSClassExoticMethods js_cssstyledecl_exotic = {
-    .get_own_property = js_cssstyledecl_get_own_property,
-};
+static JSClassExoticMethods js_cssstyledecl_exotic;
+static bool js_cssstyledecl_exotic_initialized = false;
 
-static JSClassDef JSCSSStyleDeclarationClassDefine = 
+static void init_js_cssstyledecl_exotic()
 {
-    "CSSStyleDeclaration",
-    .finalizer = JSCSSStyleDeclaration::finalizer,
-    .gc_mark = JSCSSStyleDeclaration::mark,
-    .exotic = &js_cssstyledecl_exotic,
-};
+    if (js_cssstyledecl_exotic_initialized) return;
+    js_cssstyledecl_exotic_initialized = true;
+    memset(&js_cssstyledecl_exotic, 0, sizeof(js_cssstyledecl_exotic));
+    js_cssstyledecl_exotic.get_own_property = js_cssstyledecl_get_own_property;
+}
+
+static JSClassDef JSCSSStyleDeclarationClassDefine;
+static bool JSCSSStyleDeclarationClassDefine_initialized = false;
+
+static void init_JSCSSStyleDeclarationClassDefine()
+{
+    if (JSCSSStyleDeclarationClassDefine_initialized) return;
+    JSCSSStyleDeclarationClassDefine_initialized = true;
+    init_js_cssstyledecl_exotic();
+    memset(&JSCSSStyleDeclarationClassDefine, 0, sizeof(JSCSSStyleDeclarationClassDefine));
+    JSCSSStyleDeclarationClassDefine.class_name = "CSSStyleDeclaration";
+    JSCSSStyleDeclarationClassDefine.finalizer = JSCSSStyleDeclaration::finalizer;
+    JSCSSStyleDeclarationClassDefine.gc_mark = JSCSSStyleDeclaration::mark;
+    JSCSSStyleDeclarationClassDefine.exotic = &js_cssstyledecl_exotic;
+}
 
 JSClassID JSCSSStyleDeclaration::js_class_id = 0;
 
 void JSCSSStyleDeclaration::init(JSContext* ctx)
 {
     if (JSCSSStyleDeclaration::js_class_id == 0) {
+        init_JSCSSStyleDeclarationClassDefine();
         JS_NewClassID(&JSCSSStyleDeclaration::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSCSSStyleDeclaration::js_class_id, &JSCSSStyleDeclarationClassDefine);
         JS_SetConstructor(ctx, JSCSSStyleDeclarationConstructor::self(ctx), JSCSSStyleDeclarationPrototype::self(ctx));

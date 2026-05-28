@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,16 +48,57 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPathSegArcAbsAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPathSegArcAbsAttributesFunctions[7];
+static bool JSSVGPathSegArcAbsAttributesFunctions_initialized = false;
+
+static void init_JSSVGPathSegArcAbsAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("r2", JSSVGPathSegArcAbs::getValueProperty, JSSVGPathSegArcAbs::putValueProperty, JSSVGPathSegArcAbs::R2AttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGPathSegArcAbs::getValueProperty, JSSVGPathSegArcAbs::putValueProperty, JSSVGPathSegArcAbs::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGPathSegArcAbs::getValueProperty, JSSVGPathSegArcAbs::putValueProperty, JSSVGPathSegArcAbs::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("r1", JSSVGPathSegArcAbs::getValueProperty, JSSVGPathSegArcAbs::putValueProperty, JSSVGPathSegArcAbs::R1AttrNum),
-    JS_CGETSET_MAGIC_DEF("angle", JSSVGPathSegArcAbs::getValueProperty, JSSVGPathSegArcAbs::putValueProperty, JSSVGPathSegArcAbs::AngleAttrNum),
-    JS_CGETSET_MAGIC_DEF("largeArcFlag", JSSVGPathSegArcAbs::getValueProperty, JSSVGPathSegArcAbs::putValueProperty, JSSVGPathSegArcAbs::LargeArcFlagAttrNum),
-    JS_CGETSET_MAGIC_DEF("sweepFlag", JSSVGPathSegArcAbs::getValueProperty, JSSVGPathSegArcAbs::putValueProperty, JSSVGPathSegArcAbs::SweepFlagAttrNum)
-};
+    if (JSSVGPathSegArcAbsAttributesFunctions_initialized) return;
+    JSSVGPathSegArcAbsAttributesFunctions_initialized = true;
+    memset(JSSVGPathSegArcAbsAttributesFunctions, 0, sizeof(JSSVGPathSegArcAbsAttributesFunctions));
+    JSSVGPathSegArcAbsAttributesFunctions[0].name = "r2";
+    JSSVGPathSegArcAbsAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegArcAbsAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegArcAbsAttributesFunctions[0].magic = JSSVGPathSegArcAbs::R2AttrNum;
+    JSSVGPathSegArcAbsAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegArcAbs::getValueProperty;
+    JSSVGPathSegArcAbsAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegArcAbs::putValueProperty;
+    JSSVGPathSegArcAbsAttributesFunctions[1].name = "x";
+    JSSVGPathSegArcAbsAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegArcAbsAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegArcAbsAttributesFunctions[1].magic = JSSVGPathSegArcAbs::XAttrNum;
+    JSSVGPathSegArcAbsAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegArcAbs::getValueProperty;
+    JSSVGPathSegArcAbsAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegArcAbs::putValueProperty;
+    JSSVGPathSegArcAbsAttributesFunctions[2].name = "y";
+    JSSVGPathSegArcAbsAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegArcAbsAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegArcAbsAttributesFunctions[2].magic = JSSVGPathSegArcAbs::YAttrNum;
+    JSSVGPathSegArcAbsAttributesFunctions[2].u.getset.get.getter_magic = JSSVGPathSegArcAbs::getValueProperty;
+    JSSVGPathSegArcAbsAttributesFunctions[2].u.getset.set.setter_magic = JSSVGPathSegArcAbs::putValueProperty;
+    JSSVGPathSegArcAbsAttributesFunctions[3].name = "r1";
+    JSSVGPathSegArcAbsAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegArcAbsAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegArcAbsAttributesFunctions[3].magic = JSSVGPathSegArcAbs::R1AttrNum;
+    JSSVGPathSegArcAbsAttributesFunctions[3].u.getset.get.getter_magic = JSSVGPathSegArcAbs::getValueProperty;
+    JSSVGPathSegArcAbsAttributesFunctions[3].u.getset.set.setter_magic = JSSVGPathSegArcAbs::putValueProperty;
+    JSSVGPathSegArcAbsAttributesFunctions[4].name = "angle";
+    JSSVGPathSegArcAbsAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegArcAbsAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegArcAbsAttributesFunctions[4].magic = JSSVGPathSegArcAbs::AngleAttrNum;
+    JSSVGPathSegArcAbsAttributesFunctions[4].u.getset.get.getter_magic = JSSVGPathSegArcAbs::getValueProperty;
+    JSSVGPathSegArcAbsAttributesFunctions[4].u.getset.set.setter_magic = JSSVGPathSegArcAbs::putValueProperty;
+    JSSVGPathSegArcAbsAttributesFunctions[5].name = "largeArcFlag";
+    JSSVGPathSegArcAbsAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegArcAbsAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegArcAbsAttributesFunctions[5].magic = JSSVGPathSegArcAbs::LargeArcFlagAttrNum;
+    JSSVGPathSegArcAbsAttributesFunctions[5].u.getset.get.getter_magic = JSSVGPathSegArcAbs::getValueProperty;
+    JSSVGPathSegArcAbsAttributesFunctions[5].u.getset.set.setter_magic = JSSVGPathSegArcAbs::putValueProperty;
+    JSSVGPathSegArcAbsAttributesFunctions[6].name = "sweepFlag";
+    JSSVGPathSegArcAbsAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegArcAbsAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegArcAbsAttributesFunctions[6].magic = JSSVGPathSegArcAbs::SweepFlagAttrNum;
+    JSSVGPathSegArcAbsAttributesFunctions[6].u.getset.get.getter_magic = JSSVGPathSegArcAbs::getValueProperty;
+    JSSVGPathSegArcAbsAttributesFunctions[6].u.getset.set.setter_magic = JSSVGPathSegArcAbs::putValueProperty;
+}
 
 JSValue JSSVGPathSegArcAbsPrototype::self(JSContext * ctx)
 {
@@ -73,21 +116,29 @@ JSValue JSSVGPathSegArcAbsPrototype::self(JSContext * ctx)
 
 void JSSVGPathSegArcAbsPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPathSegArcAbsAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathSegArcAbsAttributesFunctions, countof(JSSVGPathSegArcAbsAttributesFunctions));
 }
 
-static JSClassDef JSSVGPathSegArcAbsClassDefine = 
+static JSClassDef JSSVGPathSegArcAbsClassDefine;
+static bool JSSVGPathSegArcAbsClassDefine_initialized = false;
+
+static void init_JSSVGPathSegArcAbsClassDefine()
 {
-    "SVGPathSegArcAbs",
-    .finalizer = JSSVGPathSegArcAbs::finalizer,
-    .gc_mark = JSSVGPathSegArcAbs::mark,
-};
+    if (JSSVGPathSegArcAbsClassDefine_initialized) return;
+    JSSVGPathSegArcAbsClassDefine_initialized = true;
+    memset(&JSSVGPathSegArcAbsClassDefine, 0, sizeof(JSSVGPathSegArcAbsClassDefine));
+    JSSVGPathSegArcAbsClassDefine.class_name = "SVGPathSegArcAbs";
+    JSSVGPathSegArcAbsClassDefine.finalizer = JSSVGPathSegArcAbs::finalizer;
+    JSSVGPathSegArcAbsClassDefine.gc_mark = JSSVGPathSegArcAbs::mark;
+}
 
 JSClassID JSSVGPathSegArcAbs::js_class_id = 0;
 
 void JSSVGPathSegArcAbs::init(JSContext* ctx)
 {
     if (JSSVGPathSegArcAbs::js_class_id == 0) {
+        init_JSSVGPathSegArcAbsClassDefine();
         JS_NewClassID(&JSSVGPathSegArcAbs::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathSegArcAbs::js_class_id, &JSSVGPathSegArcAbsClassDefine);
         JS_SetClassProto(ctx, JSSVGPathSegArcAbs::js_class_id, JSSVGPathSegArcAbsPrototype::self(ctx));

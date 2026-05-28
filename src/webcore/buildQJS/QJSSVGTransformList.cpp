@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -49,25 +51,96 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGTransformListAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGTransformListAttributesFunctions[1];
+static bool JSSVGTransformListAttributesFunctions_initialized = false;
+
+static void init_JSSVGTransformListAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("numberOfItems", JSSVGTransformList::getValueProperty, NULL, JSSVGTransformList::NumberOfItemsAttrNum)
-};
+    if (JSSVGTransformListAttributesFunctions_initialized) return;
+    JSSVGTransformListAttributesFunctions_initialized = true;
+    memset(JSSVGTransformListAttributesFunctions, 0, sizeof(JSSVGTransformListAttributesFunctions));
+    JSSVGTransformListAttributesFunctions[0].name = "numberOfItems";
+    JSSVGTransformListAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTransformListAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTransformListAttributesFunctions[0].magic = JSSVGTransformList::NumberOfItemsAttrNum;
+    JSSVGTransformListAttributesFunctions[0].u.getset.get.getter_magic = JSSVGTransformList::getValueProperty;
+    JSSVGTransformListAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGTransformListPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGTransformListPrototypeFunctions[9];
+static bool JSSVGTransformListPrototypeFunctions_initialized = false;
+
+static void init_JSSVGTransformListPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("removeItem", 1, JSSVGTransformListPrototypeFunction::callAsFunction, JSSVGTransformList::RemoveItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("insertItemBefore", 2, JSSVGTransformListPrototypeFunction::callAsFunction, JSSVGTransformList::InsertItemBeforeFuncNum),
-    JS_CFUNC_MAGIC_DEF("initialize", 1, JSSVGTransformListPrototypeFunction::callAsFunction, JSSVGTransformList::InitializeFuncNum),
-    JS_CFUNC_MAGIC_DEF("clear", 0, JSSVGTransformListPrototypeFunction::callAsFunction, JSSVGTransformList::ClearFuncNum),
-    JS_CFUNC_MAGIC_DEF("appendItem", 1, JSSVGTransformListPrototypeFunction::callAsFunction, JSSVGTransformList::AppendItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("getItem", 1, JSSVGTransformListPrototypeFunction::callAsFunction, JSSVGTransformList::GetItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("replaceItem", 2, JSSVGTransformListPrototypeFunction::callAsFunction, JSSVGTransformList::ReplaceItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("createSVGTransformFromMatrix", 1, JSSVGTransformListPrototypeFunction::callAsFunction, JSSVGTransformList::CreateSVGTransformFromMatrixFuncNum),
-    JS_CFUNC_MAGIC_DEF("consolidate", 0, JSSVGTransformListPrototypeFunction::callAsFunction, JSSVGTransformList::ConsolidateFuncNum)
-};
+    if (JSSVGTransformListPrototypeFunctions_initialized) return;
+    JSSVGTransformListPrototypeFunctions_initialized = true;
+    memset(JSSVGTransformListPrototypeFunctions, 0, sizeof(JSSVGTransformListPrototypeFunctions));
+    JSSVGTransformListPrototypeFunctions[0].name = "removeItem";
+    JSSVGTransformListPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTransformListPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGTransformListPrototypeFunctions[0].magic = JSSVGTransformList::RemoveItemFuncNum;
+    JSSVGTransformListPrototypeFunctions[0].u.func.length = 1;
+    JSSVGTransformListPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTransformListPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGTransformListPrototypeFunction::callAsFunction;
+    JSSVGTransformListPrototypeFunctions[1].name = "insertItemBefore";
+    JSSVGTransformListPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTransformListPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGTransformListPrototypeFunctions[1].magic = JSSVGTransformList::InsertItemBeforeFuncNum;
+    JSSVGTransformListPrototypeFunctions[1].u.func.length = 2;
+    JSSVGTransformListPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTransformListPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGTransformListPrototypeFunction::callAsFunction;
+    JSSVGTransformListPrototypeFunctions[2].name = "initialize";
+    JSSVGTransformListPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTransformListPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGTransformListPrototypeFunctions[2].magic = JSSVGTransformList::InitializeFuncNum;
+    JSSVGTransformListPrototypeFunctions[2].u.func.length = 1;
+    JSSVGTransformListPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTransformListPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGTransformListPrototypeFunction::callAsFunction;
+    JSSVGTransformListPrototypeFunctions[3].name = "clear";
+    JSSVGTransformListPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTransformListPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGTransformListPrototypeFunctions[3].magic = JSSVGTransformList::ClearFuncNum;
+    JSSVGTransformListPrototypeFunctions[3].u.func.length = 0;
+    JSSVGTransformListPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTransformListPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGTransformListPrototypeFunction::callAsFunction;
+    JSSVGTransformListPrototypeFunctions[4].name = "appendItem";
+    JSSVGTransformListPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTransformListPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGTransformListPrototypeFunctions[4].magic = JSSVGTransformList::AppendItemFuncNum;
+    JSSVGTransformListPrototypeFunctions[4].u.func.length = 1;
+    JSSVGTransformListPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTransformListPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGTransformListPrototypeFunction::callAsFunction;
+    JSSVGTransformListPrototypeFunctions[5].name = "getItem";
+    JSSVGTransformListPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTransformListPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGTransformListPrototypeFunctions[5].magic = JSSVGTransformList::GetItemFuncNum;
+    JSSVGTransformListPrototypeFunctions[5].u.func.length = 1;
+    JSSVGTransformListPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTransformListPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGTransformListPrototypeFunction::callAsFunction;
+    JSSVGTransformListPrototypeFunctions[6].name = "replaceItem";
+    JSSVGTransformListPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTransformListPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSSVGTransformListPrototypeFunctions[6].magic = JSSVGTransformList::ReplaceItemFuncNum;
+    JSSVGTransformListPrototypeFunctions[6].u.func.length = 2;
+    JSSVGTransformListPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTransformListPrototypeFunctions[6].u.func.cfunc.generic_magic = JSSVGTransformListPrototypeFunction::callAsFunction;
+    JSSVGTransformListPrototypeFunctions[7].name = "createSVGTransformFromMatrix";
+    JSSVGTransformListPrototypeFunctions[7].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTransformListPrototypeFunctions[7].def_type = JS_DEF_CFUNC;
+    JSSVGTransformListPrototypeFunctions[7].magic = JSSVGTransformList::CreateSVGTransformFromMatrixFuncNum;
+    JSSVGTransformListPrototypeFunctions[7].u.func.length = 1;
+    JSSVGTransformListPrototypeFunctions[7].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTransformListPrototypeFunctions[7].u.func.cfunc.generic_magic = JSSVGTransformListPrototypeFunction::callAsFunction;
+    JSSVGTransformListPrototypeFunctions[8].name = "consolidate";
+    JSSVGTransformListPrototypeFunctions[8].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTransformListPrototypeFunctions[8].def_type = JS_DEF_CFUNC;
+    JSSVGTransformListPrototypeFunctions[8].magic = JSSVGTransformList::ConsolidateFuncNum;
+    JSSVGTransformListPrototypeFunctions[8].u.func.length = 0;
+    JSSVGTransformListPrototypeFunctions[8].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTransformListPrototypeFunctions[8].u.func.cfunc.generic_magic = JSSVGTransformListPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGTransformListPrototype::self(JSContext * ctx)
 {
@@ -85,22 +158,31 @@ JSValue JSSVGTransformListPrototype::self(JSContext * ctx)
 
 void JSSVGTransformListPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGTransformListAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTransformListAttributesFunctions, countof(JSSVGTransformListAttributesFunctions));
+    init_JSSVGTransformListPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTransformListPrototypeFunctions, countof(JSSVGTransformListPrototypeFunctions));
 }
 
-static JSClassDef JSSVGTransformListClassDefine = 
+static JSClassDef JSSVGTransformListClassDefine;
+static bool JSSVGTransformListClassDefine_initialized = false;
+
+static void init_JSSVGTransformListClassDefine()
 {
-    "SVGTransformList",
-    .finalizer = JSSVGTransformList::finalizer,
-    .gc_mark = JSSVGTransformList::mark,
-};
+    if (JSSVGTransformListClassDefine_initialized) return;
+    JSSVGTransformListClassDefine_initialized = true;
+    memset(&JSSVGTransformListClassDefine, 0, sizeof(JSSVGTransformListClassDefine));
+    JSSVGTransformListClassDefine.class_name = "SVGTransformList";
+    JSSVGTransformListClassDefine.finalizer = JSSVGTransformList::finalizer;
+    JSSVGTransformListClassDefine.gc_mark = JSSVGTransformList::mark;
+}
 
 JSClassID JSSVGTransformList::js_class_id = 0;
 
 void JSSVGTransformList::init(JSContext* ctx)
 {
     if (JSSVGTransformList::js_class_id == 0) {
+        init_JSSVGTransformListClassDefine();
         JS_NewClassID(&JSSVGTransformList::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGTransformList::js_class_id, &JSSVGTransformListClassDefine);
         JS_SetClassProto(ctx, JSSVGTransformList::js_class_id, JSSVGTransformListPrototype::self(ctx));

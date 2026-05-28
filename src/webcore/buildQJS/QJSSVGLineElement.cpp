@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -62,36 +64,159 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGLineElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGLineElementAttributesFunctions[15];
+static bool JSSVGLineElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGLineElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGLineElement::getValueProperty, JSSVGLineElement::putValueProperty, JSSVGLineElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGLineElement::getValueProperty, JSSVGLineElement::putValueProperty, JSSVGLineElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("transform", JSSVGLineElement::getValueProperty, NULL, JSSVGLineElement::TransformAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGLineElement::getValueProperty, NULL, JSSVGLineElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("x1", JSSVGLineElement::getValueProperty, NULL, JSSVGLineElement::X1AttrNum),
-    JS_CGETSET_MAGIC_DEF("x2", JSSVGLineElement::getValueProperty, NULL, JSSVGLineElement::X2AttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGLineElement::getValueProperty, NULL, JSSVGLineElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGLineElement::getValueProperty, NULL, JSSVGLineElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGLineElement::getValueProperty, NULL, JSSVGLineElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("y1", JSSVGLineElement::getValueProperty, NULL, JSSVGLineElement::Y1AttrNum),
-    JS_CGETSET_MAGIC_DEF("farthestViewportElement", JSSVGLineElement::getValueProperty, NULL, JSSVGLineElement::FarthestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("y2", JSSVGLineElement::getValueProperty, NULL, JSSVGLineElement::Y2AttrNum),
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGLineElement::getValueProperty, NULL, JSSVGLineElement::SystemLanguageAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGLineElement::getValueProperty, NULL, JSSVGLineElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("nearestViewportElement", JSSVGLineElement::getValueProperty, NULL, JSSVGLineElement::NearestViewportElementAttrNum)
-};
+    if (JSSVGLineElementAttributesFunctions_initialized) return;
+    JSSVGLineElementAttributesFunctions_initialized = true;
+    memset(JSSVGLineElementAttributesFunctions, 0, sizeof(JSSVGLineElementAttributesFunctions));
+    JSSVGLineElementAttributesFunctions[0].name = "xmllang";
+    JSSVGLineElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[0].magic = JSSVGLineElement::XmllangAttrNum;
+    JSSVGLineElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[0].u.getset.set.setter_magic = JSSVGLineElement::putValueProperty;
+    JSSVGLineElementAttributesFunctions[1].name = "xmlspace";
+    JSSVGLineElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[1].magic = JSSVGLineElement::XmlspaceAttrNum;
+    JSSVGLineElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[1].u.getset.set.setter_magic = JSSVGLineElement::putValueProperty;
+    JSSVGLineElementAttributesFunctions[2].name = "transform";
+    JSSVGLineElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[2].magic = JSSVGLineElement::TransformAttrNum;
+    JSSVGLineElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGLineElementAttributesFunctions[3].name = "externalResourcesRequired";
+    JSSVGLineElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[3].magic = JSSVGLineElement::ExternalResourcesRequiredAttrNum;
+    JSSVGLineElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGLineElementAttributesFunctions[4].name = "x1";
+    JSSVGLineElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[4].magic = JSSVGLineElement::X1AttrNum;
+    JSSVGLineElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGLineElementAttributesFunctions[5].name = "x2";
+    JSSVGLineElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[5].magic = JSSVGLineElement::X2AttrNum;
+    JSSVGLineElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGLineElementAttributesFunctions[6].name = "requiredExtensions";
+    JSSVGLineElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[6].magic = JSSVGLineElement::RequiredExtensionsAttrNum;
+    JSSVGLineElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGLineElementAttributesFunctions[7].name = "requiredFeatures";
+    JSSVGLineElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[7].magic = JSSVGLineElement::RequiredFeaturesAttrNum;
+    JSSVGLineElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGLineElementAttributesFunctions[8].name = "style";
+    JSSVGLineElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[8].magic = JSSVGLineElement::StyleAttrNum;
+    JSSVGLineElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGLineElementAttributesFunctions[9].name = "y1";
+    JSSVGLineElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[9].magic = JSSVGLineElement::Y1AttrNum;
+    JSSVGLineElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGLineElementAttributesFunctions[10].name = "farthestViewportElement";
+    JSSVGLineElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[10].magic = JSSVGLineElement::FarthestViewportElementAttrNum;
+    JSSVGLineElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSSVGLineElementAttributesFunctions[11].name = "y2";
+    JSSVGLineElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[11].magic = JSSVGLineElement::Y2AttrNum;
+    JSSVGLineElementAttributesFunctions[11].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSSVGLineElementAttributesFunctions[12].name = "systemLanguage";
+    JSSVGLineElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[12].magic = JSSVGLineElement::SystemLanguageAttrNum;
+    JSSVGLineElementAttributesFunctions[12].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSSVGLineElementAttributesFunctions[13].name = "className";
+    JSSVGLineElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[13].magic = JSSVGLineElement::ClassNameAttrNum;
+    JSSVGLineElementAttributesFunctions[13].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[13].u.getset.set.setter_magic = NULL;
+    JSSVGLineElementAttributesFunctions[14].name = "nearestViewportElement";
+    JSSVGLineElementAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGLineElementAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGLineElementAttributesFunctions[14].magic = JSSVGLineElement::NearestViewportElementAttrNum;
+    JSSVGLineElementAttributesFunctions[14].u.getset.get.getter_magic = JSSVGLineElement::getValueProperty;
+    JSSVGLineElementAttributesFunctions[14].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGLineElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGLineElementPrototypeFunctions[6];
+static bool JSSVGLineElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGLineElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGLineElementPrototypeFunction::callAsFunction, JSSVGLineElement::GetPresentationAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGLineElementPrototypeFunction::callAsFunction, JSSVGLineElement::HasExtensionFuncNum),
-    JS_CFUNC_MAGIC_DEF("getCTM", 0, JSSVGLineElementPrototypeFunction::callAsFunction, JSSVGLineElement::GetCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getScreenCTM", 0, JSSVGLineElementPrototypeFunction::callAsFunction, JSSVGLineElement::GetScreenCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getTransformToElement", 1, JSSVGLineElementPrototypeFunction::callAsFunction, JSSVGLineElement::GetTransformToElementFuncNum),
-    JS_CFUNC_MAGIC_DEF("getBBox", 0, JSSVGLineElementPrototypeFunction::callAsFunction, JSSVGLineElement::GetBBoxFuncNum)
-};
+    if (JSSVGLineElementPrototypeFunctions_initialized) return;
+    JSSVGLineElementPrototypeFunctions_initialized = true;
+    memset(JSSVGLineElementPrototypeFunctions, 0, sizeof(JSSVGLineElementPrototypeFunctions));
+    JSSVGLineElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGLineElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGLineElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGLineElementPrototypeFunctions[0].magic = JSSVGLineElement::GetPresentationAttributeFuncNum;
+    JSSVGLineElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGLineElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGLineElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGLineElementPrototypeFunction::callAsFunction;
+    JSSVGLineElementPrototypeFunctions[1].name = "hasExtension";
+    JSSVGLineElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGLineElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGLineElementPrototypeFunctions[1].magic = JSSVGLineElement::HasExtensionFuncNum;
+    JSSVGLineElementPrototypeFunctions[1].u.func.length = 1;
+    JSSVGLineElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGLineElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGLineElementPrototypeFunction::callAsFunction;
+    JSSVGLineElementPrototypeFunctions[2].name = "getCTM";
+    JSSVGLineElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGLineElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGLineElementPrototypeFunctions[2].magic = JSSVGLineElement::GetCTMFuncNum;
+    JSSVGLineElementPrototypeFunctions[2].u.func.length = 0;
+    JSSVGLineElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGLineElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGLineElementPrototypeFunction::callAsFunction;
+    JSSVGLineElementPrototypeFunctions[3].name = "getScreenCTM";
+    JSSVGLineElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGLineElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGLineElementPrototypeFunctions[3].magic = JSSVGLineElement::GetScreenCTMFuncNum;
+    JSSVGLineElementPrototypeFunctions[3].u.func.length = 0;
+    JSSVGLineElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGLineElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGLineElementPrototypeFunction::callAsFunction;
+    JSSVGLineElementPrototypeFunctions[4].name = "getTransformToElement";
+    JSSVGLineElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGLineElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGLineElementPrototypeFunctions[4].magic = JSSVGLineElement::GetTransformToElementFuncNum;
+    JSSVGLineElementPrototypeFunctions[4].u.func.length = 1;
+    JSSVGLineElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGLineElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGLineElementPrototypeFunction::callAsFunction;
+    JSSVGLineElementPrototypeFunctions[5].name = "getBBox";
+    JSSVGLineElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGLineElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGLineElementPrototypeFunctions[5].magic = JSSVGLineElement::GetBBoxFuncNum;
+    JSSVGLineElementPrototypeFunctions[5].u.func.length = 0;
+    JSSVGLineElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGLineElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGLineElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGLineElementPrototype::self(JSContext * ctx)
 {
@@ -109,22 +234,31 @@ JSValue JSSVGLineElementPrototype::self(JSContext * ctx)
 
 void JSSVGLineElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGLineElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGLineElementAttributesFunctions, countof(JSSVGLineElementAttributesFunctions));
+    init_JSSVGLineElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGLineElementPrototypeFunctions, countof(JSSVGLineElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGLineElementClassDefine = 
+static JSClassDef JSSVGLineElementClassDefine;
+static bool JSSVGLineElementClassDefine_initialized = false;
+
+static void init_JSSVGLineElementClassDefine()
 {
-    "SVGLineElement",
-    .finalizer = JSSVGLineElement::finalizer,
-    .gc_mark = JSSVGLineElement::mark,
-};
+    if (JSSVGLineElementClassDefine_initialized) return;
+    JSSVGLineElementClassDefine_initialized = true;
+    memset(&JSSVGLineElementClassDefine, 0, sizeof(JSSVGLineElementClassDefine));
+    JSSVGLineElementClassDefine.class_name = "SVGLineElement";
+    JSSVGLineElementClassDefine.finalizer = JSSVGLineElement::finalizer;
+    JSSVGLineElementClassDefine.gc_mark = JSSVGLineElement::mark;
+}
 
 JSClassID JSSVGLineElement::js_class_id = 0;
 
 void JSSVGLineElement::init(JSContext* ctx)
 {
     if (JSSVGLineElement::js_class_id == 0) {
+        init_JSSVGLineElementClassDefine();
         JS_NewClassID(&JSSVGLineElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGLineElement::js_class_id, &JSSVGLineElementClassDefine);
         JS_SetClassProto(ctx, JSSVGLineElement::js_class_id, JSSVGLineElementPrototype::self(ctx));

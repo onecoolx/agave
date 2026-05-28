@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCharacterData.h"
 
 #include "CharacterData.h"
@@ -40,12 +42,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSCharacterDataAttributesFunctions[] =
+static JSCFunctionListEntry JSCharacterDataAttributesFunctions[3];
+static bool JSCharacterDataAttributesFunctions_initialized = false;
+
+static void init_JSCharacterDataAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("data", JSCharacterData::getValueProperty, JSCharacterData::putValueProperty, JSCharacterData::DataAttrNum),
-    JS_CGETSET_MAGIC_DEF("length", JSCharacterData::getValueProperty, NULL, JSCharacterData::LengthAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSCharacterData::getValueProperty, NULL, JSCharacterData::ConstructorAttrNum)
-};
+    if (JSCharacterDataAttributesFunctions_initialized) return;
+    JSCharacterDataAttributesFunctions_initialized = true;
+    memset(JSCharacterDataAttributesFunctions, 0, sizeof(JSCharacterDataAttributesFunctions));
+    JSCharacterDataAttributesFunctions[0].name = "data";
+    JSCharacterDataAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCharacterDataAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCharacterDataAttributesFunctions[0].magic = JSCharacterData::DataAttrNum;
+    JSCharacterDataAttributesFunctions[0].u.getset.get.getter_magic = JSCharacterData::getValueProperty;
+    JSCharacterDataAttributesFunctions[0].u.getset.set.setter_magic = JSCharacterData::putValueProperty;
+    JSCharacterDataAttributesFunctions[1].name = "length";
+    JSCharacterDataAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCharacterDataAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCharacterDataAttributesFunctions[1].magic = JSCharacterData::LengthAttrNum;
+    JSCharacterDataAttributesFunctions[1].u.getset.get.getter_magic = JSCharacterData::getValueProperty;
+    JSCharacterDataAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSCharacterDataAttributesFunctions[2].name = "constructor";
+    JSCharacterDataAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCharacterDataAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCharacterDataAttributesFunctions[2].magic = JSCharacterData::ConstructorAttrNum;
+    JSCharacterDataAttributesFunctions[2].u.getset.get.getter_magic = JSCharacterData::getValueProperty;
+    JSCharacterDataAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 class JSCharacterDataConstructor {
 public:
@@ -80,14 +103,50 @@ void JSCharacterDataConstructor::initConstructor(JSContext * ctx, JSValue this_o
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSCharacterDataPrototypeFunctions[] =
+static JSCFunctionListEntry JSCharacterDataPrototypeFunctions[5];
+static bool JSCharacterDataPrototypeFunctions_initialized = false;
+
+static void init_JSCharacterDataPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("appendData", 1, JSCharacterDataPrototypeFunction::callAsFunction, JSCharacterData::AppendDataFuncNum),
-    JS_CFUNC_MAGIC_DEF("insertData", 2, JSCharacterDataPrototypeFunction::callAsFunction, JSCharacterData::InsertDataFuncNum),
-    JS_CFUNC_MAGIC_DEF("substringData", 2, JSCharacterDataPrototypeFunction::callAsFunction, JSCharacterData::SubstringDataFuncNum),
-    JS_CFUNC_MAGIC_DEF("deleteData", 2, JSCharacterDataPrototypeFunction::callAsFunction, JSCharacterData::DeleteDataFuncNum),
-    JS_CFUNC_MAGIC_DEF("replaceData", 3, JSCharacterDataPrototypeFunction::callAsFunction, JSCharacterData::ReplaceDataFuncNum)
-};
+    if (JSCharacterDataPrototypeFunctions_initialized) return;
+    JSCharacterDataPrototypeFunctions_initialized = true;
+    memset(JSCharacterDataPrototypeFunctions, 0, sizeof(JSCharacterDataPrototypeFunctions));
+    JSCharacterDataPrototypeFunctions[0].name = "appendData";
+    JSCharacterDataPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCharacterDataPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSCharacterDataPrototypeFunctions[0].magic = JSCharacterData::AppendDataFuncNum;
+    JSCharacterDataPrototypeFunctions[0].u.func.length = 1;
+    JSCharacterDataPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCharacterDataPrototypeFunctions[0].u.func.cfunc.generic_magic = JSCharacterDataPrototypeFunction::callAsFunction;
+    JSCharacterDataPrototypeFunctions[1].name = "insertData";
+    JSCharacterDataPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCharacterDataPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSCharacterDataPrototypeFunctions[1].magic = JSCharacterData::InsertDataFuncNum;
+    JSCharacterDataPrototypeFunctions[1].u.func.length = 2;
+    JSCharacterDataPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCharacterDataPrototypeFunctions[1].u.func.cfunc.generic_magic = JSCharacterDataPrototypeFunction::callAsFunction;
+    JSCharacterDataPrototypeFunctions[2].name = "substringData";
+    JSCharacterDataPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCharacterDataPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSCharacterDataPrototypeFunctions[2].magic = JSCharacterData::SubstringDataFuncNum;
+    JSCharacterDataPrototypeFunctions[2].u.func.length = 2;
+    JSCharacterDataPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCharacterDataPrototypeFunctions[2].u.func.cfunc.generic_magic = JSCharacterDataPrototypeFunction::callAsFunction;
+    JSCharacterDataPrototypeFunctions[3].name = "deleteData";
+    JSCharacterDataPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCharacterDataPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSCharacterDataPrototypeFunctions[3].magic = JSCharacterData::DeleteDataFuncNum;
+    JSCharacterDataPrototypeFunctions[3].u.func.length = 2;
+    JSCharacterDataPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCharacterDataPrototypeFunctions[3].u.func.cfunc.generic_magic = JSCharacterDataPrototypeFunction::callAsFunction;
+    JSCharacterDataPrototypeFunctions[4].name = "replaceData";
+    JSCharacterDataPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCharacterDataPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSCharacterDataPrototypeFunctions[4].magic = JSCharacterData::ReplaceDataFuncNum;
+    JSCharacterDataPrototypeFunctions[4].u.func.length = 3;
+    JSCharacterDataPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCharacterDataPrototypeFunctions[4].u.func.cfunc.generic_magic = JSCharacterDataPrototypeFunction::callAsFunction;
+}
 
 JSValue JSCharacterDataPrototype::self(JSContext * ctx)
 {
@@ -105,16 +164,24 @@ JSValue JSCharacterDataPrototype::self(JSContext * ctx)
 
 void JSCharacterDataPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCharacterDataAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCharacterDataAttributesFunctions, countof(JSCharacterDataAttributesFunctions));
+    init_JSCharacterDataPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCharacterDataPrototypeFunctions, countof(JSCharacterDataPrototypeFunctions));
 }
 
-static JSClassDef JSCharacterDataClassDefine = 
+static JSClassDef JSCharacterDataClassDefine;
+static bool JSCharacterDataClassDefine_initialized = false;
+
+static void init_JSCharacterDataClassDefine()
 {
-    "CharacterData",
-    .finalizer = JSCharacterData::finalizer,
-    .gc_mark = JSCharacterData::mark,
-};
+    if (JSCharacterDataClassDefine_initialized) return;
+    JSCharacterDataClassDefine_initialized = true;
+    memset(&JSCharacterDataClassDefine, 0, sizeof(JSCharacterDataClassDefine));
+    JSCharacterDataClassDefine.class_name = "CharacterData";
+    JSCharacterDataClassDefine.finalizer = JSCharacterData::finalizer;
+    JSCharacterDataClassDefine.gc_mark = JSCharacterData::mark;
+}
 
 JSClassID JSCharacterData::js_class_id = 0;
 

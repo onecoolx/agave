@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLFieldSetElement.h"
 
 #include "HTMLFieldSetElement.h"
@@ -40,11 +42,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLFieldSetElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLFieldSetElementAttributesFunctions[2];
+static bool JSHTMLFieldSetElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLFieldSetElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("form", JSHTMLFieldSetElement::getValueProperty, NULL, JSHTMLFieldSetElement::FormAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLFieldSetElement::getValueProperty, NULL, JSHTMLFieldSetElement::ConstructorAttrNum)
-};
+    if (JSHTMLFieldSetElementAttributesFunctions_initialized) return;
+    JSHTMLFieldSetElementAttributesFunctions_initialized = true;
+    memset(JSHTMLFieldSetElementAttributesFunctions, 0, sizeof(JSHTMLFieldSetElementAttributesFunctions));
+    JSHTMLFieldSetElementAttributesFunctions[0].name = "form";
+    JSHTMLFieldSetElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFieldSetElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFieldSetElementAttributesFunctions[0].magic = JSHTMLFieldSetElement::FormAttrNum;
+    JSHTMLFieldSetElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLFieldSetElement::getValueProperty;
+    JSHTMLFieldSetElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLFieldSetElementAttributesFunctions[1].name = "constructor";
+    JSHTMLFieldSetElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFieldSetElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFieldSetElementAttributesFunctions[1].magic = JSHTMLFieldSetElement::ConstructorAttrNum;
+    JSHTMLFieldSetElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLFieldSetElement::getValueProperty;
+    JSHTMLFieldSetElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLFieldSetElementConstructor {
 public:
@@ -93,15 +111,22 @@ JSValue JSHTMLFieldSetElementPrototype::self(JSContext * ctx)
 
 void JSHTMLFieldSetElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLFieldSetElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLFieldSetElementAttributesFunctions, countof(JSHTMLFieldSetElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLFieldSetElementClassDefine = 
+static JSClassDef JSHTMLFieldSetElementClassDefine;
+static bool JSHTMLFieldSetElementClassDefine_initialized = false;
+
+static void init_JSHTMLFieldSetElementClassDefine()
 {
-    "HTMLFieldSetElement",
-    .finalizer = JSHTMLFieldSetElement::finalizer,
-    .gc_mark = JSHTMLFieldSetElement::mark,
-};
+    if (JSHTMLFieldSetElementClassDefine_initialized) return;
+    JSHTMLFieldSetElementClassDefine_initialized = true;
+    memset(&JSHTMLFieldSetElementClassDefine, 0, sizeof(JSHTMLFieldSetElementClassDefine));
+    JSHTMLFieldSetElementClassDefine.class_name = "HTMLFieldSetElement";
+    JSHTMLFieldSetElementClassDefine.finalizer = JSHTMLFieldSetElement::finalizer;
+    JSHTMLFieldSetElementClassDefine.gc_mark = JSHTMLFieldSetElement::mark;
+}
 
 JSClassID JSHTMLFieldSetElement::js_class_id = 0;
 

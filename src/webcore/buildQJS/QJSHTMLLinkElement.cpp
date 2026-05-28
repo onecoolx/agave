@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLLinkElement.h"
 
 #include "HTMLLinkElement.h"
@@ -41,20 +43,81 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLLinkElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLLinkElementAttributesFunctions[11];
+static bool JSHTMLLinkElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLLinkElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLLinkElement::getValueProperty, NULL, JSHTMLLinkElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("charset", JSHTMLLinkElement::getValueProperty, JSHTMLLinkElement::putValueProperty, JSHTMLLinkElement::CharsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("disabled", JSHTMLLinkElement::getValueProperty, JSHTMLLinkElement::putValueProperty, JSHTMLLinkElement::DisabledAttrNum),
-    JS_CGETSET_MAGIC_DEF("media", JSHTMLLinkElement::getValueProperty, JSHTMLLinkElement::putValueProperty, JSHTMLLinkElement::MediaAttrNum),
-    JS_CGETSET_MAGIC_DEF("hreflang", JSHTMLLinkElement::getValueProperty, JSHTMLLinkElement::putValueProperty, JSHTMLLinkElement::HreflangAttrNum),
-    JS_CGETSET_MAGIC_DEF("rel", JSHTMLLinkElement::getValueProperty, JSHTMLLinkElement::putValueProperty, JSHTMLLinkElement::RelAttrNum),
-    JS_CGETSET_MAGIC_DEF("href", JSHTMLLinkElement::getValueProperty, JSHTMLLinkElement::putValueProperty, JSHTMLLinkElement::HrefAttrNum),
-    JS_CGETSET_MAGIC_DEF("rev", JSHTMLLinkElement::getValueProperty, JSHTMLLinkElement::putValueProperty, JSHTMLLinkElement::RevAttrNum),
-    JS_CGETSET_MAGIC_DEF("target", JSHTMLLinkElement::getValueProperty, JSHTMLLinkElement::putValueProperty, JSHTMLLinkElement::TargetAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSHTMLLinkElement::getValueProperty, JSHTMLLinkElement::putValueProperty, JSHTMLLinkElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("sheet", JSHTMLLinkElement::getValueProperty, NULL, JSHTMLLinkElement::SheetAttrNum)
-};
+    if (JSHTMLLinkElementAttributesFunctions_initialized) return;
+    JSHTMLLinkElementAttributesFunctions_initialized = true;
+    memset(JSHTMLLinkElementAttributesFunctions, 0, sizeof(JSHTMLLinkElementAttributesFunctions));
+    JSHTMLLinkElementAttributesFunctions[0].name = "constructor";
+    JSHTMLLinkElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLinkElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLinkElementAttributesFunctions[0].magic = JSHTMLLinkElement::ConstructorAttrNum;
+    JSHTMLLinkElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLLinkElement::getValueProperty;
+    JSHTMLLinkElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLLinkElementAttributesFunctions[1].name = "charset";
+    JSHTMLLinkElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLinkElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLinkElementAttributesFunctions[1].magic = JSHTMLLinkElement::CharsetAttrNum;
+    JSHTMLLinkElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLLinkElement::getValueProperty;
+    JSHTMLLinkElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLLinkElement::putValueProperty;
+    JSHTMLLinkElementAttributesFunctions[2].name = "disabled";
+    JSHTMLLinkElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLinkElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLinkElementAttributesFunctions[2].magic = JSHTMLLinkElement::DisabledAttrNum;
+    JSHTMLLinkElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLLinkElement::getValueProperty;
+    JSHTMLLinkElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLLinkElement::putValueProperty;
+    JSHTMLLinkElementAttributesFunctions[3].name = "media";
+    JSHTMLLinkElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLinkElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLinkElementAttributesFunctions[3].magic = JSHTMLLinkElement::MediaAttrNum;
+    JSHTMLLinkElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLLinkElement::getValueProperty;
+    JSHTMLLinkElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLLinkElement::putValueProperty;
+    JSHTMLLinkElementAttributesFunctions[4].name = "hreflang";
+    JSHTMLLinkElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLinkElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLinkElementAttributesFunctions[4].magic = JSHTMLLinkElement::HreflangAttrNum;
+    JSHTMLLinkElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLLinkElement::getValueProperty;
+    JSHTMLLinkElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLLinkElement::putValueProperty;
+    JSHTMLLinkElementAttributesFunctions[5].name = "rel";
+    JSHTMLLinkElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLinkElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLinkElementAttributesFunctions[5].magic = JSHTMLLinkElement::RelAttrNum;
+    JSHTMLLinkElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLLinkElement::getValueProperty;
+    JSHTMLLinkElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLLinkElement::putValueProperty;
+    JSHTMLLinkElementAttributesFunctions[6].name = "href";
+    JSHTMLLinkElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLinkElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLinkElementAttributesFunctions[6].magic = JSHTMLLinkElement::HrefAttrNum;
+    JSHTMLLinkElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLLinkElement::getValueProperty;
+    JSHTMLLinkElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLLinkElement::putValueProperty;
+    JSHTMLLinkElementAttributesFunctions[7].name = "rev";
+    JSHTMLLinkElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLinkElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLinkElementAttributesFunctions[7].magic = JSHTMLLinkElement::RevAttrNum;
+    JSHTMLLinkElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLLinkElement::getValueProperty;
+    JSHTMLLinkElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLLinkElement::putValueProperty;
+    JSHTMLLinkElementAttributesFunctions[8].name = "target";
+    JSHTMLLinkElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLinkElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLinkElementAttributesFunctions[8].magic = JSHTMLLinkElement::TargetAttrNum;
+    JSHTMLLinkElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLLinkElement::getValueProperty;
+    JSHTMLLinkElementAttributesFunctions[8].u.getset.set.setter_magic = JSHTMLLinkElement::putValueProperty;
+    JSHTMLLinkElementAttributesFunctions[9].name = "type";
+    JSHTMLLinkElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLinkElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLinkElementAttributesFunctions[9].magic = JSHTMLLinkElement::TypeAttrNum;
+    JSHTMLLinkElementAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLLinkElement::getValueProperty;
+    JSHTMLLinkElementAttributesFunctions[9].u.getset.set.setter_magic = JSHTMLLinkElement::putValueProperty;
+    JSHTMLLinkElementAttributesFunctions[10].name = "sheet";
+    JSHTMLLinkElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLinkElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLinkElementAttributesFunctions[10].magic = JSHTMLLinkElement::SheetAttrNum;
+    JSHTMLLinkElementAttributesFunctions[10].u.getset.get.getter_magic = JSHTMLLinkElement::getValueProperty;
+    JSHTMLLinkElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLLinkElementConstructor {
 public:
@@ -103,15 +166,22 @@ JSValue JSHTMLLinkElementPrototype::self(JSContext * ctx)
 
 void JSHTMLLinkElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLLinkElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLLinkElementAttributesFunctions, countof(JSHTMLLinkElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLLinkElementClassDefine = 
+static JSClassDef JSHTMLLinkElementClassDefine;
+static bool JSHTMLLinkElementClassDefine_initialized = false;
+
+static void init_JSHTMLLinkElementClassDefine()
 {
-    "HTMLLinkElement",
-    .finalizer = JSHTMLLinkElement::finalizer,
-    .gc_mark = JSHTMLLinkElement::mark,
-};
+    if (JSHTMLLinkElementClassDefine_initialized) return;
+    JSHTMLLinkElementClassDefine_initialized = true;
+    memset(&JSHTMLLinkElementClassDefine, 0, sizeof(JSHTMLLinkElementClassDefine));
+    JSHTMLLinkElementClassDefine.class_name = "HTMLLinkElement";
+    JSHTMLLinkElementClassDefine.finalizer = JSHTMLLinkElement::finalizer;
+    JSHTMLLinkElementClassDefine.gc_mark = JSHTMLLinkElement::mark;
+}
 
 JSClassID JSHTMLLinkElement::js_class_id = 0;
 

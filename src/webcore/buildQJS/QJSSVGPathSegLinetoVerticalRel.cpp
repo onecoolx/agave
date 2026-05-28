@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,10 +48,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPathSegLinetoVerticalRelAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPathSegLinetoVerticalRelAttributesFunctions[1];
+static bool JSSVGPathSegLinetoVerticalRelAttributesFunctions_initialized = false;
+
+static void init_JSSVGPathSegLinetoVerticalRelAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("y", JSSVGPathSegLinetoVerticalRel::getValueProperty, JSSVGPathSegLinetoVerticalRel::putValueProperty, JSSVGPathSegLinetoVerticalRel::YAttrNum)
-};
+    if (JSSVGPathSegLinetoVerticalRelAttributesFunctions_initialized) return;
+    JSSVGPathSegLinetoVerticalRelAttributesFunctions_initialized = true;
+    memset(JSSVGPathSegLinetoVerticalRelAttributesFunctions, 0, sizeof(JSSVGPathSegLinetoVerticalRelAttributesFunctions));
+    JSSVGPathSegLinetoVerticalRelAttributesFunctions[0].name = "y";
+    JSSVGPathSegLinetoVerticalRelAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegLinetoVerticalRelAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegLinetoVerticalRelAttributesFunctions[0].magic = JSSVGPathSegLinetoVerticalRel::YAttrNum;
+    JSSVGPathSegLinetoVerticalRelAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegLinetoVerticalRel::getValueProperty;
+    JSSVGPathSegLinetoVerticalRelAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegLinetoVerticalRel::putValueProperty;
+}
 
 JSValue JSSVGPathSegLinetoVerticalRelPrototype::self(JSContext * ctx)
 {
@@ -67,21 +80,29 @@ JSValue JSSVGPathSegLinetoVerticalRelPrototype::self(JSContext * ctx)
 
 void JSSVGPathSegLinetoVerticalRelPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPathSegLinetoVerticalRelAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathSegLinetoVerticalRelAttributesFunctions, countof(JSSVGPathSegLinetoVerticalRelAttributesFunctions));
 }
 
-static JSClassDef JSSVGPathSegLinetoVerticalRelClassDefine = 
+static JSClassDef JSSVGPathSegLinetoVerticalRelClassDefine;
+static bool JSSVGPathSegLinetoVerticalRelClassDefine_initialized = false;
+
+static void init_JSSVGPathSegLinetoVerticalRelClassDefine()
 {
-    "SVGPathSegLinetoVerticalRel",
-    .finalizer = JSSVGPathSegLinetoVerticalRel::finalizer,
-    .gc_mark = JSSVGPathSegLinetoVerticalRel::mark,
-};
+    if (JSSVGPathSegLinetoVerticalRelClassDefine_initialized) return;
+    JSSVGPathSegLinetoVerticalRelClassDefine_initialized = true;
+    memset(&JSSVGPathSegLinetoVerticalRelClassDefine, 0, sizeof(JSSVGPathSegLinetoVerticalRelClassDefine));
+    JSSVGPathSegLinetoVerticalRelClassDefine.class_name = "SVGPathSegLinetoVerticalRel";
+    JSSVGPathSegLinetoVerticalRelClassDefine.finalizer = JSSVGPathSegLinetoVerticalRel::finalizer;
+    JSSVGPathSegLinetoVerticalRelClassDefine.gc_mark = JSSVGPathSegLinetoVerticalRel::mark;
+}
 
 JSClassID JSSVGPathSegLinetoVerticalRel::js_class_id = 0;
 
 void JSSVGPathSegLinetoVerticalRel::init(JSContext* ctx)
 {
     if (JSSVGPathSegLinetoVerticalRel::js_class_id == 0) {
+        init_JSSVGPathSegLinetoVerticalRelClassDefine();
         JS_NewClassID(&JSSVGPathSegLinetoVerticalRel::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathSegLinetoVerticalRel::js_class_id, &JSSVGPathSegLinetoVerticalRelClassDefine);
         JS_SetClassProto(ctx, JSSVGPathSegLinetoVerticalRel::js_class_id, JSSVGPathSegLinetoVerticalRelPrototype::self(ctx));

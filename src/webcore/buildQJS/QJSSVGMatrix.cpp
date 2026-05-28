@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -45,32 +47,140 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGMatrixAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGMatrixAttributesFunctions[6];
+static bool JSSVGMatrixAttributesFunctions_initialized = false;
+
+static void init_JSSVGMatrixAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("b", JSSVGMatrix::getValueProperty, JSSVGMatrix::putValueProperty, JSSVGMatrix::BAttrNum),
-    JS_CGETSET_MAGIC_DEF("c", JSSVGMatrix::getValueProperty, JSSVGMatrix::putValueProperty, JSSVGMatrix::CAttrNum),
-    JS_CGETSET_MAGIC_DEF("f", JSSVGMatrix::getValueProperty, JSSVGMatrix::putValueProperty, JSSVGMatrix::FAttrNum),
-    JS_CGETSET_MAGIC_DEF("a", JSSVGMatrix::getValueProperty, JSSVGMatrix::putValueProperty, JSSVGMatrix::AAttrNum),
-    JS_CGETSET_MAGIC_DEF("d", JSSVGMatrix::getValueProperty, JSSVGMatrix::putValueProperty, JSSVGMatrix::DAttrNum),
-    JS_CGETSET_MAGIC_DEF("e", JSSVGMatrix::getValueProperty, JSSVGMatrix::putValueProperty, JSSVGMatrix::EAttrNum)
-};
+    if (JSSVGMatrixAttributesFunctions_initialized) return;
+    JSSVGMatrixAttributesFunctions_initialized = true;
+    memset(JSSVGMatrixAttributesFunctions, 0, sizeof(JSSVGMatrixAttributesFunctions));
+    JSSVGMatrixAttributesFunctions[0].name = "b";
+    JSSVGMatrixAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMatrixAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMatrixAttributesFunctions[0].magic = JSSVGMatrix::BAttrNum;
+    JSSVGMatrixAttributesFunctions[0].u.getset.get.getter_magic = JSSVGMatrix::getValueProperty;
+    JSSVGMatrixAttributesFunctions[0].u.getset.set.setter_magic = JSSVGMatrix::putValueProperty;
+    JSSVGMatrixAttributesFunctions[1].name = "c";
+    JSSVGMatrixAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMatrixAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMatrixAttributesFunctions[1].magic = JSSVGMatrix::CAttrNum;
+    JSSVGMatrixAttributesFunctions[1].u.getset.get.getter_magic = JSSVGMatrix::getValueProperty;
+    JSSVGMatrixAttributesFunctions[1].u.getset.set.setter_magic = JSSVGMatrix::putValueProperty;
+    JSSVGMatrixAttributesFunctions[2].name = "f";
+    JSSVGMatrixAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMatrixAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMatrixAttributesFunctions[2].magic = JSSVGMatrix::FAttrNum;
+    JSSVGMatrixAttributesFunctions[2].u.getset.get.getter_magic = JSSVGMatrix::getValueProperty;
+    JSSVGMatrixAttributesFunctions[2].u.getset.set.setter_magic = JSSVGMatrix::putValueProperty;
+    JSSVGMatrixAttributesFunctions[3].name = "a";
+    JSSVGMatrixAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMatrixAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMatrixAttributesFunctions[3].magic = JSSVGMatrix::AAttrNum;
+    JSSVGMatrixAttributesFunctions[3].u.getset.get.getter_magic = JSSVGMatrix::getValueProperty;
+    JSSVGMatrixAttributesFunctions[3].u.getset.set.setter_magic = JSSVGMatrix::putValueProperty;
+    JSSVGMatrixAttributesFunctions[4].name = "d";
+    JSSVGMatrixAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMatrixAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMatrixAttributesFunctions[4].magic = JSSVGMatrix::DAttrNum;
+    JSSVGMatrixAttributesFunctions[4].u.getset.get.getter_magic = JSSVGMatrix::getValueProperty;
+    JSSVGMatrixAttributesFunctions[4].u.getset.set.setter_magic = JSSVGMatrix::putValueProperty;
+    JSSVGMatrixAttributesFunctions[5].name = "e";
+    JSSVGMatrixAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGMatrixAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGMatrixAttributesFunctions[5].magic = JSSVGMatrix::EAttrNum;
+    JSSVGMatrixAttributesFunctions[5].u.getset.get.getter_magic = JSSVGMatrix::getValueProperty;
+    JSSVGMatrixAttributesFunctions[5].u.getset.set.setter_magic = JSSVGMatrix::putValueProperty;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGMatrixPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGMatrixPrototypeFunctions[11];
+static bool JSSVGMatrixPrototypeFunctions_initialized = false;
+
+static void init_JSSVGMatrixPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("skewX", 1, JSSVGMatrixPrototypeFunction::callAsFunction, JSSVGMatrix::SkewXFuncNum),
-    JS_CFUNC_MAGIC_DEF("rotateFromVector", 2, JSSVGMatrixPrototypeFunction::callAsFunction, JSSVGMatrix::RotateFromVectorFuncNum),
-    JS_CFUNC_MAGIC_DEF("flipX", 0, JSSVGMatrixPrototypeFunction::callAsFunction, JSSVGMatrix::FlipXFuncNum),
-    JS_CFUNC_MAGIC_DEF("multiply", 1, JSSVGMatrixPrototypeFunction::callAsFunction, JSSVGMatrix::MultiplyFuncNum),
-    JS_CFUNC_MAGIC_DEF("inverse", 0, JSSVGMatrixPrototypeFunction::callAsFunction, JSSVGMatrix::InverseFuncNum),
-    JS_CFUNC_MAGIC_DEF("rotate", 1, JSSVGMatrixPrototypeFunction::callAsFunction, JSSVGMatrix::RotateFuncNum),
-    JS_CFUNC_MAGIC_DEF("scaleNonUniform", 2, JSSVGMatrixPrototypeFunction::callAsFunction, JSSVGMatrix::ScaleNonUniformFuncNum),
-    JS_CFUNC_MAGIC_DEF("scale", 1, JSSVGMatrixPrototypeFunction::callAsFunction, JSSVGMatrix::ScaleFuncNum),
-    JS_CFUNC_MAGIC_DEF("translate", 2, JSSVGMatrixPrototypeFunction::callAsFunction, JSSVGMatrix::TranslateFuncNum),
-    JS_CFUNC_MAGIC_DEF("flipY", 0, JSSVGMatrixPrototypeFunction::callAsFunction, JSSVGMatrix::FlipYFuncNum),
-    JS_CFUNC_MAGIC_DEF("skewY", 1, JSSVGMatrixPrototypeFunction::callAsFunction, JSSVGMatrix::SkewYFuncNum)
-};
+    if (JSSVGMatrixPrototypeFunctions_initialized) return;
+    JSSVGMatrixPrototypeFunctions_initialized = true;
+    memset(JSSVGMatrixPrototypeFunctions, 0, sizeof(JSSVGMatrixPrototypeFunctions));
+    JSSVGMatrixPrototypeFunctions[0].name = "skewX";
+    JSSVGMatrixPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGMatrixPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGMatrixPrototypeFunctions[0].magic = JSSVGMatrix::SkewXFuncNum;
+    JSSVGMatrixPrototypeFunctions[0].u.func.length = 1;
+    JSSVGMatrixPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGMatrixPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGMatrixPrototypeFunction::callAsFunction;
+    JSSVGMatrixPrototypeFunctions[1].name = "rotateFromVector";
+    JSSVGMatrixPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGMatrixPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGMatrixPrototypeFunctions[1].magic = JSSVGMatrix::RotateFromVectorFuncNum;
+    JSSVGMatrixPrototypeFunctions[1].u.func.length = 2;
+    JSSVGMatrixPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGMatrixPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGMatrixPrototypeFunction::callAsFunction;
+    JSSVGMatrixPrototypeFunctions[2].name = "flipX";
+    JSSVGMatrixPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGMatrixPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGMatrixPrototypeFunctions[2].magic = JSSVGMatrix::FlipXFuncNum;
+    JSSVGMatrixPrototypeFunctions[2].u.func.length = 0;
+    JSSVGMatrixPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGMatrixPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGMatrixPrototypeFunction::callAsFunction;
+    JSSVGMatrixPrototypeFunctions[3].name = "multiply";
+    JSSVGMatrixPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGMatrixPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGMatrixPrototypeFunctions[3].magic = JSSVGMatrix::MultiplyFuncNum;
+    JSSVGMatrixPrototypeFunctions[3].u.func.length = 1;
+    JSSVGMatrixPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGMatrixPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGMatrixPrototypeFunction::callAsFunction;
+    JSSVGMatrixPrototypeFunctions[4].name = "inverse";
+    JSSVGMatrixPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGMatrixPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGMatrixPrototypeFunctions[4].magic = JSSVGMatrix::InverseFuncNum;
+    JSSVGMatrixPrototypeFunctions[4].u.func.length = 0;
+    JSSVGMatrixPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGMatrixPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGMatrixPrototypeFunction::callAsFunction;
+    JSSVGMatrixPrototypeFunctions[5].name = "rotate";
+    JSSVGMatrixPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGMatrixPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGMatrixPrototypeFunctions[5].magic = JSSVGMatrix::RotateFuncNum;
+    JSSVGMatrixPrototypeFunctions[5].u.func.length = 1;
+    JSSVGMatrixPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGMatrixPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGMatrixPrototypeFunction::callAsFunction;
+    JSSVGMatrixPrototypeFunctions[6].name = "scaleNonUniform";
+    JSSVGMatrixPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGMatrixPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSSVGMatrixPrototypeFunctions[6].magic = JSSVGMatrix::ScaleNonUniformFuncNum;
+    JSSVGMatrixPrototypeFunctions[6].u.func.length = 2;
+    JSSVGMatrixPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGMatrixPrototypeFunctions[6].u.func.cfunc.generic_magic = JSSVGMatrixPrototypeFunction::callAsFunction;
+    JSSVGMatrixPrototypeFunctions[7].name = "scale";
+    JSSVGMatrixPrototypeFunctions[7].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGMatrixPrototypeFunctions[7].def_type = JS_DEF_CFUNC;
+    JSSVGMatrixPrototypeFunctions[7].magic = JSSVGMatrix::ScaleFuncNum;
+    JSSVGMatrixPrototypeFunctions[7].u.func.length = 1;
+    JSSVGMatrixPrototypeFunctions[7].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGMatrixPrototypeFunctions[7].u.func.cfunc.generic_magic = JSSVGMatrixPrototypeFunction::callAsFunction;
+    JSSVGMatrixPrototypeFunctions[8].name = "translate";
+    JSSVGMatrixPrototypeFunctions[8].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGMatrixPrototypeFunctions[8].def_type = JS_DEF_CFUNC;
+    JSSVGMatrixPrototypeFunctions[8].magic = JSSVGMatrix::TranslateFuncNum;
+    JSSVGMatrixPrototypeFunctions[8].u.func.length = 2;
+    JSSVGMatrixPrototypeFunctions[8].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGMatrixPrototypeFunctions[8].u.func.cfunc.generic_magic = JSSVGMatrixPrototypeFunction::callAsFunction;
+    JSSVGMatrixPrototypeFunctions[9].name = "flipY";
+    JSSVGMatrixPrototypeFunctions[9].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGMatrixPrototypeFunctions[9].def_type = JS_DEF_CFUNC;
+    JSSVGMatrixPrototypeFunctions[9].magic = JSSVGMatrix::FlipYFuncNum;
+    JSSVGMatrixPrototypeFunctions[9].u.func.length = 0;
+    JSSVGMatrixPrototypeFunctions[9].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGMatrixPrototypeFunctions[9].u.func.cfunc.generic_magic = JSSVGMatrixPrototypeFunction::callAsFunction;
+    JSSVGMatrixPrototypeFunctions[10].name = "skewY";
+    JSSVGMatrixPrototypeFunctions[10].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGMatrixPrototypeFunctions[10].def_type = JS_DEF_CFUNC;
+    JSSVGMatrixPrototypeFunctions[10].magic = JSSVGMatrix::SkewYFuncNum;
+    JSSVGMatrixPrototypeFunctions[10].u.func.length = 1;
+    JSSVGMatrixPrototypeFunctions[10].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGMatrixPrototypeFunctions[10].u.func.cfunc.generic_magic = JSSVGMatrixPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGMatrixPrototype::self(JSContext * ctx)
 {
@@ -88,22 +198,31 @@ JSValue JSSVGMatrixPrototype::self(JSContext * ctx)
 
 void JSSVGMatrixPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGMatrixAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGMatrixAttributesFunctions, countof(JSSVGMatrixAttributesFunctions));
+    init_JSSVGMatrixPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGMatrixPrototypeFunctions, countof(JSSVGMatrixPrototypeFunctions));
 }
 
-static JSClassDef JSSVGMatrixClassDefine = 
+static JSClassDef JSSVGMatrixClassDefine;
+static bool JSSVGMatrixClassDefine_initialized = false;
+
+static void init_JSSVGMatrixClassDefine()
 {
-    "SVGMatrix",
-    .finalizer = JSSVGMatrix::finalizer,
-    .gc_mark = JSSVGMatrix::mark,
-};
+    if (JSSVGMatrixClassDefine_initialized) return;
+    JSSVGMatrixClassDefine_initialized = true;
+    memset(&JSSVGMatrixClassDefine, 0, sizeof(JSSVGMatrixClassDefine));
+    JSSVGMatrixClassDefine.class_name = "SVGMatrix";
+    JSSVGMatrixClassDefine.finalizer = JSSVGMatrix::finalizer;
+    JSSVGMatrixClassDefine.gc_mark = JSSVGMatrix::mark;
+}
 
 JSClassID JSSVGMatrix::js_class_id = 0;
 
 void JSSVGMatrix::init(JSContext* ctx)
 {
     if (JSSVGMatrix::js_class_id == 0) {
+        init_JSSVGMatrixClassDefine();
         JS_NewClassID(&JSSVGMatrix::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGMatrix::js_class_id, &JSSVGMatrixClassDefine);
         JS_SetClassProto(ctx, JSSVGMatrix::js_class_id, JSSVGMatrixPrototype::self(ctx));

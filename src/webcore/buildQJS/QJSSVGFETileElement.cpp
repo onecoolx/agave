@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -53,24 +55,82 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFETileElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFETileElementAttributesFunctions[8];
+static bool JSSVGFETileElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFETileElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFETileElement::getValueProperty, NULL, JSSVGFETileElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGFETileElement::getValueProperty, NULL, JSSVGFETileElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGFETileElement::getValueProperty, NULL, JSSVGFETileElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFETileElement::getValueProperty, NULL, JSSVGFETileElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("in1", JSSVGFETileElement::getValueProperty, NULL, JSSVGFETileElement::In1AttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGFETileElement::getValueProperty, NULL, JSSVGFETileElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("result", JSSVGFETileElement::getValueProperty, NULL, JSSVGFETileElement::ResultAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGFETileElement::getValueProperty, NULL, JSSVGFETileElement::StyleAttrNum)
-};
+    if (JSSVGFETileElementAttributesFunctions_initialized) return;
+    JSSVGFETileElementAttributesFunctions_initialized = true;
+    memset(JSSVGFETileElementAttributesFunctions, 0, sizeof(JSSVGFETileElementAttributesFunctions));
+    JSSVGFETileElementAttributesFunctions[0].name = "x";
+    JSSVGFETileElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFETileElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFETileElementAttributesFunctions[0].magic = JSSVGFETileElement::XAttrNum;
+    JSSVGFETileElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFETileElement::getValueProperty;
+    JSSVGFETileElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFETileElementAttributesFunctions[1].name = "className";
+    JSSVGFETileElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFETileElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFETileElementAttributesFunctions[1].magic = JSSVGFETileElement::ClassNameAttrNum;
+    JSSVGFETileElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFETileElement::getValueProperty;
+    JSSVGFETileElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFETileElementAttributesFunctions[2].name = "width";
+    JSSVGFETileElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFETileElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFETileElementAttributesFunctions[2].magic = JSSVGFETileElement::WidthAttrNum;
+    JSSVGFETileElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFETileElement::getValueProperty;
+    JSSVGFETileElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFETileElementAttributesFunctions[3].name = "y";
+    JSSVGFETileElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFETileElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFETileElementAttributesFunctions[3].magic = JSSVGFETileElement::YAttrNum;
+    JSSVGFETileElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGFETileElement::getValueProperty;
+    JSSVGFETileElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFETileElementAttributesFunctions[4].name = "in1";
+    JSSVGFETileElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFETileElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFETileElementAttributesFunctions[4].magic = JSSVGFETileElement::In1AttrNum;
+    JSSVGFETileElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGFETileElement::getValueProperty;
+    JSSVGFETileElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFETileElementAttributesFunctions[5].name = "height";
+    JSSVGFETileElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFETileElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFETileElementAttributesFunctions[5].magic = JSSVGFETileElement::HeightAttrNum;
+    JSSVGFETileElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGFETileElement::getValueProperty;
+    JSSVGFETileElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFETileElementAttributesFunctions[6].name = "result";
+    JSSVGFETileElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFETileElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFETileElementAttributesFunctions[6].magic = JSSVGFETileElement::ResultAttrNum;
+    JSSVGFETileElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGFETileElement::getValueProperty;
+    JSSVGFETileElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFETileElementAttributesFunctions[7].name = "style";
+    JSSVGFETileElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFETileElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFETileElementAttributesFunctions[7].magic = JSSVGFETileElement::StyleAttrNum;
+    JSSVGFETileElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGFETileElement::getValueProperty;
+    JSSVGFETileElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGFETileElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGFETileElementPrototypeFunctions[1];
+static bool JSSVGFETileElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGFETileElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGFETileElementPrototypeFunction::callAsFunction, JSSVGFETileElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGFETileElementPrototypeFunctions_initialized) return;
+    JSSVGFETileElementPrototypeFunctions_initialized = true;
+    memset(JSSVGFETileElementPrototypeFunctions, 0, sizeof(JSSVGFETileElementPrototypeFunctions));
+    JSSVGFETileElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGFETileElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFETileElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGFETileElementPrototypeFunctions[0].magic = JSSVGFETileElement::GetPresentationAttributeFuncNum;
+    JSSVGFETileElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGFETileElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFETileElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGFETileElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGFETileElementPrototype::self(JSContext * ctx)
 {
@@ -88,22 +148,31 @@ JSValue JSSVGFETileElementPrototype::self(JSContext * ctx)
 
 void JSSVGFETileElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFETileElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFETileElementAttributesFunctions, countof(JSSVGFETileElementAttributesFunctions));
+    init_JSSVGFETileElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFETileElementPrototypeFunctions, countof(JSSVGFETileElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGFETileElementClassDefine = 
+static JSClassDef JSSVGFETileElementClassDefine;
+static bool JSSVGFETileElementClassDefine_initialized = false;
+
+static void init_JSSVGFETileElementClassDefine()
 {
-    "SVGFETileElement",
-    .finalizer = JSSVGFETileElement::finalizer,
-    .gc_mark = JSSVGFETileElement::mark,
-};
+    if (JSSVGFETileElementClassDefine_initialized) return;
+    JSSVGFETileElementClassDefine_initialized = true;
+    memset(&JSSVGFETileElementClassDefine, 0, sizeof(JSSVGFETileElementClassDefine));
+    JSSVGFETileElementClassDefine.class_name = "SVGFETileElement";
+    JSSVGFETileElementClassDefine.finalizer = JSSVGFETileElement::finalizer;
+    JSSVGFETileElementClassDefine.gc_mark = JSSVGFETileElement::mark;
+}
 
 JSClassID JSSVGFETileElement::js_class_id = 0;
 
 void JSSVGFETileElement::init(JSContext* ctx)
 {
     if (JSSVGFETileElement::js_class_id == 0) {
+        init_JSSVGFETileElementClassDefine();
         JS_NewClassID(&JSSVGFETileElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFETileElement::js_class_id, &JSSVGFETileElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFETileElement::js_class_id, JSSVGFETileElementPrototype::self(ctx));

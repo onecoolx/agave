@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSWheelEvent.h"
 
 #include "WheelEvent.h"
@@ -38,24 +40,105 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSWheelEventAttributesFunctions[] =
+static JSCFunctionListEntry JSWheelEventAttributesFunctions[15];
+static bool JSWheelEventAttributesFunctions_initialized = false;
+
+static void init_JSWheelEventAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("wheelDeltaY", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::WheelDeltaYAttrNum),
-    JS_CGETSET_MAGIC_DEF("clientY", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::ClientYAttrNum),
-    JS_CGETSET_MAGIC_DEF("wheelDelta", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::WheelDeltaAttrNum),
-    JS_CGETSET_MAGIC_DEF("shiftKey", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::ShiftKeyAttrNum),
-    JS_CGETSET_MAGIC_DEF("screenX", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::ScreenXAttrNum),
-    JS_CGETSET_MAGIC_DEF("wheelDeltaX", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::WheelDeltaXAttrNum),
-    JS_CGETSET_MAGIC_DEF("altKey", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::AltKeyAttrNum),
-    JS_CGETSET_MAGIC_DEF("ctrlKey", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::CtrlKeyAttrNum),
-    JS_CGETSET_MAGIC_DEF("screenY", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::ScreenYAttrNum),
-    JS_CGETSET_MAGIC_DEF("clientX", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::ClientXAttrNum),
-    JS_CGETSET_MAGIC_DEF("metaKey", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::MetaKeyAttrNum),
-    JS_CGETSET_MAGIC_DEF("offsetX", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::OffsetXAttrNum),
-    JS_CGETSET_MAGIC_DEF("offsetY", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::OffsetYAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSWheelEvent::getValueProperty, NULL, JSWheelEvent::YAttrNum)
-};
+    if (JSWheelEventAttributesFunctions_initialized) return;
+    JSWheelEventAttributesFunctions_initialized = true;
+    memset(JSWheelEventAttributesFunctions, 0, sizeof(JSWheelEventAttributesFunctions));
+    JSWheelEventAttributesFunctions[0].name = "wheelDeltaY";
+    JSWheelEventAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[0].magic = JSWheelEvent::WheelDeltaYAttrNum;
+    JSWheelEventAttributesFunctions[0].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSWheelEventAttributesFunctions[1].name = "clientY";
+    JSWheelEventAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[1].magic = JSWheelEvent::ClientYAttrNum;
+    JSWheelEventAttributesFunctions[1].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSWheelEventAttributesFunctions[2].name = "wheelDelta";
+    JSWheelEventAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[2].magic = JSWheelEvent::WheelDeltaAttrNum;
+    JSWheelEventAttributesFunctions[2].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSWheelEventAttributesFunctions[3].name = "shiftKey";
+    JSWheelEventAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[3].magic = JSWheelEvent::ShiftKeyAttrNum;
+    JSWheelEventAttributesFunctions[3].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSWheelEventAttributesFunctions[4].name = "screenX";
+    JSWheelEventAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[4].magic = JSWheelEvent::ScreenXAttrNum;
+    JSWheelEventAttributesFunctions[4].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSWheelEventAttributesFunctions[5].name = "wheelDeltaX";
+    JSWheelEventAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[5].magic = JSWheelEvent::WheelDeltaXAttrNum;
+    JSWheelEventAttributesFunctions[5].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSWheelEventAttributesFunctions[6].name = "altKey";
+    JSWheelEventAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[6].magic = JSWheelEvent::AltKeyAttrNum;
+    JSWheelEventAttributesFunctions[6].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSWheelEventAttributesFunctions[7].name = "ctrlKey";
+    JSWheelEventAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[7].magic = JSWheelEvent::CtrlKeyAttrNum;
+    JSWheelEventAttributesFunctions[7].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSWheelEventAttributesFunctions[8].name = "screenY";
+    JSWheelEventAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[8].magic = JSWheelEvent::ScreenYAttrNum;
+    JSWheelEventAttributesFunctions[8].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSWheelEventAttributesFunctions[9].name = "clientX";
+    JSWheelEventAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[9].magic = JSWheelEvent::ClientXAttrNum;
+    JSWheelEventAttributesFunctions[9].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSWheelEventAttributesFunctions[10].name = "metaKey";
+    JSWheelEventAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[10].magic = JSWheelEvent::MetaKeyAttrNum;
+    JSWheelEventAttributesFunctions[10].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSWheelEventAttributesFunctions[11].name = "offsetX";
+    JSWheelEventAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[11].magic = JSWheelEvent::OffsetXAttrNum;
+    JSWheelEventAttributesFunctions[11].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSWheelEventAttributesFunctions[12].name = "offsetY";
+    JSWheelEventAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[12].magic = JSWheelEvent::OffsetYAttrNum;
+    JSWheelEventAttributesFunctions[12].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSWheelEventAttributesFunctions[13].name = "x";
+    JSWheelEventAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[13].magic = JSWheelEvent::XAttrNum;
+    JSWheelEventAttributesFunctions[13].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[13].u.getset.set.setter_magic = NULL;
+    JSWheelEventAttributesFunctions[14].name = "y";
+    JSWheelEventAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSWheelEventAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSWheelEventAttributesFunctions[14].magic = JSWheelEvent::YAttrNum;
+    JSWheelEventAttributesFunctions[14].u.getset.get.getter_magic = JSWheelEvent::getValueProperty;
+    JSWheelEventAttributesFunctions[14].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSWheelEventPrototype::self(JSContext * ctx)
 {
@@ -73,21 +156,29 @@ JSValue JSWheelEventPrototype::self(JSContext * ctx)
 
 void JSWheelEventPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSWheelEventAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSWheelEventAttributesFunctions, countof(JSWheelEventAttributesFunctions));
 }
 
-static JSClassDef JSWheelEventClassDefine = 
+static JSClassDef JSWheelEventClassDefine;
+static bool JSWheelEventClassDefine_initialized = false;
+
+static void init_JSWheelEventClassDefine()
 {
-    "WheelEvent",
-    .finalizer = JSWheelEvent::finalizer,
-    .gc_mark = JSWheelEvent::mark,
-};
+    if (JSWheelEventClassDefine_initialized) return;
+    JSWheelEventClassDefine_initialized = true;
+    memset(&JSWheelEventClassDefine, 0, sizeof(JSWheelEventClassDefine));
+    JSWheelEventClassDefine.class_name = "WheelEvent";
+    JSWheelEventClassDefine.finalizer = JSWheelEvent::finalizer;
+    JSWheelEventClassDefine.gc_mark = JSWheelEvent::mark;
+}
 
 JSClassID JSWheelEvent::js_class_id = 0;
 
 void JSWheelEvent::init(JSContext* ctx)
 {
     if (JSWheelEvent::js_class_id == 0) {
+        init_JSWheelEventClassDefine();
         JS_NewClassID(&JSWheelEvent::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSWheelEvent::js_class_id, &JSWheelEventClassDefine);
         JS_SetClassProto(ctx, JSWheelEvent::js_class_id, JSWheelEventPrototype::self(ctx));

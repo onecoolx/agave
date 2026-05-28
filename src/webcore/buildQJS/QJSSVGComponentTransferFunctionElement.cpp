@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -49,17 +51,63 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGComponentTransferFunctionElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGComponentTransferFunctionElementAttributesFunctions[8];
+static bool JSSVGComponentTransferFunctionElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGComponentTransferFunctionElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("tableValues", JSSVGComponentTransferFunctionElement::getValueProperty, NULL, JSSVGComponentTransferFunctionElement::TableValuesAttrNum),
-    JS_CGETSET_MAGIC_DEF("amplitude", JSSVGComponentTransferFunctionElement::getValueProperty, NULL, JSSVGComponentTransferFunctionElement::AmplitudeAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSSVGComponentTransferFunctionElement::getValueProperty, NULL, JSSVGComponentTransferFunctionElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("slope", JSSVGComponentTransferFunctionElement::getValueProperty, NULL, JSSVGComponentTransferFunctionElement::SlopeAttrNum),
-    JS_CGETSET_MAGIC_DEF("intercept", JSSVGComponentTransferFunctionElement::getValueProperty, NULL, JSSVGComponentTransferFunctionElement::InterceptAttrNum),
-    JS_CGETSET_MAGIC_DEF("exponent", JSSVGComponentTransferFunctionElement::getValueProperty, NULL, JSSVGComponentTransferFunctionElement::ExponentAttrNum),
-    JS_CGETSET_MAGIC_DEF("offset", JSSVGComponentTransferFunctionElement::getValueProperty, NULL, JSSVGComponentTransferFunctionElement::OffsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSSVGComponentTransferFunctionElement::getValueProperty, NULL, JSSVGComponentTransferFunctionElement::ConstructorAttrNum)
-};
+    if (JSSVGComponentTransferFunctionElementAttributesFunctions_initialized) return;
+    JSSVGComponentTransferFunctionElementAttributesFunctions_initialized = true;
+    memset(JSSVGComponentTransferFunctionElementAttributesFunctions, 0, sizeof(JSSVGComponentTransferFunctionElementAttributesFunctions));
+    JSSVGComponentTransferFunctionElementAttributesFunctions[0].name = "tableValues";
+    JSSVGComponentTransferFunctionElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[0].magic = JSSVGComponentTransferFunctionElement::TableValuesAttrNum;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElement::getValueProperty;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[1].name = "amplitude";
+    JSSVGComponentTransferFunctionElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[1].magic = JSSVGComponentTransferFunctionElement::AmplitudeAttrNum;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElement::getValueProperty;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[2].name = "type";
+    JSSVGComponentTransferFunctionElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[2].magic = JSSVGComponentTransferFunctionElement::TypeAttrNum;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElement::getValueProperty;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[3].name = "slope";
+    JSSVGComponentTransferFunctionElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[3].magic = JSSVGComponentTransferFunctionElement::SlopeAttrNum;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElement::getValueProperty;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[4].name = "intercept";
+    JSSVGComponentTransferFunctionElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[4].magic = JSSVGComponentTransferFunctionElement::InterceptAttrNum;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElement::getValueProperty;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[5].name = "exponent";
+    JSSVGComponentTransferFunctionElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[5].magic = JSSVGComponentTransferFunctionElement::ExponentAttrNum;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElement::getValueProperty;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[6].name = "offset";
+    JSSVGComponentTransferFunctionElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[6].magic = JSSVGComponentTransferFunctionElement::OffsetAttrNum;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElement::getValueProperty;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[7].name = "constructor";
+    JSSVGComponentTransferFunctionElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[7].magic = JSSVGComponentTransferFunctionElement::ConstructorAttrNum;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElement::getValueProperty;
+    JSSVGComponentTransferFunctionElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+}
 
 class JSSVGComponentTransferFunctionElementConstructor {
 public:
@@ -76,15 +124,51 @@ JSValue JSSVGComponentTransferFunctionElementConstructor::getValueProperty(JSCon
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSSVGComponentTransferFunctionElementConstructorFunctions[] =
+static JSCFunctionListEntry JSSVGComponentTransferFunctionElementConstructorFunctions[6];
+static bool JSSVGComponentTransferFunctionElementConstructorFunctions_initialized = false;
+
+static void init_JSSVGComponentTransferFunctionElementConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPONENTTRANSFER_TYPE_TABLE", JSSVGComponentTransferFunctionElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOMPONENTTRANSFER_TYPE_TABLE),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPONENTTRANSFER_TYPE_DISCRETE", JSSVGComponentTransferFunctionElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOMPONENTTRANSFER_TYPE_DISCRETE),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPONENTTRANSFER_TYPE_LINEAR", JSSVGComponentTransferFunctionElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOMPONENTTRANSFER_TYPE_LINEAR),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPONENTTRANSFER_TYPE_UNKNOWN", JSSVGComponentTransferFunctionElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOMPONENTTRANSFER_TYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPONENTTRANSFER_TYPE_IDENTITY", JSSVGComponentTransferFunctionElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOMPONENTTRANSFER_TYPE_IDENTITY),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPONENTTRANSFER_TYPE_GAMMA", JSSVGComponentTransferFunctionElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOMPONENTTRANSFER_TYPE_GAMMA)
-};
+    if (JSSVGComponentTransferFunctionElementConstructorFunctions_initialized) return;
+    JSSVGComponentTransferFunctionElementConstructorFunctions_initialized = true;
+    memset(JSSVGComponentTransferFunctionElementConstructorFunctions, 0, sizeof(JSSVGComponentTransferFunctionElementConstructorFunctions));
+    JSSVGComponentTransferFunctionElementConstructorFunctions[0].name = "SVG_FECOMPONENTTRANSFER_TYPE_TABLE";
+    JSSVGComponentTransferFunctionElementConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[0].magic = WebCore::SVG_FECOMPONENTTRANSFER_TYPE_TABLE;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[0].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElementConstructor::getValueProperty;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[1].name = "SVG_FECOMPONENTTRANSFER_TYPE_DISCRETE";
+    JSSVGComponentTransferFunctionElementConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[1].magic = WebCore::SVG_FECOMPONENTTRANSFER_TYPE_DISCRETE;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[1].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElementConstructor::getValueProperty;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[2].name = "SVG_FECOMPONENTTRANSFER_TYPE_LINEAR";
+    JSSVGComponentTransferFunctionElementConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[2].magic = WebCore::SVG_FECOMPONENTTRANSFER_TYPE_LINEAR;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[2].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElementConstructor::getValueProperty;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[3].name = "SVG_FECOMPONENTTRANSFER_TYPE_UNKNOWN";
+    JSSVGComponentTransferFunctionElementConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[3].magic = WebCore::SVG_FECOMPONENTTRANSFER_TYPE_UNKNOWN;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[3].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElementConstructor::getValueProperty;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[4].name = "SVG_FECOMPONENTTRANSFER_TYPE_IDENTITY";
+    JSSVGComponentTransferFunctionElementConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[4].magic = WebCore::SVG_FECOMPONENTTRANSFER_TYPE_IDENTITY;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[4].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElementConstructor::getValueProperty;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[5].name = "SVG_FECOMPONENTTRANSFER_TYPE_GAMMA";
+    JSSVGComponentTransferFunctionElementConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[5].magic = WebCore::SVG_FECOMPONENTTRANSFER_TYPE_GAMMA;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[5].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElementConstructor::getValueProperty;
+    JSSVGComponentTransferFunctionElementConstructorFunctions[5].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGComponentTransferFunctionElementConstructor::self(JSContext * ctx)
 {
@@ -102,20 +186,57 @@ JSValue JSSVGComponentTransferFunctionElementConstructor::self(JSContext * ctx)
 
 void JSSVGComponentTransferFunctionElementConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGComponentTransferFunctionElementConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGComponentTransferFunctionElementConstructorFunctions, countof(JSSVGComponentTransferFunctionElementConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[6];
+static bool JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPONENTTRANSFER_TYPE_TABLE", JSSVGComponentTransferFunctionElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOMPONENTTRANSFER_TYPE_TABLE),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPONENTTRANSFER_TYPE_DISCRETE", JSSVGComponentTransferFunctionElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOMPONENTTRANSFER_TYPE_DISCRETE),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPONENTTRANSFER_TYPE_LINEAR", JSSVGComponentTransferFunctionElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOMPONENTTRANSFER_TYPE_LINEAR),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPONENTTRANSFER_TYPE_UNKNOWN", JSSVGComponentTransferFunctionElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOMPONENTTRANSFER_TYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPONENTTRANSFER_TYPE_IDENTITY", JSSVGComponentTransferFunctionElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOMPONENTTRANSFER_TYPE_IDENTITY),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPONENTTRANSFER_TYPE_GAMMA", JSSVGComponentTransferFunctionElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOMPONENTTRANSFER_TYPE_GAMMA)
-};
+    if (JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions_initialized) return;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions_initialized = true;
+    memset(JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions, 0, sizeof(JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions));
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[0].name = "SVG_FECOMPONENTTRANSFER_TYPE_TABLE";
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[0].magic = WebCore::SVG_FECOMPONENTTRANSFER_TYPE_TABLE;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElementPrototype::getValueProperty;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[1].name = "SVG_FECOMPONENTTRANSFER_TYPE_DISCRETE";
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[1].magic = WebCore::SVG_FECOMPONENTTRANSFER_TYPE_DISCRETE;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElementPrototype::getValueProperty;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[2].name = "SVG_FECOMPONENTTRANSFER_TYPE_LINEAR";
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[2].magic = WebCore::SVG_FECOMPONENTTRANSFER_TYPE_LINEAR;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElementPrototype::getValueProperty;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[3].name = "SVG_FECOMPONENTTRANSFER_TYPE_UNKNOWN";
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[3].magic = WebCore::SVG_FECOMPONENTTRANSFER_TYPE_UNKNOWN;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElementPrototype::getValueProperty;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[4].name = "SVG_FECOMPONENTTRANSFER_TYPE_IDENTITY";
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[4].magic = WebCore::SVG_FECOMPONENTTRANSFER_TYPE_IDENTITY;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElementPrototype::getValueProperty;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[5].name = "SVG_FECOMPONENTTRANSFER_TYPE_GAMMA";
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[5].magic = WebCore::SVG_FECOMPONENTTRANSFER_TYPE_GAMMA;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSSVGComponentTransferFunctionElementPrototype::getValueProperty;
+    JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGComponentTransferFunctionElementPrototype::self(JSContext * ctx)
 {
@@ -133,7 +254,9 @@ JSValue JSSVGComponentTransferFunctionElementPrototype::self(JSContext * ctx)
 
 void JSSVGComponentTransferFunctionElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGComponentTransferFunctionElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGComponentTransferFunctionElementAttributesFunctions, countof(JSSVGComponentTransferFunctionElementAttributesFunctions));
+    init_JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions, countof(JSSVGComponentTransferFunctionElementPrototypeConstantsFunctions));
 }
 
@@ -143,18 +266,25 @@ JSValue JSSVGComponentTransferFunctionElementPrototype::getValueProperty(JSConte
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSSVGComponentTransferFunctionElementClassDefine = 
+static JSClassDef JSSVGComponentTransferFunctionElementClassDefine;
+static bool JSSVGComponentTransferFunctionElementClassDefine_initialized = false;
+
+static void init_JSSVGComponentTransferFunctionElementClassDefine()
 {
-    "SVGComponentTransferFunctionElement",
-    .finalizer = JSSVGComponentTransferFunctionElement::finalizer,
-    .gc_mark = JSSVGComponentTransferFunctionElement::mark,
-};
+    if (JSSVGComponentTransferFunctionElementClassDefine_initialized) return;
+    JSSVGComponentTransferFunctionElementClassDefine_initialized = true;
+    memset(&JSSVGComponentTransferFunctionElementClassDefine, 0, sizeof(JSSVGComponentTransferFunctionElementClassDefine));
+    JSSVGComponentTransferFunctionElementClassDefine.class_name = "SVGComponentTransferFunctionElement";
+    JSSVGComponentTransferFunctionElementClassDefine.finalizer = JSSVGComponentTransferFunctionElement::finalizer;
+    JSSVGComponentTransferFunctionElementClassDefine.gc_mark = JSSVGComponentTransferFunctionElement::mark;
+}
 
 JSClassID JSSVGComponentTransferFunctionElement::js_class_id = 0;
 
 void JSSVGComponentTransferFunctionElement::init(JSContext* ctx)
 {
     if (JSSVGComponentTransferFunctionElement::js_class_id == 0) {
+        init_JSSVGComponentTransferFunctionElementClassDefine();
         JS_NewClassID(&JSSVGComponentTransferFunctionElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGComponentTransferFunctionElement::js_class_id, &JSSVGComponentTransferFunctionElementClassDefine);
         JS_SetConstructor(ctx, JSSVGComponentTransferFunctionElementConstructor::self(ctx), JSSVGComponentTransferFunctionElementPrototype::self(ctx));

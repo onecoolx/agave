@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCSSRuleList.h"
 
 #include "CSSRule.h"
@@ -41,11 +43,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSCSSRuleListAttributesFunctions[] =
+static JSCFunctionListEntry JSCSSRuleListAttributesFunctions[2];
+static bool JSCSSRuleListAttributesFunctions_initialized = false;
+
+static void init_JSCSSRuleListAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("length", JSCSSRuleList::getValueProperty, NULL, JSCSSRuleList::LengthAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSCSSRuleList::getValueProperty, NULL, JSCSSRuleList::ConstructorAttrNum)
-};
+    if (JSCSSRuleListAttributesFunctions_initialized) return;
+    JSCSSRuleListAttributesFunctions_initialized = true;
+    memset(JSCSSRuleListAttributesFunctions, 0, sizeof(JSCSSRuleListAttributesFunctions));
+    JSCSSRuleListAttributesFunctions[0].name = "length";
+    JSCSSRuleListAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSRuleListAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSRuleListAttributesFunctions[0].magic = JSCSSRuleList::LengthAttrNum;
+    JSCSSRuleListAttributesFunctions[0].u.getset.get.getter_magic = JSCSSRuleList::getValueProperty;
+    JSCSSRuleListAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSCSSRuleListAttributesFunctions[1].name = "constructor";
+    JSCSSRuleListAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSRuleListAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSRuleListAttributesFunctions[1].magic = JSCSSRuleList::ConstructorAttrNum;
+    JSCSSRuleListAttributesFunctions[1].u.getset.get.getter_magic = JSCSSRuleList::getValueProperty;
+    JSCSSRuleListAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSCSSRuleListConstructor {
 public:
@@ -80,10 +98,22 @@ void JSCSSRuleListConstructor::initConstructor(JSContext * ctx, JSValue this_obj
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSCSSRuleListPrototypeFunctions[] =
+static JSCFunctionListEntry JSCSSRuleListPrototypeFunctions[1];
+static bool JSCSSRuleListPrototypeFunctions_initialized = false;
+
+static void init_JSCSSRuleListPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("item", 1, JSCSSRuleListPrototypeFunction::callAsFunction, JSCSSRuleList::ItemFuncNum)
-};
+    if (JSCSSRuleListPrototypeFunctions_initialized) return;
+    JSCSSRuleListPrototypeFunctions_initialized = true;
+    memset(JSCSSRuleListPrototypeFunctions, 0, sizeof(JSCSSRuleListPrototypeFunctions));
+    JSCSSRuleListPrototypeFunctions[0].name = "item";
+    JSCSSRuleListPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCSSRuleListPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSCSSRuleListPrototypeFunctions[0].magic = JSCSSRuleList::ItemFuncNum;
+    JSCSSRuleListPrototypeFunctions[0].u.func.length = 1;
+    JSCSSRuleListPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCSSRuleListPrototypeFunctions[0].u.func.cfunc.generic_magic = JSCSSRuleListPrototypeFunction::callAsFunction;
+}
 
 JSValue JSCSSRuleListPrototype::self(JSContext * ctx)
 {
@@ -101,22 +131,31 @@ JSValue JSCSSRuleListPrototype::self(JSContext * ctx)
 
 void JSCSSRuleListPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCSSRuleListAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSRuleListAttributesFunctions, countof(JSCSSRuleListAttributesFunctions));
+    init_JSCSSRuleListPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSRuleListPrototypeFunctions, countof(JSCSSRuleListPrototypeFunctions));
 }
 
-static JSClassDef JSCSSRuleListClassDefine = 
+static JSClassDef JSCSSRuleListClassDefine;
+static bool JSCSSRuleListClassDefine_initialized = false;
+
+static void init_JSCSSRuleListClassDefine()
 {
-    "CSSRuleList",
-    .finalizer = JSCSSRuleList::finalizer,
-    .gc_mark = JSCSSRuleList::mark,
-};
+    if (JSCSSRuleListClassDefine_initialized) return;
+    JSCSSRuleListClassDefine_initialized = true;
+    memset(&JSCSSRuleListClassDefine, 0, sizeof(JSCSSRuleListClassDefine));
+    JSCSSRuleListClassDefine.class_name = "CSSRuleList";
+    JSCSSRuleListClassDefine.finalizer = JSCSSRuleList::finalizer;
+    JSCSSRuleListClassDefine.gc_mark = JSCSSRuleList::mark;
+}
 
 JSClassID JSCSSRuleList::js_class_id = 0;
 
 void JSCSSRuleList::init(JSContext* ctx)
 {
     if (JSCSSRuleList::js_class_id == 0) {
+        init_JSCSSRuleListClassDefine();
         JS_NewClassID(&JSCSSRuleList::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSCSSRuleList::js_class_id, &JSCSSRuleListClassDefine);
         JS_SetConstructor(ctx, JSCSSRuleListConstructor::self(ctx), JSCSSRuleListPrototype::self(ctx));

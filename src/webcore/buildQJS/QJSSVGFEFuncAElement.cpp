@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -62,18 +64,25 @@ void JSSVGFEFuncAElementPrototype::initPrototype(JSContext * ctx, JSValue this_o
 {
 }
 
-static JSClassDef JSSVGFEFuncAElementClassDefine = 
+static JSClassDef JSSVGFEFuncAElementClassDefine;
+static bool JSSVGFEFuncAElementClassDefine_initialized = false;
+
+static void init_JSSVGFEFuncAElementClassDefine()
 {
-    "SVGFEFuncAElement",
-    .finalizer = JSSVGFEFuncAElement::finalizer,
-    .gc_mark = JSSVGFEFuncAElement::mark,
-};
+    if (JSSVGFEFuncAElementClassDefine_initialized) return;
+    JSSVGFEFuncAElementClassDefine_initialized = true;
+    memset(&JSSVGFEFuncAElementClassDefine, 0, sizeof(JSSVGFEFuncAElementClassDefine));
+    JSSVGFEFuncAElementClassDefine.class_name = "SVGFEFuncAElement";
+    JSSVGFEFuncAElementClassDefine.finalizer = JSSVGFEFuncAElement::finalizer;
+    JSSVGFEFuncAElementClassDefine.gc_mark = JSSVGFEFuncAElement::mark;
+}
 
 JSClassID JSSVGFEFuncAElement::js_class_id = 0;
 
 void JSSVGFEFuncAElement::init(JSContext* ctx)
 {
     if (JSSVGFEFuncAElement::js_class_id == 0) {
+        init_JSSVGFEFuncAElementClassDefine();
         JS_NewClassID(&JSSVGFEFuncAElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFEFuncAElement::js_class_id, &JSSVGFEFuncAElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFEFuncAElement::js_class_id, JSSVGFEFuncAElementPrototype::self(ctx));

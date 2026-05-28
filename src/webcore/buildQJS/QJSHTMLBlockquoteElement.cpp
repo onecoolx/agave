@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLBlockquoteElement.h"
 
 #include "HTMLBlockquoteElement.h"
@@ -39,11 +41,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLBlockquoteElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLBlockquoteElementAttributesFunctions[2];
+static bool JSHTMLBlockquoteElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLBlockquoteElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("cite", JSHTMLBlockquoteElement::getValueProperty, JSHTMLBlockquoteElement::putValueProperty, JSHTMLBlockquoteElement::CiteAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLBlockquoteElement::getValueProperty, NULL, JSHTMLBlockquoteElement::ConstructorAttrNum)
-};
+    if (JSHTMLBlockquoteElementAttributesFunctions_initialized) return;
+    JSHTMLBlockquoteElementAttributesFunctions_initialized = true;
+    memset(JSHTMLBlockquoteElementAttributesFunctions, 0, sizeof(JSHTMLBlockquoteElementAttributesFunctions));
+    JSHTMLBlockquoteElementAttributesFunctions[0].name = "cite";
+    JSHTMLBlockquoteElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBlockquoteElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBlockquoteElementAttributesFunctions[0].magic = JSHTMLBlockquoteElement::CiteAttrNum;
+    JSHTMLBlockquoteElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLBlockquoteElement::getValueProperty;
+    JSHTMLBlockquoteElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLBlockquoteElement::putValueProperty;
+    JSHTMLBlockquoteElementAttributesFunctions[1].name = "constructor";
+    JSHTMLBlockquoteElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBlockquoteElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBlockquoteElementAttributesFunctions[1].magic = JSHTMLBlockquoteElement::ConstructorAttrNum;
+    JSHTMLBlockquoteElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLBlockquoteElement::getValueProperty;
+    JSHTMLBlockquoteElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLBlockquoteElementConstructor {
 public:
@@ -92,15 +110,22 @@ JSValue JSHTMLBlockquoteElementPrototype::self(JSContext * ctx)
 
 void JSHTMLBlockquoteElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLBlockquoteElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLBlockquoteElementAttributesFunctions, countof(JSHTMLBlockquoteElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLBlockquoteElementClassDefine = 
+static JSClassDef JSHTMLBlockquoteElementClassDefine;
+static bool JSHTMLBlockquoteElementClassDefine_initialized = false;
+
+static void init_JSHTMLBlockquoteElementClassDefine()
 {
-    "HTMLBlockquoteElement",
-    .finalizer = JSHTMLBlockquoteElement::finalizer,
-    .gc_mark = JSHTMLBlockquoteElement::mark,
-};
+    if (JSHTMLBlockquoteElementClassDefine_initialized) return;
+    JSHTMLBlockquoteElementClassDefine_initialized = true;
+    memset(&JSHTMLBlockquoteElementClassDefine, 0, sizeof(JSHTMLBlockquoteElementClassDefine));
+    JSHTMLBlockquoteElementClassDefine.class_name = "HTMLBlockquoteElement";
+    JSHTMLBlockquoteElementClassDefine.finalizer = JSHTMLBlockquoteElement::finalizer;
+    JSHTMLBlockquoteElementClassDefine.gc_mark = JSHTMLBlockquoteElement::mark;
+}
 
 JSClassID JSHTMLBlockquoteElement::js_class_id = 0;
 

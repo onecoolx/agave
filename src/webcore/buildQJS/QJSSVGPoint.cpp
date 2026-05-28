@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -47,18 +49,46 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPointAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPointAttributesFunctions[2];
+static bool JSSVGPointAttributesFunctions_initialized = false;
+
+static void init_JSSVGPointAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("y", JSSVGPoint::getValueProperty, JSSVGPoint::putValueProperty, JSSVGPoint::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGPoint::getValueProperty, JSSVGPoint::putValueProperty, JSSVGPoint::XAttrNum)
-};
+    if (JSSVGPointAttributesFunctions_initialized) return;
+    JSSVGPointAttributesFunctions_initialized = true;
+    memset(JSSVGPointAttributesFunctions, 0, sizeof(JSSVGPointAttributesFunctions));
+    JSSVGPointAttributesFunctions[0].name = "y";
+    JSSVGPointAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPointAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPointAttributesFunctions[0].magic = JSSVGPoint::YAttrNum;
+    JSSVGPointAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPoint::getValueProperty;
+    JSSVGPointAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPoint::putValueProperty;
+    JSSVGPointAttributesFunctions[1].name = "x";
+    JSSVGPointAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPointAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPointAttributesFunctions[1].magic = JSSVGPoint::XAttrNum;
+    JSSVGPointAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPoint::getValueProperty;
+    JSSVGPointAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPoint::putValueProperty;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGPointPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGPointPrototypeFunctions[1];
+static bool JSSVGPointPrototypeFunctions_initialized = false;
+
+static void init_JSSVGPointPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("matrixTransform", 1, JSSVGPointPrototypeFunction::callAsFunction, JSSVGPoint::MatrixTransformFuncNum)
-};
+    if (JSSVGPointPrototypeFunctions_initialized) return;
+    JSSVGPointPrototypeFunctions_initialized = true;
+    memset(JSSVGPointPrototypeFunctions, 0, sizeof(JSSVGPointPrototypeFunctions));
+    JSSVGPointPrototypeFunctions[0].name = "matrixTransform";
+    JSSVGPointPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPointPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGPointPrototypeFunctions[0].magic = JSSVGPoint::MatrixTransformFuncNum;
+    JSSVGPointPrototypeFunctions[0].u.func.length = 1;
+    JSSVGPointPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPointPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGPointPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGPointPrototype::self(JSContext * ctx)
 {
@@ -76,22 +106,31 @@ JSValue JSSVGPointPrototype::self(JSContext * ctx)
 
 void JSSVGPointPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPointAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPointAttributesFunctions, countof(JSSVGPointAttributesFunctions));
+    init_JSSVGPointPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPointPrototypeFunctions, countof(JSSVGPointPrototypeFunctions));
 }
 
-static JSClassDef JSSVGPointClassDefine = 
+static JSClassDef JSSVGPointClassDefine;
+static bool JSSVGPointClassDefine_initialized = false;
+
+static void init_JSSVGPointClassDefine()
 {
-    "SVGPoint",
-    .finalizer = JSSVGPoint::finalizer,
-    .gc_mark = JSSVGPoint::mark,
-};
+    if (JSSVGPointClassDefine_initialized) return;
+    JSSVGPointClassDefine_initialized = true;
+    memset(&JSSVGPointClassDefine, 0, sizeof(JSSVGPointClassDefine));
+    JSSVGPointClassDefine.class_name = "SVGPoint";
+    JSSVGPointClassDefine.finalizer = JSSVGPoint::finalizer;
+    JSSVGPointClassDefine.gc_mark = JSSVGPoint::mark;
+}
 
 JSClassID JSSVGPoint::js_class_id = 0;
 
 void JSSVGPoint::init(JSContext* ctx)
 {
     if (JSSVGPoint::js_class_id == 0) {
+        init_JSSVGPointClassDefine();
         JS_NewClassID(&JSSVGPoint::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPoint::js_class_id, &JSSVGPointClassDefine);
         JS_SetClassProto(ctx, JSSVGPoint::js_class_id, JSSVGPointPrototype::self(ctx));

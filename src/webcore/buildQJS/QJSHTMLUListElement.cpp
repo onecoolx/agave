@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLUListElement.h"
 
 #include "HTMLUListElement.h"
@@ -39,12 +41,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLUListElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLUListElementAttributesFunctions[3];
+static bool JSHTMLUListElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLUListElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("compact", JSHTMLUListElement::getValueProperty, JSHTMLUListElement::putValueProperty, JSHTMLUListElement::CompactAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSHTMLUListElement::getValueProperty, JSHTMLUListElement::putValueProperty, JSHTMLUListElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLUListElement::getValueProperty, NULL, JSHTMLUListElement::ConstructorAttrNum)
-};
+    if (JSHTMLUListElementAttributesFunctions_initialized) return;
+    JSHTMLUListElementAttributesFunctions_initialized = true;
+    memset(JSHTMLUListElementAttributesFunctions, 0, sizeof(JSHTMLUListElementAttributesFunctions));
+    JSHTMLUListElementAttributesFunctions[0].name = "compact";
+    JSHTMLUListElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLUListElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLUListElementAttributesFunctions[0].magic = JSHTMLUListElement::CompactAttrNum;
+    JSHTMLUListElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLUListElement::getValueProperty;
+    JSHTMLUListElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLUListElement::putValueProperty;
+    JSHTMLUListElementAttributesFunctions[1].name = "type";
+    JSHTMLUListElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLUListElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLUListElementAttributesFunctions[1].magic = JSHTMLUListElement::TypeAttrNum;
+    JSHTMLUListElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLUListElement::getValueProperty;
+    JSHTMLUListElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLUListElement::putValueProperty;
+    JSHTMLUListElementAttributesFunctions[2].name = "constructor";
+    JSHTMLUListElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLUListElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLUListElementAttributesFunctions[2].magic = JSHTMLUListElement::ConstructorAttrNum;
+    JSHTMLUListElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLUListElement::getValueProperty;
+    JSHTMLUListElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLUListElementConstructor {
 public:
@@ -93,15 +116,22 @@ JSValue JSHTMLUListElementPrototype::self(JSContext * ctx)
 
 void JSHTMLUListElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLUListElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLUListElementAttributesFunctions, countof(JSHTMLUListElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLUListElementClassDefine = 
+static JSClassDef JSHTMLUListElementClassDefine;
+static bool JSHTMLUListElementClassDefine_initialized = false;
+
+static void init_JSHTMLUListElementClassDefine()
 {
-    "HTMLUListElement",
-    .finalizer = JSHTMLUListElement::finalizer,
-    .gc_mark = JSHTMLUListElement::mark,
-};
+    if (JSHTMLUListElementClassDefine_initialized) return;
+    JSHTMLUListElementClassDefine_initialized = true;
+    memset(&JSHTMLUListElementClassDefine, 0, sizeof(JSHTMLUListElementClassDefine));
+    JSHTMLUListElementClassDefine.class_name = "HTMLUListElement";
+    JSHTMLUListElementClassDefine.finalizer = JSHTMLUListElement::finalizer;
+    JSHTMLUListElementClassDefine.gc_mark = JSHTMLUListElement::mark;
+}
 
 JSClassID JSHTMLUListElement::js_class_id = 0;
 

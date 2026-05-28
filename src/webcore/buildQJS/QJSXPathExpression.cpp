@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(XPATH)
 
@@ -44,10 +46,22 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSXPathExpressionPrototypeFunctions[] =
+static JSCFunctionListEntry JSXPathExpressionPrototypeFunctions[1];
+static bool JSXPathExpressionPrototypeFunctions_initialized = false;
+
+static void init_JSXPathExpressionPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("evaluate", 3, JSXPathExpressionPrototypeFunction::callAsFunction, JSXPathExpression::EvaluateFuncNum)
-};
+    if (JSXPathExpressionPrototypeFunctions_initialized) return;
+    JSXPathExpressionPrototypeFunctions_initialized = true;
+    memset(JSXPathExpressionPrototypeFunctions, 0, sizeof(JSXPathExpressionPrototypeFunctions));
+    JSXPathExpressionPrototypeFunctions[0].name = "evaluate";
+    JSXPathExpressionPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSXPathExpressionPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSXPathExpressionPrototypeFunctions[0].magic = JSXPathExpression::EvaluateFuncNum;
+    JSXPathExpressionPrototypeFunctions[0].u.func.length = 3;
+    JSXPathExpressionPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSXPathExpressionPrototypeFunctions[0].u.func.cfunc.generic_magic = JSXPathExpressionPrototypeFunction::callAsFunction;
+}
 
 JSValue JSXPathExpressionPrototype::self(JSContext * ctx)
 {
@@ -65,21 +79,29 @@ JSValue JSXPathExpressionPrototype::self(JSContext * ctx)
 
 void JSXPathExpressionPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSXPathExpressionPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSXPathExpressionPrototypeFunctions, countof(JSXPathExpressionPrototypeFunctions));
 }
 
-static JSClassDef JSXPathExpressionClassDefine = 
+static JSClassDef JSXPathExpressionClassDefine;
+static bool JSXPathExpressionClassDefine_initialized = false;
+
+static void init_JSXPathExpressionClassDefine()
 {
-    "XPathExpression",
-    .finalizer = JSXPathExpression::finalizer,
-    .gc_mark = JSXPathExpression::mark,
-};
+    if (JSXPathExpressionClassDefine_initialized) return;
+    JSXPathExpressionClassDefine_initialized = true;
+    memset(&JSXPathExpressionClassDefine, 0, sizeof(JSXPathExpressionClassDefine));
+    JSXPathExpressionClassDefine.class_name = "XPathExpression";
+    JSXPathExpressionClassDefine.finalizer = JSXPathExpression::finalizer;
+    JSXPathExpressionClassDefine.gc_mark = JSXPathExpression::mark;
+}
 
 JSClassID JSXPathExpression::js_class_id = 0;
 
 void JSXPathExpression::init(JSContext* ctx)
 {
     if (JSXPathExpression::js_class_id == 0) {
+        init_JSXPathExpressionClassDefine();
         JS_NewClassID(&JSXPathExpression::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSXPathExpression::js_class_id, &JSXPathExpressionClassDefine);
         JS_SetClassProto(ctx, JSXPathExpression::js_class_id, JSXPathExpressionPrototype::self(ctx));

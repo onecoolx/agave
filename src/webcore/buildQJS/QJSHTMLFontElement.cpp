@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLFontElement.h"
 
 #include "HTMLFontElement.h"
@@ -39,13 +41,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLFontElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLFontElementAttributesFunctions[4];
+static bool JSHTMLFontElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLFontElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("size", JSHTMLFontElement::getValueProperty, JSHTMLFontElement::putValueProperty, JSHTMLFontElement::SizeAttrNum),
-    JS_CGETSET_MAGIC_DEF("color", JSHTMLFontElement::getValueProperty, JSHTMLFontElement::putValueProperty, JSHTMLFontElement::ColorAttrNum),
-    JS_CGETSET_MAGIC_DEF("face", JSHTMLFontElement::getValueProperty, JSHTMLFontElement::putValueProperty, JSHTMLFontElement::FaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLFontElement::getValueProperty, NULL, JSHTMLFontElement::ConstructorAttrNum)
-};
+    if (JSHTMLFontElementAttributesFunctions_initialized) return;
+    JSHTMLFontElementAttributesFunctions_initialized = true;
+    memset(JSHTMLFontElementAttributesFunctions, 0, sizeof(JSHTMLFontElementAttributesFunctions));
+    JSHTMLFontElementAttributesFunctions[0].name = "size";
+    JSHTMLFontElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFontElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFontElementAttributesFunctions[0].magic = JSHTMLFontElement::SizeAttrNum;
+    JSHTMLFontElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLFontElement::getValueProperty;
+    JSHTMLFontElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLFontElement::putValueProperty;
+    JSHTMLFontElementAttributesFunctions[1].name = "color";
+    JSHTMLFontElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFontElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFontElementAttributesFunctions[1].magic = JSHTMLFontElement::ColorAttrNum;
+    JSHTMLFontElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLFontElement::getValueProperty;
+    JSHTMLFontElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLFontElement::putValueProperty;
+    JSHTMLFontElementAttributesFunctions[2].name = "face";
+    JSHTMLFontElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFontElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFontElementAttributesFunctions[2].magic = JSHTMLFontElement::FaceAttrNum;
+    JSHTMLFontElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLFontElement::getValueProperty;
+    JSHTMLFontElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLFontElement::putValueProperty;
+    JSHTMLFontElementAttributesFunctions[3].name = "constructor";
+    JSHTMLFontElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFontElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFontElementAttributesFunctions[3].magic = JSHTMLFontElement::ConstructorAttrNum;
+    JSHTMLFontElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLFontElement::getValueProperty;
+    JSHTMLFontElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLFontElementConstructor {
 public:
@@ -94,15 +122,22 @@ JSValue JSHTMLFontElementPrototype::self(JSContext * ctx)
 
 void JSHTMLFontElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLFontElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLFontElementAttributesFunctions, countof(JSHTMLFontElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLFontElementClassDefine = 
+static JSClassDef JSHTMLFontElementClassDefine;
+static bool JSHTMLFontElementClassDefine_initialized = false;
+
+static void init_JSHTMLFontElementClassDefine()
 {
-    "HTMLFontElement",
-    .finalizer = JSHTMLFontElement::finalizer,
-    .gc_mark = JSHTMLFontElement::mark,
-};
+    if (JSHTMLFontElementClassDefine_initialized) return;
+    JSHTMLFontElementClassDefine_initialized = true;
+    memset(&JSHTMLFontElementClassDefine, 0, sizeof(JSHTMLFontElementClassDefine));
+    JSHTMLFontElementClassDefine.class_name = "HTMLFontElement";
+    JSHTMLFontElementClassDefine.finalizer = JSHTMLFontElement::finalizer;
+    JSHTMLFontElementClassDefine.gc_mark = JSHTMLFontElement::mark;
+}
 
 JSClassID JSHTMLFontElement::js_class_id = 0;
 

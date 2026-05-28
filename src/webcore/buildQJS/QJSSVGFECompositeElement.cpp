@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -55,24 +57,105 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFECompositeElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFECompositeElementAttributesFunctions[15];
+static bool JSSVGFECompositeElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFECompositeElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("_operator", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::_operatorAttrNum),
-    JS_CGETSET_MAGIC_DEF("k1", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::K1AttrNum),
-    JS_CGETSET_MAGIC_DEF("in2", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::In2AttrNum),
-    JS_CGETSET_MAGIC_DEF("in1", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::In1AttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("k3", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::K3AttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("k2", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::K2AttrNum),
-    JS_CGETSET_MAGIC_DEF("k4", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::K4AttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("result", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::ResultAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGFECompositeElement::getValueProperty, NULL, JSSVGFECompositeElement::StyleAttrNum)
-};
+    if (JSSVGFECompositeElementAttributesFunctions_initialized) return;
+    JSSVGFECompositeElementAttributesFunctions_initialized = true;
+    memset(JSSVGFECompositeElementAttributesFunctions, 0, sizeof(JSSVGFECompositeElementAttributesFunctions));
+    JSSVGFECompositeElementAttributesFunctions[0].name = "y";
+    JSSVGFECompositeElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[0].magic = JSSVGFECompositeElement::YAttrNum;
+    JSSVGFECompositeElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementAttributesFunctions[1].name = "_operator";
+    JSSVGFECompositeElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[1].magic = JSSVGFECompositeElement::_operatorAttrNum;
+    JSSVGFECompositeElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementAttributesFunctions[2].name = "k1";
+    JSSVGFECompositeElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[2].magic = JSSVGFECompositeElement::K1AttrNum;
+    JSSVGFECompositeElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementAttributesFunctions[3].name = "in2";
+    JSSVGFECompositeElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[3].magic = JSSVGFECompositeElement::In2AttrNum;
+    JSSVGFECompositeElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementAttributesFunctions[4].name = "in1";
+    JSSVGFECompositeElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[4].magic = JSSVGFECompositeElement::In1AttrNum;
+    JSSVGFECompositeElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementAttributesFunctions[5].name = "x";
+    JSSVGFECompositeElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[5].magic = JSSVGFECompositeElement::XAttrNum;
+    JSSVGFECompositeElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementAttributesFunctions[6].name = "k3";
+    JSSVGFECompositeElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[6].magic = JSSVGFECompositeElement::K3AttrNum;
+    JSSVGFECompositeElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementAttributesFunctions[7].name = "constructor";
+    JSSVGFECompositeElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[7].magic = JSSVGFECompositeElement::ConstructorAttrNum;
+    JSSVGFECompositeElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementAttributesFunctions[8].name = "k2";
+    JSSVGFECompositeElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[8].magic = JSSVGFECompositeElement::K2AttrNum;
+    JSSVGFECompositeElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementAttributesFunctions[9].name = "k4";
+    JSSVGFECompositeElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[9].magic = JSSVGFECompositeElement::K4AttrNum;
+    JSSVGFECompositeElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementAttributesFunctions[10].name = "width";
+    JSSVGFECompositeElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[10].magic = JSSVGFECompositeElement::WidthAttrNum;
+    JSSVGFECompositeElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementAttributesFunctions[11].name = "height";
+    JSSVGFECompositeElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[11].magic = JSSVGFECompositeElement::HeightAttrNum;
+    JSSVGFECompositeElementAttributesFunctions[11].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementAttributesFunctions[12].name = "result";
+    JSSVGFECompositeElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[12].magic = JSSVGFECompositeElement::ResultAttrNum;
+    JSSVGFECompositeElementAttributesFunctions[12].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementAttributesFunctions[13].name = "className";
+    JSSVGFECompositeElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[13].magic = JSSVGFECompositeElement::ClassNameAttrNum;
+    JSSVGFECompositeElementAttributesFunctions[13].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[13].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementAttributesFunctions[14].name = "style";
+    JSSVGFECompositeElementAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementAttributesFunctions[14].magic = JSSVGFECompositeElement::StyleAttrNum;
+    JSSVGFECompositeElementAttributesFunctions[14].u.getset.get.getter_magic = JSSVGFECompositeElement::getValueProperty;
+    JSSVGFECompositeElementAttributesFunctions[14].u.getset.set.setter_magic = NULL;
+}
 
 class JSSVGFECompositeElementConstructor {
 public:
@@ -89,16 +172,57 @@ JSValue JSSVGFECompositeElementConstructor::getValueProperty(JSContext * ctx, JS
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSSVGFECompositeElementConstructorFunctions[] =
+static JSCFunctionListEntry JSSVGFECompositeElementConstructorFunctions[7];
+static bool JSSVGFECompositeElementConstructorFunctions_initialized = false;
+
+static void init_JSSVGFECompositeElementConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPOSITE_OPERATOR_OUT", JSSVGFECompositeElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOMPOSITE_OPERATOR_OUT),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPOSITE_OPERATOR_ATOP", JSSVGFECompositeElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOMPOSITE_OPERATOR_ATOP),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPOSITE_OPERATOR_ARITHMETIC", JSSVGFECompositeElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOMPOSITE_OPERATOR_ARITHMETIC),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPOSITE_OPERATOR_OVER", JSSVGFECompositeElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOMPOSITE_OPERATOR_OVER),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPOSITE_OPERATOR_UNKNOWN", JSSVGFECompositeElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOMPOSITE_OPERATOR_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPOSITE_OPERATOR_IN", JSSVGFECompositeElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOMPOSITE_OPERATOR_IN),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPOSITE_OPERATOR_XOR", JSSVGFECompositeElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOMPOSITE_OPERATOR_XOR)
-};
+    if (JSSVGFECompositeElementConstructorFunctions_initialized) return;
+    JSSVGFECompositeElementConstructorFunctions_initialized = true;
+    memset(JSSVGFECompositeElementConstructorFunctions, 0, sizeof(JSSVGFECompositeElementConstructorFunctions));
+    JSSVGFECompositeElementConstructorFunctions[0].name = "SVG_FECOMPOSITE_OPERATOR_OUT";
+    JSSVGFECompositeElementConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementConstructorFunctions[0].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_OUT;
+    JSSVGFECompositeElementConstructorFunctions[0].u.getset.get.getter_magic = JSSVGFECompositeElementConstructor::getValueProperty;
+    JSSVGFECompositeElementConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementConstructorFunctions[1].name = "SVG_FECOMPOSITE_OPERATOR_ATOP";
+    JSSVGFECompositeElementConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementConstructorFunctions[1].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_ATOP;
+    JSSVGFECompositeElementConstructorFunctions[1].u.getset.get.getter_magic = JSSVGFECompositeElementConstructor::getValueProperty;
+    JSSVGFECompositeElementConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementConstructorFunctions[2].name = "SVG_FECOMPOSITE_OPERATOR_ARITHMETIC";
+    JSSVGFECompositeElementConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementConstructorFunctions[2].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_ARITHMETIC;
+    JSSVGFECompositeElementConstructorFunctions[2].u.getset.get.getter_magic = JSSVGFECompositeElementConstructor::getValueProperty;
+    JSSVGFECompositeElementConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementConstructorFunctions[3].name = "SVG_FECOMPOSITE_OPERATOR_OVER";
+    JSSVGFECompositeElementConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementConstructorFunctions[3].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_OVER;
+    JSSVGFECompositeElementConstructorFunctions[3].u.getset.get.getter_magic = JSSVGFECompositeElementConstructor::getValueProperty;
+    JSSVGFECompositeElementConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementConstructorFunctions[4].name = "SVG_FECOMPOSITE_OPERATOR_UNKNOWN";
+    JSSVGFECompositeElementConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementConstructorFunctions[4].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_UNKNOWN;
+    JSSVGFECompositeElementConstructorFunctions[4].u.getset.get.getter_magic = JSSVGFECompositeElementConstructor::getValueProperty;
+    JSSVGFECompositeElementConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementConstructorFunctions[5].name = "SVG_FECOMPOSITE_OPERATOR_IN";
+    JSSVGFECompositeElementConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementConstructorFunctions[5].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_IN;
+    JSSVGFECompositeElementConstructorFunctions[5].u.getset.get.getter_magic = JSSVGFECompositeElementConstructor::getValueProperty;
+    JSSVGFECompositeElementConstructorFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementConstructorFunctions[6].name = "SVG_FECOMPOSITE_OPERATOR_XOR";
+    JSSVGFECompositeElementConstructorFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementConstructorFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementConstructorFunctions[6].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_XOR;
+    JSSVGFECompositeElementConstructorFunctions[6].u.getset.get.getter_magic = JSSVGFECompositeElementConstructor::getValueProperty;
+    JSSVGFECompositeElementConstructorFunctions[6].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGFECompositeElementConstructor::self(JSContext * ctx)
 {
@@ -116,28 +240,82 @@ JSValue JSSVGFECompositeElementConstructor::self(JSContext * ctx)
 
 void JSSVGFECompositeElementConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFECompositeElementConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFECompositeElementConstructorFunctions, countof(JSSVGFECompositeElementConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFECompositeElementPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSSVGFECompositeElementPrototypeConstantsFunctions[7];
+static bool JSSVGFECompositeElementPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSSVGFECompositeElementPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPOSITE_OPERATOR_OUT", JSSVGFECompositeElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOMPOSITE_OPERATOR_OUT),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPOSITE_OPERATOR_ATOP", JSSVGFECompositeElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOMPOSITE_OPERATOR_ATOP),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPOSITE_OPERATOR_ARITHMETIC", JSSVGFECompositeElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOMPOSITE_OPERATOR_ARITHMETIC),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPOSITE_OPERATOR_OVER", JSSVGFECompositeElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOMPOSITE_OPERATOR_OVER),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPOSITE_OPERATOR_UNKNOWN", JSSVGFECompositeElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOMPOSITE_OPERATOR_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPOSITE_OPERATOR_IN", JSSVGFECompositeElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOMPOSITE_OPERATOR_IN),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOMPOSITE_OPERATOR_XOR", JSSVGFECompositeElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOMPOSITE_OPERATOR_XOR)
-};
+    if (JSSVGFECompositeElementPrototypeConstantsFunctions_initialized) return;
+    JSSVGFECompositeElementPrototypeConstantsFunctions_initialized = true;
+    memset(JSSVGFECompositeElementPrototypeConstantsFunctions, 0, sizeof(JSSVGFECompositeElementPrototypeConstantsFunctions));
+    JSSVGFECompositeElementPrototypeConstantsFunctions[0].name = "SVG_FECOMPOSITE_OPERATOR_OUT";
+    JSSVGFECompositeElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[0].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_OUT;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGFECompositeElementPrototype::getValueProperty;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[1].name = "SVG_FECOMPOSITE_OPERATOR_ATOP";
+    JSSVGFECompositeElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[1].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_ATOP;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGFECompositeElementPrototype::getValueProperty;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[2].name = "SVG_FECOMPOSITE_OPERATOR_ARITHMETIC";
+    JSSVGFECompositeElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[2].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_ARITHMETIC;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGFECompositeElementPrototype::getValueProperty;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[3].name = "SVG_FECOMPOSITE_OPERATOR_OVER";
+    JSSVGFECompositeElementPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[3].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_OVER;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGFECompositeElementPrototype::getValueProperty;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[4].name = "SVG_FECOMPOSITE_OPERATOR_UNKNOWN";
+    JSSVGFECompositeElementPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[4].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_UNKNOWN;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGFECompositeElementPrototype::getValueProperty;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[5].name = "SVG_FECOMPOSITE_OPERATOR_IN";
+    JSSVGFECompositeElementPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[5].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_IN;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSSVGFECompositeElementPrototype::getValueProperty;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[6].name = "SVG_FECOMPOSITE_OPERATOR_XOR";
+    JSSVGFECompositeElementPrototypeConstantsFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[6].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_XOR;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[6].u.getset.get.getter_magic = JSSVGFECompositeElementPrototype::getValueProperty;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[6].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGFECompositeElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGFECompositeElementPrototypeFunctions[1];
+static bool JSSVGFECompositeElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGFECompositeElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGFECompositeElementPrototypeFunction::callAsFunction, JSSVGFECompositeElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGFECompositeElementPrototypeFunctions_initialized) return;
+    JSSVGFECompositeElementPrototypeFunctions_initialized = true;
+    memset(JSSVGFECompositeElementPrototypeFunctions, 0, sizeof(JSSVGFECompositeElementPrototypeFunctions));
+    JSSVGFECompositeElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGFECompositeElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFECompositeElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGFECompositeElementPrototypeFunctions[0].magic = JSSVGFECompositeElement::GetPresentationAttributeFuncNum;
+    JSSVGFECompositeElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGFECompositeElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFECompositeElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGFECompositeElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGFECompositeElementPrototype::self(JSContext * ctx)
 {
@@ -155,8 +333,11 @@ JSValue JSSVGFECompositeElementPrototype::self(JSContext * ctx)
 
 void JSSVGFECompositeElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFECompositeElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFECompositeElementAttributesFunctions, countof(JSSVGFECompositeElementAttributesFunctions));
+    init_JSSVGFECompositeElementPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFECompositeElementPrototypeConstantsFunctions, countof(JSSVGFECompositeElementPrototypeConstantsFunctions));
+    init_JSSVGFECompositeElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFECompositeElementPrototypeFunctions, countof(JSSVGFECompositeElementPrototypeFunctions));
 }
 
@@ -166,18 +347,25 @@ JSValue JSSVGFECompositeElementPrototype::getValueProperty(JSContext * ctx, JSVa
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSSVGFECompositeElementClassDefine = 
+static JSClassDef JSSVGFECompositeElementClassDefine;
+static bool JSSVGFECompositeElementClassDefine_initialized = false;
+
+static void init_JSSVGFECompositeElementClassDefine()
 {
-    "SVGFECompositeElement",
-    .finalizer = JSSVGFECompositeElement::finalizer,
-    .gc_mark = JSSVGFECompositeElement::mark,
-};
+    if (JSSVGFECompositeElementClassDefine_initialized) return;
+    JSSVGFECompositeElementClassDefine_initialized = true;
+    memset(&JSSVGFECompositeElementClassDefine, 0, sizeof(JSSVGFECompositeElementClassDefine));
+    JSSVGFECompositeElementClassDefine.class_name = "SVGFECompositeElement";
+    JSSVGFECompositeElementClassDefine.finalizer = JSSVGFECompositeElement::finalizer;
+    JSSVGFECompositeElementClassDefine.gc_mark = JSSVGFECompositeElement::mark;
+}
 
 JSClassID JSSVGFECompositeElement::js_class_id = 0;
 
 void JSSVGFECompositeElement::init(JSContext* ctx)
 {
     if (JSSVGFECompositeElement::js_class_id == 0) {
+        init_JSSVGFECompositeElementClassDefine();
         JS_NewClassID(&JSSVGFECompositeElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFECompositeElement::js_class_id, &JSSVGFECompositeElementClassDefine);
         JS_SetConstructor(ctx, JSSVGFECompositeElementConstructor::self(ctx), JSSVGFECompositeElementPrototype::self(ctx));

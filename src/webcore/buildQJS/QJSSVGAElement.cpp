@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -61,34 +63,147 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGAElementAttributesFunctions[13];
+static bool JSSVGAElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGAElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("transform", JSSVGAElement::getValueProperty, NULL, JSSVGAElement::TransformAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGAElement::getValueProperty, JSSVGAElement::putValueProperty, JSSVGAElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGAElement::getValueProperty, NULL, JSSVGAElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("farthestViewportElement", JSSVGAElement::getValueProperty, NULL, JSSVGAElement::FarthestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("target", JSSVGAElement::getValueProperty, NULL, JSSVGAElement::TargetAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGAElement::getValueProperty, NULL, JSSVGAElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGAElement::getValueProperty, NULL, JSSVGAElement::SystemLanguageAttrNum),
-    JS_CGETSET_MAGIC_DEF("href", JSSVGAElement::getValueProperty, NULL, JSSVGAElement::HrefAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGAElement::getValueProperty, NULL, JSSVGAElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGAElement::getValueProperty, NULL, JSSVGAElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGAElement::getValueProperty, JSSVGAElement::putValueProperty, JSSVGAElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGAElement::getValueProperty, NULL, JSSVGAElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("nearestViewportElement", JSSVGAElement::getValueProperty, NULL, JSSVGAElement::NearestViewportElementAttrNum)
-};
+    if (JSSVGAElementAttributesFunctions_initialized) return;
+    JSSVGAElementAttributesFunctions_initialized = true;
+    memset(JSSVGAElementAttributesFunctions, 0, sizeof(JSSVGAElementAttributesFunctions));
+    JSSVGAElementAttributesFunctions[0].name = "transform";
+    JSSVGAElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAElementAttributesFunctions[0].magic = JSSVGAElement::TransformAttrNum;
+    JSSVGAElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGAElement::getValueProperty;
+    JSSVGAElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGAElementAttributesFunctions[1].name = "xmlspace";
+    JSSVGAElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAElementAttributesFunctions[1].magic = JSSVGAElement::XmlspaceAttrNum;
+    JSSVGAElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGAElement::getValueProperty;
+    JSSVGAElementAttributesFunctions[1].u.getset.set.setter_magic = JSSVGAElement::putValueProperty;
+    JSSVGAElementAttributesFunctions[2].name = "requiredFeatures";
+    JSSVGAElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAElementAttributesFunctions[2].magic = JSSVGAElement::RequiredFeaturesAttrNum;
+    JSSVGAElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGAElement::getValueProperty;
+    JSSVGAElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGAElementAttributesFunctions[3].name = "farthestViewportElement";
+    JSSVGAElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAElementAttributesFunctions[3].magic = JSSVGAElement::FarthestViewportElementAttrNum;
+    JSSVGAElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGAElement::getValueProperty;
+    JSSVGAElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGAElementAttributesFunctions[4].name = "target";
+    JSSVGAElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAElementAttributesFunctions[4].magic = JSSVGAElement::TargetAttrNum;
+    JSSVGAElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGAElement::getValueProperty;
+    JSSVGAElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGAElementAttributesFunctions[5].name = "style";
+    JSSVGAElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAElementAttributesFunctions[5].magic = JSSVGAElement::StyleAttrNum;
+    JSSVGAElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGAElement::getValueProperty;
+    JSSVGAElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGAElementAttributesFunctions[6].name = "systemLanguage";
+    JSSVGAElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAElementAttributesFunctions[6].magic = JSSVGAElement::SystemLanguageAttrNum;
+    JSSVGAElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGAElement::getValueProperty;
+    JSSVGAElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGAElementAttributesFunctions[7].name = "href";
+    JSSVGAElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAElementAttributesFunctions[7].magic = JSSVGAElement::HrefAttrNum;
+    JSSVGAElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGAElement::getValueProperty;
+    JSSVGAElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGAElementAttributesFunctions[8].name = "externalResourcesRequired";
+    JSSVGAElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAElementAttributesFunctions[8].magic = JSSVGAElement::ExternalResourcesRequiredAttrNum;
+    JSSVGAElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGAElement::getValueProperty;
+    JSSVGAElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGAElementAttributesFunctions[9].name = "requiredExtensions";
+    JSSVGAElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAElementAttributesFunctions[9].magic = JSSVGAElement::RequiredExtensionsAttrNum;
+    JSSVGAElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGAElement::getValueProperty;
+    JSSVGAElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGAElementAttributesFunctions[10].name = "xmllang";
+    JSSVGAElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAElementAttributesFunctions[10].magic = JSSVGAElement::XmllangAttrNum;
+    JSSVGAElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGAElement::getValueProperty;
+    JSSVGAElementAttributesFunctions[10].u.getset.set.setter_magic = JSSVGAElement::putValueProperty;
+    JSSVGAElementAttributesFunctions[11].name = "className";
+    JSSVGAElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAElementAttributesFunctions[11].magic = JSSVGAElement::ClassNameAttrNum;
+    JSSVGAElementAttributesFunctions[11].u.getset.get.getter_magic = JSSVGAElement::getValueProperty;
+    JSSVGAElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSSVGAElementAttributesFunctions[12].name = "nearestViewportElement";
+    JSSVGAElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAElementAttributesFunctions[12].magic = JSSVGAElement::NearestViewportElementAttrNum;
+    JSSVGAElementAttributesFunctions[12].u.getset.get.getter_magic = JSSVGAElement::getValueProperty;
+    JSSVGAElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGAElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGAElementPrototypeFunctions[6];
+static bool JSSVGAElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGAElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGAElementPrototypeFunction::callAsFunction, JSSVGAElement::GetPresentationAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGAElementPrototypeFunction::callAsFunction, JSSVGAElement::HasExtensionFuncNum),
-    JS_CFUNC_MAGIC_DEF("getCTM", 0, JSSVGAElementPrototypeFunction::callAsFunction, JSSVGAElement::GetCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getScreenCTM", 0, JSSVGAElementPrototypeFunction::callAsFunction, JSSVGAElement::GetScreenCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getTransformToElement", 1, JSSVGAElementPrototypeFunction::callAsFunction, JSSVGAElement::GetTransformToElementFuncNum),
-    JS_CFUNC_MAGIC_DEF("getBBox", 0, JSSVGAElementPrototypeFunction::callAsFunction, JSSVGAElement::GetBBoxFuncNum)
-};
+    if (JSSVGAElementPrototypeFunctions_initialized) return;
+    JSSVGAElementPrototypeFunctions_initialized = true;
+    memset(JSSVGAElementPrototypeFunctions, 0, sizeof(JSSVGAElementPrototypeFunctions));
+    JSSVGAElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGAElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGAElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGAElementPrototypeFunctions[0].magic = JSSVGAElement::GetPresentationAttributeFuncNum;
+    JSSVGAElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGAElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGAElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGAElementPrototypeFunction::callAsFunction;
+    JSSVGAElementPrototypeFunctions[1].name = "hasExtension";
+    JSSVGAElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGAElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGAElementPrototypeFunctions[1].magic = JSSVGAElement::HasExtensionFuncNum;
+    JSSVGAElementPrototypeFunctions[1].u.func.length = 1;
+    JSSVGAElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGAElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGAElementPrototypeFunction::callAsFunction;
+    JSSVGAElementPrototypeFunctions[2].name = "getCTM";
+    JSSVGAElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGAElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGAElementPrototypeFunctions[2].magic = JSSVGAElement::GetCTMFuncNum;
+    JSSVGAElementPrototypeFunctions[2].u.func.length = 0;
+    JSSVGAElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGAElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGAElementPrototypeFunction::callAsFunction;
+    JSSVGAElementPrototypeFunctions[3].name = "getScreenCTM";
+    JSSVGAElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGAElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGAElementPrototypeFunctions[3].magic = JSSVGAElement::GetScreenCTMFuncNum;
+    JSSVGAElementPrototypeFunctions[3].u.func.length = 0;
+    JSSVGAElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGAElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGAElementPrototypeFunction::callAsFunction;
+    JSSVGAElementPrototypeFunctions[4].name = "getTransformToElement";
+    JSSVGAElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGAElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGAElementPrototypeFunctions[4].magic = JSSVGAElement::GetTransformToElementFuncNum;
+    JSSVGAElementPrototypeFunctions[4].u.func.length = 1;
+    JSSVGAElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGAElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGAElementPrototypeFunction::callAsFunction;
+    JSSVGAElementPrototypeFunctions[5].name = "getBBox";
+    JSSVGAElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGAElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGAElementPrototypeFunctions[5].magic = JSSVGAElement::GetBBoxFuncNum;
+    JSSVGAElementPrototypeFunctions[5].u.func.length = 0;
+    JSSVGAElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGAElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGAElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGAElementPrototype::self(JSContext * ctx)
 {
@@ -106,22 +221,31 @@ JSValue JSSVGAElementPrototype::self(JSContext * ctx)
 
 void JSSVGAElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAElementAttributesFunctions, countof(JSSVGAElementAttributesFunctions));
+    init_JSSVGAElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAElementPrototypeFunctions, countof(JSSVGAElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGAElementClassDefine = 
+static JSClassDef JSSVGAElementClassDefine;
+static bool JSSVGAElementClassDefine_initialized = false;
+
+static void init_JSSVGAElementClassDefine()
 {
-    "SVGAElement",
-    .finalizer = JSSVGAElement::finalizer,
-    .gc_mark = JSSVGAElement::mark,
-};
+    if (JSSVGAElementClassDefine_initialized) return;
+    JSSVGAElementClassDefine_initialized = true;
+    memset(&JSSVGAElementClassDefine, 0, sizeof(JSSVGAElementClassDefine));
+    JSSVGAElementClassDefine.class_name = "SVGAElement";
+    JSSVGAElementClassDefine.finalizer = JSSVGAElement::finalizer;
+    JSSVGAElementClassDefine.gc_mark = JSSVGAElement::mark;
+}
 
 JSClassID JSSVGAElement::js_class_id = 0;
 
 void JSSVGAElement::init(JSContext* ctx)
 {
     if (JSSVGAElement::js_class_id == 0) {
+        init_JSSVGAElementClassDefine();
         JS_NewClassID(&JSSVGAElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAElement::js_class_id, &JSSVGAElementClassDefine);
         JS_SetClassProto(ctx, JSSVGAElement::js_class_id, JSSVGAElementPrototype::self(ctx));

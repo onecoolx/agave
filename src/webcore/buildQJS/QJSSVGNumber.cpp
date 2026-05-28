@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -45,10 +47,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGNumberAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGNumberAttributesFunctions[1];
+static bool JSSVGNumberAttributesFunctions_initialized = false;
+
+static void init_JSSVGNumberAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("value", JSSVGNumber::getValueProperty, JSSVGNumber::putValueProperty, JSSVGNumber::ValueAttrNum)
-};
+    if (JSSVGNumberAttributesFunctions_initialized) return;
+    JSSVGNumberAttributesFunctions_initialized = true;
+    memset(JSSVGNumberAttributesFunctions, 0, sizeof(JSSVGNumberAttributesFunctions));
+    JSSVGNumberAttributesFunctions[0].name = "value";
+    JSSVGNumberAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGNumberAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGNumberAttributesFunctions[0].magic = JSSVGNumber::ValueAttrNum;
+    JSSVGNumberAttributesFunctions[0].u.getset.get.getter_magic = JSSVGNumber::getValueProperty;
+    JSSVGNumberAttributesFunctions[0].u.getset.set.setter_magic = JSSVGNumber::putValueProperty;
+}
 
 JSValue JSSVGNumberPrototype::self(JSContext * ctx)
 {
@@ -66,21 +79,29 @@ JSValue JSSVGNumberPrototype::self(JSContext * ctx)
 
 void JSSVGNumberPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGNumberAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGNumberAttributesFunctions, countof(JSSVGNumberAttributesFunctions));
 }
 
-static JSClassDef JSSVGNumberClassDefine = 
+static JSClassDef JSSVGNumberClassDefine;
+static bool JSSVGNumberClassDefine_initialized = false;
+
+static void init_JSSVGNumberClassDefine()
 {
-    "SVGNumber",
-    .finalizer = JSSVGNumber::finalizer,
-    .gc_mark = JSSVGNumber::mark,
-};
+    if (JSSVGNumberClassDefine_initialized) return;
+    JSSVGNumberClassDefine_initialized = true;
+    memset(&JSSVGNumberClassDefine, 0, sizeof(JSSVGNumberClassDefine));
+    JSSVGNumberClassDefine.class_name = "SVGNumber";
+    JSSVGNumberClassDefine.finalizer = JSSVGNumber::finalizer;
+    JSSVGNumberClassDefine.gc_mark = JSSVGNumber::mark;
+}
 
 JSClassID JSSVGNumber::js_class_id = 0;
 
 void JSSVGNumber::init(JSContext* ctx)
 {
     if (JSSVGNumber::js_class_id == 0) {
+        init_JSSVGNumberClassDefine();
         JS_NewClassID(&JSSVGNumber::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGNumber::js_class_id, &JSSVGNumberClassDefine);
         JS_SetClassProto(ctx, JSSVGNumber::js_class_id, JSSVGNumberPrototype::self(ctx));

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSNodeFilter.h"
 
 #include "NodeFilter.h"
@@ -39,10 +41,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSNodeFilterAttributesFunctions[] =
+static JSCFunctionListEntry JSNodeFilterAttributesFunctions[1];
+static bool JSNodeFilterAttributesFunctions_initialized = false;
+
+static void init_JSNodeFilterAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSNodeFilter::getValueProperty, NULL, JSNodeFilter::ConstructorAttrNum)
-};
+    if (JSNodeFilterAttributesFunctions_initialized) return;
+    JSNodeFilterAttributesFunctions_initialized = true;
+    memset(JSNodeFilterAttributesFunctions, 0, sizeof(JSNodeFilterAttributesFunctions));
+    JSNodeFilterAttributesFunctions[0].name = "constructor";
+    JSNodeFilterAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterAttributesFunctions[0].magic = JSNodeFilter::ConstructorAttrNum;
+    JSNodeFilterAttributesFunctions[0].u.getset.get.getter_magic = JSNodeFilter::getValueProperty;
+    JSNodeFilterAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 class JSNodeFilterConstructor {
 public:
@@ -59,25 +72,111 @@ JSValue JSNodeFilterConstructor::getValueProperty(JSContext * ctx, JSValueConst 
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSNodeFilterConstructorFunctions[] =
+static JSCFunctionListEntry JSNodeFilterConstructorFunctions[16];
+static bool JSNodeFilterConstructorFunctions_initialized = false;
+
+static void init_JSNodeFilterConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SHOW_CDATA_SECTION", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::SHOW_CDATA_SECTION),
-    JS_CGETSET_MAGIC_DEF("FILTER_ACCEPT", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::FILTER_ACCEPT),
-    JS_CGETSET_MAGIC_DEF("FILTER_REJECT", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::FILTER_REJECT),
-    JS_CGETSET_MAGIC_DEF("SHOW_TEXT", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::SHOW_TEXT),
-    JS_CGETSET_MAGIC_DEF("SHOW_COMMENT", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::SHOW_COMMENT),
-    JS_CGETSET_MAGIC_DEF("SHOW_ALL", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::SHOW_ALL),
-    JS_CGETSET_MAGIC_DEF("SHOW_ENTITY_REFERENCE", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::SHOW_ENTITY_REFERENCE),
-    JS_CGETSET_MAGIC_DEF("SHOW_NOTATION", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::SHOW_NOTATION),
-    JS_CGETSET_MAGIC_DEF("SHOW_PROCESSING_INSTRUCTION", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::SHOW_PROCESSING_INSTRUCTION),
-    JS_CGETSET_MAGIC_DEF("SHOW_DOCUMENT", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::SHOW_DOCUMENT),
-    JS_CGETSET_MAGIC_DEF("FILTER_SKIP", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::FILTER_SKIP),
-    JS_CGETSET_MAGIC_DEF("SHOW_ELEMENT", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::SHOW_ELEMENT),
-    JS_CGETSET_MAGIC_DEF("SHOW_ATTRIBUTE", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::SHOW_ATTRIBUTE),
-    JS_CGETSET_MAGIC_DEF("SHOW_ENTITY", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::SHOW_ENTITY),
-    JS_CGETSET_MAGIC_DEF("SHOW_DOCUMENT_TYPE", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::SHOW_DOCUMENT_TYPE),
-    JS_CGETSET_MAGIC_DEF("SHOW_DOCUMENT_FRAGMENT", JSNodeFilterConstructor::getValueProperty, NULL, NodeFilter::SHOW_DOCUMENT_FRAGMENT)
-};
+    if (JSNodeFilterConstructorFunctions_initialized) return;
+    JSNodeFilterConstructorFunctions_initialized = true;
+    memset(JSNodeFilterConstructorFunctions, 0, sizeof(JSNodeFilterConstructorFunctions));
+    JSNodeFilterConstructorFunctions[0].name = "SHOW_CDATA_SECTION";
+    JSNodeFilterConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[0].magic = NodeFilter::SHOW_CDATA_SECTION;
+    JSNodeFilterConstructorFunctions[0].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[1].name = "FILTER_ACCEPT";
+    JSNodeFilterConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[1].magic = NodeFilter::FILTER_ACCEPT;
+    JSNodeFilterConstructorFunctions[1].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[2].name = "FILTER_REJECT";
+    JSNodeFilterConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[2].magic = NodeFilter::FILTER_REJECT;
+    JSNodeFilterConstructorFunctions[2].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[3].name = "SHOW_TEXT";
+    JSNodeFilterConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[3].magic = NodeFilter::SHOW_TEXT;
+    JSNodeFilterConstructorFunctions[3].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[4].name = "SHOW_COMMENT";
+    JSNodeFilterConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[4].magic = NodeFilter::SHOW_COMMENT;
+    JSNodeFilterConstructorFunctions[4].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[5].name = "SHOW_ALL";
+    JSNodeFilterConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[5].magic = NodeFilter::SHOW_ALL;
+    JSNodeFilterConstructorFunctions[5].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[5].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[6].name = "SHOW_ENTITY_REFERENCE";
+    JSNodeFilterConstructorFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[6].magic = NodeFilter::SHOW_ENTITY_REFERENCE;
+    JSNodeFilterConstructorFunctions[6].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[6].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[7].name = "SHOW_NOTATION";
+    JSNodeFilterConstructorFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[7].magic = NodeFilter::SHOW_NOTATION;
+    JSNodeFilterConstructorFunctions[7].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[7].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[8].name = "SHOW_PROCESSING_INSTRUCTION";
+    JSNodeFilterConstructorFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[8].magic = NodeFilter::SHOW_PROCESSING_INSTRUCTION;
+    JSNodeFilterConstructorFunctions[8].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[8].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[9].name = "SHOW_DOCUMENT";
+    JSNodeFilterConstructorFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[9].magic = NodeFilter::SHOW_DOCUMENT;
+    JSNodeFilterConstructorFunctions[9].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[9].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[10].name = "FILTER_SKIP";
+    JSNodeFilterConstructorFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[10].magic = NodeFilter::FILTER_SKIP;
+    JSNodeFilterConstructorFunctions[10].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[10].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[11].name = "SHOW_ELEMENT";
+    JSNodeFilterConstructorFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[11].magic = NodeFilter::SHOW_ELEMENT;
+    JSNodeFilterConstructorFunctions[11].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[11].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[12].name = "SHOW_ATTRIBUTE";
+    JSNodeFilterConstructorFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[12].magic = NodeFilter::SHOW_ATTRIBUTE;
+    JSNodeFilterConstructorFunctions[12].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[12].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[13].name = "SHOW_ENTITY";
+    JSNodeFilterConstructorFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[13].magic = NodeFilter::SHOW_ENTITY;
+    JSNodeFilterConstructorFunctions[13].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[13].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[14].name = "SHOW_DOCUMENT_TYPE";
+    JSNodeFilterConstructorFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[14].magic = NodeFilter::SHOW_DOCUMENT_TYPE;
+    JSNodeFilterConstructorFunctions[14].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[14].u.getset.set.setter_magic = NULL;
+    JSNodeFilterConstructorFunctions[15].name = "SHOW_DOCUMENT_FRAGMENT";
+    JSNodeFilterConstructorFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterConstructorFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterConstructorFunctions[15].magic = NodeFilter::SHOW_DOCUMENT_FRAGMENT;
+    JSNodeFilterConstructorFunctions[15].u.getset.get.getter_magic = JSNodeFilterConstructor::getValueProperty;
+    JSNodeFilterConstructorFunctions[15].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSNodeFilterConstructor::self(JSContext * ctx)
 {
@@ -95,37 +194,136 @@ JSValue JSNodeFilterConstructor::self(JSContext * ctx)
 
 void JSNodeFilterConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSNodeFilterConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNodeFilterConstructorFunctions, countof(JSNodeFilterConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSNodeFilterPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSNodeFilterPrototypeConstantsFunctions[16];
+static bool JSNodeFilterPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSNodeFilterPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SHOW_CDATA_SECTION", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::SHOW_CDATA_SECTION),
-    JS_CGETSET_MAGIC_DEF("FILTER_ACCEPT", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::FILTER_ACCEPT),
-    JS_CGETSET_MAGIC_DEF("FILTER_REJECT", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::FILTER_REJECT),
-    JS_CGETSET_MAGIC_DEF("SHOW_TEXT", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::SHOW_TEXT),
-    JS_CGETSET_MAGIC_DEF("SHOW_COMMENT", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::SHOW_COMMENT),
-    JS_CGETSET_MAGIC_DEF("SHOW_ALL", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::SHOW_ALL),
-    JS_CGETSET_MAGIC_DEF("SHOW_ENTITY_REFERENCE", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::SHOW_ENTITY_REFERENCE),
-    JS_CGETSET_MAGIC_DEF("SHOW_NOTATION", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::SHOW_NOTATION),
-    JS_CGETSET_MAGIC_DEF("SHOW_PROCESSING_INSTRUCTION", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::SHOW_PROCESSING_INSTRUCTION),
-    JS_CGETSET_MAGIC_DEF("SHOW_DOCUMENT", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::SHOW_DOCUMENT),
-    JS_CGETSET_MAGIC_DEF("FILTER_SKIP", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::FILTER_SKIP),
-    JS_CGETSET_MAGIC_DEF("SHOW_ELEMENT", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::SHOW_ELEMENT),
-    JS_CGETSET_MAGIC_DEF("SHOW_ATTRIBUTE", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::SHOW_ATTRIBUTE),
-    JS_CGETSET_MAGIC_DEF("SHOW_ENTITY", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::SHOW_ENTITY),
-    JS_CGETSET_MAGIC_DEF("SHOW_DOCUMENT_TYPE", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::SHOW_DOCUMENT_TYPE),
-    JS_CGETSET_MAGIC_DEF("SHOW_DOCUMENT_FRAGMENT", JSNodeFilterPrototype::getValueProperty, NULL, NodeFilter::SHOW_DOCUMENT_FRAGMENT)
-};
+    if (JSNodeFilterPrototypeConstantsFunctions_initialized) return;
+    JSNodeFilterPrototypeConstantsFunctions_initialized = true;
+    memset(JSNodeFilterPrototypeConstantsFunctions, 0, sizeof(JSNodeFilterPrototypeConstantsFunctions));
+    JSNodeFilterPrototypeConstantsFunctions[0].name = "SHOW_CDATA_SECTION";
+    JSNodeFilterPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[0].magic = NodeFilter::SHOW_CDATA_SECTION;
+    JSNodeFilterPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[1].name = "FILTER_ACCEPT";
+    JSNodeFilterPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[1].magic = NodeFilter::FILTER_ACCEPT;
+    JSNodeFilterPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[2].name = "FILTER_REJECT";
+    JSNodeFilterPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[2].magic = NodeFilter::FILTER_REJECT;
+    JSNodeFilterPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[3].name = "SHOW_TEXT";
+    JSNodeFilterPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[3].magic = NodeFilter::SHOW_TEXT;
+    JSNodeFilterPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[4].name = "SHOW_COMMENT";
+    JSNodeFilterPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[4].magic = NodeFilter::SHOW_COMMENT;
+    JSNodeFilterPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[5].name = "SHOW_ALL";
+    JSNodeFilterPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[5].magic = NodeFilter::SHOW_ALL;
+    JSNodeFilterPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[6].name = "SHOW_ENTITY_REFERENCE";
+    JSNodeFilterPrototypeConstantsFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[6].magic = NodeFilter::SHOW_ENTITY_REFERENCE;
+    JSNodeFilterPrototypeConstantsFunctions[6].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[6].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[7].name = "SHOW_NOTATION";
+    JSNodeFilterPrototypeConstantsFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[7].magic = NodeFilter::SHOW_NOTATION;
+    JSNodeFilterPrototypeConstantsFunctions[7].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[7].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[8].name = "SHOW_PROCESSING_INSTRUCTION";
+    JSNodeFilterPrototypeConstantsFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[8].magic = NodeFilter::SHOW_PROCESSING_INSTRUCTION;
+    JSNodeFilterPrototypeConstantsFunctions[8].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[8].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[9].name = "SHOW_DOCUMENT";
+    JSNodeFilterPrototypeConstantsFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[9].magic = NodeFilter::SHOW_DOCUMENT;
+    JSNodeFilterPrototypeConstantsFunctions[9].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[9].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[10].name = "FILTER_SKIP";
+    JSNodeFilterPrototypeConstantsFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[10].magic = NodeFilter::FILTER_SKIP;
+    JSNodeFilterPrototypeConstantsFunctions[10].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[10].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[11].name = "SHOW_ELEMENT";
+    JSNodeFilterPrototypeConstantsFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[11].magic = NodeFilter::SHOW_ELEMENT;
+    JSNodeFilterPrototypeConstantsFunctions[11].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[11].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[12].name = "SHOW_ATTRIBUTE";
+    JSNodeFilterPrototypeConstantsFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[12].magic = NodeFilter::SHOW_ATTRIBUTE;
+    JSNodeFilterPrototypeConstantsFunctions[12].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[12].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[13].name = "SHOW_ENTITY";
+    JSNodeFilterPrototypeConstantsFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[13].magic = NodeFilter::SHOW_ENTITY;
+    JSNodeFilterPrototypeConstantsFunctions[13].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[13].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[14].name = "SHOW_DOCUMENT_TYPE";
+    JSNodeFilterPrototypeConstantsFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[14].magic = NodeFilter::SHOW_DOCUMENT_TYPE;
+    JSNodeFilterPrototypeConstantsFunctions[14].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[14].u.getset.set.setter_magic = NULL;
+    JSNodeFilterPrototypeConstantsFunctions[15].name = "SHOW_DOCUMENT_FRAGMENT";
+    JSNodeFilterPrototypeConstantsFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeConstantsFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNodeFilterPrototypeConstantsFunctions[15].magic = NodeFilter::SHOW_DOCUMENT_FRAGMENT;
+    JSNodeFilterPrototypeConstantsFunctions[15].u.getset.get.getter_magic = JSNodeFilterPrototype::getValueProperty;
+    JSNodeFilterPrototypeConstantsFunctions[15].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSNodeFilterPrototypeFunctions[] =
+static JSCFunctionListEntry JSNodeFilterPrototypeFunctions[1];
+static bool JSNodeFilterPrototypeFunctions_initialized = false;
+
+static void init_JSNodeFilterPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("acceptNode", 1, JSNodeFilterPrototypeFunction::callAsFunction, JSNodeFilter::AcceptNodeFuncNum)
-};
+    if (JSNodeFilterPrototypeFunctions_initialized) return;
+    JSNodeFilterPrototypeFunctions_initialized = true;
+    memset(JSNodeFilterPrototypeFunctions, 0, sizeof(JSNodeFilterPrototypeFunctions));
+    JSNodeFilterPrototypeFunctions[0].name = "acceptNode";
+    JSNodeFilterPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodeFilterPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSNodeFilterPrototypeFunctions[0].magic = JSNodeFilter::AcceptNodeFuncNum;
+    JSNodeFilterPrototypeFunctions[0].u.func.length = 1;
+    JSNodeFilterPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodeFilterPrototypeFunctions[0].u.func.cfunc.generic_magic = JSNodeFilterPrototypeFunction::callAsFunction;
+}
 
 JSValue JSNodeFilterPrototype::self(JSContext * ctx)
 {
@@ -143,8 +341,11 @@ JSValue JSNodeFilterPrototype::self(JSContext * ctx)
 
 void JSNodeFilterPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSNodeFilterAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNodeFilterAttributesFunctions, countof(JSNodeFilterAttributesFunctions));
+    init_JSNodeFilterPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNodeFilterPrototypeConstantsFunctions, countof(JSNodeFilterPrototypeConstantsFunctions));
+    init_JSNodeFilterPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNodeFilterPrototypeFunctions, countof(JSNodeFilterPrototypeFunctions));
 }
 
@@ -154,18 +355,25 @@ JSValue JSNodeFilterPrototype::getValueProperty(JSContext * ctx, JSValueConst th
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSNodeFilterClassDefine = 
+static JSClassDef JSNodeFilterClassDefine;
+static bool JSNodeFilterClassDefine_initialized = false;
+
+static void init_JSNodeFilterClassDefine()
 {
-    "NodeFilter",
-    .finalizer = JSNodeFilter::finalizer,
-    .gc_mark = JSNodeFilter::mark,
-};
+    if (JSNodeFilterClassDefine_initialized) return;
+    JSNodeFilterClassDefine_initialized = true;
+    memset(&JSNodeFilterClassDefine, 0, sizeof(JSNodeFilterClassDefine));
+    JSNodeFilterClassDefine.class_name = "NodeFilter";
+    JSNodeFilterClassDefine.finalizer = JSNodeFilter::finalizer;
+    JSNodeFilterClassDefine.gc_mark = JSNodeFilter::mark;
+}
 
 JSClassID JSNodeFilter::js_class_id = 0;
 
 void JSNodeFilter::init(JSContext* ctx)
 {
     if (JSNodeFilter::js_class_id == 0) {
+        init_JSNodeFilterClassDefine();
         JS_NewClassID(&JSNodeFilter::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSNodeFilter::js_class_id, &JSNodeFilterClassDefine);
         JS_SetConstructor(ctx, JSNodeFilterConstructor::self(ctx), JSNodeFilterPrototype::self(ctx));

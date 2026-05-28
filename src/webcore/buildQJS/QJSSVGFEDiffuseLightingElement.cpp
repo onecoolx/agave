@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -54,28 +56,106 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFEDiffuseLightingElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFEDiffuseLightingElementAttributesFunctions[12];
+static bool JSSVGFEDiffuseLightingElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFEDiffuseLightingElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("surfaceScale", JSSVGFEDiffuseLightingElement::getValueProperty, NULL, JSSVGFEDiffuseLightingElement::SurfaceScaleAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFEDiffuseLightingElement::getValueProperty, NULL, JSSVGFEDiffuseLightingElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFEDiffuseLightingElement::getValueProperty, NULL, JSSVGFEDiffuseLightingElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("in1", JSSVGFEDiffuseLightingElement::getValueProperty, NULL, JSSVGFEDiffuseLightingElement::In1AttrNum),
-    JS_CGETSET_MAGIC_DEF("diffuseConstant", JSSVGFEDiffuseLightingElement::getValueProperty, NULL, JSSVGFEDiffuseLightingElement::DiffuseConstantAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGFEDiffuseLightingElement::getValueProperty, NULL, JSSVGFEDiffuseLightingElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("kernelUnitLengthY", JSSVGFEDiffuseLightingElement::getValueProperty, NULL, JSSVGFEDiffuseLightingElement::KernelUnitLengthYAttrNum),
-    JS_CGETSET_MAGIC_DEF("kernelUnitLengthX", JSSVGFEDiffuseLightingElement::getValueProperty, NULL, JSSVGFEDiffuseLightingElement::KernelUnitLengthXAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGFEDiffuseLightingElement::getValueProperty, NULL, JSSVGFEDiffuseLightingElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGFEDiffuseLightingElement::getValueProperty, NULL, JSSVGFEDiffuseLightingElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("result", JSSVGFEDiffuseLightingElement::getValueProperty, NULL, JSSVGFEDiffuseLightingElement::ResultAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGFEDiffuseLightingElement::getValueProperty, NULL, JSSVGFEDiffuseLightingElement::ClassNameAttrNum)
-};
+    if (JSSVGFEDiffuseLightingElementAttributesFunctions_initialized) return;
+    JSSVGFEDiffuseLightingElementAttributesFunctions_initialized = true;
+    memset(JSSVGFEDiffuseLightingElementAttributesFunctions, 0, sizeof(JSSVGFEDiffuseLightingElementAttributesFunctions));
+    JSSVGFEDiffuseLightingElementAttributesFunctions[0].name = "surfaceScale";
+    JSSVGFEDiffuseLightingElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[0].magic = JSSVGFEDiffuseLightingElement::SurfaceScaleAttrNum;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFEDiffuseLightingElement::getValueProperty;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[1].name = "y";
+    JSSVGFEDiffuseLightingElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[1].magic = JSSVGFEDiffuseLightingElement::YAttrNum;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFEDiffuseLightingElement::getValueProperty;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[2].name = "x";
+    JSSVGFEDiffuseLightingElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[2].magic = JSSVGFEDiffuseLightingElement::XAttrNum;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFEDiffuseLightingElement::getValueProperty;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[3].name = "in1";
+    JSSVGFEDiffuseLightingElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[3].magic = JSSVGFEDiffuseLightingElement::In1AttrNum;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGFEDiffuseLightingElement::getValueProperty;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[4].name = "diffuseConstant";
+    JSSVGFEDiffuseLightingElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[4].magic = JSSVGFEDiffuseLightingElement::DiffuseConstantAttrNum;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGFEDiffuseLightingElement::getValueProperty;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[5].name = "style";
+    JSSVGFEDiffuseLightingElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[5].magic = JSSVGFEDiffuseLightingElement::StyleAttrNum;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGFEDiffuseLightingElement::getValueProperty;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[6].name = "kernelUnitLengthY";
+    JSSVGFEDiffuseLightingElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[6].magic = JSSVGFEDiffuseLightingElement::KernelUnitLengthYAttrNum;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGFEDiffuseLightingElement::getValueProperty;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[7].name = "kernelUnitLengthX";
+    JSSVGFEDiffuseLightingElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[7].magic = JSSVGFEDiffuseLightingElement::KernelUnitLengthXAttrNum;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGFEDiffuseLightingElement::getValueProperty;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[8].name = "width";
+    JSSVGFEDiffuseLightingElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[8].magic = JSSVGFEDiffuseLightingElement::WidthAttrNum;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGFEDiffuseLightingElement::getValueProperty;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[9].name = "height";
+    JSSVGFEDiffuseLightingElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[9].magic = JSSVGFEDiffuseLightingElement::HeightAttrNum;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGFEDiffuseLightingElement::getValueProperty;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[10].name = "result";
+    JSSVGFEDiffuseLightingElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[10].magic = JSSVGFEDiffuseLightingElement::ResultAttrNum;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGFEDiffuseLightingElement::getValueProperty;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[11].name = "className";
+    JSSVGFEDiffuseLightingElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[11].magic = JSSVGFEDiffuseLightingElement::ClassNameAttrNum;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[11].u.getset.get.getter_magic = JSSVGFEDiffuseLightingElement::getValueProperty;
+    JSSVGFEDiffuseLightingElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGFEDiffuseLightingElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGFEDiffuseLightingElementPrototypeFunctions[1];
+static bool JSSVGFEDiffuseLightingElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGFEDiffuseLightingElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGFEDiffuseLightingElementPrototypeFunction::callAsFunction, JSSVGFEDiffuseLightingElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGFEDiffuseLightingElementPrototypeFunctions_initialized) return;
+    JSSVGFEDiffuseLightingElementPrototypeFunctions_initialized = true;
+    memset(JSSVGFEDiffuseLightingElementPrototypeFunctions, 0, sizeof(JSSVGFEDiffuseLightingElementPrototypeFunctions));
+    JSSVGFEDiffuseLightingElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGFEDiffuseLightingElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFEDiffuseLightingElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGFEDiffuseLightingElementPrototypeFunctions[0].magic = JSSVGFEDiffuseLightingElement::GetPresentationAttributeFuncNum;
+    JSSVGFEDiffuseLightingElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGFEDiffuseLightingElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFEDiffuseLightingElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGFEDiffuseLightingElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGFEDiffuseLightingElementPrototype::self(JSContext * ctx)
 {
@@ -93,22 +173,31 @@ JSValue JSSVGFEDiffuseLightingElementPrototype::self(JSContext * ctx)
 
 void JSSVGFEDiffuseLightingElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFEDiffuseLightingElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEDiffuseLightingElementAttributesFunctions, countof(JSSVGFEDiffuseLightingElementAttributesFunctions));
+    init_JSSVGFEDiffuseLightingElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEDiffuseLightingElementPrototypeFunctions, countof(JSSVGFEDiffuseLightingElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGFEDiffuseLightingElementClassDefine = 
+static JSClassDef JSSVGFEDiffuseLightingElementClassDefine;
+static bool JSSVGFEDiffuseLightingElementClassDefine_initialized = false;
+
+static void init_JSSVGFEDiffuseLightingElementClassDefine()
 {
-    "SVGFEDiffuseLightingElement",
-    .finalizer = JSSVGFEDiffuseLightingElement::finalizer,
-    .gc_mark = JSSVGFEDiffuseLightingElement::mark,
-};
+    if (JSSVGFEDiffuseLightingElementClassDefine_initialized) return;
+    JSSVGFEDiffuseLightingElementClassDefine_initialized = true;
+    memset(&JSSVGFEDiffuseLightingElementClassDefine, 0, sizeof(JSSVGFEDiffuseLightingElementClassDefine));
+    JSSVGFEDiffuseLightingElementClassDefine.class_name = "SVGFEDiffuseLightingElement";
+    JSSVGFEDiffuseLightingElementClassDefine.finalizer = JSSVGFEDiffuseLightingElement::finalizer;
+    JSSVGFEDiffuseLightingElementClassDefine.gc_mark = JSSVGFEDiffuseLightingElement::mark;
+}
 
 JSClassID JSSVGFEDiffuseLightingElement::js_class_id = 0;
 
 void JSSVGFEDiffuseLightingElement::init(JSContext* ctx)
 {
     if (JSSVGFEDiffuseLightingElement::js_class_id == 0) {
+        init_JSSVGFEDiffuseLightingElementClassDefine();
         JS_NewClassID(&JSSVGFEDiffuseLightingElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFEDiffuseLightingElement::js_class_id, &JSSVGFEDiffuseLightingElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFEDiffuseLightingElement::js_class_id, JSSVGFEDiffuseLightingElementPrototype::self(ctx));

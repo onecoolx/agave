@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCanvasRenderingContext2D.h"
 
 #include "CanvasGradient.h"
@@ -45,63 +47,350 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSCanvasRenderingContext2DAttributesFunctions[] =
+static JSCFunctionListEntry JSCanvasRenderingContext2DAttributesFunctions[13];
+static bool JSCanvasRenderingContext2DAttributesFunctions_initialized = false;
+
+static void init_JSCanvasRenderingContext2DAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("lineWidth", JSCanvasRenderingContext2D::getValueProperty, JSCanvasRenderingContext2D::putValueProperty, JSCanvasRenderingContext2D::LineWidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("shadowOffsetY", JSCanvasRenderingContext2D::getValueProperty, JSCanvasRenderingContext2D::putValueProperty, JSCanvasRenderingContext2D::ShadowOffsetYAttrNum),
-    JS_CGETSET_MAGIC_DEF("strokeStyle", JSCanvasRenderingContext2D::getValueProperty, JSCanvasRenderingContext2D::putValueProperty, JSCanvasRenderingContext2D::StrokeStyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("globalAlpha", JSCanvasRenderingContext2D::getValueProperty, JSCanvasRenderingContext2D::putValueProperty, JSCanvasRenderingContext2D::GlobalAlphaAttrNum),
-    JS_CGETSET_MAGIC_DEF("lineJoin", JSCanvasRenderingContext2D::getValueProperty, JSCanvasRenderingContext2D::putValueProperty, JSCanvasRenderingContext2D::LineJoinAttrNum),
-    JS_CGETSET_MAGIC_DEF("shadowOffsetX", JSCanvasRenderingContext2D::getValueProperty, JSCanvasRenderingContext2D::putValueProperty, JSCanvasRenderingContext2D::ShadowOffsetXAttrNum),
-    JS_CGETSET_MAGIC_DEF("globalCompositeOperation", JSCanvasRenderingContext2D::getValueProperty, JSCanvasRenderingContext2D::putValueProperty, JSCanvasRenderingContext2D::GlobalCompositeOperationAttrNum),
-    JS_CGETSET_MAGIC_DEF("lineCap", JSCanvasRenderingContext2D::getValueProperty, JSCanvasRenderingContext2D::putValueProperty, JSCanvasRenderingContext2D::LineCapAttrNum),
-    JS_CGETSET_MAGIC_DEF("shadowColor", JSCanvasRenderingContext2D::getValueProperty, JSCanvasRenderingContext2D::putValueProperty, JSCanvasRenderingContext2D::ShadowColorAttrNum),
-    JS_CGETSET_MAGIC_DEF("canvas", JSCanvasRenderingContext2D::getValueProperty, NULL, JSCanvasRenderingContext2D::CanvasAttrNum),
-    JS_CGETSET_MAGIC_DEF("shadowBlur", JSCanvasRenderingContext2D::getValueProperty, JSCanvasRenderingContext2D::putValueProperty, JSCanvasRenderingContext2D::ShadowBlurAttrNum),
-    JS_CGETSET_MAGIC_DEF("miterLimit", JSCanvasRenderingContext2D::getValueProperty, JSCanvasRenderingContext2D::putValueProperty, JSCanvasRenderingContext2D::MiterLimitAttrNum),
-    JS_CGETSET_MAGIC_DEF("fillStyle", JSCanvasRenderingContext2D::getValueProperty, JSCanvasRenderingContext2D::putValueProperty, JSCanvasRenderingContext2D::FillStyleAttrNum)
-};
+    if (JSCanvasRenderingContext2DAttributesFunctions_initialized) return;
+    JSCanvasRenderingContext2DAttributesFunctions_initialized = true;
+    memset(JSCanvasRenderingContext2DAttributesFunctions, 0, sizeof(JSCanvasRenderingContext2DAttributesFunctions));
+    JSCanvasRenderingContext2DAttributesFunctions[0].name = "lineWidth";
+    JSCanvasRenderingContext2DAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCanvasRenderingContext2DAttributesFunctions[0].magic = JSCanvasRenderingContext2D::LineWidthAttrNum;
+    JSCanvasRenderingContext2DAttributesFunctions[0].u.getset.get.getter_magic = JSCanvasRenderingContext2D::getValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[0].u.getset.set.setter_magic = JSCanvasRenderingContext2D::putValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[1].name = "shadowOffsetY";
+    JSCanvasRenderingContext2DAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCanvasRenderingContext2DAttributesFunctions[1].magic = JSCanvasRenderingContext2D::ShadowOffsetYAttrNum;
+    JSCanvasRenderingContext2DAttributesFunctions[1].u.getset.get.getter_magic = JSCanvasRenderingContext2D::getValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[1].u.getset.set.setter_magic = JSCanvasRenderingContext2D::putValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[2].name = "strokeStyle";
+    JSCanvasRenderingContext2DAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCanvasRenderingContext2DAttributesFunctions[2].magic = JSCanvasRenderingContext2D::StrokeStyleAttrNum;
+    JSCanvasRenderingContext2DAttributesFunctions[2].u.getset.get.getter_magic = JSCanvasRenderingContext2D::getValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[2].u.getset.set.setter_magic = JSCanvasRenderingContext2D::putValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[3].name = "globalAlpha";
+    JSCanvasRenderingContext2DAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCanvasRenderingContext2DAttributesFunctions[3].magic = JSCanvasRenderingContext2D::GlobalAlphaAttrNum;
+    JSCanvasRenderingContext2DAttributesFunctions[3].u.getset.get.getter_magic = JSCanvasRenderingContext2D::getValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[3].u.getset.set.setter_magic = JSCanvasRenderingContext2D::putValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[4].name = "lineJoin";
+    JSCanvasRenderingContext2DAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCanvasRenderingContext2DAttributesFunctions[4].magic = JSCanvasRenderingContext2D::LineJoinAttrNum;
+    JSCanvasRenderingContext2DAttributesFunctions[4].u.getset.get.getter_magic = JSCanvasRenderingContext2D::getValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[4].u.getset.set.setter_magic = JSCanvasRenderingContext2D::putValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[5].name = "shadowOffsetX";
+    JSCanvasRenderingContext2DAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCanvasRenderingContext2DAttributesFunctions[5].magic = JSCanvasRenderingContext2D::ShadowOffsetXAttrNum;
+    JSCanvasRenderingContext2DAttributesFunctions[5].u.getset.get.getter_magic = JSCanvasRenderingContext2D::getValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[5].u.getset.set.setter_magic = JSCanvasRenderingContext2D::putValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[6].name = "globalCompositeOperation";
+    JSCanvasRenderingContext2DAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCanvasRenderingContext2DAttributesFunctions[6].magic = JSCanvasRenderingContext2D::GlobalCompositeOperationAttrNum;
+    JSCanvasRenderingContext2DAttributesFunctions[6].u.getset.get.getter_magic = JSCanvasRenderingContext2D::getValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[6].u.getset.set.setter_magic = JSCanvasRenderingContext2D::putValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[7].name = "lineCap";
+    JSCanvasRenderingContext2DAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCanvasRenderingContext2DAttributesFunctions[7].magic = JSCanvasRenderingContext2D::LineCapAttrNum;
+    JSCanvasRenderingContext2DAttributesFunctions[7].u.getset.get.getter_magic = JSCanvasRenderingContext2D::getValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[7].u.getset.set.setter_magic = JSCanvasRenderingContext2D::putValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[8].name = "shadowColor";
+    JSCanvasRenderingContext2DAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCanvasRenderingContext2DAttributesFunctions[8].magic = JSCanvasRenderingContext2D::ShadowColorAttrNum;
+    JSCanvasRenderingContext2DAttributesFunctions[8].u.getset.get.getter_magic = JSCanvasRenderingContext2D::getValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[8].u.getset.set.setter_magic = JSCanvasRenderingContext2D::putValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[9].name = "canvas";
+    JSCanvasRenderingContext2DAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCanvasRenderingContext2DAttributesFunctions[9].magic = JSCanvasRenderingContext2D::CanvasAttrNum;
+    JSCanvasRenderingContext2DAttributesFunctions[9].u.getset.get.getter_magic = JSCanvasRenderingContext2D::getValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSCanvasRenderingContext2DAttributesFunctions[10].name = "shadowBlur";
+    JSCanvasRenderingContext2DAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCanvasRenderingContext2DAttributesFunctions[10].magic = JSCanvasRenderingContext2D::ShadowBlurAttrNum;
+    JSCanvasRenderingContext2DAttributesFunctions[10].u.getset.get.getter_magic = JSCanvasRenderingContext2D::getValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[10].u.getset.set.setter_magic = JSCanvasRenderingContext2D::putValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[11].name = "miterLimit";
+    JSCanvasRenderingContext2DAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCanvasRenderingContext2DAttributesFunctions[11].magic = JSCanvasRenderingContext2D::MiterLimitAttrNum;
+    JSCanvasRenderingContext2DAttributesFunctions[11].u.getset.get.getter_magic = JSCanvasRenderingContext2D::getValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[11].u.getset.set.setter_magic = JSCanvasRenderingContext2D::putValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[12].name = "fillStyle";
+    JSCanvasRenderingContext2DAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCanvasRenderingContext2DAttributesFunctions[12].magic = JSCanvasRenderingContext2D::FillStyleAttrNum;
+    JSCanvasRenderingContext2DAttributesFunctions[12].u.getset.get.getter_magic = JSCanvasRenderingContext2D::getValueProperty;
+    JSCanvasRenderingContext2DAttributesFunctions[12].u.getset.set.setter_magic = JSCanvasRenderingContext2D::putValueProperty;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSCanvasRenderingContext2DPrototypeFunctions[] =
+static JSCFunctionListEntry JSCanvasRenderingContext2DPrototypeFunctions[35];
+static bool JSCanvasRenderingContext2DPrototypeFunctions_initialized = false;
+
+static void init_JSCanvasRenderingContext2DPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("fill", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::FillFuncNum),
-    JS_CFUNC_MAGIC_DEF("lineTo", 2, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::LineToFuncNum),
-    JS_CFUNC_MAGIC_DEF("save", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::SaveFuncNum),
-    JS_CFUNC_MAGIC_DEF("restore", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::RestoreFuncNum),
-    JS_CFUNC_MAGIC_DEF("drawImageFromRect", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::DrawImageFromRectFuncNum),
-    JS_CFUNC_MAGIC_DEF("setLineJoin", 1, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::SetLineJoinFuncNum),
-    JS_CFUNC_MAGIC_DEF("createLinearGradient", 4, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::CreateLinearGradientFuncNum),
-    JS_CFUNC_MAGIC_DEF("setShadow", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::SetShadowFuncNum),
-    JS_CFUNC_MAGIC_DEF("clip", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::ClipFuncNum),
-    JS_CFUNC_MAGIC_DEF("rotate", 1, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::RotateFuncNum),
-    JS_CFUNC_MAGIC_DEF("setLineWidth", 1, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::SetLineWidthFuncNum),
-    JS_CFUNC_MAGIC_DEF("translate", 2, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::TranslateFuncNum),
-    JS_CFUNC_MAGIC_DEF("setFillColor", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::SetFillColorFuncNum),
-    JS_CFUNC_MAGIC_DEF("createPattern", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::CreatePatternFuncNum),
-    JS_CFUNC_MAGIC_DEF("quadraticCurveTo", 4, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::QuadraticCurveToFuncNum),
-    JS_CFUNC_MAGIC_DEF("scale", 2, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::ScaleFuncNum),
-    JS_CFUNC_MAGIC_DEF("setCompositeOperation", 1, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::SetCompositeOperationFuncNum),
-    JS_CFUNC_MAGIC_DEF("beginPath", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::BeginPathFuncNum),
-    JS_CFUNC_MAGIC_DEF("bezierCurveTo", 6, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::BezierCurveToFuncNum),
-    JS_CFUNC_MAGIC_DEF("moveTo", 2, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::MoveToFuncNum),
-    JS_CFUNC_MAGIC_DEF("clearRect", 4, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::ClearRectFuncNum),
-    JS_CFUNC_MAGIC_DEF("arc", 6, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::ArcFuncNum),
-    JS_CFUNC_MAGIC_DEF("createRadialGradient", 6, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::CreateRadialGradientFuncNum),
-    JS_CFUNC_MAGIC_DEF("fillRect", 4, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::FillRectFuncNum),
-    JS_CFUNC_MAGIC_DEF("closePath", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::ClosePathFuncNum),
-    JS_CFUNC_MAGIC_DEF("arcTo", 5, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::ArcToFuncNum),
-    JS_CFUNC_MAGIC_DEF("rect", 4, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::RectFuncNum),
-    JS_CFUNC_MAGIC_DEF("stroke", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::StrokeFuncNum),
-    JS_CFUNC_MAGIC_DEF("setAlpha", 1, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::SetAlphaFuncNum),
-    JS_CFUNC_MAGIC_DEF("setLineCap", 1, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::SetLineCapFuncNum),
-    JS_CFUNC_MAGIC_DEF("setMiterLimit", 1, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::SetMiterLimitFuncNum),
-    JS_CFUNC_MAGIC_DEF("clearShadow", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::ClearShadowFuncNum),
-    JS_CFUNC_MAGIC_DEF("setStrokeColor", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::SetStrokeColorFuncNum),
-    JS_CFUNC_MAGIC_DEF("strokeRect", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::StrokeRectFuncNum),
-    JS_CFUNC_MAGIC_DEF("drawImage", 0, JSCanvasRenderingContext2DPrototypeFunction::callAsFunction, JSCanvasRenderingContext2D::DrawImageFuncNum)
-};
+    if (JSCanvasRenderingContext2DPrototypeFunctions_initialized) return;
+    JSCanvasRenderingContext2DPrototypeFunctions_initialized = true;
+    memset(JSCanvasRenderingContext2DPrototypeFunctions, 0, sizeof(JSCanvasRenderingContext2DPrototypeFunctions));
+    JSCanvasRenderingContext2DPrototypeFunctions[0].name = "fill";
+    JSCanvasRenderingContext2DPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[0].magic = JSCanvasRenderingContext2D::FillFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[0].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[0].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[1].name = "lineTo";
+    JSCanvasRenderingContext2DPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[1].magic = JSCanvasRenderingContext2D::LineToFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[1].u.func.length = 2;
+    JSCanvasRenderingContext2DPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[1].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[2].name = "save";
+    JSCanvasRenderingContext2DPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[2].magic = JSCanvasRenderingContext2D::SaveFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[2].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[2].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[3].name = "restore";
+    JSCanvasRenderingContext2DPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[3].magic = JSCanvasRenderingContext2D::RestoreFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[3].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[3].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[4].name = "drawImageFromRect";
+    JSCanvasRenderingContext2DPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[4].magic = JSCanvasRenderingContext2D::DrawImageFromRectFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[4].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[4].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[5].name = "setLineJoin";
+    JSCanvasRenderingContext2DPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[5].magic = JSCanvasRenderingContext2D::SetLineJoinFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[5].u.func.length = 1;
+    JSCanvasRenderingContext2DPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[5].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[6].name = "createLinearGradient";
+    JSCanvasRenderingContext2DPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[6].magic = JSCanvasRenderingContext2D::CreateLinearGradientFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[6].u.func.length = 4;
+    JSCanvasRenderingContext2DPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[6].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[7].name = "setShadow";
+    JSCanvasRenderingContext2DPrototypeFunctions[7].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[7].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[7].magic = JSCanvasRenderingContext2D::SetShadowFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[7].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[7].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[7].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[8].name = "clip";
+    JSCanvasRenderingContext2DPrototypeFunctions[8].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[8].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[8].magic = JSCanvasRenderingContext2D::ClipFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[8].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[8].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[8].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[9].name = "rotate";
+    JSCanvasRenderingContext2DPrototypeFunctions[9].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[9].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[9].magic = JSCanvasRenderingContext2D::RotateFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[9].u.func.length = 1;
+    JSCanvasRenderingContext2DPrototypeFunctions[9].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[9].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[10].name = "setLineWidth";
+    JSCanvasRenderingContext2DPrototypeFunctions[10].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[10].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[10].magic = JSCanvasRenderingContext2D::SetLineWidthFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[10].u.func.length = 1;
+    JSCanvasRenderingContext2DPrototypeFunctions[10].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[10].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[11].name = "translate";
+    JSCanvasRenderingContext2DPrototypeFunctions[11].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[11].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[11].magic = JSCanvasRenderingContext2D::TranslateFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[11].u.func.length = 2;
+    JSCanvasRenderingContext2DPrototypeFunctions[11].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[11].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[12].name = "setFillColor";
+    JSCanvasRenderingContext2DPrototypeFunctions[12].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[12].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[12].magic = JSCanvasRenderingContext2D::SetFillColorFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[12].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[12].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[12].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[13].name = "createPattern";
+    JSCanvasRenderingContext2DPrototypeFunctions[13].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[13].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[13].magic = JSCanvasRenderingContext2D::CreatePatternFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[13].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[13].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[13].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[14].name = "quadraticCurveTo";
+    JSCanvasRenderingContext2DPrototypeFunctions[14].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[14].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[14].magic = JSCanvasRenderingContext2D::QuadraticCurveToFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[14].u.func.length = 4;
+    JSCanvasRenderingContext2DPrototypeFunctions[14].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[14].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[15].name = "scale";
+    JSCanvasRenderingContext2DPrototypeFunctions[15].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[15].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[15].magic = JSCanvasRenderingContext2D::ScaleFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[15].u.func.length = 2;
+    JSCanvasRenderingContext2DPrototypeFunctions[15].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[15].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[16].name = "setCompositeOperation";
+    JSCanvasRenderingContext2DPrototypeFunctions[16].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[16].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[16].magic = JSCanvasRenderingContext2D::SetCompositeOperationFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[16].u.func.length = 1;
+    JSCanvasRenderingContext2DPrototypeFunctions[16].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[16].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[17].name = "beginPath";
+    JSCanvasRenderingContext2DPrototypeFunctions[17].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[17].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[17].magic = JSCanvasRenderingContext2D::BeginPathFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[17].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[17].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[17].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[18].name = "bezierCurveTo";
+    JSCanvasRenderingContext2DPrototypeFunctions[18].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[18].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[18].magic = JSCanvasRenderingContext2D::BezierCurveToFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[18].u.func.length = 6;
+    JSCanvasRenderingContext2DPrototypeFunctions[18].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[18].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[19].name = "moveTo";
+    JSCanvasRenderingContext2DPrototypeFunctions[19].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[19].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[19].magic = JSCanvasRenderingContext2D::MoveToFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[19].u.func.length = 2;
+    JSCanvasRenderingContext2DPrototypeFunctions[19].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[19].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[20].name = "clearRect";
+    JSCanvasRenderingContext2DPrototypeFunctions[20].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[20].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[20].magic = JSCanvasRenderingContext2D::ClearRectFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[20].u.func.length = 4;
+    JSCanvasRenderingContext2DPrototypeFunctions[20].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[20].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[21].name = "arc";
+    JSCanvasRenderingContext2DPrototypeFunctions[21].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[21].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[21].magic = JSCanvasRenderingContext2D::ArcFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[21].u.func.length = 6;
+    JSCanvasRenderingContext2DPrototypeFunctions[21].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[21].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[22].name = "createRadialGradient";
+    JSCanvasRenderingContext2DPrototypeFunctions[22].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[22].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[22].magic = JSCanvasRenderingContext2D::CreateRadialGradientFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[22].u.func.length = 6;
+    JSCanvasRenderingContext2DPrototypeFunctions[22].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[22].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[23].name = "fillRect";
+    JSCanvasRenderingContext2DPrototypeFunctions[23].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[23].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[23].magic = JSCanvasRenderingContext2D::FillRectFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[23].u.func.length = 4;
+    JSCanvasRenderingContext2DPrototypeFunctions[23].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[23].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[24].name = "closePath";
+    JSCanvasRenderingContext2DPrototypeFunctions[24].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[24].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[24].magic = JSCanvasRenderingContext2D::ClosePathFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[24].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[24].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[24].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[25].name = "arcTo";
+    JSCanvasRenderingContext2DPrototypeFunctions[25].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[25].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[25].magic = JSCanvasRenderingContext2D::ArcToFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[25].u.func.length = 5;
+    JSCanvasRenderingContext2DPrototypeFunctions[25].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[25].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[26].name = "rect";
+    JSCanvasRenderingContext2DPrototypeFunctions[26].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[26].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[26].magic = JSCanvasRenderingContext2D::RectFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[26].u.func.length = 4;
+    JSCanvasRenderingContext2DPrototypeFunctions[26].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[26].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[27].name = "stroke";
+    JSCanvasRenderingContext2DPrototypeFunctions[27].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[27].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[27].magic = JSCanvasRenderingContext2D::StrokeFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[27].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[27].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[27].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[28].name = "setAlpha";
+    JSCanvasRenderingContext2DPrototypeFunctions[28].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[28].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[28].magic = JSCanvasRenderingContext2D::SetAlphaFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[28].u.func.length = 1;
+    JSCanvasRenderingContext2DPrototypeFunctions[28].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[28].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[29].name = "setLineCap";
+    JSCanvasRenderingContext2DPrototypeFunctions[29].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[29].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[29].magic = JSCanvasRenderingContext2D::SetLineCapFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[29].u.func.length = 1;
+    JSCanvasRenderingContext2DPrototypeFunctions[29].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[29].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[30].name = "setMiterLimit";
+    JSCanvasRenderingContext2DPrototypeFunctions[30].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[30].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[30].magic = JSCanvasRenderingContext2D::SetMiterLimitFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[30].u.func.length = 1;
+    JSCanvasRenderingContext2DPrototypeFunctions[30].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[30].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[31].name = "clearShadow";
+    JSCanvasRenderingContext2DPrototypeFunctions[31].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[31].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[31].magic = JSCanvasRenderingContext2D::ClearShadowFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[31].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[31].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[31].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[32].name = "setStrokeColor";
+    JSCanvasRenderingContext2DPrototypeFunctions[32].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[32].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[32].magic = JSCanvasRenderingContext2D::SetStrokeColorFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[32].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[32].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[32].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[33].name = "strokeRect";
+    JSCanvasRenderingContext2DPrototypeFunctions[33].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[33].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[33].magic = JSCanvasRenderingContext2D::StrokeRectFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[33].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[33].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[33].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+    JSCanvasRenderingContext2DPrototypeFunctions[34].name = "drawImage";
+    JSCanvasRenderingContext2DPrototypeFunctions[34].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasRenderingContext2DPrototypeFunctions[34].def_type = JS_DEF_CFUNC;
+    JSCanvasRenderingContext2DPrototypeFunctions[34].magic = JSCanvasRenderingContext2D::DrawImageFuncNum;
+    JSCanvasRenderingContext2DPrototypeFunctions[34].u.func.length = 0;
+    JSCanvasRenderingContext2DPrototypeFunctions[34].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasRenderingContext2DPrototypeFunctions[34].u.func.cfunc.generic_magic = JSCanvasRenderingContext2DPrototypeFunction::callAsFunction;
+}
 
 JSValue JSCanvasRenderingContext2DPrototype::self(JSContext * ctx)
 {
@@ -119,22 +408,31 @@ JSValue JSCanvasRenderingContext2DPrototype::self(JSContext * ctx)
 
 void JSCanvasRenderingContext2DPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCanvasRenderingContext2DAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCanvasRenderingContext2DAttributesFunctions, countof(JSCanvasRenderingContext2DAttributesFunctions));
+    init_JSCanvasRenderingContext2DPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCanvasRenderingContext2DPrototypeFunctions, countof(JSCanvasRenderingContext2DPrototypeFunctions));
 }
 
-static JSClassDef JSCanvasRenderingContext2DClassDefine = 
+static JSClassDef JSCanvasRenderingContext2DClassDefine;
+static bool JSCanvasRenderingContext2DClassDefine_initialized = false;
+
+static void init_JSCanvasRenderingContext2DClassDefine()
 {
-    "CanvasRenderingContext2D",
-    .finalizer = JSCanvasRenderingContext2D::finalizer,
-    .gc_mark = JSCanvasRenderingContext2D::mark,
-};
+    if (JSCanvasRenderingContext2DClassDefine_initialized) return;
+    JSCanvasRenderingContext2DClassDefine_initialized = true;
+    memset(&JSCanvasRenderingContext2DClassDefine, 0, sizeof(JSCanvasRenderingContext2DClassDefine));
+    JSCanvasRenderingContext2DClassDefine.class_name = "CanvasRenderingContext2D";
+    JSCanvasRenderingContext2DClassDefine.finalizer = JSCanvasRenderingContext2D::finalizer;
+    JSCanvasRenderingContext2DClassDefine.gc_mark = JSCanvasRenderingContext2D::mark;
+}
 
 JSClassID JSCanvasRenderingContext2D::js_class_id = 0;
 
 void JSCanvasRenderingContext2D::init(JSContext* ctx)
 {
     if (JSCanvasRenderingContext2D::js_class_id == 0) {
+        init_JSCanvasRenderingContext2DClassDefine();
         JS_NewClassID(&JSCanvasRenderingContext2D::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSCanvasRenderingContext2D::js_class_id, &JSCanvasRenderingContext2DClassDefine);
         JS_SetClassProto(ctx, JSCanvasRenderingContext2D::js_class_id, JSCanvasRenderingContext2DPrototype::self(ctx));

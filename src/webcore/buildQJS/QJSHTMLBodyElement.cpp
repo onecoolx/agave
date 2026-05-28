@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLBodyElement.h"
 
 #include "HTMLBodyElement.h"
@@ -39,20 +41,81 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLBodyElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLBodyElementAttributesFunctions[11];
+static bool JSHTMLBodyElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLBodyElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("aLink", JSHTMLBodyElement::getValueProperty, JSHTMLBodyElement::putValueProperty, JSHTMLBodyElement::ALinkAttrNum),
-    JS_CGETSET_MAGIC_DEF("text", JSHTMLBodyElement::getValueProperty, JSHTMLBodyElement::putValueProperty, JSHTMLBodyElement::TextAttrNum),
-    JS_CGETSET_MAGIC_DEF("link", JSHTMLBodyElement::getValueProperty, JSHTMLBodyElement::putValueProperty, JSHTMLBodyElement::LinkAttrNum),
-    JS_CGETSET_MAGIC_DEF("background", JSHTMLBodyElement::getValueProperty, JSHTMLBodyElement::putValueProperty, JSHTMLBodyElement::BackgroundAttrNum),
-    JS_CGETSET_MAGIC_DEF("vLink", JSHTMLBodyElement::getValueProperty, JSHTMLBodyElement::putValueProperty, JSHTMLBodyElement::VLinkAttrNum),
-    JS_CGETSET_MAGIC_DEF("scrollLeft", JSHTMLBodyElement::getValueProperty, JSHTMLBodyElement::putValueProperty, JSHTMLBodyElement::ScrollLeftAttrNum),
-    JS_CGETSET_MAGIC_DEF("bgColor", JSHTMLBodyElement::getValueProperty, JSHTMLBodyElement::putValueProperty, JSHTMLBodyElement::BgColorAttrNum),
-    JS_CGETSET_MAGIC_DEF("scrollTop", JSHTMLBodyElement::getValueProperty, JSHTMLBodyElement::putValueProperty, JSHTMLBodyElement::ScrollTopAttrNum),
-    JS_CGETSET_MAGIC_DEF("scrollWidth", JSHTMLBodyElement::getValueProperty, NULL, JSHTMLBodyElement::ScrollWidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("scrollHeight", JSHTMLBodyElement::getValueProperty, NULL, JSHTMLBodyElement::ScrollHeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLBodyElement::getValueProperty, NULL, JSHTMLBodyElement::ConstructorAttrNum)
-};
+    if (JSHTMLBodyElementAttributesFunctions_initialized) return;
+    JSHTMLBodyElementAttributesFunctions_initialized = true;
+    memset(JSHTMLBodyElementAttributesFunctions, 0, sizeof(JSHTMLBodyElementAttributesFunctions));
+    JSHTMLBodyElementAttributesFunctions[0].name = "aLink";
+    JSHTMLBodyElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBodyElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBodyElementAttributesFunctions[0].magic = JSHTMLBodyElement::ALinkAttrNum;
+    JSHTMLBodyElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLBodyElement::getValueProperty;
+    JSHTMLBodyElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLBodyElement::putValueProperty;
+    JSHTMLBodyElementAttributesFunctions[1].name = "text";
+    JSHTMLBodyElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBodyElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBodyElementAttributesFunctions[1].magic = JSHTMLBodyElement::TextAttrNum;
+    JSHTMLBodyElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLBodyElement::getValueProperty;
+    JSHTMLBodyElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLBodyElement::putValueProperty;
+    JSHTMLBodyElementAttributesFunctions[2].name = "link";
+    JSHTMLBodyElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBodyElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBodyElementAttributesFunctions[2].magic = JSHTMLBodyElement::LinkAttrNum;
+    JSHTMLBodyElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLBodyElement::getValueProperty;
+    JSHTMLBodyElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLBodyElement::putValueProperty;
+    JSHTMLBodyElementAttributesFunctions[3].name = "background";
+    JSHTMLBodyElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBodyElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBodyElementAttributesFunctions[3].magic = JSHTMLBodyElement::BackgroundAttrNum;
+    JSHTMLBodyElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLBodyElement::getValueProperty;
+    JSHTMLBodyElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLBodyElement::putValueProperty;
+    JSHTMLBodyElementAttributesFunctions[4].name = "vLink";
+    JSHTMLBodyElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBodyElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBodyElementAttributesFunctions[4].magic = JSHTMLBodyElement::VLinkAttrNum;
+    JSHTMLBodyElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLBodyElement::getValueProperty;
+    JSHTMLBodyElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLBodyElement::putValueProperty;
+    JSHTMLBodyElementAttributesFunctions[5].name = "scrollLeft";
+    JSHTMLBodyElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBodyElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBodyElementAttributesFunctions[5].magic = JSHTMLBodyElement::ScrollLeftAttrNum;
+    JSHTMLBodyElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLBodyElement::getValueProperty;
+    JSHTMLBodyElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLBodyElement::putValueProperty;
+    JSHTMLBodyElementAttributesFunctions[6].name = "bgColor";
+    JSHTMLBodyElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBodyElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBodyElementAttributesFunctions[6].magic = JSHTMLBodyElement::BgColorAttrNum;
+    JSHTMLBodyElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLBodyElement::getValueProperty;
+    JSHTMLBodyElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLBodyElement::putValueProperty;
+    JSHTMLBodyElementAttributesFunctions[7].name = "scrollTop";
+    JSHTMLBodyElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBodyElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBodyElementAttributesFunctions[7].magic = JSHTMLBodyElement::ScrollTopAttrNum;
+    JSHTMLBodyElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLBodyElement::getValueProperty;
+    JSHTMLBodyElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLBodyElement::putValueProperty;
+    JSHTMLBodyElementAttributesFunctions[8].name = "scrollWidth";
+    JSHTMLBodyElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBodyElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBodyElementAttributesFunctions[8].magic = JSHTMLBodyElement::ScrollWidthAttrNum;
+    JSHTMLBodyElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLBodyElement::getValueProperty;
+    JSHTMLBodyElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSHTMLBodyElementAttributesFunctions[9].name = "scrollHeight";
+    JSHTMLBodyElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBodyElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBodyElementAttributesFunctions[9].magic = JSHTMLBodyElement::ScrollHeightAttrNum;
+    JSHTMLBodyElementAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLBodyElement::getValueProperty;
+    JSHTMLBodyElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSHTMLBodyElementAttributesFunctions[10].name = "constructor";
+    JSHTMLBodyElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBodyElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBodyElementAttributesFunctions[10].magic = JSHTMLBodyElement::ConstructorAttrNum;
+    JSHTMLBodyElementAttributesFunctions[10].u.getset.get.getter_magic = JSHTMLBodyElement::getValueProperty;
+    JSHTMLBodyElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLBodyElementConstructor {
 public:
@@ -101,15 +164,22 @@ JSValue JSHTMLBodyElementPrototype::self(JSContext * ctx)
 
 void JSHTMLBodyElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLBodyElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLBodyElementAttributesFunctions, countof(JSHTMLBodyElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLBodyElementClassDefine = 
+static JSClassDef JSHTMLBodyElementClassDefine;
+static bool JSHTMLBodyElementClassDefine_initialized = false;
+
+static void init_JSHTMLBodyElementClassDefine()
 {
-    "HTMLBodyElement",
-    .finalizer = JSHTMLBodyElement::finalizer,
-    .gc_mark = JSHTMLBodyElement::mark,
-};
+    if (JSHTMLBodyElementClassDefine_initialized) return;
+    JSHTMLBodyElementClassDefine_initialized = true;
+    memset(&JSHTMLBodyElementClassDefine, 0, sizeof(JSHTMLBodyElementClassDefine));
+    JSHTMLBodyElementClassDefine.class_name = "HTMLBodyElement";
+    JSHTMLBodyElementClassDefine.finalizer = JSHTMLBodyElement::finalizer;
+    JSHTMLBodyElementClassDefine.gc_mark = JSHTMLBodyElement::mark;
+}
 
 JSClassID JSHTMLBodyElement::js_class_id = 0;
 

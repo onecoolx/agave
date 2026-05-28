@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -55,20 +57,81 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFEColorMatrixElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFEColorMatrixElementAttributesFunctions[11];
+static bool JSSVGFEColorMatrixElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFEColorMatrixElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("values", JSSVGFEColorMatrixElement::getValueProperty, NULL, JSSVGFEColorMatrixElement::ValuesAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGFEColorMatrixElement::getValueProperty, NULL, JSSVGFEColorMatrixElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGFEColorMatrixElement::getValueProperty, NULL, JSSVGFEColorMatrixElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSSVGFEColorMatrixElement::getValueProperty, NULL, JSSVGFEColorMatrixElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("in1", JSSVGFEColorMatrixElement::getValueProperty, NULL, JSSVGFEColorMatrixElement::In1AttrNum),
-    JS_CGETSET_MAGIC_DEF("result", JSSVGFEColorMatrixElement::getValueProperty, NULL, JSSVGFEColorMatrixElement::ResultAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFEColorMatrixElement::getValueProperty, NULL, JSSVGFEColorMatrixElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFEColorMatrixElement::getValueProperty, NULL, JSSVGFEColorMatrixElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGFEColorMatrixElement::getValueProperty, NULL, JSSVGFEColorMatrixElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGFEColorMatrixElement::getValueProperty, NULL, JSSVGFEColorMatrixElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSSVGFEColorMatrixElement::getValueProperty, NULL, JSSVGFEColorMatrixElement::ConstructorAttrNum)
-};
+    if (JSSVGFEColorMatrixElementAttributesFunctions_initialized) return;
+    JSSVGFEColorMatrixElementAttributesFunctions_initialized = true;
+    memset(JSSVGFEColorMatrixElementAttributesFunctions, 0, sizeof(JSSVGFEColorMatrixElementAttributesFunctions));
+    JSSVGFEColorMatrixElementAttributesFunctions[0].name = "values";
+    JSSVGFEColorMatrixElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementAttributesFunctions[0].magic = JSSVGFEColorMatrixElement::ValuesAttrNum;
+    JSSVGFEColorMatrixElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFEColorMatrixElement::getValueProperty;
+    JSSVGFEColorMatrixElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementAttributesFunctions[1].name = "height";
+    JSSVGFEColorMatrixElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementAttributesFunctions[1].magic = JSSVGFEColorMatrixElement::HeightAttrNum;
+    JSSVGFEColorMatrixElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFEColorMatrixElement::getValueProperty;
+    JSSVGFEColorMatrixElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementAttributesFunctions[2].name = "className";
+    JSSVGFEColorMatrixElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementAttributesFunctions[2].magic = JSSVGFEColorMatrixElement::ClassNameAttrNum;
+    JSSVGFEColorMatrixElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFEColorMatrixElement::getValueProperty;
+    JSSVGFEColorMatrixElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementAttributesFunctions[3].name = "type";
+    JSSVGFEColorMatrixElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementAttributesFunctions[3].magic = JSSVGFEColorMatrixElement::TypeAttrNum;
+    JSSVGFEColorMatrixElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGFEColorMatrixElement::getValueProperty;
+    JSSVGFEColorMatrixElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementAttributesFunctions[4].name = "in1";
+    JSSVGFEColorMatrixElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementAttributesFunctions[4].magic = JSSVGFEColorMatrixElement::In1AttrNum;
+    JSSVGFEColorMatrixElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGFEColorMatrixElement::getValueProperty;
+    JSSVGFEColorMatrixElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementAttributesFunctions[5].name = "result";
+    JSSVGFEColorMatrixElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementAttributesFunctions[5].magic = JSSVGFEColorMatrixElement::ResultAttrNum;
+    JSSVGFEColorMatrixElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGFEColorMatrixElement::getValueProperty;
+    JSSVGFEColorMatrixElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementAttributesFunctions[6].name = "x";
+    JSSVGFEColorMatrixElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementAttributesFunctions[6].magic = JSSVGFEColorMatrixElement::XAttrNum;
+    JSSVGFEColorMatrixElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGFEColorMatrixElement::getValueProperty;
+    JSSVGFEColorMatrixElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementAttributesFunctions[7].name = "y";
+    JSSVGFEColorMatrixElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementAttributesFunctions[7].magic = JSSVGFEColorMatrixElement::YAttrNum;
+    JSSVGFEColorMatrixElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGFEColorMatrixElement::getValueProperty;
+    JSSVGFEColorMatrixElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementAttributesFunctions[8].name = "width";
+    JSSVGFEColorMatrixElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementAttributesFunctions[8].magic = JSSVGFEColorMatrixElement::WidthAttrNum;
+    JSSVGFEColorMatrixElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGFEColorMatrixElement::getValueProperty;
+    JSSVGFEColorMatrixElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementAttributesFunctions[9].name = "style";
+    JSSVGFEColorMatrixElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementAttributesFunctions[9].magic = JSSVGFEColorMatrixElement::StyleAttrNum;
+    JSSVGFEColorMatrixElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGFEColorMatrixElement::getValueProperty;
+    JSSVGFEColorMatrixElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementAttributesFunctions[10].name = "constructor";
+    JSSVGFEColorMatrixElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementAttributesFunctions[10].magic = JSSVGFEColorMatrixElement::ConstructorAttrNum;
+    JSSVGFEColorMatrixElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGFEColorMatrixElement::getValueProperty;
+    JSSVGFEColorMatrixElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+}
 
 class JSSVGFEColorMatrixElementConstructor {
 public:
@@ -85,14 +148,45 @@ JSValue JSSVGFEColorMatrixElementConstructor::getValueProperty(JSContext * ctx, 
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSSVGFEColorMatrixElementConstructorFunctions[] =
+static JSCFunctionListEntry JSSVGFEColorMatrixElementConstructorFunctions[5];
+static bool JSSVGFEColorMatrixElementConstructorFunctions_initialized = false;
+
+static void init_JSSVGFEColorMatrixElementConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_FECOLORMATRIX_TYPE_UNKNOWN", JSSVGFEColorMatrixElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOLORMATRIX_TYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOLORMATRIX_TYPE_SATURATE", JSSVGFEColorMatrixElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOLORMATRIX_TYPE_SATURATE),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOLORMATRIX_TYPE_MATRIX", JSSVGFEColorMatrixElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOLORMATRIX_TYPE_MATRIX),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOLORMATRIX_TYPE_HUEROTATE", JSSVGFEColorMatrixElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOLORMATRIX_TYPE_HUEROTATE),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOLORMATRIX_TYPE_LUMINANCETOALPHA", JSSVGFEColorMatrixElementConstructor::getValueProperty, NULL, WebCore::SVG_FECOLORMATRIX_TYPE_LUMINANCETOALPHA)
-};
+    if (JSSVGFEColorMatrixElementConstructorFunctions_initialized) return;
+    JSSVGFEColorMatrixElementConstructorFunctions_initialized = true;
+    memset(JSSVGFEColorMatrixElementConstructorFunctions, 0, sizeof(JSSVGFEColorMatrixElementConstructorFunctions));
+    JSSVGFEColorMatrixElementConstructorFunctions[0].name = "SVG_FECOLORMATRIX_TYPE_UNKNOWN";
+    JSSVGFEColorMatrixElementConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementConstructorFunctions[0].magic = WebCore::SVG_FECOLORMATRIX_TYPE_UNKNOWN;
+    JSSVGFEColorMatrixElementConstructorFunctions[0].u.getset.get.getter_magic = JSSVGFEColorMatrixElementConstructor::getValueProperty;
+    JSSVGFEColorMatrixElementConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementConstructorFunctions[1].name = "SVG_FECOLORMATRIX_TYPE_SATURATE";
+    JSSVGFEColorMatrixElementConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementConstructorFunctions[1].magic = WebCore::SVG_FECOLORMATRIX_TYPE_SATURATE;
+    JSSVGFEColorMatrixElementConstructorFunctions[1].u.getset.get.getter_magic = JSSVGFEColorMatrixElementConstructor::getValueProperty;
+    JSSVGFEColorMatrixElementConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementConstructorFunctions[2].name = "SVG_FECOLORMATRIX_TYPE_MATRIX";
+    JSSVGFEColorMatrixElementConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementConstructorFunctions[2].magic = WebCore::SVG_FECOLORMATRIX_TYPE_MATRIX;
+    JSSVGFEColorMatrixElementConstructorFunctions[2].u.getset.get.getter_magic = JSSVGFEColorMatrixElementConstructor::getValueProperty;
+    JSSVGFEColorMatrixElementConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementConstructorFunctions[3].name = "SVG_FECOLORMATRIX_TYPE_HUEROTATE";
+    JSSVGFEColorMatrixElementConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementConstructorFunctions[3].magic = WebCore::SVG_FECOLORMATRIX_TYPE_HUEROTATE;
+    JSSVGFEColorMatrixElementConstructorFunctions[3].u.getset.get.getter_magic = JSSVGFEColorMatrixElementConstructor::getValueProperty;
+    JSSVGFEColorMatrixElementConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementConstructorFunctions[4].name = "SVG_FECOLORMATRIX_TYPE_LUMINANCETOALPHA";
+    JSSVGFEColorMatrixElementConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementConstructorFunctions[4].magic = WebCore::SVG_FECOLORMATRIX_TYPE_LUMINANCETOALPHA;
+    JSSVGFEColorMatrixElementConstructorFunctions[4].u.getset.get.getter_magic = JSSVGFEColorMatrixElementConstructor::getValueProperty;
+    JSSVGFEColorMatrixElementConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGFEColorMatrixElementConstructor::self(JSContext * ctx)
 {
@@ -110,26 +204,70 @@ JSValue JSSVGFEColorMatrixElementConstructor::self(JSContext * ctx)
 
 void JSSVGFEColorMatrixElementConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFEColorMatrixElementConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEColorMatrixElementConstructorFunctions, countof(JSSVGFEColorMatrixElementConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFEColorMatrixElementPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSSVGFEColorMatrixElementPrototypeConstantsFunctions[5];
+static bool JSSVGFEColorMatrixElementPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSSVGFEColorMatrixElementPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_FECOLORMATRIX_TYPE_UNKNOWN", JSSVGFEColorMatrixElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOLORMATRIX_TYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOLORMATRIX_TYPE_SATURATE", JSSVGFEColorMatrixElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOLORMATRIX_TYPE_SATURATE),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOLORMATRIX_TYPE_MATRIX", JSSVGFEColorMatrixElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOLORMATRIX_TYPE_MATRIX),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOLORMATRIX_TYPE_HUEROTATE", JSSVGFEColorMatrixElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOLORMATRIX_TYPE_HUEROTATE),
-    JS_CGETSET_MAGIC_DEF("SVG_FECOLORMATRIX_TYPE_LUMINANCETOALPHA", JSSVGFEColorMatrixElementPrototype::getValueProperty, NULL, WebCore::SVG_FECOLORMATRIX_TYPE_LUMINANCETOALPHA)
-};
+    if (JSSVGFEColorMatrixElementPrototypeConstantsFunctions_initialized) return;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions_initialized = true;
+    memset(JSSVGFEColorMatrixElementPrototypeConstantsFunctions, 0, sizeof(JSSVGFEColorMatrixElementPrototypeConstantsFunctions));
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[0].name = "SVG_FECOLORMATRIX_TYPE_UNKNOWN";
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[0].magic = WebCore::SVG_FECOLORMATRIX_TYPE_UNKNOWN;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGFEColorMatrixElementPrototype::getValueProperty;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[1].name = "SVG_FECOLORMATRIX_TYPE_SATURATE";
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[1].magic = WebCore::SVG_FECOLORMATRIX_TYPE_SATURATE;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGFEColorMatrixElementPrototype::getValueProperty;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[2].name = "SVG_FECOLORMATRIX_TYPE_MATRIX";
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[2].magic = WebCore::SVG_FECOLORMATRIX_TYPE_MATRIX;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGFEColorMatrixElementPrototype::getValueProperty;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[3].name = "SVG_FECOLORMATRIX_TYPE_HUEROTATE";
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[3].magic = WebCore::SVG_FECOLORMATRIX_TYPE_HUEROTATE;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGFEColorMatrixElementPrototype::getValueProperty;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[4].name = "SVG_FECOLORMATRIX_TYPE_LUMINANCETOALPHA";
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[4].magic = WebCore::SVG_FECOLORMATRIX_TYPE_LUMINANCETOALPHA;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGFEColorMatrixElementPrototype::getValueProperty;
+    JSSVGFEColorMatrixElementPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGFEColorMatrixElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGFEColorMatrixElementPrototypeFunctions[1];
+static bool JSSVGFEColorMatrixElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGFEColorMatrixElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGFEColorMatrixElementPrototypeFunction::callAsFunction, JSSVGFEColorMatrixElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGFEColorMatrixElementPrototypeFunctions_initialized) return;
+    JSSVGFEColorMatrixElementPrototypeFunctions_initialized = true;
+    memset(JSSVGFEColorMatrixElementPrototypeFunctions, 0, sizeof(JSSVGFEColorMatrixElementPrototypeFunctions));
+    JSSVGFEColorMatrixElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGFEColorMatrixElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFEColorMatrixElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGFEColorMatrixElementPrototypeFunctions[0].magic = JSSVGFEColorMatrixElement::GetPresentationAttributeFuncNum;
+    JSSVGFEColorMatrixElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGFEColorMatrixElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFEColorMatrixElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGFEColorMatrixElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGFEColorMatrixElementPrototype::self(JSContext * ctx)
 {
@@ -147,8 +285,11 @@ JSValue JSSVGFEColorMatrixElementPrototype::self(JSContext * ctx)
 
 void JSSVGFEColorMatrixElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFEColorMatrixElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEColorMatrixElementAttributesFunctions, countof(JSSVGFEColorMatrixElementAttributesFunctions));
+    init_JSSVGFEColorMatrixElementPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEColorMatrixElementPrototypeConstantsFunctions, countof(JSSVGFEColorMatrixElementPrototypeConstantsFunctions));
+    init_JSSVGFEColorMatrixElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEColorMatrixElementPrototypeFunctions, countof(JSSVGFEColorMatrixElementPrototypeFunctions));
 }
 
@@ -158,18 +299,25 @@ JSValue JSSVGFEColorMatrixElementPrototype::getValueProperty(JSContext * ctx, JS
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSSVGFEColorMatrixElementClassDefine = 
+static JSClassDef JSSVGFEColorMatrixElementClassDefine;
+static bool JSSVGFEColorMatrixElementClassDefine_initialized = false;
+
+static void init_JSSVGFEColorMatrixElementClassDefine()
 {
-    "SVGFEColorMatrixElement",
-    .finalizer = JSSVGFEColorMatrixElement::finalizer,
-    .gc_mark = JSSVGFEColorMatrixElement::mark,
-};
+    if (JSSVGFEColorMatrixElementClassDefine_initialized) return;
+    JSSVGFEColorMatrixElementClassDefine_initialized = true;
+    memset(&JSSVGFEColorMatrixElementClassDefine, 0, sizeof(JSSVGFEColorMatrixElementClassDefine));
+    JSSVGFEColorMatrixElementClassDefine.class_name = "SVGFEColorMatrixElement";
+    JSSVGFEColorMatrixElementClassDefine.finalizer = JSSVGFEColorMatrixElement::finalizer;
+    JSSVGFEColorMatrixElementClassDefine.gc_mark = JSSVGFEColorMatrixElement::mark;
+}
 
 JSClassID JSSVGFEColorMatrixElement::js_class_id = 0;
 
 void JSSVGFEColorMatrixElement::init(JSContext* ctx)
 {
     if (JSSVGFEColorMatrixElement::js_class_id == 0) {
+        init_JSSVGFEColorMatrixElementClassDefine();
         JS_NewClassID(&JSSVGFEColorMatrixElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFEColorMatrixElement::js_class_id, &JSSVGFEColorMatrixElementClassDefine);
         JS_SetConstructor(ctx, JSSVGFEColorMatrixElementConstructor::self(ctx), JSSVGFEColorMatrixElementPrototype::self(ctx));

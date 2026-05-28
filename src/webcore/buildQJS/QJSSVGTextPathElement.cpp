@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -49,14 +51,45 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGTextPathElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGTextPathElementAttributesFunctions[5];
+static bool JSSVGTextPathElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGTextPathElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("href", JSSVGTextPathElement::getValueProperty, NULL, JSSVGTextPathElement::HrefAttrNum),
-    JS_CGETSET_MAGIC_DEF("spacing", JSSVGTextPathElement::getValueProperty, NULL, JSSVGTextPathElement::SpacingAttrNum),
-    JS_CGETSET_MAGIC_DEF("startOffset", JSSVGTextPathElement::getValueProperty, NULL, JSSVGTextPathElement::StartOffsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("method", JSSVGTextPathElement::getValueProperty, NULL, JSSVGTextPathElement::MethodAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSSVGTextPathElement::getValueProperty, NULL, JSSVGTextPathElement::ConstructorAttrNum)
-};
+    if (JSSVGTextPathElementAttributesFunctions_initialized) return;
+    JSSVGTextPathElementAttributesFunctions_initialized = true;
+    memset(JSSVGTextPathElementAttributesFunctions, 0, sizeof(JSSVGTextPathElementAttributesFunctions));
+    JSSVGTextPathElementAttributesFunctions[0].name = "href";
+    JSSVGTextPathElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementAttributesFunctions[0].magic = JSSVGTextPathElement::HrefAttrNum;
+    JSSVGTextPathElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGTextPathElement::getValueProperty;
+    JSSVGTextPathElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGTextPathElementAttributesFunctions[1].name = "spacing";
+    JSSVGTextPathElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementAttributesFunctions[1].magic = JSSVGTextPathElement::SpacingAttrNum;
+    JSSVGTextPathElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGTextPathElement::getValueProperty;
+    JSSVGTextPathElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGTextPathElementAttributesFunctions[2].name = "startOffset";
+    JSSVGTextPathElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementAttributesFunctions[2].magic = JSSVGTextPathElement::StartOffsetAttrNum;
+    JSSVGTextPathElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGTextPathElement::getValueProperty;
+    JSSVGTextPathElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGTextPathElementAttributesFunctions[3].name = "method";
+    JSSVGTextPathElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementAttributesFunctions[3].magic = JSSVGTextPathElement::MethodAttrNum;
+    JSSVGTextPathElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGTextPathElement::getValueProperty;
+    JSSVGTextPathElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGTextPathElementAttributesFunctions[4].name = "constructor";
+    JSSVGTextPathElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementAttributesFunctions[4].magic = JSSVGTextPathElement::ConstructorAttrNum;
+    JSSVGTextPathElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGTextPathElement::getValueProperty;
+    JSSVGTextPathElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+}
 
 class JSSVGTextPathElementConstructor {
 public:
@@ -73,15 +106,51 @@ JSValue JSSVGTextPathElementConstructor::getValueProperty(JSContext * ctx, JSVal
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSSVGTextPathElementConstructorFunctions[] =
+static JSCFunctionListEntry JSSVGTextPathElementConstructorFunctions[6];
+static bool JSSVGTextPathElementConstructorFunctions_initialized = false;
+
+static void init_JSSVGTextPathElementConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("TEXTPATH_METHODTYPE_UNKNOWN", JSSVGTextPathElementConstructor::getValueProperty, NULL, SVGTextPathElement::TEXTPATH_METHODTYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("TEXTPATH_SPACINGTYPE_UNKNOWN", JSSVGTextPathElementConstructor::getValueProperty, NULL, SVGTextPathElement::TEXTPATH_SPACINGTYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("TEXTPATH_METHODTYPE_ALIGN", JSSVGTextPathElementConstructor::getValueProperty, NULL, SVGTextPathElement::TEXTPATH_METHODTYPE_ALIGN),
-    JS_CGETSET_MAGIC_DEF("TEXTPATH_METHODTYPE_STRETCH", JSSVGTextPathElementConstructor::getValueProperty, NULL, SVGTextPathElement::TEXTPATH_METHODTYPE_STRETCH),
-    JS_CGETSET_MAGIC_DEF("TEXTPATH_SPACINGTYPE_EXACT", JSSVGTextPathElementConstructor::getValueProperty, NULL, SVGTextPathElement::TEXTPATH_SPACINGTYPE_EXACT),
-    JS_CGETSET_MAGIC_DEF("TEXTPATH_SPACINGTYPE_AUTO", JSSVGTextPathElementConstructor::getValueProperty, NULL, SVGTextPathElement::TEXTPATH_SPACINGTYPE_AUTO)
-};
+    if (JSSVGTextPathElementConstructorFunctions_initialized) return;
+    JSSVGTextPathElementConstructorFunctions_initialized = true;
+    memset(JSSVGTextPathElementConstructorFunctions, 0, sizeof(JSSVGTextPathElementConstructorFunctions));
+    JSSVGTextPathElementConstructorFunctions[0].name = "TEXTPATH_METHODTYPE_UNKNOWN";
+    JSSVGTextPathElementConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementConstructorFunctions[0].magic = SVGTextPathElement::TEXTPATH_METHODTYPE_UNKNOWN;
+    JSSVGTextPathElementConstructorFunctions[0].u.getset.get.getter_magic = JSSVGTextPathElementConstructor::getValueProperty;
+    JSSVGTextPathElementConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGTextPathElementConstructorFunctions[1].name = "TEXTPATH_SPACINGTYPE_UNKNOWN";
+    JSSVGTextPathElementConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementConstructorFunctions[1].magic = SVGTextPathElement::TEXTPATH_SPACINGTYPE_UNKNOWN;
+    JSSVGTextPathElementConstructorFunctions[1].u.getset.get.getter_magic = JSSVGTextPathElementConstructor::getValueProperty;
+    JSSVGTextPathElementConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGTextPathElementConstructorFunctions[2].name = "TEXTPATH_METHODTYPE_ALIGN";
+    JSSVGTextPathElementConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementConstructorFunctions[2].magic = SVGTextPathElement::TEXTPATH_METHODTYPE_ALIGN;
+    JSSVGTextPathElementConstructorFunctions[2].u.getset.get.getter_magic = JSSVGTextPathElementConstructor::getValueProperty;
+    JSSVGTextPathElementConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGTextPathElementConstructorFunctions[3].name = "TEXTPATH_METHODTYPE_STRETCH";
+    JSSVGTextPathElementConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementConstructorFunctions[3].magic = SVGTextPathElement::TEXTPATH_METHODTYPE_STRETCH;
+    JSSVGTextPathElementConstructorFunctions[3].u.getset.get.getter_magic = JSSVGTextPathElementConstructor::getValueProperty;
+    JSSVGTextPathElementConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGTextPathElementConstructorFunctions[4].name = "TEXTPATH_SPACINGTYPE_EXACT";
+    JSSVGTextPathElementConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementConstructorFunctions[4].magic = SVGTextPathElement::TEXTPATH_SPACINGTYPE_EXACT;
+    JSSVGTextPathElementConstructorFunctions[4].u.getset.get.getter_magic = JSSVGTextPathElementConstructor::getValueProperty;
+    JSSVGTextPathElementConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGTextPathElementConstructorFunctions[5].name = "TEXTPATH_SPACINGTYPE_AUTO";
+    JSSVGTextPathElementConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementConstructorFunctions[5].magic = SVGTextPathElement::TEXTPATH_SPACINGTYPE_AUTO;
+    JSSVGTextPathElementConstructorFunctions[5].u.getset.get.getter_magic = JSSVGTextPathElementConstructor::getValueProperty;
+    JSSVGTextPathElementConstructorFunctions[5].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGTextPathElementConstructor::self(JSContext * ctx)
 {
@@ -99,20 +168,57 @@ JSValue JSSVGTextPathElementConstructor::self(JSContext * ctx)
 
 void JSSVGTextPathElementConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGTextPathElementConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTextPathElementConstructorFunctions, countof(JSSVGTextPathElementConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGTextPathElementPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSSVGTextPathElementPrototypeConstantsFunctions[6];
+static bool JSSVGTextPathElementPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSSVGTextPathElementPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("TEXTPATH_METHODTYPE_UNKNOWN", JSSVGTextPathElementPrototype::getValueProperty, NULL, SVGTextPathElement::TEXTPATH_METHODTYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("TEXTPATH_SPACINGTYPE_UNKNOWN", JSSVGTextPathElementPrototype::getValueProperty, NULL, SVGTextPathElement::TEXTPATH_SPACINGTYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("TEXTPATH_METHODTYPE_ALIGN", JSSVGTextPathElementPrototype::getValueProperty, NULL, SVGTextPathElement::TEXTPATH_METHODTYPE_ALIGN),
-    JS_CGETSET_MAGIC_DEF("TEXTPATH_METHODTYPE_STRETCH", JSSVGTextPathElementPrototype::getValueProperty, NULL, SVGTextPathElement::TEXTPATH_METHODTYPE_STRETCH),
-    JS_CGETSET_MAGIC_DEF("TEXTPATH_SPACINGTYPE_EXACT", JSSVGTextPathElementPrototype::getValueProperty, NULL, SVGTextPathElement::TEXTPATH_SPACINGTYPE_EXACT),
-    JS_CGETSET_MAGIC_DEF("TEXTPATH_SPACINGTYPE_AUTO", JSSVGTextPathElementPrototype::getValueProperty, NULL, SVGTextPathElement::TEXTPATH_SPACINGTYPE_AUTO)
-};
+    if (JSSVGTextPathElementPrototypeConstantsFunctions_initialized) return;
+    JSSVGTextPathElementPrototypeConstantsFunctions_initialized = true;
+    memset(JSSVGTextPathElementPrototypeConstantsFunctions, 0, sizeof(JSSVGTextPathElementPrototypeConstantsFunctions));
+    JSSVGTextPathElementPrototypeConstantsFunctions[0].name = "TEXTPATH_METHODTYPE_UNKNOWN";
+    JSSVGTextPathElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementPrototypeConstantsFunctions[0].magic = SVGTextPathElement::TEXTPATH_METHODTYPE_UNKNOWN;
+    JSSVGTextPathElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGTextPathElementPrototype::getValueProperty;
+    JSSVGTextPathElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGTextPathElementPrototypeConstantsFunctions[1].name = "TEXTPATH_SPACINGTYPE_UNKNOWN";
+    JSSVGTextPathElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementPrototypeConstantsFunctions[1].magic = SVGTextPathElement::TEXTPATH_SPACINGTYPE_UNKNOWN;
+    JSSVGTextPathElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGTextPathElementPrototype::getValueProperty;
+    JSSVGTextPathElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGTextPathElementPrototypeConstantsFunctions[2].name = "TEXTPATH_METHODTYPE_ALIGN";
+    JSSVGTextPathElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementPrototypeConstantsFunctions[2].magic = SVGTextPathElement::TEXTPATH_METHODTYPE_ALIGN;
+    JSSVGTextPathElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGTextPathElementPrototype::getValueProperty;
+    JSSVGTextPathElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGTextPathElementPrototypeConstantsFunctions[3].name = "TEXTPATH_METHODTYPE_STRETCH";
+    JSSVGTextPathElementPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementPrototypeConstantsFunctions[3].magic = SVGTextPathElement::TEXTPATH_METHODTYPE_STRETCH;
+    JSSVGTextPathElementPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGTextPathElementPrototype::getValueProperty;
+    JSSVGTextPathElementPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGTextPathElementPrototypeConstantsFunctions[4].name = "TEXTPATH_SPACINGTYPE_EXACT";
+    JSSVGTextPathElementPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementPrototypeConstantsFunctions[4].magic = SVGTextPathElement::TEXTPATH_SPACINGTYPE_EXACT;
+    JSSVGTextPathElementPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGTextPathElementPrototype::getValueProperty;
+    JSSVGTextPathElementPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGTextPathElementPrototypeConstantsFunctions[5].name = "TEXTPATH_SPACINGTYPE_AUTO";
+    JSSVGTextPathElementPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextPathElementPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextPathElementPrototypeConstantsFunctions[5].magic = SVGTextPathElement::TEXTPATH_SPACINGTYPE_AUTO;
+    JSSVGTextPathElementPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSSVGTextPathElementPrototype::getValueProperty;
+    JSSVGTextPathElementPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGTextPathElementPrototype::self(JSContext * ctx)
 {
@@ -130,7 +236,9 @@ JSValue JSSVGTextPathElementPrototype::self(JSContext * ctx)
 
 void JSSVGTextPathElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGTextPathElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTextPathElementAttributesFunctions, countof(JSSVGTextPathElementAttributesFunctions));
+    init_JSSVGTextPathElementPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTextPathElementPrototypeConstantsFunctions, countof(JSSVGTextPathElementPrototypeConstantsFunctions));
 }
 
@@ -140,18 +248,25 @@ JSValue JSSVGTextPathElementPrototype::getValueProperty(JSContext * ctx, JSValue
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSSVGTextPathElementClassDefine = 
+static JSClassDef JSSVGTextPathElementClassDefine;
+static bool JSSVGTextPathElementClassDefine_initialized = false;
+
+static void init_JSSVGTextPathElementClassDefine()
 {
-    "SVGTextPathElement",
-    .finalizer = JSSVGTextPathElement::finalizer,
-    .gc_mark = JSSVGTextPathElement::mark,
-};
+    if (JSSVGTextPathElementClassDefine_initialized) return;
+    JSSVGTextPathElementClassDefine_initialized = true;
+    memset(&JSSVGTextPathElementClassDefine, 0, sizeof(JSSVGTextPathElementClassDefine));
+    JSSVGTextPathElementClassDefine.class_name = "SVGTextPathElement";
+    JSSVGTextPathElementClassDefine.finalizer = JSSVGTextPathElement::finalizer;
+    JSSVGTextPathElementClassDefine.gc_mark = JSSVGTextPathElement::mark;
+}
 
 JSClassID JSSVGTextPathElement::js_class_id = 0;
 
 void JSSVGTextPathElement::init(JSContext* ctx)
 {
     if (JSSVGTextPathElement::js_class_id == 0) {
+        init_JSSVGTextPathElementClassDefine();
         JS_NewClassID(&JSSVGTextPathElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGTextPathElement::js_class_id, &JSSVGTextPathElementClassDefine);
         JS_SetConstructor(ctx, JSSVGTextPathElementConstructor::self(ctx), JSSVGTextPathElementPrototype::self(ctx));

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCanvasGradient.h"
 
 #include "CanvasGradient.h"
@@ -39,10 +41,22 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSCanvasGradientPrototypeFunctions[] =
+static JSCFunctionListEntry JSCanvasGradientPrototypeFunctions[1];
+static bool JSCanvasGradientPrototypeFunctions_initialized = false;
+
+static void init_JSCanvasGradientPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("addColorStop", 2, JSCanvasGradientPrototypeFunction::callAsFunction, JSCanvasGradient::AddColorStopFuncNum)
-};
+    if (JSCanvasGradientPrototypeFunctions_initialized) return;
+    JSCanvasGradientPrototypeFunctions_initialized = true;
+    memset(JSCanvasGradientPrototypeFunctions, 0, sizeof(JSCanvasGradientPrototypeFunctions));
+    JSCanvasGradientPrototypeFunctions[0].name = "addColorStop";
+    JSCanvasGradientPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSCanvasGradientPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSCanvasGradientPrototypeFunctions[0].magic = JSCanvasGradient::AddColorStopFuncNum;
+    JSCanvasGradientPrototypeFunctions[0].u.func.length = 2;
+    JSCanvasGradientPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSCanvasGradientPrototypeFunctions[0].u.func.cfunc.generic_magic = JSCanvasGradientPrototypeFunction::callAsFunction;
+}
 
 JSValue JSCanvasGradientPrototype::self(JSContext * ctx)
 {
@@ -60,21 +74,29 @@ JSValue JSCanvasGradientPrototype::self(JSContext * ctx)
 
 void JSCanvasGradientPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCanvasGradientPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCanvasGradientPrototypeFunctions, countof(JSCanvasGradientPrototypeFunctions));
 }
 
-static JSClassDef JSCanvasGradientClassDefine = 
+static JSClassDef JSCanvasGradientClassDefine;
+static bool JSCanvasGradientClassDefine_initialized = false;
+
+static void init_JSCanvasGradientClassDefine()
 {
-    "CanvasGradient",
-    .finalizer = JSCanvasGradient::finalizer,
-    .gc_mark = JSCanvasGradient::mark,
-};
+    if (JSCanvasGradientClassDefine_initialized) return;
+    JSCanvasGradientClassDefine_initialized = true;
+    memset(&JSCanvasGradientClassDefine, 0, sizeof(JSCanvasGradientClassDefine));
+    JSCanvasGradientClassDefine.class_name = "CanvasGradient";
+    JSCanvasGradientClassDefine.finalizer = JSCanvasGradient::finalizer;
+    JSCanvasGradientClassDefine.gc_mark = JSCanvasGradient::mark;
+}
 
 JSClassID JSCanvasGradient::js_class_id = 0;
 
 void JSCanvasGradient::init(JSContext* ctx)
 {
     if (JSCanvasGradient::js_class_id == 0) {
+        init_JSCanvasGradientClassDefine();
         JS_NewClassID(&JSCanvasGradient::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSCanvasGradient::js_class_id, &JSCanvasGradientClassDefine);
         JS_SetClassProto(ctx, JSCanvasGradient::js_class_id, JSCanvasGradientPrototype::self(ctx));

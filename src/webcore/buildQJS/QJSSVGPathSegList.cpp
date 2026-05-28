@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,23 +48,82 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPathSegListAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPathSegListAttributesFunctions[1];
+static bool JSSVGPathSegListAttributesFunctions_initialized = false;
+
+static void init_JSSVGPathSegListAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("numberOfItems", JSSVGPathSegList::getValueProperty, NULL, JSSVGPathSegList::NumberOfItemsAttrNum)
-};
+    if (JSSVGPathSegListAttributesFunctions_initialized) return;
+    JSSVGPathSegListAttributesFunctions_initialized = true;
+    memset(JSSVGPathSegListAttributesFunctions, 0, sizeof(JSSVGPathSegListAttributesFunctions));
+    JSSVGPathSegListAttributesFunctions[0].name = "numberOfItems";
+    JSSVGPathSegListAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegListAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegListAttributesFunctions[0].magic = JSSVGPathSegList::NumberOfItemsAttrNum;
+    JSSVGPathSegListAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegList::getValueProperty;
+    JSSVGPathSegListAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGPathSegListPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGPathSegListPrototypeFunctions[7];
+static bool JSSVGPathSegListPrototypeFunctions_initialized = false;
+
+static void init_JSSVGPathSegListPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("clear", 0, JSSVGPathSegListPrototypeFunction::callAsFunction, JSSVGPathSegList::ClearFuncNum),
-    JS_CFUNC_MAGIC_DEF("getItem", 1, JSSVGPathSegListPrototypeFunction::callAsFunction, JSSVGPathSegList::GetItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("insertItemBefore", 2, JSSVGPathSegListPrototypeFunction::callAsFunction, JSSVGPathSegList::InsertItemBeforeFuncNum),
-    JS_CFUNC_MAGIC_DEF("initialize", 1, JSSVGPathSegListPrototypeFunction::callAsFunction, JSSVGPathSegList::InitializeFuncNum),
-    JS_CFUNC_MAGIC_DEF("replaceItem", 2, JSSVGPathSegListPrototypeFunction::callAsFunction, JSSVGPathSegList::ReplaceItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("removeItem", 1, JSSVGPathSegListPrototypeFunction::callAsFunction, JSSVGPathSegList::RemoveItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("appendItem", 1, JSSVGPathSegListPrototypeFunction::callAsFunction, JSSVGPathSegList::AppendItemFuncNum)
-};
+    if (JSSVGPathSegListPrototypeFunctions_initialized) return;
+    JSSVGPathSegListPrototypeFunctions_initialized = true;
+    memset(JSSVGPathSegListPrototypeFunctions, 0, sizeof(JSSVGPathSegListPrototypeFunctions));
+    JSSVGPathSegListPrototypeFunctions[0].name = "clear";
+    JSSVGPathSegListPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathSegListPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGPathSegListPrototypeFunctions[0].magic = JSSVGPathSegList::ClearFuncNum;
+    JSSVGPathSegListPrototypeFunctions[0].u.func.length = 0;
+    JSSVGPathSegListPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathSegListPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGPathSegListPrototypeFunction::callAsFunction;
+    JSSVGPathSegListPrototypeFunctions[1].name = "getItem";
+    JSSVGPathSegListPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathSegListPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGPathSegListPrototypeFunctions[1].magic = JSSVGPathSegList::GetItemFuncNum;
+    JSSVGPathSegListPrototypeFunctions[1].u.func.length = 1;
+    JSSVGPathSegListPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathSegListPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGPathSegListPrototypeFunction::callAsFunction;
+    JSSVGPathSegListPrototypeFunctions[2].name = "insertItemBefore";
+    JSSVGPathSegListPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathSegListPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGPathSegListPrototypeFunctions[2].magic = JSSVGPathSegList::InsertItemBeforeFuncNum;
+    JSSVGPathSegListPrototypeFunctions[2].u.func.length = 2;
+    JSSVGPathSegListPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathSegListPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGPathSegListPrototypeFunction::callAsFunction;
+    JSSVGPathSegListPrototypeFunctions[3].name = "initialize";
+    JSSVGPathSegListPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathSegListPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGPathSegListPrototypeFunctions[3].magic = JSSVGPathSegList::InitializeFuncNum;
+    JSSVGPathSegListPrototypeFunctions[3].u.func.length = 1;
+    JSSVGPathSegListPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathSegListPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGPathSegListPrototypeFunction::callAsFunction;
+    JSSVGPathSegListPrototypeFunctions[4].name = "replaceItem";
+    JSSVGPathSegListPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathSegListPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGPathSegListPrototypeFunctions[4].magic = JSSVGPathSegList::ReplaceItemFuncNum;
+    JSSVGPathSegListPrototypeFunctions[4].u.func.length = 2;
+    JSSVGPathSegListPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathSegListPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGPathSegListPrototypeFunction::callAsFunction;
+    JSSVGPathSegListPrototypeFunctions[5].name = "removeItem";
+    JSSVGPathSegListPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathSegListPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGPathSegListPrototypeFunctions[5].magic = JSSVGPathSegList::RemoveItemFuncNum;
+    JSSVGPathSegListPrototypeFunctions[5].u.func.length = 1;
+    JSSVGPathSegListPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathSegListPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGPathSegListPrototypeFunction::callAsFunction;
+    JSSVGPathSegListPrototypeFunctions[6].name = "appendItem";
+    JSSVGPathSegListPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPathSegListPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSSVGPathSegListPrototypeFunctions[6].magic = JSSVGPathSegList::AppendItemFuncNum;
+    JSSVGPathSegListPrototypeFunctions[6].u.func.length = 1;
+    JSSVGPathSegListPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPathSegListPrototypeFunctions[6].u.func.cfunc.generic_magic = JSSVGPathSegListPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGPathSegListPrototype::self(JSContext * ctx)
 {
@@ -80,22 +141,31 @@ JSValue JSSVGPathSegListPrototype::self(JSContext * ctx)
 
 void JSSVGPathSegListPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPathSegListAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathSegListAttributesFunctions, countof(JSSVGPathSegListAttributesFunctions));
+    init_JSSVGPathSegListPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathSegListPrototypeFunctions, countof(JSSVGPathSegListPrototypeFunctions));
 }
 
-static JSClassDef JSSVGPathSegListClassDefine = 
+static JSClassDef JSSVGPathSegListClassDefine;
+static bool JSSVGPathSegListClassDefine_initialized = false;
+
+static void init_JSSVGPathSegListClassDefine()
 {
-    "SVGPathSegList",
-    .finalizer = JSSVGPathSegList::finalizer,
-    .gc_mark = JSSVGPathSegList::mark,
-};
+    if (JSSVGPathSegListClassDefine_initialized) return;
+    JSSVGPathSegListClassDefine_initialized = true;
+    memset(&JSSVGPathSegListClassDefine, 0, sizeof(JSSVGPathSegListClassDefine));
+    JSSVGPathSegListClassDefine.class_name = "SVGPathSegList";
+    JSSVGPathSegListClassDefine.finalizer = JSSVGPathSegList::finalizer;
+    JSSVGPathSegListClassDefine.gc_mark = JSSVGPathSegList::mark;
+}
 
 JSClassID JSSVGPathSegList::js_class_id = 0;
 
 void JSSVGPathSegList::init(JSContext* ctx)
 {
     if (JSSVGPathSegList::js_class_id == 0) {
+        init_JSSVGPathSegListClassDefine();
         JS_NewClassID(&JSSVGPathSegList::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathSegList::js_class_id, &JSSVGPathSegListClassDefine);
         JS_SetClassProto(ctx, JSSVGPathSegList::js_class_id, JSSVGPathSegListPrototype::self(ctx));

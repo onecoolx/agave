@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCDATASection.h"
 
 #include "CDATASection.h"
@@ -38,10 +40,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSCDATASectionAttributesFunctions[] =
+static JSCFunctionListEntry JSCDATASectionAttributesFunctions[1];
+static bool JSCDATASectionAttributesFunctions_initialized = false;
+
+static void init_JSCDATASectionAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSCDATASection::getValueProperty, NULL, JSCDATASection::ConstructorAttrNum)
-};
+    if (JSCDATASectionAttributesFunctions_initialized) return;
+    JSCDATASectionAttributesFunctions_initialized = true;
+    memset(JSCDATASectionAttributesFunctions, 0, sizeof(JSCDATASectionAttributesFunctions));
+    JSCDATASectionAttributesFunctions[0].name = "constructor";
+    JSCDATASectionAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCDATASectionAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCDATASectionAttributesFunctions[0].magic = JSCDATASection::ConstructorAttrNum;
+    JSCDATASectionAttributesFunctions[0].u.getset.get.getter_magic = JSCDATASection::getValueProperty;
+    JSCDATASectionAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 class JSCDATASectionConstructor {
 public:
@@ -90,15 +103,22 @@ JSValue JSCDATASectionPrototype::self(JSContext * ctx)
 
 void JSCDATASectionPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCDATASectionAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCDATASectionAttributesFunctions, countof(JSCDATASectionAttributesFunctions));
 }
 
-static JSClassDef JSCDATASectionClassDefine = 
+static JSClassDef JSCDATASectionClassDefine;
+static bool JSCDATASectionClassDefine_initialized = false;
+
+static void init_JSCDATASectionClassDefine()
 {
-    "CDATASection",
-    .finalizer = JSCDATASection::finalizer,
-    .gc_mark = JSCDATASection::mark,
-};
+    if (JSCDATASectionClassDefine_initialized) return;
+    JSCDATASectionClassDefine_initialized = true;
+    memset(&JSCDATASectionClassDefine, 0, sizeof(JSCDATASectionClassDefine));
+    JSCDATASectionClassDefine.class_name = "CDATASection";
+    JSCDATASectionClassDefine.finalizer = JSCDATASection::finalizer;
+    JSCDATASectionClassDefine.gc_mark = JSCDATASection::mark;
+}
 
 JSClassID JSCDATASection::js_class_id = 0;
 

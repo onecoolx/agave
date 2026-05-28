@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -47,11 +49,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAnimatedRectAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGAnimatedRectAttributesFunctions[2];
+static bool JSSVGAnimatedRectAttributesFunctions_initialized = false;
+
+static void init_JSSVGAnimatedRectAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("baseVal", JSSVGAnimatedRect::getValueProperty, NULL, JSSVGAnimatedRect::BaseValAttrNum),
-    JS_CGETSET_MAGIC_DEF("animVal", JSSVGAnimatedRect::getValueProperty, NULL, JSSVGAnimatedRect::AnimValAttrNum)
-};
+    if (JSSVGAnimatedRectAttributesFunctions_initialized) return;
+    JSSVGAnimatedRectAttributesFunctions_initialized = true;
+    memset(JSSVGAnimatedRectAttributesFunctions, 0, sizeof(JSSVGAnimatedRectAttributesFunctions));
+    JSSVGAnimatedRectAttributesFunctions[0].name = "baseVal";
+    JSSVGAnimatedRectAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedRectAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedRectAttributesFunctions[0].magic = JSSVGAnimatedRect::BaseValAttrNum;
+    JSSVGAnimatedRectAttributesFunctions[0].u.getset.get.getter_magic = JSSVGAnimatedRect::getValueProperty;
+    JSSVGAnimatedRectAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGAnimatedRectAttributesFunctions[1].name = "animVal";
+    JSSVGAnimatedRectAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedRectAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedRectAttributesFunctions[1].magic = JSSVGAnimatedRect::AnimValAttrNum;
+    JSSVGAnimatedRectAttributesFunctions[1].u.getset.get.getter_magic = JSSVGAnimatedRect::getValueProperty;
+    JSSVGAnimatedRectAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGAnimatedRectPrototype::self(JSContext * ctx)
 {
@@ -69,21 +87,29 @@ JSValue JSSVGAnimatedRectPrototype::self(JSContext * ctx)
 
 void JSSVGAnimatedRectPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAnimatedRectAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnimatedRectAttributesFunctions, countof(JSSVGAnimatedRectAttributesFunctions));
 }
 
-static JSClassDef JSSVGAnimatedRectClassDefine = 
+static JSClassDef JSSVGAnimatedRectClassDefine;
+static bool JSSVGAnimatedRectClassDefine_initialized = false;
+
+static void init_JSSVGAnimatedRectClassDefine()
 {
-    "SVGAnimatedRect",
-    .finalizer = JSSVGAnimatedRect::finalizer,
-    .gc_mark = JSSVGAnimatedRect::mark,
-};
+    if (JSSVGAnimatedRectClassDefine_initialized) return;
+    JSSVGAnimatedRectClassDefine_initialized = true;
+    memset(&JSSVGAnimatedRectClassDefine, 0, sizeof(JSSVGAnimatedRectClassDefine));
+    JSSVGAnimatedRectClassDefine.class_name = "SVGAnimatedRect";
+    JSSVGAnimatedRectClassDefine.finalizer = JSSVGAnimatedRect::finalizer;
+    JSSVGAnimatedRectClassDefine.gc_mark = JSSVGAnimatedRect::mark;
+}
 
 JSClassID JSSVGAnimatedRect::js_class_id = 0;
 
 void JSSVGAnimatedRect::init(JSContext* ctx)
 {
     if (JSSVGAnimatedRect::js_class_id == 0) {
+        init_JSSVGAnimatedRectClassDefine();
         JS_NewClassID(&JSSVGAnimatedRect::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimatedRect::js_class_id, &JSSVGAnimatedRectClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimatedRect::js_class_id, JSSVGAnimatedRectPrototype::self(ctx));

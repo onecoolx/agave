@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLMenuElement.h"
 
 #include "HTMLMenuElement.h"
@@ -38,11 +40,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLMenuElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLMenuElementAttributesFunctions[2];
+static bool JSHTMLMenuElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLMenuElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("compact", JSHTMLMenuElement::getValueProperty, JSHTMLMenuElement::putValueProperty, JSHTMLMenuElement::CompactAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLMenuElement::getValueProperty, NULL, JSHTMLMenuElement::ConstructorAttrNum)
-};
+    if (JSHTMLMenuElementAttributesFunctions_initialized) return;
+    JSHTMLMenuElementAttributesFunctions_initialized = true;
+    memset(JSHTMLMenuElementAttributesFunctions, 0, sizeof(JSHTMLMenuElementAttributesFunctions));
+    JSHTMLMenuElementAttributesFunctions[0].name = "compact";
+    JSHTMLMenuElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLMenuElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLMenuElementAttributesFunctions[0].magic = JSHTMLMenuElement::CompactAttrNum;
+    JSHTMLMenuElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLMenuElement::getValueProperty;
+    JSHTMLMenuElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLMenuElement::putValueProperty;
+    JSHTMLMenuElementAttributesFunctions[1].name = "constructor";
+    JSHTMLMenuElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLMenuElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLMenuElementAttributesFunctions[1].magic = JSHTMLMenuElement::ConstructorAttrNum;
+    JSHTMLMenuElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLMenuElement::getValueProperty;
+    JSHTMLMenuElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLMenuElementConstructor {
 public:
@@ -91,15 +109,22 @@ JSValue JSHTMLMenuElementPrototype::self(JSContext * ctx)
 
 void JSHTMLMenuElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLMenuElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLMenuElementAttributesFunctions, countof(JSHTMLMenuElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLMenuElementClassDefine = 
+static JSClassDef JSHTMLMenuElementClassDefine;
+static bool JSHTMLMenuElementClassDefine_initialized = false;
+
+static void init_JSHTMLMenuElementClassDefine()
 {
-    "HTMLMenuElement",
-    .finalizer = JSHTMLMenuElement::finalizer,
-    .gc_mark = JSHTMLMenuElement::mark,
-};
+    if (JSHTMLMenuElementClassDefine_initialized) return;
+    JSHTMLMenuElementClassDefine_initialized = true;
+    memset(&JSHTMLMenuElementClassDefine, 0, sizeof(JSHTMLMenuElementClassDefine));
+    JSHTMLMenuElementClassDefine.class_name = "HTMLMenuElement";
+    JSHTMLMenuElementClassDefine.finalizer = JSHTMLMenuElement::finalizer;
+    JSHTMLMenuElementClassDefine.gc_mark = JSHTMLMenuElement::mark;
+}
 
 JSClassID JSHTMLMenuElement::js_class_id = 0;
 

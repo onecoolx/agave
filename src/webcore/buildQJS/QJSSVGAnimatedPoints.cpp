@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -48,11 +50,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAnimatedPointsAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGAnimatedPointsAttributesFunctions[2];
+static bool JSSVGAnimatedPointsAttributesFunctions_initialized = false;
+
+static void init_JSSVGAnimatedPointsAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("points", JSSVGAnimatedPoints::getValueProperty, NULL, JSSVGAnimatedPoints::PointsAttrNum),
-    JS_CGETSET_MAGIC_DEF("animatedPoints", JSSVGAnimatedPoints::getValueProperty, NULL, JSSVGAnimatedPoints::AnimatedPointsAttrNum)
-};
+    if (JSSVGAnimatedPointsAttributesFunctions_initialized) return;
+    JSSVGAnimatedPointsAttributesFunctions_initialized = true;
+    memset(JSSVGAnimatedPointsAttributesFunctions, 0, sizeof(JSSVGAnimatedPointsAttributesFunctions));
+    JSSVGAnimatedPointsAttributesFunctions[0].name = "points";
+    JSSVGAnimatedPointsAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedPointsAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedPointsAttributesFunctions[0].magic = JSSVGAnimatedPoints::PointsAttrNum;
+    JSSVGAnimatedPointsAttributesFunctions[0].u.getset.get.getter_magic = JSSVGAnimatedPoints::getValueProperty;
+    JSSVGAnimatedPointsAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGAnimatedPointsAttributesFunctions[1].name = "animatedPoints";
+    JSSVGAnimatedPointsAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedPointsAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedPointsAttributesFunctions[1].magic = JSSVGAnimatedPoints::AnimatedPointsAttrNum;
+    JSSVGAnimatedPointsAttributesFunctions[1].u.getset.get.getter_magic = JSSVGAnimatedPoints::getValueProperty;
+    JSSVGAnimatedPointsAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGAnimatedPointsPrototype::self(JSContext * ctx)
 {
@@ -70,21 +88,29 @@ JSValue JSSVGAnimatedPointsPrototype::self(JSContext * ctx)
 
 void JSSVGAnimatedPointsPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAnimatedPointsAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnimatedPointsAttributesFunctions, countof(JSSVGAnimatedPointsAttributesFunctions));
 }
 
-static JSClassDef JSSVGAnimatedPointsClassDefine = 
+static JSClassDef JSSVGAnimatedPointsClassDefine;
+static bool JSSVGAnimatedPointsClassDefine_initialized = false;
+
+static void init_JSSVGAnimatedPointsClassDefine()
 {
-    "SVGAnimatedPoints",
-    .finalizer = JSSVGAnimatedPoints::finalizer,
-    .gc_mark = JSSVGAnimatedPoints::mark,
-};
+    if (JSSVGAnimatedPointsClassDefine_initialized) return;
+    JSSVGAnimatedPointsClassDefine_initialized = true;
+    memset(&JSSVGAnimatedPointsClassDefine, 0, sizeof(JSSVGAnimatedPointsClassDefine));
+    JSSVGAnimatedPointsClassDefine.class_name = "SVGAnimatedPoints";
+    JSSVGAnimatedPointsClassDefine.finalizer = JSSVGAnimatedPoints::finalizer;
+    JSSVGAnimatedPointsClassDefine.gc_mark = JSSVGAnimatedPoints::mark;
+}
 
 JSClassID JSSVGAnimatedPoints::js_class_id = 0;
 
 void JSSVGAnimatedPoints::init(JSContext* ctx)
 {
     if (JSSVGAnimatedPoints::js_class_id == 0) {
+        init_JSSVGAnimatedPointsClassDefine();
         JS_NewClassID(&JSSVGAnimatedPoints::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimatedPoints::js_class_id, &JSSVGAnimatedPointsClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimatedPoints::js_class_id, JSSVGAnimatedPointsPrototype::self(ctx));

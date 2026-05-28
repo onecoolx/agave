@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -51,24 +53,85 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAnimationElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGAnimationElementAttributesFunctions[5];
+static bool JSSVGAnimationElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGAnimationElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGAnimationElement::getValueProperty, NULL, JSSVGAnimationElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("targetElement", JSSVGAnimationElement::getValueProperty, NULL, JSSVGAnimationElement::TargetElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGAnimationElement::getValueProperty, NULL, JSSVGAnimationElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGAnimationElement::getValueProperty, NULL, JSSVGAnimationElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGAnimationElement::getValueProperty, NULL, JSSVGAnimationElement::SystemLanguageAttrNum)
-};
+    if (JSSVGAnimationElementAttributesFunctions_initialized) return;
+    JSSVGAnimationElementAttributesFunctions_initialized = true;
+    memset(JSSVGAnimationElementAttributesFunctions, 0, sizeof(JSSVGAnimationElementAttributesFunctions));
+    JSSVGAnimationElementAttributesFunctions[0].name = "externalResourcesRequired";
+    JSSVGAnimationElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimationElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimationElementAttributesFunctions[0].magic = JSSVGAnimationElement::ExternalResourcesRequiredAttrNum;
+    JSSVGAnimationElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGAnimationElement::getValueProperty;
+    JSSVGAnimationElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGAnimationElementAttributesFunctions[1].name = "targetElement";
+    JSSVGAnimationElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimationElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimationElementAttributesFunctions[1].magic = JSSVGAnimationElement::TargetElementAttrNum;
+    JSSVGAnimationElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGAnimationElement::getValueProperty;
+    JSSVGAnimationElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGAnimationElementAttributesFunctions[2].name = "requiredExtensions";
+    JSSVGAnimationElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimationElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimationElementAttributesFunctions[2].magic = JSSVGAnimationElement::RequiredExtensionsAttrNum;
+    JSSVGAnimationElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGAnimationElement::getValueProperty;
+    JSSVGAnimationElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGAnimationElementAttributesFunctions[3].name = "requiredFeatures";
+    JSSVGAnimationElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimationElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimationElementAttributesFunctions[3].magic = JSSVGAnimationElement::RequiredFeaturesAttrNum;
+    JSSVGAnimationElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGAnimationElement::getValueProperty;
+    JSSVGAnimationElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGAnimationElementAttributesFunctions[4].name = "systemLanguage";
+    JSSVGAnimationElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimationElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimationElementAttributesFunctions[4].magic = JSSVGAnimationElement::SystemLanguageAttrNum;
+    JSSVGAnimationElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGAnimationElement::getValueProperty;
+    JSSVGAnimationElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGAnimationElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGAnimationElementPrototypeFunctions[4];
+static bool JSSVGAnimationElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGAnimationElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getSimpleDuration", 0, JSSVGAnimationElementPrototypeFunction::callAsFunction, JSSVGAnimationElement::GetSimpleDurationFuncNum),
-    JS_CFUNC_MAGIC_DEF("getCurrentTime", 0, JSSVGAnimationElementPrototypeFunction::callAsFunction, JSSVGAnimationElement::GetCurrentTimeFuncNum),
-    JS_CFUNC_MAGIC_DEF("getStartTime", 0, JSSVGAnimationElementPrototypeFunction::callAsFunction, JSSVGAnimationElement::GetStartTimeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGAnimationElementPrototypeFunction::callAsFunction, JSSVGAnimationElement::HasExtensionFuncNum)
-};
+    if (JSSVGAnimationElementPrototypeFunctions_initialized) return;
+    JSSVGAnimationElementPrototypeFunctions_initialized = true;
+    memset(JSSVGAnimationElementPrototypeFunctions, 0, sizeof(JSSVGAnimationElementPrototypeFunctions));
+    JSSVGAnimationElementPrototypeFunctions[0].name = "getSimpleDuration";
+    JSSVGAnimationElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGAnimationElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGAnimationElementPrototypeFunctions[0].magic = JSSVGAnimationElement::GetSimpleDurationFuncNum;
+    JSSVGAnimationElementPrototypeFunctions[0].u.func.length = 0;
+    JSSVGAnimationElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGAnimationElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGAnimationElementPrototypeFunction::callAsFunction;
+    JSSVGAnimationElementPrototypeFunctions[1].name = "getCurrentTime";
+    JSSVGAnimationElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGAnimationElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGAnimationElementPrototypeFunctions[1].magic = JSSVGAnimationElement::GetCurrentTimeFuncNum;
+    JSSVGAnimationElementPrototypeFunctions[1].u.func.length = 0;
+    JSSVGAnimationElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGAnimationElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGAnimationElementPrototypeFunction::callAsFunction;
+    JSSVGAnimationElementPrototypeFunctions[2].name = "getStartTime";
+    JSSVGAnimationElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGAnimationElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGAnimationElementPrototypeFunctions[2].magic = JSSVGAnimationElement::GetStartTimeFuncNum;
+    JSSVGAnimationElementPrototypeFunctions[2].u.func.length = 0;
+    JSSVGAnimationElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGAnimationElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGAnimationElementPrototypeFunction::callAsFunction;
+    JSSVGAnimationElementPrototypeFunctions[3].name = "hasExtension";
+    JSSVGAnimationElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGAnimationElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGAnimationElementPrototypeFunctions[3].magic = JSSVGAnimationElement::HasExtensionFuncNum;
+    JSSVGAnimationElementPrototypeFunctions[3].u.func.length = 1;
+    JSSVGAnimationElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGAnimationElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGAnimationElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGAnimationElementPrototype::self(JSContext * ctx)
 {
@@ -86,22 +149,31 @@ JSValue JSSVGAnimationElementPrototype::self(JSContext * ctx)
 
 void JSSVGAnimationElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAnimationElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnimationElementAttributesFunctions, countof(JSSVGAnimationElementAttributesFunctions));
+    init_JSSVGAnimationElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnimationElementPrototypeFunctions, countof(JSSVGAnimationElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGAnimationElementClassDefine = 
+static JSClassDef JSSVGAnimationElementClassDefine;
+static bool JSSVGAnimationElementClassDefine_initialized = false;
+
+static void init_JSSVGAnimationElementClassDefine()
 {
-    "SVGAnimationElement",
-    .finalizer = JSSVGAnimationElement::finalizer,
-    .gc_mark = JSSVGAnimationElement::mark,
-};
+    if (JSSVGAnimationElementClassDefine_initialized) return;
+    JSSVGAnimationElementClassDefine_initialized = true;
+    memset(&JSSVGAnimationElementClassDefine, 0, sizeof(JSSVGAnimationElementClassDefine));
+    JSSVGAnimationElementClassDefine.class_name = "SVGAnimationElement";
+    JSSVGAnimationElementClassDefine.finalizer = JSSVGAnimationElement::finalizer;
+    JSSVGAnimationElementClassDefine.gc_mark = JSSVGAnimationElement::mark;
+}
 
 JSClassID JSSVGAnimationElement::js_class_id = 0;
 
 void JSSVGAnimationElement::init(JSContext* ctx)
 {
     if (JSSVGAnimationElement::js_class_id == 0) {
+        init_JSSVGAnimationElementClassDefine();
         JS_NewClassID(&JSSVGAnimationElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimationElement::js_class_id, &JSSVGAnimationElementClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimationElement::js_class_id, JSSVGAnimationElementPrototype::self(ctx));

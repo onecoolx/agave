@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -61,32 +63,135 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGDefsElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGDefsElementAttributesFunctions[11];
+static bool JSSVGDefsElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGDefsElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("farthestViewportElement", JSSVGDefsElement::getValueProperty, NULL, JSSVGDefsElement::FarthestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGDefsElement::getValueProperty, NULL, JSSVGDefsElement::SystemLanguageAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGDefsElement::getValueProperty, JSSVGDefsElement::putValueProperty, JSSVGDefsElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGDefsElement::getValueProperty, NULL, JSSVGDefsElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("nearestViewportElement", JSSVGDefsElement::getValueProperty, NULL, JSSVGDefsElement::NearestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGDefsElement::getValueProperty, NULL, JSSVGDefsElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGDefsElement::getValueProperty, NULL, JSSVGDefsElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGDefsElement::getValueProperty, JSSVGDefsElement::putValueProperty, JSSVGDefsElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGDefsElement::getValueProperty, NULL, JSSVGDefsElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGDefsElement::getValueProperty, NULL, JSSVGDefsElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("transform", JSSVGDefsElement::getValueProperty, NULL, JSSVGDefsElement::TransformAttrNum)
-};
+    if (JSSVGDefsElementAttributesFunctions_initialized) return;
+    JSSVGDefsElementAttributesFunctions_initialized = true;
+    memset(JSSVGDefsElementAttributesFunctions, 0, sizeof(JSSVGDefsElementAttributesFunctions));
+    JSSVGDefsElementAttributesFunctions[0].name = "farthestViewportElement";
+    JSSVGDefsElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDefsElementAttributesFunctions[0].magic = JSSVGDefsElement::FarthestViewportElementAttrNum;
+    JSSVGDefsElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGDefsElement::getValueProperty;
+    JSSVGDefsElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGDefsElementAttributesFunctions[1].name = "systemLanguage";
+    JSSVGDefsElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDefsElementAttributesFunctions[1].magic = JSSVGDefsElement::SystemLanguageAttrNum;
+    JSSVGDefsElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGDefsElement::getValueProperty;
+    JSSVGDefsElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGDefsElementAttributesFunctions[2].name = "xmlspace";
+    JSSVGDefsElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDefsElementAttributesFunctions[2].magic = JSSVGDefsElement::XmlspaceAttrNum;
+    JSSVGDefsElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGDefsElement::getValueProperty;
+    JSSVGDefsElementAttributesFunctions[2].u.getset.set.setter_magic = JSSVGDefsElement::putValueProperty;
+    JSSVGDefsElementAttributesFunctions[3].name = "requiredExtensions";
+    JSSVGDefsElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDefsElementAttributesFunctions[3].magic = JSSVGDefsElement::RequiredExtensionsAttrNum;
+    JSSVGDefsElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGDefsElement::getValueProperty;
+    JSSVGDefsElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGDefsElementAttributesFunctions[4].name = "nearestViewportElement";
+    JSSVGDefsElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDefsElementAttributesFunctions[4].magic = JSSVGDefsElement::NearestViewportElementAttrNum;
+    JSSVGDefsElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGDefsElement::getValueProperty;
+    JSSVGDefsElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGDefsElementAttributesFunctions[5].name = "style";
+    JSSVGDefsElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDefsElementAttributesFunctions[5].magic = JSSVGDefsElement::StyleAttrNum;
+    JSSVGDefsElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGDefsElement::getValueProperty;
+    JSSVGDefsElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGDefsElementAttributesFunctions[6].name = "requiredFeatures";
+    JSSVGDefsElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDefsElementAttributesFunctions[6].magic = JSSVGDefsElement::RequiredFeaturesAttrNum;
+    JSSVGDefsElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGDefsElement::getValueProperty;
+    JSSVGDefsElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGDefsElementAttributesFunctions[7].name = "xmllang";
+    JSSVGDefsElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDefsElementAttributesFunctions[7].magic = JSSVGDefsElement::XmllangAttrNum;
+    JSSVGDefsElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGDefsElement::getValueProperty;
+    JSSVGDefsElementAttributesFunctions[7].u.getset.set.setter_magic = JSSVGDefsElement::putValueProperty;
+    JSSVGDefsElementAttributesFunctions[8].name = "externalResourcesRequired";
+    JSSVGDefsElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDefsElementAttributesFunctions[8].magic = JSSVGDefsElement::ExternalResourcesRequiredAttrNum;
+    JSSVGDefsElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGDefsElement::getValueProperty;
+    JSSVGDefsElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGDefsElementAttributesFunctions[9].name = "className";
+    JSSVGDefsElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDefsElementAttributesFunctions[9].magic = JSSVGDefsElement::ClassNameAttrNum;
+    JSSVGDefsElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGDefsElement::getValueProperty;
+    JSSVGDefsElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGDefsElementAttributesFunctions[10].name = "transform";
+    JSSVGDefsElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGDefsElementAttributesFunctions[10].magic = JSSVGDefsElement::TransformAttrNum;
+    JSSVGDefsElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGDefsElement::getValueProperty;
+    JSSVGDefsElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGDefsElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGDefsElementPrototypeFunctions[6];
+static bool JSSVGDefsElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGDefsElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGDefsElementPrototypeFunction::callAsFunction, JSSVGDefsElement::GetPresentationAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGDefsElementPrototypeFunction::callAsFunction, JSSVGDefsElement::HasExtensionFuncNum),
-    JS_CFUNC_MAGIC_DEF("getCTM", 0, JSSVGDefsElementPrototypeFunction::callAsFunction, JSSVGDefsElement::GetCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getScreenCTM", 0, JSSVGDefsElementPrototypeFunction::callAsFunction, JSSVGDefsElement::GetScreenCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getTransformToElement", 1, JSSVGDefsElementPrototypeFunction::callAsFunction, JSSVGDefsElement::GetTransformToElementFuncNum),
-    JS_CFUNC_MAGIC_DEF("getBBox", 0, JSSVGDefsElementPrototypeFunction::callAsFunction, JSSVGDefsElement::GetBBoxFuncNum)
-};
+    if (JSSVGDefsElementPrototypeFunctions_initialized) return;
+    JSSVGDefsElementPrototypeFunctions_initialized = true;
+    memset(JSSVGDefsElementPrototypeFunctions, 0, sizeof(JSSVGDefsElementPrototypeFunctions));
+    JSSVGDefsElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGDefsElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGDefsElementPrototypeFunctions[0].magic = JSSVGDefsElement::GetPresentationAttributeFuncNum;
+    JSSVGDefsElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGDefsElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGDefsElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGDefsElementPrototypeFunction::callAsFunction;
+    JSSVGDefsElementPrototypeFunctions[1].name = "hasExtension";
+    JSSVGDefsElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGDefsElementPrototypeFunctions[1].magic = JSSVGDefsElement::HasExtensionFuncNum;
+    JSSVGDefsElementPrototypeFunctions[1].u.func.length = 1;
+    JSSVGDefsElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGDefsElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGDefsElementPrototypeFunction::callAsFunction;
+    JSSVGDefsElementPrototypeFunctions[2].name = "getCTM";
+    JSSVGDefsElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGDefsElementPrototypeFunctions[2].magic = JSSVGDefsElement::GetCTMFuncNum;
+    JSSVGDefsElementPrototypeFunctions[2].u.func.length = 0;
+    JSSVGDefsElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGDefsElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGDefsElementPrototypeFunction::callAsFunction;
+    JSSVGDefsElementPrototypeFunctions[3].name = "getScreenCTM";
+    JSSVGDefsElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGDefsElementPrototypeFunctions[3].magic = JSSVGDefsElement::GetScreenCTMFuncNum;
+    JSSVGDefsElementPrototypeFunctions[3].u.func.length = 0;
+    JSSVGDefsElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGDefsElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGDefsElementPrototypeFunction::callAsFunction;
+    JSSVGDefsElementPrototypeFunctions[4].name = "getTransformToElement";
+    JSSVGDefsElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGDefsElementPrototypeFunctions[4].magic = JSSVGDefsElement::GetTransformToElementFuncNum;
+    JSSVGDefsElementPrototypeFunctions[4].u.func.length = 1;
+    JSSVGDefsElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGDefsElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGDefsElementPrototypeFunction::callAsFunction;
+    JSSVGDefsElementPrototypeFunctions[5].name = "getBBox";
+    JSSVGDefsElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGDefsElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGDefsElementPrototypeFunctions[5].magic = JSSVGDefsElement::GetBBoxFuncNum;
+    JSSVGDefsElementPrototypeFunctions[5].u.func.length = 0;
+    JSSVGDefsElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGDefsElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGDefsElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGDefsElementPrototype::self(JSContext * ctx)
 {
@@ -104,22 +209,31 @@ JSValue JSSVGDefsElementPrototype::self(JSContext * ctx)
 
 void JSSVGDefsElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGDefsElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGDefsElementAttributesFunctions, countof(JSSVGDefsElementAttributesFunctions));
+    init_JSSVGDefsElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGDefsElementPrototypeFunctions, countof(JSSVGDefsElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGDefsElementClassDefine = 
+static JSClassDef JSSVGDefsElementClassDefine;
+static bool JSSVGDefsElementClassDefine_initialized = false;
+
+static void init_JSSVGDefsElementClassDefine()
 {
-    "SVGDefsElement",
-    .finalizer = JSSVGDefsElement::finalizer,
-    .gc_mark = JSSVGDefsElement::mark,
-};
+    if (JSSVGDefsElementClassDefine_initialized) return;
+    JSSVGDefsElementClassDefine_initialized = true;
+    memset(&JSSVGDefsElementClassDefine, 0, sizeof(JSSVGDefsElementClassDefine));
+    JSSVGDefsElementClassDefine.class_name = "SVGDefsElement";
+    JSSVGDefsElementClassDefine.finalizer = JSSVGDefsElement::finalizer;
+    JSSVGDefsElementClassDefine.gc_mark = JSSVGDefsElement::mark;
+}
 
 JSClassID JSSVGDefsElement::js_class_id = 0;
 
 void JSSVGDefsElement::init(JSContext* ctx)
 {
     if (JSSVGDefsElement::js_class_id == 0) {
+        init_JSSVGDefsElementClassDefine();
         JS_NewClassID(&JSSVGDefsElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGDefsElement::js_class_id, &JSSVGDefsElementClassDefine);
         JS_SetClassProto(ctx, JSSVGDefsElement::js_class_id, JSSVGDefsElementPrototype::self(ctx));

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLImageElement.h"
 
 #include "HTMLImageElement.h"
@@ -39,28 +41,129 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLImageElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLImageElementAttributesFunctions[19];
+static bool JSHTMLImageElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLImageElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("hspace", JSHTMLImageElement::getValueProperty, JSHTMLImageElement::putValueProperty, JSHTMLImageElement::HspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLImageElement::getValueProperty, JSHTMLImageElement::putValueProperty, JSHTMLImageElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("src", JSHTMLImageElement::getValueProperty, JSHTMLImageElement::putValueProperty, JSHTMLImageElement::SrcAttrNum),
-    JS_CGETSET_MAGIC_DEF("useMap", JSHTMLImageElement::getValueProperty, JSHTMLImageElement::putValueProperty, JSHTMLImageElement::UseMapAttrNum),
-    JS_CGETSET_MAGIC_DEF("complete", JSHTMLImageElement::getValueProperty, NULL, JSHTMLImageElement::CompleteAttrNum),
-    JS_CGETSET_MAGIC_DEF("lowsrc", JSHTMLImageElement::getValueProperty, JSHTMLImageElement::putValueProperty, JSHTMLImageElement::LowsrcAttrNum),
-    JS_CGETSET_MAGIC_DEF("alt", JSHTMLImageElement::getValueProperty, JSHTMLImageElement::putValueProperty, JSHTMLImageElement::AltAttrNum),
-    JS_CGETSET_MAGIC_DEF("name", JSHTMLImageElement::getValueProperty, JSHTMLImageElement::putValueProperty, JSHTMLImageElement::NameAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSHTMLImageElement::getValueProperty, NULL, JSHTMLImageElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("isMap", JSHTMLImageElement::getValueProperty, JSHTMLImageElement::putValueProperty, JSHTMLImageElement::IsMapAttrNum),
-    JS_CGETSET_MAGIC_DEF("vspace", JSHTMLImageElement::getValueProperty, JSHTMLImageElement::putValueProperty, JSHTMLImageElement::VspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("border", JSHTMLImageElement::getValueProperty, JSHTMLImageElement::putValueProperty, JSHTMLImageElement::BorderAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSHTMLImageElement::getValueProperty, JSHTMLImageElement::putValueProperty, JSHTMLImageElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("longDesc", JSHTMLImageElement::getValueProperty, JSHTMLImageElement::putValueProperty, JSHTMLImageElement::LongDescAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSHTMLImageElement::getValueProperty, JSHTMLImageElement::putValueProperty, JSHTMLImageElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("naturalHeight", JSHTMLImageElement::getValueProperty, NULL, JSHTMLImageElement::NaturalHeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("naturalWidth", JSHTMLImageElement::getValueProperty, NULL, JSHTMLImageElement::NaturalWidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSHTMLImageElement::getValueProperty, NULL, JSHTMLImageElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLImageElement::getValueProperty, NULL, JSHTMLImageElement::ConstructorAttrNum)
-};
+    if (JSHTMLImageElementAttributesFunctions_initialized) return;
+    JSHTMLImageElementAttributesFunctions_initialized = true;
+    memset(JSHTMLImageElementAttributesFunctions, 0, sizeof(JSHTMLImageElementAttributesFunctions));
+    JSHTMLImageElementAttributesFunctions[0].name = "hspace";
+    JSHTMLImageElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[0].magic = JSHTMLImageElement::HspaceAttrNum;
+    JSHTMLImageElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLImageElement::putValueProperty;
+    JSHTMLImageElementAttributesFunctions[1].name = "align";
+    JSHTMLImageElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[1].magic = JSHTMLImageElement::AlignAttrNum;
+    JSHTMLImageElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLImageElement::putValueProperty;
+    JSHTMLImageElementAttributesFunctions[2].name = "src";
+    JSHTMLImageElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[2].magic = JSHTMLImageElement::SrcAttrNum;
+    JSHTMLImageElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLImageElement::putValueProperty;
+    JSHTMLImageElementAttributesFunctions[3].name = "useMap";
+    JSHTMLImageElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[3].magic = JSHTMLImageElement::UseMapAttrNum;
+    JSHTMLImageElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLImageElement::putValueProperty;
+    JSHTMLImageElementAttributesFunctions[4].name = "complete";
+    JSHTMLImageElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[4].magic = JSHTMLImageElement::CompleteAttrNum;
+    JSHTMLImageElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSHTMLImageElementAttributesFunctions[5].name = "lowsrc";
+    JSHTMLImageElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[5].magic = JSHTMLImageElement::LowsrcAttrNum;
+    JSHTMLImageElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLImageElement::putValueProperty;
+    JSHTMLImageElementAttributesFunctions[6].name = "alt";
+    JSHTMLImageElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[6].magic = JSHTMLImageElement::AltAttrNum;
+    JSHTMLImageElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLImageElement::putValueProperty;
+    JSHTMLImageElementAttributesFunctions[7].name = "name";
+    JSHTMLImageElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[7].magic = JSHTMLImageElement::NameAttrNum;
+    JSHTMLImageElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLImageElement::putValueProperty;
+    JSHTMLImageElementAttributesFunctions[8].name = "y";
+    JSHTMLImageElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[8].magic = JSHTMLImageElement::YAttrNum;
+    JSHTMLImageElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSHTMLImageElementAttributesFunctions[9].name = "isMap";
+    JSHTMLImageElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[9].magic = JSHTMLImageElement::IsMapAttrNum;
+    JSHTMLImageElementAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[9].u.getset.set.setter_magic = JSHTMLImageElement::putValueProperty;
+    JSHTMLImageElementAttributesFunctions[10].name = "vspace";
+    JSHTMLImageElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[10].magic = JSHTMLImageElement::VspaceAttrNum;
+    JSHTMLImageElementAttributesFunctions[10].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[10].u.getset.set.setter_magic = JSHTMLImageElement::putValueProperty;
+    JSHTMLImageElementAttributesFunctions[11].name = "border";
+    JSHTMLImageElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[11].magic = JSHTMLImageElement::BorderAttrNum;
+    JSHTMLImageElementAttributesFunctions[11].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[11].u.getset.set.setter_magic = JSHTMLImageElement::putValueProperty;
+    JSHTMLImageElementAttributesFunctions[12].name = "height";
+    JSHTMLImageElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[12].magic = JSHTMLImageElement::HeightAttrNum;
+    JSHTMLImageElementAttributesFunctions[12].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[12].u.getset.set.setter_magic = JSHTMLImageElement::putValueProperty;
+    JSHTMLImageElementAttributesFunctions[13].name = "longDesc";
+    JSHTMLImageElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[13].magic = JSHTMLImageElement::LongDescAttrNum;
+    JSHTMLImageElementAttributesFunctions[13].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[13].u.getset.set.setter_magic = JSHTMLImageElement::putValueProperty;
+    JSHTMLImageElementAttributesFunctions[14].name = "width";
+    JSHTMLImageElementAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[14].magic = JSHTMLImageElement::WidthAttrNum;
+    JSHTMLImageElementAttributesFunctions[14].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[14].u.getset.set.setter_magic = JSHTMLImageElement::putValueProperty;
+    JSHTMLImageElementAttributesFunctions[15].name = "naturalHeight";
+    JSHTMLImageElementAttributesFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[15].magic = JSHTMLImageElement::NaturalHeightAttrNum;
+    JSHTMLImageElementAttributesFunctions[15].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[15].u.getset.set.setter_magic = NULL;
+    JSHTMLImageElementAttributesFunctions[16].name = "naturalWidth";
+    JSHTMLImageElementAttributesFunctions[16].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[16].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[16].magic = JSHTMLImageElement::NaturalWidthAttrNum;
+    JSHTMLImageElementAttributesFunctions[16].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[16].u.getset.set.setter_magic = NULL;
+    JSHTMLImageElementAttributesFunctions[17].name = "x";
+    JSHTMLImageElementAttributesFunctions[17].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[17].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[17].magic = JSHTMLImageElement::XAttrNum;
+    JSHTMLImageElementAttributesFunctions[17].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[17].u.getset.set.setter_magic = NULL;
+    JSHTMLImageElementAttributesFunctions[18].name = "constructor";
+    JSHTMLImageElementAttributesFunctions[18].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLImageElementAttributesFunctions[18].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLImageElementAttributesFunctions[18].magic = JSHTMLImageElement::ConstructorAttrNum;
+    JSHTMLImageElementAttributesFunctions[18].u.getset.get.getter_magic = JSHTMLImageElement::getValueProperty;
+    JSHTMLImageElementAttributesFunctions[18].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLImageElementConstructor {
 public:
@@ -109,15 +212,22 @@ JSValue JSHTMLImageElementPrototype::self(JSContext * ctx)
 
 void JSHTMLImageElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLImageElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLImageElementAttributesFunctions, countof(JSHTMLImageElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLImageElementClassDefine = 
+static JSClassDef JSHTMLImageElementClassDefine;
+static bool JSHTMLImageElementClassDefine_initialized = false;
+
+static void init_JSHTMLImageElementClassDefine()
 {
-    "HTMLImageElement",
-    .finalizer = JSHTMLImageElement::finalizer,
-    .gc_mark = JSHTMLImageElement::mark,
-};
+    if (JSHTMLImageElementClassDefine_initialized) return;
+    JSHTMLImageElementClassDefine_initialized = true;
+    memset(&JSHTMLImageElementClassDefine, 0, sizeof(JSHTMLImageElementClassDefine));
+    JSHTMLImageElementClassDefine.class_name = "HTMLImageElement";
+    JSHTMLImageElementClassDefine.finalizer = JSHTMLImageElement::finalizer;
+    JSHTMLImageElementClassDefine.gc_mark = JSHTMLImageElement::mark;
+}
 
 JSClassID JSHTMLImageElement::js_class_id = 0;
 

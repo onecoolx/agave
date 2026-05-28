@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSEvent.h"
 
 #include "Event.h"
@@ -42,21 +44,87 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSEventAttributesFunctions[] =
+static JSCFunctionListEntry JSEventAttributesFunctions[12];
+static bool JSEventAttributesFunctions_initialized = false;
+
+static void init_JSEventAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("srcElement", JSEvent::getValueProperty, NULL, JSEvent::SrcElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("bubbles", JSEvent::getValueProperty, NULL, JSEvent::BubblesAttrNum),
-    JS_CGETSET_MAGIC_DEF("currentTarget", JSEvent::getValueProperty, NULL, JSEvent::CurrentTargetAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSEvent::getValueProperty, NULL, JSEvent::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("returnValue", JSEvent::getValueProperty, JSEvent::putValueProperty, JSEvent::ReturnValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSEvent::getValueProperty, NULL, JSEvent::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("target", JSEvent::getValueProperty, NULL, JSEvent::TargetAttrNum),
-    JS_CGETSET_MAGIC_DEF("eventPhase", JSEvent::getValueProperty, NULL, JSEvent::EventPhaseAttrNum),
-    JS_CGETSET_MAGIC_DEF("cancelable", JSEvent::getValueProperty, NULL, JSEvent::CancelableAttrNum),
-    JS_CGETSET_MAGIC_DEF("timeStamp", JSEvent::getValueProperty, NULL, JSEvent::TimeStampAttrNum),
-    JS_CGETSET_MAGIC_DEF("cancelBubble", JSEvent::getValueProperty, JSEvent::putValueProperty, JSEvent::CancelBubbleAttrNum),
-    JS_CGETSET_MAGIC_DEF("clipboardData", JSEvent::getValueProperty, NULL, JSEvent::ClipboardDataAttrNum)
-};
+    if (JSEventAttributesFunctions_initialized) return;
+    JSEventAttributesFunctions_initialized = true;
+    memset(JSEventAttributesFunctions, 0, sizeof(JSEventAttributesFunctions));
+    JSEventAttributesFunctions[0].name = "srcElement";
+    JSEventAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventAttributesFunctions[0].magic = JSEvent::SrcElementAttrNum;
+    JSEventAttributesFunctions[0].u.getset.get.getter_magic = JSEvent::getValueProperty;
+    JSEventAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSEventAttributesFunctions[1].name = "bubbles";
+    JSEventAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventAttributesFunctions[1].magic = JSEvent::BubblesAttrNum;
+    JSEventAttributesFunctions[1].u.getset.get.getter_magic = JSEvent::getValueProperty;
+    JSEventAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSEventAttributesFunctions[2].name = "currentTarget";
+    JSEventAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventAttributesFunctions[2].magic = JSEvent::CurrentTargetAttrNum;
+    JSEventAttributesFunctions[2].u.getset.get.getter_magic = JSEvent::getValueProperty;
+    JSEventAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSEventAttributesFunctions[3].name = "type";
+    JSEventAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventAttributesFunctions[3].magic = JSEvent::TypeAttrNum;
+    JSEventAttributesFunctions[3].u.getset.get.getter_magic = JSEvent::getValueProperty;
+    JSEventAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSEventAttributesFunctions[4].name = "returnValue";
+    JSEventAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventAttributesFunctions[4].magic = JSEvent::ReturnValueAttrNum;
+    JSEventAttributesFunctions[4].u.getset.get.getter_magic = JSEvent::getValueProperty;
+    JSEventAttributesFunctions[4].u.getset.set.setter_magic = JSEvent::putValueProperty;
+    JSEventAttributesFunctions[5].name = "constructor";
+    JSEventAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventAttributesFunctions[5].magic = JSEvent::ConstructorAttrNum;
+    JSEventAttributesFunctions[5].u.getset.get.getter_magic = JSEvent::getValueProperty;
+    JSEventAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSEventAttributesFunctions[6].name = "target";
+    JSEventAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventAttributesFunctions[6].magic = JSEvent::TargetAttrNum;
+    JSEventAttributesFunctions[6].u.getset.get.getter_magic = JSEvent::getValueProperty;
+    JSEventAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSEventAttributesFunctions[7].name = "eventPhase";
+    JSEventAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventAttributesFunctions[7].magic = JSEvent::EventPhaseAttrNum;
+    JSEventAttributesFunctions[7].u.getset.get.getter_magic = JSEvent::getValueProperty;
+    JSEventAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSEventAttributesFunctions[8].name = "cancelable";
+    JSEventAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventAttributesFunctions[8].magic = JSEvent::CancelableAttrNum;
+    JSEventAttributesFunctions[8].u.getset.get.getter_magic = JSEvent::getValueProperty;
+    JSEventAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSEventAttributesFunctions[9].name = "timeStamp";
+    JSEventAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventAttributesFunctions[9].magic = JSEvent::TimeStampAttrNum;
+    JSEventAttributesFunctions[9].u.getset.get.getter_magic = JSEvent::getValueProperty;
+    JSEventAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSEventAttributesFunctions[10].name = "cancelBubble";
+    JSEventAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventAttributesFunctions[10].magic = JSEvent::CancelBubbleAttrNum;
+    JSEventAttributesFunctions[10].u.getset.get.getter_magic = JSEvent::getValueProperty;
+    JSEventAttributesFunctions[10].u.getset.set.setter_magic = JSEvent::putValueProperty;
+    JSEventAttributesFunctions[11].name = "clipboardData";
+    JSEventAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventAttributesFunctions[11].magic = JSEvent::ClipboardDataAttrNum;
+    JSEventAttributesFunctions[11].u.getset.get.getter_magic = JSEvent::getValueProperty;
+    JSEventAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+}
 
 class JSEventConstructor {
 public:
@@ -73,28 +141,129 @@ JSValue JSEventConstructor::getValueProperty(JSContext * ctx, JSValueConst this_
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSEventConstructorFunctions[] =
+static JSCFunctionListEntry JSEventConstructorFunctions[19];
+static bool JSEventConstructorFunctions_initialized = false;
+
+static void init_JSEventConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("MOUSEOUT", JSEventConstructor::getValueProperty, NULL, Event::MOUSEOUT),
-    JS_CGETSET_MAGIC_DEF("MOUSEOVER", JSEventConstructor::getValueProperty, NULL, Event::MOUSEOVER),
-    JS_CGETSET_MAGIC_DEF("CAPTURING_PHASE", JSEventConstructor::getValueProperty, NULL, Event::CAPTURING_PHASE),
-    JS_CGETSET_MAGIC_DEF("MOUSEDOWN", JSEventConstructor::getValueProperty, NULL, Event::MOUSEDOWN),
-    JS_CGETSET_MAGIC_DEF("AT_TARGET", JSEventConstructor::getValueProperty, NULL, Event::AT_TARGET),
-    JS_CGETSET_MAGIC_DEF("DRAGDROP", JSEventConstructor::getValueProperty, NULL, Event::DRAGDROP),
-    JS_CGETSET_MAGIC_DEF("KEYUP", JSEventConstructor::getValueProperty, NULL, Event::KEYUP),
-    JS_CGETSET_MAGIC_DEF("SELECT", JSEventConstructor::getValueProperty, NULL, Event::SELECT),
-    JS_CGETSET_MAGIC_DEF("BLUR", JSEventConstructor::getValueProperty, NULL, Event::BLUR),
-    JS_CGETSET_MAGIC_DEF("MOUSEMOVE", JSEventConstructor::getValueProperty, NULL, Event::MOUSEMOVE),
-    JS_CGETSET_MAGIC_DEF("CLICK", JSEventConstructor::getValueProperty, NULL, Event::CLICK),
-    JS_CGETSET_MAGIC_DEF("MOUSEUP", JSEventConstructor::getValueProperty, NULL, Event::MOUSEUP),
-    JS_CGETSET_MAGIC_DEF("BUBBLING_PHASE", JSEventConstructor::getValueProperty, NULL, Event::BUBBLING_PHASE),
-    JS_CGETSET_MAGIC_DEF("MOUSEDRAG", JSEventConstructor::getValueProperty, NULL, Event::MOUSEDRAG),
-    JS_CGETSET_MAGIC_DEF("DBLCLICK", JSEventConstructor::getValueProperty, NULL, Event::DBLCLICK),
-    JS_CGETSET_MAGIC_DEF("KEYDOWN", JSEventConstructor::getValueProperty, NULL, Event::KEYDOWN),
-    JS_CGETSET_MAGIC_DEF("KEYPRESS", JSEventConstructor::getValueProperty, NULL, Event::KEYPRESS),
-    JS_CGETSET_MAGIC_DEF("FOCUS", JSEventConstructor::getValueProperty, NULL, Event::FOCUS),
-    JS_CGETSET_MAGIC_DEF("CHANGE", JSEventConstructor::getValueProperty, NULL, Event::CHANGE)
-};
+    if (JSEventConstructorFunctions_initialized) return;
+    JSEventConstructorFunctions_initialized = true;
+    memset(JSEventConstructorFunctions, 0, sizeof(JSEventConstructorFunctions));
+    JSEventConstructorFunctions[0].name = "MOUSEOUT";
+    JSEventConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[0].magic = Event::MOUSEOUT;
+    JSEventConstructorFunctions[0].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[1].name = "MOUSEOVER";
+    JSEventConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[1].magic = Event::MOUSEOVER;
+    JSEventConstructorFunctions[1].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[2].name = "CAPTURING_PHASE";
+    JSEventConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[2].magic = Event::CAPTURING_PHASE;
+    JSEventConstructorFunctions[2].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[3].name = "MOUSEDOWN";
+    JSEventConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[3].magic = Event::MOUSEDOWN;
+    JSEventConstructorFunctions[3].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[4].name = "AT_TARGET";
+    JSEventConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[4].magic = Event::AT_TARGET;
+    JSEventConstructorFunctions[4].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[5].name = "DRAGDROP";
+    JSEventConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[5].magic = Event::DRAGDROP;
+    JSEventConstructorFunctions[5].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[5].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[6].name = "KEYUP";
+    JSEventConstructorFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[6].magic = Event::KEYUP;
+    JSEventConstructorFunctions[6].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[6].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[7].name = "SELECT";
+    JSEventConstructorFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[7].magic = Event::SELECT;
+    JSEventConstructorFunctions[7].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[7].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[8].name = "BLUR";
+    JSEventConstructorFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[8].magic = Event::BLUR;
+    JSEventConstructorFunctions[8].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[8].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[9].name = "MOUSEMOVE";
+    JSEventConstructorFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[9].magic = Event::MOUSEMOVE;
+    JSEventConstructorFunctions[9].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[9].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[10].name = "CLICK";
+    JSEventConstructorFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[10].magic = Event::CLICK;
+    JSEventConstructorFunctions[10].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[10].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[11].name = "MOUSEUP";
+    JSEventConstructorFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[11].magic = Event::MOUSEUP;
+    JSEventConstructorFunctions[11].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[11].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[12].name = "BUBBLING_PHASE";
+    JSEventConstructorFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[12].magic = Event::BUBBLING_PHASE;
+    JSEventConstructorFunctions[12].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[12].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[13].name = "MOUSEDRAG";
+    JSEventConstructorFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[13].magic = Event::MOUSEDRAG;
+    JSEventConstructorFunctions[13].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[13].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[14].name = "DBLCLICK";
+    JSEventConstructorFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[14].magic = Event::DBLCLICK;
+    JSEventConstructorFunctions[14].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[14].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[15].name = "KEYDOWN";
+    JSEventConstructorFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[15].magic = Event::KEYDOWN;
+    JSEventConstructorFunctions[15].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[15].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[16].name = "KEYPRESS";
+    JSEventConstructorFunctions[16].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[16].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[16].magic = Event::KEYPRESS;
+    JSEventConstructorFunctions[16].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[16].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[17].name = "FOCUS";
+    JSEventConstructorFunctions[17].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[17].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[17].magic = Event::FOCUS;
+    JSEventConstructorFunctions[17].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[17].u.getset.set.setter_magic = NULL;
+    JSEventConstructorFunctions[18].name = "CHANGE";
+    JSEventConstructorFunctions[18].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventConstructorFunctions[18].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventConstructorFunctions[18].magic = Event::CHANGE;
+    JSEventConstructorFunctions[18].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
+    JSEventConstructorFunctions[18].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSEventConstructor::self(JSContext * ctx)
 {
@@ -112,42 +281,168 @@ JSValue JSEventConstructor::self(JSContext * ctx)
 
 void JSEventConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSEventConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSEventConstructorFunctions, countof(JSEventConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSEventPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSEventPrototypeConstantsFunctions[19];
+static bool JSEventPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSEventPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("MOUSEOUT", JSEventPrototype::getValueProperty, NULL, Event::MOUSEOUT),
-    JS_CGETSET_MAGIC_DEF("MOUSEOVER", JSEventPrototype::getValueProperty, NULL, Event::MOUSEOVER),
-    JS_CGETSET_MAGIC_DEF("CAPTURING_PHASE", JSEventPrototype::getValueProperty, NULL, Event::CAPTURING_PHASE),
-    JS_CGETSET_MAGIC_DEF("MOUSEDOWN", JSEventPrototype::getValueProperty, NULL, Event::MOUSEDOWN),
-    JS_CGETSET_MAGIC_DEF("AT_TARGET", JSEventPrototype::getValueProperty, NULL, Event::AT_TARGET),
-    JS_CGETSET_MAGIC_DEF("DRAGDROP", JSEventPrototype::getValueProperty, NULL, Event::DRAGDROP),
-    JS_CGETSET_MAGIC_DEF("KEYUP", JSEventPrototype::getValueProperty, NULL, Event::KEYUP),
-    JS_CGETSET_MAGIC_DEF("SELECT", JSEventPrototype::getValueProperty, NULL, Event::SELECT),
-    JS_CGETSET_MAGIC_DEF("BLUR", JSEventPrototype::getValueProperty, NULL, Event::BLUR),
-    JS_CGETSET_MAGIC_DEF("MOUSEMOVE", JSEventPrototype::getValueProperty, NULL, Event::MOUSEMOVE),
-    JS_CGETSET_MAGIC_DEF("CLICK", JSEventPrototype::getValueProperty, NULL, Event::CLICK),
-    JS_CGETSET_MAGIC_DEF("MOUSEUP", JSEventPrototype::getValueProperty, NULL, Event::MOUSEUP),
-    JS_CGETSET_MAGIC_DEF("BUBBLING_PHASE", JSEventPrototype::getValueProperty, NULL, Event::BUBBLING_PHASE),
-    JS_CGETSET_MAGIC_DEF("MOUSEDRAG", JSEventPrototype::getValueProperty, NULL, Event::MOUSEDRAG),
-    JS_CGETSET_MAGIC_DEF("DBLCLICK", JSEventPrototype::getValueProperty, NULL, Event::DBLCLICK),
-    JS_CGETSET_MAGIC_DEF("KEYDOWN", JSEventPrototype::getValueProperty, NULL, Event::KEYDOWN),
-    JS_CGETSET_MAGIC_DEF("KEYPRESS", JSEventPrototype::getValueProperty, NULL, Event::KEYPRESS),
-    JS_CGETSET_MAGIC_DEF("FOCUS", JSEventPrototype::getValueProperty, NULL, Event::FOCUS),
-    JS_CGETSET_MAGIC_DEF("CHANGE", JSEventPrototype::getValueProperty, NULL, Event::CHANGE)
-};
+    if (JSEventPrototypeConstantsFunctions_initialized) return;
+    JSEventPrototypeConstantsFunctions_initialized = true;
+    memset(JSEventPrototypeConstantsFunctions, 0, sizeof(JSEventPrototypeConstantsFunctions));
+    JSEventPrototypeConstantsFunctions[0].name = "MOUSEOUT";
+    JSEventPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[0].magic = Event::MOUSEOUT;
+    JSEventPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[1].name = "MOUSEOVER";
+    JSEventPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[1].magic = Event::MOUSEOVER;
+    JSEventPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[2].name = "CAPTURING_PHASE";
+    JSEventPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[2].magic = Event::CAPTURING_PHASE;
+    JSEventPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[3].name = "MOUSEDOWN";
+    JSEventPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[3].magic = Event::MOUSEDOWN;
+    JSEventPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[4].name = "AT_TARGET";
+    JSEventPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[4].magic = Event::AT_TARGET;
+    JSEventPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[5].name = "DRAGDROP";
+    JSEventPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[5].magic = Event::DRAGDROP;
+    JSEventPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[6].name = "KEYUP";
+    JSEventPrototypeConstantsFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[6].magic = Event::KEYUP;
+    JSEventPrototypeConstantsFunctions[6].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[6].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[7].name = "SELECT";
+    JSEventPrototypeConstantsFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[7].magic = Event::SELECT;
+    JSEventPrototypeConstantsFunctions[7].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[7].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[8].name = "BLUR";
+    JSEventPrototypeConstantsFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[8].magic = Event::BLUR;
+    JSEventPrototypeConstantsFunctions[8].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[8].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[9].name = "MOUSEMOVE";
+    JSEventPrototypeConstantsFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[9].magic = Event::MOUSEMOVE;
+    JSEventPrototypeConstantsFunctions[9].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[9].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[10].name = "CLICK";
+    JSEventPrototypeConstantsFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[10].magic = Event::CLICK;
+    JSEventPrototypeConstantsFunctions[10].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[10].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[11].name = "MOUSEUP";
+    JSEventPrototypeConstantsFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[11].magic = Event::MOUSEUP;
+    JSEventPrototypeConstantsFunctions[11].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[11].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[12].name = "BUBBLING_PHASE";
+    JSEventPrototypeConstantsFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[12].magic = Event::BUBBLING_PHASE;
+    JSEventPrototypeConstantsFunctions[12].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[12].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[13].name = "MOUSEDRAG";
+    JSEventPrototypeConstantsFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[13].magic = Event::MOUSEDRAG;
+    JSEventPrototypeConstantsFunctions[13].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[13].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[14].name = "DBLCLICK";
+    JSEventPrototypeConstantsFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[14].magic = Event::DBLCLICK;
+    JSEventPrototypeConstantsFunctions[14].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[14].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[15].name = "KEYDOWN";
+    JSEventPrototypeConstantsFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[15].magic = Event::KEYDOWN;
+    JSEventPrototypeConstantsFunctions[15].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[15].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[16].name = "KEYPRESS";
+    JSEventPrototypeConstantsFunctions[16].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[16].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[16].magic = Event::KEYPRESS;
+    JSEventPrototypeConstantsFunctions[16].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[16].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[17].name = "FOCUS";
+    JSEventPrototypeConstantsFunctions[17].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[17].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[17].magic = Event::FOCUS;
+    JSEventPrototypeConstantsFunctions[17].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[17].u.getset.set.setter_magic = NULL;
+    JSEventPrototypeConstantsFunctions[18].name = "CHANGE";
+    JSEventPrototypeConstantsFunctions[18].prop_flags = JS_PROP_CONFIGURABLE;
+    JSEventPrototypeConstantsFunctions[18].def_type = JS_DEF_CGETSET_MAGIC;
+    JSEventPrototypeConstantsFunctions[18].magic = Event::CHANGE;
+    JSEventPrototypeConstantsFunctions[18].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
+    JSEventPrototypeConstantsFunctions[18].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSEventPrototypeFunctions[] =
+static JSCFunctionListEntry JSEventPrototypeFunctions[3];
+static bool JSEventPrototypeFunctions_initialized = false;
+
+static void init_JSEventPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("stopPropagation", 0, JSEventPrototypeFunction::callAsFunction, JSEvent::StopPropagationFuncNum),
-    JS_CFUNC_MAGIC_DEF("preventDefault", 0, JSEventPrototypeFunction::callAsFunction, JSEvent::PreventDefaultFuncNum),
-    JS_CFUNC_MAGIC_DEF("initEvent", 3, JSEventPrototypeFunction::callAsFunction, JSEvent::InitEventFuncNum)
-};
+    if (JSEventPrototypeFunctions_initialized) return;
+    JSEventPrototypeFunctions_initialized = true;
+    memset(JSEventPrototypeFunctions, 0, sizeof(JSEventPrototypeFunctions));
+    JSEventPrototypeFunctions[0].name = "stopPropagation";
+    JSEventPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSEventPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSEventPrototypeFunctions[0].magic = JSEvent::StopPropagationFuncNum;
+    JSEventPrototypeFunctions[0].u.func.length = 0;
+    JSEventPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSEventPrototypeFunctions[0].u.func.cfunc.generic_magic = JSEventPrototypeFunction::callAsFunction;
+    JSEventPrototypeFunctions[1].name = "preventDefault";
+    JSEventPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSEventPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSEventPrototypeFunctions[1].magic = JSEvent::PreventDefaultFuncNum;
+    JSEventPrototypeFunctions[1].u.func.length = 0;
+    JSEventPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSEventPrototypeFunctions[1].u.func.cfunc.generic_magic = JSEventPrototypeFunction::callAsFunction;
+    JSEventPrototypeFunctions[2].name = "initEvent";
+    JSEventPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSEventPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSEventPrototypeFunctions[2].magic = JSEvent::InitEventFuncNum;
+    JSEventPrototypeFunctions[2].u.func.length = 3;
+    JSEventPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSEventPrototypeFunctions[2].u.func.cfunc.generic_magic = JSEventPrototypeFunction::callAsFunction;
+}
 
 JSValue JSEventPrototype::self(JSContext * ctx)
 {
@@ -165,8 +460,11 @@ JSValue JSEventPrototype::self(JSContext * ctx)
 
 void JSEventPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSEventAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSEventAttributesFunctions, countof(JSEventAttributesFunctions));
+    init_JSEventPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSEventPrototypeConstantsFunctions, countof(JSEventPrototypeConstantsFunctions));
+    init_JSEventPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSEventPrototypeFunctions, countof(JSEventPrototypeFunctions));
 }
 
@@ -176,18 +474,25 @@ JSValue JSEventPrototype::getValueProperty(JSContext * ctx, JSValueConst this_va
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSEventClassDefine = 
+static JSClassDef JSEventClassDefine;
+static bool JSEventClassDefine_initialized = false;
+
+static void init_JSEventClassDefine()
 {
-    "Event",
-    .finalizer = JSEvent::finalizer,
-    .gc_mark = JSEvent::mark,
-};
+    if (JSEventClassDefine_initialized) return;
+    JSEventClassDefine_initialized = true;
+    memset(&JSEventClassDefine, 0, sizeof(JSEventClassDefine));
+    JSEventClassDefine.class_name = "Event";
+    JSEventClassDefine.finalizer = JSEvent::finalizer;
+    JSEventClassDefine.gc_mark = JSEvent::mark;
+}
 
 JSClassID JSEvent::js_class_id = 0;
 
 void JSEvent::init(JSContext* ctx)
 {
     if (JSEvent::js_class_id == 0) {
+        init_JSEventClassDefine();
         JS_NewClassID(&JSEvent::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSEvent::js_class_id, &JSEventClassDefine);
         JS_SetConstructor(ctx, JSEventConstructor::self(ctx), JSEventPrototype::self(ctx));

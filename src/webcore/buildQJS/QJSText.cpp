@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSText.h"
 
 #include "ExceptionCode.h"
@@ -40,10 +42,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSTextAttributesFunctions[] =
+static JSCFunctionListEntry JSTextAttributesFunctions[1];
+static bool JSTextAttributesFunctions_initialized = false;
+
+static void init_JSTextAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSText::getValueProperty, NULL, JSText::ConstructorAttrNum)
-};
+    if (JSTextAttributesFunctions_initialized) return;
+    JSTextAttributesFunctions_initialized = true;
+    memset(JSTextAttributesFunctions, 0, sizeof(JSTextAttributesFunctions));
+    JSTextAttributesFunctions[0].name = "constructor";
+    JSTextAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSTextAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSTextAttributesFunctions[0].magic = JSText::ConstructorAttrNum;
+    JSTextAttributesFunctions[0].u.getset.get.getter_magic = JSText::getValueProperty;
+    JSTextAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 class JSTextConstructor {
 public:
@@ -78,10 +91,22 @@ void JSTextConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSTextPrototypeFunctions[] =
+static JSCFunctionListEntry JSTextPrototypeFunctions[1];
+static bool JSTextPrototypeFunctions_initialized = false;
+
+static void init_JSTextPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("splitText", 1, JSTextPrototypeFunction::callAsFunction, JSText::SplitTextFuncNum)
-};
+    if (JSTextPrototypeFunctions_initialized) return;
+    JSTextPrototypeFunctions_initialized = true;
+    memset(JSTextPrototypeFunctions, 0, sizeof(JSTextPrototypeFunctions));
+    JSTextPrototypeFunctions[0].name = "splitText";
+    JSTextPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSTextPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSTextPrototypeFunctions[0].magic = JSText::SplitTextFuncNum;
+    JSTextPrototypeFunctions[0].u.func.length = 1;
+    JSTextPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSTextPrototypeFunctions[0].u.func.cfunc.generic_magic = JSTextPrototypeFunction::callAsFunction;
+}
 
 JSValue JSTextPrototype::self(JSContext * ctx)
 {
@@ -99,16 +124,24 @@ JSValue JSTextPrototype::self(JSContext * ctx)
 
 void JSTextPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSTextAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSTextAttributesFunctions, countof(JSTextAttributesFunctions));
+    init_JSTextPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSTextPrototypeFunctions, countof(JSTextPrototypeFunctions));
 }
 
-static JSClassDef JSTextClassDefine = 
+static JSClassDef JSTextClassDefine;
+static bool JSTextClassDefine_initialized = false;
+
+static void init_JSTextClassDefine()
 {
-    "Text",
-    .finalizer = JSText::finalizer,
-    .gc_mark = JSText::mark,
-};
+    if (JSTextClassDefine_initialized) return;
+    JSTextClassDefine_initialized = true;
+    memset(&JSTextClassDefine, 0, sizeof(JSTextClassDefine));
+    JSTextClassDefine.class_name = "Text";
+    JSTextClassDefine.finalizer = JSText::finalizer;
+    JSTextClassDefine.gc_mark = JSText::mark;
+}
 
 JSClassID JSText::js_class_id = 0;
 

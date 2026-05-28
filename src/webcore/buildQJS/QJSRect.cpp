@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSRect.h"
 
 #include "CSSPrimitiveValue.h"
@@ -40,14 +42,45 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSRectAttributesFunctions[] =
+static JSCFunctionListEntry JSRectAttributesFunctions[5];
+static bool JSRectAttributesFunctions_initialized = false;
+
+static void init_JSRectAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("right", JSRect::getValueProperty, NULL, JSRect::RightAttrNum),
-    JS_CGETSET_MAGIC_DEF("top", JSRect::getValueProperty, NULL, JSRect::TopAttrNum),
-    JS_CGETSET_MAGIC_DEF("left", JSRect::getValueProperty, NULL, JSRect::LeftAttrNum),
-    JS_CGETSET_MAGIC_DEF("bottom", JSRect::getValueProperty, NULL, JSRect::BottomAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSRect::getValueProperty, NULL, JSRect::ConstructorAttrNum)
-};
+    if (JSRectAttributesFunctions_initialized) return;
+    JSRectAttributesFunctions_initialized = true;
+    memset(JSRectAttributesFunctions, 0, sizeof(JSRectAttributesFunctions));
+    JSRectAttributesFunctions[0].name = "right";
+    JSRectAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRectAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRectAttributesFunctions[0].magic = JSRect::RightAttrNum;
+    JSRectAttributesFunctions[0].u.getset.get.getter_magic = JSRect::getValueProperty;
+    JSRectAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSRectAttributesFunctions[1].name = "top";
+    JSRectAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRectAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRectAttributesFunctions[1].magic = JSRect::TopAttrNum;
+    JSRectAttributesFunctions[1].u.getset.get.getter_magic = JSRect::getValueProperty;
+    JSRectAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSRectAttributesFunctions[2].name = "left";
+    JSRectAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRectAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRectAttributesFunctions[2].magic = JSRect::LeftAttrNum;
+    JSRectAttributesFunctions[2].u.getset.get.getter_magic = JSRect::getValueProperty;
+    JSRectAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSRectAttributesFunctions[3].name = "bottom";
+    JSRectAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRectAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRectAttributesFunctions[3].magic = JSRect::BottomAttrNum;
+    JSRectAttributesFunctions[3].u.getset.get.getter_magic = JSRect::getValueProperty;
+    JSRectAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSRectAttributesFunctions[4].name = "constructor";
+    JSRectAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRectAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRectAttributesFunctions[4].magic = JSRect::ConstructorAttrNum;
+    JSRectAttributesFunctions[4].u.getset.get.getter_magic = JSRect::getValueProperty;
+    JSRectAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+}
 
 class JSRectConstructor {
 public:
@@ -96,21 +129,29 @@ JSValue JSRectPrototype::self(JSContext * ctx)
 
 void JSRectPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSRectAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSRectAttributesFunctions, countof(JSRectAttributesFunctions));
 }
 
-static JSClassDef JSRectClassDefine = 
+static JSClassDef JSRectClassDefine;
+static bool JSRectClassDefine_initialized = false;
+
+static void init_JSRectClassDefine()
 {
-    "Rect",
-    .finalizer = JSRect::finalizer,
-    .gc_mark = JSRect::mark,
-};
+    if (JSRectClassDefine_initialized) return;
+    JSRectClassDefine_initialized = true;
+    memset(&JSRectClassDefine, 0, sizeof(JSRectClassDefine));
+    JSRectClassDefine.class_name = "Rect";
+    JSRectClassDefine.finalizer = JSRect::finalizer;
+    JSRectClassDefine.gc_mark = JSRect::mark;
+}
 
 JSClassID JSRect::js_class_id = 0;
 
 void JSRect::init(JSContext* ctx)
 {
     if (JSRect::js_class_id == 0) {
+        init_JSRectClassDefine();
         JS_NewClassID(&JSRect::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSRect::js_class_id, &JSRectClassDefine);
         JS_SetConstructor(ctx, JSRectConstructor::self(ctx), JSRectPrototype::self(ctx));

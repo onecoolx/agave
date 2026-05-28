@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -54,27 +56,101 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFEGaussianBlurElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFEGaussianBlurElementAttributesFunctions[10];
+static bool JSSVGFEGaussianBlurElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFEGaussianBlurElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("stdDeviationY", JSSVGFEGaussianBlurElement::getValueProperty, NULL, JSSVGFEGaussianBlurElement::StdDeviationYAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGFEGaussianBlurElement::getValueProperty, NULL, JSSVGFEGaussianBlurElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFEGaussianBlurElement::getValueProperty, NULL, JSSVGFEGaussianBlurElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("stdDeviationX", JSSVGFEGaussianBlurElement::getValueProperty, NULL, JSSVGFEGaussianBlurElement::StdDeviationXAttrNum),
-    JS_CGETSET_MAGIC_DEF("in1", JSSVGFEGaussianBlurElement::getValueProperty, NULL, JSSVGFEGaussianBlurElement::In1AttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGFEGaussianBlurElement::getValueProperty, NULL, JSSVGFEGaussianBlurElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("result", JSSVGFEGaussianBlurElement::getValueProperty, NULL, JSSVGFEGaussianBlurElement::ResultAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFEGaussianBlurElement::getValueProperty, NULL, JSSVGFEGaussianBlurElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGFEGaussianBlurElement::getValueProperty, NULL, JSSVGFEGaussianBlurElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGFEGaussianBlurElement::getValueProperty, NULL, JSSVGFEGaussianBlurElement::StyleAttrNum)
-};
+    if (JSSVGFEGaussianBlurElementAttributesFunctions_initialized) return;
+    JSSVGFEGaussianBlurElementAttributesFunctions_initialized = true;
+    memset(JSSVGFEGaussianBlurElementAttributesFunctions, 0, sizeof(JSSVGFEGaussianBlurElementAttributesFunctions));
+    JSSVGFEGaussianBlurElementAttributesFunctions[0].name = "stdDeviationY";
+    JSSVGFEGaussianBlurElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEGaussianBlurElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEGaussianBlurElementAttributesFunctions[0].magic = JSSVGFEGaussianBlurElement::StdDeviationYAttrNum;
+    JSSVGFEGaussianBlurElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFEGaussianBlurElement::getValueProperty;
+    JSSVGFEGaussianBlurElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEGaussianBlurElementAttributesFunctions[1].name = "width";
+    JSSVGFEGaussianBlurElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEGaussianBlurElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEGaussianBlurElementAttributesFunctions[1].magic = JSSVGFEGaussianBlurElement::WidthAttrNum;
+    JSSVGFEGaussianBlurElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFEGaussianBlurElement::getValueProperty;
+    JSSVGFEGaussianBlurElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEGaussianBlurElementAttributesFunctions[2].name = "x";
+    JSSVGFEGaussianBlurElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEGaussianBlurElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEGaussianBlurElementAttributesFunctions[2].magic = JSSVGFEGaussianBlurElement::XAttrNum;
+    JSSVGFEGaussianBlurElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFEGaussianBlurElement::getValueProperty;
+    JSSVGFEGaussianBlurElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEGaussianBlurElementAttributesFunctions[3].name = "stdDeviationX";
+    JSSVGFEGaussianBlurElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEGaussianBlurElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEGaussianBlurElementAttributesFunctions[3].magic = JSSVGFEGaussianBlurElement::StdDeviationXAttrNum;
+    JSSVGFEGaussianBlurElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGFEGaussianBlurElement::getValueProperty;
+    JSSVGFEGaussianBlurElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFEGaussianBlurElementAttributesFunctions[4].name = "in1";
+    JSSVGFEGaussianBlurElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEGaussianBlurElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEGaussianBlurElementAttributesFunctions[4].magic = JSSVGFEGaussianBlurElement::In1AttrNum;
+    JSSVGFEGaussianBlurElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGFEGaussianBlurElement::getValueProperty;
+    JSSVGFEGaussianBlurElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFEGaussianBlurElementAttributesFunctions[5].name = "height";
+    JSSVGFEGaussianBlurElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEGaussianBlurElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEGaussianBlurElementAttributesFunctions[5].magic = JSSVGFEGaussianBlurElement::HeightAttrNum;
+    JSSVGFEGaussianBlurElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGFEGaussianBlurElement::getValueProperty;
+    JSSVGFEGaussianBlurElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFEGaussianBlurElementAttributesFunctions[6].name = "result";
+    JSSVGFEGaussianBlurElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEGaussianBlurElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEGaussianBlurElementAttributesFunctions[6].magic = JSSVGFEGaussianBlurElement::ResultAttrNum;
+    JSSVGFEGaussianBlurElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGFEGaussianBlurElement::getValueProperty;
+    JSSVGFEGaussianBlurElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFEGaussianBlurElementAttributesFunctions[7].name = "y";
+    JSSVGFEGaussianBlurElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEGaussianBlurElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEGaussianBlurElementAttributesFunctions[7].magic = JSSVGFEGaussianBlurElement::YAttrNum;
+    JSSVGFEGaussianBlurElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGFEGaussianBlurElement::getValueProperty;
+    JSSVGFEGaussianBlurElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGFEGaussianBlurElementAttributesFunctions[8].name = "className";
+    JSSVGFEGaussianBlurElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEGaussianBlurElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEGaussianBlurElementAttributesFunctions[8].magic = JSSVGFEGaussianBlurElement::ClassNameAttrNum;
+    JSSVGFEGaussianBlurElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGFEGaussianBlurElement::getValueProperty;
+    JSSVGFEGaussianBlurElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGFEGaussianBlurElementAttributesFunctions[9].name = "style";
+    JSSVGFEGaussianBlurElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEGaussianBlurElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEGaussianBlurElementAttributesFunctions[9].magic = JSSVGFEGaussianBlurElement::StyleAttrNum;
+    JSSVGFEGaussianBlurElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGFEGaussianBlurElement::getValueProperty;
+    JSSVGFEGaussianBlurElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGFEGaussianBlurElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGFEGaussianBlurElementPrototypeFunctions[2];
+static bool JSSVGFEGaussianBlurElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGFEGaussianBlurElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGFEGaussianBlurElementPrototypeFunction::callAsFunction, JSSVGFEGaussianBlurElement::GetPresentationAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("setStdDeviation", 2, JSSVGFEGaussianBlurElementPrototypeFunction::callAsFunction, JSSVGFEGaussianBlurElement::SetStdDeviationFuncNum)
-};
+    if (JSSVGFEGaussianBlurElementPrototypeFunctions_initialized) return;
+    JSSVGFEGaussianBlurElementPrototypeFunctions_initialized = true;
+    memset(JSSVGFEGaussianBlurElementPrototypeFunctions, 0, sizeof(JSSVGFEGaussianBlurElementPrototypeFunctions));
+    JSSVGFEGaussianBlurElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGFEGaussianBlurElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFEGaussianBlurElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGFEGaussianBlurElementPrototypeFunctions[0].magic = JSSVGFEGaussianBlurElement::GetPresentationAttributeFuncNum;
+    JSSVGFEGaussianBlurElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGFEGaussianBlurElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFEGaussianBlurElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGFEGaussianBlurElementPrototypeFunction::callAsFunction;
+    JSSVGFEGaussianBlurElementPrototypeFunctions[1].name = "setStdDeviation";
+    JSSVGFEGaussianBlurElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFEGaussianBlurElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGFEGaussianBlurElementPrototypeFunctions[1].magic = JSSVGFEGaussianBlurElement::SetStdDeviationFuncNum;
+    JSSVGFEGaussianBlurElementPrototypeFunctions[1].u.func.length = 2;
+    JSSVGFEGaussianBlurElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFEGaussianBlurElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGFEGaussianBlurElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGFEGaussianBlurElementPrototype::self(JSContext * ctx)
 {
@@ -92,22 +168,31 @@ JSValue JSSVGFEGaussianBlurElementPrototype::self(JSContext * ctx)
 
 void JSSVGFEGaussianBlurElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFEGaussianBlurElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEGaussianBlurElementAttributesFunctions, countof(JSSVGFEGaussianBlurElementAttributesFunctions));
+    init_JSSVGFEGaussianBlurElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEGaussianBlurElementPrototypeFunctions, countof(JSSVGFEGaussianBlurElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGFEGaussianBlurElementClassDefine = 
+static JSClassDef JSSVGFEGaussianBlurElementClassDefine;
+static bool JSSVGFEGaussianBlurElementClassDefine_initialized = false;
+
+static void init_JSSVGFEGaussianBlurElementClassDefine()
 {
-    "SVGFEGaussianBlurElement",
-    .finalizer = JSSVGFEGaussianBlurElement::finalizer,
-    .gc_mark = JSSVGFEGaussianBlurElement::mark,
-};
+    if (JSSVGFEGaussianBlurElementClassDefine_initialized) return;
+    JSSVGFEGaussianBlurElementClassDefine_initialized = true;
+    memset(&JSSVGFEGaussianBlurElementClassDefine, 0, sizeof(JSSVGFEGaussianBlurElementClassDefine));
+    JSSVGFEGaussianBlurElementClassDefine.class_name = "SVGFEGaussianBlurElement";
+    JSSVGFEGaussianBlurElementClassDefine.finalizer = JSSVGFEGaussianBlurElement::finalizer;
+    JSSVGFEGaussianBlurElementClassDefine.gc_mark = JSSVGFEGaussianBlurElement::mark;
+}
 
 JSClassID JSSVGFEGaussianBlurElement::js_class_id = 0;
 
 void JSSVGFEGaussianBlurElement::init(JSContext* ctx)
 {
     if (JSSVGFEGaussianBlurElement::js_class_id == 0) {
+        init_JSSVGFEGaussianBlurElementClassDefine();
         JS_NewClassID(&JSSVGFEGaussianBlurElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFEGaussianBlurElement::js_class_id, &JSSVGFEGaussianBlurElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFEGaussianBlurElement::js_class_id, JSSVGFEGaussianBlurElementPrototype::self(ctx));

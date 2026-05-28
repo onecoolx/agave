@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -45,11 +47,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAnimatedNumberAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGAnimatedNumberAttributesFunctions[2];
+static bool JSSVGAnimatedNumberAttributesFunctions_initialized = false;
+
+static void init_JSSVGAnimatedNumberAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("baseVal", JSSVGAnimatedNumber::getValueProperty, JSSVGAnimatedNumber::putValueProperty, JSSVGAnimatedNumber::BaseValAttrNum),
-    JS_CGETSET_MAGIC_DEF("animVal", JSSVGAnimatedNumber::getValueProperty, NULL, JSSVGAnimatedNumber::AnimValAttrNum)
-};
+    if (JSSVGAnimatedNumberAttributesFunctions_initialized) return;
+    JSSVGAnimatedNumberAttributesFunctions_initialized = true;
+    memset(JSSVGAnimatedNumberAttributesFunctions, 0, sizeof(JSSVGAnimatedNumberAttributesFunctions));
+    JSSVGAnimatedNumberAttributesFunctions[0].name = "baseVal";
+    JSSVGAnimatedNumberAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedNumberAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedNumberAttributesFunctions[0].magic = JSSVGAnimatedNumber::BaseValAttrNum;
+    JSSVGAnimatedNumberAttributesFunctions[0].u.getset.get.getter_magic = JSSVGAnimatedNumber::getValueProperty;
+    JSSVGAnimatedNumberAttributesFunctions[0].u.getset.set.setter_magic = JSSVGAnimatedNumber::putValueProperty;
+    JSSVGAnimatedNumberAttributesFunctions[1].name = "animVal";
+    JSSVGAnimatedNumberAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedNumberAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedNumberAttributesFunctions[1].magic = JSSVGAnimatedNumber::AnimValAttrNum;
+    JSSVGAnimatedNumberAttributesFunctions[1].u.getset.get.getter_magic = JSSVGAnimatedNumber::getValueProperty;
+    JSSVGAnimatedNumberAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGAnimatedNumberPrototype::self(JSContext * ctx)
 {
@@ -67,21 +85,29 @@ JSValue JSSVGAnimatedNumberPrototype::self(JSContext * ctx)
 
 void JSSVGAnimatedNumberPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAnimatedNumberAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnimatedNumberAttributesFunctions, countof(JSSVGAnimatedNumberAttributesFunctions));
 }
 
-static JSClassDef JSSVGAnimatedNumberClassDefine = 
+static JSClassDef JSSVGAnimatedNumberClassDefine;
+static bool JSSVGAnimatedNumberClassDefine_initialized = false;
+
+static void init_JSSVGAnimatedNumberClassDefine()
 {
-    "SVGAnimatedNumber",
-    .finalizer = JSSVGAnimatedNumber::finalizer,
-    .gc_mark = JSSVGAnimatedNumber::mark,
-};
+    if (JSSVGAnimatedNumberClassDefine_initialized) return;
+    JSSVGAnimatedNumberClassDefine_initialized = true;
+    memset(&JSSVGAnimatedNumberClassDefine, 0, sizeof(JSSVGAnimatedNumberClassDefine));
+    JSSVGAnimatedNumberClassDefine.class_name = "SVGAnimatedNumber";
+    JSSVGAnimatedNumberClassDefine.finalizer = JSSVGAnimatedNumber::finalizer;
+    JSSVGAnimatedNumberClassDefine.gc_mark = JSSVGAnimatedNumber::mark;
+}
 
 JSClassID JSSVGAnimatedNumber::js_class_id = 0;
 
 void JSSVGAnimatedNumber::init(JSContext* ctx)
 {
     if (JSSVGAnimatedNumber::js_class_id == 0) {
+        init_JSSVGAnimatedNumberClassDefine();
         JS_NewClassID(&JSSVGAnimatedNumber::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimatedNumber::js_class_id, &JSSVGAnimatedNumberClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimatedNumber::js_class_id, JSSVGAnimatedNumberPrototype::self(ctx));

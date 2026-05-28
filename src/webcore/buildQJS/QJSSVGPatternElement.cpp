@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -61,35 +63,149 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPatternElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPatternElementAttributesFunctions[18];
+static bool JSSVGPatternElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGPatternElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("patternContentUnits", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::PatternContentUnitsAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGPatternElement::getValueProperty, JSSVGPatternElement::putValueProperty, JSSVGPatternElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGPatternElement::getValueProperty, JSSVGPatternElement::putValueProperty, JSSVGPatternElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("patternTransform", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::PatternTransformAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("patternUnits", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::PatternUnitsAttrNum),
-    JS_CGETSET_MAGIC_DEF("href", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::HrefAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::SystemLanguageAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("viewBox", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::ViewBoxAttrNum),
-    JS_CGETSET_MAGIC_DEF("preserveAspectRatio", JSSVGPatternElement::getValueProperty, NULL, JSSVGPatternElement::PreserveAspectRatioAttrNum)
-};
+    if (JSSVGPatternElementAttributesFunctions_initialized) return;
+    JSSVGPatternElementAttributesFunctions_initialized = true;
+    memset(JSSVGPatternElementAttributesFunctions, 0, sizeof(JSSVGPatternElementAttributesFunctions));
+    JSSVGPatternElementAttributesFunctions[0].name = "patternContentUnits";
+    JSSVGPatternElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[0].magic = JSSVGPatternElement::PatternContentUnitsAttrNum;
+    JSSVGPatternElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[1].name = "xmlspace";
+    JSSVGPatternElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[1].magic = JSSVGPatternElement::XmlspaceAttrNum;
+    JSSVGPatternElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPatternElement::putValueProperty;
+    JSSVGPatternElementAttributesFunctions[2].name = "requiredFeatures";
+    JSSVGPatternElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[2].magic = JSSVGPatternElement::RequiredFeaturesAttrNum;
+    JSSVGPatternElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[3].name = "y";
+    JSSVGPatternElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[3].magic = JSSVGPatternElement::YAttrNum;
+    JSSVGPatternElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[4].name = "xmllang";
+    JSSVGPatternElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[4].magic = JSSVGPatternElement::XmllangAttrNum;
+    JSSVGPatternElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[4].u.getset.set.setter_magic = JSSVGPatternElement::putValueProperty;
+    JSSVGPatternElementAttributesFunctions[5].name = "style";
+    JSSVGPatternElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[5].magic = JSSVGPatternElement::StyleAttrNum;
+    JSSVGPatternElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[6].name = "x";
+    JSSVGPatternElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[6].magic = JSSVGPatternElement::XAttrNum;
+    JSSVGPatternElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[7].name = "patternTransform";
+    JSSVGPatternElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[7].magic = JSSVGPatternElement::PatternTransformAttrNum;
+    JSSVGPatternElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[8].name = "width";
+    JSSVGPatternElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[8].magic = JSSVGPatternElement::WidthAttrNum;
+    JSSVGPatternElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[9].name = "patternUnits";
+    JSSVGPatternElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[9].magic = JSSVGPatternElement::PatternUnitsAttrNum;
+    JSSVGPatternElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[10].name = "href";
+    JSSVGPatternElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[10].magic = JSSVGPatternElement::HrefAttrNum;
+    JSSVGPatternElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[11].name = "requiredExtensions";
+    JSSVGPatternElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[11].magic = JSSVGPatternElement::RequiredExtensionsAttrNum;
+    JSSVGPatternElementAttributesFunctions[11].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[12].name = "height";
+    JSSVGPatternElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[12].magic = JSSVGPatternElement::HeightAttrNum;
+    JSSVGPatternElementAttributesFunctions[12].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[13].name = "systemLanguage";
+    JSSVGPatternElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[13].magic = JSSVGPatternElement::SystemLanguageAttrNum;
+    JSSVGPatternElementAttributesFunctions[13].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[13].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[14].name = "externalResourcesRequired";
+    JSSVGPatternElementAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[14].magic = JSSVGPatternElement::ExternalResourcesRequiredAttrNum;
+    JSSVGPatternElementAttributesFunctions[14].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[14].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[15].name = "className";
+    JSSVGPatternElementAttributesFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[15].magic = JSSVGPatternElement::ClassNameAttrNum;
+    JSSVGPatternElementAttributesFunctions[15].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[15].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[16].name = "viewBox";
+    JSSVGPatternElementAttributesFunctions[16].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[16].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[16].magic = JSSVGPatternElement::ViewBoxAttrNum;
+    JSSVGPatternElementAttributesFunctions[16].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[16].u.getset.set.setter_magic = NULL;
+    JSSVGPatternElementAttributesFunctions[17].name = "preserveAspectRatio";
+    JSSVGPatternElementAttributesFunctions[17].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementAttributesFunctions[17].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPatternElementAttributesFunctions[17].magic = JSSVGPatternElement::PreserveAspectRatioAttrNum;
+    JSSVGPatternElementAttributesFunctions[17].u.getset.get.getter_magic = JSSVGPatternElement::getValueProperty;
+    JSSVGPatternElementAttributesFunctions[17].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGPatternElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGPatternElementPrototypeFunctions[2];
+static bool JSSVGPatternElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGPatternElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGPatternElementPrototypeFunction::callAsFunction, JSSVGPatternElement::GetPresentationAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGPatternElementPrototypeFunction::callAsFunction, JSSVGPatternElement::HasExtensionFuncNum)
-};
+    if (JSSVGPatternElementPrototypeFunctions_initialized) return;
+    JSSVGPatternElementPrototypeFunctions_initialized = true;
+    memset(JSSVGPatternElementPrototypeFunctions, 0, sizeof(JSSVGPatternElementPrototypeFunctions));
+    JSSVGPatternElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGPatternElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGPatternElementPrototypeFunctions[0].magic = JSSVGPatternElement::GetPresentationAttributeFuncNum;
+    JSSVGPatternElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGPatternElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPatternElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGPatternElementPrototypeFunction::callAsFunction;
+    JSSVGPatternElementPrototypeFunctions[1].name = "hasExtension";
+    JSSVGPatternElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPatternElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGPatternElementPrototypeFunctions[1].magic = JSSVGPatternElement::HasExtensionFuncNum;
+    JSSVGPatternElementPrototypeFunctions[1].u.func.length = 1;
+    JSSVGPatternElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPatternElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGPatternElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGPatternElementPrototype::self(JSContext * ctx)
 {
@@ -107,22 +223,31 @@ JSValue JSSVGPatternElementPrototype::self(JSContext * ctx)
 
 void JSSVGPatternElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPatternElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPatternElementAttributesFunctions, countof(JSSVGPatternElementAttributesFunctions));
+    init_JSSVGPatternElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPatternElementPrototypeFunctions, countof(JSSVGPatternElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGPatternElementClassDefine = 
+static JSClassDef JSSVGPatternElementClassDefine;
+static bool JSSVGPatternElementClassDefine_initialized = false;
+
+static void init_JSSVGPatternElementClassDefine()
 {
-    "SVGPatternElement",
-    .finalizer = JSSVGPatternElement::finalizer,
-    .gc_mark = JSSVGPatternElement::mark,
-};
+    if (JSSVGPatternElementClassDefine_initialized) return;
+    JSSVGPatternElementClassDefine_initialized = true;
+    memset(&JSSVGPatternElementClassDefine, 0, sizeof(JSSVGPatternElementClassDefine));
+    JSSVGPatternElementClassDefine.class_name = "SVGPatternElement";
+    JSSVGPatternElementClassDefine.finalizer = JSSVGPatternElement::finalizer;
+    JSSVGPatternElementClassDefine.gc_mark = JSSVGPatternElement::mark;
+}
 
 JSClassID JSSVGPatternElement::js_class_id = 0;
 
 void JSSVGPatternElement::init(JSContext* ctx)
 {
     if (JSSVGPatternElement::js_class_id == 0) {
+        init_JSSVGPatternElementClassDefine();
         JS_NewClassID(&JSSVGPatternElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPatternElement::js_class_id, &JSSVGPatternElementClassDefine);
         JS_SetClassProto(ctx, JSSVGPatternElement::js_class_id, JSSVGPatternElementPrototype::self(ctx));

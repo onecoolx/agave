@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,11 +48,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPathSegMovetoAbsAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPathSegMovetoAbsAttributesFunctions[2];
+static bool JSSVGPathSegMovetoAbsAttributesFunctions_initialized = false;
+
+static void init_JSSVGPathSegMovetoAbsAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("y", JSSVGPathSegMovetoAbs::getValueProperty, JSSVGPathSegMovetoAbs::putValueProperty, JSSVGPathSegMovetoAbs::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGPathSegMovetoAbs::getValueProperty, JSSVGPathSegMovetoAbs::putValueProperty, JSSVGPathSegMovetoAbs::XAttrNum)
-};
+    if (JSSVGPathSegMovetoAbsAttributesFunctions_initialized) return;
+    JSSVGPathSegMovetoAbsAttributesFunctions_initialized = true;
+    memset(JSSVGPathSegMovetoAbsAttributesFunctions, 0, sizeof(JSSVGPathSegMovetoAbsAttributesFunctions));
+    JSSVGPathSegMovetoAbsAttributesFunctions[0].name = "y";
+    JSSVGPathSegMovetoAbsAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegMovetoAbsAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegMovetoAbsAttributesFunctions[0].magic = JSSVGPathSegMovetoAbs::YAttrNum;
+    JSSVGPathSegMovetoAbsAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegMovetoAbs::getValueProperty;
+    JSSVGPathSegMovetoAbsAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegMovetoAbs::putValueProperty;
+    JSSVGPathSegMovetoAbsAttributesFunctions[1].name = "x";
+    JSSVGPathSegMovetoAbsAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegMovetoAbsAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegMovetoAbsAttributesFunctions[1].magic = JSSVGPathSegMovetoAbs::XAttrNum;
+    JSSVGPathSegMovetoAbsAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegMovetoAbs::getValueProperty;
+    JSSVGPathSegMovetoAbsAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegMovetoAbs::putValueProperty;
+}
 
 JSValue JSSVGPathSegMovetoAbsPrototype::self(JSContext * ctx)
 {
@@ -68,21 +86,29 @@ JSValue JSSVGPathSegMovetoAbsPrototype::self(JSContext * ctx)
 
 void JSSVGPathSegMovetoAbsPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPathSegMovetoAbsAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathSegMovetoAbsAttributesFunctions, countof(JSSVGPathSegMovetoAbsAttributesFunctions));
 }
 
-static JSClassDef JSSVGPathSegMovetoAbsClassDefine = 
+static JSClassDef JSSVGPathSegMovetoAbsClassDefine;
+static bool JSSVGPathSegMovetoAbsClassDefine_initialized = false;
+
+static void init_JSSVGPathSegMovetoAbsClassDefine()
 {
-    "SVGPathSegMovetoAbs",
-    .finalizer = JSSVGPathSegMovetoAbs::finalizer,
-    .gc_mark = JSSVGPathSegMovetoAbs::mark,
-};
+    if (JSSVGPathSegMovetoAbsClassDefine_initialized) return;
+    JSSVGPathSegMovetoAbsClassDefine_initialized = true;
+    memset(&JSSVGPathSegMovetoAbsClassDefine, 0, sizeof(JSSVGPathSegMovetoAbsClassDefine));
+    JSSVGPathSegMovetoAbsClassDefine.class_name = "SVGPathSegMovetoAbs";
+    JSSVGPathSegMovetoAbsClassDefine.finalizer = JSSVGPathSegMovetoAbs::finalizer;
+    JSSVGPathSegMovetoAbsClassDefine.gc_mark = JSSVGPathSegMovetoAbs::mark;
+}
 
 JSClassID JSSVGPathSegMovetoAbs::js_class_id = 0;
 
 void JSSVGPathSegMovetoAbs::init(JSContext* ctx)
 {
     if (JSSVGPathSegMovetoAbs::js_class_id == 0) {
+        init_JSSVGPathSegMovetoAbsClassDefine();
         JS_NewClassID(&JSSVGPathSegMovetoAbs::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathSegMovetoAbs::js_class_id, &JSSVGPathSegMovetoAbsClassDefine);
         JS_SetClassProto(ctx, JSSVGPathSegMovetoAbs::js_class_id, JSSVGPathSegMovetoAbsPrototype::self(ctx));

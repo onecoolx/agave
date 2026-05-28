@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLDListElement.h"
 
 #include "HTMLDListElement.h"
@@ -38,11 +40,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLDListElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLDListElementAttributesFunctions[2];
+static bool JSHTMLDListElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLDListElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("compact", JSHTMLDListElement::getValueProperty, JSHTMLDListElement::putValueProperty, JSHTMLDListElement::CompactAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLDListElement::getValueProperty, NULL, JSHTMLDListElement::ConstructorAttrNum)
-};
+    if (JSHTMLDListElementAttributesFunctions_initialized) return;
+    JSHTMLDListElementAttributesFunctions_initialized = true;
+    memset(JSHTMLDListElementAttributesFunctions, 0, sizeof(JSHTMLDListElementAttributesFunctions));
+    JSHTMLDListElementAttributesFunctions[0].name = "compact";
+    JSHTMLDListElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDListElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDListElementAttributesFunctions[0].magic = JSHTMLDListElement::CompactAttrNum;
+    JSHTMLDListElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLDListElement::getValueProperty;
+    JSHTMLDListElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLDListElement::putValueProperty;
+    JSHTMLDListElementAttributesFunctions[1].name = "constructor";
+    JSHTMLDListElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDListElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDListElementAttributesFunctions[1].magic = JSHTMLDListElement::ConstructorAttrNum;
+    JSHTMLDListElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLDListElement::getValueProperty;
+    JSHTMLDListElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLDListElementConstructor {
 public:
@@ -91,15 +109,22 @@ JSValue JSHTMLDListElementPrototype::self(JSContext * ctx)
 
 void JSHTMLDListElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLDListElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLDListElementAttributesFunctions, countof(JSHTMLDListElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLDListElementClassDefine = 
+static JSClassDef JSHTMLDListElementClassDefine;
+static bool JSHTMLDListElementClassDefine_initialized = false;
+
+static void init_JSHTMLDListElementClassDefine()
 {
-    "HTMLDListElement",
-    .finalizer = JSHTMLDListElement::finalizer,
-    .gc_mark = JSHTMLDListElement::mark,
-};
+    if (JSHTMLDListElementClassDefine_initialized) return;
+    JSHTMLDListElementClassDefine_initialized = true;
+    memset(&JSHTMLDListElementClassDefine, 0, sizeof(JSHTMLDListElementClassDefine));
+    JSHTMLDListElementClassDefine.class_name = "HTMLDListElement";
+    JSHTMLDListElementClassDefine.finalizer = JSHTMLDListElement::finalizer;
+    JSHTMLDListElementClassDefine.gc_mark = JSHTMLDListElement::mark;
+}
 
 JSClassID JSHTMLDListElement::js_class_id = 0;
 

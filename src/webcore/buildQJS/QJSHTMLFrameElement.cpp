@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLFrameElement.h"
 
 #include "Document.h"
@@ -43,23 +45,99 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLFrameElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLFrameElementAttributesFunctions[14];
+static bool JSHTMLFrameElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLFrameElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("scrolling", JSHTMLFrameElement::getValueProperty, JSHTMLFrameElement::putValueProperty, JSHTMLFrameElement::ScrollingAttrNum),
-    JS_CGETSET_MAGIC_DEF("longDesc", JSHTMLFrameElement::getValueProperty, JSHTMLFrameElement::putValueProperty, JSHTMLFrameElement::LongDescAttrNum),
-    JS_CGETSET_MAGIC_DEF("location", JSHTMLFrameElement::getValueProperty, JSHTMLFrameElement::putValueProperty, JSHTMLFrameElement::LocationAttrNum),
-    JS_CGETSET_MAGIC_DEF("marginWidth", JSHTMLFrameElement::getValueProperty, JSHTMLFrameElement::putValueProperty, JSHTMLFrameElement::MarginWidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("name", JSHTMLFrameElement::getValueProperty, JSHTMLFrameElement::putValueProperty, JSHTMLFrameElement::NameAttrNum),
-    JS_CGETSET_MAGIC_DEF("marginHeight", JSHTMLFrameElement::getValueProperty, JSHTMLFrameElement::putValueProperty, JSHTMLFrameElement::MarginHeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("frameBorder", JSHTMLFrameElement::getValueProperty, JSHTMLFrameElement::putValueProperty, JSHTMLFrameElement::FrameBorderAttrNum),
-    JS_CGETSET_MAGIC_DEF("noResize", JSHTMLFrameElement::getValueProperty, JSHTMLFrameElement::putValueProperty, JSHTMLFrameElement::NoResizeAttrNum),
-    JS_CGETSET_MAGIC_DEF("src", JSHTMLFrameElement::getValueProperty, JSHTMLFrameElement::putValueProperty, JSHTMLFrameElement::SrcAttrNum),
-    JS_CGETSET_MAGIC_DEF("contentDocument", JSHTMLFrameElement::getValueProperty, NULL, JSHTMLFrameElement::ContentDocumentAttrNum),
-    JS_CGETSET_MAGIC_DEF("contentWindow", JSHTMLFrameElement::getValueProperty, NULL, JSHTMLFrameElement::ContentWindowAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSHTMLFrameElement::getValueProperty, NULL, JSHTMLFrameElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSHTMLFrameElement::getValueProperty, NULL, JSHTMLFrameElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLFrameElement::getValueProperty, NULL, JSHTMLFrameElement::ConstructorAttrNum)
-};
+    if (JSHTMLFrameElementAttributesFunctions_initialized) return;
+    JSHTMLFrameElementAttributesFunctions_initialized = true;
+    memset(JSHTMLFrameElementAttributesFunctions, 0, sizeof(JSHTMLFrameElementAttributesFunctions));
+    JSHTMLFrameElementAttributesFunctions[0].name = "scrolling";
+    JSHTMLFrameElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameElementAttributesFunctions[0].magic = JSHTMLFrameElement::ScrollingAttrNum;
+    JSHTMLFrameElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLFrameElement::getValueProperty;
+    JSHTMLFrameElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLFrameElement::putValueProperty;
+    JSHTMLFrameElementAttributesFunctions[1].name = "longDesc";
+    JSHTMLFrameElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameElementAttributesFunctions[1].magic = JSHTMLFrameElement::LongDescAttrNum;
+    JSHTMLFrameElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLFrameElement::getValueProperty;
+    JSHTMLFrameElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLFrameElement::putValueProperty;
+    JSHTMLFrameElementAttributesFunctions[2].name = "location";
+    JSHTMLFrameElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameElementAttributesFunctions[2].magic = JSHTMLFrameElement::LocationAttrNum;
+    JSHTMLFrameElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLFrameElement::getValueProperty;
+    JSHTMLFrameElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLFrameElement::putValueProperty;
+    JSHTMLFrameElementAttributesFunctions[3].name = "marginWidth";
+    JSHTMLFrameElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameElementAttributesFunctions[3].magic = JSHTMLFrameElement::MarginWidthAttrNum;
+    JSHTMLFrameElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLFrameElement::getValueProperty;
+    JSHTMLFrameElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLFrameElement::putValueProperty;
+    JSHTMLFrameElementAttributesFunctions[4].name = "name";
+    JSHTMLFrameElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameElementAttributesFunctions[4].magic = JSHTMLFrameElement::NameAttrNum;
+    JSHTMLFrameElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLFrameElement::getValueProperty;
+    JSHTMLFrameElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLFrameElement::putValueProperty;
+    JSHTMLFrameElementAttributesFunctions[5].name = "marginHeight";
+    JSHTMLFrameElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameElementAttributesFunctions[5].magic = JSHTMLFrameElement::MarginHeightAttrNum;
+    JSHTMLFrameElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLFrameElement::getValueProperty;
+    JSHTMLFrameElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLFrameElement::putValueProperty;
+    JSHTMLFrameElementAttributesFunctions[6].name = "frameBorder";
+    JSHTMLFrameElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameElementAttributesFunctions[6].magic = JSHTMLFrameElement::FrameBorderAttrNum;
+    JSHTMLFrameElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLFrameElement::getValueProperty;
+    JSHTMLFrameElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLFrameElement::putValueProperty;
+    JSHTMLFrameElementAttributesFunctions[7].name = "noResize";
+    JSHTMLFrameElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameElementAttributesFunctions[7].magic = JSHTMLFrameElement::NoResizeAttrNum;
+    JSHTMLFrameElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLFrameElement::getValueProperty;
+    JSHTMLFrameElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLFrameElement::putValueProperty;
+    JSHTMLFrameElementAttributesFunctions[8].name = "src";
+    JSHTMLFrameElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameElementAttributesFunctions[8].magic = JSHTMLFrameElement::SrcAttrNum;
+    JSHTMLFrameElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLFrameElement::getValueProperty;
+    JSHTMLFrameElementAttributesFunctions[8].u.getset.set.setter_magic = JSHTMLFrameElement::putValueProperty;
+    JSHTMLFrameElementAttributesFunctions[9].name = "contentDocument";
+    JSHTMLFrameElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameElementAttributesFunctions[9].magic = JSHTMLFrameElement::ContentDocumentAttrNum;
+    JSHTMLFrameElementAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLFrameElement::getValueProperty;
+    JSHTMLFrameElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSHTMLFrameElementAttributesFunctions[10].name = "contentWindow";
+    JSHTMLFrameElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameElementAttributesFunctions[10].magic = JSHTMLFrameElement::ContentWindowAttrNum;
+    JSHTMLFrameElementAttributesFunctions[10].u.getset.get.getter_magic = JSHTMLFrameElement::getValueProperty;
+    JSHTMLFrameElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSHTMLFrameElementAttributesFunctions[11].name = "width";
+    JSHTMLFrameElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameElementAttributesFunctions[11].magic = JSHTMLFrameElement::WidthAttrNum;
+    JSHTMLFrameElementAttributesFunctions[11].u.getset.get.getter_magic = JSHTMLFrameElement::getValueProperty;
+    JSHTMLFrameElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSHTMLFrameElementAttributesFunctions[12].name = "height";
+    JSHTMLFrameElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameElementAttributesFunctions[12].magic = JSHTMLFrameElement::HeightAttrNum;
+    JSHTMLFrameElementAttributesFunctions[12].u.getset.get.getter_magic = JSHTMLFrameElement::getValueProperty;
+    JSHTMLFrameElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSHTMLFrameElementAttributesFunctions[13].name = "constructor";
+    JSHTMLFrameElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLFrameElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLFrameElementAttributesFunctions[13].magic = JSHTMLFrameElement::ConstructorAttrNum;
+    JSHTMLFrameElementAttributesFunctions[13].u.getset.get.getter_magic = JSHTMLFrameElement::getValueProperty;
+    JSHTMLFrameElementAttributesFunctions[13].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLFrameElementConstructor {
 public:
@@ -108,15 +186,22 @@ JSValue JSHTMLFrameElementPrototype::self(JSContext * ctx)
 
 void JSHTMLFrameElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLFrameElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLFrameElementAttributesFunctions, countof(JSHTMLFrameElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLFrameElementClassDefine = 
+static JSClassDef JSHTMLFrameElementClassDefine;
+static bool JSHTMLFrameElementClassDefine_initialized = false;
+
+static void init_JSHTMLFrameElementClassDefine()
 {
-    "HTMLFrameElement",
-    .finalizer = JSHTMLFrameElement::finalizer,
-    .gc_mark = JSHTMLFrameElement::mark,
-};
+    if (JSHTMLFrameElementClassDefine_initialized) return;
+    JSHTMLFrameElementClassDefine_initialized = true;
+    memset(&JSHTMLFrameElementClassDefine, 0, sizeof(JSHTMLFrameElementClassDefine));
+    JSHTMLFrameElementClassDefine.class_name = "HTMLFrameElement";
+    JSHTMLFrameElementClassDefine.finalizer = JSHTMLFrameElement::finalizer;
+    JSHTMLFrameElementClassDefine.gc_mark = JSHTMLFrameElement::mark;
+}
 
 JSClassID JSHTMLFrameElement::js_class_id = 0;
 

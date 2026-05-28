@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -62,38 +64,171 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGRectElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGRectElementAttributesFunctions[17];
+static bool JSSVGRectElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGRectElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("height", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::SystemLanguageAttrNum),
-    JS_CGETSET_MAGIC_DEF("farthestViewportElement", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::FarthestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("ry", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::RyAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("transform", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::TransformAttrNum),
-    JS_CGETSET_MAGIC_DEF("rx", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::RxAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGRectElement::getValueProperty, JSSVGRectElement::putValueProperty, JSSVGRectElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGRectElement::getValueProperty, JSSVGRectElement::putValueProperty, JSSVGRectElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("nearestViewportElement", JSSVGRectElement::getValueProperty, NULL, JSSVGRectElement::NearestViewportElementAttrNum)
-};
+    if (JSSVGRectElementAttributesFunctions_initialized) return;
+    JSSVGRectElementAttributesFunctions_initialized = true;
+    memset(JSSVGRectElementAttributesFunctions, 0, sizeof(JSSVGRectElementAttributesFunctions));
+    JSSVGRectElementAttributesFunctions[0].name = "height";
+    JSSVGRectElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[0].magic = JSSVGRectElement::HeightAttrNum;
+    JSSVGRectElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGRectElementAttributesFunctions[1].name = "requiredFeatures";
+    JSSVGRectElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[1].magic = JSSVGRectElement::RequiredFeaturesAttrNum;
+    JSSVGRectElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGRectElementAttributesFunctions[2].name = "systemLanguage";
+    JSSVGRectElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[2].magic = JSSVGRectElement::SystemLanguageAttrNum;
+    JSSVGRectElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGRectElementAttributesFunctions[3].name = "farthestViewportElement";
+    JSSVGRectElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[3].magic = JSSVGRectElement::FarthestViewportElementAttrNum;
+    JSSVGRectElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGRectElementAttributesFunctions[4].name = "x";
+    JSSVGRectElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[4].magic = JSSVGRectElement::XAttrNum;
+    JSSVGRectElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGRectElementAttributesFunctions[5].name = "ry";
+    JSSVGRectElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[5].magic = JSSVGRectElement::RyAttrNum;
+    JSSVGRectElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGRectElementAttributesFunctions[6].name = "requiredExtensions";
+    JSSVGRectElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[6].magic = JSSVGRectElement::RequiredExtensionsAttrNum;
+    JSSVGRectElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGRectElementAttributesFunctions[7].name = "width";
+    JSSVGRectElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[7].magic = JSSVGRectElement::WidthAttrNum;
+    JSSVGRectElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGRectElementAttributesFunctions[8].name = "y";
+    JSSVGRectElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[8].magic = JSSVGRectElement::YAttrNum;
+    JSSVGRectElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGRectElementAttributesFunctions[9].name = "transform";
+    JSSVGRectElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[9].magic = JSSVGRectElement::TransformAttrNum;
+    JSSVGRectElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGRectElementAttributesFunctions[10].name = "rx";
+    JSSVGRectElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[10].magic = JSSVGRectElement::RxAttrNum;
+    JSSVGRectElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSSVGRectElementAttributesFunctions[11].name = "style";
+    JSSVGRectElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[11].magic = JSSVGRectElement::StyleAttrNum;
+    JSSVGRectElementAttributesFunctions[11].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSSVGRectElementAttributesFunctions[12].name = "xmllang";
+    JSSVGRectElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[12].magic = JSSVGRectElement::XmllangAttrNum;
+    JSSVGRectElementAttributesFunctions[12].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[12].u.getset.set.setter_magic = JSSVGRectElement::putValueProperty;
+    JSSVGRectElementAttributesFunctions[13].name = "xmlspace";
+    JSSVGRectElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[13].magic = JSSVGRectElement::XmlspaceAttrNum;
+    JSSVGRectElementAttributesFunctions[13].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[13].u.getset.set.setter_magic = JSSVGRectElement::putValueProperty;
+    JSSVGRectElementAttributesFunctions[14].name = "externalResourcesRequired";
+    JSSVGRectElementAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[14].magic = JSSVGRectElement::ExternalResourcesRequiredAttrNum;
+    JSSVGRectElementAttributesFunctions[14].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[14].u.getset.set.setter_magic = NULL;
+    JSSVGRectElementAttributesFunctions[15].name = "className";
+    JSSVGRectElementAttributesFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[15].magic = JSSVGRectElement::ClassNameAttrNum;
+    JSSVGRectElementAttributesFunctions[15].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[15].u.getset.set.setter_magic = NULL;
+    JSSVGRectElementAttributesFunctions[16].name = "nearestViewportElement";
+    JSSVGRectElementAttributesFunctions[16].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGRectElementAttributesFunctions[16].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGRectElementAttributesFunctions[16].magic = JSSVGRectElement::NearestViewportElementAttrNum;
+    JSSVGRectElementAttributesFunctions[16].u.getset.get.getter_magic = JSSVGRectElement::getValueProperty;
+    JSSVGRectElementAttributesFunctions[16].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGRectElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGRectElementPrototypeFunctions[6];
+static bool JSSVGRectElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGRectElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGRectElementPrototypeFunction::callAsFunction, JSSVGRectElement::GetPresentationAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGRectElementPrototypeFunction::callAsFunction, JSSVGRectElement::HasExtensionFuncNum),
-    JS_CFUNC_MAGIC_DEF("getCTM", 0, JSSVGRectElementPrototypeFunction::callAsFunction, JSSVGRectElement::GetCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getScreenCTM", 0, JSSVGRectElementPrototypeFunction::callAsFunction, JSSVGRectElement::GetScreenCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getTransformToElement", 1, JSSVGRectElementPrototypeFunction::callAsFunction, JSSVGRectElement::GetTransformToElementFuncNum),
-    JS_CFUNC_MAGIC_DEF("getBBox", 0, JSSVGRectElementPrototypeFunction::callAsFunction, JSSVGRectElement::GetBBoxFuncNum)
-};
+    if (JSSVGRectElementPrototypeFunctions_initialized) return;
+    JSSVGRectElementPrototypeFunctions_initialized = true;
+    memset(JSSVGRectElementPrototypeFunctions, 0, sizeof(JSSVGRectElementPrototypeFunctions));
+    JSSVGRectElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGRectElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGRectElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGRectElementPrototypeFunctions[0].magic = JSSVGRectElement::GetPresentationAttributeFuncNum;
+    JSSVGRectElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGRectElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGRectElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGRectElementPrototypeFunction::callAsFunction;
+    JSSVGRectElementPrototypeFunctions[1].name = "hasExtension";
+    JSSVGRectElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGRectElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGRectElementPrototypeFunctions[1].magic = JSSVGRectElement::HasExtensionFuncNum;
+    JSSVGRectElementPrototypeFunctions[1].u.func.length = 1;
+    JSSVGRectElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGRectElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGRectElementPrototypeFunction::callAsFunction;
+    JSSVGRectElementPrototypeFunctions[2].name = "getCTM";
+    JSSVGRectElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGRectElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGRectElementPrototypeFunctions[2].magic = JSSVGRectElement::GetCTMFuncNum;
+    JSSVGRectElementPrototypeFunctions[2].u.func.length = 0;
+    JSSVGRectElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGRectElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGRectElementPrototypeFunction::callAsFunction;
+    JSSVGRectElementPrototypeFunctions[3].name = "getScreenCTM";
+    JSSVGRectElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGRectElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGRectElementPrototypeFunctions[3].magic = JSSVGRectElement::GetScreenCTMFuncNum;
+    JSSVGRectElementPrototypeFunctions[3].u.func.length = 0;
+    JSSVGRectElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGRectElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGRectElementPrototypeFunction::callAsFunction;
+    JSSVGRectElementPrototypeFunctions[4].name = "getTransformToElement";
+    JSSVGRectElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGRectElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGRectElementPrototypeFunctions[4].magic = JSSVGRectElement::GetTransformToElementFuncNum;
+    JSSVGRectElementPrototypeFunctions[4].u.func.length = 1;
+    JSSVGRectElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGRectElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGRectElementPrototypeFunction::callAsFunction;
+    JSSVGRectElementPrototypeFunctions[5].name = "getBBox";
+    JSSVGRectElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGRectElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGRectElementPrototypeFunctions[5].magic = JSSVGRectElement::GetBBoxFuncNum;
+    JSSVGRectElementPrototypeFunctions[5].u.func.length = 0;
+    JSSVGRectElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGRectElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGRectElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGRectElementPrototype::self(JSContext * ctx)
 {
@@ -111,22 +246,31 @@ JSValue JSSVGRectElementPrototype::self(JSContext * ctx)
 
 void JSSVGRectElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGRectElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGRectElementAttributesFunctions, countof(JSSVGRectElementAttributesFunctions));
+    init_JSSVGRectElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGRectElementPrototypeFunctions, countof(JSSVGRectElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGRectElementClassDefine = 
+static JSClassDef JSSVGRectElementClassDefine;
+static bool JSSVGRectElementClassDefine_initialized = false;
+
+static void init_JSSVGRectElementClassDefine()
 {
-    "SVGRectElement",
-    .finalizer = JSSVGRectElement::finalizer,
-    .gc_mark = JSSVGRectElement::mark,
-};
+    if (JSSVGRectElementClassDefine_initialized) return;
+    JSSVGRectElementClassDefine_initialized = true;
+    memset(&JSSVGRectElementClassDefine, 0, sizeof(JSSVGRectElementClassDefine));
+    JSSVGRectElementClassDefine.class_name = "SVGRectElement";
+    JSSVGRectElementClassDefine.finalizer = JSSVGRectElement::finalizer;
+    JSSVGRectElementClassDefine.gc_mark = JSSVGRectElement::mark;
+}
 
 JSClassID JSSVGRectElement::js_class_id = 0;
 
 void JSSVGRectElement::init(JSContext* ctx)
 {
     if (JSSVGRectElement::js_class_id == 0) {
+        init_JSSVGRectElementClassDefine();
         JS_NewClassID(&JSSVGRectElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGRectElement::js_class_id, &JSSVGRectElementClassDefine);
         JS_SetClassProto(ctx, JSSVGRectElement::js_class_id, JSSVGRectElementPrototype::self(ctx));

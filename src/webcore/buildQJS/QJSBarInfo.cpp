@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSBarInfo.h"
 
 #include "BarInfo.h"
@@ -38,10 +40,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSBarInfoAttributesFunctions[] =
+static JSCFunctionListEntry JSBarInfoAttributesFunctions[1];
+static bool JSBarInfoAttributesFunctions_initialized = false;
+
+static void init_JSBarInfoAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("visible", JSBarInfo::getValueProperty, NULL, JSBarInfo::VisibleAttrNum)
-};
+    if (JSBarInfoAttributesFunctions_initialized) return;
+    JSBarInfoAttributesFunctions_initialized = true;
+    memset(JSBarInfoAttributesFunctions, 0, sizeof(JSBarInfoAttributesFunctions));
+    JSBarInfoAttributesFunctions[0].name = "visible";
+    JSBarInfoAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSBarInfoAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSBarInfoAttributesFunctions[0].magic = JSBarInfo::VisibleAttrNum;
+    JSBarInfoAttributesFunctions[0].u.getset.get.getter_magic = JSBarInfo::getValueProperty;
+    JSBarInfoAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSBarInfoPrototype::self(JSContext * ctx)
 {
@@ -59,21 +72,29 @@ JSValue JSBarInfoPrototype::self(JSContext * ctx)
 
 void JSBarInfoPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSBarInfoAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSBarInfoAttributesFunctions, countof(JSBarInfoAttributesFunctions));
 }
 
-static JSClassDef JSBarInfoClassDefine = 
+static JSClassDef JSBarInfoClassDefine;
+static bool JSBarInfoClassDefine_initialized = false;
+
+static void init_JSBarInfoClassDefine()
 {
-    "BarInfo",
-    .finalizer = JSBarInfo::finalizer,
-    .gc_mark = JSBarInfo::mark,
-};
+    if (JSBarInfoClassDefine_initialized) return;
+    JSBarInfoClassDefine_initialized = true;
+    memset(&JSBarInfoClassDefine, 0, sizeof(JSBarInfoClassDefine));
+    JSBarInfoClassDefine.class_name = "BarInfo";
+    JSBarInfoClassDefine.finalizer = JSBarInfo::finalizer;
+    JSBarInfoClassDefine.gc_mark = JSBarInfo::mark;
+}
 
 JSClassID JSBarInfo::js_class_id = 0;
 
 void JSBarInfo::init(JSContext* ctx)
 {
     if (JSBarInfo::js_class_id == 0) {
+        init_JSBarInfoClassDefine();
         JS_NewClassID(&JSBarInfo::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSBarInfo::js_class_id, &JSBarInfoClassDefine);
         JS_SetClassProto(ctx, JSBarInfo::js_class_id, JSBarInfoPrototype::self(ctx));

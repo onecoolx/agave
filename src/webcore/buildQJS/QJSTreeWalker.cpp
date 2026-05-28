@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSTreeWalker.h"
 
 #include "Node.h"
@@ -42,27 +44,106 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSTreeWalkerAttributesFunctions[] =
+static JSCFunctionListEntry JSTreeWalkerAttributesFunctions[5];
+static bool JSTreeWalkerAttributesFunctions_initialized = false;
+
+static void init_JSTreeWalkerAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("filter", JSTreeWalker::getValueProperty, NULL, JSTreeWalker::FilterAttrNum),
-    JS_CGETSET_MAGIC_DEF("root", JSTreeWalker::getValueProperty, NULL, JSTreeWalker::RootAttrNum),
-    JS_CGETSET_MAGIC_DEF("whatToShow", JSTreeWalker::getValueProperty, NULL, JSTreeWalker::WhatToShowAttrNum),
-    JS_CGETSET_MAGIC_DEF("expandEntityReferences", JSTreeWalker::getValueProperty, NULL, JSTreeWalker::ExpandEntityReferencesAttrNum),
-    JS_CGETSET_MAGIC_DEF("currentNode", JSTreeWalker::getValueProperty, JSTreeWalker::putValueProperty, JSTreeWalker::CurrentNodeAttrNum)
-};
+    if (JSTreeWalkerAttributesFunctions_initialized) return;
+    JSTreeWalkerAttributesFunctions_initialized = true;
+    memset(JSTreeWalkerAttributesFunctions, 0, sizeof(JSTreeWalkerAttributesFunctions));
+    JSTreeWalkerAttributesFunctions[0].name = "filter";
+    JSTreeWalkerAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSTreeWalkerAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSTreeWalkerAttributesFunctions[0].magic = JSTreeWalker::FilterAttrNum;
+    JSTreeWalkerAttributesFunctions[0].u.getset.get.getter_magic = JSTreeWalker::getValueProperty;
+    JSTreeWalkerAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSTreeWalkerAttributesFunctions[1].name = "root";
+    JSTreeWalkerAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSTreeWalkerAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSTreeWalkerAttributesFunctions[1].magic = JSTreeWalker::RootAttrNum;
+    JSTreeWalkerAttributesFunctions[1].u.getset.get.getter_magic = JSTreeWalker::getValueProperty;
+    JSTreeWalkerAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSTreeWalkerAttributesFunctions[2].name = "whatToShow";
+    JSTreeWalkerAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSTreeWalkerAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSTreeWalkerAttributesFunctions[2].magic = JSTreeWalker::WhatToShowAttrNum;
+    JSTreeWalkerAttributesFunctions[2].u.getset.get.getter_magic = JSTreeWalker::getValueProperty;
+    JSTreeWalkerAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSTreeWalkerAttributesFunctions[3].name = "expandEntityReferences";
+    JSTreeWalkerAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSTreeWalkerAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSTreeWalkerAttributesFunctions[3].magic = JSTreeWalker::ExpandEntityReferencesAttrNum;
+    JSTreeWalkerAttributesFunctions[3].u.getset.get.getter_magic = JSTreeWalker::getValueProperty;
+    JSTreeWalkerAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSTreeWalkerAttributesFunctions[4].name = "currentNode";
+    JSTreeWalkerAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSTreeWalkerAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSTreeWalkerAttributesFunctions[4].magic = JSTreeWalker::CurrentNodeAttrNum;
+    JSTreeWalkerAttributesFunctions[4].u.getset.get.getter_magic = JSTreeWalker::getValueProperty;
+    JSTreeWalkerAttributesFunctions[4].u.getset.set.setter_magic = JSTreeWalker::putValueProperty;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSTreeWalkerPrototypeFunctions[] =
+static JSCFunctionListEntry JSTreeWalkerPrototypeFunctions[7];
+static bool JSTreeWalkerPrototypeFunctions_initialized = false;
+
+static void init_JSTreeWalkerPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("nextSibling", 0, JSTreeWalkerPrototypeFunction::callAsFunction, JSTreeWalker::NextSiblingFuncNum),
-    JS_CFUNC_MAGIC_DEF("parentNode", 0, JSTreeWalkerPrototypeFunction::callAsFunction, JSTreeWalker::ParentNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("nextNode", 0, JSTreeWalkerPrototypeFunction::callAsFunction, JSTreeWalker::NextNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("lastChild", 0, JSTreeWalkerPrototypeFunction::callAsFunction, JSTreeWalker::LastChildFuncNum),
-    JS_CFUNC_MAGIC_DEF("previousNode", 0, JSTreeWalkerPrototypeFunction::callAsFunction, JSTreeWalker::PreviousNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("firstChild", 0, JSTreeWalkerPrototypeFunction::callAsFunction, JSTreeWalker::FirstChildFuncNum),
-    JS_CFUNC_MAGIC_DEF("previousSibling", 0, JSTreeWalkerPrototypeFunction::callAsFunction, JSTreeWalker::PreviousSiblingFuncNum)
-};
+    if (JSTreeWalkerPrototypeFunctions_initialized) return;
+    JSTreeWalkerPrototypeFunctions_initialized = true;
+    memset(JSTreeWalkerPrototypeFunctions, 0, sizeof(JSTreeWalkerPrototypeFunctions));
+    JSTreeWalkerPrototypeFunctions[0].name = "nextSibling";
+    JSTreeWalkerPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSTreeWalkerPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSTreeWalkerPrototypeFunctions[0].magic = JSTreeWalker::NextSiblingFuncNum;
+    JSTreeWalkerPrototypeFunctions[0].u.func.length = 0;
+    JSTreeWalkerPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSTreeWalkerPrototypeFunctions[0].u.func.cfunc.generic_magic = JSTreeWalkerPrototypeFunction::callAsFunction;
+    JSTreeWalkerPrototypeFunctions[1].name = "parentNode";
+    JSTreeWalkerPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSTreeWalkerPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSTreeWalkerPrototypeFunctions[1].magic = JSTreeWalker::ParentNodeFuncNum;
+    JSTreeWalkerPrototypeFunctions[1].u.func.length = 0;
+    JSTreeWalkerPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSTreeWalkerPrototypeFunctions[1].u.func.cfunc.generic_magic = JSTreeWalkerPrototypeFunction::callAsFunction;
+    JSTreeWalkerPrototypeFunctions[2].name = "nextNode";
+    JSTreeWalkerPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSTreeWalkerPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSTreeWalkerPrototypeFunctions[2].magic = JSTreeWalker::NextNodeFuncNum;
+    JSTreeWalkerPrototypeFunctions[2].u.func.length = 0;
+    JSTreeWalkerPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSTreeWalkerPrototypeFunctions[2].u.func.cfunc.generic_magic = JSTreeWalkerPrototypeFunction::callAsFunction;
+    JSTreeWalkerPrototypeFunctions[3].name = "lastChild";
+    JSTreeWalkerPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSTreeWalkerPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSTreeWalkerPrototypeFunctions[3].magic = JSTreeWalker::LastChildFuncNum;
+    JSTreeWalkerPrototypeFunctions[3].u.func.length = 0;
+    JSTreeWalkerPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSTreeWalkerPrototypeFunctions[3].u.func.cfunc.generic_magic = JSTreeWalkerPrototypeFunction::callAsFunction;
+    JSTreeWalkerPrototypeFunctions[4].name = "previousNode";
+    JSTreeWalkerPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSTreeWalkerPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSTreeWalkerPrototypeFunctions[4].magic = JSTreeWalker::PreviousNodeFuncNum;
+    JSTreeWalkerPrototypeFunctions[4].u.func.length = 0;
+    JSTreeWalkerPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSTreeWalkerPrototypeFunctions[4].u.func.cfunc.generic_magic = JSTreeWalkerPrototypeFunction::callAsFunction;
+    JSTreeWalkerPrototypeFunctions[5].name = "firstChild";
+    JSTreeWalkerPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSTreeWalkerPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSTreeWalkerPrototypeFunctions[5].magic = JSTreeWalker::FirstChildFuncNum;
+    JSTreeWalkerPrototypeFunctions[5].u.func.length = 0;
+    JSTreeWalkerPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSTreeWalkerPrototypeFunctions[5].u.func.cfunc.generic_magic = JSTreeWalkerPrototypeFunction::callAsFunction;
+    JSTreeWalkerPrototypeFunctions[6].name = "previousSibling";
+    JSTreeWalkerPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSTreeWalkerPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSTreeWalkerPrototypeFunctions[6].magic = JSTreeWalker::PreviousSiblingFuncNum;
+    JSTreeWalkerPrototypeFunctions[6].u.func.length = 0;
+    JSTreeWalkerPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSTreeWalkerPrototypeFunctions[6].u.func.cfunc.generic_magic = JSTreeWalkerPrototypeFunction::callAsFunction;
+}
 
 JSValue JSTreeWalkerPrototype::self(JSContext * ctx)
 {
@@ -80,22 +161,31 @@ JSValue JSTreeWalkerPrototype::self(JSContext * ctx)
 
 void JSTreeWalkerPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSTreeWalkerAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSTreeWalkerAttributesFunctions, countof(JSTreeWalkerAttributesFunctions));
+    init_JSTreeWalkerPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSTreeWalkerPrototypeFunctions, countof(JSTreeWalkerPrototypeFunctions));
 }
 
-static JSClassDef JSTreeWalkerClassDefine = 
+static JSClassDef JSTreeWalkerClassDefine;
+static bool JSTreeWalkerClassDefine_initialized = false;
+
+static void init_JSTreeWalkerClassDefine()
 {
-    "TreeWalker",
-    .finalizer = JSTreeWalker::finalizer,
-    .gc_mark = JSTreeWalker::mark,
-};
+    if (JSTreeWalkerClassDefine_initialized) return;
+    JSTreeWalkerClassDefine_initialized = true;
+    memset(&JSTreeWalkerClassDefine, 0, sizeof(JSTreeWalkerClassDefine));
+    JSTreeWalkerClassDefine.class_name = "TreeWalker";
+    JSTreeWalkerClassDefine.finalizer = JSTreeWalker::finalizer;
+    JSTreeWalkerClassDefine.gc_mark = JSTreeWalker::mark;
+}
 
 JSClassID JSTreeWalker::js_class_id = 0;
 
 void JSTreeWalker::init(JSContext* ctx)
 {
     if (JSTreeWalker::js_class_id == 0) {
+        init_JSTreeWalkerClassDefine();
         JS_NewClassID(&JSTreeWalker::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSTreeWalker::js_class_id, &JSTreeWalkerClassDefine);
         JS_SetClassProto(ctx, JSTreeWalker::js_class_id, JSTreeWalkerPrototype::self(ctx));

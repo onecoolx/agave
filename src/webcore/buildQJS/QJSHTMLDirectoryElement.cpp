@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLDirectoryElement.h"
 
 #include "HTMLDirectoryElement.h"
@@ -38,11 +40,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLDirectoryElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLDirectoryElementAttributesFunctions[2];
+static bool JSHTMLDirectoryElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLDirectoryElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("compact", JSHTMLDirectoryElement::getValueProperty, JSHTMLDirectoryElement::putValueProperty, JSHTMLDirectoryElement::CompactAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLDirectoryElement::getValueProperty, NULL, JSHTMLDirectoryElement::ConstructorAttrNum)
-};
+    if (JSHTMLDirectoryElementAttributesFunctions_initialized) return;
+    JSHTMLDirectoryElementAttributesFunctions_initialized = true;
+    memset(JSHTMLDirectoryElementAttributesFunctions, 0, sizeof(JSHTMLDirectoryElementAttributesFunctions));
+    JSHTMLDirectoryElementAttributesFunctions[0].name = "compact";
+    JSHTMLDirectoryElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDirectoryElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDirectoryElementAttributesFunctions[0].magic = JSHTMLDirectoryElement::CompactAttrNum;
+    JSHTMLDirectoryElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLDirectoryElement::getValueProperty;
+    JSHTMLDirectoryElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLDirectoryElement::putValueProperty;
+    JSHTMLDirectoryElementAttributesFunctions[1].name = "constructor";
+    JSHTMLDirectoryElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLDirectoryElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLDirectoryElementAttributesFunctions[1].magic = JSHTMLDirectoryElement::ConstructorAttrNum;
+    JSHTMLDirectoryElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLDirectoryElement::getValueProperty;
+    JSHTMLDirectoryElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLDirectoryElementConstructor {
 public:
@@ -91,15 +109,22 @@ JSValue JSHTMLDirectoryElementPrototype::self(JSContext * ctx)
 
 void JSHTMLDirectoryElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLDirectoryElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLDirectoryElementAttributesFunctions, countof(JSHTMLDirectoryElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLDirectoryElementClassDefine = 
+static JSClassDef JSHTMLDirectoryElementClassDefine;
+static bool JSHTMLDirectoryElementClassDefine_initialized = false;
+
+static void init_JSHTMLDirectoryElementClassDefine()
 {
-    "HTMLDirectoryElement",
-    .finalizer = JSHTMLDirectoryElement::finalizer,
-    .gc_mark = JSHTMLDirectoryElement::mark,
-};
+    if (JSHTMLDirectoryElementClassDefine_initialized) return;
+    JSHTMLDirectoryElementClassDefine_initialized = true;
+    memset(&JSHTMLDirectoryElementClassDefine, 0, sizeof(JSHTMLDirectoryElementClassDefine));
+    JSHTMLDirectoryElementClassDefine.class_name = "HTMLDirectoryElement";
+    JSHTMLDirectoryElementClassDefine.finalizer = JSHTMLDirectoryElement::finalizer;
+    JSHTMLDirectoryElementClassDefine.gc_mark = JSHTMLDirectoryElement::mark;
+}
 
 JSClassID JSHTMLDirectoryElement::js_class_id = 0;
 

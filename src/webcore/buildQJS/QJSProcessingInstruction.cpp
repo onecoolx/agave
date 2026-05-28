@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSProcessingInstruction.h"
 
 #include "ProcessingInstruction.h"
@@ -41,13 +43,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSProcessingInstructionAttributesFunctions[] =
+static JSCFunctionListEntry JSProcessingInstructionAttributesFunctions[4];
+static bool JSProcessingInstructionAttributesFunctions_initialized = false;
+
+static void init_JSProcessingInstructionAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSProcessingInstruction::getValueProperty, NULL, JSProcessingInstruction::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("target", JSProcessingInstruction::getValueProperty, NULL, JSProcessingInstruction::TargetAttrNum),
-    JS_CGETSET_MAGIC_DEF("data", JSProcessingInstruction::getValueProperty, JSProcessingInstruction::putValueProperty, JSProcessingInstruction::DataAttrNum),
-    JS_CGETSET_MAGIC_DEF("sheet", JSProcessingInstruction::getValueProperty, NULL, JSProcessingInstruction::SheetAttrNum)
-};
+    if (JSProcessingInstructionAttributesFunctions_initialized) return;
+    JSProcessingInstructionAttributesFunctions_initialized = true;
+    memset(JSProcessingInstructionAttributesFunctions, 0, sizeof(JSProcessingInstructionAttributesFunctions));
+    JSProcessingInstructionAttributesFunctions[0].name = "constructor";
+    JSProcessingInstructionAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSProcessingInstructionAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSProcessingInstructionAttributesFunctions[0].magic = JSProcessingInstruction::ConstructorAttrNum;
+    JSProcessingInstructionAttributesFunctions[0].u.getset.get.getter_magic = JSProcessingInstruction::getValueProperty;
+    JSProcessingInstructionAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSProcessingInstructionAttributesFunctions[1].name = "target";
+    JSProcessingInstructionAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSProcessingInstructionAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSProcessingInstructionAttributesFunctions[1].magic = JSProcessingInstruction::TargetAttrNum;
+    JSProcessingInstructionAttributesFunctions[1].u.getset.get.getter_magic = JSProcessingInstruction::getValueProperty;
+    JSProcessingInstructionAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSProcessingInstructionAttributesFunctions[2].name = "data";
+    JSProcessingInstructionAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSProcessingInstructionAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSProcessingInstructionAttributesFunctions[2].magic = JSProcessingInstruction::DataAttrNum;
+    JSProcessingInstructionAttributesFunctions[2].u.getset.get.getter_magic = JSProcessingInstruction::getValueProperty;
+    JSProcessingInstructionAttributesFunctions[2].u.getset.set.setter_magic = JSProcessingInstruction::putValueProperty;
+    JSProcessingInstructionAttributesFunctions[3].name = "sheet";
+    JSProcessingInstructionAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSProcessingInstructionAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSProcessingInstructionAttributesFunctions[3].magic = JSProcessingInstruction::SheetAttrNum;
+    JSProcessingInstructionAttributesFunctions[3].u.getset.get.getter_magic = JSProcessingInstruction::getValueProperty;
+    JSProcessingInstructionAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 class JSProcessingInstructionConstructor {
 public:
@@ -96,15 +124,22 @@ JSValue JSProcessingInstructionPrototype::self(JSContext * ctx)
 
 void JSProcessingInstructionPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSProcessingInstructionAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSProcessingInstructionAttributesFunctions, countof(JSProcessingInstructionAttributesFunctions));
 }
 
-static JSClassDef JSProcessingInstructionClassDefine = 
+static JSClassDef JSProcessingInstructionClassDefine;
+static bool JSProcessingInstructionClassDefine_initialized = false;
+
+static void init_JSProcessingInstructionClassDefine()
 {
-    "ProcessingInstruction",
-    .finalizer = JSProcessingInstruction::finalizer,
-    .gc_mark = JSProcessingInstruction::mark,
-};
+    if (JSProcessingInstructionClassDefine_initialized) return;
+    JSProcessingInstructionClassDefine_initialized = true;
+    memset(&JSProcessingInstructionClassDefine, 0, sizeof(JSProcessingInstructionClassDefine));
+    JSProcessingInstructionClassDefine.class_name = "ProcessingInstruction";
+    JSProcessingInstructionClassDefine.finalizer = JSProcessingInstruction::finalizer;
+    JSProcessingInstructionClassDefine.gc_mark = JSProcessingInstruction::mark;
+}
 
 JSClassID JSProcessingInstruction::js_class_id = 0;
 

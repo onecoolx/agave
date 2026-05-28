@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -47,17 +49,63 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFESpotLightElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFESpotLightElementAttributesFunctions[8];
+static bool JSSVGFESpotLightElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFESpotLightElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("pointsAtZ", JSSVGFESpotLightElement::getValueProperty, NULL, JSSVGFESpotLightElement::PointsAtZAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFESpotLightElement::getValueProperty, NULL, JSSVGFESpotLightElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("pointsAtX", JSSVGFESpotLightElement::getValueProperty, NULL, JSSVGFESpotLightElement::PointsAtXAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFESpotLightElement::getValueProperty, NULL, JSSVGFESpotLightElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("specularExponent", JSSVGFESpotLightElement::getValueProperty, NULL, JSSVGFESpotLightElement::SpecularExponentAttrNum),
-    JS_CGETSET_MAGIC_DEF("z", JSSVGFESpotLightElement::getValueProperty, NULL, JSSVGFESpotLightElement::ZAttrNum),
-    JS_CGETSET_MAGIC_DEF("pointsAtY", JSSVGFESpotLightElement::getValueProperty, NULL, JSSVGFESpotLightElement::PointsAtYAttrNum),
-    JS_CGETSET_MAGIC_DEF("limitingConeAngle", JSSVGFESpotLightElement::getValueProperty, NULL, JSSVGFESpotLightElement::LimitingConeAngleAttrNum)
-};
+    if (JSSVGFESpotLightElementAttributesFunctions_initialized) return;
+    JSSVGFESpotLightElementAttributesFunctions_initialized = true;
+    memset(JSSVGFESpotLightElementAttributesFunctions, 0, sizeof(JSSVGFESpotLightElementAttributesFunctions));
+    JSSVGFESpotLightElementAttributesFunctions[0].name = "pointsAtZ";
+    JSSVGFESpotLightElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpotLightElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpotLightElementAttributesFunctions[0].magic = JSSVGFESpotLightElement::PointsAtZAttrNum;
+    JSSVGFESpotLightElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFESpotLightElement::getValueProperty;
+    JSSVGFESpotLightElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFESpotLightElementAttributesFunctions[1].name = "x";
+    JSSVGFESpotLightElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpotLightElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpotLightElementAttributesFunctions[1].magic = JSSVGFESpotLightElement::XAttrNum;
+    JSSVGFESpotLightElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFESpotLightElement::getValueProperty;
+    JSSVGFESpotLightElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFESpotLightElementAttributesFunctions[2].name = "pointsAtX";
+    JSSVGFESpotLightElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpotLightElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpotLightElementAttributesFunctions[2].magic = JSSVGFESpotLightElement::PointsAtXAttrNum;
+    JSSVGFESpotLightElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFESpotLightElement::getValueProperty;
+    JSSVGFESpotLightElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFESpotLightElementAttributesFunctions[3].name = "y";
+    JSSVGFESpotLightElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpotLightElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpotLightElementAttributesFunctions[3].magic = JSSVGFESpotLightElement::YAttrNum;
+    JSSVGFESpotLightElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGFESpotLightElement::getValueProperty;
+    JSSVGFESpotLightElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFESpotLightElementAttributesFunctions[4].name = "specularExponent";
+    JSSVGFESpotLightElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpotLightElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpotLightElementAttributesFunctions[4].magic = JSSVGFESpotLightElement::SpecularExponentAttrNum;
+    JSSVGFESpotLightElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGFESpotLightElement::getValueProperty;
+    JSSVGFESpotLightElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFESpotLightElementAttributesFunctions[5].name = "z";
+    JSSVGFESpotLightElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpotLightElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpotLightElementAttributesFunctions[5].magic = JSSVGFESpotLightElement::ZAttrNum;
+    JSSVGFESpotLightElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGFESpotLightElement::getValueProperty;
+    JSSVGFESpotLightElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFESpotLightElementAttributesFunctions[6].name = "pointsAtY";
+    JSSVGFESpotLightElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpotLightElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpotLightElementAttributesFunctions[6].magic = JSSVGFESpotLightElement::PointsAtYAttrNum;
+    JSSVGFESpotLightElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGFESpotLightElement::getValueProperty;
+    JSSVGFESpotLightElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFESpotLightElementAttributesFunctions[7].name = "limitingConeAngle";
+    JSSVGFESpotLightElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFESpotLightElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFESpotLightElementAttributesFunctions[7].magic = JSSVGFESpotLightElement::LimitingConeAngleAttrNum;
+    JSSVGFESpotLightElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGFESpotLightElement::getValueProperty;
+    JSSVGFESpotLightElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGFESpotLightElementPrototype::self(JSContext * ctx)
 {
@@ -75,21 +123,29 @@ JSValue JSSVGFESpotLightElementPrototype::self(JSContext * ctx)
 
 void JSSVGFESpotLightElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFESpotLightElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFESpotLightElementAttributesFunctions, countof(JSSVGFESpotLightElementAttributesFunctions));
 }
 
-static JSClassDef JSSVGFESpotLightElementClassDefine = 
+static JSClassDef JSSVGFESpotLightElementClassDefine;
+static bool JSSVGFESpotLightElementClassDefine_initialized = false;
+
+static void init_JSSVGFESpotLightElementClassDefine()
 {
-    "SVGFESpotLightElement",
-    .finalizer = JSSVGFESpotLightElement::finalizer,
-    .gc_mark = JSSVGFESpotLightElement::mark,
-};
+    if (JSSVGFESpotLightElementClassDefine_initialized) return;
+    JSSVGFESpotLightElementClassDefine_initialized = true;
+    memset(&JSSVGFESpotLightElementClassDefine, 0, sizeof(JSSVGFESpotLightElementClassDefine));
+    JSSVGFESpotLightElementClassDefine.class_name = "SVGFESpotLightElement";
+    JSSVGFESpotLightElementClassDefine.finalizer = JSSVGFESpotLightElement::finalizer;
+    JSSVGFESpotLightElementClassDefine.gc_mark = JSSVGFESpotLightElement::mark;
+}
 
 JSClassID JSSVGFESpotLightElement::js_class_id = 0;
 
 void JSSVGFESpotLightElement::init(JSContext* ctx)
 {
     if (JSSVGFESpotLightElement::js_class_id == 0) {
+        init_JSSVGFESpotLightElementClassDefine();
         JS_NewClassID(&JSSVGFESpotLightElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFESpotLightElement::js_class_id, &JSSVGFESpotLightElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFESpotLightElement::js_class_id, JSSVGFESpotLightElementPrototype::self(ctx));

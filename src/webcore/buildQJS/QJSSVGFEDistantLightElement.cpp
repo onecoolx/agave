@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -47,11 +49,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFEDistantLightElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFEDistantLightElementAttributesFunctions[2];
+static bool JSSVGFEDistantLightElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFEDistantLightElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("azimuth", JSSVGFEDistantLightElement::getValueProperty, NULL, JSSVGFEDistantLightElement::AzimuthAttrNum),
-    JS_CGETSET_MAGIC_DEF("elevation", JSSVGFEDistantLightElement::getValueProperty, NULL, JSSVGFEDistantLightElement::ElevationAttrNum)
-};
+    if (JSSVGFEDistantLightElementAttributesFunctions_initialized) return;
+    JSSVGFEDistantLightElementAttributesFunctions_initialized = true;
+    memset(JSSVGFEDistantLightElementAttributesFunctions, 0, sizeof(JSSVGFEDistantLightElementAttributesFunctions));
+    JSSVGFEDistantLightElementAttributesFunctions[0].name = "azimuth";
+    JSSVGFEDistantLightElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEDistantLightElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEDistantLightElementAttributesFunctions[0].magic = JSSVGFEDistantLightElement::AzimuthAttrNum;
+    JSSVGFEDistantLightElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFEDistantLightElement::getValueProperty;
+    JSSVGFEDistantLightElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEDistantLightElementAttributesFunctions[1].name = "elevation";
+    JSSVGFEDistantLightElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEDistantLightElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEDistantLightElementAttributesFunctions[1].magic = JSSVGFEDistantLightElement::ElevationAttrNum;
+    JSSVGFEDistantLightElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFEDistantLightElement::getValueProperty;
+    JSSVGFEDistantLightElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGFEDistantLightElementPrototype::self(JSContext * ctx)
 {
@@ -69,21 +87,29 @@ JSValue JSSVGFEDistantLightElementPrototype::self(JSContext * ctx)
 
 void JSSVGFEDistantLightElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFEDistantLightElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEDistantLightElementAttributesFunctions, countof(JSSVGFEDistantLightElementAttributesFunctions));
 }
 
-static JSClassDef JSSVGFEDistantLightElementClassDefine = 
+static JSClassDef JSSVGFEDistantLightElementClassDefine;
+static bool JSSVGFEDistantLightElementClassDefine_initialized = false;
+
+static void init_JSSVGFEDistantLightElementClassDefine()
 {
-    "SVGFEDistantLightElement",
-    .finalizer = JSSVGFEDistantLightElement::finalizer,
-    .gc_mark = JSSVGFEDistantLightElement::mark,
-};
+    if (JSSVGFEDistantLightElementClassDefine_initialized) return;
+    JSSVGFEDistantLightElementClassDefine_initialized = true;
+    memset(&JSSVGFEDistantLightElementClassDefine, 0, sizeof(JSSVGFEDistantLightElementClassDefine));
+    JSSVGFEDistantLightElementClassDefine.class_name = "SVGFEDistantLightElement";
+    JSSVGFEDistantLightElementClassDefine.finalizer = JSSVGFEDistantLightElement::finalizer;
+    JSSVGFEDistantLightElementClassDefine.gc_mark = JSSVGFEDistantLightElement::mark;
+}
 
 JSClassID JSSVGFEDistantLightElement::js_class_id = 0;
 
 void JSSVGFEDistantLightElement::init(JSContext* ctx)
 {
     if (JSSVGFEDistantLightElement::js_class_id == 0) {
+        init_JSSVGFEDistantLightElementClassDefine();
         JS_NewClassID(&JSSVGFEDistantLightElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFEDistantLightElement::js_class_id, &JSSVGFEDistantLightElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFEDistantLightElement::js_class_id, JSSVGFEDistantLightElementPrototype::self(ctx));

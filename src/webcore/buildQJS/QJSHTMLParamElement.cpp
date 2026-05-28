@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLParamElement.h"
 
 #include "HTMLParamElement.h"
@@ -39,14 +41,45 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLParamElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLParamElementAttributesFunctions[5];
+static bool JSHTMLParamElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLParamElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("name", JSHTMLParamElement::getValueProperty, JSHTMLParamElement::putValueProperty, JSHTMLParamElement::NameAttrNum),
-    JS_CGETSET_MAGIC_DEF("valueType", JSHTMLParamElement::getValueProperty, JSHTMLParamElement::putValueProperty, JSHTMLParamElement::ValueTypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("value", JSHTMLParamElement::getValueProperty, JSHTMLParamElement::putValueProperty, JSHTMLParamElement::ValueAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSHTMLParamElement::getValueProperty, JSHTMLParamElement::putValueProperty, JSHTMLParamElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLParamElement::getValueProperty, NULL, JSHTMLParamElement::ConstructorAttrNum)
-};
+    if (JSHTMLParamElementAttributesFunctions_initialized) return;
+    JSHTMLParamElementAttributesFunctions_initialized = true;
+    memset(JSHTMLParamElementAttributesFunctions, 0, sizeof(JSHTMLParamElementAttributesFunctions));
+    JSHTMLParamElementAttributesFunctions[0].name = "name";
+    JSHTMLParamElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLParamElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLParamElementAttributesFunctions[0].magic = JSHTMLParamElement::NameAttrNum;
+    JSHTMLParamElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLParamElement::getValueProperty;
+    JSHTMLParamElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLParamElement::putValueProperty;
+    JSHTMLParamElementAttributesFunctions[1].name = "valueType";
+    JSHTMLParamElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLParamElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLParamElementAttributesFunctions[1].magic = JSHTMLParamElement::ValueTypeAttrNum;
+    JSHTMLParamElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLParamElement::getValueProperty;
+    JSHTMLParamElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLParamElement::putValueProperty;
+    JSHTMLParamElementAttributesFunctions[2].name = "value";
+    JSHTMLParamElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLParamElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLParamElementAttributesFunctions[2].magic = JSHTMLParamElement::ValueAttrNum;
+    JSHTMLParamElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLParamElement::getValueProperty;
+    JSHTMLParamElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLParamElement::putValueProperty;
+    JSHTMLParamElementAttributesFunctions[3].name = "type";
+    JSHTMLParamElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLParamElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLParamElementAttributesFunctions[3].magic = JSHTMLParamElement::TypeAttrNum;
+    JSHTMLParamElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLParamElement::getValueProperty;
+    JSHTMLParamElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLParamElement::putValueProperty;
+    JSHTMLParamElementAttributesFunctions[4].name = "constructor";
+    JSHTMLParamElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLParamElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLParamElementAttributesFunctions[4].magic = JSHTMLParamElement::ConstructorAttrNum;
+    JSHTMLParamElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLParamElement::getValueProperty;
+    JSHTMLParamElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLParamElementConstructor {
 public:
@@ -95,15 +128,22 @@ JSValue JSHTMLParamElementPrototype::self(JSContext * ctx)
 
 void JSHTMLParamElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLParamElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLParamElementAttributesFunctions, countof(JSHTMLParamElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLParamElementClassDefine = 
+static JSClassDef JSHTMLParamElementClassDefine;
+static bool JSHTMLParamElementClassDefine_initialized = false;
+
+static void init_JSHTMLParamElementClassDefine()
 {
-    "HTMLParamElement",
-    .finalizer = JSHTMLParamElement::finalizer,
-    .gc_mark = JSHTMLParamElement::mark,
-};
+    if (JSHTMLParamElementClassDefine_initialized) return;
+    JSHTMLParamElementClassDefine_initialized = true;
+    memset(&JSHTMLParamElementClassDefine, 0, sizeof(JSHTMLParamElementClassDefine));
+    JSHTMLParamElementClassDefine.class_name = "HTMLParamElement";
+    JSHTMLParamElementClassDefine.finalizer = JSHTMLParamElement::finalizer;
+    JSHTMLParamElementClassDefine.gc_mark = JSHTMLParamElement::mark;
+}
 
 JSClassID JSHTMLParamElement::js_class_id = 0;
 

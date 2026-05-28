@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLAreaElement.h"
 
 #include "HTMLAreaElement.h"
@@ -39,25 +41,111 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLAreaElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLAreaElementAttributesFunctions[16];
+static bool JSHTMLAreaElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLAreaElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("hostname", JSHTMLAreaElement::getValueProperty, NULL, JSHTMLAreaElement::HostnameAttrNum),
-    JS_CGETSET_MAGIC_DEF("target", JSHTMLAreaElement::getValueProperty, JSHTMLAreaElement::putValueProperty, JSHTMLAreaElement::TargetAttrNum),
-    JS_CGETSET_MAGIC_DEF("hash", JSHTMLAreaElement::getValueProperty, NULL, JSHTMLAreaElement::HashAttrNum),
-    JS_CGETSET_MAGIC_DEF("href", JSHTMLAreaElement::getValueProperty, JSHTMLAreaElement::putValueProperty, JSHTMLAreaElement::HrefAttrNum),
-    JS_CGETSET_MAGIC_DEF("alt", JSHTMLAreaElement::getValueProperty, JSHTMLAreaElement::putValueProperty, JSHTMLAreaElement::AltAttrNum),
-    JS_CGETSET_MAGIC_DEF("port", JSHTMLAreaElement::getValueProperty, NULL, JSHTMLAreaElement::PortAttrNum),
-    JS_CGETSET_MAGIC_DEF("shape", JSHTMLAreaElement::getValueProperty, JSHTMLAreaElement::putValueProperty, JSHTMLAreaElement::ShapeAttrNum),
-    JS_CGETSET_MAGIC_DEF("coords", JSHTMLAreaElement::getValueProperty, JSHTMLAreaElement::putValueProperty, JSHTMLAreaElement::CoordsAttrNum),
-    JS_CGETSET_MAGIC_DEF("accessKey", JSHTMLAreaElement::getValueProperty, JSHTMLAreaElement::putValueProperty, JSHTMLAreaElement::AccessKeyAttrNum),
-    JS_CGETSET_MAGIC_DEF("noHref", JSHTMLAreaElement::getValueProperty, JSHTMLAreaElement::putValueProperty, JSHTMLAreaElement::NoHrefAttrNum),
-    JS_CGETSET_MAGIC_DEF("tabIndex", JSHTMLAreaElement::getValueProperty, JSHTMLAreaElement::putValueProperty, JSHTMLAreaElement::TabIndexAttrNum),
-    JS_CGETSET_MAGIC_DEF("host", JSHTMLAreaElement::getValueProperty, NULL, JSHTMLAreaElement::HostAttrNum),
-    JS_CGETSET_MAGIC_DEF("pathname", JSHTMLAreaElement::getValueProperty, NULL, JSHTMLAreaElement::PathnameAttrNum),
-    JS_CGETSET_MAGIC_DEF("protocol", JSHTMLAreaElement::getValueProperty, NULL, JSHTMLAreaElement::ProtocolAttrNum),
-    JS_CGETSET_MAGIC_DEF("search", JSHTMLAreaElement::getValueProperty, NULL, JSHTMLAreaElement::SearchAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLAreaElement::getValueProperty, NULL, JSHTMLAreaElement::ConstructorAttrNum)
-};
+    if (JSHTMLAreaElementAttributesFunctions_initialized) return;
+    JSHTMLAreaElementAttributesFunctions_initialized = true;
+    memset(JSHTMLAreaElementAttributesFunctions, 0, sizeof(JSHTMLAreaElementAttributesFunctions));
+    JSHTMLAreaElementAttributesFunctions[0].name = "hostname";
+    JSHTMLAreaElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[0].magic = JSHTMLAreaElement::HostnameAttrNum;
+    JSHTMLAreaElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLAreaElementAttributesFunctions[1].name = "target";
+    JSHTMLAreaElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[1].magic = JSHTMLAreaElement::TargetAttrNum;
+    JSHTMLAreaElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLAreaElement::putValueProperty;
+    JSHTMLAreaElementAttributesFunctions[2].name = "hash";
+    JSHTMLAreaElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[2].magic = JSHTMLAreaElement::HashAttrNum;
+    JSHTMLAreaElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSHTMLAreaElementAttributesFunctions[3].name = "href";
+    JSHTMLAreaElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[3].magic = JSHTMLAreaElement::HrefAttrNum;
+    JSHTMLAreaElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLAreaElement::putValueProperty;
+    JSHTMLAreaElementAttributesFunctions[4].name = "alt";
+    JSHTMLAreaElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[4].magic = JSHTMLAreaElement::AltAttrNum;
+    JSHTMLAreaElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLAreaElement::putValueProperty;
+    JSHTMLAreaElementAttributesFunctions[5].name = "port";
+    JSHTMLAreaElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[5].magic = JSHTMLAreaElement::PortAttrNum;
+    JSHTMLAreaElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSHTMLAreaElementAttributesFunctions[6].name = "shape";
+    JSHTMLAreaElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[6].magic = JSHTMLAreaElement::ShapeAttrNum;
+    JSHTMLAreaElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLAreaElement::putValueProperty;
+    JSHTMLAreaElementAttributesFunctions[7].name = "coords";
+    JSHTMLAreaElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[7].magic = JSHTMLAreaElement::CoordsAttrNum;
+    JSHTMLAreaElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLAreaElement::putValueProperty;
+    JSHTMLAreaElementAttributesFunctions[8].name = "accessKey";
+    JSHTMLAreaElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[8].magic = JSHTMLAreaElement::AccessKeyAttrNum;
+    JSHTMLAreaElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[8].u.getset.set.setter_magic = JSHTMLAreaElement::putValueProperty;
+    JSHTMLAreaElementAttributesFunctions[9].name = "noHref";
+    JSHTMLAreaElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[9].magic = JSHTMLAreaElement::NoHrefAttrNum;
+    JSHTMLAreaElementAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[9].u.getset.set.setter_magic = JSHTMLAreaElement::putValueProperty;
+    JSHTMLAreaElementAttributesFunctions[10].name = "tabIndex";
+    JSHTMLAreaElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[10].magic = JSHTMLAreaElement::TabIndexAttrNum;
+    JSHTMLAreaElementAttributesFunctions[10].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[10].u.getset.set.setter_magic = JSHTMLAreaElement::putValueProperty;
+    JSHTMLAreaElementAttributesFunctions[11].name = "host";
+    JSHTMLAreaElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[11].magic = JSHTMLAreaElement::HostAttrNum;
+    JSHTMLAreaElementAttributesFunctions[11].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSHTMLAreaElementAttributesFunctions[12].name = "pathname";
+    JSHTMLAreaElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[12].magic = JSHTMLAreaElement::PathnameAttrNum;
+    JSHTMLAreaElementAttributesFunctions[12].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSHTMLAreaElementAttributesFunctions[13].name = "protocol";
+    JSHTMLAreaElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[13].magic = JSHTMLAreaElement::ProtocolAttrNum;
+    JSHTMLAreaElementAttributesFunctions[13].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[13].u.getset.set.setter_magic = NULL;
+    JSHTMLAreaElementAttributesFunctions[14].name = "search";
+    JSHTMLAreaElementAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[14].magic = JSHTMLAreaElement::SearchAttrNum;
+    JSHTMLAreaElementAttributesFunctions[14].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[14].u.getset.set.setter_magic = NULL;
+    JSHTMLAreaElementAttributesFunctions[15].name = "constructor";
+    JSHTMLAreaElementAttributesFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLAreaElementAttributesFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLAreaElementAttributesFunctions[15].magic = JSHTMLAreaElement::ConstructorAttrNum;
+    JSHTMLAreaElementAttributesFunctions[15].u.getset.get.getter_magic = JSHTMLAreaElement::getValueProperty;
+    JSHTMLAreaElementAttributesFunctions[15].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLAreaElementConstructor {
 public:
@@ -106,15 +194,22 @@ JSValue JSHTMLAreaElementPrototype::self(JSContext * ctx)
 
 void JSHTMLAreaElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLAreaElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLAreaElementAttributesFunctions, countof(JSHTMLAreaElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLAreaElementClassDefine = 
+static JSClassDef JSHTMLAreaElementClassDefine;
+static bool JSHTMLAreaElementClassDefine_initialized = false;
+
+static void init_JSHTMLAreaElementClassDefine()
 {
-    "HTMLAreaElement",
-    .finalizer = JSHTMLAreaElement::finalizer,
-    .gc_mark = JSHTMLAreaElement::mark,
-};
+    if (JSHTMLAreaElementClassDefine_initialized) return;
+    JSHTMLAreaElementClassDefine_initialized = true;
+    memset(&JSHTMLAreaElementClassDefine, 0, sizeof(JSHTMLAreaElementClassDefine));
+    JSHTMLAreaElementClassDefine.class_name = "HTMLAreaElement";
+    JSHTMLAreaElementClassDefine.finalizer = JSHTMLAreaElement::finalizer;
+    JSHTMLAreaElementClassDefine.gc_mark = JSHTMLAreaElement::mark;
+}
 
 JSClassID JSHTMLAreaElement::js_class_id = 0;
 

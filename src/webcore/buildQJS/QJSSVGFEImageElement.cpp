@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -55,27 +57,100 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFEImageElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFEImageElementAttributesFunctions[11];
+static bool JSSVGFEImageElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFEImageElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFEImageElement::getValueProperty, NULL, JSSVGFEImageElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGFEImageElement::getValueProperty, JSSVGFEImageElement::putValueProperty, JSSVGFEImageElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGFEImageElement::getValueProperty, NULL, JSSVGFEImageElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGFEImageElement::getValueProperty, JSSVGFEImageElement::putValueProperty, JSSVGFEImageElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGFEImageElement::getValueProperty, NULL, JSSVGFEImageElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("href", JSSVGFEImageElement::getValueProperty, NULL, JSSVGFEImageElement::HrefAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGFEImageElement::getValueProperty, NULL, JSSVGFEImageElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("result", JSSVGFEImageElement::getValueProperty, NULL, JSSVGFEImageElement::ResultAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFEImageElement::getValueProperty, NULL, JSSVGFEImageElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGFEImageElement::getValueProperty, NULL, JSSVGFEImageElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGFEImageElement::getValueProperty, NULL, JSSVGFEImageElement::StyleAttrNum)
-};
+    if (JSSVGFEImageElementAttributesFunctions_initialized) return;
+    JSSVGFEImageElementAttributesFunctions_initialized = true;
+    memset(JSSVGFEImageElementAttributesFunctions, 0, sizeof(JSSVGFEImageElementAttributesFunctions));
+    JSSVGFEImageElementAttributesFunctions[0].name = "x";
+    JSSVGFEImageElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEImageElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEImageElementAttributesFunctions[0].magic = JSSVGFEImageElement::XAttrNum;
+    JSSVGFEImageElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFEImageElement::getValueProperty;
+    JSSVGFEImageElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEImageElementAttributesFunctions[1].name = "xmllang";
+    JSSVGFEImageElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEImageElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEImageElementAttributesFunctions[1].magic = JSSVGFEImageElement::XmllangAttrNum;
+    JSSVGFEImageElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFEImageElement::getValueProperty;
+    JSSVGFEImageElementAttributesFunctions[1].u.getset.set.setter_magic = JSSVGFEImageElement::putValueProperty;
+    JSSVGFEImageElementAttributesFunctions[2].name = "height";
+    JSSVGFEImageElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEImageElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEImageElementAttributesFunctions[2].magic = JSSVGFEImageElement::HeightAttrNum;
+    JSSVGFEImageElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFEImageElement::getValueProperty;
+    JSSVGFEImageElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEImageElementAttributesFunctions[3].name = "xmlspace";
+    JSSVGFEImageElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEImageElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEImageElementAttributesFunctions[3].magic = JSSVGFEImageElement::XmlspaceAttrNum;
+    JSSVGFEImageElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGFEImageElement::getValueProperty;
+    JSSVGFEImageElementAttributesFunctions[3].u.getset.set.setter_magic = JSSVGFEImageElement::putValueProperty;
+    JSSVGFEImageElementAttributesFunctions[4].name = "externalResourcesRequired";
+    JSSVGFEImageElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEImageElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEImageElementAttributesFunctions[4].magic = JSSVGFEImageElement::ExternalResourcesRequiredAttrNum;
+    JSSVGFEImageElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGFEImageElement::getValueProperty;
+    JSSVGFEImageElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFEImageElementAttributesFunctions[5].name = "href";
+    JSSVGFEImageElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEImageElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEImageElementAttributesFunctions[5].magic = JSSVGFEImageElement::HrefAttrNum;
+    JSSVGFEImageElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGFEImageElement::getValueProperty;
+    JSSVGFEImageElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFEImageElementAttributesFunctions[6].name = "width";
+    JSSVGFEImageElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEImageElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEImageElementAttributesFunctions[6].magic = JSSVGFEImageElement::WidthAttrNum;
+    JSSVGFEImageElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGFEImageElement::getValueProperty;
+    JSSVGFEImageElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFEImageElementAttributesFunctions[7].name = "result";
+    JSSVGFEImageElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEImageElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEImageElementAttributesFunctions[7].magic = JSSVGFEImageElement::ResultAttrNum;
+    JSSVGFEImageElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGFEImageElement::getValueProperty;
+    JSSVGFEImageElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGFEImageElementAttributesFunctions[8].name = "y";
+    JSSVGFEImageElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEImageElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEImageElementAttributesFunctions[8].magic = JSSVGFEImageElement::YAttrNum;
+    JSSVGFEImageElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGFEImageElement::getValueProperty;
+    JSSVGFEImageElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGFEImageElementAttributesFunctions[9].name = "className";
+    JSSVGFEImageElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEImageElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEImageElementAttributesFunctions[9].magic = JSSVGFEImageElement::ClassNameAttrNum;
+    JSSVGFEImageElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGFEImageElement::getValueProperty;
+    JSSVGFEImageElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGFEImageElementAttributesFunctions[10].name = "style";
+    JSSVGFEImageElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEImageElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEImageElementAttributesFunctions[10].magic = JSSVGFEImageElement::StyleAttrNum;
+    JSSVGFEImageElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGFEImageElement::getValueProperty;
+    JSSVGFEImageElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGFEImageElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGFEImageElementPrototypeFunctions[1];
+static bool JSSVGFEImageElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGFEImageElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGFEImageElementPrototypeFunction::callAsFunction, JSSVGFEImageElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGFEImageElementPrototypeFunctions_initialized) return;
+    JSSVGFEImageElementPrototypeFunctions_initialized = true;
+    memset(JSSVGFEImageElementPrototypeFunctions, 0, sizeof(JSSVGFEImageElementPrototypeFunctions));
+    JSSVGFEImageElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGFEImageElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFEImageElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGFEImageElementPrototypeFunctions[0].magic = JSSVGFEImageElement::GetPresentationAttributeFuncNum;
+    JSSVGFEImageElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGFEImageElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFEImageElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGFEImageElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGFEImageElementPrototype::self(JSContext * ctx)
 {
@@ -93,22 +168,31 @@ JSValue JSSVGFEImageElementPrototype::self(JSContext * ctx)
 
 void JSSVGFEImageElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFEImageElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEImageElementAttributesFunctions, countof(JSSVGFEImageElementAttributesFunctions));
+    init_JSSVGFEImageElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEImageElementPrototypeFunctions, countof(JSSVGFEImageElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGFEImageElementClassDefine = 
+static JSClassDef JSSVGFEImageElementClassDefine;
+static bool JSSVGFEImageElementClassDefine_initialized = false;
+
+static void init_JSSVGFEImageElementClassDefine()
 {
-    "SVGFEImageElement",
-    .finalizer = JSSVGFEImageElement::finalizer,
-    .gc_mark = JSSVGFEImageElement::mark,
-};
+    if (JSSVGFEImageElementClassDefine_initialized) return;
+    JSSVGFEImageElementClassDefine_initialized = true;
+    memset(&JSSVGFEImageElementClassDefine, 0, sizeof(JSSVGFEImageElementClassDefine));
+    JSSVGFEImageElementClassDefine.class_name = "SVGFEImageElement";
+    JSSVGFEImageElementClassDefine.finalizer = JSSVGFEImageElement::finalizer;
+    JSSVGFEImageElementClassDefine.gc_mark = JSSVGFEImageElement::mark;
+}
 
 JSClassID JSSVGFEImageElement::js_class_id = 0;
 
 void JSSVGFEImageElement::init(JSContext* ctx)
 {
     if (JSSVGFEImageElement::js_class_id == 0) {
+        init_JSSVGFEImageElementClassDefine();
         JS_NewClassID(&JSSVGFEImageElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFEImageElement::js_class_id, &JSSVGFEImageElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFEImageElement::js_class_id, JSSVGFEImageElementPrototype::self(ctx));

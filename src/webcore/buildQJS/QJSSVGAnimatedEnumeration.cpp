@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -45,11 +47,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAnimatedEnumerationAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGAnimatedEnumerationAttributesFunctions[2];
+static bool JSSVGAnimatedEnumerationAttributesFunctions_initialized = false;
+
+static void init_JSSVGAnimatedEnumerationAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("baseVal", JSSVGAnimatedEnumeration::getValueProperty, JSSVGAnimatedEnumeration::putValueProperty, JSSVGAnimatedEnumeration::BaseValAttrNum),
-    JS_CGETSET_MAGIC_DEF("animVal", JSSVGAnimatedEnumeration::getValueProperty, NULL, JSSVGAnimatedEnumeration::AnimValAttrNum)
-};
+    if (JSSVGAnimatedEnumerationAttributesFunctions_initialized) return;
+    JSSVGAnimatedEnumerationAttributesFunctions_initialized = true;
+    memset(JSSVGAnimatedEnumerationAttributesFunctions, 0, sizeof(JSSVGAnimatedEnumerationAttributesFunctions));
+    JSSVGAnimatedEnumerationAttributesFunctions[0].name = "baseVal";
+    JSSVGAnimatedEnumerationAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedEnumerationAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedEnumerationAttributesFunctions[0].magic = JSSVGAnimatedEnumeration::BaseValAttrNum;
+    JSSVGAnimatedEnumerationAttributesFunctions[0].u.getset.get.getter_magic = JSSVGAnimatedEnumeration::getValueProperty;
+    JSSVGAnimatedEnumerationAttributesFunctions[0].u.getset.set.setter_magic = JSSVGAnimatedEnumeration::putValueProperty;
+    JSSVGAnimatedEnumerationAttributesFunctions[1].name = "animVal";
+    JSSVGAnimatedEnumerationAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedEnumerationAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedEnumerationAttributesFunctions[1].magic = JSSVGAnimatedEnumeration::AnimValAttrNum;
+    JSSVGAnimatedEnumerationAttributesFunctions[1].u.getset.get.getter_magic = JSSVGAnimatedEnumeration::getValueProperty;
+    JSSVGAnimatedEnumerationAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGAnimatedEnumerationPrototype::self(JSContext * ctx)
 {
@@ -67,21 +85,29 @@ JSValue JSSVGAnimatedEnumerationPrototype::self(JSContext * ctx)
 
 void JSSVGAnimatedEnumerationPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAnimatedEnumerationAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnimatedEnumerationAttributesFunctions, countof(JSSVGAnimatedEnumerationAttributesFunctions));
 }
 
-static JSClassDef JSSVGAnimatedEnumerationClassDefine = 
+static JSClassDef JSSVGAnimatedEnumerationClassDefine;
+static bool JSSVGAnimatedEnumerationClassDefine_initialized = false;
+
+static void init_JSSVGAnimatedEnumerationClassDefine()
 {
-    "SVGAnimatedEnumeration",
-    .finalizer = JSSVGAnimatedEnumeration::finalizer,
-    .gc_mark = JSSVGAnimatedEnumeration::mark,
-};
+    if (JSSVGAnimatedEnumerationClassDefine_initialized) return;
+    JSSVGAnimatedEnumerationClassDefine_initialized = true;
+    memset(&JSSVGAnimatedEnumerationClassDefine, 0, sizeof(JSSVGAnimatedEnumerationClassDefine));
+    JSSVGAnimatedEnumerationClassDefine.class_name = "SVGAnimatedEnumeration";
+    JSSVGAnimatedEnumerationClassDefine.finalizer = JSSVGAnimatedEnumeration::finalizer;
+    JSSVGAnimatedEnumerationClassDefine.gc_mark = JSSVGAnimatedEnumeration::mark;
+}
 
 JSClassID JSSVGAnimatedEnumeration::js_class_id = 0;
 
 void JSSVGAnimatedEnumeration::init(JSContext* ctx)
 {
     if (JSSVGAnimatedEnumeration::js_class_id == 0) {
+        init_JSSVGAnimatedEnumerationClassDefine();
         JS_NewClassID(&JSSVGAnimatedEnumeration::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimatedEnumeration::js_class_id, &JSSVGAnimatedEnumerationClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimatedEnumeration::js_class_id, JSSVGAnimatedEnumerationPrototype::self(ctx));

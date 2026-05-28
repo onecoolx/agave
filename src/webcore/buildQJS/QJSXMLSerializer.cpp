@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSXMLSerializer.h"
 
 #include "QJSNode.h"
@@ -40,10 +42,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSXMLSerializerAttributesFunctions[] =
+static JSCFunctionListEntry JSXMLSerializerAttributesFunctions[1];
+static bool JSXMLSerializerAttributesFunctions_initialized = false;
+
+static void init_JSXMLSerializerAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSXMLSerializer::getValueProperty, NULL, JSXMLSerializer::ConstructorAttrNum)
-};
+    if (JSXMLSerializerAttributesFunctions_initialized) return;
+    JSXMLSerializerAttributesFunctions_initialized = true;
+    memset(JSXMLSerializerAttributesFunctions, 0, sizeof(JSXMLSerializerAttributesFunctions));
+    JSXMLSerializerAttributesFunctions[0].name = "constructor";
+    JSXMLSerializerAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXMLSerializerAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXMLSerializerAttributesFunctions[0].magic = JSXMLSerializer::ConstructorAttrNum;
+    JSXMLSerializerAttributesFunctions[0].u.getset.get.getter_magic = JSXMLSerializer::getValueProperty;
+    JSXMLSerializerAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 class JSXMLSerializerConstructor {
 public:
@@ -84,10 +97,22 @@ JSValue JSXMLSerializerConstructor::construct(JSContext *ctx, JSValueConst new_t
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSXMLSerializerPrototypeFunctions[] =
+static JSCFunctionListEntry JSXMLSerializerPrototypeFunctions[1];
+static bool JSXMLSerializerPrototypeFunctions_initialized = false;
+
+static void init_JSXMLSerializerPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("serializeToString", 1, JSXMLSerializerPrototypeFunction::callAsFunction, JSXMLSerializer::SerializeToStringFuncNum)
-};
+    if (JSXMLSerializerPrototypeFunctions_initialized) return;
+    JSXMLSerializerPrototypeFunctions_initialized = true;
+    memset(JSXMLSerializerPrototypeFunctions, 0, sizeof(JSXMLSerializerPrototypeFunctions));
+    JSXMLSerializerPrototypeFunctions[0].name = "serializeToString";
+    JSXMLSerializerPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSXMLSerializerPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSXMLSerializerPrototypeFunctions[0].magic = JSXMLSerializer::SerializeToStringFuncNum;
+    JSXMLSerializerPrototypeFunctions[0].u.func.length = 1;
+    JSXMLSerializerPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSXMLSerializerPrototypeFunctions[0].u.func.cfunc.generic_magic = JSXMLSerializerPrototypeFunction::callAsFunction;
+}
 
 JSValue JSXMLSerializerPrototype::self(JSContext * ctx)
 {
@@ -105,22 +130,31 @@ JSValue JSXMLSerializerPrototype::self(JSContext * ctx)
 
 void JSXMLSerializerPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSXMLSerializerAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSXMLSerializerAttributesFunctions, countof(JSXMLSerializerAttributesFunctions));
+    init_JSXMLSerializerPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSXMLSerializerPrototypeFunctions, countof(JSXMLSerializerPrototypeFunctions));
 }
 
-static JSClassDef JSXMLSerializerClassDefine = 
+static JSClassDef JSXMLSerializerClassDefine;
+static bool JSXMLSerializerClassDefine_initialized = false;
+
+static void init_JSXMLSerializerClassDefine()
 {
-    "XMLSerializer",
-    .finalizer = JSXMLSerializer::finalizer,
-    .gc_mark = JSXMLSerializer::mark,
-};
+    if (JSXMLSerializerClassDefine_initialized) return;
+    JSXMLSerializerClassDefine_initialized = true;
+    memset(&JSXMLSerializerClassDefine, 0, sizeof(JSXMLSerializerClassDefine));
+    JSXMLSerializerClassDefine.class_name = "XMLSerializer";
+    JSXMLSerializerClassDefine.finalizer = JSXMLSerializer::finalizer;
+    JSXMLSerializerClassDefine.gc_mark = JSXMLSerializer::mark;
+}
 
 JSClassID JSXMLSerializer::js_class_id = 0;
 
 void JSXMLSerializer::init(JSContext* ctx)
 {
     if (JSXMLSerializer::js_class_id == 0) {
+        init_JSXMLSerializerClassDefine();
         JS_NewClassID(&JSXMLSerializer::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSXMLSerializer::js_class_id, &JSXMLSerializerClassDefine);
         JS_SetConstructor(ctx, JSXMLSerializerConstructor::self(ctx), JSXMLSerializerPrototype::self(ctx));

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLTitleElement.h"
 
 #include "HTMLTitleElement.h"
@@ -39,11 +41,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLTitleElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLTitleElementAttributesFunctions[2];
+static bool JSHTMLTitleElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLTitleElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("text", JSHTMLTitleElement::getValueProperty, JSHTMLTitleElement::putValueProperty, JSHTMLTitleElement::TextAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLTitleElement::getValueProperty, NULL, JSHTMLTitleElement::ConstructorAttrNum)
-};
+    if (JSHTMLTitleElementAttributesFunctions_initialized) return;
+    JSHTMLTitleElementAttributesFunctions_initialized = true;
+    memset(JSHTMLTitleElementAttributesFunctions, 0, sizeof(JSHTMLTitleElementAttributesFunctions));
+    JSHTMLTitleElementAttributesFunctions[0].name = "text";
+    JSHTMLTitleElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTitleElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTitleElementAttributesFunctions[0].magic = JSHTMLTitleElement::TextAttrNum;
+    JSHTMLTitleElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLTitleElement::getValueProperty;
+    JSHTMLTitleElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLTitleElement::putValueProperty;
+    JSHTMLTitleElementAttributesFunctions[1].name = "constructor";
+    JSHTMLTitleElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTitleElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTitleElementAttributesFunctions[1].magic = JSHTMLTitleElement::ConstructorAttrNum;
+    JSHTMLTitleElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLTitleElement::getValueProperty;
+    JSHTMLTitleElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLTitleElementConstructor {
 public:
@@ -92,15 +110,22 @@ JSValue JSHTMLTitleElementPrototype::self(JSContext * ctx)
 
 void JSHTMLTitleElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLTitleElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTitleElementAttributesFunctions, countof(JSHTMLTitleElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLTitleElementClassDefine = 
+static JSClassDef JSHTMLTitleElementClassDefine;
+static bool JSHTMLTitleElementClassDefine_initialized = false;
+
+static void init_JSHTMLTitleElementClassDefine()
 {
-    "HTMLTitleElement",
-    .finalizer = JSHTMLTitleElement::finalizer,
-    .gc_mark = JSHTMLTitleElement::mark,
-};
+    if (JSHTMLTitleElementClassDefine_initialized) return;
+    JSHTMLTitleElementClassDefine_initialized = true;
+    memset(&JSHTMLTitleElementClassDefine, 0, sizeof(JSHTMLTitleElementClassDefine));
+    JSHTMLTitleElementClassDefine.class_name = "HTMLTitleElement";
+    JSHTMLTitleElementClassDefine.finalizer = JSHTMLTitleElement::finalizer;
+    JSHTMLTitleElementClassDefine.gc_mark = JSHTMLTitleElement::mark;
+}
 
 JSClassID JSHTMLTitleElement::js_class_id = 0;
 

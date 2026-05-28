@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -62,18 +64,25 @@ void JSSVGAnimateColorElementPrototype::initPrototype(JSContext * ctx, JSValue t
 {
 }
 
-static JSClassDef JSSVGAnimateColorElementClassDefine = 
+static JSClassDef JSSVGAnimateColorElementClassDefine;
+static bool JSSVGAnimateColorElementClassDefine_initialized = false;
+
+static void init_JSSVGAnimateColorElementClassDefine()
 {
-    "SVGAnimateColorElement",
-    .finalizer = JSSVGAnimateColorElement::finalizer,
-    .gc_mark = JSSVGAnimateColorElement::mark,
-};
+    if (JSSVGAnimateColorElementClassDefine_initialized) return;
+    JSSVGAnimateColorElementClassDefine_initialized = true;
+    memset(&JSSVGAnimateColorElementClassDefine, 0, sizeof(JSSVGAnimateColorElementClassDefine));
+    JSSVGAnimateColorElementClassDefine.class_name = "SVGAnimateColorElement";
+    JSSVGAnimateColorElementClassDefine.finalizer = JSSVGAnimateColorElement::finalizer;
+    JSSVGAnimateColorElementClassDefine.gc_mark = JSSVGAnimateColorElement::mark;
+}
 
 JSClassID JSSVGAnimateColorElement::js_class_id = 0;
 
 void JSSVGAnimateColorElement::init(JSContext* ctx)
 {
     if (JSSVGAnimateColorElement::js_class_id == 0) {
+        init_JSSVGAnimateColorElementClassDefine();
         JS_NewClassID(&JSSVGAnimateColorElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimateColorElement::js_class_id, &JSSVGAnimateColorElementClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimateColorElement::js_class_id, JSSVGAnimateColorElementPrototype::self(ctx));

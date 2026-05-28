@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -55,17 +57,63 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGGradientElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGGradientElementAttributesFunctions[8];
+static bool JSSVGGradientElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGGradientElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("href", JSSVGGradientElement::getValueProperty, NULL, JSSVGGradientElement::HrefAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGGradientElement::getValueProperty, NULL, JSSVGGradientElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGGradientElement::getValueProperty, NULL, JSSVGGradientElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGGradientElement::getValueProperty, NULL, JSSVGGradientElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("spreadMethod", JSSVGGradientElement::getValueProperty, NULL, JSSVGGradientElement::SpreadMethodAttrNum),
-    JS_CGETSET_MAGIC_DEF("gradientUnits", JSSVGGradientElement::getValueProperty, NULL, JSSVGGradientElement::GradientUnitsAttrNum),
-    JS_CGETSET_MAGIC_DEF("gradientTransform", JSSVGGradientElement::getValueProperty, NULL, JSSVGGradientElement::GradientTransformAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSSVGGradientElement::getValueProperty, NULL, JSSVGGradientElement::ConstructorAttrNum)
-};
+    if (JSSVGGradientElementAttributesFunctions_initialized) return;
+    JSSVGGradientElementAttributesFunctions_initialized = true;
+    memset(JSSVGGradientElementAttributesFunctions, 0, sizeof(JSSVGGradientElementAttributesFunctions));
+    JSSVGGradientElementAttributesFunctions[0].name = "href";
+    JSSVGGradientElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementAttributesFunctions[0].magic = JSSVGGradientElement::HrefAttrNum;
+    JSSVGGradientElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGGradientElement::getValueProperty;
+    JSSVGGradientElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGGradientElementAttributesFunctions[1].name = "externalResourcesRequired";
+    JSSVGGradientElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementAttributesFunctions[1].magic = JSSVGGradientElement::ExternalResourcesRequiredAttrNum;
+    JSSVGGradientElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGGradientElement::getValueProperty;
+    JSSVGGradientElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGGradientElementAttributesFunctions[2].name = "className";
+    JSSVGGradientElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementAttributesFunctions[2].magic = JSSVGGradientElement::ClassNameAttrNum;
+    JSSVGGradientElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGGradientElement::getValueProperty;
+    JSSVGGradientElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGGradientElementAttributesFunctions[3].name = "style";
+    JSSVGGradientElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementAttributesFunctions[3].magic = JSSVGGradientElement::StyleAttrNum;
+    JSSVGGradientElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGGradientElement::getValueProperty;
+    JSSVGGradientElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGGradientElementAttributesFunctions[4].name = "spreadMethod";
+    JSSVGGradientElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementAttributesFunctions[4].magic = JSSVGGradientElement::SpreadMethodAttrNum;
+    JSSVGGradientElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGGradientElement::getValueProperty;
+    JSSVGGradientElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGGradientElementAttributesFunctions[5].name = "gradientUnits";
+    JSSVGGradientElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementAttributesFunctions[5].magic = JSSVGGradientElement::GradientUnitsAttrNum;
+    JSSVGGradientElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGGradientElement::getValueProperty;
+    JSSVGGradientElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGGradientElementAttributesFunctions[6].name = "gradientTransform";
+    JSSVGGradientElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementAttributesFunctions[6].magic = JSSVGGradientElement::GradientTransformAttrNum;
+    JSSVGGradientElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGGradientElement::getValueProperty;
+    JSSVGGradientElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGGradientElementAttributesFunctions[7].name = "constructor";
+    JSSVGGradientElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementAttributesFunctions[7].magic = JSSVGGradientElement::ConstructorAttrNum;
+    JSSVGGradientElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGGradientElement::getValueProperty;
+    JSSVGGradientElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+}
 
 class JSSVGGradientElementConstructor {
 public:
@@ -82,13 +130,39 @@ JSValue JSSVGGradientElementConstructor::getValueProperty(JSContext * ctx, JSVal
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSSVGGradientElementConstructorFunctions[] =
+static JSCFunctionListEntry JSSVGGradientElementConstructorFunctions[4];
+static bool JSSVGGradientElementConstructorFunctions_initialized = false;
+
+static void init_JSSVGGradientElementConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_SPREADMETHOD_UNKNOWN", JSSVGGradientElementConstructor::getValueProperty, NULL, SVGGradientElement::SVG_SPREADMETHOD_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_SPREADMETHOD_REPEAT", JSSVGGradientElementConstructor::getValueProperty, NULL, SVGGradientElement::SVG_SPREADMETHOD_REPEAT),
-    JS_CGETSET_MAGIC_DEF("SVG_SPREADMETHOD_PAD", JSSVGGradientElementConstructor::getValueProperty, NULL, SVGGradientElement::SVG_SPREADMETHOD_PAD),
-    JS_CGETSET_MAGIC_DEF("SVG_SPREADMETHOD_REFLECT", JSSVGGradientElementConstructor::getValueProperty, NULL, SVGGradientElement::SVG_SPREADMETHOD_REFLECT)
-};
+    if (JSSVGGradientElementConstructorFunctions_initialized) return;
+    JSSVGGradientElementConstructorFunctions_initialized = true;
+    memset(JSSVGGradientElementConstructorFunctions, 0, sizeof(JSSVGGradientElementConstructorFunctions));
+    JSSVGGradientElementConstructorFunctions[0].name = "SVG_SPREADMETHOD_UNKNOWN";
+    JSSVGGradientElementConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementConstructorFunctions[0].magic = SVGGradientElement::SVG_SPREADMETHOD_UNKNOWN;
+    JSSVGGradientElementConstructorFunctions[0].u.getset.get.getter_magic = JSSVGGradientElementConstructor::getValueProperty;
+    JSSVGGradientElementConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGGradientElementConstructorFunctions[1].name = "SVG_SPREADMETHOD_REPEAT";
+    JSSVGGradientElementConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementConstructorFunctions[1].magic = SVGGradientElement::SVG_SPREADMETHOD_REPEAT;
+    JSSVGGradientElementConstructorFunctions[1].u.getset.get.getter_magic = JSSVGGradientElementConstructor::getValueProperty;
+    JSSVGGradientElementConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGGradientElementConstructorFunctions[2].name = "SVG_SPREADMETHOD_PAD";
+    JSSVGGradientElementConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementConstructorFunctions[2].magic = SVGGradientElement::SVG_SPREADMETHOD_PAD;
+    JSSVGGradientElementConstructorFunctions[2].u.getset.get.getter_magic = JSSVGGradientElementConstructor::getValueProperty;
+    JSSVGGradientElementConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGGradientElementConstructorFunctions[3].name = "SVG_SPREADMETHOD_REFLECT";
+    JSSVGGradientElementConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementConstructorFunctions[3].magic = SVGGradientElement::SVG_SPREADMETHOD_REFLECT;
+    JSSVGGradientElementConstructorFunctions[3].u.getset.get.getter_magic = JSSVGGradientElementConstructor::getValueProperty;
+    JSSVGGradientElementConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGGradientElementConstructor::self(JSContext * ctx)
 {
@@ -106,25 +180,64 @@ JSValue JSSVGGradientElementConstructor::self(JSContext * ctx)
 
 void JSSVGGradientElementConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGGradientElementConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGGradientElementConstructorFunctions, countof(JSSVGGradientElementConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGGradientElementPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSSVGGradientElementPrototypeConstantsFunctions[4];
+static bool JSSVGGradientElementPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSSVGGradientElementPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_SPREADMETHOD_UNKNOWN", JSSVGGradientElementPrototype::getValueProperty, NULL, SVGGradientElement::SVG_SPREADMETHOD_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_SPREADMETHOD_REPEAT", JSSVGGradientElementPrototype::getValueProperty, NULL, SVGGradientElement::SVG_SPREADMETHOD_REPEAT),
-    JS_CGETSET_MAGIC_DEF("SVG_SPREADMETHOD_PAD", JSSVGGradientElementPrototype::getValueProperty, NULL, SVGGradientElement::SVG_SPREADMETHOD_PAD),
-    JS_CGETSET_MAGIC_DEF("SVG_SPREADMETHOD_REFLECT", JSSVGGradientElementPrototype::getValueProperty, NULL, SVGGradientElement::SVG_SPREADMETHOD_REFLECT)
-};
+    if (JSSVGGradientElementPrototypeConstantsFunctions_initialized) return;
+    JSSVGGradientElementPrototypeConstantsFunctions_initialized = true;
+    memset(JSSVGGradientElementPrototypeConstantsFunctions, 0, sizeof(JSSVGGradientElementPrototypeConstantsFunctions));
+    JSSVGGradientElementPrototypeConstantsFunctions[0].name = "SVG_SPREADMETHOD_UNKNOWN";
+    JSSVGGradientElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementPrototypeConstantsFunctions[0].magic = SVGGradientElement::SVG_SPREADMETHOD_UNKNOWN;
+    JSSVGGradientElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGGradientElementPrototype::getValueProperty;
+    JSSVGGradientElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGGradientElementPrototypeConstantsFunctions[1].name = "SVG_SPREADMETHOD_REPEAT";
+    JSSVGGradientElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementPrototypeConstantsFunctions[1].magic = SVGGradientElement::SVG_SPREADMETHOD_REPEAT;
+    JSSVGGradientElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGGradientElementPrototype::getValueProperty;
+    JSSVGGradientElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGGradientElementPrototypeConstantsFunctions[2].name = "SVG_SPREADMETHOD_PAD";
+    JSSVGGradientElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementPrototypeConstantsFunctions[2].magic = SVGGradientElement::SVG_SPREADMETHOD_PAD;
+    JSSVGGradientElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGGradientElementPrototype::getValueProperty;
+    JSSVGGradientElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGGradientElementPrototypeConstantsFunctions[3].name = "SVG_SPREADMETHOD_REFLECT";
+    JSSVGGradientElementPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGGradientElementPrototypeConstantsFunctions[3].magic = SVGGradientElement::SVG_SPREADMETHOD_REFLECT;
+    JSSVGGradientElementPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGGradientElementPrototype::getValueProperty;
+    JSSVGGradientElementPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGGradientElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGGradientElementPrototypeFunctions[1];
+static bool JSSVGGradientElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGGradientElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGGradientElementPrototypeFunction::callAsFunction, JSSVGGradientElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGGradientElementPrototypeFunctions_initialized) return;
+    JSSVGGradientElementPrototypeFunctions_initialized = true;
+    memset(JSSVGGradientElementPrototypeFunctions, 0, sizeof(JSSVGGradientElementPrototypeFunctions));
+    JSSVGGradientElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGGradientElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGGradientElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGGradientElementPrototypeFunctions[0].magic = JSSVGGradientElement::GetPresentationAttributeFuncNum;
+    JSSVGGradientElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGGradientElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGGradientElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGGradientElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGGradientElementPrototype::self(JSContext * ctx)
 {
@@ -142,8 +255,11 @@ JSValue JSSVGGradientElementPrototype::self(JSContext * ctx)
 
 void JSSVGGradientElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGGradientElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGGradientElementAttributesFunctions, countof(JSSVGGradientElementAttributesFunctions));
+    init_JSSVGGradientElementPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGGradientElementPrototypeConstantsFunctions, countof(JSSVGGradientElementPrototypeConstantsFunctions));
+    init_JSSVGGradientElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGGradientElementPrototypeFunctions, countof(JSSVGGradientElementPrototypeFunctions));
 }
 
@@ -153,18 +269,25 @@ JSValue JSSVGGradientElementPrototype::getValueProperty(JSContext * ctx, JSValue
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSSVGGradientElementClassDefine = 
+static JSClassDef JSSVGGradientElementClassDefine;
+static bool JSSVGGradientElementClassDefine_initialized = false;
+
+static void init_JSSVGGradientElementClassDefine()
 {
-    "SVGGradientElement",
-    .finalizer = JSSVGGradientElement::finalizer,
-    .gc_mark = JSSVGGradientElement::mark,
-};
+    if (JSSVGGradientElementClassDefine_initialized) return;
+    JSSVGGradientElementClassDefine_initialized = true;
+    memset(&JSSVGGradientElementClassDefine, 0, sizeof(JSSVGGradientElementClassDefine));
+    JSSVGGradientElementClassDefine.class_name = "SVGGradientElement";
+    JSSVGGradientElementClassDefine.finalizer = JSSVGGradientElement::finalizer;
+    JSSVGGradientElementClassDefine.gc_mark = JSSVGGradientElement::mark;
+}
 
 JSClassID JSSVGGradientElement::js_class_id = 0;
 
 void JSSVGGradientElement::init(JSContext* ctx)
 {
     if (JSSVGGradientElement::js_class_id == 0) {
+        init_JSSVGGradientElementClassDefine();
         JS_NewClassID(&JSSVGGradientElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGGradientElement::js_class_id, &JSSVGGradientElementClassDefine);
         JS_SetConstructor(ctx, JSSVGGradientElementConstructor::self(ctx), JSSVGGradientElementPrototype::self(ctx));

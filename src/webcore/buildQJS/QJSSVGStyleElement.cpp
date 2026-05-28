@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -47,13 +49,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGStyleElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGStyleElementAttributesFunctions[4];
+static bool JSSVGStyleElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGStyleElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGStyleElement::getValueProperty, JSSVGStyleElement::putValueProperty, JSSVGStyleElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("media", JSSVGStyleElement::getValueProperty, JSSVGStyleElement::putValueProperty, JSSVGStyleElement::MediaAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSSVGStyleElement::getValueProperty, JSSVGStyleElement::putValueProperty, JSSVGStyleElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("title", JSSVGStyleElement::getValueProperty, JSSVGStyleElement::putValueProperty, JSSVGStyleElement::TitleAttrNum)
-};
+    if (JSSVGStyleElementAttributesFunctions_initialized) return;
+    JSSVGStyleElementAttributesFunctions_initialized = true;
+    memset(JSSVGStyleElementAttributesFunctions, 0, sizeof(JSSVGStyleElementAttributesFunctions));
+    JSSVGStyleElementAttributesFunctions[0].name = "xmlspace";
+    JSSVGStyleElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGStyleElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGStyleElementAttributesFunctions[0].magic = JSSVGStyleElement::XmlspaceAttrNum;
+    JSSVGStyleElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGStyleElement::getValueProperty;
+    JSSVGStyleElementAttributesFunctions[0].u.getset.set.setter_magic = JSSVGStyleElement::putValueProperty;
+    JSSVGStyleElementAttributesFunctions[1].name = "media";
+    JSSVGStyleElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGStyleElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGStyleElementAttributesFunctions[1].magic = JSSVGStyleElement::MediaAttrNum;
+    JSSVGStyleElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGStyleElement::getValueProperty;
+    JSSVGStyleElementAttributesFunctions[1].u.getset.set.setter_magic = JSSVGStyleElement::putValueProperty;
+    JSSVGStyleElementAttributesFunctions[2].name = "type";
+    JSSVGStyleElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGStyleElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGStyleElementAttributesFunctions[2].magic = JSSVGStyleElement::TypeAttrNum;
+    JSSVGStyleElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGStyleElement::getValueProperty;
+    JSSVGStyleElementAttributesFunctions[2].u.getset.set.setter_magic = JSSVGStyleElement::putValueProperty;
+    JSSVGStyleElementAttributesFunctions[3].name = "title";
+    JSSVGStyleElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGStyleElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGStyleElementAttributesFunctions[3].magic = JSSVGStyleElement::TitleAttrNum;
+    JSSVGStyleElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGStyleElement::getValueProperty;
+    JSSVGStyleElementAttributesFunctions[3].u.getset.set.setter_magic = JSSVGStyleElement::putValueProperty;
+}
 
 JSValue JSSVGStyleElementPrototype::self(JSContext * ctx)
 {
@@ -71,21 +99,29 @@ JSValue JSSVGStyleElementPrototype::self(JSContext * ctx)
 
 void JSSVGStyleElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGStyleElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGStyleElementAttributesFunctions, countof(JSSVGStyleElementAttributesFunctions));
 }
 
-static JSClassDef JSSVGStyleElementClassDefine = 
+static JSClassDef JSSVGStyleElementClassDefine;
+static bool JSSVGStyleElementClassDefine_initialized = false;
+
+static void init_JSSVGStyleElementClassDefine()
 {
-    "SVGStyleElement",
-    .finalizer = JSSVGStyleElement::finalizer,
-    .gc_mark = JSSVGStyleElement::mark,
-};
+    if (JSSVGStyleElementClassDefine_initialized) return;
+    JSSVGStyleElementClassDefine_initialized = true;
+    memset(&JSSVGStyleElementClassDefine, 0, sizeof(JSSVGStyleElementClassDefine));
+    JSSVGStyleElementClassDefine.class_name = "SVGStyleElement";
+    JSSVGStyleElementClassDefine.finalizer = JSSVGStyleElement::finalizer;
+    JSSVGStyleElementClassDefine.gc_mark = JSSVGStyleElement::mark;
+}
 
 JSClassID JSSVGStyleElement::js_class_id = 0;
 
 void JSSVGStyleElement::init(JSContext* ctx)
 {
     if (JSSVGStyleElement::js_class_id == 0) {
+        init_JSSVGStyleElementClassDefine();
         JS_NewClassID(&JSSVGStyleElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGStyleElement::js_class_id, &JSSVGStyleElementClassDefine);
         JS_SetClassProto(ctx, JSSVGStyleElement::js_class_id, JSSVGStyleElementPrototype::self(ctx));

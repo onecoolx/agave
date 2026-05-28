@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -47,12 +49,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGColorAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGColorAttributesFunctions[3];
+static bool JSSVGColorAttributesFunctions_initialized = false;
+
+static void init_JSSVGColorAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("rgbColor", JSSVGColor::getValueProperty, NULL, JSSVGColor::RgbColorAttrNum),
-    JS_CGETSET_MAGIC_DEF("colorType", JSSVGColor::getValueProperty, NULL, JSSVGColor::ColorTypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSSVGColor::getValueProperty, NULL, JSSVGColor::ConstructorAttrNum)
-};
+    if (JSSVGColorAttributesFunctions_initialized) return;
+    JSSVGColorAttributesFunctions_initialized = true;
+    memset(JSSVGColorAttributesFunctions, 0, sizeof(JSSVGColorAttributesFunctions));
+    JSSVGColorAttributesFunctions[0].name = "rgbColor";
+    JSSVGColorAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGColorAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGColorAttributesFunctions[0].magic = JSSVGColor::RgbColorAttrNum;
+    JSSVGColorAttributesFunctions[0].u.getset.get.getter_magic = JSSVGColor::getValueProperty;
+    JSSVGColorAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGColorAttributesFunctions[1].name = "colorType";
+    JSSVGColorAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGColorAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGColorAttributesFunctions[1].magic = JSSVGColor::ColorTypeAttrNum;
+    JSSVGColorAttributesFunctions[1].u.getset.get.getter_magic = JSSVGColor::getValueProperty;
+    JSSVGColorAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGColorAttributesFunctions[2].name = "constructor";
+    JSSVGColorAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGColorAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGColorAttributesFunctions[2].magic = JSSVGColor::ConstructorAttrNum;
+    JSSVGColorAttributesFunctions[2].u.getset.get.getter_magic = JSSVGColor::getValueProperty;
+    JSSVGColorAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 class JSSVGColorConstructor {
 public:
@@ -69,13 +92,39 @@ JSValue JSSVGColorConstructor::getValueProperty(JSContext * ctx, JSValueConst th
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSSVGColorConstructorFunctions[] =
+static JSCFunctionListEntry JSSVGColorConstructorFunctions[4];
+static bool JSSVGColorConstructorFunctions_initialized = false;
+
+static void init_JSSVGColorConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_COLORTYPE_UNKNOWN", JSSVGColorConstructor::getValueProperty, NULL, SVGColor::SVG_COLORTYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_COLORTYPE_RGBCOLOR_ICCCOLOR", JSSVGColorConstructor::getValueProperty, NULL, SVGColor::SVG_COLORTYPE_RGBCOLOR_ICCCOLOR),
-    JS_CGETSET_MAGIC_DEF("SVG_COLORTYPE_CURRENTCOLOR", JSSVGColorConstructor::getValueProperty, NULL, SVGColor::SVG_COLORTYPE_CURRENTCOLOR),
-    JS_CGETSET_MAGIC_DEF("SVG_COLORTYPE_RGBCOLOR", JSSVGColorConstructor::getValueProperty, NULL, SVGColor::SVG_COLORTYPE_RGBCOLOR)
-};
+    if (JSSVGColorConstructorFunctions_initialized) return;
+    JSSVGColorConstructorFunctions_initialized = true;
+    memset(JSSVGColorConstructorFunctions, 0, sizeof(JSSVGColorConstructorFunctions));
+    JSSVGColorConstructorFunctions[0].name = "SVG_COLORTYPE_UNKNOWN";
+    JSSVGColorConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGColorConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGColorConstructorFunctions[0].magic = SVGColor::SVG_COLORTYPE_UNKNOWN;
+    JSSVGColorConstructorFunctions[0].u.getset.get.getter_magic = JSSVGColorConstructor::getValueProperty;
+    JSSVGColorConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGColorConstructorFunctions[1].name = "SVG_COLORTYPE_RGBCOLOR_ICCCOLOR";
+    JSSVGColorConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGColorConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGColorConstructorFunctions[1].magic = SVGColor::SVG_COLORTYPE_RGBCOLOR_ICCCOLOR;
+    JSSVGColorConstructorFunctions[1].u.getset.get.getter_magic = JSSVGColorConstructor::getValueProperty;
+    JSSVGColorConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGColorConstructorFunctions[2].name = "SVG_COLORTYPE_CURRENTCOLOR";
+    JSSVGColorConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGColorConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGColorConstructorFunctions[2].magic = SVGColor::SVG_COLORTYPE_CURRENTCOLOR;
+    JSSVGColorConstructorFunctions[2].u.getset.get.getter_magic = JSSVGColorConstructor::getValueProperty;
+    JSSVGColorConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGColorConstructorFunctions[3].name = "SVG_COLORTYPE_RGBCOLOR";
+    JSSVGColorConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGColorConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGColorConstructorFunctions[3].magic = SVGColor::SVG_COLORTYPE_RGBCOLOR;
+    JSSVGColorConstructorFunctions[3].u.getset.get.getter_magic = JSSVGColorConstructor::getValueProperty;
+    JSSVGColorConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGColorConstructor::self(JSContext * ctx)
 {
@@ -93,27 +142,78 @@ JSValue JSSVGColorConstructor::self(JSContext * ctx)
 
 void JSSVGColorConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGColorConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGColorConstructorFunctions, countof(JSSVGColorConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGColorPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSSVGColorPrototypeConstantsFunctions[4];
+static bool JSSVGColorPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSSVGColorPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_COLORTYPE_UNKNOWN", JSSVGColorPrototype::getValueProperty, NULL, SVGColor::SVG_COLORTYPE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_COLORTYPE_RGBCOLOR_ICCCOLOR", JSSVGColorPrototype::getValueProperty, NULL, SVGColor::SVG_COLORTYPE_RGBCOLOR_ICCCOLOR),
-    JS_CGETSET_MAGIC_DEF("SVG_COLORTYPE_CURRENTCOLOR", JSSVGColorPrototype::getValueProperty, NULL, SVGColor::SVG_COLORTYPE_CURRENTCOLOR),
-    JS_CGETSET_MAGIC_DEF("SVG_COLORTYPE_RGBCOLOR", JSSVGColorPrototype::getValueProperty, NULL, SVGColor::SVG_COLORTYPE_RGBCOLOR)
-};
+    if (JSSVGColorPrototypeConstantsFunctions_initialized) return;
+    JSSVGColorPrototypeConstantsFunctions_initialized = true;
+    memset(JSSVGColorPrototypeConstantsFunctions, 0, sizeof(JSSVGColorPrototypeConstantsFunctions));
+    JSSVGColorPrototypeConstantsFunctions[0].name = "SVG_COLORTYPE_UNKNOWN";
+    JSSVGColorPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGColorPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGColorPrototypeConstantsFunctions[0].magic = SVGColor::SVG_COLORTYPE_UNKNOWN;
+    JSSVGColorPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGColorPrototype::getValueProperty;
+    JSSVGColorPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGColorPrototypeConstantsFunctions[1].name = "SVG_COLORTYPE_RGBCOLOR_ICCCOLOR";
+    JSSVGColorPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGColorPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGColorPrototypeConstantsFunctions[1].magic = SVGColor::SVG_COLORTYPE_RGBCOLOR_ICCCOLOR;
+    JSSVGColorPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGColorPrototype::getValueProperty;
+    JSSVGColorPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGColorPrototypeConstantsFunctions[2].name = "SVG_COLORTYPE_CURRENTCOLOR";
+    JSSVGColorPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGColorPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGColorPrototypeConstantsFunctions[2].magic = SVGColor::SVG_COLORTYPE_CURRENTCOLOR;
+    JSSVGColorPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGColorPrototype::getValueProperty;
+    JSSVGColorPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGColorPrototypeConstantsFunctions[3].name = "SVG_COLORTYPE_RGBCOLOR";
+    JSSVGColorPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGColorPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGColorPrototypeConstantsFunctions[3].magic = SVGColor::SVG_COLORTYPE_RGBCOLOR;
+    JSSVGColorPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGColorPrototype::getValueProperty;
+    JSSVGColorPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGColorPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGColorPrototypeFunctions[3];
+static bool JSSVGColorPrototypeFunctions_initialized = false;
+
+static void init_JSSVGColorPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("setRGBColorICCColor", 2, JSSVGColorPrototypeFunction::callAsFunction, JSSVGColor::SetRGBColorICCColorFuncNum),
-    JS_CFUNC_MAGIC_DEF("setRGBColor", 1, JSSVGColorPrototypeFunction::callAsFunction, JSSVGColor::SetRGBColorFuncNum),
-    JS_CFUNC_MAGIC_DEF("setColor", 3, JSSVGColorPrototypeFunction::callAsFunction, JSSVGColor::SetColorFuncNum)
-};
+    if (JSSVGColorPrototypeFunctions_initialized) return;
+    JSSVGColorPrototypeFunctions_initialized = true;
+    memset(JSSVGColorPrototypeFunctions, 0, sizeof(JSSVGColorPrototypeFunctions));
+    JSSVGColorPrototypeFunctions[0].name = "setRGBColorICCColor";
+    JSSVGColorPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGColorPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGColorPrototypeFunctions[0].magic = JSSVGColor::SetRGBColorICCColorFuncNum;
+    JSSVGColorPrototypeFunctions[0].u.func.length = 2;
+    JSSVGColorPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGColorPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGColorPrototypeFunction::callAsFunction;
+    JSSVGColorPrototypeFunctions[1].name = "setRGBColor";
+    JSSVGColorPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGColorPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGColorPrototypeFunctions[1].magic = JSSVGColor::SetRGBColorFuncNum;
+    JSSVGColorPrototypeFunctions[1].u.func.length = 1;
+    JSSVGColorPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGColorPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGColorPrototypeFunction::callAsFunction;
+    JSSVGColorPrototypeFunctions[2].name = "setColor";
+    JSSVGColorPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGColorPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGColorPrototypeFunctions[2].magic = JSSVGColor::SetColorFuncNum;
+    JSSVGColorPrototypeFunctions[2].u.func.length = 3;
+    JSSVGColorPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGColorPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGColorPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGColorPrototype::self(JSContext * ctx)
 {
@@ -131,8 +231,11 @@ JSValue JSSVGColorPrototype::self(JSContext * ctx)
 
 void JSSVGColorPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGColorAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGColorAttributesFunctions, countof(JSSVGColorAttributesFunctions));
+    init_JSSVGColorPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGColorPrototypeConstantsFunctions, countof(JSSVGColorPrototypeConstantsFunctions));
+    init_JSSVGColorPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGColorPrototypeFunctions, countof(JSSVGColorPrototypeFunctions));
 }
 
@@ -142,18 +245,25 @@ JSValue JSSVGColorPrototype::getValueProperty(JSContext * ctx, JSValueConst this
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSSVGColorClassDefine = 
+static JSClassDef JSSVGColorClassDefine;
+static bool JSSVGColorClassDefine_initialized = false;
+
+static void init_JSSVGColorClassDefine()
 {
-    "SVGColor",
-    .finalizer = JSSVGColor::finalizer,
-    .gc_mark = JSSVGColor::mark,
-};
+    if (JSSVGColorClassDefine_initialized) return;
+    JSSVGColorClassDefine_initialized = true;
+    memset(&JSSVGColorClassDefine, 0, sizeof(JSSVGColorClassDefine));
+    JSSVGColorClassDefine.class_name = "SVGColor";
+    JSSVGColorClassDefine.finalizer = JSSVGColor::finalizer;
+    JSSVGColorClassDefine.gc_mark = JSSVGColor::mark;
+}
 
 JSClassID JSSVGColor::js_class_id = 0;
 
 void JSSVGColor::init(JSContext* ctx)
 {
     if (JSSVGColor::js_class_id == 0) {
+        init_JSSVGColorClassDefine();
         JS_NewClassID(&JSSVGColor::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGColor::js_class_id, &JSSVGColorClassDefine);
         JS_SetConstructor(ctx, JSSVGColorConstructor::self(ctx), JSSVGColorPrototype::self(ctx));

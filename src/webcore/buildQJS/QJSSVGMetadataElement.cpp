@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -62,18 +64,25 @@ void JSSVGMetadataElementPrototype::initPrototype(JSContext * ctx, JSValue this_
 {
 }
 
-static JSClassDef JSSVGMetadataElementClassDefine = 
+static JSClassDef JSSVGMetadataElementClassDefine;
+static bool JSSVGMetadataElementClassDefine_initialized = false;
+
+static void init_JSSVGMetadataElementClassDefine()
 {
-    "SVGMetadataElement",
-    .finalizer = JSSVGMetadataElement::finalizer,
-    .gc_mark = JSSVGMetadataElement::mark,
-};
+    if (JSSVGMetadataElementClassDefine_initialized) return;
+    JSSVGMetadataElementClassDefine_initialized = true;
+    memset(&JSSVGMetadataElementClassDefine, 0, sizeof(JSSVGMetadataElementClassDefine));
+    JSSVGMetadataElementClassDefine.class_name = "SVGMetadataElement";
+    JSSVGMetadataElementClassDefine.finalizer = JSSVGMetadataElement::finalizer;
+    JSSVGMetadataElementClassDefine.gc_mark = JSSVGMetadataElement::mark;
+}
 
 JSClassID JSSVGMetadataElement::js_class_id = 0;
 
 void JSSVGMetadataElement::init(JSContext* ctx)
 {
     if (JSSVGMetadataElement::js_class_id == 0) {
+        init_JSSVGMetadataElementClassDefine();
         JS_NewClassID(&JSSVGMetadataElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGMetadataElement::js_class_id, &JSSVGMetadataElementClassDefine);
         JS_SetClassProto(ctx, JSSVGMetadataElement::js_class_id, JSSVGMetadataElementPrototype::self(ctx));

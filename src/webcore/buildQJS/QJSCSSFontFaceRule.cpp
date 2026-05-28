@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCSSFontFaceRule.h"
 
 #include "CSSFontFaceRule.h"
@@ -41,11 +43,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSCSSFontFaceRuleAttributesFunctions[] =
+static JSCFunctionListEntry JSCSSFontFaceRuleAttributesFunctions[2];
+static bool JSCSSFontFaceRuleAttributesFunctions_initialized = false;
+
+static void init_JSCSSFontFaceRuleAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("style", JSCSSFontFaceRule::getValueProperty, NULL, JSCSSFontFaceRule::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSCSSFontFaceRule::getValueProperty, NULL, JSCSSFontFaceRule::ConstructorAttrNum)
-};
+    if (JSCSSFontFaceRuleAttributesFunctions_initialized) return;
+    JSCSSFontFaceRuleAttributesFunctions_initialized = true;
+    memset(JSCSSFontFaceRuleAttributesFunctions, 0, sizeof(JSCSSFontFaceRuleAttributesFunctions));
+    JSCSSFontFaceRuleAttributesFunctions[0].name = "style";
+    JSCSSFontFaceRuleAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSFontFaceRuleAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSFontFaceRuleAttributesFunctions[0].magic = JSCSSFontFaceRule::StyleAttrNum;
+    JSCSSFontFaceRuleAttributesFunctions[0].u.getset.get.getter_magic = JSCSSFontFaceRule::getValueProperty;
+    JSCSSFontFaceRuleAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSCSSFontFaceRuleAttributesFunctions[1].name = "constructor";
+    JSCSSFontFaceRuleAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSFontFaceRuleAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSFontFaceRuleAttributesFunctions[1].magic = JSCSSFontFaceRule::ConstructorAttrNum;
+    JSCSSFontFaceRuleAttributesFunctions[1].u.getset.get.getter_magic = JSCSSFontFaceRule::getValueProperty;
+    JSCSSFontFaceRuleAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSCSSFontFaceRuleConstructor {
 public:
@@ -94,21 +112,29 @@ JSValue JSCSSFontFaceRulePrototype::self(JSContext * ctx)
 
 void JSCSSFontFaceRulePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCSSFontFaceRuleAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSFontFaceRuleAttributesFunctions, countof(JSCSSFontFaceRuleAttributesFunctions));
 }
 
-static JSClassDef JSCSSFontFaceRuleClassDefine = 
+static JSClassDef JSCSSFontFaceRuleClassDefine;
+static bool JSCSSFontFaceRuleClassDefine_initialized = false;
+
+static void init_JSCSSFontFaceRuleClassDefine()
 {
-    "CSSFontFaceRule",
-    .finalizer = JSCSSFontFaceRule::finalizer,
-    .gc_mark = JSCSSFontFaceRule::mark,
-};
+    if (JSCSSFontFaceRuleClassDefine_initialized) return;
+    JSCSSFontFaceRuleClassDefine_initialized = true;
+    memset(&JSCSSFontFaceRuleClassDefine, 0, sizeof(JSCSSFontFaceRuleClassDefine));
+    JSCSSFontFaceRuleClassDefine.class_name = "CSSFontFaceRule";
+    JSCSSFontFaceRuleClassDefine.finalizer = JSCSSFontFaceRule::finalizer;
+    JSCSSFontFaceRuleClassDefine.gc_mark = JSCSSFontFaceRule::mark;
+}
 
 JSClassID JSCSSFontFaceRule::js_class_id = 0;
 
 void JSCSSFontFaceRule::init(JSContext* ctx)
 {
     if (JSCSSFontFaceRule::js_class_id == 0) {
+        init_JSCSSFontFaceRuleClassDefine();
         JS_NewClassID(&JSCSSFontFaceRule::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSCSSFontFaceRule::js_class_id, &JSCSSFontFaceRuleClassDefine);
         JS_SetConstructor(ctx, JSCSSFontFaceRuleConstructor::self(ctx), JSCSSFontFaceRulePrototype::self(ctx));

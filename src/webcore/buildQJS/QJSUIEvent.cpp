@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSUIEvent.h"
 
 #include "ExceptionCode.h"
@@ -41,25 +43,88 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSUIEventAttributesFunctions[] =
+static JSCFunctionListEntry JSUIEventAttributesFunctions[9];
+static bool JSUIEventAttributesFunctions_initialized = false;
+
+static void init_JSUIEventAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("layerX", JSUIEvent::getValueProperty, NULL, JSUIEvent::LayerXAttrNum),
-    JS_CGETSET_MAGIC_DEF("view", JSUIEvent::getValueProperty, NULL, JSUIEvent::ViewAttrNum),
-    JS_CGETSET_MAGIC_DEF("pageX", JSUIEvent::getValueProperty, NULL, JSUIEvent::PageXAttrNum),
-    JS_CGETSET_MAGIC_DEF("which", JSUIEvent::getValueProperty, NULL, JSUIEvent::WhichAttrNum),
-    JS_CGETSET_MAGIC_DEF("detail", JSUIEvent::getValueProperty, NULL, JSUIEvent::DetailAttrNum),
-    JS_CGETSET_MAGIC_DEF("keyCode", JSUIEvent::getValueProperty, NULL, JSUIEvent::KeyCodeAttrNum),
-    JS_CGETSET_MAGIC_DEF("charCode", JSUIEvent::getValueProperty, NULL, JSUIEvent::CharCodeAttrNum),
-    JS_CGETSET_MAGIC_DEF("layerY", JSUIEvent::getValueProperty, NULL, JSUIEvent::LayerYAttrNum),
-    JS_CGETSET_MAGIC_DEF("pageY", JSUIEvent::getValueProperty, NULL, JSUIEvent::PageYAttrNum)
-};
+    if (JSUIEventAttributesFunctions_initialized) return;
+    JSUIEventAttributesFunctions_initialized = true;
+    memset(JSUIEventAttributesFunctions, 0, sizeof(JSUIEventAttributesFunctions));
+    JSUIEventAttributesFunctions[0].name = "layerX";
+    JSUIEventAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSUIEventAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSUIEventAttributesFunctions[0].magic = JSUIEvent::LayerXAttrNum;
+    JSUIEventAttributesFunctions[0].u.getset.get.getter_magic = JSUIEvent::getValueProperty;
+    JSUIEventAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSUIEventAttributesFunctions[1].name = "view";
+    JSUIEventAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSUIEventAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSUIEventAttributesFunctions[1].magic = JSUIEvent::ViewAttrNum;
+    JSUIEventAttributesFunctions[1].u.getset.get.getter_magic = JSUIEvent::getValueProperty;
+    JSUIEventAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSUIEventAttributesFunctions[2].name = "pageX";
+    JSUIEventAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSUIEventAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSUIEventAttributesFunctions[2].magic = JSUIEvent::PageXAttrNum;
+    JSUIEventAttributesFunctions[2].u.getset.get.getter_magic = JSUIEvent::getValueProperty;
+    JSUIEventAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSUIEventAttributesFunctions[3].name = "which";
+    JSUIEventAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSUIEventAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSUIEventAttributesFunctions[3].magic = JSUIEvent::WhichAttrNum;
+    JSUIEventAttributesFunctions[3].u.getset.get.getter_magic = JSUIEvent::getValueProperty;
+    JSUIEventAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSUIEventAttributesFunctions[4].name = "detail";
+    JSUIEventAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSUIEventAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSUIEventAttributesFunctions[4].magic = JSUIEvent::DetailAttrNum;
+    JSUIEventAttributesFunctions[4].u.getset.get.getter_magic = JSUIEvent::getValueProperty;
+    JSUIEventAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSUIEventAttributesFunctions[5].name = "keyCode";
+    JSUIEventAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSUIEventAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSUIEventAttributesFunctions[5].magic = JSUIEvent::KeyCodeAttrNum;
+    JSUIEventAttributesFunctions[5].u.getset.get.getter_magic = JSUIEvent::getValueProperty;
+    JSUIEventAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSUIEventAttributesFunctions[6].name = "charCode";
+    JSUIEventAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSUIEventAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSUIEventAttributesFunctions[6].magic = JSUIEvent::CharCodeAttrNum;
+    JSUIEventAttributesFunctions[6].u.getset.get.getter_magic = JSUIEvent::getValueProperty;
+    JSUIEventAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSUIEventAttributesFunctions[7].name = "layerY";
+    JSUIEventAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSUIEventAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSUIEventAttributesFunctions[7].magic = JSUIEvent::LayerYAttrNum;
+    JSUIEventAttributesFunctions[7].u.getset.get.getter_magic = JSUIEvent::getValueProperty;
+    JSUIEventAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSUIEventAttributesFunctions[8].name = "pageY";
+    JSUIEventAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSUIEventAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSUIEventAttributesFunctions[8].magic = JSUIEvent::PageYAttrNum;
+    JSUIEventAttributesFunctions[8].u.getset.get.getter_magic = JSUIEvent::getValueProperty;
+    JSUIEventAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSUIEventPrototypeFunctions[] =
+static JSCFunctionListEntry JSUIEventPrototypeFunctions[1];
+static bool JSUIEventPrototypeFunctions_initialized = false;
+
+static void init_JSUIEventPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("initUIEvent", 5, JSUIEventPrototypeFunction::callAsFunction, JSUIEvent::InitUIEventFuncNum)
-};
+    if (JSUIEventPrototypeFunctions_initialized) return;
+    JSUIEventPrototypeFunctions_initialized = true;
+    memset(JSUIEventPrototypeFunctions, 0, sizeof(JSUIEventPrototypeFunctions));
+    JSUIEventPrototypeFunctions[0].name = "initUIEvent";
+    JSUIEventPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSUIEventPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSUIEventPrototypeFunctions[0].magic = JSUIEvent::InitUIEventFuncNum;
+    JSUIEventPrototypeFunctions[0].u.func.length = 5;
+    JSUIEventPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSUIEventPrototypeFunctions[0].u.func.cfunc.generic_magic = JSUIEventPrototypeFunction::callAsFunction;
+}
 
 JSValue JSUIEventPrototype::self(JSContext * ctx)
 {
@@ -77,22 +142,31 @@ JSValue JSUIEventPrototype::self(JSContext * ctx)
 
 void JSUIEventPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSUIEventAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSUIEventAttributesFunctions, countof(JSUIEventAttributesFunctions));
+    init_JSUIEventPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSUIEventPrototypeFunctions, countof(JSUIEventPrototypeFunctions));
 }
 
-static JSClassDef JSUIEventClassDefine = 
+static JSClassDef JSUIEventClassDefine;
+static bool JSUIEventClassDefine_initialized = false;
+
+static void init_JSUIEventClassDefine()
 {
-    "UIEvent",
-    .finalizer = JSUIEvent::finalizer,
-    .gc_mark = JSUIEvent::mark,
-};
+    if (JSUIEventClassDefine_initialized) return;
+    JSUIEventClassDefine_initialized = true;
+    memset(&JSUIEventClassDefine, 0, sizeof(JSUIEventClassDefine));
+    JSUIEventClassDefine.class_name = "UIEvent";
+    JSUIEventClassDefine.finalizer = JSUIEvent::finalizer;
+    JSUIEventClassDefine.gc_mark = JSUIEvent::mark;
+}
 
 JSClassID JSUIEvent::js_class_id = 0;
 
 void JSUIEvent::init(JSContext* ctx)
 {
     if (JSUIEvent::js_class_id == 0) {
+        init_JSUIEventClassDefine();
         JS_NewClassID(&JSUIEvent::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSUIEvent::js_class_id, &JSUIEventClassDefine);
         JS_SetClassProto(ctx, JSUIEvent::js_class_id, JSUIEventPrototype::self(ctx));

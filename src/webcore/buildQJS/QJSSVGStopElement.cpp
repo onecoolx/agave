@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -53,19 +55,52 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGStopElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGStopElementAttributesFunctions[3];
+static bool JSSVGStopElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGStopElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("className", JSSVGStopElement::getValueProperty, NULL, JSSVGStopElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("offset", JSSVGStopElement::getValueProperty, NULL, JSSVGStopElement::OffsetAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGStopElement::getValueProperty, NULL, JSSVGStopElement::StyleAttrNum)
-};
+    if (JSSVGStopElementAttributesFunctions_initialized) return;
+    JSSVGStopElementAttributesFunctions_initialized = true;
+    memset(JSSVGStopElementAttributesFunctions, 0, sizeof(JSSVGStopElementAttributesFunctions));
+    JSSVGStopElementAttributesFunctions[0].name = "className";
+    JSSVGStopElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGStopElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGStopElementAttributesFunctions[0].magic = JSSVGStopElement::ClassNameAttrNum;
+    JSSVGStopElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGStopElement::getValueProperty;
+    JSSVGStopElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGStopElementAttributesFunctions[1].name = "offset";
+    JSSVGStopElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGStopElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGStopElementAttributesFunctions[1].magic = JSSVGStopElement::OffsetAttrNum;
+    JSSVGStopElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGStopElement::getValueProperty;
+    JSSVGStopElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGStopElementAttributesFunctions[2].name = "style";
+    JSSVGStopElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGStopElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGStopElementAttributesFunctions[2].magic = JSSVGStopElement::StyleAttrNum;
+    JSSVGStopElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGStopElement::getValueProperty;
+    JSSVGStopElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGStopElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGStopElementPrototypeFunctions[1];
+static bool JSSVGStopElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGStopElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGStopElementPrototypeFunction::callAsFunction, JSSVGStopElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGStopElementPrototypeFunctions_initialized) return;
+    JSSVGStopElementPrototypeFunctions_initialized = true;
+    memset(JSSVGStopElementPrototypeFunctions, 0, sizeof(JSSVGStopElementPrototypeFunctions));
+    JSSVGStopElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGStopElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGStopElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGStopElementPrototypeFunctions[0].magic = JSSVGStopElement::GetPresentationAttributeFuncNum;
+    JSSVGStopElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGStopElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGStopElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGStopElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGStopElementPrototype::self(JSContext * ctx)
 {
@@ -83,22 +118,31 @@ JSValue JSSVGStopElementPrototype::self(JSContext * ctx)
 
 void JSSVGStopElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGStopElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGStopElementAttributesFunctions, countof(JSSVGStopElementAttributesFunctions));
+    init_JSSVGStopElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGStopElementPrototypeFunctions, countof(JSSVGStopElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGStopElementClassDefine = 
+static JSClassDef JSSVGStopElementClassDefine;
+static bool JSSVGStopElementClassDefine_initialized = false;
+
+static void init_JSSVGStopElementClassDefine()
 {
-    "SVGStopElement",
-    .finalizer = JSSVGStopElement::finalizer,
-    .gc_mark = JSSVGStopElement::mark,
-};
+    if (JSSVGStopElementClassDefine_initialized) return;
+    JSSVGStopElementClassDefine_initialized = true;
+    memset(&JSSVGStopElementClassDefine, 0, sizeof(JSSVGStopElementClassDefine));
+    JSSVGStopElementClassDefine.class_name = "SVGStopElement";
+    JSSVGStopElementClassDefine.finalizer = JSSVGStopElement::finalizer;
+    JSSVGStopElementClassDefine.gc_mark = JSSVGStopElement::mark;
+}
 
 JSClassID JSSVGStopElement::js_class_id = 0;
 
 void JSSVGStopElement::init(JSContext* ctx)
 {
     if (JSSVGStopElement::js_class_id == 0) {
+        init_JSSVGStopElementClassDefine();
         JS_NewClassID(&JSSVGStopElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGStopElement::js_class_id, &JSSVGStopElementClassDefine);
         JS_SetClassProto(ctx, JSSVGStopElement::js_class_id, JSSVGStopElementPrototype::self(ctx));

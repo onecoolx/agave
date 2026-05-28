@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLQuoteElement.h"
 
 #include "HTMLQuoteElement.h"
@@ -39,11 +41,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLQuoteElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLQuoteElementAttributesFunctions[2];
+static bool JSHTMLQuoteElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLQuoteElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("cite", JSHTMLQuoteElement::getValueProperty, JSHTMLQuoteElement::putValueProperty, JSHTMLQuoteElement::CiteAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLQuoteElement::getValueProperty, NULL, JSHTMLQuoteElement::ConstructorAttrNum)
-};
+    if (JSHTMLQuoteElementAttributesFunctions_initialized) return;
+    JSHTMLQuoteElementAttributesFunctions_initialized = true;
+    memset(JSHTMLQuoteElementAttributesFunctions, 0, sizeof(JSHTMLQuoteElementAttributesFunctions));
+    JSHTMLQuoteElementAttributesFunctions[0].name = "cite";
+    JSHTMLQuoteElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLQuoteElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLQuoteElementAttributesFunctions[0].magic = JSHTMLQuoteElement::CiteAttrNum;
+    JSHTMLQuoteElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLQuoteElement::getValueProperty;
+    JSHTMLQuoteElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLQuoteElement::putValueProperty;
+    JSHTMLQuoteElementAttributesFunctions[1].name = "constructor";
+    JSHTMLQuoteElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLQuoteElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLQuoteElementAttributesFunctions[1].magic = JSHTMLQuoteElement::ConstructorAttrNum;
+    JSHTMLQuoteElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLQuoteElement::getValueProperty;
+    JSHTMLQuoteElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLQuoteElementConstructor {
 public:
@@ -92,15 +110,22 @@ JSValue JSHTMLQuoteElementPrototype::self(JSContext * ctx)
 
 void JSHTMLQuoteElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLQuoteElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLQuoteElementAttributesFunctions, countof(JSHTMLQuoteElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLQuoteElementClassDefine = 
+static JSClassDef JSHTMLQuoteElementClassDefine;
+static bool JSHTMLQuoteElementClassDefine_initialized = false;
+
+static void init_JSHTMLQuoteElementClassDefine()
 {
-    "HTMLQuoteElement",
-    .finalizer = JSHTMLQuoteElement::finalizer,
-    .gc_mark = JSHTMLQuoteElement::mark,
-};
+    if (JSHTMLQuoteElementClassDefine_initialized) return;
+    JSHTMLQuoteElementClassDefine_initialized = true;
+    memset(&JSHTMLQuoteElementClassDefine, 0, sizeof(JSHTMLQuoteElementClassDefine));
+    JSHTMLQuoteElementClassDefine.class_name = "HTMLQuoteElement";
+    JSHTMLQuoteElementClassDefine.finalizer = JSHTMLQuoteElement::finalizer;
+    JSHTMLQuoteElementClassDefine.gc_mark = JSHTMLQuoteElement::mark;
+}
 
 JSClassID JSHTMLQuoteElement::js_class_id = 0;
 

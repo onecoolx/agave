@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -51,23 +53,75 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGViewElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGViewElementAttributesFunctions[5];
+static bool JSSVGViewElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGViewElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGViewElement::getValueProperty, NULL, JSSVGViewElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("zoomAndPan", JSSVGViewElement::getValueProperty, JSSVGViewElement::putValueProperty, JSSVGViewElement::ZoomAndPanAttrNum),
-    JS_CGETSET_MAGIC_DEF("viewTarget", JSSVGViewElement::getValueProperty, NULL, JSSVGViewElement::ViewTargetAttrNum),
-    JS_CGETSET_MAGIC_DEF("viewBox", JSSVGViewElement::getValueProperty, NULL, JSSVGViewElement::ViewBoxAttrNum),
-    JS_CGETSET_MAGIC_DEF("preserveAspectRatio", JSSVGViewElement::getValueProperty, NULL, JSSVGViewElement::PreserveAspectRatioAttrNum)
-};
+    if (JSSVGViewElementAttributesFunctions_initialized) return;
+    JSSVGViewElementAttributesFunctions_initialized = true;
+    memset(JSSVGViewElementAttributesFunctions, 0, sizeof(JSSVGViewElementAttributesFunctions));
+    JSSVGViewElementAttributesFunctions[0].name = "externalResourcesRequired";
+    JSSVGViewElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGViewElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGViewElementAttributesFunctions[0].magic = JSSVGViewElement::ExternalResourcesRequiredAttrNum;
+    JSSVGViewElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGViewElement::getValueProperty;
+    JSSVGViewElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGViewElementAttributesFunctions[1].name = "zoomAndPan";
+    JSSVGViewElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGViewElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGViewElementAttributesFunctions[1].magic = JSSVGViewElement::ZoomAndPanAttrNum;
+    JSSVGViewElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGViewElement::getValueProperty;
+    JSSVGViewElementAttributesFunctions[1].u.getset.set.setter_magic = JSSVGViewElement::putValueProperty;
+    JSSVGViewElementAttributesFunctions[2].name = "viewTarget";
+    JSSVGViewElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGViewElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGViewElementAttributesFunctions[2].magic = JSSVGViewElement::ViewTargetAttrNum;
+    JSSVGViewElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGViewElement::getValueProperty;
+    JSSVGViewElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGViewElementAttributesFunctions[3].name = "viewBox";
+    JSSVGViewElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGViewElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGViewElementAttributesFunctions[3].magic = JSSVGViewElement::ViewBoxAttrNum;
+    JSSVGViewElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGViewElement::getValueProperty;
+    JSSVGViewElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGViewElementAttributesFunctions[4].name = "preserveAspectRatio";
+    JSSVGViewElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGViewElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGViewElementAttributesFunctions[4].magic = JSSVGViewElement::PreserveAspectRatioAttrNum;
+    JSSVGViewElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGViewElement::getValueProperty;
+    JSSVGViewElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+}
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGViewElementPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSSVGViewElementPrototypeConstantsFunctions[3];
+static bool JSSVGViewElementPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSSVGViewElementPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_ZOOMANDPAN_UNKNOWN", JSSVGViewElementPrototype::getValueProperty, NULL, SVGViewElement::SVG_ZOOMANDPAN_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_ZOOMANDPAN_DISABLE", JSSVGViewElementPrototype::getValueProperty, NULL, SVGViewElement::SVG_ZOOMANDPAN_DISABLE),
-    JS_CGETSET_MAGIC_DEF("SVG_ZOOMANDPAN_MAGNIFY", JSSVGViewElementPrototype::getValueProperty, NULL, SVGViewElement::SVG_ZOOMANDPAN_MAGNIFY)
-};
+    if (JSSVGViewElementPrototypeConstantsFunctions_initialized) return;
+    JSSVGViewElementPrototypeConstantsFunctions_initialized = true;
+    memset(JSSVGViewElementPrototypeConstantsFunctions, 0, sizeof(JSSVGViewElementPrototypeConstantsFunctions));
+    JSSVGViewElementPrototypeConstantsFunctions[0].name = "SVG_ZOOMANDPAN_UNKNOWN";
+    JSSVGViewElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGViewElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGViewElementPrototypeConstantsFunctions[0].magic = SVGViewElement::SVG_ZOOMANDPAN_UNKNOWN;
+    JSSVGViewElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGViewElementPrototype::getValueProperty;
+    JSSVGViewElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGViewElementPrototypeConstantsFunctions[1].name = "SVG_ZOOMANDPAN_DISABLE";
+    JSSVGViewElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGViewElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGViewElementPrototypeConstantsFunctions[1].magic = SVGViewElement::SVG_ZOOMANDPAN_DISABLE;
+    JSSVGViewElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGViewElementPrototype::getValueProperty;
+    JSSVGViewElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGViewElementPrototypeConstantsFunctions[2].name = "SVG_ZOOMANDPAN_MAGNIFY";
+    JSSVGViewElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGViewElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGViewElementPrototypeConstantsFunctions[2].magic = SVGViewElement::SVG_ZOOMANDPAN_MAGNIFY;
+    JSSVGViewElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGViewElementPrototype::getValueProperty;
+    JSSVGViewElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGViewElementPrototype::self(JSContext * ctx)
 {
@@ -85,7 +139,9 @@ JSValue JSSVGViewElementPrototype::self(JSContext * ctx)
 
 void JSSVGViewElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGViewElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGViewElementAttributesFunctions, countof(JSSVGViewElementAttributesFunctions));
+    init_JSSVGViewElementPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGViewElementPrototypeConstantsFunctions, countof(JSSVGViewElementPrototypeConstantsFunctions));
 }
 
@@ -95,18 +151,25 @@ JSValue JSSVGViewElementPrototype::getValueProperty(JSContext * ctx, JSValueCons
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSSVGViewElementClassDefine = 
+static JSClassDef JSSVGViewElementClassDefine;
+static bool JSSVGViewElementClassDefine_initialized = false;
+
+static void init_JSSVGViewElementClassDefine()
 {
-    "SVGViewElement",
-    .finalizer = JSSVGViewElement::finalizer,
-    .gc_mark = JSSVGViewElement::mark,
-};
+    if (JSSVGViewElementClassDefine_initialized) return;
+    JSSVGViewElementClassDefine_initialized = true;
+    memset(&JSSVGViewElementClassDefine, 0, sizeof(JSSVGViewElementClassDefine));
+    JSSVGViewElementClassDefine.class_name = "SVGViewElement";
+    JSSVGViewElementClassDefine.finalizer = JSSVGViewElement::finalizer;
+    JSSVGViewElementClassDefine.gc_mark = JSSVGViewElement::mark;
+}
 
 JSClassID JSSVGViewElement::js_class_id = 0;
 
 void JSSVGViewElement::init(JSContext* ctx)
 {
     if (JSSVGViewElement::js_class_id == 0) {
+        init_JSSVGViewElementClassDefine();
         JS_NewClassID(&JSSVGViewElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGViewElement::js_class_id, &JSSVGViewElementClassDefine);
         JS_SetClassProto(ctx, JSSVGViewElement::js_class_id, JSSVGViewElementPrototype::self(ctx));

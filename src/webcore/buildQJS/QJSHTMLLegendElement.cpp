@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLLegendElement.h"
 
 #include "HTMLFormElement.h"
@@ -41,13 +43,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLLegendElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLLegendElementAttributesFunctions[4];
+static bool JSHTMLLegendElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLLegendElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("form", JSHTMLLegendElement::getValueProperty, NULL, JSHTMLLegendElement::FormAttrNum),
-    JS_CGETSET_MAGIC_DEF("accessKey", JSHTMLLegendElement::getValueProperty, JSHTMLLegendElement::putValueProperty, JSHTMLLegendElement::AccessKeyAttrNum),
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLLegendElement::getValueProperty, JSHTMLLegendElement::putValueProperty, JSHTMLLegendElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLLegendElement::getValueProperty, NULL, JSHTMLLegendElement::ConstructorAttrNum)
-};
+    if (JSHTMLLegendElementAttributesFunctions_initialized) return;
+    JSHTMLLegendElementAttributesFunctions_initialized = true;
+    memset(JSHTMLLegendElementAttributesFunctions, 0, sizeof(JSHTMLLegendElementAttributesFunctions));
+    JSHTMLLegendElementAttributesFunctions[0].name = "form";
+    JSHTMLLegendElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLegendElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLegendElementAttributesFunctions[0].magic = JSHTMLLegendElement::FormAttrNum;
+    JSHTMLLegendElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLLegendElement::getValueProperty;
+    JSHTMLLegendElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLLegendElementAttributesFunctions[1].name = "accessKey";
+    JSHTMLLegendElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLegendElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLegendElementAttributesFunctions[1].magic = JSHTMLLegendElement::AccessKeyAttrNum;
+    JSHTMLLegendElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLLegendElement::getValueProperty;
+    JSHTMLLegendElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLLegendElement::putValueProperty;
+    JSHTMLLegendElementAttributesFunctions[2].name = "align";
+    JSHTMLLegendElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLegendElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLegendElementAttributesFunctions[2].magic = JSHTMLLegendElement::AlignAttrNum;
+    JSHTMLLegendElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLLegendElement::getValueProperty;
+    JSHTMLLegendElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLLegendElement::putValueProperty;
+    JSHTMLLegendElementAttributesFunctions[3].name = "constructor";
+    JSHTMLLegendElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLegendElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLegendElementAttributesFunctions[3].magic = JSHTMLLegendElement::ConstructorAttrNum;
+    JSHTMLLegendElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLLegendElement::getValueProperty;
+    JSHTMLLegendElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLLegendElementConstructor {
 public:
@@ -82,10 +110,22 @@ void JSHTMLLegendElementConstructor::initConstructor(JSContext * ctx, JSValue th
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHTMLLegendElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSHTMLLegendElementPrototypeFunctions[1];
+static bool JSHTMLLegendElementPrototypeFunctions_initialized = false;
+
+static void init_JSHTMLLegendElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("focus", 0, JSHTMLLegendElementPrototypeFunction::callAsFunction, JSHTMLLegendElement::FocusFuncNum)
-};
+    if (JSHTMLLegendElementPrototypeFunctions_initialized) return;
+    JSHTMLLegendElementPrototypeFunctions_initialized = true;
+    memset(JSHTMLLegendElementPrototypeFunctions, 0, sizeof(JSHTMLLegendElementPrototypeFunctions));
+    JSHTMLLegendElementPrototypeFunctions[0].name = "focus";
+    JSHTMLLegendElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLLegendElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHTMLLegendElementPrototypeFunctions[0].magic = JSHTMLLegendElement::FocusFuncNum;
+    JSHTMLLegendElementPrototypeFunctions[0].u.func.length = 0;
+    JSHTMLLegendElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLLegendElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLLegendElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHTMLLegendElementPrototype::self(JSContext * ctx)
 {
@@ -103,16 +143,24 @@ JSValue JSHTMLLegendElementPrototype::self(JSContext * ctx)
 
 void JSHTMLLegendElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLLegendElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLLegendElementAttributesFunctions, countof(JSHTMLLegendElementAttributesFunctions));
+    init_JSHTMLLegendElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLLegendElementPrototypeFunctions, countof(JSHTMLLegendElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLLegendElementClassDefine = 
+static JSClassDef JSHTMLLegendElementClassDefine;
+static bool JSHTMLLegendElementClassDefine_initialized = false;
+
+static void init_JSHTMLLegendElementClassDefine()
 {
-    "HTMLLegendElement",
-    .finalizer = JSHTMLLegendElement::finalizer,
-    .gc_mark = JSHTMLLegendElement::mark,
-};
+    if (JSHTMLLegendElementClassDefine_initialized) return;
+    JSHTMLLegendElementClassDefine_initialized = true;
+    memset(&JSHTMLLegendElementClassDefine, 0, sizeof(JSHTMLLegendElementClassDefine));
+    JSHTMLLegendElementClassDefine.class_name = "HTMLLegendElement";
+    JSHTMLLegendElementClassDefine.finalizer = JSHTMLLegendElement::finalizer;
+    JSHTMLLegendElementClassDefine.gc_mark = JSHTMLLegendElement::mark;
+}
 
 JSClassID JSHTMLLegendElement::js_class_id = 0;
 

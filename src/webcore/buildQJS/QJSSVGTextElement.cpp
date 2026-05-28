@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -51,22 +53,73 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGTextElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGTextElementAttributesFunctions[3];
+static bool JSSVGTextElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGTextElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("nearestViewportElement", JSSVGTextElement::getValueProperty, NULL, JSSVGTextElement::NearestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("transform", JSSVGTextElement::getValueProperty, NULL, JSSVGTextElement::TransformAttrNum),
-    JS_CGETSET_MAGIC_DEF("farthestViewportElement", JSSVGTextElement::getValueProperty, NULL, JSSVGTextElement::FarthestViewportElementAttrNum)
-};
+    if (JSSVGTextElementAttributesFunctions_initialized) return;
+    JSSVGTextElementAttributesFunctions_initialized = true;
+    memset(JSSVGTextElementAttributesFunctions, 0, sizeof(JSSVGTextElementAttributesFunctions));
+    JSSVGTextElementAttributesFunctions[0].name = "nearestViewportElement";
+    JSSVGTextElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextElementAttributesFunctions[0].magic = JSSVGTextElement::NearestViewportElementAttrNum;
+    JSSVGTextElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGTextElement::getValueProperty;
+    JSSVGTextElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGTextElementAttributesFunctions[1].name = "transform";
+    JSSVGTextElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextElementAttributesFunctions[1].magic = JSSVGTextElement::TransformAttrNum;
+    JSSVGTextElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGTextElement::getValueProperty;
+    JSSVGTextElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGTextElementAttributesFunctions[2].name = "farthestViewportElement";
+    JSSVGTextElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTextElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTextElementAttributesFunctions[2].magic = JSSVGTextElement::FarthestViewportElementAttrNum;
+    JSSVGTextElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGTextElement::getValueProperty;
+    JSSVGTextElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGTextElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGTextElementPrototypeFunctions[4];
+static bool JSSVGTextElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGTextElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getTransformToElement", 1, JSSVGTextElementPrototypeFunction::callAsFunction, JSSVGTextElement::GetTransformToElementFuncNum),
-    JS_CFUNC_MAGIC_DEF("getScreenCTM", 0, JSSVGTextElementPrototypeFunction::callAsFunction, JSSVGTextElement::GetScreenCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getCTM", 0, JSSVGTextElementPrototypeFunction::callAsFunction, JSSVGTextElement::GetCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getBBox", 0, JSSVGTextElementPrototypeFunction::callAsFunction, JSSVGTextElement::GetBBoxFuncNum)
-};
+    if (JSSVGTextElementPrototypeFunctions_initialized) return;
+    JSSVGTextElementPrototypeFunctions_initialized = true;
+    memset(JSSVGTextElementPrototypeFunctions, 0, sizeof(JSSVGTextElementPrototypeFunctions));
+    JSSVGTextElementPrototypeFunctions[0].name = "getTransformToElement";
+    JSSVGTextElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGTextElementPrototypeFunctions[0].magic = JSSVGTextElement::GetTransformToElementFuncNum;
+    JSSVGTextElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGTextElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGTextElementPrototypeFunction::callAsFunction;
+    JSSVGTextElementPrototypeFunctions[1].name = "getScreenCTM";
+    JSSVGTextElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGTextElementPrototypeFunctions[1].magic = JSSVGTextElement::GetScreenCTMFuncNum;
+    JSSVGTextElementPrototypeFunctions[1].u.func.length = 0;
+    JSSVGTextElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGTextElementPrototypeFunction::callAsFunction;
+    JSSVGTextElementPrototypeFunctions[2].name = "getCTM";
+    JSSVGTextElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGTextElementPrototypeFunctions[2].magic = JSSVGTextElement::GetCTMFuncNum;
+    JSSVGTextElementPrototypeFunctions[2].u.func.length = 0;
+    JSSVGTextElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGTextElementPrototypeFunction::callAsFunction;
+    JSSVGTextElementPrototypeFunctions[3].name = "getBBox";
+    JSSVGTextElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTextElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGTextElementPrototypeFunctions[3].magic = JSSVGTextElement::GetBBoxFuncNum;
+    JSSVGTextElementPrototypeFunctions[3].u.func.length = 0;
+    JSSVGTextElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTextElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGTextElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGTextElementPrototype::self(JSContext * ctx)
 {
@@ -84,22 +137,31 @@ JSValue JSSVGTextElementPrototype::self(JSContext * ctx)
 
 void JSSVGTextElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGTextElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTextElementAttributesFunctions, countof(JSSVGTextElementAttributesFunctions));
+    init_JSSVGTextElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTextElementPrototypeFunctions, countof(JSSVGTextElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGTextElementClassDefine = 
+static JSClassDef JSSVGTextElementClassDefine;
+static bool JSSVGTextElementClassDefine_initialized = false;
+
+static void init_JSSVGTextElementClassDefine()
 {
-    "SVGTextElement",
-    .finalizer = JSSVGTextElement::finalizer,
-    .gc_mark = JSSVGTextElement::mark,
-};
+    if (JSSVGTextElementClassDefine_initialized) return;
+    JSSVGTextElementClassDefine_initialized = true;
+    memset(&JSSVGTextElementClassDefine, 0, sizeof(JSSVGTextElementClassDefine));
+    JSSVGTextElementClassDefine.class_name = "SVGTextElement";
+    JSSVGTextElementClassDefine.finalizer = JSSVGTextElement::finalizer;
+    JSSVGTextElementClassDefine.gc_mark = JSSVGTextElement::mark;
+}
 
 JSClassID JSSVGTextElement::js_class_id = 0;
 
 void JSSVGTextElement::init(JSContext* ctx)
 {
     if (JSSVGTextElement::js_class_id == 0) {
+        init_JSSVGTextElementClassDefine();
         JS_NewClassID(&JSSVGTextElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGTextElement::js_class_id, &JSSVGTextElementClassDefine);
         JS_SetClassProto(ctx, JSSVGTextElement::js_class_id, JSSVGTextElementPrototype::self(ctx));

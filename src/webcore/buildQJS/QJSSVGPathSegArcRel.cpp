@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,16 +48,57 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPathSegArcRelAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPathSegArcRelAttributesFunctions[7];
+static bool JSSVGPathSegArcRelAttributesFunctions_initialized = false;
+
+static void init_JSSVGPathSegArcRelAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("r2", JSSVGPathSegArcRel::getValueProperty, JSSVGPathSegArcRel::putValueProperty, JSSVGPathSegArcRel::R2AttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGPathSegArcRel::getValueProperty, JSSVGPathSegArcRel::putValueProperty, JSSVGPathSegArcRel::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGPathSegArcRel::getValueProperty, JSSVGPathSegArcRel::putValueProperty, JSSVGPathSegArcRel::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("r1", JSSVGPathSegArcRel::getValueProperty, JSSVGPathSegArcRel::putValueProperty, JSSVGPathSegArcRel::R1AttrNum),
-    JS_CGETSET_MAGIC_DEF("angle", JSSVGPathSegArcRel::getValueProperty, JSSVGPathSegArcRel::putValueProperty, JSSVGPathSegArcRel::AngleAttrNum),
-    JS_CGETSET_MAGIC_DEF("largeArcFlag", JSSVGPathSegArcRel::getValueProperty, JSSVGPathSegArcRel::putValueProperty, JSSVGPathSegArcRel::LargeArcFlagAttrNum),
-    JS_CGETSET_MAGIC_DEF("sweepFlag", JSSVGPathSegArcRel::getValueProperty, JSSVGPathSegArcRel::putValueProperty, JSSVGPathSegArcRel::SweepFlagAttrNum)
-};
+    if (JSSVGPathSegArcRelAttributesFunctions_initialized) return;
+    JSSVGPathSegArcRelAttributesFunctions_initialized = true;
+    memset(JSSVGPathSegArcRelAttributesFunctions, 0, sizeof(JSSVGPathSegArcRelAttributesFunctions));
+    JSSVGPathSegArcRelAttributesFunctions[0].name = "r2";
+    JSSVGPathSegArcRelAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegArcRelAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegArcRelAttributesFunctions[0].magic = JSSVGPathSegArcRel::R2AttrNum;
+    JSSVGPathSegArcRelAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegArcRel::getValueProperty;
+    JSSVGPathSegArcRelAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegArcRel::putValueProperty;
+    JSSVGPathSegArcRelAttributesFunctions[1].name = "x";
+    JSSVGPathSegArcRelAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegArcRelAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegArcRelAttributesFunctions[1].magic = JSSVGPathSegArcRel::XAttrNum;
+    JSSVGPathSegArcRelAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegArcRel::getValueProperty;
+    JSSVGPathSegArcRelAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegArcRel::putValueProperty;
+    JSSVGPathSegArcRelAttributesFunctions[2].name = "y";
+    JSSVGPathSegArcRelAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegArcRelAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegArcRelAttributesFunctions[2].magic = JSSVGPathSegArcRel::YAttrNum;
+    JSSVGPathSegArcRelAttributesFunctions[2].u.getset.get.getter_magic = JSSVGPathSegArcRel::getValueProperty;
+    JSSVGPathSegArcRelAttributesFunctions[2].u.getset.set.setter_magic = JSSVGPathSegArcRel::putValueProperty;
+    JSSVGPathSegArcRelAttributesFunctions[3].name = "r1";
+    JSSVGPathSegArcRelAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegArcRelAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegArcRelAttributesFunctions[3].magic = JSSVGPathSegArcRel::R1AttrNum;
+    JSSVGPathSegArcRelAttributesFunctions[3].u.getset.get.getter_magic = JSSVGPathSegArcRel::getValueProperty;
+    JSSVGPathSegArcRelAttributesFunctions[3].u.getset.set.setter_magic = JSSVGPathSegArcRel::putValueProperty;
+    JSSVGPathSegArcRelAttributesFunctions[4].name = "angle";
+    JSSVGPathSegArcRelAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegArcRelAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegArcRelAttributesFunctions[4].magic = JSSVGPathSegArcRel::AngleAttrNum;
+    JSSVGPathSegArcRelAttributesFunctions[4].u.getset.get.getter_magic = JSSVGPathSegArcRel::getValueProperty;
+    JSSVGPathSegArcRelAttributesFunctions[4].u.getset.set.setter_magic = JSSVGPathSegArcRel::putValueProperty;
+    JSSVGPathSegArcRelAttributesFunctions[5].name = "largeArcFlag";
+    JSSVGPathSegArcRelAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegArcRelAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegArcRelAttributesFunctions[5].magic = JSSVGPathSegArcRel::LargeArcFlagAttrNum;
+    JSSVGPathSegArcRelAttributesFunctions[5].u.getset.get.getter_magic = JSSVGPathSegArcRel::getValueProperty;
+    JSSVGPathSegArcRelAttributesFunctions[5].u.getset.set.setter_magic = JSSVGPathSegArcRel::putValueProperty;
+    JSSVGPathSegArcRelAttributesFunctions[6].name = "sweepFlag";
+    JSSVGPathSegArcRelAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegArcRelAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegArcRelAttributesFunctions[6].magic = JSSVGPathSegArcRel::SweepFlagAttrNum;
+    JSSVGPathSegArcRelAttributesFunctions[6].u.getset.get.getter_magic = JSSVGPathSegArcRel::getValueProperty;
+    JSSVGPathSegArcRelAttributesFunctions[6].u.getset.set.setter_magic = JSSVGPathSegArcRel::putValueProperty;
+}
 
 JSValue JSSVGPathSegArcRelPrototype::self(JSContext * ctx)
 {
@@ -73,21 +116,29 @@ JSValue JSSVGPathSegArcRelPrototype::self(JSContext * ctx)
 
 void JSSVGPathSegArcRelPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPathSegArcRelAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathSegArcRelAttributesFunctions, countof(JSSVGPathSegArcRelAttributesFunctions));
 }
 
-static JSClassDef JSSVGPathSegArcRelClassDefine = 
+static JSClassDef JSSVGPathSegArcRelClassDefine;
+static bool JSSVGPathSegArcRelClassDefine_initialized = false;
+
+static void init_JSSVGPathSegArcRelClassDefine()
 {
-    "SVGPathSegArcRel",
-    .finalizer = JSSVGPathSegArcRel::finalizer,
-    .gc_mark = JSSVGPathSegArcRel::mark,
-};
+    if (JSSVGPathSegArcRelClassDefine_initialized) return;
+    JSSVGPathSegArcRelClassDefine_initialized = true;
+    memset(&JSSVGPathSegArcRelClassDefine, 0, sizeof(JSSVGPathSegArcRelClassDefine));
+    JSSVGPathSegArcRelClassDefine.class_name = "SVGPathSegArcRel";
+    JSSVGPathSegArcRelClassDefine.finalizer = JSSVGPathSegArcRel::finalizer;
+    JSSVGPathSegArcRelClassDefine.gc_mark = JSSVGPathSegArcRel::mark;
+}
 
 JSClassID JSSVGPathSegArcRel::js_class_id = 0;
 
 void JSSVGPathSegArcRel::init(JSContext* ctx)
 {
     if (JSSVGPathSegArcRel::js_class_id == 0) {
+        init_JSSVGPathSegArcRelClassDefine();
         JS_NewClassID(&JSSVGPathSegArcRel::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathSegArcRel::js_class_id, &JSSVGPathSegArcRelClassDefine);
         JS_SetClassProto(ctx, JSSVGPathSegArcRel::js_class_id, JSSVGPathSegArcRelPrototype::self(ctx));

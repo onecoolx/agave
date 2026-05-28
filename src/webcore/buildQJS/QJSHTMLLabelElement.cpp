@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLLabelElement.h"
 
 #include "HTMLFormElement.h"
@@ -41,13 +43,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLLabelElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLLabelElementAttributesFunctions[4];
+static bool JSHTMLLabelElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLLabelElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("form", JSHTMLLabelElement::getValueProperty, NULL, JSHTMLLabelElement::FormAttrNum),
-    JS_CGETSET_MAGIC_DEF("accessKey", JSHTMLLabelElement::getValueProperty, JSHTMLLabelElement::putValueProperty, JSHTMLLabelElement::AccessKeyAttrNum),
-    JS_CGETSET_MAGIC_DEF("htmlFor", JSHTMLLabelElement::getValueProperty, JSHTMLLabelElement::putValueProperty, JSHTMLLabelElement::HtmlForAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLLabelElement::getValueProperty, NULL, JSHTMLLabelElement::ConstructorAttrNum)
-};
+    if (JSHTMLLabelElementAttributesFunctions_initialized) return;
+    JSHTMLLabelElementAttributesFunctions_initialized = true;
+    memset(JSHTMLLabelElementAttributesFunctions, 0, sizeof(JSHTMLLabelElementAttributesFunctions));
+    JSHTMLLabelElementAttributesFunctions[0].name = "form";
+    JSHTMLLabelElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLabelElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLabelElementAttributesFunctions[0].magic = JSHTMLLabelElement::FormAttrNum;
+    JSHTMLLabelElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLLabelElement::getValueProperty;
+    JSHTMLLabelElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLLabelElementAttributesFunctions[1].name = "accessKey";
+    JSHTMLLabelElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLabelElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLabelElementAttributesFunctions[1].magic = JSHTMLLabelElement::AccessKeyAttrNum;
+    JSHTMLLabelElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLLabelElement::getValueProperty;
+    JSHTMLLabelElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLLabelElement::putValueProperty;
+    JSHTMLLabelElementAttributesFunctions[2].name = "htmlFor";
+    JSHTMLLabelElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLabelElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLabelElementAttributesFunctions[2].magic = JSHTMLLabelElement::HtmlForAttrNum;
+    JSHTMLLabelElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLLabelElement::getValueProperty;
+    JSHTMLLabelElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLLabelElement::putValueProperty;
+    JSHTMLLabelElementAttributesFunctions[3].name = "constructor";
+    JSHTMLLabelElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLabelElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLabelElementAttributesFunctions[3].magic = JSHTMLLabelElement::ConstructorAttrNum;
+    JSHTMLLabelElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLLabelElement::getValueProperty;
+    JSHTMLLabelElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLLabelElementConstructor {
 public:
@@ -82,10 +110,22 @@ void JSHTMLLabelElementConstructor::initConstructor(JSContext * ctx, JSValue thi
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHTMLLabelElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSHTMLLabelElementPrototypeFunctions[1];
+static bool JSHTMLLabelElementPrototypeFunctions_initialized = false;
+
+static void init_JSHTMLLabelElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("focus", 0, JSHTMLLabelElementPrototypeFunction::callAsFunction, JSHTMLLabelElement::FocusFuncNum)
-};
+    if (JSHTMLLabelElementPrototypeFunctions_initialized) return;
+    JSHTMLLabelElementPrototypeFunctions_initialized = true;
+    memset(JSHTMLLabelElementPrototypeFunctions, 0, sizeof(JSHTMLLabelElementPrototypeFunctions));
+    JSHTMLLabelElementPrototypeFunctions[0].name = "focus";
+    JSHTMLLabelElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLLabelElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHTMLLabelElementPrototypeFunctions[0].magic = JSHTMLLabelElement::FocusFuncNum;
+    JSHTMLLabelElementPrototypeFunctions[0].u.func.length = 0;
+    JSHTMLLabelElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLLabelElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLLabelElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHTMLLabelElementPrototype::self(JSContext * ctx)
 {
@@ -103,16 +143,24 @@ JSValue JSHTMLLabelElementPrototype::self(JSContext * ctx)
 
 void JSHTMLLabelElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLLabelElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLLabelElementAttributesFunctions, countof(JSHTMLLabelElementAttributesFunctions));
+    init_JSHTMLLabelElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLLabelElementPrototypeFunctions, countof(JSHTMLLabelElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLLabelElementClassDefine = 
+static JSClassDef JSHTMLLabelElementClassDefine;
+static bool JSHTMLLabelElementClassDefine_initialized = false;
+
+static void init_JSHTMLLabelElementClassDefine()
 {
-    "HTMLLabelElement",
-    .finalizer = JSHTMLLabelElement::finalizer,
-    .gc_mark = JSHTMLLabelElement::mark,
-};
+    if (JSHTMLLabelElementClassDefine_initialized) return;
+    JSHTMLLabelElementClassDefine_initialized = true;
+    memset(&JSHTMLLabelElementClassDefine, 0, sizeof(JSHTMLLabelElementClassDefine));
+    JSHTMLLabelElementClassDefine.class_name = "HTMLLabelElement";
+    JSHTMLLabelElementClassDefine.finalizer = JSHTMLLabelElement::finalizer;
+    JSHTMLLabelElementClassDefine.gc_mark = JSHTMLLabelElement::mark;
+}
 
 JSClassID JSHTMLLabelElement::js_class_id = 0;
 

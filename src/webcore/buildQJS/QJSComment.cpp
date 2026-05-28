@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSComment.h"
 
 #include "Comment.h"
@@ -38,10 +40,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSCommentAttributesFunctions[] =
+static JSCFunctionListEntry JSCommentAttributesFunctions[1];
+static bool JSCommentAttributesFunctions_initialized = false;
+
+static void init_JSCommentAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSComment::getValueProperty, NULL, JSComment::ConstructorAttrNum)
-};
+    if (JSCommentAttributesFunctions_initialized) return;
+    JSCommentAttributesFunctions_initialized = true;
+    memset(JSCommentAttributesFunctions, 0, sizeof(JSCommentAttributesFunctions));
+    JSCommentAttributesFunctions[0].name = "constructor";
+    JSCommentAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCommentAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCommentAttributesFunctions[0].magic = JSComment::ConstructorAttrNum;
+    JSCommentAttributesFunctions[0].u.getset.get.getter_magic = JSComment::getValueProperty;
+    JSCommentAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 class JSCommentConstructor {
 public:
@@ -90,15 +103,22 @@ JSValue JSCommentPrototype::self(JSContext * ctx)
 
 void JSCommentPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCommentAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCommentAttributesFunctions, countof(JSCommentAttributesFunctions));
 }
 
-static JSClassDef JSCommentClassDefine = 
+static JSClassDef JSCommentClassDefine;
+static bool JSCommentClassDefine_initialized = false;
+
+static void init_JSCommentClassDefine()
 {
-    "Comment",
-    .finalizer = JSComment::finalizer,
-    .gc_mark = JSComment::mark,
-};
+    if (JSCommentClassDefine_initialized) return;
+    JSCommentClassDefine_initialized = true;
+    memset(&JSCommentClassDefine, 0, sizeof(JSCommentClassDefine));
+    JSCommentClassDefine.class_name = "Comment";
+    JSCommentClassDefine.finalizer = JSComment::finalizer;
+    JSCommentClassDefine.gc_mark = JSComment::mark;
+}
 
 JSClassID JSComment::js_class_id = 0;
 

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -45,11 +47,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAnimatedBooleanAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGAnimatedBooleanAttributesFunctions[2];
+static bool JSSVGAnimatedBooleanAttributesFunctions_initialized = false;
+
+static void init_JSSVGAnimatedBooleanAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("baseVal", JSSVGAnimatedBoolean::getValueProperty, JSSVGAnimatedBoolean::putValueProperty, JSSVGAnimatedBoolean::BaseValAttrNum),
-    JS_CGETSET_MAGIC_DEF("animVal", JSSVGAnimatedBoolean::getValueProperty, NULL, JSSVGAnimatedBoolean::AnimValAttrNum)
-};
+    if (JSSVGAnimatedBooleanAttributesFunctions_initialized) return;
+    JSSVGAnimatedBooleanAttributesFunctions_initialized = true;
+    memset(JSSVGAnimatedBooleanAttributesFunctions, 0, sizeof(JSSVGAnimatedBooleanAttributesFunctions));
+    JSSVGAnimatedBooleanAttributesFunctions[0].name = "baseVal";
+    JSSVGAnimatedBooleanAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedBooleanAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedBooleanAttributesFunctions[0].magic = JSSVGAnimatedBoolean::BaseValAttrNum;
+    JSSVGAnimatedBooleanAttributesFunctions[0].u.getset.get.getter_magic = JSSVGAnimatedBoolean::getValueProperty;
+    JSSVGAnimatedBooleanAttributesFunctions[0].u.getset.set.setter_magic = JSSVGAnimatedBoolean::putValueProperty;
+    JSSVGAnimatedBooleanAttributesFunctions[1].name = "animVal";
+    JSSVGAnimatedBooleanAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedBooleanAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedBooleanAttributesFunctions[1].magic = JSSVGAnimatedBoolean::AnimValAttrNum;
+    JSSVGAnimatedBooleanAttributesFunctions[1].u.getset.get.getter_magic = JSSVGAnimatedBoolean::getValueProperty;
+    JSSVGAnimatedBooleanAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGAnimatedBooleanPrototype::self(JSContext * ctx)
 {
@@ -67,21 +85,29 @@ JSValue JSSVGAnimatedBooleanPrototype::self(JSContext * ctx)
 
 void JSSVGAnimatedBooleanPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAnimatedBooleanAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnimatedBooleanAttributesFunctions, countof(JSSVGAnimatedBooleanAttributesFunctions));
 }
 
-static JSClassDef JSSVGAnimatedBooleanClassDefine = 
+static JSClassDef JSSVGAnimatedBooleanClassDefine;
+static bool JSSVGAnimatedBooleanClassDefine_initialized = false;
+
+static void init_JSSVGAnimatedBooleanClassDefine()
 {
-    "SVGAnimatedBoolean",
-    .finalizer = JSSVGAnimatedBoolean::finalizer,
-    .gc_mark = JSSVGAnimatedBoolean::mark,
-};
+    if (JSSVGAnimatedBooleanClassDefine_initialized) return;
+    JSSVGAnimatedBooleanClassDefine_initialized = true;
+    memset(&JSSVGAnimatedBooleanClassDefine, 0, sizeof(JSSVGAnimatedBooleanClassDefine));
+    JSSVGAnimatedBooleanClassDefine.class_name = "SVGAnimatedBoolean";
+    JSSVGAnimatedBooleanClassDefine.finalizer = JSSVGAnimatedBoolean::finalizer;
+    JSSVGAnimatedBooleanClassDefine.gc_mark = JSSVGAnimatedBoolean::mark;
+}
 
 JSClassID JSSVGAnimatedBoolean::js_class_id = 0;
 
 void JSSVGAnimatedBoolean::init(JSContext* ctx)
 {
     if (JSSVGAnimatedBoolean::js_class_id == 0) {
+        init_JSSVGAnimatedBooleanClassDefine();
         JS_NewClassID(&JSSVGAnimatedBoolean::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimatedBoolean::js_class_id, &JSSVGAnimatedBooleanClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimatedBoolean::js_class_id, JSSVGAnimatedBooleanPrototype::self(ctx));

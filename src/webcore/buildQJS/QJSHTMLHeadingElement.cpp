@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLHeadingElement.h"
 
 #include "HTMLHeadingElement.h"
@@ -39,11 +41,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLHeadingElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLHeadingElementAttributesFunctions[2];
+static bool JSHTMLHeadingElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLHeadingElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLHeadingElement::getValueProperty, JSHTMLHeadingElement::putValueProperty, JSHTMLHeadingElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLHeadingElement::getValueProperty, NULL, JSHTMLHeadingElement::ConstructorAttrNum)
-};
+    if (JSHTMLHeadingElementAttributesFunctions_initialized) return;
+    JSHTMLHeadingElementAttributesFunctions_initialized = true;
+    memset(JSHTMLHeadingElementAttributesFunctions, 0, sizeof(JSHTMLHeadingElementAttributesFunctions));
+    JSHTMLHeadingElementAttributesFunctions[0].name = "align";
+    JSHTMLHeadingElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLHeadingElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLHeadingElementAttributesFunctions[0].magic = JSHTMLHeadingElement::AlignAttrNum;
+    JSHTMLHeadingElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLHeadingElement::getValueProperty;
+    JSHTMLHeadingElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLHeadingElement::putValueProperty;
+    JSHTMLHeadingElementAttributesFunctions[1].name = "constructor";
+    JSHTMLHeadingElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLHeadingElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLHeadingElementAttributesFunctions[1].magic = JSHTMLHeadingElement::ConstructorAttrNum;
+    JSHTMLHeadingElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLHeadingElement::getValueProperty;
+    JSHTMLHeadingElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLHeadingElementConstructor {
 public:
@@ -92,15 +110,22 @@ JSValue JSHTMLHeadingElementPrototype::self(JSContext * ctx)
 
 void JSHTMLHeadingElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLHeadingElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLHeadingElementAttributesFunctions, countof(JSHTMLHeadingElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLHeadingElementClassDefine = 
+static JSClassDef JSHTMLHeadingElementClassDefine;
+static bool JSHTMLHeadingElementClassDefine_initialized = false;
+
+static void init_JSHTMLHeadingElementClassDefine()
 {
-    "HTMLHeadingElement",
-    .finalizer = JSHTMLHeadingElement::finalizer,
-    .gc_mark = JSHTMLHeadingElement::mark,
-};
+    if (JSHTMLHeadingElementClassDefine_initialized) return;
+    JSHTMLHeadingElementClassDefine_initialized = true;
+    memset(&JSHTMLHeadingElementClassDefine, 0, sizeof(JSHTMLHeadingElementClassDefine));
+    JSHTMLHeadingElementClassDefine.class_name = "HTMLHeadingElement";
+    JSHTMLHeadingElementClassDefine.finalizer = JSHTMLHeadingElement::finalizer;
+    JSHTMLHeadingElementClassDefine.gc_mark = JSHTMLHeadingElement::mark;
+}
 
 JSClassID JSHTMLHeadingElement::js_class_id = 0;
 

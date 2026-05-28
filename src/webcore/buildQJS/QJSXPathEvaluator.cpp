@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(XPATH)
 
@@ -50,10 +52,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSXPathEvaluatorAttributesFunctions[] =
+static JSCFunctionListEntry JSXPathEvaluatorAttributesFunctions[1];
+static bool JSXPathEvaluatorAttributesFunctions_initialized = false;
+
+static void init_JSXPathEvaluatorAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSXPathEvaluator::getValueProperty, NULL, JSXPathEvaluator::ConstructorAttrNum)
-};
+    if (JSXPathEvaluatorAttributesFunctions_initialized) return;
+    JSXPathEvaluatorAttributesFunctions_initialized = true;
+    memset(JSXPathEvaluatorAttributesFunctions, 0, sizeof(JSXPathEvaluatorAttributesFunctions));
+    JSXPathEvaluatorAttributesFunctions[0].name = "constructor";
+    JSXPathEvaluatorAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSXPathEvaluatorAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSXPathEvaluatorAttributesFunctions[0].magic = JSXPathEvaluator::ConstructorAttrNum;
+    JSXPathEvaluatorAttributesFunctions[0].u.getset.get.getter_magic = JSXPathEvaluator::getValueProperty;
+    JSXPathEvaluatorAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 class JSXPathEvaluatorConstructor {
 public:
@@ -94,12 +107,36 @@ JSValue JSXPathEvaluatorConstructor::construct(JSContext *ctx, JSValueConst new_
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSXPathEvaluatorPrototypeFunctions[] =
+static JSCFunctionListEntry JSXPathEvaluatorPrototypeFunctions[3];
+static bool JSXPathEvaluatorPrototypeFunctions_initialized = false;
+
+static void init_JSXPathEvaluatorPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("evaluate", 5, JSXPathEvaluatorPrototypeFunction::callAsFunction, JSXPathEvaluator::EvaluateFuncNum),
-    JS_CFUNC_MAGIC_DEF("createExpression", 2, JSXPathEvaluatorPrototypeFunction::callAsFunction, JSXPathEvaluator::CreateExpressionFuncNum),
-    JS_CFUNC_MAGIC_DEF("createNSResolver", 1, JSXPathEvaluatorPrototypeFunction::callAsFunction, JSXPathEvaluator::CreateNSResolverFuncNum)
-};
+    if (JSXPathEvaluatorPrototypeFunctions_initialized) return;
+    JSXPathEvaluatorPrototypeFunctions_initialized = true;
+    memset(JSXPathEvaluatorPrototypeFunctions, 0, sizeof(JSXPathEvaluatorPrototypeFunctions));
+    JSXPathEvaluatorPrototypeFunctions[0].name = "evaluate";
+    JSXPathEvaluatorPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSXPathEvaluatorPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSXPathEvaluatorPrototypeFunctions[0].magic = JSXPathEvaluator::EvaluateFuncNum;
+    JSXPathEvaluatorPrototypeFunctions[0].u.func.length = 5;
+    JSXPathEvaluatorPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSXPathEvaluatorPrototypeFunctions[0].u.func.cfunc.generic_magic = JSXPathEvaluatorPrototypeFunction::callAsFunction;
+    JSXPathEvaluatorPrototypeFunctions[1].name = "createExpression";
+    JSXPathEvaluatorPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSXPathEvaluatorPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSXPathEvaluatorPrototypeFunctions[1].magic = JSXPathEvaluator::CreateExpressionFuncNum;
+    JSXPathEvaluatorPrototypeFunctions[1].u.func.length = 2;
+    JSXPathEvaluatorPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSXPathEvaluatorPrototypeFunctions[1].u.func.cfunc.generic_magic = JSXPathEvaluatorPrototypeFunction::callAsFunction;
+    JSXPathEvaluatorPrototypeFunctions[2].name = "createNSResolver";
+    JSXPathEvaluatorPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSXPathEvaluatorPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSXPathEvaluatorPrototypeFunctions[2].magic = JSXPathEvaluator::CreateNSResolverFuncNum;
+    JSXPathEvaluatorPrototypeFunctions[2].u.func.length = 1;
+    JSXPathEvaluatorPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSXPathEvaluatorPrototypeFunctions[2].u.func.cfunc.generic_magic = JSXPathEvaluatorPrototypeFunction::callAsFunction;
+}
 
 JSValue JSXPathEvaluatorPrototype::self(JSContext * ctx)
 {
@@ -117,22 +154,31 @@ JSValue JSXPathEvaluatorPrototype::self(JSContext * ctx)
 
 void JSXPathEvaluatorPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSXPathEvaluatorAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSXPathEvaluatorAttributesFunctions, countof(JSXPathEvaluatorAttributesFunctions));
+    init_JSXPathEvaluatorPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSXPathEvaluatorPrototypeFunctions, countof(JSXPathEvaluatorPrototypeFunctions));
 }
 
-static JSClassDef JSXPathEvaluatorClassDefine = 
+static JSClassDef JSXPathEvaluatorClassDefine;
+static bool JSXPathEvaluatorClassDefine_initialized = false;
+
+static void init_JSXPathEvaluatorClassDefine()
 {
-    "XPathEvaluator",
-    .finalizer = JSXPathEvaluator::finalizer,
-    .gc_mark = JSXPathEvaluator::mark,
-};
+    if (JSXPathEvaluatorClassDefine_initialized) return;
+    JSXPathEvaluatorClassDefine_initialized = true;
+    memset(&JSXPathEvaluatorClassDefine, 0, sizeof(JSXPathEvaluatorClassDefine));
+    JSXPathEvaluatorClassDefine.class_name = "XPathEvaluator";
+    JSXPathEvaluatorClassDefine.finalizer = JSXPathEvaluator::finalizer;
+    JSXPathEvaluatorClassDefine.gc_mark = JSXPathEvaluator::mark;
+}
 
 JSClassID JSXPathEvaluator::js_class_id = 0;
 
 void JSXPathEvaluator::init(JSContext* ctx)
 {
     if (JSXPathEvaluator::js_class_id == 0) {
+        init_JSXPathEvaluatorClassDefine();
         JS_NewClassID(&JSXPathEvaluator::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSXPathEvaluator::js_class_id, &JSXPathEvaluatorClassDefine);
         JS_SetConstructor(ctx, JSXPathEvaluatorConstructor::self(ctx), JSXPathEvaluatorPrototype::self(ctx));

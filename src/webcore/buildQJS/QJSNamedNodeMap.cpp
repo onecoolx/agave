@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSNamedNodeMap.h"
 
 #include "ExceptionCode.h"
@@ -41,11 +43,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSNamedNodeMapAttributesFunctions[] =
+static JSCFunctionListEntry JSNamedNodeMapAttributesFunctions[2];
+static bool JSNamedNodeMapAttributesFunctions_initialized = false;
+
+static void init_JSNamedNodeMapAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("length", JSNamedNodeMap::getValueProperty, NULL, JSNamedNodeMap::LengthAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSNamedNodeMap::getValueProperty, NULL, JSNamedNodeMap::ConstructorAttrNum)
-};
+    if (JSNamedNodeMapAttributesFunctions_initialized) return;
+    JSNamedNodeMapAttributesFunctions_initialized = true;
+    memset(JSNamedNodeMapAttributesFunctions, 0, sizeof(JSNamedNodeMapAttributesFunctions));
+    JSNamedNodeMapAttributesFunctions[0].name = "length";
+    JSNamedNodeMapAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNamedNodeMapAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNamedNodeMapAttributesFunctions[0].magic = JSNamedNodeMap::LengthAttrNum;
+    JSNamedNodeMapAttributesFunctions[0].u.getset.get.getter_magic = JSNamedNodeMap::getValueProperty;
+    JSNamedNodeMapAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSNamedNodeMapAttributesFunctions[1].name = "constructor";
+    JSNamedNodeMapAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNamedNodeMapAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNamedNodeMapAttributesFunctions[1].magic = JSNamedNodeMap::ConstructorAttrNum;
+    JSNamedNodeMapAttributesFunctions[1].u.getset.get.getter_magic = JSNamedNodeMap::getValueProperty;
+    JSNamedNodeMapAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 class JSNamedNodeMapConstructor {
 public:
@@ -80,16 +98,64 @@ void JSNamedNodeMapConstructor::initConstructor(JSContext * ctx, JSValue this_ob
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSNamedNodeMapPrototypeFunctions[] =
+static JSCFunctionListEntry JSNamedNodeMapPrototypeFunctions[7];
+static bool JSNamedNodeMapPrototypeFunctions_initialized = false;
+
+static void init_JSNamedNodeMapPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getNamedItem", 1, JSNamedNodeMapPrototypeFunction::callAsFunction, JSNamedNodeMap::GetNamedItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("setNamedItem", 1, JSNamedNodeMapPrototypeFunction::callAsFunction, JSNamedNodeMap::SetNamedItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("getNamedItemNS", 2, JSNamedNodeMapPrototypeFunction::callAsFunction, JSNamedNodeMap::GetNamedItemNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("removeNamedItem", 1, JSNamedNodeMapPrototypeFunction::callAsFunction, JSNamedNodeMap::RemoveNamedItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("item", 1, JSNamedNodeMapPrototypeFunction::callAsFunction, JSNamedNodeMap::ItemFuncNum),
-    JS_CFUNC_MAGIC_DEF("setNamedItemNS", 1, JSNamedNodeMapPrototypeFunction::callAsFunction, JSNamedNodeMap::SetNamedItemNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("removeNamedItemNS", 2, JSNamedNodeMapPrototypeFunction::callAsFunction, JSNamedNodeMap::RemoveNamedItemNSFuncNum)
-};
+    if (JSNamedNodeMapPrototypeFunctions_initialized) return;
+    JSNamedNodeMapPrototypeFunctions_initialized = true;
+    memset(JSNamedNodeMapPrototypeFunctions, 0, sizeof(JSNamedNodeMapPrototypeFunctions));
+    JSNamedNodeMapPrototypeFunctions[0].name = "getNamedItem";
+    JSNamedNodeMapPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNamedNodeMapPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSNamedNodeMapPrototypeFunctions[0].magic = JSNamedNodeMap::GetNamedItemFuncNum;
+    JSNamedNodeMapPrototypeFunctions[0].u.func.length = 1;
+    JSNamedNodeMapPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNamedNodeMapPrototypeFunctions[0].u.func.cfunc.generic_magic = JSNamedNodeMapPrototypeFunction::callAsFunction;
+    JSNamedNodeMapPrototypeFunctions[1].name = "setNamedItem";
+    JSNamedNodeMapPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNamedNodeMapPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSNamedNodeMapPrototypeFunctions[1].magic = JSNamedNodeMap::SetNamedItemFuncNum;
+    JSNamedNodeMapPrototypeFunctions[1].u.func.length = 1;
+    JSNamedNodeMapPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNamedNodeMapPrototypeFunctions[1].u.func.cfunc.generic_magic = JSNamedNodeMapPrototypeFunction::callAsFunction;
+    JSNamedNodeMapPrototypeFunctions[2].name = "getNamedItemNS";
+    JSNamedNodeMapPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNamedNodeMapPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSNamedNodeMapPrototypeFunctions[2].magic = JSNamedNodeMap::GetNamedItemNSFuncNum;
+    JSNamedNodeMapPrototypeFunctions[2].u.func.length = 2;
+    JSNamedNodeMapPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNamedNodeMapPrototypeFunctions[2].u.func.cfunc.generic_magic = JSNamedNodeMapPrototypeFunction::callAsFunction;
+    JSNamedNodeMapPrototypeFunctions[3].name = "removeNamedItem";
+    JSNamedNodeMapPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNamedNodeMapPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSNamedNodeMapPrototypeFunctions[3].magic = JSNamedNodeMap::RemoveNamedItemFuncNum;
+    JSNamedNodeMapPrototypeFunctions[3].u.func.length = 1;
+    JSNamedNodeMapPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNamedNodeMapPrototypeFunctions[3].u.func.cfunc.generic_magic = JSNamedNodeMapPrototypeFunction::callAsFunction;
+    JSNamedNodeMapPrototypeFunctions[4].name = "item";
+    JSNamedNodeMapPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNamedNodeMapPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSNamedNodeMapPrototypeFunctions[4].magic = JSNamedNodeMap::ItemFuncNum;
+    JSNamedNodeMapPrototypeFunctions[4].u.func.length = 1;
+    JSNamedNodeMapPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNamedNodeMapPrototypeFunctions[4].u.func.cfunc.generic_magic = JSNamedNodeMapPrototypeFunction::callAsFunction;
+    JSNamedNodeMapPrototypeFunctions[5].name = "setNamedItemNS";
+    JSNamedNodeMapPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNamedNodeMapPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSNamedNodeMapPrototypeFunctions[5].magic = JSNamedNodeMap::SetNamedItemNSFuncNum;
+    JSNamedNodeMapPrototypeFunctions[5].u.func.length = 1;
+    JSNamedNodeMapPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNamedNodeMapPrototypeFunctions[5].u.func.cfunc.generic_magic = JSNamedNodeMapPrototypeFunction::callAsFunction;
+    JSNamedNodeMapPrototypeFunctions[6].name = "removeNamedItemNS";
+    JSNamedNodeMapPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNamedNodeMapPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSNamedNodeMapPrototypeFunctions[6].magic = JSNamedNodeMap::RemoveNamedItemNSFuncNum;
+    JSNamedNodeMapPrototypeFunctions[6].u.func.length = 2;
+    JSNamedNodeMapPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNamedNodeMapPrototypeFunctions[6].u.func.cfunc.generic_magic = JSNamedNodeMapPrototypeFunction::callAsFunction;
+}
 
 JSValue JSNamedNodeMapPrototype::self(JSContext * ctx)
 {
@@ -107,22 +173,31 @@ JSValue JSNamedNodeMapPrototype::self(JSContext * ctx)
 
 void JSNamedNodeMapPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSNamedNodeMapAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNamedNodeMapAttributesFunctions, countof(JSNamedNodeMapAttributesFunctions));
+    init_JSNamedNodeMapPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSNamedNodeMapPrototypeFunctions, countof(JSNamedNodeMapPrototypeFunctions));
 }
 
-static JSClassDef JSNamedNodeMapClassDefine = 
+static JSClassDef JSNamedNodeMapClassDefine;
+static bool JSNamedNodeMapClassDefine_initialized = false;
+
+static void init_JSNamedNodeMapClassDefine()
 {
-    "NamedNodeMap",
-    .finalizer = JSNamedNodeMap::finalizer,
-    .gc_mark = JSNamedNodeMap::mark,
-};
+    if (JSNamedNodeMapClassDefine_initialized) return;
+    JSNamedNodeMapClassDefine_initialized = true;
+    memset(&JSNamedNodeMapClassDefine, 0, sizeof(JSNamedNodeMapClassDefine));
+    JSNamedNodeMapClassDefine.class_name = "NamedNodeMap";
+    JSNamedNodeMapClassDefine.finalizer = JSNamedNodeMap::finalizer;
+    JSNamedNodeMapClassDefine.gc_mark = JSNamedNodeMap::mark;
+}
 
 JSClassID JSNamedNodeMap::js_class_id = 0;
 
 void JSNamedNodeMap::init(JSContext* ctx)
 {
     if (JSNamedNodeMap::js_class_id == 0) {
+        init_JSNamedNodeMapClassDefine();
         JS_NewClassID(&JSNamedNodeMap::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSNamedNodeMap::js_class_id, &JSNamedNodeMapClassDefine);
         JS_SetConstructor(ctx, JSNamedNodeMapConstructor::self(ctx), JSNamedNodeMapPrototype::self(ctx));

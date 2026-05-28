@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCSSPageRule.h"
 
 #include "CSSMutableStyleDeclaration.h"
@@ -42,12 +44,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSCSSPageRuleAttributesFunctions[] =
+static JSCFunctionListEntry JSCSSPageRuleAttributesFunctions[3];
+static bool JSCSSPageRuleAttributesFunctions_initialized = false;
+
+static void init_JSCSSPageRuleAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("selectorText", JSCSSPageRule::getValueProperty, JSCSSPageRule::putValueProperty, JSCSSPageRule::SelectorTextAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSCSSPageRule::getValueProperty, NULL, JSCSSPageRule::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSCSSPageRule::getValueProperty, NULL, JSCSSPageRule::ConstructorAttrNum)
-};
+    if (JSCSSPageRuleAttributesFunctions_initialized) return;
+    JSCSSPageRuleAttributesFunctions_initialized = true;
+    memset(JSCSSPageRuleAttributesFunctions, 0, sizeof(JSCSSPageRuleAttributesFunctions));
+    JSCSSPageRuleAttributesFunctions[0].name = "selectorText";
+    JSCSSPageRuleAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSPageRuleAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSPageRuleAttributesFunctions[0].magic = JSCSSPageRule::SelectorTextAttrNum;
+    JSCSSPageRuleAttributesFunctions[0].u.getset.get.getter_magic = JSCSSPageRule::getValueProperty;
+    JSCSSPageRuleAttributesFunctions[0].u.getset.set.setter_magic = JSCSSPageRule::putValueProperty;
+    JSCSSPageRuleAttributesFunctions[1].name = "style";
+    JSCSSPageRuleAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSPageRuleAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSPageRuleAttributesFunctions[1].magic = JSCSSPageRule::StyleAttrNum;
+    JSCSSPageRuleAttributesFunctions[1].u.getset.get.getter_magic = JSCSSPageRule::getValueProperty;
+    JSCSSPageRuleAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSCSSPageRuleAttributesFunctions[2].name = "constructor";
+    JSCSSPageRuleAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSPageRuleAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSPageRuleAttributesFunctions[2].magic = JSCSSPageRule::ConstructorAttrNum;
+    JSCSSPageRuleAttributesFunctions[2].u.getset.get.getter_magic = JSCSSPageRule::getValueProperty;
+    JSCSSPageRuleAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
 
 class JSCSSPageRuleConstructor {
 public:
@@ -96,21 +119,29 @@ JSValue JSCSSPageRulePrototype::self(JSContext * ctx)
 
 void JSCSSPageRulePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCSSPageRuleAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSPageRuleAttributesFunctions, countof(JSCSSPageRuleAttributesFunctions));
 }
 
-static JSClassDef JSCSSPageRuleClassDefine = 
+static JSClassDef JSCSSPageRuleClassDefine;
+static bool JSCSSPageRuleClassDefine_initialized = false;
+
+static void init_JSCSSPageRuleClassDefine()
 {
-    "CSSPageRule",
-    .finalizer = JSCSSPageRule::finalizer,
-    .gc_mark = JSCSSPageRule::mark,
-};
+    if (JSCSSPageRuleClassDefine_initialized) return;
+    JSCSSPageRuleClassDefine_initialized = true;
+    memset(&JSCSSPageRuleClassDefine, 0, sizeof(JSCSSPageRuleClassDefine));
+    JSCSSPageRuleClassDefine.class_name = "CSSPageRule";
+    JSCSSPageRuleClassDefine.finalizer = JSCSSPageRule::finalizer;
+    JSCSSPageRuleClassDefine.gc_mark = JSCSSPageRule::mark;
+}
 
 JSClassID JSCSSPageRule::js_class_id = 0;
 
 void JSCSSPageRule::init(JSContext* ctx)
 {
     if (JSCSSPageRule::js_class_id == 0) {
+        init_JSCSSPageRuleClassDefine();
         JS_NewClassID(&JSCSSPageRule::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSCSSPageRule::js_class_id, &JSCSSPageRuleClassDefine);
         JS_SetConstructor(ctx, JSCSSPageRuleConstructor::self(ctx), JSCSSPageRulePrototype::self(ctx));

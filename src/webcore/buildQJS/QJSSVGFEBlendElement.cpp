@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -54,20 +56,81 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFEBlendElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFEBlendElementAttributesFunctions[11];
+static bool JSSVGFEBlendElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFEBlendElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFEBlendElement::getValueProperty, NULL, JSSVGFEBlendElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGFEBlendElement::getValueProperty, NULL, JSSVGFEBlendElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("mode", JSSVGFEBlendElement::getValueProperty, NULL, JSSVGFEBlendElement::ModeAttrNum),
-    JS_CGETSET_MAGIC_DEF("in2", JSSVGFEBlendElement::getValueProperty, NULL, JSSVGFEBlendElement::In2AttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFEBlendElement::getValueProperty, NULL, JSSVGFEBlendElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("in1", JSSVGFEBlendElement::getValueProperty, NULL, JSSVGFEBlendElement::In1AttrNum),
-    JS_CGETSET_MAGIC_DEF("result", JSSVGFEBlendElement::getValueProperty, NULL, JSSVGFEBlendElement::ResultAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGFEBlendElement::getValueProperty, NULL, JSSVGFEBlendElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGFEBlendElement::getValueProperty, NULL, JSSVGFEBlendElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGFEBlendElement::getValueProperty, NULL, JSSVGFEBlendElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSSVGFEBlendElement::getValueProperty, NULL, JSSVGFEBlendElement::ConstructorAttrNum)
-};
+    if (JSSVGFEBlendElementAttributesFunctions_initialized) return;
+    JSSVGFEBlendElementAttributesFunctions_initialized = true;
+    memset(JSSVGFEBlendElementAttributesFunctions, 0, sizeof(JSSVGFEBlendElementAttributesFunctions));
+    JSSVGFEBlendElementAttributesFunctions[0].name = "x";
+    JSSVGFEBlendElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementAttributesFunctions[0].magic = JSSVGFEBlendElement::XAttrNum;
+    JSSVGFEBlendElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFEBlendElement::getValueProperty;
+    JSSVGFEBlendElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementAttributesFunctions[1].name = "height";
+    JSSVGFEBlendElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementAttributesFunctions[1].magic = JSSVGFEBlendElement::HeightAttrNum;
+    JSSVGFEBlendElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFEBlendElement::getValueProperty;
+    JSSVGFEBlendElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementAttributesFunctions[2].name = "mode";
+    JSSVGFEBlendElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementAttributesFunctions[2].magic = JSSVGFEBlendElement::ModeAttrNum;
+    JSSVGFEBlendElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFEBlendElement::getValueProperty;
+    JSSVGFEBlendElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementAttributesFunctions[3].name = "in2";
+    JSSVGFEBlendElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementAttributesFunctions[3].magic = JSSVGFEBlendElement::In2AttrNum;
+    JSSVGFEBlendElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGFEBlendElement::getValueProperty;
+    JSSVGFEBlendElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementAttributesFunctions[4].name = "y";
+    JSSVGFEBlendElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementAttributesFunctions[4].magic = JSSVGFEBlendElement::YAttrNum;
+    JSSVGFEBlendElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGFEBlendElement::getValueProperty;
+    JSSVGFEBlendElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementAttributesFunctions[5].name = "in1";
+    JSSVGFEBlendElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementAttributesFunctions[5].magic = JSSVGFEBlendElement::In1AttrNum;
+    JSSVGFEBlendElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGFEBlendElement::getValueProperty;
+    JSSVGFEBlendElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementAttributesFunctions[6].name = "result";
+    JSSVGFEBlendElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementAttributesFunctions[6].magic = JSSVGFEBlendElement::ResultAttrNum;
+    JSSVGFEBlendElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGFEBlendElement::getValueProperty;
+    JSSVGFEBlendElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementAttributesFunctions[7].name = "width";
+    JSSVGFEBlendElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementAttributesFunctions[7].magic = JSSVGFEBlendElement::WidthAttrNum;
+    JSSVGFEBlendElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGFEBlendElement::getValueProperty;
+    JSSVGFEBlendElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementAttributesFunctions[8].name = "className";
+    JSSVGFEBlendElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementAttributesFunctions[8].magic = JSSVGFEBlendElement::ClassNameAttrNum;
+    JSSVGFEBlendElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGFEBlendElement::getValueProperty;
+    JSSVGFEBlendElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementAttributesFunctions[9].name = "style";
+    JSSVGFEBlendElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementAttributesFunctions[9].magic = JSSVGFEBlendElement::StyleAttrNum;
+    JSSVGFEBlendElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGFEBlendElement::getValueProperty;
+    JSSVGFEBlendElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementAttributesFunctions[10].name = "constructor";
+    JSSVGFEBlendElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementAttributesFunctions[10].magic = JSSVGFEBlendElement::ConstructorAttrNum;
+    JSSVGFEBlendElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGFEBlendElement::getValueProperty;
+    JSSVGFEBlendElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+}
 
 class JSSVGFEBlendElementConstructor {
 public:
@@ -84,15 +147,51 @@ JSValue JSSVGFEBlendElementConstructor::getValueProperty(JSContext * ctx, JSValu
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSSVGFEBlendElementConstructorFunctions[] =
+static JSCFunctionListEntry JSSVGFEBlendElementConstructorFunctions[6];
+static bool JSSVGFEBlendElementConstructorFunctions_initialized = false;
+
+static void init_JSSVGFEBlendElementConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_FEBLEND_MODE_NORMAL", JSSVGFEBlendElementConstructor::getValueProperty, NULL, WebCore::SVG_FEBLEND_MODE_NORMAL),
-    JS_CGETSET_MAGIC_DEF("SVG_FEBLEND_MODE_UNKNOWN", JSSVGFEBlendElementConstructor::getValueProperty, NULL, WebCore::SVG_FEBLEND_MODE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_FEBLEND_MODE_MULTIPLY", JSSVGFEBlendElementConstructor::getValueProperty, NULL, WebCore::SVG_FEBLEND_MODE_MULTIPLY),
-    JS_CGETSET_MAGIC_DEF("SVG_FEBLEND_MODE_SCREEN", JSSVGFEBlendElementConstructor::getValueProperty, NULL, WebCore::SVG_FEBLEND_MODE_SCREEN),
-    JS_CGETSET_MAGIC_DEF("SVG_FEBLEND_MODE_DARKEN", JSSVGFEBlendElementConstructor::getValueProperty, NULL, WebCore::SVG_FEBLEND_MODE_DARKEN),
-    JS_CGETSET_MAGIC_DEF("SVG_FEBLEND_MODE_LIGHTEN", JSSVGFEBlendElementConstructor::getValueProperty, NULL, WebCore::SVG_FEBLEND_MODE_LIGHTEN)
-};
+    if (JSSVGFEBlendElementConstructorFunctions_initialized) return;
+    JSSVGFEBlendElementConstructorFunctions_initialized = true;
+    memset(JSSVGFEBlendElementConstructorFunctions, 0, sizeof(JSSVGFEBlendElementConstructorFunctions));
+    JSSVGFEBlendElementConstructorFunctions[0].name = "SVG_FEBLEND_MODE_NORMAL";
+    JSSVGFEBlendElementConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementConstructorFunctions[0].magic = WebCore::SVG_FEBLEND_MODE_NORMAL;
+    JSSVGFEBlendElementConstructorFunctions[0].u.getset.get.getter_magic = JSSVGFEBlendElementConstructor::getValueProperty;
+    JSSVGFEBlendElementConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementConstructorFunctions[1].name = "SVG_FEBLEND_MODE_UNKNOWN";
+    JSSVGFEBlendElementConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementConstructorFunctions[1].magic = WebCore::SVG_FEBLEND_MODE_UNKNOWN;
+    JSSVGFEBlendElementConstructorFunctions[1].u.getset.get.getter_magic = JSSVGFEBlendElementConstructor::getValueProperty;
+    JSSVGFEBlendElementConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementConstructorFunctions[2].name = "SVG_FEBLEND_MODE_MULTIPLY";
+    JSSVGFEBlendElementConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementConstructorFunctions[2].magic = WebCore::SVG_FEBLEND_MODE_MULTIPLY;
+    JSSVGFEBlendElementConstructorFunctions[2].u.getset.get.getter_magic = JSSVGFEBlendElementConstructor::getValueProperty;
+    JSSVGFEBlendElementConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementConstructorFunctions[3].name = "SVG_FEBLEND_MODE_SCREEN";
+    JSSVGFEBlendElementConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementConstructorFunctions[3].magic = WebCore::SVG_FEBLEND_MODE_SCREEN;
+    JSSVGFEBlendElementConstructorFunctions[3].u.getset.get.getter_magic = JSSVGFEBlendElementConstructor::getValueProperty;
+    JSSVGFEBlendElementConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementConstructorFunctions[4].name = "SVG_FEBLEND_MODE_DARKEN";
+    JSSVGFEBlendElementConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementConstructorFunctions[4].magic = WebCore::SVG_FEBLEND_MODE_DARKEN;
+    JSSVGFEBlendElementConstructorFunctions[4].u.getset.get.getter_magic = JSSVGFEBlendElementConstructor::getValueProperty;
+    JSSVGFEBlendElementConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementConstructorFunctions[5].name = "SVG_FEBLEND_MODE_LIGHTEN";
+    JSSVGFEBlendElementConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementConstructorFunctions[5].magic = WebCore::SVG_FEBLEND_MODE_LIGHTEN;
+    JSSVGFEBlendElementConstructorFunctions[5].u.getset.get.getter_magic = JSSVGFEBlendElementConstructor::getValueProperty;
+    JSSVGFEBlendElementConstructorFunctions[5].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGFEBlendElementConstructor::self(JSContext * ctx)
 {
@@ -110,27 +209,76 @@ JSValue JSSVGFEBlendElementConstructor::self(JSContext * ctx)
 
 void JSSVGFEBlendElementConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFEBlendElementConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEBlendElementConstructorFunctions, countof(JSSVGFEBlendElementConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFEBlendElementPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSSVGFEBlendElementPrototypeConstantsFunctions[6];
+static bool JSSVGFEBlendElementPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSSVGFEBlendElementPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("SVG_FEBLEND_MODE_NORMAL", JSSVGFEBlendElementPrototype::getValueProperty, NULL, WebCore::SVG_FEBLEND_MODE_NORMAL),
-    JS_CGETSET_MAGIC_DEF("SVG_FEBLEND_MODE_UNKNOWN", JSSVGFEBlendElementPrototype::getValueProperty, NULL, WebCore::SVG_FEBLEND_MODE_UNKNOWN),
-    JS_CGETSET_MAGIC_DEF("SVG_FEBLEND_MODE_MULTIPLY", JSSVGFEBlendElementPrototype::getValueProperty, NULL, WebCore::SVG_FEBLEND_MODE_MULTIPLY),
-    JS_CGETSET_MAGIC_DEF("SVG_FEBLEND_MODE_SCREEN", JSSVGFEBlendElementPrototype::getValueProperty, NULL, WebCore::SVG_FEBLEND_MODE_SCREEN),
-    JS_CGETSET_MAGIC_DEF("SVG_FEBLEND_MODE_DARKEN", JSSVGFEBlendElementPrototype::getValueProperty, NULL, WebCore::SVG_FEBLEND_MODE_DARKEN),
-    JS_CGETSET_MAGIC_DEF("SVG_FEBLEND_MODE_LIGHTEN", JSSVGFEBlendElementPrototype::getValueProperty, NULL, WebCore::SVG_FEBLEND_MODE_LIGHTEN)
-};
+    if (JSSVGFEBlendElementPrototypeConstantsFunctions_initialized) return;
+    JSSVGFEBlendElementPrototypeConstantsFunctions_initialized = true;
+    memset(JSSVGFEBlendElementPrototypeConstantsFunctions, 0, sizeof(JSSVGFEBlendElementPrototypeConstantsFunctions));
+    JSSVGFEBlendElementPrototypeConstantsFunctions[0].name = "SVG_FEBLEND_MODE_NORMAL";
+    JSSVGFEBlendElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[0].magic = WebCore::SVG_FEBLEND_MODE_NORMAL;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGFEBlendElementPrototype::getValueProperty;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[1].name = "SVG_FEBLEND_MODE_UNKNOWN";
+    JSSVGFEBlendElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[1].magic = WebCore::SVG_FEBLEND_MODE_UNKNOWN;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGFEBlendElementPrototype::getValueProperty;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[2].name = "SVG_FEBLEND_MODE_MULTIPLY";
+    JSSVGFEBlendElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[2].magic = WebCore::SVG_FEBLEND_MODE_MULTIPLY;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGFEBlendElementPrototype::getValueProperty;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[3].name = "SVG_FEBLEND_MODE_SCREEN";
+    JSSVGFEBlendElementPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[3].magic = WebCore::SVG_FEBLEND_MODE_SCREEN;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGFEBlendElementPrototype::getValueProperty;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[4].name = "SVG_FEBLEND_MODE_DARKEN";
+    JSSVGFEBlendElementPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[4].magic = WebCore::SVG_FEBLEND_MODE_DARKEN;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGFEBlendElementPrototype::getValueProperty;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[5].name = "SVG_FEBLEND_MODE_LIGHTEN";
+    JSSVGFEBlendElementPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[5].magic = WebCore::SVG_FEBLEND_MODE_LIGHTEN;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSSVGFEBlendElementPrototype::getValueProperty;
+    JSSVGFEBlendElementPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGFEBlendElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGFEBlendElementPrototypeFunctions[1];
+static bool JSSVGFEBlendElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGFEBlendElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGFEBlendElementPrototypeFunction::callAsFunction, JSSVGFEBlendElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGFEBlendElementPrototypeFunctions_initialized) return;
+    JSSVGFEBlendElementPrototypeFunctions_initialized = true;
+    memset(JSSVGFEBlendElementPrototypeFunctions, 0, sizeof(JSSVGFEBlendElementPrototypeFunctions));
+    JSSVGFEBlendElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGFEBlendElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFEBlendElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGFEBlendElementPrototypeFunctions[0].magic = JSSVGFEBlendElement::GetPresentationAttributeFuncNum;
+    JSSVGFEBlendElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGFEBlendElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFEBlendElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGFEBlendElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGFEBlendElementPrototype::self(JSContext * ctx)
 {
@@ -148,8 +296,11 @@ JSValue JSSVGFEBlendElementPrototype::self(JSContext * ctx)
 
 void JSSVGFEBlendElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFEBlendElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEBlendElementAttributesFunctions, countof(JSSVGFEBlendElementAttributesFunctions));
+    init_JSSVGFEBlendElementPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEBlendElementPrototypeConstantsFunctions, countof(JSSVGFEBlendElementPrototypeConstantsFunctions));
+    init_JSSVGFEBlendElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEBlendElementPrototypeFunctions, countof(JSSVGFEBlendElementPrototypeFunctions));
 }
 
@@ -159,18 +310,25 @@ JSValue JSSVGFEBlendElementPrototype::getValueProperty(JSContext * ctx, JSValueC
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSSVGFEBlendElementClassDefine = 
+static JSClassDef JSSVGFEBlendElementClassDefine;
+static bool JSSVGFEBlendElementClassDefine_initialized = false;
+
+static void init_JSSVGFEBlendElementClassDefine()
 {
-    "SVGFEBlendElement",
-    .finalizer = JSSVGFEBlendElement::finalizer,
-    .gc_mark = JSSVGFEBlendElement::mark,
-};
+    if (JSSVGFEBlendElementClassDefine_initialized) return;
+    JSSVGFEBlendElementClassDefine_initialized = true;
+    memset(&JSSVGFEBlendElementClassDefine, 0, sizeof(JSSVGFEBlendElementClassDefine));
+    JSSVGFEBlendElementClassDefine.class_name = "SVGFEBlendElement";
+    JSSVGFEBlendElementClassDefine.finalizer = JSSVGFEBlendElement::finalizer;
+    JSSVGFEBlendElementClassDefine.gc_mark = JSSVGFEBlendElement::mark;
+}
 
 JSClassID JSSVGFEBlendElement::js_class_id = 0;
 
 void JSSVGFEBlendElement::init(JSContext* ctx)
 {
     if (JSSVGFEBlendElement::js_class_id == 0) {
+        init_JSSVGFEBlendElementClassDefine();
         JS_NewClassID(&JSSVGFEBlendElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFEBlendElement::js_class_id, &JSSVGFEBlendElementClassDefine);
         JS_SetConstructor(ctx, JSSVGFEBlendElementConstructor::self(ctx), JSSVGFEBlendElementPrototype::self(ctx));

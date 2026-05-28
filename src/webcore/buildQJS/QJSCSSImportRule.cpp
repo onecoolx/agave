@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSCSSImportRule.h"
 
 #include "CSSImportRule.h"
@@ -43,13 +45,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSCSSImportRuleAttributesFunctions[] =
+static JSCFunctionListEntry JSCSSImportRuleAttributesFunctions[4];
+static bool JSCSSImportRuleAttributesFunctions_initialized = false;
+
+static void init_JSCSSImportRuleAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("href", JSCSSImportRule::getValueProperty, NULL, JSCSSImportRule::HrefAttrNum),
-    JS_CGETSET_MAGIC_DEF("media", JSCSSImportRule::getValueProperty, NULL, JSCSSImportRule::MediaAttrNum),
-    JS_CGETSET_MAGIC_DEF("styleSheet", JSCSSImportRule::getValueProperty, NULL, JSCSSImportRule::StyleSheetAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSCSSImportRule::getValueProperty, NULL, JSCSSImportRule::ConstructorAttrNum)
-};
+    if (JSCSSImportRuleAttributesFunctions_initialized) return;
+    JSCSSImportRuleAttributesFunctions_initialized = true;
+    memset(JSCSSImportRuleAttributesFunctions, 0, sizeof(JSCSSImportRuleAttributesFunctions));
+    JSCSSImportRuleAttributesFunctions[0].name = "href";
+    JSCSSImportRuleAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSImportRuleAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSImportRuleAttributesFunctions[0].magic = JSCSSImportRule::HrefAttrNum;
+    JSCSSImportRuleAttributesFunctions[0].u.getset.get.getter_magic = JSCSSImportRule::getValueProperty;
+    JSCSSImportRuleAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSCSSImportRuleAttributesFunctions[1].name = "media";
+    JSCSSImportRuleAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSImportRuleAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSImportRuleAttributesFunctions[1].magic = JSCSSImportRule::MediaAttrNum;
+    JSCSSImportRuleAttributesFunctions[1].u.getset.get.getter_magic = JSCSSImportRule::getValueProperty;
+    JSCSSImportRuleAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSCSSImportRuleAttributesFunctions[2].name = "styleSheet";
+    JSCSSImportRuleAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSImportRuleAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSImportRuleAttributesFunctions[2].magic = JSCSSImportRule::StyleSheetAttrNum;
+    JSCSSImportRuleAttributesFunctions[2].u.getset.get.getter_magic = JSCSSImportRule::getValueProperty;
+    JSCSSImportRuleAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSCSSImportRuleAttributesFunctions[3].name = "constructor";
+    JSCSSImportRuleAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSCSSImportRuleAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSCSSImportRuleAttributesFunctions[3].magic = JSCSSImportRule::ConstructorAttrNum;
+    JSCSSImportRuleAttributesFunctions[3].u.getset.get.getter_magic = JSCSSImportRule::getValueProperty;
+    JSCSSImportRuleAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 class JSCSSImportRuleConstructor {
 public:
@@ -98,21 +126,29 @@ JSValue JSCSSImportRulePrototype::self(JSContext * ctx)
 
 void JSCSSImportRulePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSCSSImportRuleAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSImportRuleAttributesFunctions, countof(JSCSSImportRuleAttributesFunctions));
 }
 
-static JSClassDef JSCSSImportRuleClassDefine = 
+static JSClassDef JSCSSImportRuleClassDefine;
+static bool JSCSSImportRuleClassDefine_initialized = false;
+
+static void init_JSCSSImportRuleClassDefine()
 {
-    "CSSImportRule",
-    .finalizer = JSCSSImportRule::finalizer,
-    .gc_mark = JSCSSImportRule::mark,
-};
+    if (JSCSSImportRuleClassDefine_initialized) return;
+    JSCSSImportRuleClassDefine_initialized = true;
+    memset(&JSCSSImportRuleClassDefine, 0, sizeof(JSCSSImportRuleClassDefine));
+    JSCSSImportRuleClassDefine.class_name = "CSSImportRule";
+    JSCSSImportRuleClassDefine.finalizer = JSCSSImportRule::finalizer;
+    JSCSSImportRuleClassDefine.gc_mark = JSCSSImportRule::mark;
+}
 
 JSClassID JSCSSImportRule::js_class_id = 0;
 
 void JSCSSImportRule::init(JSContext* ctx)
 {
     if (JSCSSImportRule::js_class_id == 0) {
+        init_JSCSSImportRuleClassDefine();
         JS_NewClassID(&JSCSSImportRule::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSCSSImportRule::js_class_id, &JSCSSImportRuleClassDefine);
         JS_SetConstructor(ctx, JSCSSImportRuleConstructor::self(ctx), JSCSSImportRulePrototype::self(ctx));

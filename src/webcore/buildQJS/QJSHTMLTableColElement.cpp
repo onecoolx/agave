@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLTableColElement.h"
 
 #include "HTMLTableColElement.h"
@@ -39,16 +41,57 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLTableColElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLTableColElementAttributesFunctions[7];
+static bool JSHTMLTableColElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLTableColElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("width", JSHTMLTableColElement::getValueProperty, JSHTMLTableColElement::putValueProperty, JSHTMLTableColElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("chOff", JSHTMLTableColElement::getValueProperty, JSHTMLTableColElement::putValueProperty, JSHTMLTableColElement::ChOffAttrNum),
-    JS_CGETSET_MAGIC_DEF("ch", JSHTMLTableColElement::getValueProperty, JSHTMLTableColElement::putValueProperty, JSHTMLTableColElement::ChAttrNum),
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLTableColElement::getValueProperty, JSHTMLTableColElement::putValueProperty, JSHTMLTableColElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("span", JSHTMLTableColElement::getValueProperty, JSHTMLTableColElement::putValueProperty, JSHTMLTableColElement::SpanAttrNum),
-    JS_CGETSET_MAGIC_DEF("vAlign", JSHTMLTableColElement::getValueProperty, JSHTMLTableColElement::putValueProperty, JSHTMLTableColElement::VAlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLTableColElement::getValueProperty, NULL, JSHTMLTableColElement::ConstructorAttrNum)
-};
+    if (JSHTMLTableColElementAttributesFunctions_initialized) return;
+    JSHTMLTableColElementAttributesFunctions_initialized = true;
+    memset(JSHTMLTableColElementAttributesFunctions, 0, sizeof(JSHTMLTableColElementAttributesFunctions));
+    JSHTMLTableColElementAttributesFunctions[0].name = "width";
+    JSHTMLTableColElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableColElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableColElementAttributesFunctions[0].magic = JSHTMLTableColElement::WidthAttrNum;
+    JSHTMLTableColElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLTableColElement::getValueProperty;
+    JSHTMLTableColElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLTableColElement::putValueProperty;
+    JSHTMLTableColElementAttributesFunctions[1].name = "chOff";
+    JSHTMLTableColElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableColElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableColElementAttributesFunctions[1].magic = JSHTMLTableColElement::ChOffAttrNum;
+    JSHTMLTableColElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLTableColElement::getValueProperty;
+    JSHTMLTableColElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLTableColElement::putValueProperty;
+    JSHTMLTableColElementAttributesFunctions[2].name = "ch";
+    JSHTMLTableColElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableColElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableColElementAttributesFunctions[2].magic = JSHTMLTableColElement::ChAttrNum;
+    JSHTMLTableColElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLTableColElement::getValueProperty;
+    JSHTMLTableColElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLTableColElement::putValueProperty;
+    JSHTMLTableColElementAttributesFunctions[3].name = "align";
+    JSHTMLTableColElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableColElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableColElementAttributesFunctions[3].magic = JSHTMLTableColElement::AlignAttrNum;
+    JSHTMLTableColElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLTableColElement::getValueProperty;
+    JSHTMLTableColElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLTableColElement::putValueProperty;
+    JSHTMLTableColElementAttributesFunctions[4].name = "span";
+    JSHTMLTableColElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableColElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableColElementAttributesFunctions[4].magic = JSHTMLTableColElement::SpanAttrNum;
+    JSHTMLTableColElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLTableColElement::getValueProperty;
+    JSHTMLTableColElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLTableColElement::putValueProperty;
+    JSHTMLTableColElementAttributesFunctions[5].name = "vAlign";
+    JSHTMLTableColElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableColElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableColElementAttributesFunctions[5].magic = JSHTMLTableColElement::VAlignAttrNum;
+    JSHTMLTableColElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLTableColElement::getValueProperty;
+    JSHTMLTableColElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLTableColElement::putValueProperty;
+    JSHTMLTableColElementAttributesFunctions[6].name = "constructor";
+    JSHTMLTableColElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableColElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableColElementAttributesFunctions[6].magic = JSHTMLTableColElement::ConstructorAttrNum;
+    JSHTMLTableColElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLTableColElement::getValueProperty;
+    JSHTMLTableColElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLTableColElementConstructor {
 public:
@@ -97,15 +140,22 @@ JSValue JSHTMLTableColElementPrototype::self(JSContext * ctx)
 
 void JSHTMLTableColElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLTableColElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTableColElementAttributesFunctions, countof(JSHTMLTableColElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLTableColElementClassDefine = 
+static JSClassDef JSHTMLTableColElementClassDefine;
+static bool JSHTMLTableColElementClassDefine_initialized = false;
+
+static void init_JSHTMLTableColElementClassDefine()
 {
-    "HTMLTableColElement",
-    .finalizer = JSHTMLTableColElement::finalizer,
-    .gc_mark = JSHTMLTableColElement::mark,
-};
+    if (JSHTMLTableColElementClassDefine_initialized) return;
+    JSHTMLTableColElementClassDefine_initialized = true;
+    memset(&JSHTMLTableColElementClassDefine, 0, sizeof(JSHTMLTableColElementClassDefine));
+    JSHTMLTableColElementClassDefine.class_name = "HTMLTableColElement";
+    JSHTMLTableColElementClassDefine.finalizer = JSHTMLTableColElement::finalizer;
+    JSHTMLTableColElementClassDefine.gc_mark = JSHTMLTableColElement::mark;
+}
 
 JSClassID JSHTMLTableColElement::js_class_id = 0;
 

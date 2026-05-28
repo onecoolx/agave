@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG) && ENABLE(SVG_EXPERIMENTAL_FEATURES)
 
@@ -54,26 +56,94 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGFEOffsetElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGFEOffsetElementAttributesFunctions[10];
+static bool JSSVGFEOffsetElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGFEOffsetElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("dy", JSSVGFEOffsetElement::getValueProperty, NULL, JSSVGFEOffsetElement::DyAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGFEOffsetElement::getValueProperty, NULL, JSSVGFEOffsetElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("dx", JSSVGFEOffsetElement::getValueProperty, NULL, JSSVGFEOffsetElement::DxAttrNum),
-    JS_CGETSET_MAGIC_DEF("in1", JSSVGFEOffsetElement::getValueProperty, NULL, JSSVGFEOffsetElement::In1AttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSSVGFEOffsetElement::getValueProperty, NULL, JSSVGFEOffsetElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("result", JSSVGFEOffsetElement::getValueProperty, NULL, JSSVGFEOffsetElement::ResultAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGFEOffsetElement::getValueProperty, NULL, JSSVGFEOffsetElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSSVGFEOffsetElement::getValueProperty, NULL, JSSVGFEOffsetElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGFEOffsetElement::getValueProperty, NULL, JSSVGFEOffsetElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGFEOffsetElement::getValueProperty, NULL, JSSVGFEOffsetElement::StyleAttrNum)
-};
+    if (JSSVGFEOffsetElementAttributesFunctions_initialized) return;
+    JSSVGFEOffsetElementAttributesFunctions_initialized = true;
+    memset(JSSVGFEOffsetElementAttributesFunctions, 0, sizeof(JSSVGFEOffsetElementAttributesFunctions));
+    JSSVGFEOffsetElementAttributesFunctions[0].name = "dy";
+    JSSVGFEOffsetElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEOffsetElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEOffsetElementAttributesFunctions[0].magic = JSSVGFEOffsetElement::DyAttrNum;
+    JSSVGFEOffsetElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFEOffsetElement::getValueProperty;
+    JSSVGFEOffsetElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFEOffsetElementAttributesFunctions[1].name = "x";
+    JSSVGFEOffsetElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEOffsetElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEOffsetElementAttributesFunctions[1].magic = JSSVGFEOffsetElement::XAttrNum;
+    JSSVGFEOffsetElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFEOffsetElement::getValueProperty;
+    JSSVGFEOffsetElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEOffsetElementAttributesFunctions[2].name = "dx";
+    JSSVGFEOffsetElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEOffsetElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEOffsetElementAttributesFunctions[2].magic = JSSVGFEOffsetElement::DxAttrNum;
+    JSSVGFEOffsetElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFEOffsetElement::getValueProperty;
+    JSSVGFEOffsetElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEOffsetElementAttributesFunctions[3].name = "in1";
+    JSSVGFEOffsetElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEOffsetElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEOffsetElementAttributesFunctions[3].magic = JSSVGFEOffsetElement::In1AttrNum;
+    JSSVGFEOffsetElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGFEOffsetElement::getValueProperty;
+    JSSVGFEOffsetElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFEOffsetElementAttributesFunctions[4].name = "height";
+    JSSVGFEOffsetElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEOffsetElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEOffsetElementAttributesFunctions[4].magic = JSSVGFEOffsetElement::HeightAttrNum;
+    JSSVGFEOffsetElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGFEOffsetElement::getValueProperty;
+    JSSVGFEOffsetElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFEOffsetElementAttributesFunctions[5].name = "result";
+    JSSVGFEOffsetElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEOffsetElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEOffsetElementAttributesFunctions[5].magic = JSSVGFEOffsetElement::ResultAttrNum;
+    JSSVGFEOffsetElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGFEOffsetElement::getValueProperty;
+    JSSVGFEOffsetElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFEOffsetElementAttributesFunctions[6].name = "y";
+    JSSVGFEOffsetElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEOffsetElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEOffsetElementAttributesFunctions[6].magic = JSSVGFEOffsetElement::YAttrNum;
+    JSSVGFEOffsetElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGFEOffsetElement::getValueProperty;
+    JSSVGFEOffsetElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFEOffsetElementAttributesFunctions[7].name = "width";
+    JSSVGFEOffsetElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEOffsetElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEOffsetElementAttributesFunctions[7].magic = JSSVGFEOffsetElement::WidthAttrNum;
+    JSSVGFEOffsetElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGFEOffsetElement::getValueProperty;
+    JSSVGFEOffsetElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGFEOffsetElementAttributesFunctions[8].name = "className";
+    JSSVGFEOffsetElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEOffsetElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEOffsetElementAttributesFunctions[8].magic = JSSVGFEOffsetElement::ClassNameAttrNum;
+    JSSVGFEOffsetElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGFEOffsetElement::getValueProperty;
+    JSSVGFEOffsetElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGFEOffsetElementAttributesFunctions[9].name = "style";
+    JSSVGFEOffsetElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGFEOffsetElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGFEOffsetElementAttributesFunctions[9].magic = JSSVGFEOffsetElement::StyleAttrNum;
+    JSSVGFEOffsetElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGFEOffsetElement::getValueProperty;
+    JSSVGFEOffsetElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGFEOffsetElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGFEOffsetElementPrototypeFunctions[1];
+static bool JSSVGFEOffsetElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGFEOffsetElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGFEOffsetElementPrototypeFunction::callAsFunction, JSSVGFEOffsetElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGFEOffsetElementPrototypeFunctions_initialized) return;
+    JSSVGFEOffsetElementPrototypeFunctions_initialized = true;
+    memset(JSSVGFEOffsetElementPrototypeFunctions, 0, sizeof(JSSVGFEOffsetElementPrototypeFunctions));
+    JSSVGFEOffsetElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGFEOffsetElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGFEOffsetElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGFEOffsetElementPrototypeFunctions[0].magic = JSSVGFEOffsetElement::GetPresentationAttributeFuncNum;
+    JSSVGFEOffsetElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGFEOffsetElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGFEOffsetElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGFEOffsetElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGFEOffsetElementPrototype::self(JSContext * ctx)
 {
@@ -91,22 +161,31 @@ JSValue JSSVGFEOffsetElementPrototype::self(JSContext * ctx)
 
 void JSSVGFEOffsetElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGFEOffsetElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEOffsetElementAttributesFunctions, countof(JSSVGFEOffsetElementAttributesFunctions));
+    init_JSSVGFEOffsetElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEOffsetElementPrototypeFunctions, countof(JSSVGFEOffsetElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGFEOffsetElementClassDefine = 
+static JSClassDef JSSVGFEOffsetElementClassDefine;
+static bool JSSVGFEOffsetElementClassDefine_initialized = false;
+
+static void init_JSSVGFEOffsetElementClassDefine()
 {
-    "SVGFEOffsetElement",
-    .finalizer = JSSVGFEOffsetElement::finalizer,
-    .gc_mark = JSSVGFEOffsetElement::mark,
-};
+    if (JSSVGFEOffsetElementClassDefine_initialized) return;
+    JSSVGFEOffsetElementClassDefine_initialized = true;
+    memset(&JSSVGFEOffsetElementClassDefine, 0, sizeof(JSSVGFEOffsetElementClassDefine));
+    JSSVGFEOffsetElementClassDefine.class_name = "SVGFEOffsetElement";
+    JSSVGFEOffsetElementClassDefine.finalizer = JSSVGFEOffsetElement::finalizer;
+    JSSVGFEOffsetElementClassDefine.gc_mark = JSSVGFEOffsetElement::mark;
+}
 
 JSClassID JSSVGFEOffsetElement::js_class_id = 0;
 
 void JSSVGFEOffsetElement::init(JSContext* ctx)
 {
     if (JSSVGFEOffsetElement::js_class_id == 0) {
+        init_JSSVGFEOffsetElementClassDefine();
         JS_NewClassID(&JSSVGFEOffsetElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGFEOffsetElement::js_class_id, &JSSVGFEOffsetElementClassDefine);
         JS_SetClassProto(ctx, JSSVGFEOffsetElement::js_class_id, JSSVGFEOffsetElementPrototype::self(ctx));

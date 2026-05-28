@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -46,11 +48,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPathSegLinetoAbsAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPathSegLinetoAbsAttributesFunctions[2];
+static bool JSSVGPathSegLinetoAbsAttributesFunctions_initialized = false;
+
+static void init_JSSVGPathSegLinetoAbsAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("y", JSSVGPathSegLinetoAbs::getValueProperty, JSSVGPathSegLinetoAbs::putValueProperty, JSSVGPathSegLinetoAbs::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGPathSegLinetoAbs::getValueProperty, JSSVGPathSegLinetoAbs::putValueProperty, JSSVGPathSegLinetoAbs::XAttrNum)
-};
+    if (JSSVGPathSegLinetoAbsAttributesFunctions_initialized) return;
+    JSSVGPathSegLinetoAbsAttributesFunctions_initialized = true;
+    memset(JSSVGPathSegLinetoAbsAttributesFunctions, 0, sizeof(JSSVGPathSegLinetoAbsAttributesFunctions));
+    JSSVGPathSegLinetoAbsAttributesFunctions[0].name = "y";
+    JSSVGPathSegLinetoAbsAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegLinetoAbsAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegLinetoAbsAttributesFunctions[0].magic = JSSVGPathSegLinetoAbs::YAttrNum;
+    JSSVGPathSegLinetoAbsAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegLinetoAbs::getValueProperty;
+    JSSVGPathSegLinetoAbsAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegLinetoAbs::putValueProperty;
+    JSSVGPathSegLinetoAbsAttributesFunctions[1].name = "x";
+    JSSVGPathSegLinetoAbsAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPathSegLinetoAbsAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPathSegLinetoAbsAttributesFunctions[1].magic = JSSVGPathSegLinetoAbs::XAttrNum;
+    JSSVGPathSegLinetoAbsAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegLinetoAbs::getValueProperty;
+    JSSVGPathSegLinetoAbsAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegLinetoAbs::putValueProperty;
+}
 
 JSValue JSSVGPathSegLinetoAbsPrototype::self(JSContext * ctx)
 {
@@ -68,21 +86,29 @@ JSValue JSSVGPathSegLinetoAbsPrototype::self(JSContext * ctx)
 
 void JSSVGPathSegLinetoAbsPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPathSegLinetoAbsAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPathSegLinetoAbsAttributesFunctions, countof(JSSVGPathSegLinetoAbsAttributesFunctions));
 }
 
-static JSClassDef JSSVGPathSegLinetoAbsClassDefine = 
+static JSClassDef JSSVGPathSegLinetoAbsClassDefine;
+static bool JSSVGPathSegLinetoAbsClassDefine_initialized = false;
+
+static void init_JSSVGPathSegLinetoAbsClassDefine()
 {
-    "SVGPathSegLinetoAbs",
-    .finalizer = JSSVGPathSegLinetoAbs::finalizer,
-    .gc_mark = JSSVGPathSegLinetoAbs::mark,
-};
+    if (JSSVGPathSegLinetoAbsClassDefine_initialized) return;
+    JSSVGPathSegLinetoAbsClassDefine_initialized = true;
+    memset(&JSSVGPathSegLinetoAbsClassDefine, 0, sizeof(JSSVGPathSegLinetoAbsClassDefine));
+    JSSVGPathSegLinetoAbsClassDefine.class_name = "SVGPathSegLinetoAbs";
+    JSSVGPathSegLinetoAbsClassDefine.finalizer = JSSVGPathSegLinetoAbs::finalizer;
+    JSSVGPathSegLinetoAbsClassDefine.gc_mark = JSSVGPathSegLinetoAbs::mark;
+}
 
 JSClassID JSSVGPathSegLinetoAbs::js_class_id = 0;
 
 void JSSVGPathSegLinetoAbs::init(JSContext* ctx)
 {
     if (JSSVGPathSegLinetoAbs::js_class_id == 0) {
+        init_JSSVGPathSegLinetoAbsClassDefine();
         JS_NewClassID(&JSSVGPathSegLinetoAbs::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathSegLinetoAbs::js_class_id, &JSSVGPathSegLinetoAbsClassDefine);
         JS_SetClassProto(ctx, JSSVGPathSegLinetoAbs::js_class_id, JSSVGPathSegLinetoAbsPrototype::self(ctx));

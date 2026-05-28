@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSTextEvent.h"
 
 #include "QJSDOMWindow.h"
@@ -40,17 +42,40 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSTextEventAttributesFunctions[] =
+static JSCFunctionListEntry JSTextEventAttributesFunctions[1];
+static bool JSTextEventAttributesFunctions_initialized = false;
+
+static void init_JSTextEventAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("data", JSTextEvent::getValueProperty, NULL, JSTextEvent::DataAttrNum)
-};
+    if (JSTextEventAttributesFunctions_initialized) return;
+    JSTextEventAttributesFunctions_initialized = true;
+    memset(JSTextEventAttributesFunctions, 0, sizeof(JSTextEventAttributesFunctions));
+    JSTextEventAttributesFunctions[0].name = "data";
+    JSTextEventAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSTextEventAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSTextEventAttributesFunctions[0].magic = JSTextEvent::DataAttrNum;
+    JSTextEventAttributesFunctions[0].u.getset.get.getter_magic = JSTextEvent::getValueProperty;
+    JSTextEventAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSTextEventPrototypeFunctions[] =
+static JSCFunctionListEntry JSTextEventPrototypeFunctions[1];
+static bool JSTextEventPrototypeFunctions_initialized = false;
+
+static void init_JSTextEventPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("initTextEvent", 5, JSTextEventPrototypeFunction::callAsFunction, JSTextEvent::InitTextEventFuncNum)
-};
+    if (JSTextEventPrototypeFunctions_initialized) return;
+    JSTextEventPrototypeFunctions_initialized = true;
+    memset(JSTextEventPrototypeFunctions, 0, sizeof(JSTextEventPrototypeFunctions));
+    JSTextEventPrototypeFunctions[0].name = "initTextEvent";
+    JSTextEventPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSTextEventPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSTextEventPrototypeFunctions[0].magic = JSTextEvent::InitTextEventFuncNum;
+    JSTextEventPrototypeFunctions[0].u.func.length = 5;
+    JSTextEventPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSTextEventPrototypeFunctions[0].u.func.cfunc.generic_magic = JSTextEventPrototypeFunction::callAsFunction;
+}
 
 JSValue JSTextEventPrototype::self(JSContext * ctx)
 {
@@ -68,22 +93,31 @@ JSValue JSTextEventPrototype::self(JSContext * ctx)
 
 void JSTextEventPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSTextEventAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSTextEventAttributesFunctions, countof(JSTextEventAttributesFunctions));
+    init_JSTextEventPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSTextEventPrototypeFunctions, countof(JSTextEventPrototypeFunctions));
 }
 
-static JSClassDef JSTextEventClassDefine = 
+static JSClassDef JSTextEventClassDefine;
+static bool JSTextEventClassDefine_initialized = false;
+
+static void init_JSTextEventClassDefine()
 {
-    "TextEvent",
-    .finalizer = JSTextEvent::finalizer,
-    .gc_mark = JSTextEvent::mark,
-};
+    if (JSTextEventClassDefine_initialized) return;
+    JSTextEventClassDefine_initialized = true;
+    memset(&JSTextEventClassDefine, 0, sizeof(JSTextEventClassDefine));
+    JSTextEventClassDefine.class_name = "TextEvent";
+    JSTextEventClassDefine.finalizer = JSTextEvent::finalizer;
+    JSTextEventClassDefine.gc_mark = JSTextEvent::mark;
+}
 
 JSClassID JSTextEvent::js_class_id = 0;
 
 void JSTextEvent::init(JSContext* ctx)
 {
     if (JSTextEvent::js_class_id == 0) {
+        init_JSTextEventClassDefine();
         JS_NewClassID(&JSTextEvent::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSTextEvent::js_class_id, &JSTextEventClassDefine);
         JS_SetClassProto(ctx, JSTextEvent::js_class_id, JSTextEventPrototype::self(ctx));

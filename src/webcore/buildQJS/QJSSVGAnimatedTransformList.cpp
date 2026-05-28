@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -47,11 +49,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAnimatedTransformListAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGAnimatedTransformListAttributesFunctions[2];
+static bool JSSVGAnimatedTransformListAttributesFunctions_initialized = false;
+
+static void init_JSSVGAnimatedTransformListAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("baseVal", JSSVGAnimatedTransformList::getValueProperty, NULL, JSSVGAnimatedTransformList::BaseValAttrNum),
-    JS_CGETSET_MAGIC_DEF("animVal", JSSVGAnimatedTransformList::getValueProperty, NULL, JSSVGAnimatedTransformList::AnimValAttrNum)
-};
+    if (JSSVGAnimatedTransformListAttributesFunctions_initialized) return;
+    JSSVGAnimatedTransformListAttributesFunctions_initialized = true;
+    memset(JSSVGAnimatedTransformListAttributesFunctions, 0, sizeof(JSSVGAnimatedTransformListAttributesFunctions));
+    JSSVGAnimatedTransformListAttributesFunctions[0].name = "baseVal";
+    JSSVGAnimatedTransformListAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedTransformListAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedTransformListAttributesFunctions[0].magic = JSSVGAnimatedTransformList::BaseValAttrNum;
+    JSSVGAnimatedTransformListAttributesFunctions[0].u.getset.get.getter_magic = JSSVGAnimatedTransformList::getValueProperty;
+    JSSVGAnimatedTransformListAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGAnimatedTransformListAttributesFunctions[1].name = "animVal";
+    JSSVGAnimatedTransformListAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedTransformListAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedTransformListAttributesFunctions[1].magic = JSSVGAnimatedTransformList::AnimValAttrNum;
+    JSSVGAnimatedTransformListAttributesFunctions[1].u.getset.get.getter_magic = JSSVGAnimatedTransformList::getValueProperty;
+    JSSVGAnimatedTransformListAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGAnimatedTransformListPrototype::self(JSContext * ctx)
 {
@@ -69,21 +87,29 @@ JSValue JSSVGAnimatedTransformListPrototype::self(JSContext * ctx)
 
 void JSSVGAnimatedTransformListPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAnimatedTransformListAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnimatedTransformListAttributesFunctions, countof(JSSVGAnimatedTransformListAttributesFunctions));
 }
 
-static JSClassDef JSSVGAnimatedTransformListClassDefine = 
+static JSClassDef JSSVGAnimatedTransformListClassDefine;
+static bool JSSVGAnimatedTransformListClassDefine_initialized = false;
+
+static void init_JSSVGAnimatedTransformListClassDefine()
 {
-    "SVGAnimatedTransformList",
-    .finalizer = JSSVGAnimatedTransformList::finalizer,
-    .gc_mark = JSSVGAnimatedTransformList::mark,
-};
+    if (JSSVGAnimatedTransformListClassDefine_initialized) return;
+    JSSVGAnimatedTransformListClassDefine_initialized = true;
+    memset(&JSSVGAnimatedTransformListClassDefine, 0, sizeof(JSSVGAnimatedTransformListClassDefine));
+    JSSVGAnimatedTransformListClassDefine.class_name = "SVGAnimatedTransformList";
+    JSSVGAnimatedTransformListClassDefine.finalizer = JSSVGAnimatedTransformList::finalizer;
+    JSSVGAnimatedTransformListClassDefine.gc_mark = JSSVGAnimatedTransformList::mark;
+}
 
 JSClassID JSSVGAnimatedTransformList::js_class_id = 0;
 
 void JSSVGAnimatedTransformList::init(JSContext* ctx)
 {
     if (JSSVGAnimatedTransformList::js_class_id == 0) {
+        init_JSSVGAnimatedTransformListClassDefine();
         JS_NewClassID(&JSSVGAnimatedTransformList::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimatedTransformList::js_class_id, &JSSVGAnimatedTransformListClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimatedTransformList::js_class_id, JSSVGAnimatedTransformListPrototype::self(ctx));

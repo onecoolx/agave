@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSElement.h"
 
 #include "Attr.h"
@@ -52,25 +54,111 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSElementAttributesFunctions[] =
+static JSCFunctionListEntry JSElementAttributesFunctions[16];
+static bool JSElementAttributesFunctions_initialized = false;
+
+static void init_JSElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("clientLeft", JSElement::getValueProperty, NULL, JSElement::ClientLeftAttrNum),
-    JS_CGETSET_MAGIC_DEF("tagName", JSElement::getValueProperty, NULL, JSElement::TagNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("offsetWidth", JSElement::getValueProperty, NULL, JSElement::OffsetWidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("offsetParent", JSElement::getValueProperty, NULL, JSElement::OffsetParentAttrNum),
-    JS_CGETSET_MAGIC_DEF("scrollWidth", JSElement::getValueProperty, NULL, JSElement::ScrollWidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("offsetTop", JSElement::getValueProperty, NULL, JSElement::OffsetTopAttrNum),
-    JS_CGETSET_MAGIC_DEF("offsetLeft", JSElement::getValueProperty, NULL, JSElement::OffsetLeftAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSElement::getValueProperty, NULL, JSElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("scrollLeft", JSElement::getValueProperty, JSElement::putValueProperty, JSElement::ScrollLeftAttrNum),
-    JS_CGETSET_MAGIC_DEF("offsetHeight", JSElement::getValueProperty, NULL, JSElement::OffsetHeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("clientTop", JSElement::getValueProperty, NULL, JSElement::ClientTopAttrNum),
-    JS_CGETSET_MAGIC_DEF("clientWidth", JSElement::getValueProperty, NULL, JSElement::ClientWidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("clientHeight", JSElement::getValueProperty, NULL, JSElement::ClientHeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("scrollTop", JSElement::getValueProperty, JSElement::putValueProperty, JSElement::ScrollTopAttrNum),
-    JS_CGETSET_MAGIC_DEF("scrollHeight", JSElement::getValueProperty, NULL, JSElement::ScrollHeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSElement::getValueProperty, NULL, JSElement::ConstructorAttrNum)
-};
+    if (JSElementAttributesFunctions_initialized) return;
+    JSElementAttributesFunctions_initialized = true;
+    memset(JSElementAttributesFunctions, 0, sizeof(JSElementAttributesFunctions));
+    JSElementAttributesFunctions[0].name = "clientLeft";
+    JSElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[0].magic = JSElement::ClientLeftAttrNum;
+    JSElementAttributesFunctions[0].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[1].name = "tagName";
+    JSElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[1].magic = JSElement::TagNameAttrNum;
+    JSElementAttributesFunctions[1].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[2].name = "offsetWidth";
+    JSElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[2].magic = JSElement::OffsetWidthAttrNum;
+    JSElementAttributesFunctions[2].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[3].name = "offsetParent";
+    JSElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[3].magic = JSElement::OffsetParentAttrNum;
+    JSElementAttributesFunctions[3].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[4].name = "scrollWidth";
+    JSElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[4].magic = JSElement::ScrollWidthAttrNum;
+    JSElementAttributesFunctions[4].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[5].name = "offsetTop";
+    JSElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[5].magic = JSElement::OffsetTopAttrNum;
+    JSElementAttributesFunctions[5].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[6].name = "offsetLeft";
+    JSElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[6].magic = JSElement::OffsetLeftAttrNum;
+    JSElementAttributesFunctions[6].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[7].name = "style";
+    JSElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[7].magic = JSElement::StyleAttrNum;
+    JSElementAttributesFunctions[7].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[8].name = "scrollLeft";
+    JSElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[8].magic = JSElement::ScrollLeftAttrNum;
+    JSElementAttributesFunctions[8].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[8].u.getset.set.setter_magic = JSElement::putValueProperty;
+    JSElementAttributesFunctions[9].name = "offsetHeight";
+    JSElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[9].magic = JSElement::OffsetHeightAttrNum;
+    JSElementAttributesFunctions[9].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[10].name = "clientTop";
+    JSElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[10].magic = JSElement::ClientTopAttrNum;
+    JSElementAttributesFunctions[10].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[11].name = "clientWidth";
+    JSElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[11].magic = JSElement::ClientWidthAttrNum;
+    JSElementAttributesFunctions[11].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[12].name = "clientHeight";
+    JSElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[12].magic = JSElement::ClientHeightAttrNum;
+    JSElementAttributesFunctions[12].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[13].name = "scrollTop";
+    JSElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[13].magic = JSElement::ScrollTopAttrNum;
+    JSElementAttributesFunctions[13].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[13].u.getset.set.setter_magic = JSElement::putValueProperty;
+    JSElementAttributesFunctions[14].name = "scrollHeight";
+    JSElementAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[14].magic = JSElement::ScrollHeightAttrNum;
+    JSElementAttributesFunctions[14].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[14].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[15].name = "constructor";
+    JSElementAttributesFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[15].magic = JSElement::ConstructorAttrNum;
+    JSElementAttributesFunctions[15].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[15].u.getset.set.setter_magic = NULL;
+}
 
 class JSElementConstructor {
 public:
@@ -105,32 +193,176 @@ void JSElementConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSElementPrototypeFunctions[23];
+static bool JSElementPrototypeFunctions_initialized = false;
+
+static void init_JSElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("removeAttributeNode", 1, JSElementPrototypeFunction::callAsFunction, JSElement::RemoveAttributeNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("removeAttribute", 1, JSElementPrototypeFunction::callAsFunction, JSElement::RemoveAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("getAttributeNode", 1, JSElementPrototypeFunction::callAsFunction, JSElement::GetAttributeNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("getAttributeNodeNS", 2, JSElementPrototypeFunction::callAsFunction, JSElement::GetAttributeNodeNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("getElementsByTagName", 1, JSElementPrototypeFunction::callAsFunction, JSElement::GetElementsByTagNameFuncNum),
-    JS_CFUNC_MAGIC_DEF("getElementsByTagNameNS", 2, JSElementPrototypeFunction::callAsFunction, JSElement::GetElementsByTagNameNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("getAttributeNS", 2, JSElementPrototypeFunction::callAsFunction, JSElement::GetAttributeNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("setAttributeNode", 1, JSElementPrototypeFunction::callAsFunction, JSElement::SetAttributeNodeFuncNum),
-    JS_CFUNC_MAGIC_DEF("scrollByLines", 1, JSElementPrototypeFunction::callAsFunction, JSElement::ScrollByLinesFuncNum),
-    JS_CFUNC_MAGIC_DEF("setAttribute", 2, JSElementPrototypeFunction::callAsFunction, JSElement::SetAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("scrollByPages", 1, JSElementPrototypeFunction::callAsFunction, JSElement::ScrollByPagesFuncNum),
-    JS_CFUNC_MAGIC_DEF("removeAttributeNS", 2, JSElementPrototypeFunction::callAsFunction, JSElement::RemoveAttributeNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("setAttributeNS", 3, JSElementPrototypeFunction::callAsFunction, JSElement::SetAttributeNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("setAttributeNodeNS", 1, JSElementPrototypeFunction::callAsFunction, JSElement::SetAttributeNodeNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("getAttribute", 1, JSElementPrototypeFunction::callAsFunction, JSElement::GetAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("scrollIntoView", 1, JSElementPrototypeFunction::callAsFunction, JSElement::ScrollIntoViewFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasAttribute", 1, JSElementPrototypeFunction::callAsFunction, JSElement::HasAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasAttributeNS", 2, JSElementPrototypeFunction::callAsFunction, JSElement::HasAttributeNSFuncNum),
-    JS_CFUNC_MAGIC_DEF("focus", 0, JSElementPrototypeFunction::callAsFunction, JSElement::FocusFuncNum),
-    JS_CFUNC_MAGIC_DEF("blur", 0, JSElementPrototypeFunction::callAsFunction, JSElement::BlurFuncNum),
-    JS_CFUNC_MAGIC_DEF("insertAdjacentElement", 2, JSElementPrototypeFunction::callAsFunction, JSElement::InsertAdjacentElementFuncNum),
-    JS_CFUNC_MAGIC_DEF("contains", 1, JSElementPrototypeFunction::callAsFunction, JSElement::ContainsFuncNum),
-    JS_CFUNC_MAGIC_DEF("scrollIntoViewIfNeeded", 1, JSElementPrototypeFunction::callAsFunction, JSElement::ScrollIntoViewIfNeededFuncNum)
-};
+    if (JSElementPrototypeFunctions_initialized) return;
+    JSElementPrototypeFunctions_initialized = true;
+    memset(JSElementPrototypeFunctions, 0, sizeof(JSElementPrototypeFunctions));
+    JSElementPrototypeFunctions[0].name = "removeAttributeNode";
+    JSElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[0].magic = JSElement::RemoveAttributeNodeFuncNum;
+    JSElementPrototypeFunctions[0].u.func.length = 1;
+    JSElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[1].name = "removeAttribute";
+    JSElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[1].magic = JSElement::RemoveAttributeFuncNum;
+    JSElementPrototypeFunctions[1].u.func.length = 1;
+    JSElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[2].name = "getAttributeNode";
+    JSElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[2].magic = JSElement::GetAttributeNodeFuncNum;
+    JSElementPrototypeFunctions[2].u.func.length = 1;
+    JSElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[3].name = "getAttributeNodeNS";
+    JSElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[3].magic = JSElement::GetAttributeNodeNSFuncNum;
+    JSElementPrototypeFunctions[3].u.func.length = 2;
+    JSElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[4].name = "getElementsByTagName";
+    JSElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[4].magic = JSElement::GetElementsByTagNameFuncNum;
+    JSElementPrototypeFunctions[4].u.func.length = 1;
+    JSElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[5].name = "getElementsByTagNameNS";
+    JSElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[5].magic = JSElement::GetElementsByTagNameNSFuncNum;
+    JSElementPrototypeFunctions[5].u.func.length = 2;
+    JSElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[6].name = "getAttributeNS";
+    JSElementPrototypeFunctions[6].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[6].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[6].magic = JSElement::GetAttributeNSFuncNum;
+    JSElementPrototypeFunctions[6].u.func.length = 2;
+    JSElementPrototypeFunctions[6].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[6].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[7].name = "setAttributeNode";
+    JSElementPrototypeFunctions[7].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[7].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[7].magic = JSElement::SetAttributeNodeFuncNum;
+    JSElementPrototypeFunctions[7].u.func.length = 1;
+    JSElementPrototypeFunctions[7].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[7].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[8].name = "scrollByLines";
+    JSElementPrototypeFunctions[8].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[8].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[8].magic = JSElement::ScrollByLinesFuncNum;
+    JSElementPrototypeFunctions[8].u.func.length = 1;
+    JSElementPrototypeFunctions[8].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[8].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[9].name = "setAttribute";
+    JSElementPrototypeFunctions[9].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[9].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[9].magic = JSElement::SetAttributeFuncNum;
+    JSElementPrototypeFunctions[9].u.func.length = 2;
+    JSElementPrototypeFunctions[9].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[9].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[10].name = "scrollByPages";
+    JSElementPrototypeFunctions[10].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[10].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[10].magic = JSElement::ScrollByPagesFuncNum;
+    JSElementPrototypeFunctions[10].u.func.length = 1;
+    JSElementPrototypeFunctions[10].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[10].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[11].name = "removeAttributeNS";
+    JSElementPrototypeFunctions[11].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[11].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[11].magic = JSElement::RemoveAttributeNSFuncNum;
+    JSElementPrototypeFunctions[11].u.func.length = 2;
+    JSElementPrototypeFunctions[11].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[11].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[12].name = "setAttributeNS";
+    JSElementPrototypeFunctions[12].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[12].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[12].magic = JSElement::SetAttributeNSFuncNum;
+    JSElementPrototypeFunctions[12].u.func.length = 3;
+    JSElementPrototypeFunctions[12].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[12].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[13].name = "setAttributeNodeNS";
+    JSElementPrototypeFunctions[13].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[13].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[13].magic = JSElement::SetAttributeNodeNSFuncNum;
+    JSElementPrototypeFunctions[13].u.func.length = 1;
+    JSElementPrototypeFunctions[13].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[13].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[14].name = "getAttribute";
+    JSElementPrototypeFunctions[14].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[14].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[14].magic = JSElement::GetAttributeFuncNum;
+    JSElementPrototypeFunctions[14].u.func.length = 1;
+    JSElementPrototypeFunctions[14].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[14].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[15].name = "scrollIntoView";
+    JSElementPrototypeFunctions[15].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[15].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[15].magic = JSElement::ScrollIntoViewFuncNum;
+    JSElementPrototypeFunctions[15].u.func.length = 1;
+    JSElementPrototypeFunctions[15].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[15].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[16].name = "hasAttribute";
+    JSElementPrototypeFunctions[16].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[16].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[16].magic = JSElement::HasAttributeFuncNum;
+    JSElementPrototypeFunctions[16].u.func.length = 1;
+    JSElementPrototypeFunctions[16].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[16].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[17].name = "hasAttributeNS";
+    JSElementPrototypeFunctions[17].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[17].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[17].magic = JSElement::HasAttributeNSFuncNum;
+    JSElementPrototypeFunctions[17].u.func.length = 2;
+    JSElementPrototypeFunctions[17].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[17].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[18].name = "focus";
+    JSElementPrototypeFunctions[18].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[18].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[18].magic = JSElement::FocusFuncNum;
+    JSElementPrototypeFunctions[18].u.func.length = 0;
+    JSElementPrototypeFunctions[18].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[18].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[19].name = "blur";
+    JSElementPrototypeFunctions[19].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[19].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[19].magic = JSElement::BlurFuncNum;
+    JSElementPrototypeFunctions[19].u.func.length = 0;
+    JSElementPrototypeFunctions[19].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[19].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[20].name = "insertAdjacentElement";
+    JSElementPrototypeFunctions[20].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[20].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[20].magic = JSElement::InsertAdjacentElementFuncNum;
+    JSElementPrototypeFunctions[20].u.func.length = 2;
+    JSElementPrototypeFunctions[20].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[20].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[21].name = "contains";
+    JSElementPrototypeFunctions[21].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[21].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[21].magic = JSElement::ContainsFuncNum;
+    JSElementPrototypeFunctions[21].u.func.length = 1;
+    JSElementPrototypeFunctions[21].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[21].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[22].name = "scrollIntoViewIfNeeded";
+    JSElementPrototypeFunctions[22].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[22].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[22].magic = JSElement::ScrollIntoViewIfNeededFuncNum;
+    JSElementPrototypeFunctions[22].u.func.length = 1;
+    JSElementPrototypeFunctions[22].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[22].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSElementPrototype::self(JSContext * ctx)
 {
@@ -148,16 +380,24 @@ JSValue JSElementPrototype::self(JSContext * ctx)
 
 void JSElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSElementAttributesFunctions, countof(JSElementAttributesFunctions));
+    init_JSElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSElementPrototypeFunctions, countof(JSElementPrototypeFunctions));
 }
 
-static JSClassDef JSElementClassDefine = 
+static JSClassDef JSElementClassDefine;
+static bool JSElementClassDefine_initialized = false;
+
+static void init_JSElementClassDefine()
 {
-    "Element",
-    .finalizer = JSElement::finalizer,
-    .gc_mark = JSElement::mark,
-};
+    if (JSElementClassDefine_initialized) return;
+    JSElementClassDefine_initialized = true;
+    memset(&JSElementClassDefine, 0, sizeof(JSElementClassDefine));
+    JSElementClassDefine.class_name = "Element";
+    JSElementClassDefine.finalizer = JSElement::finalizer;
+    JSElementClassDefine.gc_mark = JSElement::mark;
+}
 
 JSClassID JSElement::js_class_id = 0;
 

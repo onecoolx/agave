@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -53,17 +55,63 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGElementInstanceAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGElementInstanceAttributesFunctions[8];
+static bool JSSVGElementInstanceAttributesFunctions_initialized = false;
+
+static void init_JSSVGElementInstanceAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("childNodes", JSSVGElementInstance::getValueProperty, NULL, JSSVGElementInstance::ChildNodesAttrNum),
-    JS_CGETSET_MAGIC_DEF("parentNode", JSSVGElementInstance::getValueProperty, NULL, JSSVGElementInstance::ParentNodeAttrNum),
-    JS_CGETSET_MAGIC_DEF("firstChild", JSSVGElementInstance::getValueProperty, NULL, JSSVGElementInstance::FirstChildAttrNum),
-    JS_CGETSET_MAGIC_DEF("correspondingUseElement", JSSVGElementInstance::getValueProperty, NULL, JSSVGElementInstance::CorrespondingUseElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("lastChild", JSSVGElementInstance::getValueProperty, NULL, JSSVGElementInstance::LastChildAttrNum),
-    JS_CGETSET_MAGIC_DEF("correspondingElement", JSSVGElementInstance::getValueProperty, NULL, JSSVGElementInstance::CorrespondingElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("previousSibling", JSSVGElementInstance::getValueProperty, NULL, JSSVGElementInstance::PreviousSiblingAttrNum),
-    JS_CGETSET_MAGIC_DEF("nextSibling", JSSVGElementInstance::getValueProperty, NULL, JSSVGElementInstance::NextSiblingAttrNum)
-};
+    if (JSSVGElementInstanceAttributesFunctions_initialized) return;
+    JSSVGElementInstanceAttributesFunctions_initialized = true;
+    memset(JSSVGElementInstanceAttributesFunctions, 0, sizeof(JSSVGElementInstanceAttributesFunctions));
+    JSSVGElementInstanceAttributesFunctions[0].name = "childNodes";
+    JSSVGElementInstanceAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGElementInstanceAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGElementInstanceAttributesFunctions[0].magic = JSSVGElementInstance::ChildNodesAttrNum;
+    JSSVGElementInstanceAttributesFunctions[0].u.getset.get.getter_magic = JSSVGElementInstance::getValueProperty;
+    JSSVGElementInstanceAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGElementInstanceAttributesFunctions[1].name = "parentNode";
+    JSSVGElementInstanceAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGElementInstanceAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGElementInstanceAttributesFunctions[1].magic = JSSVGElementInstance::ParentNodeAttrNum;
+    JSSVGElementInstanceAttributesFunctions[1].u.getset.get.getter_magic = JSSVGElementInstance::getValueProperty;
+    JSSVGElementInstanceAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGElementInstanceAttributesFunctions[2].name = "firstChild";
+    JSSVGElementInstanceAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGElementInstanceAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGElementInstanceAttributesFunctions[2].magic = JSSVGElementInstance::FirstChildAttrNum;
+    JSSVGElementInstanceAttributesFunctions[2].u.getset.get.getter_magic = JSSVGElementInstance::getValueProperty;
+    JSSVGElementInstanceAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGElementInstanceAttributesFunctions[3].name = "correspondingUseElement";
+    JSSVGElementInstanceAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGElementInstanceAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGElementInstanceAttributesFunctions[3].magic = JSSVGElementInstance::CorrespondingUseElementAttrNum;
+    JSSVGElementInstanceAttributesFunctions[3].u.getset.get.getter_magic = JSSVGElementInstance::getValueProperty;
+    JSSVGElementInstanceAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGElementInstanceAttributesFunctions[4].name = "lastChild";
+    JSSVGElementInstanceAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGElementInstanceAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGElementInstanceAttributesFunctions[4].magic = JSSVGElementInstance::LastChildAttrNum;
+    JSSVGElementInstanceAttributesFunctions[4].u.getset.get.getter_magic = JSSVGElementInstance::getValueProperty;
+    JSSVGElementInstanceAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGElementInstanceAttributesFunctions[5].name = "correspondingElement";
+    JSSVGElementInstanceAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGElementInstanceAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGElementInstanceAttributesFunctions[5].magic = JSSVGElementInstance::CorrespondingElementAttrNum;
+    JSSVGElementInstanceAttributesFunctions[5].u.getset.get.getter_magic = JSSVGElementInstance::getValueProperty;
+    JSSVGElementInstanceAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGElementInstanceAttributesFunctions[6].name = "previousSibling";
+    JSSVGElementInstanceAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGElementInstanceAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGElementInstanceAttributesFunctions[6].magic = JSSVGElementInstance::PreviousSiblingAttrNum;
+    JSSVGElementInstanceAttributesFunctions[6].u.getset.get.getter_magic = JSSVGElementInstance::getValueProperty;
+    JSSVGElementInstanceAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGElementInstanceAttributesFunctions[7].name = "nextSibling";
+    JSSVGElementInstanceAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGElementInstanceAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGElementInstanceAttributesFunctions[7].magic = JSSVGElementInstance::NextSiblingAttrNum;
+    JSSVGElementInstanceAttributesFunctions[7].u.getset.get.getter_magic = JSSVGElementInstance::getValueProperty;
+    JSSVGElementInstanceAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGElementInstancePrototype::self(JSContext * ctx)
 {
@@ -81,21 +129,29 @@ JSValue JSSVGElementInstancePrototype::self(JSContext * ctx)
 
 void JSSVGElementInstancePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGElementInstanceAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGElementInstanceAttributesFunctions, countof(JSSVGElementInstanceAttributesFunctions));
 }
 
-static JSClassDef JSSVGElementInstanceClassDefine = 
+static JSClassDef JSSVGElementInstanceClassDefine;
+static bool JSSVGElementInstanceClassDefine_initialized = false;
+
+static void init_JSSVGElementInstanceClassDefine()
 {
-    "SVGElementInstance",
-    .finalizer = JSSVGElementInstance::finalizer,
-    .gc_mark = JSSVGElementInstance::mark,
-};
+    if (JSSVGElementInstanceClassDefine_initialized) return;
+    JSSVGElementInstanceClassDefine_initialized = true;
+    memset(&JSSVGElementInstanceClassDefine, 0, sizeof(JSSVGElementInstanceClassDefine));
+    JSSVGElementInstanceClassDefine.class_name = "SVGElementInstance";
+    JSSVGElementInstanceClassDefine.finalizer = JSSVGElementInstance::finalizer;
+    JSSVGElementInstanceClassDefine.gc_mark = JSSVGElementInstance::mark;
+}
 
 JSClassID JSSVGElementInstance::js_class_id = 0;
 
 void JSSVGElementInstance::init(JSContext* ctx)
 {
     if (JSSVGElementInstance::js_class_id == 0) {
+        init_JSSVGElementInstanceClassDefine();
         JS_NewClassID(&JSSVGElementInstance::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGElementInstance::js_class_id, &JSSVGElementInstanceClassDefine);
         JS_SetClassProto(ctx, JSSVGElementInstance::js_class_id, JSSVGElementInstancePrototype::self(ctx));

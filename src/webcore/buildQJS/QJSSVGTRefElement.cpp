@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -47,10 +49,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGTRefElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGTRefElementAttributesFunctions[1];
+static bool JSSVGTRefElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGTRefElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("href", JSSVGTRefElement::getValueProperty, NULL, JSSVGTRefElement::HrefAttrNum)
-};
+    if (JSSVGTRefElementAttributesFunctions_initialized) return;
+    JSSVGTRefElementAttributesFunctions_initialized = true;
+    memset(JSSVGTRefElementAttributesFunctions, 0, sizeof(JSSVGTRefElementAttributesFunctions));
+    JSSVGTRefElementAttributesFunctions[0].name = "href";
+    JSSVGTRefElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTRefElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTRefElementAttributesFunctions[0].magic = JSSVGTRefElement::HrefAttrNum;
+    JSSVGTRefElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGTRefElement::getValueProperty;
+    JSSVGTRefElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGTRefElementPrototype::self(JSContext * ctx)
 {
@@ -68,21 +81,29 @@ JSValue JSSVGTRefElementPrototype::self(JSContext * ctx)
 
 void JSSVGTRefElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGTRefElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTRefElementAttributesFunctions, countof(JSSVGTRefElementAttributesFunctions));
 }
 
-static JSClassDef JSSVGTRefElementClassDefine = 
+static JSClassDef JSSVGTRefElementClassDefine;
+static bool JSSVGTRefElementClassDefine_initialized = false;
+
+static void init_JSSVGTRefElementClassDefine()
 {
-    "SVGTRefElement",
-    .finalizer = JSSVGTRefElement::finalizer,
-    .gc_mark = JSSVGTRefElement::mark,
-};
+    if (JSSVGTRefElementClassDefine_initialized) return;
+    JSSVGTRefElementClassDefine_initialized = true;
+    memset(&JSSVGTRefElementClassDefine, 0, sizeof(JSSVGTRefElementClassDefine));
+    JSSVGTRefElementClassDefine.class_name = "SVGTRefElement";
+    JSSVGTRefElementClassDefine.finalizer = JSSVGTRefElement::finalizer;
+    JSSVGTRefElementClassDefine.gc_mark = JSSVGTRefElement::mark;
+}
 
 JSClassID JSSVGTRefElement::js_class_id = 0;
 
 void JSSVGTRefElement::init(JSContext* ctx)
 {
     if (JSSVGTRefElement::js_class_id == 0) {
+        init_JSSVGTRefElementClassDefine();
         JS_NewClassID(&JSSVGTRefElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGTRefElement::js_class_id, &JSSVGTRefElementClassDefine);
         JS_SetClassProto(ctx, JSSVGTRefElement::js_class_id, JSSVGTRefElementPrototype::self(ctx));

@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLTableRowElement.h"
 
 #include "ExceptionCode.h"
@@ -44,18 +46,69 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLTableRowElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLTableRowElementAttributesFunctions[9];
+static bool JSHTMLTableRowElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLTableRowElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("rowIndex", JSHTMLTableRowElement::getValueProperty, NULL, JSHTMLTableRowElement::RowIndexAttrNum),
-    JS_CGETSET_MAGIC_DEF("vAlign", JSHTMLTableRowElement::getValueProperty, JSHTMLTableRowElement::putValueProperty, JSHTMLTableRowElement::VAlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("cells", JSHTMLTableRowElement::getValueProperty, NULL, JSHTMLTableRowElement::CellsAttrNum),
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLTableRowElement::getValueProperty, JSHTMLTableRowElement::putValueProperty, JSHTMLTableRowElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("bgColor", JSHTMLTableRowElement::getValueProperty, JSHTMLTableRowElement::putValueProperty, JSHTMLTableRowElement::BgColorAttrNum),
-    JS_CGETSET_MAGIC_DEF("sectionRowIndex", JSHTMLTableRowElement::getValueProperty, NULL, JSHTMLTableRowElement::SectionRowIndexAttrNum),
-    JS_CGETSET_MAGIC_DEF("ch", JSHTMLTableRowElement::getValueProperty, JSHTMLTableRowElement::putValueProperty, JSHTMLTableRowElement::ChAttrNum),
-    JS_CGETSET_MAGIC_DEF("chOff", JSHTMLTableRowElement::getValueProperty, JSHTMLTableRowElement::putValueProperty, JSHTMLTableRowElement::ChOffAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLTableRowElement::getValueProperty, NULL, JSHTMLTableRowElement::ConstructorAttrNum)
-};
+    if (JSHTMLTableRowElementAttributesFunctions_initialized) return;
+    JSHTMLTableRowElementAttributesFunctions_initialized = true;
+    memset(JSHTMLTableRowElementAttributesFunctions, 0, sizeof(JSHTMLTableRowElementAttributesFunctions));
+    JSHTMLTableRowElementAttributesFunctions[0].name = "rowIndex";
+    JSHTMLTableRowElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableRowElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableRowElementAttributesFunctions[0].magic = JSHTMLTableRowElement::RowIndexAttrNum;
+    JSHTMLTableRowElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLTableRowElement::getValueProperty;
+    JSHTMLTableRowElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLTableRowElementAttributesFunctions[1].name = "vAlign";
+    JSHTMLTableRowElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableRowElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableRowElementAttributesFunctions[1].magic = JSHTMLTableRowElement::VAlignAttrNum;
+    JSHTMLTableRowElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLTableRowElement::getValueProperty;
+    JSHTMLTableRowElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLTableRowElement::putValueProperty;
+    JSHTMLTableRowElementAttributesFunctions[2].name = "cells";
+    JSHTMLTableRowElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableRowElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableRowElementAttributesFunctions[2].magic = JSHTMLTableRowElement::CellsAttrNum;
+    JSHTMLTableRowElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLTableRowElement::getValueProperty;
+    JSHTMLTableRowElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSHTMLTableRowElementAttributesFunctions[3].name = "align";
+    JSHTMLTableRowElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableRowElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableRowElementAttributesFunctions[3].magic = JSHTMLTableRowElement::AlignAttrNum;
+    JSHTMLTableRowElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLTableRowElement::getValueProperty;
+    JSHTMLTableRowElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLTableRowElement::putValueProperty;
+    JSHTMLTableRowElementAttributesFunctions[4].name = "bgColor";
+    JSHTMLTableRowElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableRowElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableRowElementAttributesFunctions[4].magic = JSHTMLTableRowElement::BgColorAttrNum;
+    JSHTMLTableRowElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLTableRowElement::getValueProperty;
+    JSHTMLTableRowElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLTableRowElement::putValueProperty;
+    JSHTMLTableRowElementAttributesFunctions[5].name = "sectionRowIndex";
+    JSHTMLTableRowElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableRowElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableRowElementAttributesFunctions[5].magic = JSHTMLTableRowElement::SectionRowIndexAttrNum;
+    JSHTMLTableRowElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLTableRowElement::getValueProperty;
+    JSHTMLTableRowElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSHTMLTableRowElementAttributesFunctions[6].name = "ch";
+    JSHTMLTableRowElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableRowElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableRowElementAttributesFunctions[6].magic = JSHTMLTableRowElement::ChAttrNum;
+    JSHTMLTableRowElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLTableRowElement::getValueProperty;
+    JSHTMLTableRowElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLTableRowElement::putValueProperty;
+    JSHTMLTableRowElementAttributesFunctions[7].name = "chOff";
+    JSHTMLTableRowElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableRowElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableRowElementAttributesFunctions[7].magic = JSHTMLTableRowElement::ChOffAttrNum;
+    JSHTMLTableRowElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLTableRowElement::getValueProperty;
+    JSHTMLTableRowElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLTableRowElement::putValueProperty;
+    JSHTMLTableRowElementAttributesFunctions[8].name = "constructor";
+    JSHTMLTableRowElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLTableRowElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLTableRowElementAttributesFunctions[8].magic = JSHTMLTableRowElement::ConstructorAttrNum;
+    JSHTMLTableRowElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLTableRowElement::getValueProperty;
+    JSHTMLTableRowElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLTableRowElementConstructor {
 public:
@@ -90,11 +143,29 @@ void JSHTMLTableRowElementConstructor::initConstructor(JSContext * ctx, JSValue 
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSHTMLTableRowElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSHTMLTableRowElementPrototypeFunctions[2];
+static bool JSHTMLTableRowElementPrototypeFunctions_initialized = false;
+
+static void init_JSHTMLTableRowElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("insertCell", 1, JSHTMLTableRowElementPrototypeFunction::callAsFunction, JSHTMLTableRowElement::InsertCellFuncNum),
-    JS_CFUNC_MAGIC_DEF("deleteCell", 1, JSHTMLTableRowElementPrototypeFunction::callAsFunction, JSHTMLTableRowElement::DeleteCellFuncNum)
-};
+    if (JSHTMLTableRowElementPrototypeFunctions_initialized) return;
+    JSHTMLTableRowElementPrototypeFunctions_initialized = true;
+    memset(JSHTMLTableRowElementPrototypeFunctions, 0, sizeof(JSHTMLTableRowElementPrototypeFunctions));
+    JSHTMLTableRowElementPrototypeFunctions[0].name = "insertCell";
+    JSHTMLTableRowElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTableRowElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSHTMLTableRowElementPrototypeFunctions[0].magic = JSHTMLTableRowElement::InsertCellFuncNum;
+    JSHTMLTableRowElementPrototypeFunctions[0].u.func.length = 1;
+    JSHTMLTableRowElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTableRowElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLTableRowElementPrototypeFunction::callAsFunction;
+    JSHTMLTableRowElementPrototypeFunctions[1].name = "deleteCell";
+    JSHTMLTableRowElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLTableRowElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSHTMLTableRowElementPrototypeFunctions[1].magic = JSHTMLTableRowElement::DeleteCellFuncNum;
+    JSHTMLTableRowElementPrototypeFunctions[1].u.func.length = 1;
+    JSHTMLTableRowElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLTableRowElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSHTMLTableRowElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSHTMLTableRowElementPrototype::self(JSContext * ctx)
 {
@@ -112,16 +183,24 @@ JSValue JSHTMLTableRowElementPrototype::self(JSContext * ctx)
 
 void JSHTMLTableRowElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLTableRowElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTableRowElementAttributesFunctions, countof(JSHTMLTableRowElementAttributesFunctions));
+    init_JSHTMLTableRowElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTableRowElementPrototypeFunctions, countof(JSHTMLTableRowElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLTableRowElementClassDefine = 
+static JSClassDef JSHTMLTableRowElementClassDefine;
+static bool JSHTMLTableRowElementClassDefine_initialized = false;
+
+static void init_JSHTMLTableRowElementClassDefine()
 {
-    "HTMLTableRowElement",
-    .finalizer = JSHTMLTableRowElement::finalizer,
-    .gc_mark = JSHTMLTableRowElement::mark,
-};
+    if (JSHTMLTableRowElementClassDefine_initialized) return;
+    JSHTMLTableRowElementClassDefine_initialized = true;
+    memset(&JSHTMLTableRowElementClassDefine, 0, sizeof(JSHTMLTableRowElementClassDefine));
+    JSHTMLTableRowElementClassDefine.class_name = "HTMLTableRowElement";
+    JSHTMLTableRowElementClassDefine.finalizer = JSHTMLTableRowElement::finalizer;
+    JSHTMLTableRowElementClassDefine.gc_mark = JSHTMLTableRowElement::mark;
+}
 
 JSClassID JSHTMLTableRowElement::js_class_id = 0;
 

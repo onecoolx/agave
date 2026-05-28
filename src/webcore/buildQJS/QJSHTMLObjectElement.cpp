@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLObjectElement.h"
 
 #include "Document.h"
@@ -44,29 +46,135 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLObjectElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLObjectElementAttributesFunctions[20];
+static bool JSHTMLObjectElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLObjectElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("contentDocument", JSHTMLObjectElement::getValueProperty, NULL, JSHTMLObjectElement::ContentDocumentAttrNum),
-    JS_CGETSET_MAGIC_DEF("declare", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::DeclareAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("form", JSHTMLObjectElement::getValueProperty, NULL, JSHTMLObjectElement::FormAttrNum),
-    JS_CGETSET_MAGIC_DEF("codeType", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::CodeTypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("vspace", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::VspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("width", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::WidthAttrNum),
-    JS_CGETSET_MAGIC_DEF("border", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::BorderAttrNum),
-    JS_CGETSET_MAGIC_DEF("tabIndex", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::TabIndexAttrNum),
-    JS_CGETSET_MAGIC_DEF("standby", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::StandbyAttrNum),
-    JS_CGETSET_MAGIC_DEF("hspace", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::HspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("height", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::HeightAttrNum),
-    JS_CGETSET_MAGIC_DEF("codeBase", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::CodeBaseAttrNum),
-    JS_CGETSET_MAGIC_DEF("archive", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::ArchiveAttrNum),
-    JS_CGETSET_MAGIC_DEF("code", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::CodeAttrNum),
-    JS_CGETSET_MAGIC_DEF("align", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::AlignAttrNum),
-    JS_CGETSET_MAGIC_DEF("data", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::DataAttrNum),
-    JS_CGETSET_MAGIC_DEF("name", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::NameAttrNum),
-    JS_CGETSET_MAGIC_DEF("useMap", JSHTMLObjectElement::getValueProperty, JSHTMLObjectElement::putValueProperty, JSHTMLObjectElement::UseMapAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLObjectElement::getValueProperty, NULL, JSHTMLObjectElement::ConstructorAttrNum)
-};
+    if (JSHTMLObjectElementAttributesFunctions_initialized) return;
+    JSHTMLObjectElementAttributesFunctions_initialized = true;
+    memset(JSHTMLObjectElementAttributesFunctions, 0, sizeof(JSHTMLObjectElementAttributesFunctions));
+    JSHTMLObjectElementAttributesFunctions[0].name = "contentDocument";
+    JSHTMLObjectElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[0].magic = JSHTMLObjectElement::ContentDocumentAttrNum;
+    JSHTMLObjectElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLObjectElementAttributesFunctions[1].name = "declare";
+    JSHTMLObjectElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[1].magic = JSHTMLObjectElement::DeclareAttrNum;
+    JSHTMLObjectElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[2].name = "type";
+    JSHTMLObjectElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[2].magic = JSHTMLObjectElement::TypeAttrNum;
+    JSHTMLObjectElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[3].name = "form";
+    JSHTMLObjectElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[3].magic = JSHTMLObjectElement::FormAttrNum;
+    JSHTMLObjectElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSHTMLObjectElementAttributesFunctions[4].name = "codeType";
+    JSHTMLObjectElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[4].magic = JSHTMLObjectElement::CodeTypeAttrNum;
+    JSHTMLObjectElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[5].name = "vspace";
+    JSHTMLObjectElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[5].magic = JSHTMLObjectElement::VspaceAttrNum;
+    JSHTMLObjectElementAttributesFunctions[5].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[5].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[6].name = "width";
+    JSHTMLObjectElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[6].magic = JSHTMLObjectElement::WidthAttrNum;
+    JSHTMLObjectElementAttributesFunctions[6].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[6].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[7].name = "border";
+    JSHTMLObjectElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[7].magic = JSHTMLObjectElement::BorderAttrNum;
+    JSHTMLObjectElementAttributesFunctions[7].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[7].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[8].name = "tabIndex";
+    JSHTMLObjectElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[8].magic = JSHTMLObjectElement::TabIndexAttrNum;
+    JSHTMLObjectElementAttributesFunctions[8].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[8].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[9].name = "standby";
+    JSHTMLObjectElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[9].magic = JSHTMLObjectElement::StandbyAttrNum;
+    JSHTMLObjectElementAttributesFunctions[9].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[9].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[10].name = "hspace";
+    JSHTMLObjectElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[10].magic = JSHTMLObjectElement::HspaceAttrNum;
+    JSHTMLObjectElementAttributesFunctions[10].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[10].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[11].name = "height";
+    JSHTMLObjectElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[11].magic = JSHTMLObjectElement::HeightAttrNum;
+    JSHTMLObjectElementAttributesFunctions[11].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[11].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[12].name = "codeBase";
+    JSHTMLObjectElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[12].magic = JSHTMLObjectElement::CodeBaseAttrNum;
+    JSHTMLObjectElementAttributesFunctions[12].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[12].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[13].name = "archive";
+    JSHTMLObjectElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[13].magic = JSHTMLObjectElement::ArchiveAttrNum;
+    JSHTMLObjectElementAttributesFunctions[13].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[13].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[14].name = "code";
+    JSHTMLObjectElementAttributesFunctions[14].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[14].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[14].magic = JSHTMLObjectElement::CodeAttrNum;
+    JSHTMLObjectElementAttributesFunctions[14].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[14].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[15].name = "align";
+    JSHTMLObjectElementAttributesFunctions[15].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[15].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[15].magic = JSHTMLObjectElement::AlignAttrNum;
+    JSHTMLObjectElementAttributesFunctions[15].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[15].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[16].name = "data";
+    JSHTMLObjectElementAttributesFunctions[16].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[16].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[16].magic = JSHTMLObjectElement::DataAttrNum;
+    JSHTMLObjectElementAttributesFunctions[16].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[16].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[17].name = "name";
+    JSHTMLObjectElementAttributesFunctions[17].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[17].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[17].magic = JSHTMLObjectElement::NameAttrNum;
+    JSHTMLObjectElementAttributesFunctions[17].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[17].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[18].name = "useMap";
+    JSHTMLObjectElementAttributesFunctions[18].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[18].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[18].magic = JSHTMLObjectElement::UseMapAttrNum;
+    JSHTMLObjectElementAttributesFunctions[18].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[18].u.getset.set.setter_magic = JSHTMLObjectElement::putValueProperty;
+    JSHTMLObjectElementAttributesFunctions[19].name = "constructor";
+    JSHTMLObjectElementAttributesFunctions[19].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLObjectElementAttributesFunctions[19].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLObjectElementAttributesFunctions[19].magic = JSHTMLObjectElement::ConstructorAttrNum;
+    JSHTMLObjectElementAttributesFunctions[19].u.getset.get.getter_magic = JSHTMLObjectElement::getValueProperty;
+    JSHTMLObjectElementAttributesFunctions[19].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLObjectElementConstructor {
 public:
@@ -115,15 +223,22 @@ JSValue JSHTMLObjectElementPrototype::self(JSContext * ctx)
 
 void JSHTMLObjectElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLObjectElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLObjectElementAttributesFunctions, countof(JSHTMLObjectElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLObjectElementClassDefine = 
+static JSClassDef JSHTMLObjectElementClassDefine;
+static bool JSHTMLObjectElementClassDefine_initialized = false;
+
+static void init_JSHTMLObjectElementClassDefine()
 {
-    "HTMLObjectElement",
-    .finalizer = JSHTMLObjectElement::finalizer,
-    .gc_mark = JSHTMLObjectElement::mark,
-};
+    if (JSHTMLObjectElementClassDefine_initialized) return;
+    JSHTMLObjectElementClassDefine_initialized = true;
+    memset(&JSHTMLObjectElementClassDefine, 0, sizeof(JSHTMLObjectElementClassDefine));
+    JSHTMLObjectElementClassDefine.class_name = "HTMLObjectElement";
+    JSHTMLObjectElementClassDefine.finalizer = JSHTMLObjectElement::finalizer;
+    JSHTMLObjectElementClassDefine.gc_mark = JSHTMLObjectElement::mark;
+}
 
 JSClassID JSHTMLObjectElement::js_class_id = 0;
 

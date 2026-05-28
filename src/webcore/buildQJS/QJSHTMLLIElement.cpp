@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLLIElement.h"
 
 #include "HTMLLIElement.h"
@@ -39,12 +41,33 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLLIElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLLIElementAttributesFunctions[3];
+static bool JSHTMLLIElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLLIElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLLIElement::getValueProperty, NULL, JSHTMLLIElement::ConstructorAttrNum),
-    JS_CGETSET_MAGIC_DEF("type", JSHTMLLIElement::getValueProperty, JSHTMLLIElement::putValueProperty, JSHTMLLIElement::TypeAttrNum),
-    JS_CGETSET_MAGIC_DEF("value", JSHTMLLIElement::getValueProperty, JSHTMLLIElement::putValueProperty, JSHTMLLIElement::ValueAttrNum)
-};
+    if (JSHTMLLIElementAttributesFunctions_initialized) return;
+    JSHTMLLIElementAttributesFunctions_initialized = true;
+    memset(JSHTMLLIElementAttributesFunctions, 0, sizeof(JSHTMLLIElementAttributesFunctions));
+    JSHTMLLIElementAttributesFunctions[0].name = "constructor";
+    JSHTMLLIElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLIElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLIElementAttributesFunctions[0].magic = JSHTMLLIElement::ConstructorAttrNum;
+    JSHTMLLIElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLLIElement::getValueProperty;
+    JSHTMLLIElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSHTMLLIElementAttributesFunctions[1].name = "type";
+    JSHTMLLIElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLIElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLIElementAttributesFunctions[1].magic = JSHTMLLIElement::TypeAttrNum;
+    JSHTMLLIElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLLIElement::getValueProperty;
+    JSHTMLLIElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLLIElement::putValueProperty;
+    JSHTMLLIElementAttributesFunctions[2].name = "value";
+    JSHTMLLIElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLLIElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLLIElementAttributesFunctions[2].magic = JSHTMLLIElement::ValueAttrNum;
+    JSHTMLLIElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLLIElement::getValueProperty;
+    JSHTMLLIElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLLIElement::putValueProperty;
+}
 
 class JSHTMLLIElementConstructor {
 public:
@@ -93,15 +116,22 @@ JSValue JSHTMLLIElementPrototype::self(JSContext * ctx)
 
 void JSHTMLLIElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLLIElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLLIElementAttributesFunctions, countof(JSHTMLLIElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLLIElementClassDefine = 
+static JSClassDef JSHTMLLIElementClassDefine;
+static bool JSHTMLLIElementClassDefine_initialized = false;
+
+static void init_JSHTMLLIElementClassDefine()
 {
-    "HTMLLIElement",
-    .finalizer = JSHTMLLIElement::finalizer,
-    .gc_mark = JSHTMLLIElement::mark,
-};
+    if (JSHTMLLIElementClassDefine_initialized) return;
+    JSHTMLLIElementClassDefine_initialized = true;
+    memset(&JSHTMLLIElementClassDefine, 0, sizeof(JSHTMLLIElementClassDefine));
+    JSHTMLLIElementClassDefine.class_name = "HTMLLIElement";
+    JSHTMLLIElementClassDefine.finalizer = JSHTMLLIElement::finalizer;
+    JSHTMLLIElementClassDefine.gc_mark = JSHTMLLIElement::mark;
+}
 
 JSClassID JSHTMLLIElement::js_class_id = 0;
 

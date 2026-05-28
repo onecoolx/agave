@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -62,18 +64,25 @@ void JSSVGPathSegClosePathPrototype::initPrototype(JSContext * ctx, JSValue this
 {
 }
 
-static JSClassDef JSSVGPathSegClosePathClassDefine = 
+static JSClassDef JSSVGPathSegClosePathClassDefine;
+static bool JSSVGPathSegClosePathClassDefine_initialized = false;
+
+static void init_JSSVGPathSegClosePathClassDefine()
 {
-    "SVGPathSegClosePath",
-    .finalizer = JSSVGPathSegClosePath::finalizer,
-    .gc_mark = JSSVGPathSegClosePath::mark,
-};
+    if (JSSVGPathSegClosePathClassDefine_initialized) return;
+    JSSVGPathSegClosePathClassDefine_initialized = true;
+    memset(&JSSVGPathSegClosePathClassDefine, 0, sizeof(JSSVGPathSegClosePathClassDefine));
+    JSSVGPathSegClosePathClassDefine.class_name = "SVGPathSegClosePath";
+    JSSVGPathSegClosePathClassDefine.finalizer = JSSVGPathSegClosePath::finalizer;
+    JSSVGPathSegClosePathClassDefine.gc_mark = JSSVGPathSegClosePath::mark;
+}
 
 JSClassID JSSVGPathSegClosePath::js_class_id = 0;
 
 void JSSVGPathSegClosePath::init(JSContext* ctx)
 {
     if (JSSVGPathSegClosePath::js_class_id == 0) {
+        init_JSSVGPathSegClosePathClassDefine();
         JS_NewClassID(&JSSVGPathSegClosePath::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPathSegClosePath::js_class_id, &JSSVGPathSegClosePathClassDefine);
         JS_SetClassProto(ctx, JSSVGPathSegClosePath::js_class_id, JSSVGPathSegClosePathPrototype::self(ctx));

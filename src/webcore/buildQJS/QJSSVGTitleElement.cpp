@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -53,20 +55,58 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGTitleElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGTitleElementAttributesFunctions[4];
+static bool JSSVGTitleElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGTitleElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGTitleElement::getValueProperty, JSSVGTitleElement::putValueProperty, JSSVGTitleElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGTitleElement::getValueProperty, NULL, JSSVGTitleElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGTitleElement::getValueProperty, JSSVGTitleElement::putValueProperty, JSSVGTitleElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGTitleElement::getValueProperty, NULL, JSSVGTitleElement::StyleAttrNum)
-};
+    if (JSSVGTitleElementAttributesFunctions_initialized) return;
+    JSSVGTitleElementAttributesFunctions_initialized = true;
+    memset(JSSVGTitleElementAttributesFunctions, 0, sizeof(JSSVGTitleElementAttributesFunctions));
+    JSSVGTitleElementAttributesFunctions[0].name = "xmllang";
+    JSSVGTitleElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTitleElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTitleElementAttributesFunctions[0].magic = JSSVGTitleElement::XmllangAttrNum;
+    JSSVGTitleElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGTitleElement::getValueProperty;
+    JSSVGTitleElementAttributesFunctions[0].u.getset.set.setter_magic = JSSVGTitleElement::putValueProperty;
+    JSSVGTitleElementAttributesFunctions[1].name = "className";
+    JSSVGTitleElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTitleElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTitleElementAttributesFunctions[1].magic = JSSVGTitleElement::ClassNameAttrNum;
+    JSSVGTitleElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGTitleElement::getValueProperty;
+    JSSVGTitleElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGTitleElementAttributesFunctions[2].name = "xmlspace";
+    JSSVGTitleElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTitleElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTitleElementAttributesFunctions[2].magic = JSSVGTitleElement::XmlspaceAttrNum;
+    JSSVGTitleElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGTitleElement::getValueProperty;
+    JSSVGTitleElementAttributesFunctions[2].u.getset.set.setter_magic = JSSVGTitleElement::putValueProperty;
+    JSSVGTitleElementAttributesFunctions[3].name = "style";
+    JSSVGTitleElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGTitleElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGTitleElementAttributesFunctions[3].magic = JSSVGTitleElement::StyleAttrNum;
+    JSSVGTitleElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGTitleElement::getValueProperty;
+    JSSVGTitleElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGTitleElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGTitleElementPrototypeFunctions[1];
+static bool JSSVGTitleElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGTitleElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGTitleElementPrototypeFunction::callAsFunction, JSSVGTitleElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGTitleElementPrototypeFunctions_initialized) return;
+    JSSVGTitleElementPrototypeFunctions_initialized = true;
+    memset(JSSVGTitleElementPrototypeFunctions, 0, sizeof(JSSVGTitleElementPrototypeFunctions));
+    JSSVGTitleElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGTitleElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGTitleElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGTitleElementPrototypeFunctions[0].magic = JSSVGTitleElement::GetPresentationAttributeFuncNum;
+    JSSVGTitleElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGTitleElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGTitleElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGTitleElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGTitleElementPrototype::self(JSContext * ctx)
 {
@@ -84,22 +124,31 @@ JSValue JSSVGTitleElementPrototype::self(JSContext * ctx)
 
 void JSSVGTitleElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGTitleElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTitleElementAttributesFunctions, countof(JSSVGTitleElementAttributesFunctions));
+    init_JSSVGTitleElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTitleElementPrototypeFunctions, countof(JSSVGTitleElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGTitleElementClassDefine = 
+static JSClassDef JSSVGTitleElementClassDefine;
+static bool JSSVGTitleElementClassDefine_initialized = false;
+
+static void init_JSSVGTitleElementClassDefine()
 {
-    "SVGTitleElement",
-    .finalizer = JSSVGTitleElement::finalizer,
-    .gc_mark = JSSVGTitleElement::mark,
-};
+    if (JSSVGTitleElementClassDefine_initialized) return;
+    JSSVGTitleElementClassDefine_initialized = true;
+    memset(&JSSVGTitleElementClassDefine, 0, sizeof(JSSVGTitleElementClassDefine));
+    JSSVGTitleElementClassDefine.class_name = "SVGTitleElement";
+    JSSVGTitleElementClassDefine.finalizer = JSSVGTitleElement::finalizer;
+    JSSVGTitleElementClassDefine.gc_mark = JSSVGTitleElement::mark;
+}
 
 JSClassID JSSVGTitleElement::js_class_id = 0;
 
 void JSSVGTitleElement::init(JSContext* ctx)
 {
     if (JSSVGTitleElement::js_class_id == 0) {
+        init_JSSVGTitleElementClassDefine();
         JS_NewClassID(&JSSVGTitleElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGTitleElement::js_class_id, &JSSVGTitleElementClassDefine);
         JS_SetClassProto(ctx, JSSVGTitleElement::js_class_id, JSSVGTitleElementPrototype::self(ctx));

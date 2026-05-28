@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -47,11 +49,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAnimatedPreserveAspectRatioAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGAnimatedPreserveAspectRatioAttributesFunctions[2];
+static bool JSSVGAnimatedPreserveAspectRatioAttributesFunctions_initialized = false;
+
+static void init_JSSVGAnimatedPreserveAspectRatioAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("baseVal", JSSVGAnimatedPreserveAspectRatio::getValueProperty, NULL, JSSVGAnimatedPreserveAspectRatio::BaseValAttrNum),
-    JS_CGETSET_MAGIC_DEF("animVal", JSSVGAnimatedPreserveAspectRatio::getValueProperty, NULL, JSSVGAnimatedPreserveAspectRatio::AnimValAttrNum)
-};
+    if (JSSVGAnimatedPreserveAspectRatioAttributesFunctions_initialized) return;
+    JSSVGAnimatedPreserveAspectRatioAttributesFunctions_initialized = true;
+    memset(JSSVGAnimatedPreserveAspectRatioAttributesFunctions, 0, sizeof(JSSVGAnimatedPreserveAspectRatioAttributesFunctions));
+    JSSVGAnimatedPreserveAspectRatioAttributesFunctions[0].name = "baseVal";
+    JSSVGAnimatedPreserveAspectRatioAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedPreserveAspectRatioAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedPreserveAspectRatioAttributesFunctions[0].magic = JSSVGAnimatedPreserveAspectRatio::BaseValAttrNum;
+    JSSVGAnimatedPreserveAspectRatioAttributesFunctions[0].u.getset.get.getter_magic = JSSVGAnimatedPreserveAspectRatio::getValueProperty;
+    JSSVGAnimatedPreserveAspectRatioAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGAnimatedPreserveAspectRatioAttributesFunctions[1].name = "animVal";
+    JSSVGAnimatedPreserveAspectRatioAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedPreserveAspectRatioAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedPreserveAspectRatioAttributesFunctions[1].magic = JSSVGAnimatedPreserveAspectRatio::AnimValAttrNum;
+    JSSVGAnimatedPreserveAspectRatioAttributesFunctions[1].u.getset.get.getter_magic = JSSVGAnimatedPreserveAspectRatio::getValueProperty;
+    JSSVGAnimatedPreserveAspectRatioAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGAnimatedPreserveAspectRatioPrototype::self(JSContext * ctx)
 {
@@ -69,21 +87,29 @@ JSValue JSSVGAnimatedPreserveAspectRatioPrototype::self(JSContext * ctx)
 
 void JSSVGAnimatedPreserveAspectRatioPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAnimatedPreserveAspectRatioAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnimatedPreserveAspectRatioAttributesFunctions, countof(JSSVGAnimatedPreserveAspectRatioAttributesFunctions));
 }
 
-static JSClassDef JSSVGAnimatedPreserveAspectRatioClassDefine = 
+static JSClassDef JSSVGAnimatedPreserveAspectRatioClassDefine;
+static bool JSSVGAnimatedPreserveAspectRatioClassDefine_initialized = false;
+
+static void init_JSSVGAnimatedPreserveAspectRatioClassDefine()
 {
-    "SVGAnimatedPreserveAspectRatio",
-    .finalizer = JSSVGAnimatedPreserveAspectRatio::finalizer,
-    .gc_mark = JSSVGAnimatedPreserveAspectRatio::mark,
-};
+    if (JSSVGAnimatedPreserveAspectRatioClassDefine_initialized) return;
+    JSSVGAnimatedPreserveAspectRatioClassDefine_initialized = true;
+    memset(&JSSVGAnimatedPreserveAspectRatioClassDefine, 0, sizeof(JSSVGAnimatedPreserveAspectRatioClassDefine));
+    JSSVGAnimatedPreserveAspectRatioClassDefine.class_name = "SVGAnimatedPreserveAspectRatio";
+    JSSVGAnimatedPreserveAspectRatioClassDefine.finalizer = JSSVGAnimatedPreserveAspectRatio::finalizer;
+    JSSVGAnimatedPreserveAspectRatioClassDefine.gc_mark = JSSVGAnimatedPreserveAspectRatio::mark;
+}
 
 JSClassID JSSVGAnimatedPreserveAspectRatio::js_class_id = 0;
 
 void JSSVGAnimatedPreserveAspectRatio::init(JSContext* ctx)
 {
     if (JSSVGAnimatedPreserveAspectRatio::js_class_id == 0) {
+        init_JSSVGAnimatedPreserveAspectRatioClassDefine();
         JS_NewClassID(&JSSVGAnimatedPreserveAspectRatio::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimatedPreserveAspectRatio::js_class_id, &JSSVGAnimatedPreserveAspectRatioClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimatedPreserveAspectRatio::js_class_id, JSSVGAnimatedPreserveAspectRatioPrototype::self(ctx));

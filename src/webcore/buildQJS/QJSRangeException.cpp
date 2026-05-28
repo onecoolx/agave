@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSRangeException.h"
 
 #include "RangeException.h"
@@ -38,10 +40,21 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSRangeExceptionAttributesFunctions[] =
+static JSCFunctionListEntry JSRangeExceptionAttributesFunctions[1];
+static bool JSRangeExceptionAttributesFunctions_initialized = false;
+
+static void init_JSRangeExceptionAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("constructor", JSRangeException::getValueProperty, NULL, JSRangeException::ConstructorAttrNum)
-};
+    if (JSRangeExceptionAttributesFunctions_initialized) return;
+    JSRangeExceptionAttributesFunctions_initialized = true;
+    memset(JSRangeExceptionAttributesFunctions, 0, sizeof(JSRangeExceptionAttributesFunctions));
+    JSRangeExceptionAttributesFunctions[0].name = "constructor";
+    JSRangeExceptionAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeExceptionAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeExceptionAttributesFunctions[0].magic = JSRangeException::ConstructorAttrNum;
+    JSRangeExceptionAttributesFunctions[0].u.getset.get.getter_magic = JSRangeException::getValueProperty;
+    JSRangeExceptionAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
 
 class JSRangeExceptionConstructor {
 public:
@@ -58,11 +71,27 @@ JSValue JSRangeExceptionConstructor::getValueProperty(JSContext * ctx, JSValueCo
 
 /* Functions table for constructor */
 
-static const JSCFunctionListEntry JSRangeExceptionConstructorFunctions[] =
+static JSCFunctionListEntry JSRangeExceptionConstructorFunctions[2];
+static bool JSRangeExceptionConstructorFunctions_initialized = false;
+
+static void init_JSRangeExceptionConstructorFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("BAD_BOUNDARYPOINTS_ERR", JSRangeExceptionConstructor::getValueProperty, NULL, RangeException::BAD_BOUNDARYPOINTS_ERR),
-    JS_CGETSET_MAGIC_DEF("INVALID_NODE_TYPE_ERR", JSRangeExceptionConstructor::getValueProperty, NULL, RangeException::INVALID_NODE_TYPE_ERR)
-};
+    if (JSRangeExceptionConstructorFunctions_initialized) return;
+    JSRangeExceptionConstructorFunctions_initialized = true;
+    memset(JSRangeExceptionConstructorFunctions, 0, sizeof(JSRangeExceptionConstructorFunctions));
+    JSRangeExceptionConstructorFunctions[0].name = "BAD_BOUNDARYPOINTS_ERR";
+    JSRangeExceptionConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeExceptionConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeExceptionConstructorFunctions[0].magic = RangeException::BAD_BOUNDARYPOINTS_ERR;
+    JSRangeExceptionConstructorFunctions[0].u.getset.get.getter_magic = JSRangeExceptionConstructor::getValueProperty;
+    JSRangeExceptionConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSRangeExceptionConstructorFunctions[1].name = "INVALID_NODE_TYPE_ERR";
+    JSRangeExceptionConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeExceptionConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeExceptionConstructorFunctions[1].magic = RangeException::INVALID_NODE_TYPE_ERR;
+    JSRangeExceptionConstructorFunctions[1].u.getset.get.getter_magic = JSRangeExceptionConstructor::getValueProperty;
+    JSRangeExceptionConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSRangeExceptionConstructor::self(JSContext * ctx)
 {
@@ -80,16 +109,33 @@ JSValue JSRangeExceptionConstructor::self(JSContext * ctx)
 
 void JSRangeExceptionConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 {
+    init_JSRangeExceptionConstructorFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSRangeExceptionConstructorFunctions, countof(JSRangeExceptionConstructorFunctions));
 }
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSRangeExceptionPrototypeConstantsFunctions[] =
+static JSCFunctionListEntry JSRangeExceptionPrototypeConstantsFunctions[2];
+static bool JSRangeExceptionPrototypeConstantsFunctions_initialized = false;
+
+static void init_JSRangeExceptionPrototypeConstantsFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("BAD_BOUNDARYPOINTS_ERR", JSRangeExceptionPrototype::getValueProperty, NULL, RangeException::BAD_BOUNDARYPOINTS_ERR),
-    JS_CGETSET_MAGIC_DEF("INVALID_NODE_TYPE_ERR", JSRangeExceptionPrototype::getValueProperty, NULL, RangeException::INVALID_NODE_TYPE_ERR)
-};
+    if (JSRangeExceptionPrototypeConstantsFunctions_initialized) return;
+    JSRangeExceptionPrototypeConstantsFunctions_initialized = true;
+    memset(JSRangeExceptionPrototypeConstantsFunctions, 0, sizeof(JSRangeExceptionPrototypeConstantsFunctions));
+    JSRangeExceptionPrototypeConstantsFunctions[0].name = "BAD_BOUNDARYPOINTS_ERR";
+    JSRangeExceptionPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeExceptionPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeExceptionPrototypeConstantsFunctions[0].magic = RangeException::BAD_BOUNDARYPOINTS_ERR;
+    JSRangeExceptionPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSRangeExceptionPrototype::getValueProperty;
+    JSRangeExceptionPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSRangeExceptionPrototypeConstantsFunctions[1].name = "INVALID_NODE_TYPE_ERR";
+    JSRangeExceptionPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRangeExceptionPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRangeExceptionPrototypeConstantsFunctions[1].magic = RangeException::INVALID_NODE_TYPE_ERR;
+    JSRangeExceptionPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSRangeExceptionPrototype::getValueProperty;
+    JSRangeExceptionPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSRangeExceptionPrototype::self(JSContext * ctx)
 {
@@ -107,7 +153,9 @@ JSValue JSRangeExceptionPrototype::self(JSContext * ctx)
 
 void JSRangeExceptionPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSRangeExceptionAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSRangeExceptionAttributesFunctions, countof(JSRangeExceptionAttributesFunctions));
+    init_JSRangeExceptionPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSRangeExceptionPrototypeConstantsFunctions, countof(JSRangeExceptionPrototypeConstantsFunctions));
 }
 
@@ -117,18 +165,25 @@ JSValue JSRangeExceptionPrototype::getValueProperty(JSContext * ctx, JSValueCons
     return JS_NewInt32(ctx, token);
 }
 
-static JSClassDef JSRangeExceptionClassDefine = 
+static JSClassDef JSRangeExceptionClassDefine;
+static bool JSRangeExceptionClassDefine_initialized = false;
+
+static void init_JSRangeExceptionClassDefine()
 {
-    "RangeException",
-    .finalizer = JSRangeException::finalizer,
-    .gc_mark = JSRangeException::mark,
-};
+    if (JSRangeExceptionClassDefine_initialized) return;
+    JSRangeExceptionClassDefine_initialized = true;
+    memset(&JSRangeExceptionClassDefine, 0, sizeof(JSRangeExceptionClassDefine));
+    JSRangeExceptionClassDefine.class_name = "RangeException";
+    JSRangeExceptionClassDefine.finalizer = JSRangeException::finalizer;
+    JSRangeExceptionClassDefine.gc_mark = JSRangeException::mark;
+}
 
 JSClassID JSRangeException::js_class_id = 0;
 
 void JSRangeException::init(JSContext* ctx)
 {
     if (JSRangeException::js_class_id == 0) {
+        init_JSRangeExceptionClassDefine();
         JS_NewClassID(&JSRangeException::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSRangeException::js_class_id, &JSRangeExceptionClassDefine);
         JS_SetConstructor(ctx, JSRangeExceptionConstructor::self(ctx), JSRangeExceptionPrototype::self(ctx));

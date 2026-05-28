@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -51,23 +53,76 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGCursorElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGCursorElementAttributesFunctions[7];
+static bool JSSVGCursorElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGCursorElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGCursorElement::getValueProperty, NULL, JSSVGCursorElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("x", JSSVGCursorElement::getValueProperty, NULL, JSSVGCursorElement::XAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGCursorElement::getValueProperty, NULL, JSSVGCursorElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("y", JSSVGCursorElement::getValueProperty, NULL, JSSVGCursorElement::YAttrNum),
-    JS_CGETSET_MAGIC_DEF("href", JSSVGCursorElement::getValueProperty, NULL, JSSVGCursorElement::HrefAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGCursorElement::getValueProperty, NULL, JSSVGCursorElement::SystemLanguageAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGCursorElement::getValueProperty, NULL, JSSVGCursorElement::ExternalResourcesRequiredAttrNum)
-};
+    if (JSSVGCursorElementAttributesFunctions_initialized) return;
+    JSSVGCursorElementAttributesFunctions_initialized = true;
+    memset(JSSVGCursorElementAttributesFunctions, 0, sizeof(JSSVGCursorElementAttributesFunctions));
+    JSSVGCursorElementAttributesFunctions[0].name = "requiredFeatures";
+    JSSVGCursorElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCursorElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCursorElementAttributesFunctions[0].magic = JSSVGCursorElement::RequiredFeaturesAttrNum;
+    JSSVGCursorElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGCursorElement::getValueProperty;
+    JSSVGCursorElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGCursorElementAttributesFunctions[1].name = "x";
+    JSSVGCursorElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCursorElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCursorElementAttributesFunctions[1].magic = JSSVGCursorElement::XAttrNum;
+    JSSVGCursorElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGCursorElement::getValueProperty;
+    JSSVGCursorElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGCursorElementAttributesFunctions[2].name = "requiredExtensions";
+    JSSVGCursorElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCursorElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCursorElementAttributesFunctions[2].magic = JSSVGCursorElement::RequiredExtensionsAttrNum;
+    JSSVGCursorElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGCursorElement::getValueProperty;
+    JSSVGCursorElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGCursorElementAttributesFunctions[3].name = "y";
+    JSSVGCursorElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCursorElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCursorElementAttributesFunctions[3].magic = JSSVGCursorElement::YAttrNum;
+    JSSVGCursorElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGCursorElement::getValueProperty;
+    JSSVGCursorElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGCursorElementAttributesFunctions[4].name = "href";
+    JSSVGCursorElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCursorElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCursorElementAttributesFunctions[4].magic = JSSVGCursorElement::HrefAttrNum;
+    JSSVGCursorElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGCursorElement::getValueProperty;
+    JSSVGCursorElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGCursorElementAttributesFunctions[5].name = "systemLanguage";
+    JSSVGCursorElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCursorElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCursorElementAttributesFunctions[5].magic = JSSVGCursorElement::SystemLanguageAttrNum;
+    JSSVGCursorElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGCursorElement::getValueProperty;
+    JSSVGCursorElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGCursorElementAttributesFunctions[6].name = "externalResourcesRequired";
+    JSSVGCursorElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCursorElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCursorElementAttributesFunctions[6].magic = JSSVGCursorElement::ExternalResourcesRequiredAttrNum;
+    JSSVGCursorElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGCursorElement::getValueProperty;
+    JSSVGCursorElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGCursorElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGCursorElementPrototypeFunctions[1];
+static bool JSSVGCursorElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGCursorElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGCursorElementPrototypeFunction::callAsFunction, JSSVGCursorElement::HasExtensionFuncNum)
-};
+    if (JSSVGCursorElementPrototypeFunctions_initialized) return;
+    JSSVGCursorElementPrototypeFunctions_initialized = true;
+    memset(JSSVGCursorElementPrototypeFunctions, 0, sizeof(JSSVGCursorElementPrototypeFunctions));
+    JSSVGCursorElementPrototypeFunctions[0].name = "hasExtension";
+    JSSVGCursorElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGCursorElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGCursorElementPrototypeFunctions[0].magic = JSSVGCursorElement::HasExtensionFuncNum;
+    JSSVGCursorElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGCursorElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGCursorElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGCursorElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGCursorElementPrototype::self(JSContext * ctx)
 {
@@ -85,22 +140,31 @@ JSValue JSSVGCursorElementPrototype::self(JSContext * ctx)
 
 void JSSVGCursorElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGCursorElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGCursorElementAttributesFunctions, countof(JSSVGCursorElementAttributesFunctions));
+    init_JSSVGCursorElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGCursorElementPrototypeFunctions, countof(JSSVGCursorElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGCursorElementClassDefine = 
+static JSClassDef JSSVGCursorElementClassDefine;
+static bool JSSVGCursorElementClassDefine_initialized = false;
+
+static void init_JSSVGCursorElementClassDefine()
 {
-    "SVGCursorElement",
-    .finalizer = JSSVGCursorElement::finalizer,
-    .gc_mark = JSSVGCursorElement::mark,
-};
+    if (JSSVGCursorElementClassDefine_initialized) return;
+    JSSVGCursorElementClassDefine_initialized = true;
+    memset(&JSSVGCursorElementClassDefine, 0, sizeof(JSSVGCursorElementClassDefine));
+    JSSVGCursorElementClassDefine.class_name = "SVGCursorElement";
+    JSSVGCursorElementClassDefine.finalizer = JSSVGCursorElement::finalizer;
+    JSSVGCursorElementClassDefine.gc_mark = JSSVGCursorElement::mark;
+}
 
 JSClassID JSSVGCursorElement::js_class_id = 0;
 
 void JSSVGCursorElement::init(JSContext* ctx)
 {
     if (JSSVGCursorElement::js_class_id == 0) {
+        init_JSSVGCursorElementClassDefine();
         JS_NewClassID(&JSSVGCursorElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGCursorElement::js_class_id, &JSSVGCursorElementClassDefine);
         JS_SetClassProto(ctx, JSSVGCursorElement::js_class_id, JSSVGCursorElementPrototype::self(ctx));

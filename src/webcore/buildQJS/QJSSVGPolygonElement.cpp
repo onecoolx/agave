@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -63,34 +65,147 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGPolygonElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGPolygonElementAttributesFunctions[13];
+static bool JSSVGPolygonElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGPolygonElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("transform", JSSVGPolygonElement::getValueProperty, NULL, JSSVGPolygonElement::TransformAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGPolygonElement::getValueProperty, JSSVGPolygonElement::putValueProperty, JSSVGPolygonElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGPolygonElement::getValueProperty, NULL, JSSVGPolygonElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("farthestViewportElement", JSSVGPolygonElement::getValueProperty, NULL, JSSVGPolygonElement::FarthestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGPolygonElement::getValueProperty, NULL, JSSVGPolygonElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGPolygonElement::getValueProperty, NULL, JSSVGPolygonElement::SystemLanguageAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGPolygonElement::getValueProperty, NULL, JSSVGPolygonElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGPolygonElement::getValueProperty, NULL, JSSVGPolygonElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGPolygonElement::getValueProperty, NULL, JSSVGPolygonElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGPolygonElement::getValueProperty, JSSVGPolygonElement::putValueProperty, JSSVGPolygonElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("nearestViewportElement", JSSVGPolygonElement::getValueProperty, NULL, JSSVGPolygonElement::NearestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("points", JSSVGPolygonElement::getValueProperty, NULL, JSSVGPolygonElement::PointsAttrNum),
-    JS_CGETSET_MAGIC_DEF("animatedPoints", JSSVGPolygonElement::getValueProperty, NULL, JSSVGPolygonElement::AnimatedPointsAttrNum)
-};
+    if (JSSVGPolygonElementAttributesFunctions_initialized) return;
+    JSSVGPolygonElementAttributesFunctions_initialized = true;
+    memset(JSSVGPolygonElementAttributesFunctions, 0, sizeof(JSSVGPolygonElementAttributesFunctions));
+    JSSVGPolygonElementAttributesFunctions[0].name = "transform";
+    JSSVGPolygonElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolygonElementAttributesFunctions[0].magic = JSSVGPolygonElement::TransformAttrNum;
+    JSSVGPolygonElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPolygonElement::getValueProperty;
+    JSSVGPolygonElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGPolygonElementAttributesFunctions[1].name = "xmlspace";
+    JSSVGPolygonElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolygonElementAttributesFunctions[1].magic = JSSVGPolygonElement::XmlspaceAttrNum;
+    JSSVGPolygonElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPolygonElement::getValueProperty;
+    JSSVGPolygonElementAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPolygonElement::putValueProperty;
+    JSSVGPolygonElementAttributesFunctions[2].name = "requiredFeatures";
+    JSSVGPolygonElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolygonElementAttributesFunctions[2].magic = JSSVGPolygonElement::RequiredFeaturesAttrNum;
+    JSSVGPolygonElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGPolygonElement::getValueProperty;
+    JSSVGPolygonElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGPolygonElementAttributesFunctions[3].name = "farthestViewportElement";
+    JSSVGPolygonElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolygonElementAttributesFunctions[3].magic = JSSVGPolygonElement::FarthestViewportElementAttrNum;
+    JSSVGPolygonElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGPolygonElement::getValueProperty;
+    JSSVGPolygonElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGPolygonElementAttributesFunctions[4].name = "style";
+    JSSVGPolygonElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolygonElementAttributesFunctions[4].magic = JSSVGPolygonElement::StyleAttrNum;
+    JSSVGPolygonElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGPolygonElement::getValueProperty;
+    JSSVGPolygonElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGPolygonElementAttributesFunctions[5].name = "systemLanguage";
+    JSSVGPolygonElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolygonElementAttributesFunctions[5].magic = JSSVGPolygonElement::SystemLanguageAttrNum;
+    JSSVGPolygonElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGPolygonElement::getValueProperty;
+    JSSVGPolygonElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGPolygonElementAttributesFunctions[6].name = "className";
+    JSSVGPolygonElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolygonElementAttributesFunctions[6].magic = JSSVGPolygonElement::ClassNameAttrNum;
+    JSSVGPolygonElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGPolygonElement::getValueProperty;
+    JSSVGPolygonElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGPolygonElementAttributesFunctions[7].name = "externalResourcesRequired";
+    JSSVGPolygonElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolygonElementAttributesFunctions[7].magic = JSSVGPolygonElement::ExternalResourcesRequiredAttrNum;
+    JSSVGPolygonElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGPolygonElement::getValueProperty;
+    JSSVGPolygonElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGPolygonElementAttributesFunctions[8].name = "requiredExtensions";
+    JSSVGPolygonElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolygonElementAttributesFunctions[8].magic = JSSVGPolygonElement::RequiredExtensionsAttrNum;
+    JSSVGPolygonElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGPolygonElement::getValueProperty;
+    JSSVGPolygonElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGPolygonElementAttributesFunctions[9].name = "xmllang";
+    JSSVGPolygonElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolygonElementAttributesFunctions[9].magic = JSSVGPolygonElement::XmllangAttrNum;
+    JSSVGPolygonElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGPolygonElement::getValueProperty;
+    JSSVGPolygonElementAttributesFunctions[9].u.getset.set.setter_magic = JSSVGPolygonElement::putValueProperty;
+    JSSVGPolygonElementAttributesFunctions[10].name = "nearestViewportElement";
+    JSSVGPolygonElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolygonElementAttributesFunctions[10].magic = JSSVGPolygonElement::NearestViewportElementAttrNum;
+    JSSVGPolygonElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGPolygonElement::getValueProperty;
+    JSSVGPolygonElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSSVGPolygonElementAttributesFunctions[11].name = "points";
+    JSSVGPolygonElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolygonElementAttributesFunctions[11].magic = JSSVGPolygonElement::PointsAttrNum;
+    JSSVGPolygonElementAttributesFunctions[11].u.getset.get.getter_magic = JSSVGPolygonElement::getValueProperty;
+    JSSVGPolygonElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSSVGPolygonElementAttributesFunctions[12].name = "animatedPoints";
+    JSSVGPolygonElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGPolygonElementAttributesFunctions[12].magic = JSSVGPolygonElement::AnimatedPointsAttrNum;
+    JSSVGPolygonElementAttributesFunctions[12].u.getset.get.getter_magic = JSSVGPolygonElement::getValueProperty;
+    JSSVGPolygonElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGPolygonElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGPolygonElementPrototypeFunctions[6];
+static bool JSSVGPolygonElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGPolygonElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGPolygonElementPrototypeFunction::callAsFunction, JSSVGPolygonElement::GetPresentationAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGPolygonElementPrototypeFunction::callAsFunction, JSSVGPolygonElement::HasExtensionFuncNum),
-    JS_CFUNC_MAGIC_DEF("getCTM", 0, JSSVGPolygonElementPrototypeFunction::callAsFunction, JSSVGPolygonElement::GetCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getScreenCTM", 0, JSSVGPolygonElementPrototypeFunction::callAsFunction, JSSVGPolygonElement::GetScreenCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getTransformToElement", 1, JSSVGPolygonElementPrototypeFunction::callAsFunction, JSSVGPolygonElement::GetTransformToElementFuncNum),
-    JS_CFUNC_MAGIC_DEF("getBBox", 0, JSSVGPolygonElementPrototypeFunction::callAsFunction, JSSVGPolygonElement::GetBBoxFuncNum)
-};
+    if (JSSVGPolygonElementPrototypeFunctions_initialized) return;
+    JSSVGPolygonElementPrototypeFunctions_initialized = true;
+    memset(JSSVGPolygonElementPrototypeFunctions, 0, sizeof(JSSVGPolygonElementPrototypeFunctions));
+    JSSVGPolygonElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGPolygonElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGPolygonElementPrototypeFunctions[0].magic = JSSVGPolygonElement::GetPresentationAttributeFuncNum;
+    JSSVGPolygonElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGPolygonElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPolygonElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGPolygonElementPrototypeFunction::callAsFunction;
+    JSSVGPolygonElementPrototypeFunctions[1].name = "hasExtension";
+    JSSVGPolygonElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGPolygonElementPrototypeFunctions[1].magic = JSSVGPolygonElement::HasExtensionFuncNum;
+    JSSVGPolygonElementPrototypeFunctions[1].u.func.length = 1;
+    JSSVGPolygonElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPolygonElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGPolygonElementPrototypeFunction::callAsFunction;
+    JSSVGPolygonElementPrototypeFunctions[2].name = "getCTM";
+    JSSVGPolygonElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGPolygonElementPrototypeFunctions[2].magic = JSSVGPolygonElement::GetCTMFuncNum;
+    JSSVGPolygonElementPrototypeFunctions[2].u.func.length = 0;
+    JSSVGPolygonElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPolygonElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGPolygonElementPrototypeFunction::callAsFunction;
+    JSSVGPolygonElementPrototypeFunctions[3].name = "getScreenCTM";
+    JSSVGPolygonElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGPolygonElementPrototypeFunctions[3].magic = JSSVGPolygonElement::GetScreenCTMFuncNum;
+    JSSVGPolygonElementPrototypeFunctions[3].u.func.length = 0;
+    JSSVGPolygonElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPolygonElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGPolygonElementPrototypeFunction::callAsFunction;
+    JSSVGPolygonElementPrototypeFunctions[4].name = "getTransformToElement";
+    JSSVGPolygonElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGPolygonElementPrototypeFunctions[4].magic = JSSVGPolygonElement::GetTransformToElementFuncNum;
+    JSSVGPolygonElementPrototypeFunctions[4].u.func.length = 1;
+    JSSVGPolygonElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPolygonElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGPolygonElementPrototypeFunction::callAsFunction;
+    JSSVGPolygonElementPrototypeFunctions[5].name = "getBBox";
+    JSSVGPolygonElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGPolygonElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGPolygonElementPrototypeFunctions[5].magic = JSSVGPolygonElement::GetBBoxFuncNum;
+    JSSVGPolygonElementPrototypeFunctions[5].u.func.length = 0;
+    JSSVGPolygonElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGPolygonElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGPolygonElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGPolygonElementPrototype::self(JSContext * ctx)
 {
@@ -108,22 +223,31 @@ JSValue JSSVGPolygonElementPrototype::self(JSContext * ctx)
 
 void JSSVGPolygonElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGPolygonElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPolygonElementAttributesFunctions, countof(JSSVGPolygonElementAttributesFunctions));
+    init_JSSVGPolygonElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPolygonElementPrototypeFunctions, countof(JSSVGPolygonElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGPolygonElementClassDefine = 
+static JSClassDef JSSVGPolygonElementClassDefine;
+static bool JSSVGPolygonElementClassDefine_initialized = false;
+
+static void init_JSSVGPolygonElementClassDefine()
 {
-    "SVGPolygonElement",
-    .finalizer = JSSVGPolygonElement::finalizer,
-    .gc_mark = JSSVGPolygonElement::mark,
-};
+    if (JSSVGPolygonElementClassDefine_initialized) return;
+    JSSVGPolygonElementClassDefine_initialized = true;
+    memset(&JSSVGPolygonElementClassDefine, 0, sizeof(JSSVGPolygonElementClassDefine));
+    JSSVGPolygonElementClassDefine.class_name = "SVGPolygonElement";
+    JSSVGPolygonElementClassDefine.finalizer = JSSVGPolygonElement::finalizer;
+    JSSVGPolygonElementClassDefine.gc_mark = JSSVGPolygonElement::mark;
+}
 
 JSClassID JSSVGPolygonElement::js_class_id = 0;
 
 void JSSVGPolygonElement::init(JSContext* ctx)
 {
     if (JSSVGPolygonElement::js_class_id == 0) {
+        init_JSSVGPolygonElementClassDefine();
         JS_NewClassID(&JSSVGPolygonElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGPolygonElement::js_class_id, &JSSVGPolygonElementClassDefine);
         JS_SetClassProto(ctx, JSSVGPolygonElement::js_class_id, JSSVGPolygonElementPrototype::self(ctx));

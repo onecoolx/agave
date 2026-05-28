@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "QJSHTMLBaseFontElement.h"
 
 #include "HTMLBaseFontElement.h"
@@ -39,13 +41,39 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSHTMLBaseFontElementAttributesFunctions[] =
+static JSCFunctionListEntry JSHTMLBaseFontElementAttributesFunctions[4];
+static bool JSHTMLBaseFontElementAttributesFunctions_initialized = false;
+
+static void init_JSHTMLBaseFontElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("size", JSHTMLBaseFontElement::getValueProperty, JSHTMLBaseFontElement::putValueProperty, JSHTMLBaseFontElement::SizeAttrNum),
-    JS_CGETSET_MAGIC_DEF("color", JSHTMLBaseFontElement::getValueProperty, JSHTMLBaseFontElement::putValueProperty, JSHTMLBaseFontElement::ColorAttrNum),
-    JS_CGETSET_MAGIC_DEF("face", JSHTMLBaseFontElement::getValueProperty, JSHTMLBaseFontElement::putValueProperty, JSHTMLBaseFontElement::FaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("constructor", JSHTMLBaseFontElement::getValueProperty, NULL, JSHTMLBaseFontElement::ConstructorAttrNum)
-};
+    if (JSHTMLBaseFontElementAttributesFunctions_initialized) return;
+    JSHTMLBaseFontElementAttributesFunctions_initialized = true;
+    memset(JSHTMLBaseFontElementAttributesFunctions, 0, sizeof(JSHTMLBaseFontElementAttributesFunctions));
+    JSHTMLBaseFontElementAttributesFunctions[0].name = "size";
+    JSHTMLBaseFontElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBaseFontElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBaseFontElementAttributesFunctions[0].magic = JSHTMLBaseFontElement::SizeAttrNum;
+    JSHTMLBaseFontElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLBaseFontElement::getValueProperty;
+    JSHTMLBaseFontElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLBaseFontElement::putValueProperty;
+    JSHTMLBaseFontElementAttributesFunctions[1].name = "color";
+    JSHTMLBaseFontElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBaseFontElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBaseFontElementAttributesFunctions[1].magic = JSHTMLBaseFontElement::ColorAttrNum;
+    JSHTMLBaseFontElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLBaseFontElement::getValueProperty;
+    JSHTMLBaseFontElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLBaseFontElement::putValueProperty;
+    JSHTMLBaseFontElementAttributesFunctions[2].name = "face";
+    JSHTMLBaseFontElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBaseFontElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBaseFontElementAttributesFunctions[2].magic = JSHTMLBaseFontElement::FaceAttrNum;
+    JSHTMLBaseFontElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLBaseFontElement::getValueProperty;
+    JSHTMLBaseFontElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLBaseFontElement::putValueProperty;
+    JSHTMLBaseFontElementAttributesFunctions[3].name = "constructor";
+    JSHTMLBaseFontElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLBaseFontElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLBaseFontElementAttributesFunctions[3].magic = JSHTMLBaseFontElement::ConstructorAttrNum;
+    JSHTMLBaseFontElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLBaseFontElement::getValueProperty;
+    JSHTMLBaseFontElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+}
 
 class JSHTMLBaseFontElementConstructor {
 public:
@@ -94,15 +122,22 @@ JSValue JSHTMLBaseFontElementPrototype::self(JSContext * ctx)
 
 void JSHTMLBaseFontElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSHTMLBaseFontElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLBaseFontElementAttributesFunctions, countof(JSHTMLBaseFontElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLBaseFontElementClassDefine = 
+static JSClassDef JSHTMLBaseFontElementClassDefine;
+static bool JSHTMLBaseFontElementClassDefine_initialized = false;
+
+static void init_JSHTMLBaseFontElementClassDefine()
 {
-    "HTMLBaseFontElement",
-    .finalizer = JSHTMLBaseFontElement::finalizer,
-    .gc_mark = JSHTMLBaseFontElement::mark,
-};
+    if (JSHTMLBaseFontElementClassDefine_initialized) return;
+    JSHTMLBaseFontElementClassDefine_initialized = true;
+    memset(&JSHTMLBaseFontElementClassDefine, 0, sizeof(JSHTMLBaseFontElementClassDefine));
+    JSHTMLBaseFontElementClassDefine.class_name = "HTMLBaseFontElement";
+    JSHTMLBaseFontElementClassDefine.finalizer = JSHTMLBaseFontElement::finalizer;
+    JSHTMLBaseFontElementClassDefine.gc_mark = JSHTMLBaseFontElement::mark;
+}
 
 JSClassID JSHTMLBaseFontElement::js_class_id = 0;
 

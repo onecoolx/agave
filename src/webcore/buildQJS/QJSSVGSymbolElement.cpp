@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -56,23 +58,76 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGSymbolElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGSymbolElementAttributesFunctions[7];
+static bool JSSVGSymbolElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGSymbolElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGSymbolElement::getValueProperty, JSSVGSymbolElement::putValueProperty, JSSVGSymbolElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGSymbolElement::getValueProperty, NULL, JSSVGSymbolElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGSymbolElement::getValueProperty, NULL, JSSVGSymbolElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("preserveAspectRatio", JSSVGSymbolElement::getValueProperty, NULL, JSSVGSymbolElement::PreserveAspectRatioAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGSymbolElement::getValueProperty, JSSVGSymbolElement::putValueProperty, JSSVGSymbolElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGSymbolElement::getValueProperty, NULL, JSSVGSymbolElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("viewBox", JSSVGSymbolElement::getValueProperty, NULL, JSSVGSymbolElement::ViewBoxAttrNum)
-};
+    if (JSSVGSymbolElementAttributesFunctions_initialized) return;
+    JSSVGSymbolElementAttributesFunctions_initialized = true;
+    memset(JSSVGSymbolElementAttributesFunctions, 0, sizeof(JSSVGSymbolElementAttributesFunctions));
+    JSSVGSymbolElementAttributesFunctions[0].name = "xmlspace";
+    JSSVGSymbolElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGSymbolElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGSymbolElementAttributesFunctions[0].magic = JSSVGSymbolElement::XmlspaceAttrNum;
+    JSSVGSymbolElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGSymbolElement::getValueProperty;
+    JSSVGSymbolElementAttributesFunctions[0].u.getset.set.setter_magic = JSSVGSymbolElement::putValueProperty;
+    JSSVGSymbolElementAttributesFunctions[1].name = "className";
+    JSSVGSymbolElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGSymbolElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGSymbolElementAttributesFunctions[1].magic = JSSVGSymbolElement::ClassNameAttrNum;
+    JSSVGSymbolElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGSymbolElement::getValueProperty;
+    JSSVGSymbolElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGSymbolElementAttributesFunctions[2].name = "externalResourcesRequired";
+    JSSVGSymbolElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGSymbolElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGSymbolElementAttributesFunctions[2].magic = JSSVGSymbolElement::ExternalResourcesRequiredAttrNum;
+    JSSVGSymbolElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGSymbolElement::getValueProperty;
+    JSSVGSymbolElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGSymbolElementAttributesFunctions[3].name = "preserveAspectRatio";
+    JSSVGSymbolElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGSymbolElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGSymbolElementAttributesFunctions[3].magic = JSSVGSymbolElement::PreserveAspectRatioAttrNum;
+    JSSVGSymbolElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGSymbolElement::getValueProperty;
+    JSSVGSymbolElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGSymbolElementAttributesFunctions[4].name = "xmllang";
+    JSSVGSymbolElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGSymbolElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGSymbolElementAttributesFunctions[4].magic = JSSVGSymbolElement::XmllangAttrNum;
+    JSSVGSymbolElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGSymbolElement::getValueProperty;
+    JSSVGSymbolElementAttributesFunctions[4].u.getset.set.setter_magic = JSSVGSymbolElement::putValueProperty;
+    JSSVGSymbolElementAttributesFunctions[5].name = "style";
+    JSSVGSymbolElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGSymbolElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGSymbolElementAttributesFunctions[5].magic = JSSVGSymbolElement::StyleAttrNum;
+    JSSVGSymbolElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGSymbolElement::getValueProperty;
+    JSSVGSymbolElementAttributesFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGSymbolElementAttributesFunctions[6].name = "viewBox";
+    JSSVGSymbolElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGSymbolElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGSymbolElementAttributesFunctions[6].magic = JSSVGSymbolElement::ViewBoxAttrNum;
+    JSSVGSymbolElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGSymbolElement::getValueProperty;
+    JSSVGSymbolElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGSymbolElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGSymbolElementPrototypeFunctions[1];
+static bool JSSVGSymbolElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGSymbolElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGSymbolElementPrototypeFunction::callAsFunction, JSSVGSymbolElement::GetPresentationAttributeFuncNum)
-};
+    if (JSSVGSymbolElementPrototypeFunctions_initialized) return;
+    JSSVGSymbolElementPrototypeFunctions_initialized = true;
+    memset(JSSVGSymbolElementPrototypeFunctions, 0, sizeof(JSSVGSymbolElementPrototypeFunctions));
+    JSSVGSymbolElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGSymbolElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGSymbolElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGSymbolElementPrototypeFunctions[0].magic = JSSVGSymbolElement::GetPresentationAttributeFuncNum;
+    JSSVGSymbolElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGSymbolElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGSymbolElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGSymbolElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGSymbolElementPrototype::self(JSContext * ctx)
 {
@@ -90,22 +145,31 @@ JSValue JSSVGSymbolElementPrototype::self(JSContext * ctx)
 
 void JSSVGSymbolElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGSymbolElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGSymbolElementAttributesFunctions, countof(JSSVGSymbolElementAttributesFunctions));
+    init_JSSVGSymbolElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGSymbolElementPrototypeFunctions, countof(JSSVGSymbolElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGSymbolElementClassDefine = 
+static JSClassDef JSSVGSymbolElementClassDefine;
+static bool JSSVGSymbolElementClassDefine_initialized = false;
+
+static void init_JSSVGSymbolElementClassDefine()
 {
-    "SVGSymbolElement",
-    .finalizer = JSSVGSymbolElement::finalizer,
-    .gc_mark = JSSVGSymbolElement::mark,
-};
+    if (JSSVGSymbolElementClassDefine_initialized) return;
+    JSSVGSymbolElementClassDefine_initialized = true;
+    memset(&JSSVGSymbolElementClassDefine, 0, sizeof(JSSVGSymbolElementClassDefine));
+    JSSVGSymbolElementClassDefine.class_name = "SVGSymbolElement";
+    JSSVGSymbolElementClassDefine.finalizer = JSSVGSymbolElement::finalizer;
+    JSSVGSymbolElementClassDefine.gc_mark = JSSVGSymbolElement::mark;
+}
 
 JSClassID JSSVGSymbolElement::js_class_id = 0;
 
 void JSSVGSymbolElement::init(JSContext* ctx)
 {
     if (JSSVGSymbolElement::js_class_id == 0) {
+        init_JSSVGSymbolElementClassDefine();
         JS_NewClassID(&JSSVGSymbolElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGSymbolElement::js_class_id, &JSSVGSymbolElementClassDefine);
         JS_SetClassProto(ctx, JSSVGSymbolElement::js_class_id, JSSVGSymbolElementPrototype::self(ctx));

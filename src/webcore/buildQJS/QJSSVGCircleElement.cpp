@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -62,35 +64,153 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGCircleElementAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGCircleElementAttributesFunctions[14];
+static bool JSSVGCircleElementAttributesFunctions_initialized = false;
+
+static void init_JSSVGCircleElementAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("xmlspace", JSSVGCircleElement::getValueProperty, JSSVGCircleElement::putValueProperty, JSSVGCircleElement::XmlspaceAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredFeatures", JSSVGCircleElement::getValueProperty, NULL, JSSVGCircleElement::RequiredFeaturesAttrNum),
-    JS_CGETSET_MAGIC_DEF("style", JSSVGCircleElement::getValueProperty, NULL, JSSVGCircleElement::StyleAttrNum),
-    JS_CGETSET_MAGIC_DEF("cy", JSSVGCircleElement::getValueProperty, NULL, JSSVGCircleElement::CyAttrNum),
-    JS_CGETSET_MAGIC_DEF("systemLanguage", JSSVGCircleElement::getValueProperty, NULL, JSSVGCircleElement::SystemLanguageAttrNum),
-    JS_CGETSET_MAGIC_DEF("xmllang", JSSVGCircleElement::getValueProperty, JSSVGCircleElement::putValueProperty, JSSVGCircleElement::XmllangAttrNum),
-    JS_CGETSET_MAGIC_DEF("cx", JSSVGCircleElement::getValueProperty, NULL, JSSVGCircleElement::CxAttrNum),
-    JS_CGETSET_MAGIC_DEF("className", JSSVGCircleElement::getValueProperty, NULL, JSSVGCircleElement::ClassNameAttrNum),
-    JS_CGETSET_MAGIC_DEF("externalResourcesRequired", JSSVGCircleElement::getValueProperty, NULL, JSSVGCircleElement::ExternalResourcesRequiredAttrNum),
-    JS_CGETSET_MAGIC_DEF("requiredExtensions", JSSVGCircleElement::getValueProperty, NULL, JSSVGCircleElement::RequiredExtensionsAttrNum),
-    JS_CGETSET_MAGIC_DEF("r", JSSVGCircleElement::getValueProperty, NULL, JSSVGCircleElement::RAttrNum),
-    JS_CGETSET_MAGIC_DEF("transform", JSSVGCircleElement::getValueProperty, NULL, JSSVGCircleElement::TransformAttrNum),
-    JS_CGETSET_MAGIC_DEF("nearestViewportElement", JSSVGCircleElement::getValueProperty, NULL, JSSVGCircleElement::NearestViewportElementAttrNum),
-    JS_CGETSET_MAGIC_DEF("farthestViewportElement", JSSVGCircleElement::getValueProperty, NULL, JSSVGCircleElement::FarthestViewportElementAttrNum)
-};
+    if (JSSVGCircleElementAttributesFunctions_initialized) return;
+    JSSVGCircleElementAttributesFunctions_initialized = true;
+    memset(JSSVGCircleElementAttributesFunctions, 0, sizeof(JSSVGCircleElementAttributesFunctions));
+    JSSVGCircleElementAttributesFunctions[0].name = "xmlspace";
+    JSSVGCircleElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCircleElementAttributesFunctions[0].magic = JSSVGCircleElement::XmlspaceAttrNum;
+    JSSVGCircleElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGCircleElement::getValueProperty;
+    JSSVGCircleElementAttributesFunctions[0].u.getset.set.setter_magic = JSSVGCircleElement::putValueProperty;
+    JSSVGCircleElementAttributesFunctions[1].name = "requiredFeatures";
+    JSSVGCircleElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCircleElementAttributesFunctions[1].magic = JSSVGCircleElement::RequiredFeaturesAttrNum;
+    JSSVGCircleElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGCircleElement::getValueProperty;
+    JSSVGCircleElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGCircleElementAttributesFunctions[2].name = "style";
+    JSSVGCircleElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCircleElementAttributesFunctions[2].magic = JSSVGCircleElement::StyleAttrNum;
+    JSSVGCircleElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGCircleElement::getValueProperty;
+    JSSVGCircleElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGCircleElementAttributesFunctions[3].name = "cy";
+    JSSVGCircleElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCircleElementAttributesFunctions[3].magic = JSSVGCircleElement::CyAttrNum;
+    JSSVGCircleElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGCircleElement::getValueProperty;
+    JSSVGCircleElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGCircleElementAttributesFunctions[4].name = "systemLanguage";
+    JSSVGCircleElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCircleElementAttributesFunctions[4].magic = JSSVGCircleElement::SystemLanguageAttrNum;
+    JSSVGCircleElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGCircleElement::getValueProperty;
+    JSSVGCircleElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGCircleElementAttributesFunctions[5].name = "xmllang";
+    JSSVGCircleElementAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCircleElementAttributesFunctions[5].magic = JSSVGCircleElement::XmllangAttrNum;
+    JSSVGCircleElementAttributesFunctions[5].u.getset.get.getter_magic = JSSVGCircleElement::getValueProperty;
+    JSSVGCircleElementAttributesFunctions[5].u.getset.set.setter_magic = JSSVGCircleElement::putValueProperty;
+    JSSVGCircleElementAttributesFunctions[6].name = "cx";
+    JSSVGCircleElementAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCircleElementAttributesFunctions[6].magic = JSSVGCircleElement::CxAttrNum;
+    JSSVGCircleElementAttributesFunctions[6].u.getset.get.getter_magic = JSSVGCircleElement::getValueProperty;
+    JSSVGCircleElementAttributesFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGCircleElementAttributesFunctions[7].name = "className";
+    JSSVGCircleElementAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCircleElementAttributesFunctions[7].magic = JSSVGCircleElement::ClassNameAttrNum;
+    JSSVGCircleElementAttributesFunctions[7].u.getset.get.getter_magic = JSSVGCircleElement::getValueProperty;
+    JSSVGCircleElementAttributesFunctions[7].u.getset.set.setter_magic = NULL;
+    JSSVGCircleElementAttributesFunctions[8].name = "externalResourcesRequired";
+    JSSVGCircleElementAttributesFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementAttributesFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCircleElementAttributesFunctions[8].magic = JSSVGCircleElement::ExternalResourcesRequiredAttrNum;
+    JSSVGCircleElementAttributesFunctions[8].u.getset.get.getter_magic = JSSVGCircleElement::getValueProperty;
+    JSSVGCircleElementAttributesFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGCircleElementAttributesFunctions[9].name = "requiredExtensions";
+    JSSVGCircleElementAttributesFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementAttributesFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCircleElementAttributesFunctions[9].magic = JSSVGCircleElement::RequiredExtensionsAttrNum;
+    JSSVGCircleElementAttributesFunctions[9].u.getset.get.getter_magic = JSSVGCircleElement::getValueProperty;
+    JSSVGCircleElementAttributesFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGCircleElementAttributesFunctions[10].name = "r";
+    JSSVGCircleElementAttributesFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementAttributesFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCircleElementAttributesFunctions[10].magic = JSSVGCircleElement::RAttrNum;
+    JSSVGCircleElementAttributesFunctions[10].u.getset.get.getter_magic = JSSVGCircleElement::getValueProperty;
+    JSSVGCircleElementAttributesFunctions[10].u.getset.set.setter_magic = NULL;
+    JSSVGCircleElementAttributesFunctions[11].name = "transform";
+    JSSVGCircleElementAttributesFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementAttributesFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCircleElementAttributesFunctions[11].magic = JSSVGCircleElement::TransformAttrNum;
+    JSSVGCircleElementAttributesFunctions[11].u.getset.get.getter_magic = JSSVGCircleElement::getValueProperty;
+    JSSVGCircleElementAttributesFunctions[11].u.getset.set.setter_magic = NULL;
+    JSSVGCircleElementAttributesFunctions[12].name = "nearestViewportElement";
+    JSSVGCircleElementAttributesFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementAttributesFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCircleElementAttributesFunctions[12].magic = JSSVGCircleElement::NearestViewportElementAttrNum;
+    JSSVGCircleElementAttributesFunctions[12].u.getset.get.getter_magic = JSSVGCircleElement::getValueProperty;
+    JSSVGCircleElementAttributesFunctions[12].u.getset.set.setter_magic = NULL;
+    JSSVGCircleElementAttributesFunctions[13].name = "farthestViewportElement";
+    JSSVGCircleElementAttributesFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementAttributesFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGCircleElementAttributesFunctions[13].magic = JSSVGCircleElement::FarthestViewportElementAttrNum;
+    JSSVGCircleElementAttributesFunctions[13].u.getset.get.getter_magic = JSSVGCircleElement::getValueProperty;
+    JSSVGCircleElementAttributesFunctions[13].u.getset.set.setter_magic = NULL;
+}
 
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSSVGCircleElementPrototypeFunctions[] =
+static JSCFunctionListEntry JSSVGCircleElementPrototypeFunctions[6];
+static bool JSSVGCircleElementPrototypeFunctions_initialized = false;
+
+static void init_JSSVGCircleElementPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("getPresentationAttribute", 1, JSSVGCircleElementPrototypeFunction::callAsFunction, JSSVGCircleElement::GetPresentationAttributeFuncNum),
-    JS_CFUNC_MAGIC_DEF("hasExtension", 1, JSSVGCircleElementPrototypeFunction::callAsFunction, JSSVGCircleElement::HasExtensionFuncNum),
-    JS_CFUNC_MAGIC_DEF("getCTM", 0, JSSVGCircleElementPrototypeFunction::callAsFunction, JSSVGCircleElement::GetCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getScreenCTM", 0, JSSVGCircleElementPrototypeFunction::callAsFunction, JSSVGCircleElement::GetScreenCTMFuncNum),
-    JS_CFUNC_MAGIC_DEF("getTransformToElement", 1, JSSVGCircleElementPrototypeFunction::callAsFunction, JSSVGCircleElement::GetTransformToElementFuncNum),
-    JS_CFUNC_MAGIC_DEF("getBBox", 0, JSSVGCircleElementPrototypeFunction::callAsFunction, JSSVGCircleElement::GetBBoxFuncNum)
-};
+    if (JSSVGCircleElementPrototypeFunctions_initialized) return;
+    JSSVGCircleElementPrototypeFunctions_initialized = true;
+    memset(JSSVGCircleElementPrototypeFunctions, 0, sizeof(JSSVGCircleElementPrototypeFunctions));
+    JSSVGCircleElementPrototypeFunctions[0].name = "getPresentationAttribute";
+    JSSVGCircleElementPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSSVGCircleElementPrototypeFunctions[0].magic = JSSVGCircleElement::GetPresentationAttributeFuncNum;
+    JSSVGCircleElementPrototypeFunctions[0].u.func.length = 1;
+    JSSVGCircleElementPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGCircleElementPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGCircleElementPrototypeFunction::callAsFunction;
+    JSSVGCircleElementPrototypeFunctions[1].name = "hasExtension";
+    JSSVGCircleElementPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
+    JSSVGCircleElementPrototypeFunctions[1].magic = JSSVGCircleElement::HasExtensionFuncNum;
+    JSSVGCircleElementPrototypeFunctions[1].u.func.length = 1;
+    JSSVGCircleElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGCircleElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGCircleElementPrototypeFunction::callAsFunction;
+    JSSVGCircleElementPrototypeFunctions[2].name = "getCTM";
+    JSSVGCircleElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSSVGCircleElementPrototypeFunctions[2].magic = JSSVGCircleElement::GetCTMFuncNum;
+    JSSVGCircleElementPrototypeFunctions[2].u.func.length = 0;
+    JSSVGCircleElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGCircleElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSSVGCircleElementPrototypeFunction::callAsFunction;
+    JSSVGCircleElementPrototypeFunctions[3].name = "getScreenCTM";
+    JSSVGCircleElementPrototypeFunctions[3].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementPrototypeFunctions[3].def_type = JS_DEF_CFUNC;
+    JSSVGCircleElementPrototypeFunctions[3].magic = JSSVGCircleElement::GetScreenCTMFuncNum;
+    JSSVGCircleElementPrototypeFunctions[3].u.func.length = 0;
+    JSSVGCircleElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGCircleElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSSVGCircleElementPrototypeFunction::callAsFunction;
+    JSSVGCircleElementPrototypeFunctions[4].name = "getTransformToElement";
+    JSSVGCircleElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSSVGCircleElementPrototypeFunctions[4].magic = JSSVGCircleElement::GetTransformToElementFuncNum;
+    JSSVGCircleElementPrototypeFunctions[4].u.func.length = 1;
+    JSSVGCircleElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGCircleElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSSVGCircleElementPrototypeFunction::callAsFunction;
+    JSSVGCircleElementPrototypeFunctions[5].name = "getBBox";
+    JSSVGCircleElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSSVGCircleElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSSVGCircleElementPrototypeFunctions[5].magic = JSSVGCircleElement::GetBBoxFuncNum;
+    JSSVGCircleElementPrototypeFunctions[5].u.func.length = 0;
+    JSSVGCircleElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSSVGCircleElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSSVGCircleElementPrototypeFunction::callAsFunction;
+}
 
 JSValue JSSVGCircleElementPrototype::self(JSContext * ctx)
 {
@@ -108,22 +228,31 @@ JSValue JSSVGCircleElementPrototype::self(JSContext * ctx)
 
 void JSSVGCircleElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGCircleElementAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGCircleElementAttributesFunctions, countof(JSSVGCircleElementAttributesFunctions));
+    init_JSSVGCircleElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGCircleElementPrototypeFunctions, countof(JSSVGCircleElementPrototypeFunctions));
 }
 
-static JSClassDef JSSVGCircleElementClassDefine = 
+static JSClassDef JSSVGCircleElementClassDefine;
+static bool JSSVGCircleElementClassDefine_initialized = false;
+
+static void init_JSSVGCircleElementClassDefine()
 {
-    "SVGCircleElement",
-    .finalizer = JSSVGCircleElement::finalizer,
-    .gc_mark = JSSVGCircleElement::mark,
-};
+    if (JSSVGCircleElementClassDefine_initialized) return;
+    JSSVGCircleElementClassDefine_initialized = true;
+    memset(&JSSVGCircleElementClassDefine, 0, sizeof(JSSVGCircleElementClassDefine));
+    JSSVGCircleElementClassDefine.class_name = "SVGCircleElement";
+    JSSVGCircleElementClassDefine.finalizer = JSSVGCircleElement::finalizer;
+    JSSVGCircleElementClassDefine.gc_mark = JSSVGCircleElement::mark;
+}
 
 JSClassID JSSVGCircleElement::js_class_id = 0;
 
 void JSSVGCircleElement::init(JSContext* ctx)
 {
     if (JSSVGCircleElement::js_class_id == 0) {
+        init_JSSVGCircleElementClassDefine();
         JS_NewClassID(&JSSVGCircleElement::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGCircleElement::js_class_id, &JSSVGCircleElementClassDefine);
         JS_SetClassProto(ctx, JSSVGCircleElement::js_class_id, JSSVGCircleElementPrototype::self(ctx));

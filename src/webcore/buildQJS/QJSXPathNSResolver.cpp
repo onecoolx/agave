@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(XPATH)
 
@@ -43,10 +45,22 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Prototype functions table */
 
-static const JSCFunctionListEntry JSXPathNSResolverPrototypeFunctions[] =
+static JSCFunctionListEntry JSXPathNSResolverPrototypeFunctions[1];
+static bool JSXPathNSResolverPrototypeFunctions_initialized = false;
+
+static void init_JSXPathNSResolverPrototypeFunctions()
 {
-    JS_CFUNC_MAGIC_DEF("lookupNamespaceURI", 1, JSXPathNSResolverPrototypeFunction::callAsFunction, JSXPathNSResolver::LookupNamespaceURIFuncNum)
-};
+    if (JSXPathNSResolverPrototypeFunctions_initialized) return;
+    JSXPathNSResolverPrototypeFunctions_initialized = true;
+    memset(JSXPathNSResolverPrototypeFunctions, 0, sizeof(JSXPathNSResolverPrototypeFunctions));
+    JSXPathNSResolverPrototypeFunctions[0].name = "lookupNamespaceURI";
+    JSXPathNSResolverPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSXPathNSResolverPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
+    JSXPathNSResolverPrototypeFunctions[0].magic = JSXPathNSResolver::LookupNamespaceURIFuncNum;
+    JSXPathNSResolverPrototypeFunctions[0].u.func.length = 1;
+    JSXPathNSResolverPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
+    JSXPathNSResolverPrototypeFunctions[0].u.func.cfunc.generic_magic = JSXPathNSResolverPrototypeFunction::callAsFunction;
+}
 
 JSValue JSXPathNSResolverPrototype::self(JSContext * ctx)
 {
@@ -64,21 +78,29 @@ JSValue JSXPathNSResolverPrototype::self(JSContext * ctx)
 
 void JSXPathNSResolverPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSXPathNSResolverPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSXPathNSResolverPrototypeFunctions, countof(JSXPathNSResolverPrototypeFunctions));
 }
 
-static JSClassDef JSXPathNSResolverClassDefine = 
+static JSClassDef JSXPathNSResolverClassDefine;
+static bool JSXPathNSResolverClassDefine_initialized = false;
+
+static void init_JSXPathNSResolverClassDefine()
 {
-    "XPathNSResolver",
-    .finalizer = JSXPathNSResolver::finalizer,
-    .gc_mark = JSXPathNSResolver::mark,
-};
+    if (JSXPathNSResolverClassDefine_initialized) return;
+    JSXPathNSResolverClassDefine_initialized = true;
+    memset(&JSXPathNSResolverClassDefine, 0, sizeof(JSXPathNSResolverClassDefine));
+    JSXPathNSResolverClassDefine.class_name = "XPathNSResolver";
+    JSXPathNSResolverClassDefine.finalizer = JSXPathNSResolver::finalizer;
+    JSXPathNSResolverClassDefine.gc_mark = JSXPathNSResolver::mark;
+}
 
 JSClassID JSXPathNSResolver::js_class_id = 0;
 
 void JSXPathNSResolver::init(JSContext* ctx)
 {
     if (JSXPathNSResolver::js_class_id == 0) {
+        init_JSXPathNSResolverClassDefine();
         JS_NewClassID(&JSXPathNSResolver::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSXPathNSResolver::js_class_id, &JSXPathNSResolverClassDefine);
         JS_SetClassProto(ctx, JSXPathNSResolver::js_class_id, JSXPathNSResolverPrototype::self(ctx));

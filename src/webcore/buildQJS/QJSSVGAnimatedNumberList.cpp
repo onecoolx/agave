@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 
 #if ENABLE(SVG)
 
@@ -47,11 +49,27 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static const JSCFunctionListEntry JSSVGAnimatedNumberListAttributesFunctions[] =
+static JSCFunctionListEntry JSSVGAnimatedNumberListAttributesFunctions[2];
+static bool JSSVGAnimatedNumberListAttributesFunctions_initialized = false;
+
+static void init_JSSVGAnimatedNumberListAttributesFunctions()
 {
-    JS_CGETSET_MAGIC_DEF("baseVal", JSSVGAnimatedNumberList::getValueProperty, NULL, JSSVGAnimatedNumberList::BaseValAttrNum),
-    JS_CGETSET_MAGIC_DEF("animVal", JSSVGAnimatedNumberList::getValueProperty, NULL, JSSVGAnimatedNumberList::AnimValAttrNum)
-};
+    if (JSSVGAnimatedNumberListAttributesFunctions_initialized) return;
+    JSSVGAnimatedNumberListAttributesFunctions_initialized = true;
+    memset(JSSVGAnimatedNumberListAttributesFunctions, 0, sizeof(JSSVGAnimatedNumberListAttributesFunctions));
+    JSSVGAnimatedNumberListAttributesFunctions[0].name = "baseVal";
+    JSSVGAnimatedNumberListAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedNumberListAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedNumberListAttributesFunctions[0].magic = JSSVGAnimatedNumberList::BaseValAttrNum;
+    JSSVGAnimatedNumberListAttributesFunctions[0].u.getset.get.getter_magic = JSSVGAnimatedNumberList::getValueProperty;
+    JSSVGAnimatedNumberListAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGAnimatedNumberListAttributesFunctions[1].name = "animVal";
+    JSSVGAnimatedNumberListAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSSVGAnimatedNumberListAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSSVGAnimatedNumberListAttributesFunctions[1].magic = JSSVGAnimatedNumberList::AnimValAttrNum;
+    JSSVGAnimatedNumberListAttributesFunctions[1].u.getset.get.getter_magic = JSSVGAnimatedNumberList::getValueProperty;
+    JSSVGAnimatedNumberListAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+}
 
 JSValue JSSVGAnimatedNumberListPrototype::self(JSContext * ctx)
 {
@@ -69,21 +87,29 @@ JSValue JSSVGAnimatedNumberListPrototype::self(JSContext * ctx)
 
 void JSSVGAnimatedNumberListPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 {
+    init_JSSVGAnimatedNumberListAttributesFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGAnimatedNumberListAttributesFunctions, countof(JSSVGAnimatedNumberListAttributesFunctions));
 }
 
-static JSClassDef JSSVGAnimatedNumberListClassDefine = 
+static JSClassDef JSSVGAnimatedNumberListClassDefine;
+static bool JSSVGAnimatedNumberListClassDefine_initialized = false;
+
+static void init_JSSVGAnimatedNumberListClassDefine()
 {
-    "SVGAnimatedNumberList",
-    .finalizer = JSSVGAnimatedNumberList::finalizer,
-    .gc_mark = JSSVGAnimatedNumberList::mark,
-};
+    if (JSSVGAnimatedNumberListClassDefine_initialized) return;
+    JSSVGAnimatedNumberListClassDefine_initialized = true;
+    memset(&JSSVGAnimatedNumberListClassDefine, 0, sizeof(JSSVGAnimatedNumberListClassDefine));
+    JSSVGAnimatedNumberListClassDefine.class_name = "SVGAnimatedNumberList";
+    JSSVGAnimatedNumberListClassDefine.finalizer = JSSVGAnimatedNumberList::finalizer;
+    JSSVGAnimatedNumberListClassDefine.gc_mark = JSSVGAnimatedNumberList::mark;
+}
 
 JSClassID JSSVGAnimatedNumberList::js_class_id = 0;
 
 void JSSVGAnimatedNumberList::init(JSContext* ctx)
 {
     if (JSSVGAnimatedNumberList::js_class_id == 0) {
+        init_JSSVGAnimatedNumberListClassDefine();
         JS_NewClassID(&JSSVGAnimatedNumberList::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSSVGAnimatedNumberList::js_class_id, &JSSVGAnimatedNumberListClassDefine);
         JS_SetClassProto(ctx, JSSVGAnimatedNumberList::js_class_id, JSSVGAnimatedNumberListPrototype::self(ctx));
