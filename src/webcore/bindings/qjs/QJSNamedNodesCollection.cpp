@@ -25,6 +25,7 @@
  */
 
 #include "config.h"
+#include <string.h>
 #include "QJSNamedNodesCollection.h"
 
 #if ENABLE(QJS)
@@ -42,25 +43,44 @@ using namespace QJS;
 
 /* Functions table */
 
-static const JSCFunctionListEntry JSNamedNodesCollectionAttributesFunctions[] =
-{
-    JS_CGETSET_MAGIC_DEF("length", JSNamedNodesCollection::getValueProperty, NULL, JSNamedNodesCollection::LengthAttrNum)
-};
+static JSCFunctionListEntry JSNamedNodesCollectionAttributesFunctions[1];
+static bool JSNamedNodesCollectionAttributesFunctions_inited = false;
 
-static JSClassDef JSNamedNodesCollectionClassDefine = 
+static void init_JSNamedNodesCollectionAttributesFunctions()
 {
-    "NamedNodesCollection",
-    .finalizer = JSNamedNodesCollection::finalizer,
-};
+    if (JSNamedNodesCollectionAttributesFunctions_inited) return;
+    JSNamedNodesCollectionAttributesFunctions_inited = true;
+    memset(JSNamedNodesCollectionAttributesFunctions, 0, sizeof(JSNamedNodesCollectionAttributesFunctions));
+    JSNamedNodesCollectionAttributesFunctions[0].name = "length";
+    JSNamedNodesCollectionAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSNamedNodesCollectionAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSNamedNodesCollectionAttributesFunctions[0].magic = JSNamedNodesCollection::LengthAttrNum;
+    JSNamedNodesCollectionAttributesFunctions[0].u.getset.get.getter_magic = JSNamedNodesCollection::getValueProperty;
+    JSNamedNodesCollectionAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+}
+
+static JSClassDef JSNamedNodesCollectionClassDefine;
+static bool JSNamedNodesCollectionClassDefine_inited = false;
+
+static void init_JSNamedNodesCollectionClassDefine()
+{
+    if (JSNamedNodesCollectionClassDefine_inited) return;
+    JSNamedNodesCollectionClassDefine_inited = true;
+    memset(&JSNamedNodesCollectionClassDefine, 0, sizeof(JSNamedNodesCollectionClassDefine));
+    JSNamedNodesCollectionClassDefine.class_name = "NamedNodesCollection";
+    JSNamedNodesCollectionClassDefine.finalizer = JSNamedNodesCollection::finalizer;
+}
 
 JSClassID JSNamedNodesCollection::js_class_id = 0;
 
 void JSNamedNodesCollection::init(JSContext* ctx)
 {
     if (JSNamedNodesCollection::js_class_id == 0) {
+        init_JSNamedNodesCollectionClassDefine();
         JS_NewClassID(&JSNamedNodesCollection::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSNamedNodesCollection::js_class_id, &JSNamedNodesCollectionClassDefine);
 
+        init_JSNamedNodesCollectionAttributesFunctions();
         JSValue proto = JS_NewObject(ctx);
         JS_SetPropertyFunctionList(ctx, proto, JSNamedNodesCollectionAttributesFunctions, countof(JSNamedNodesCollectionAttributesFunctions));
 

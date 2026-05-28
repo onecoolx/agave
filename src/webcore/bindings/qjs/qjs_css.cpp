@@ -25,6 +25,7 @@
  */
 
 #include "config.h"
+#include <string.h>
 
 #if ENABLE(QJS)
 #include "qjs_css.h"
@@ -39,26 +40,55 @@ using namespace QJS;
 
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 
-static const JSCFunctionListEntry JSRGBColorAttributesFunctions[] =
-{
-    JS_CGETSET_MAGIC_DEF("blue", JSRGBColor::getValueProperty, NULL, JSRGBColor::Blue),
-    JS_CGETSET_MAGIC_DEF("red", JSRGBColor::getValueProperty, NULL, JSRGBColor::Red),
-    JS_CGETSET_MAGIC_DEF("green", JSRGBColor::getValueProperty, NULL, JSRGBColor::Green),
-};
+static JSCFunctionListEntry JSRGBColorAttributesFunctions[3];
+static bool JSRGBColorAttributesFunctions_inited = false;
 
-static JSClassDef JSRGBColorClassDefine = 
+static void init_JSRGBColorAttributesFunctions()
 {
-    "RGBColor",
-};
+    if (JSRGBColorAttributesFunctions_inited) return;
+    JSRGBColorAttributesFunctions_inited = true;
+    memset(JSRGBColorAttributesFunctions, 0, sizeof(JSRGBColorAttributesFunctions));
+    JSRGBColorAttributesFunctions[0].name = "blue";
+    JSRGBColorAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRGBColorAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRGBColorAttributesFunctions[0].magic = JSRGBColor::Blue;
+    JSRGBColorAttributesFunctions[0].u.getset.get.getter_magic = JSRGBColor::getValueProperty;
+    JSRGBColorAttributesFunctions[0].u.getset.set.setter_magic = NULL;
+    JSRGBColorAttributesFunctions[1].name = "red";
+    JSRGBColorAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRGBColorAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRGBColorAttributesFunctions[1].magic = JSRGBColor::Red;
+    JSRGBColorAttributesFunctions[1].u.getset.get.getter_magic = JSRGBColor::getValueProperty;
+    JSRGBColorAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSRGBColorAttributesFunctions[2].name = "green";
+    JSRGBColorAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    JSRGBColorAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    JSRGBColorAttributesFunctions[2].magic = JSRGBColor::Green;
+    JSRGBColorAttributesFunctions[2].u.getset.get.getter_magic = JSRGBColor::getValueProperty;
+    JSRGBColorAttributesFunctions[2].u.getset.set.setter_magic = NULL;
+}
+
+static JSClassDef JSRGBColorClassDefine;
+static bool JSRGBColorClassDefine_inited = false;
+
+static void init_JSRGBColorClassDefine()
+{
+    if (JSRGBColorClassDefine_inited) return;
+    JSRGBColorClassDefine_inited = true;
+    memset(&JSRGBColorClassDefine, 0, sizeof(JSRGBColorClassDefine));
+    JSRGBColorClassDefine.class_name = "RGBColor";
+}
 
 JSClassID JSRGBColor::js_class_id = 0;
 
 void JSRGBColor::init(JSContext* ctx)
 {
     if (JSRGBColor::js_class_id == 0) {
+        init_JSRGBColorClassDefine();
         JS_NewClassID(&JSRGBColor::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSRGBColor::js_class_id, &JSRGBColorClassDefine);
 
+        init_JSRGBColorAttributesFunctions();
         JSValue proto = JS_NewObject(ctx);
         JS_SetPropertyFunctionList(ctx, proto, JSRGBColorAttributesFunctions, countof(JSRGBColorAttributesFunctions));
 

@@ -25,6 +25,7 @@
  */
 
 #include "config.h"
+#include <string.h>
 
 #include "QJSXMLHttpRequest.h"
 
@@ -78,25 +79,28 @@ using namespace WebCore;
 @end
 */
 
-static const JSCFunctionListEntry JSXMLHttpRequestFunctions[] =
-{
-    //JS_CFUNC_MAGIC_DEF("importStylesheet", 1, JSXSLTProcessorPrototypeFunction::callAsFunction, JSXSLTProcessor::ImportStylesheet),
-    //JS_CGETSET_MAGIC_DEF("size", JSHTMLSelectElement::getValueProperty, JSHTMLSelectElement::putValueProperty, JSHTMLSelectElement::SizeAttrNum),
-    //JS_CGETSET_MAGIC_DEF("form", JSHTMLSelectElement::getValueProperty, NULL, JSHTMLSelectElement::FormAttrNum),
+static const JSCFunctionListEntry JSXMLHttpRequestFunctions[] = {
 };
 
-static JSClassDef JSXMLHttpRequestClassDefine = 
+static JSClassDef JSXMLHttpRequestClassDefine;
+static bool JSXMLHttpRequestClassDefine_inited = false;
+
+static void init_JSXMLHttpRequestClassDefine()
 {
-    "XMLHttpRequest",
-    .finalizer = JSXMLHttpRequest::finalizer,
-    .gc_mark = JSXMLHttpRequest::mark,
-};
+    if (JSXMLHttpRequestClassDefine_inited) return;
+    JSXMLHttpRequestClassDefine_inited = true;
+    memset(&JSXMLHttpRequestClassDefine, 0, sizeof(JSXMLHttpRequestClassDefine));
+    JSXMLHttpRequestClassDefine.class_name = "XMLHttpRequest";
+    JSXMLHttpRequestClassDefine.finalizer = JSXMLHttpRequest::finalizer;
+    JSXMLHttpRequestClassDefine.gc_mark = JSXMLHttpRequest::mark;
+}
 
 JSClassID JSXMLHttpRequest::js_class_id = 0;
 
 void JSXMLHttpRequest::init(JSContext* ctx, Document* d)
 {
     if (JSXMLHttpRequest::js_class_id == 0) {
+        init_JSXMLHttpRequestClassDefine();
         JS_NewClassID(&JSXMLHttpRequest::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSXMLHttpRequest::js_class_id, &JSXMLHttpRequestClassDefine);
 

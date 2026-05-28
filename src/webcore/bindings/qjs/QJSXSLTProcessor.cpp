@@ -25,6 +25,7 @@
  */
 
 #include "config.h"
+#include <string.h>
 
 #if ENABLE(XSLT)
 
@@ -42,32 +43,57 @@ namespace QJS {
 
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 
-static const JSCFunctionListEntry JSXSLTProcessorFunctions[] =
-{
-    JS_CFUNC_MAGIC_DEF("importStylesheet", 1, JSXSLTProcessorPrototypeFunction::callAsFunction, JSXSLTProcessor::ImportStylesheet),
-    JS_CFUNC_MAGIC_DEF("transformToDocument", 1, JSXSLTProcessorPrototypeFunction::callAsFunction, JSXSLTProcessor::TransformToDocument),
-    JS_CFUNC_MAGIC_DEF("transformToFragment", 2, JSXSLTProcessorPrototypeFunction::callAsFunction, JSXSLTProcessor::TransformToFragment),
-    JS_CFUNC_MAGIC_DEF("setParameter", 3, JSXSLTProcessorPrototypeFunction::callAsFunction, JSXSLTProcessor::SetParameter),
-    JS_CFUNC_MAGIC_DEF("getParameter", 2, JSXSLTProcessorPrototypeFunction::callAsFunction, JSXSLTProcessor::GetParameter),
-    JS_CFUNC_MAGIC_DEF("removeParameter", 2, JSXSLTProcessorPrototypeFunction::callAsFunction, JSXSLTProcessor::RemoveParameter),
-    JS_CFUNC_MAGIC_DEF("clearParameters", 0, JSXSLTProcessorPrototypeFunction::callAsFunction, JSXSLTProcessor::ClearParameters),
-    JS_CFUNC_MAGIC_DEF("reset", 0, JSXSLTProcessorPrototypeFunction::callAsFunction, JSXSLTProcessor::Reset),
-};
+static JSCFunctionListEntry JSXSLTProcessorFunctions[8];
+static bool JSXSLTProcessorFunctions_inited = false;
 
-static JSClassDef JSXSLTProcessorClassDefine = 
+static void init_JSXSLTProcessorFunctions()
 {
-    "XSLTProcessor",
-    .finalizer = JSXSLTProcessor::finalizer,
-};
+    if (JSXSLTProcessorFunctions_inited) return;
+    JSXSLTProcessorFunctions_inited = true;
+    memset(JSXSLTProcessorFunctions, 0, sizeof(JSXSLTProcessorFunctions));
+    struct { const char* n; int l; int m; } defs[] = {
+        {"importStylesheet",1,JSXSLTProcessor::ImportStylesheet},
+        {"transformToDocument",1,JSXSLTProcessor::TransformToDocument},
+        {"transformToFragment",2,JSXSLTProcessor::TransformToFragment},
+        {"setParameter",3,JSXSLTProcessor::SetParameter},
+        {"getParameter",2,JSXSLTProcessor::GetParameter},
+        {"removeParameter",2,JSXSLTProcessor::RemoveParameter},
+        {"clearParameters",0,JSXSLTProcessor::ClearParameters},
+        {"reset",0,JSXSLTProcessor::Reset},
+    };
+    for (int i = 0; i < 8; i++) {
+        JSXSLTProcessorFunctions[i].name = defs[i].n;
+        JSXSLTProcessorFunctions[i].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+        JSXSLTProcessorFunctions[i].def_type = JS_DEF_CFUNC;
+        JSXSLTProcessorFunctions[i].magic = defs[i].m;
+        JSXSLTProcessorFunctions[i].u.func.length = defs[i].l;
+        JSXSLTProcessorFunctions[i].u.func.cproto = JS_CFUNC_generic_magic;
+        JSXSLTProcessorFunctions[i].u.func.cfunc.generic_magic = JSXSLTProcessorPrototypeFunction::callAsFunction;
+    }
+}
+
+static JSClassDef JSXSLTProcessorClassDefine;
+static bool JSXSLTProcessorClassDefine_inited = false;
+
+static void init_JSXSLTProcessorClassDefine()
+{
+    if (JSXSLTProcessorClassDefine_inited) return;
+    JSXSLTProcessorClassDefine_inited = true;
+    memset(&JSXSLTProcessorClassDefine, 0, sizeof(JSXSLTProcessorClassDefine));
+    JSXSLTProcessorClassDefine.class_name = "XSLTProcessor";
+    JSXSLTProcessorClassDefine.finalizer = JSXSLTProcessor::finalizer;
+}
 
 JSClassID JSXSLTProcessor::js_class_id = 0;
 
 void JSXSLTProcessor::init(JSContext* ctx)
 {
     if (JSXSLTProcessor::js_class_id == 0) {
+        init_JSXSLTProcessorClassDefine();
         JS_NewClassID(&JSXSLTProcessor::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSXSLTProcessor::js_class_id, &JSXSLTProcessorClassDefine);
 
+        init_JSXSLTProcessorFunctions();
         JSValue proto = JS_NewObject(ctx);
         JS_SetPropertyFunctionList(ctx, proto, JSXSLTProcessorFunctions, countof(JSXSLTProcessorFunctions));
 
