@@ -80,14 +80,7 @@ class JSSVGPreserveAspectRatioConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSSVGPreserveAspectRatioConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -99,90 +92,62 @@ static void init_JSSVGPreserveAspectRatioConstructorFunctions()
     if (JSSVGPreserveAspectRatioConstructorFunctions_initialized) return;
     JSSVGPreserveAspectRatioConstructorFunctions_initialized = true;
     memset(JSSVGPreserveAspectRatioConstructorFunctions, 0, sizeof(JSSVGPreserveAspectRatioConstructorFunctions));
-    JSSVGPreserveAspectRatioConstructorFunctions[0].name = "SVG_PRESERVEASPECTRATIO_XMAXYMAX";
+    JSSVGPreserveAspectRatioConstructorFunctions[0].name = "SVG_PRESERVEASPECTRATIO_UNKNOWN";
     JSSVGPreserveAspectRatioConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioConstructorFunctions[0].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMAXYMAX;
-    JSSVGPreserveAspectRatioConstructorFunctions[0].u.getset.get.getter_magic = JSSVGPreserveAspectRatioConstructor::getValueProperty;
-    JSSVGPreserveAspectRatioConstructorFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioConstructorFunctions[1].name = "SVG_PRESERVEASPECTRATIO_XMINYMAX";
+    JSSVGPreserveAspectRatioConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioConstructorFunctions[0].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_UNKNOWN;
+    JSSVGPreserveAspectRatioConstructorFunctions[1].name = "SVG_PRESERVEASPECTRATIO_NONE";
     JSSVGPreserveAspectRatioConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioConstructorFunctions[1].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMINYMAX;
-    JSSVGPreserveAspectRatioConstructorFunctions[1].u.getset.get.getter_magic = JSSVGPreserveAspectRatioConstructor::getValueProperty;
-    JSSVGPreserveAspectRatioConstructorFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioConstructorFunctions[2].name = "SVG_PRESERVEASPECTRATIO_NONE";
+    JSSVGPreserveAspectRatioConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioConstructorFunctions[1].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_NONE;
+    JSSVGPreserveAspectRatioConstructorFunctions[2].name = "SVG_PRESERVEASPECTRATIO_XMINYMIN";
     JSSVGPreserveAspectRatioConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioConstructorFunctions[2].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_NONE;
-    JSSVGPreserveAspectRatioConstructorFunctions[2].u.getset.get.getter_magic = JSSVGPreserveAspectRatioConstructor::getValueProperty;
-    JSSVGPreserveAspectRatioConstructorFunctions[2].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioConstructorFunctions[3].name = "SVG_PRESERVEASPECTRATIO_UNKNOWN";
+    JSSVGPreserveAspectRatioConstructorFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioConstructorFunctions[2].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMINYMIN;
+    JSSVGPreserveAspectRatioConstructorFunctions[3].name = "SVG_PRESERVEASPECTRATIO_XMIDYMIN";
     JSSVGPreserveAspectRatioConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioConstructorFunctions[3].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_UNKNOWN;
-    JSSVGPreserveAspectRatioConstructorFunctions[3].u.getset.get.getter_magic = JSSVGPreserveAspectRatioConstructor::getValueProperty;
-    JSSVGPreserveAspectRatioConstructorFunctions[3].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioConstructorFunctions[4].name = "SVG_PRESERVEASPECTRATIO_XMIDYMIN";
+    JSSVGPreserveAspectRatioConstructorFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioConstructorFunctions[3].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMIDYMIN;
+    JSSVGPreserveAspectRatioConstructorFunctions[4].name = "SVG_PRESERVEASPECTRATIO_XMAXYMIN";
     JSSVGPreserveAspectRatioConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioConstructorFunctions[4].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMIDYMIN;
-    JSSVGPreserveAspectRatioConstructorFunctions[4].u.getset.get.getter_magic = JSSVGPreserveAspectRatioConstructor::getValueProperty;
-    JSSVGPreserveAspectRatioConstructorFunctions[4].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioConstructorFunctions[5].name = "SVG_MEETORSLICE_UNKNOWN";
+    JSSVGPreserveAspectRatioConstructorFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioConstructorFunctions[4].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMAXYMIN;
+    JSSVGPreserveAspectRatioConstructorFunctions[5].name = "SVG_PRESERVEASPECTRATIO_XMINYMID";
     JSSVGPreserveAspectRatioConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioConstructorFunctions[5].magic = SVGPreserveAspectRatio::SVG_MEETORSLICE_UNKNOWN;
-    JSSVGPreserveAspectRatioConstructorFunctions[5].u.getset.get.getter_magic = JSSVGPreserveAspectRatioConstructor::getValueProperty;
-    JSSVGPreserveAspectRatioConstructorFunctions[5].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioConstructorFunctions[6].name = "SVG_MEETORSLICE_SLICE";
+    JSSVGPreserveAspectRatioConstructorFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioConstructorFunctions[5].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMINYMID;
+    JSSVGPreserveAspectRatioConstructorFunctions[6].name = "SVG_PRESERVEASPECTRATIO_XMIDYMID";
     JSSVGPreserveAspectRatioConstructorFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioConstructorFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioConstructorFunctions[6].magic = SVGPreserveAspectRatio::SVG_MEETORSLICE_SLICE;
-    JSSVGPreserveAspectRatioConstructorFunctions[6].u.getset.get.getter_magic = JSSVGPreserveAspectRatioConstructor::getValueProperty;
-    JSSVGPreserveAspectRatioConstructorFunctions[6].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioConstructorFunctions[7].name = "SVG_PRESERVEASPECTRATIO_XMINYMIN";
+    JSSVGPreserveAspectRatioConstructorFunctions[6].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioConstructorFunctions[6].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMIDYMID;
+    JSSVGPreserveAspectRatioConstructorFunctions[7].name = "SVG_PRESERVEASPECTRATIO_XMAXYMID";
     JSSVGPreserveAspectRatioConstructorFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioConstructorFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioConstructorFunctions[7].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMINYMIN;
-    JSSVGPreserveAspectRatioConstructorFunctions[7].u.getset.get.getter_magic = JSSVGPreserveAspectRatioConstructor::getValueProperty;
-    JSSVGPreserveAspectRatioConstructorFunctions[7].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioConstructorFunctions[8].name = "SVG_PRESERVEASPECTRATIO_XMAXYMID";
+    JSSVGPreserveAspectRatioConstructorFunctions[7].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioConstructorFunctions[7].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMAXYMID;
+    JSSVGPreserveAspectRatioConstructorFunctions[8].name = "SVG_PRESERVEASPECTRATIO_XMINYMAX";
     JSSVGPreserveAspectRatioConstructorFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioConstructorFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioConstructorFunctions[8].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMAXYMID;
-    JSSVGPreserveAspectRatioConstructorFunctions[8].u.getset.get.getter_magic = JSSVGPreserveAspectRatioConstructor::getValueProperty;
-    JSSVGPreserveAspectRatioConstructorFunctions[8].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioConstructorFunctions[9].name = "SVG_PRESERVEASPECTRATIO_XMAXYMIN";
+    JSSVGPreserveAspectRatioConstructorFunctions[8].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioConstructorFunctions[8].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMINYMAX;
+    JSSVGPreserveAspectRatioConstructorFunctions[9].name = "SVG_PRESERVEASPECTRATIO_XMIDYMAX";
     JSSVGPreserveAspectRatioConstructorFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioConstructorFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioConstructorFunctions[9].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMAXYMIN;
-    JSSVGPreserveAspectRatioConstructorFunctions[9].u.getset.get.getter_magic = JSSVGPreserveAspectRatioConstructor::getValueProperty;
-    JSSVGPreserveAspectRatioConstructorFunctions[9].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioConstructorFunctions[10].name = "SVG_PRESERVEASPECTRATIO_XMINYMID";
+    JSSVGPreserveAspectRatioConstructorFunctions[9].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioConstructorFunctions[9].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMIDYMAX;
+    JSSVGPreserveAspectRatioConstructorFunctions[10].name = "SVG_PRESERVEASPECTRATIO_XMAXYMAX";
     JSSVGPreserveAspectRatioConstructorFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioConstructorFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioConstructorFunctions[10].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMINYMID;
-    JSSVGPreserveAspectRatioConstructorFunctions[10].u.getset.get.getter_magic = JSSVGPreserveAspectRatioConstructor::getValueProperty;
-    JSSVGPreserveAspectRatioConstructorFunctions[10].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioConstructorFunctions[11].name = "SVG_PRESERVEASPECTRATIO_XMIDYMID";
+    JSSVGPreserveAspectRatioConstructorFunctions[10].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioConstructorFunctions[10].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMAXYMAX;
+    JSSVGPreserveAspectRatioConstructorFunctions[11].name = "SVG_MEETORSLICE_UNKNOWN";
     JSSVGPreserveAspectRatioConstructorFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioConstructorFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioConstructorFunctions[11].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMIDYMID;
-    JSSVGPreserveAspectRatioConstructorFunctions[11].u.getset.get.getter_magic = JSSVGPreserveAspectRatioConstructor::getValueProperty;
-    JSSVGPreserveAspectRatioConstructorFunctions[11].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioConstructorFunctions[12].name = "SVG_PRESERVEASPECTRATIO_XMIDYMAX";
+    JSSVGPreserveAspectRatioConstructorFunctions[11].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioConstructorFunctions[11].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_MEETORSLICE_UNKNOWN;
+    JSSVGPreserveAspectRatioConstructorFunctions[12].name = "SVG_MEETORSLICE_MEET";
     JSSVGPreserveAspectRatioConstructorFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioConstructorFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioConstructorFunctions[12].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMIDYMAX;
-    JSSVGPreserveAspectRatioConstructorFunctions[12].u.getset.get.getter_magic = JSSVGPreserveAspectRatioConstructor::getValueProperty;
-    JSSVGPreserveAspectRatioConstructorFunctions[12].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioConstructorFunctions[13].name = "SVG_MEETORSLICE_MEET";
+    JSSVGPreserveAspectRatioConstructorFunctions[12].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioConstructorFunctions[12].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_MEETORSLICE_MEET;
+    JSSVGPreserveAspectRatioConstructorFunctions[13].name = "SVG_MEETORSLICE_SLICE";
     JSSVGPreserveAspectRatioConstructorFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioConstructorFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioConstructorFunctions[13].magic = SVGPreserveAspectRatio::SVG_MEETORSLICE_MEET;
-    JSSVGPreserveAspectRatioConstructorFunctions[13].u.getset.get.getter_magic = JSSVGPreserveAspectRatioConstructor::getValueProperty;
-    JSSVGPreserveAspectRatioConstructorFunctions[13].u.getset.set.setter_magic = NULL;
+    JSSVGPreserveAspectRatioConstructorFunctions[13].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioConstructorFunctions[13].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_MEETORSLICE_SLICE;
 }
 
 JSValue JSSVGPreserveAspectRatioConstructor::self(JSContext * ctx)
@@ -205,7 +170,7 @@ void JSSVGPreserveAspectRatioConstructor::initConstructor(JSContext * ctx, JSVal
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPreserveAspectRatioConstructorFunctions, countof(JSSVGPreserveAspectRatioConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSSVGPreserveAspectRatioPrototypeConstantsFunctions[14];
 static bool JSSVGPreserveAspectRatioPrototypeConstantsFunctions_initialized = false;
@@ -215,90 +180,62 @@ static void init_JSSVGPreserveAspectRatioPrototypeConstantsFunctions()
     if (JSSVGPreserveAspectRatioPrototypeConstantsFunctions_initialized) return;
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions_initialized = true;
     memset(JSSVGPreserveAspectRatioPrototypeConstantsFunctions, 0, sizeof(JSSVGPreserveAspectRatioPrototypeConstantsFunctions));
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[0].name = "SVG_PRESERVEASPECTRATIO_XMAXYMAX";
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[0].name = "SVG_PRESERVEASPECTRATIO_UNKNOWN";
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[0].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMAXYMAX;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGPreserveAspectRatioPrototype::getValueProperty;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[1].name = "SVG_PRESERVEASPECTRATIO_XMINYMAX";
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[0].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_UNKNOWN;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[1].name = "SVG_PRESERVEASPECTRATIO_NONE";
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[1].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMINYMAX;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGPreserveAspectRatioPrototype::getValueProperty;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[2].name = "SVG_PRESERVEASPECTRATIO_NONE";
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[1].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_NONE;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[2].name = "SVG_PRESERVEASPECTRATIO_XMINYMIN";
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[2].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_NONE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGPreserveAspectRatioPrototype::getValueProperty;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[3].name = "SVG_PRESERVEASPECTRATIO_UNKNOWN";
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[2].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMINYMIN;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[3].name = "SVG_PRESERVEASPECTRATIO_XMIDYMIN";
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[3].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_UNKNOWN;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGPreserveAspectRatioPrototype::getValueProperty;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[4].name = "SVG_PRESERVEASPECTRATIO_XMIDYMIN";
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[3].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMIDYMIN;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[4].name = "SVG_PRESERVEASPECTRATIO_XMAXYMIN";
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[4].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMIDYMIN;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGPreserveAspectRatioPrototype::getValueProperty;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[5].name = "SVG_MEETORSLICE_UNKNOWN";
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[4].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMAXYMIN;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[5].name = "SVG_PRESERVEASPECTRATIO_XMINYMID";
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[5].magic = SVGPreserveAspectRatio::SVG_MEETORSLICE_UNKNOWN;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSSVGPreserveAspectRatioPrototype::getValueProperty;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[6].name = "SVG_MEETORSLICE_SLICE";
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[5].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMINYMID;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[6].name = "SVG_PRESERVEASPECTRATIO_XMIDYMID";
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[6].magic = SVGPreserveAspectRatio::SVG_MEETORSLICE_SLICE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[6].u.getset.get.getter_magic = JSSVGPreserveAspectRatioPrototype::getValueProperty;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[6].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[7].name = "SVG_PRESERVEASPECTRATIO_XMINYMIN";
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[6].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[6].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMIDYMID;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[7].name = "SVG_PRESERVEASPECTRATIO_XMAXYMID";
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[7].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMINYMIN;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[7].u.getset.get.getter_magic = JSSVGPreserveAspectRatioPrototype::getValueProperty;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[7].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[8].name = "SVG_PRESERVEASPECTRATIO_XMAXYMID";
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[7].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[7].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMAXYMID;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[8].name = "SVG_PRESERVEASPECTRATIO_XMINYMAX";
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[8].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMAXYMID;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[8].u.getset.get.getter_magic = JSSVGPreserveAspectRatioPrototype::getValueProperty;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[8].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[9].name = "SVG_PRESERVEASPECTRATIO_XMAXYMIN";
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[8].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[8].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMINYMAX;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[9].name = "SVG_PRESERVEASPECTRATIO_XMIDYMAX";
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[9].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMAXYMIN;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[9].u.getset.get.getter_magic = JSSVGPreserveAspectRatioPrototype::getValueProperty;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[9].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[10].name = "SVG_PRESERVEASPECTRATIO_XMINYMID";
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[9].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[9].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMIDYMAX;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[10].name = "SVG_PRESERVEASPECTRATIO_XMAXYMAX";
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions[10].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[10].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[10].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMINYMID;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[10].u.getset.get.getter_magic = JSSVGPreserveAspectRatioPrototype::getValueProperty;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[10].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[11].name = "SVG_PRESERVEASPECTRATIO_XMIDYMID";
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[10].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[10].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMAXYMAX;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[11].name = "SVG_MEETORSLICE_UNKNOWN";
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions[11].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[11].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[11].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMIDYMID;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[11].u.getset.get.getter_magic = JSSVGPreserveAspectRatioPrototype::getValueProperty;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[11].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[12].name = "SVG_PRESERVEASPECTRATIO_XMIDYMAX";
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[11].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[11].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_MEETORSLICE_UNKNOWN;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[12].name = "SVG_MEETORSLICE_MEET";
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions[12].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[12].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[12].magic = SVGPreserveAspectRatio::SVG_PRESERVEASPECTRATIO_XMIDYMAX;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[12].u.getset.get.getter_magic = JSSVGPreserveAspectRatioPrototype::getValueProperty;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[12].u.getset.set.setter_magic = NULL;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[13].name = "SVG_MEETORSLICE_MEET";
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[12].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[12].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_MEETORSLICE_MEET;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[13].name = "SVG_MEETORSLICE_SLICE";
     JSSVGPreserveAspectRatioPrototypeConstantsFunctions[13].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[13].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[13].magic = SVGPreserveAspectRatio::SVG_MEETORSLICE_MEET;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[13].u.getset.get.getter_magic = JSSVGPreserveAspectRatioPrototype::getValueProperty;
-    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[13].u.getset.set.setter_magic = NULL;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[13].def_type = JS_DEF_PROP_INT32;
+    JSSVGPreserveAspectRatioPrototypeConstantsFunctions[13].u.i32 = (int32_t)SVGPreserveAspectRatio::SVG_MEETORSLICE_SLICE;
 }
 
 JSValue JSSVGPreserveAspectRatioPrototype::self(JSContext * ctx)
@@ -321,12 +258,6 @@ void JSSVGPreserveAspectRatioPrototype::initPrototype(JSContext * ctx, JSValue t
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPreserveAspectRatioAttributesFunctions, countof(JSSVGPreserveAspectRatioAttributesFunctions));
     init_JSSVGPreserveAspectRatioPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPreserveAspectRatioPrototypeConstantsFunctions, countof(JSSVGPreserveAspectRatioPrototypeConstantsFunctions));
-}
-
-JSValue JSSVGPreserveAspectRatioPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSSVGPreserveAspectRatioClassDefine;

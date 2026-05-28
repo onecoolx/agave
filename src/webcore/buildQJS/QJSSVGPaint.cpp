@@ -81,14 +81,7 @@ class JSSVGPaintConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSSVGPaintConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -100,66 +93,46 @@ static void init_JSSVGPaintConstructorFunctions()
     if (JSSVGPaintConstructorFunctions_initialized) return;
     JSSVGPaintConstructorFunctions_initialized = true;
     memset(JSSVGPaintConstructorFunctions, 0, sizeof(JSSVGPaintConstructorFunctions));
-    JSSVGPaintConstructorFunctions[0].name = "SVG_PAINTTYPE_URI_CURRENTCOLOR";
+    JSSVGPaintConstructorFunctions[0].name = "SVG_PAINTTYPE_UNKNOWN";
     JSSVGPaintConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintConstructorFunctions[0].magic = SVGPaint::SVG_PAINTTYPE_URI_CURRENTCOLOR;
-    JSSVGPaintConstructorFunctions[0].u.getset.get.getter_magic = JSSVGPaintConstructor::getValueProperty;
-    JSSVGPaintConstructorFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGPaintConstructorFunctions[1].name = "SVG_PAINTTYPE_NONE";
+    JSSVGPaintConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintConstructorFunctions[0].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_UNKNOWN;
+    JSSVGPaintConstructorFunctions[1].name = "SVG_PAINTTYPE_RGBCOLOR";
     JSSVGPaintConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintConstructorFunctions[1].magic = SVGPaint::SVG_PAINTTYPE_NONE;
-    JSSVGPaintConstructorFunctions[1].u.getset.get.getter_magic = JSSVGPaintConstructor::getValueProperty;
-    JSSVGPaintConstructorFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGPaintConstructorFunctions[2].name = "SVG_PAINTTYPE_RGBCOLOR";
+    JSSVGPaintConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintConstructorFunctions[1].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_RGBCOLOR;
+    JSSVGPaintConstructorFunctions[2].name = "SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR";
     JSSVGPaintConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintConstructorFunctions[2].magic = SVGPaint::SVG_PAINTTYPE_RGBCOLOR;
-    JSSVGPaintConstructorFunctions[2].u.getset.get.getter_magic = JSSVGPaintConstructor::getValueProperty;
-    JSSVGPaintConstructorFunctions[2].u.getset.set.setter_magic = NULL;
-    JSSVGPaintConstructorFunctions[3].name = "SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR";
+    JSSVGPaintConstructorFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintConstructorFunctions[2].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR;
+    JSSVGPaintConstructorFunctions[3].name = "SVG_PAINTTYPE_NONE";
     JSSVGPaintConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintConstructorFunctions[3].magic = SVGPaint::SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR;
-    JSSVGPaintConstructorFunctions[3].u.getset.get.getter_magic = JSSVGPaintConstructor::getValueProperty;
-    JSSVGPaintConstructorFunctions[3].u.getset.set.setter_magic = NULL;
-    JSSVGPaintConstructorFunctions[4].name = "SVG_PAINTTYPE_UNKNOWN";
+    JSSVGPaintConstructorFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintConstructorFunctions[3].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_NONE;
+    JSSVGPaintConstructorFunctions[4].name = "SVG_PAINTTYPE_CURRENTCOLOR";
     JSSVGPaintConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintConstructorFunctions[4].magic = SVGPaint::SVG_PAINTTYPE_UNKNOWN;
-    JSSVGPaintConstructorFunctions[4].u.getset.get.getter_magic = JSSVGPaintConstructor::getValueProperty;
-    JSSVGPaintConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGPaintConstructorFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintConstructorFunctions[4].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_CURRENTCOLOR;
     JSSVGPaintConstructorFunctions[5].name = "SVG_PAINTTYPE_URI_NONE";
     JSSVGPaintConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintConstructorFunctions[5].magic = SVGPaint::SVG_PAINTTYPE_URI_NONE;
-    JSSVGPaintConstructorFunctions[5].u.getset.get.getter_magic = JSSVGPaintConstructor::getValueProperty;
-    JSSVGPaintConstructorFunctions[5].u.getset.set.setter_magic = NULL;
-    JSSVGPaintConstructorFunctions[6].name = "SVG_PAINTTYPE_URI_RGBCOLOR";
+    JSSVGPaintConstructorFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintConstructorFunctions[5].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_URI_NONE;
+    JSSVGPaintConstructorFunctions[6].name = "SVG_PAINTTYPE_URI_CURRENTCOLOR";
     JSSVGPaintConstructorFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintConstructorFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintConstructorFunctions[6].magic = SVGPaint::SVG_PAINTTYPE_URI_RGBCOLOR;
-    JSSVGPaintConstructorFunctions[6].u.getset.get.getter_magic = JSSVGPaintConstructor::getValueProperty;
-    JSSVGPaintConstructorFunctions[6].u.getset.set.setter_magic = NULL;
-    JSSVGPaintConstructorFunctions[7].name = "SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR";
+    JSSVGPaintConstructorFunctions[6].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintConstructorFunctions[6].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_URI_CURRENTCOLOR;
+    JSSVGPaintConstructorFunctions[7].name = "SVG_PAINTTYPE_URI_RGBCOLOR";
     JSSVGPaintConstructorFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintConstructorFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintConstructorFunctions[7].magic = SVGPaint::SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR;
-    JSSVGPaintConstructorFunctions[7].u.getset.get.getter_magic = JSSVGPaintConstructor::getValueProperty;
-    JSSVGPaintConstructorFunctions[7].u.getset.set.setter_magic = NULL;
-    JSSVGPaintConstructorFunctions[8].name = "SVG_PAINTTYPE_CURRENTCOLOR";
+    JSSVGPaintConstructorFunctions[7].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintConstructorFunctions[7].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_URI_RGBCOLOR;
+    JSSVGPaintConstructorFunctions[8].name = "SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR";
     JSSVGPaintConstructorFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintConstructorFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintConstructorFunctions[8].magic = SVGPaint::SVG_PAINTTYPE_CURRENTCOLOR;
-    JSSVGPaintConstructorFunctions[8].u.getset.get.getter_magic = JSSVGPaintConstructor::getValueProperty;
-    JSSVGPaintConstructorFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGPaintConstructorFunctions[8].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintConstructorFunctions[8].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR;
     JSSVGPaintConstructorFunctions[9].name = "SVG_PAINTTYPE_URI";
     JSSVGPaintConstructorFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintConstructorFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintConstructorFunctions[9].magic = SVGPaint::SVG_PAINTTYPE_URI;
-    JSSVGPaintConstructorFunctions[9].u.getset.get.getter_magic = JSSVGPaintConstructor::getValueProperty;
-    JSSVGPaintConstructorFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGPaintConstructorFunctions[9].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintConstructorFunctions[9].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_URI;
 }
 
 JSValue JSSVGPaintConstructor::self(JSContext * ctx)
@@ -182,7 +155,7 @@ void JSSVGPaintConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPaintConstructorFunctions, countof(JSSVGPaintConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSSVGPaintPrototypeConstantsFunctions[10];
 static bool JSSVGPaintPrototypeConstantsFunctions_initialized = false;
@@ -192,66 +165,46 @@ static void init_JSSVGPaintPrototypeConstantsFunctions()
     if (JSSVGPaintPrototypeConstantsFunctions_initialized) return;
     JSSVGPaintPrototypeConstantsFunctions_initialized = true;
     memset(JSSVGPaintPrototypeConstantsFunctions, 0, sizeof(JSSVGPaintPrototypeConstantsFunctions));
-    JSSVGPaintPrototypeConstantsFunctions[0].name = "SVG_PAINTTYPE_URI_CURRENTCOLOR";
+    JSSVGPaintPrototypeConstantsFunctions[0].name = "SVG_PAINTTYPE_UNKNOWN";
     JSSVGPaintPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintPrototypeConstantsFunctions[0].magic = SVGPaint::SVG_PAINTTYPE_URI_CURRENTCOLOR;
-    JSSVGPaintPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGPaintPrototype::getValueProperty;
-    JSSVGPaintPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGPaintPrototypeConstantsFunctions[1].name = "SVG_PAINTTYPE_NONE";
+    JSSVGPaintPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintPrototypeConstantsFunctions[0].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_UNKNOWN;
+    JSSVGPaintPrototypeConstantsFunctions[1].name = "SVG_PAINTTYPE_RGBCOLOR";
     JSSVGPaintPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintPrototypeConstantsFunctions[1].magic = SVGPaint::SVG_PAINTTYPE_NONE;
-    JSSVGPaintPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGPaintPrototype::getValueProperty;
-    JSSVGPaintPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGPaintPrototypeConstantsFunctions[2].name = "SVG_PAINTTYPE_RGBCOLOR";
+    JSSVGPaintPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintPrototypeConstantsFunctions[1].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_RGBCOLOR;
+    JSSVGPaintPrototypeConstantsFunctions[2].name = "SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR";
     JSSVGPaintPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintPrototypeConstantsFunctions[2].magic = SVGPaint::SVG_PAINTTYPE_RGBCOLOR;
-    JSSVGPaintPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGPaintPrototype::getValueProperty;
-    JSSVGPaintPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
-    JSSVGPaintPrototypeConstantsFunctions[3].name = "SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR";
+    JSSVGPaintPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintPrototypeConstantsFunctions[2].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR;
+    JSSVGPaintPrototypeConstantsFunctions[3].name = "SVG_PAINTTYPE_NONE";
     JSSVGPaintPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintPrototypeConstantsFunctions[3].magic = SVGPaint::SVG_PAINTTYPE_RGBCOLOR_ICCCOLOR;
-    JSSVGPaintPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGPaintPrototype::getValueProperty;
-    JSSVGPaintPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
-    JSSVGPaintPrototypeConstantsFunctions[4].name = "SVG_PAINTTYPE_UNKNOWN";
+    JSSVGPaintPrototypeConstantsFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintPrototypeConstantsFunctions[3].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_NONE;
+    JSSVGPaintPrototypeConstantsFunctions[4].name = "SVG_PAINTTYPE_CURRENTCOLOR";
     JSSVGPaintPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintPrototypeConstantsFunctions[4].magic = SVGPaint::SVG_PAINTTYPE_UNKNOWN;
-    JSSVGPaintPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGPaintPrototype::getValueProperty;
-    JSSVGPaintPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGPaintPrototypeConstantsFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintPrototypeConstantsFunctions[4].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_CURRENTCOLOR;
     JSSVGPaintPrototypeConstantsFunctions[5].name = "SVG_PAINTTYPE_URI_NONE";
     JSSVGPaintPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintPrototypeConstantsFunctions[5].magic = SVGPaint::SVG_PAINTTYPE_URI_NONE;
-    JSSVGPaintPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSSVGPaintPrototype::getValueProperty;
-    JSSVGPaintPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
-    JSSVGPaintPrototypeConstantsFunctions[6].name = "SVG_PAINTTYPE_URI_RGBCOLOR";
+    JSSVGPaintPrototypeConstantsFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintPrototypeConstantsFunctions[5].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_URI_NONE;
+    JSSVGPaintPrototypeConstantsFunctions[6].name = "SVG_PAINTTYPE_URI_CURRENTCOLOR";
     JSSVGPaintPrototypeConstantsFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintPrototypeConstantsFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintPrototypeConstantsFunctions[6].magic = SVGPaint::SVG_PAINTTYPE_URI_RGBCOLOR;
-    JSSVGPaintPrototypeConstantsFunctions[6].u.getset.get.getter_magic = JSSVGPaintPrototype::getValueProperty;
-    JSSVGPaintPrototypeConstantsFunctions[6].u.getset.set.setter_magic = NULL;
-    JSSVGPaintPrototypeConstantsFunctions[7].name = "SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR";
+    JSSVGPaintPrototypeConstantsFunctions[6].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintPrototypeConstantsFunctions[6].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_URI_CURRENTCOLOR;
+    JSSVGPaintPrototypeConstantsFunctions[7].name = "SVG_PAINTTYPE_URI_RGBCOLOR";
     JSSVGPaintPrototypeConstantsFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintPrototypeConstantsFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintPrototypeConstantsFunctions[7].magic = SVGPaint::SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR;
-    JSSVGPaintPrototypeConstantsFunctions[7].u.getset.get.getter_magic = JSSVGPaintPrototype::getValueProperty;
-    JSSVGPaintPrototypeConstantsFunctions[7].u.getset.set.setter_magic = NULL;
-    JSSVGPaintPrototypeConstantsFunctions[8].name = "SVG_PAINTTYPE_CURRENTCOLOR";
+    JSSVGPaintPrototypeConstantsFunctions[7].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintPrototypeConstantsFunctions[7].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_URI_RGBCOLOR;
+    JSSVGPaintPrototypeConstantsFunctions[8].name = "SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR";
     JSSVGPaintPrototypeConstantsFunctions[8].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintPrototypeConstantsFunctions[8].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintPrototypeConstantsFunctions[8].magic = SVGPaint::SVG_PAINTTYPE_CURRENTCOLOR;
-    JSSVGPaintPrototypeConstantsFunctions[8].u.getset.get.getter_magic = JSSVGPaintPrototype::getValueProperty;
-    JSSVGPaintPrototypeConstantsFunctions[8].u.getset.set.setter_magic = NULL;
+    JSSVGPaintPrototypeConstantsFunctions[8].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintPrototypeConstantsFunctions[8].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_URI_RGBCOLOR_ICCCOLOR;
     JSSVGPaintPrototypeConstantsFunctions[9].name = "SVG_PAINTTYPE_URI";
     JSSVGPaintPrototypeConstantsFunctions[9].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGPaintPrototypeConstantsFunctions[9].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPaintPrototypeConstantsFunctions[9].magic = SVGPaint::SVG_PAINTTYPE_URI;
-    JSSVGPaintPrototypeConstantsFunctions[9].u.getset.get.getter_magic = JSSVGPaintPrototype::getValueProperty;
-    JSSVGPaintPrototypeConstantsFunctions[9].u.getset.set.setter_magic = NULL;
+    JSSVGPaintPrototypeConstantsFunctions[9].def_type = JS_DEF_PROP_INT32;
+    JSSVGPaintPrototypeConstantsFunctions[9].u.i32 = (int32_t)SVGPaint::SVG_PAINTTYPE_URI;
 }
 
 /* Prototype functions table */
@@ -302,12 +255,6 @@ void JSSVGPaintPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPaintPrototypeConstantsFunctions, countof(JSSVGPaintPrototypeConstantsFunctions));
     init_JSSVGPaintPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGPaintPrototypeFunctions, countof(JSSVGPaintPrototypeFunctions));
-}
-
-JSValue JSSVGPaintPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSSVGPaintClassDefine;

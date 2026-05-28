@@ -156,14 +156,7 @@ class JSSVGFETurbulenceElementConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSSVGFETurbulenceElementConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -177,40 +170,28 @@ static void init_JSSVGFETurbulenceElementConstructorFunctions()
     memset(JSSVGFETurbulenceElementConstructorFunctions, 0, sizeof(JSSVGFETurbulenceElementConstructorFunctions));
     JSSVGFETurbulenceElementConstructorFunctions[0].name = "SVG_TURBULENCE_TYPE_UNKNOWN";
     JSSVGFETurbulenceElementConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFETurbulenceElementConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFETurbulenceElementConstructorFunctions[0].magic = WebCore::SVG_TURBULENCE_TYPE_UNKNOWN;
-    JSSVGFETurbulenceElementConstructorFunctions[0].u.getset.get.getter_magic = JSSVGFETurbulenceElementConstructor::getValueProperty;
-    JSSVGFETurbulenceElementConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFETurbulenceElementConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGFETurbulenceElementConstructorFunctions[0].u.i32 = (int32_t)WebCore::SVG_TURBULENCE_TYPE_UNKNOWN;
     JSSVGFETurbulenceElementConstructorFunctions[1].name = "SVG_TURBULENCE_TYPE_FRACTALNOISE";
     JSSVGFETurbulenceElementConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFETurbulenceElementConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFETurbulenceElementConstructorFunctions[1].magic = WebCore::SVG_TURBULENCE_TYPE_FRACTALNOISE;
-    JSSVGFETurbulenceElementConstructorFunctions[1].u.getset.get.getter_magic = JSSVGFETurbulenceElementConstructor::getValueProperty;
-    JSSVGFETurbulenceElementConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFETurbulenceElementConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGFETurbulenceElementConstructorFunctions[1].u.i32 = (int32_t)WebCore::SVG_TURBULENCE_TYPE_FRACTALNOISE;
     JSSVGFETurbulenceElementConstructorFunctions[2].name = "SVG_TURBULENCE_TYPE_TURBULENCE";
     JSSVGFETurbulenceElementConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFETurbulenceElementConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFETurbulenceElementConstructorFunctions[2].magic = WebCore::SVG_TURBULENCE_TYPE_TURBULENCE;
-    JSSVGFETurbulenceElementConstructorFunctions[2].u.getset.get.getter_magic = JSSVGFETurbulenceElementConstructor::getValueProperty;
-    JSSVGFETurbulenceElementConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFETurbulenceElementConstructorFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGFETurbulenceElementConstructorFunctions[2].u.i32 = (int32_t)WebCore::SVG_TURBULENCE_TYPE_TURBULENCE;
     JSSVGFETurbulenceElementConstructorFunctions[3].name = "SVG_STITCHTYPE_UNKNOWN";
     JSSVGFETurbulenceElementConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFETurbulenceElementConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFETurbulenceElementConstructorFunctions[3].magic = WebCore::SVG_STITCHTYPE_UNKNOWN;
-    JSSVGFETurbulenceElementConstructorFunctions[3].u.getset.get.getter_magic = JSSVGFETurbulenceElementConstructor::getValueProperty;
-    JSSVGFETurbulenceElementConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFETurbulenceElementConstructorFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGFETurbulenceElementConstructorFunctions[3].u.i32 = (int32_t)WebCore::SVG_STITCHTYPE_UNKNOWN;
     JSSVGFETurbulenceElementConstructorFunctions[4].name = "SVG_STITCHTYPE_STITCH";
     JSSVGFETurbulenceElementConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFETurbulenceElementConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFETurbulenceElementConstructorFunctions[4].magic = WebCore::SVG_STITCHTYPE_STITCH;
-    JSSVGFETurbulenceElementConstructorFunctions[4].u.getset.get.getter_magic = JSSVGFETurbulenceElementConstructor::getValueProperty;
-    JSSVGFETurbulenceElementConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFETurbulenceElementConstructorFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGFETurbulenceElementConstructorFunctions[4].u.i32 = (int32_t)WebCore::SVG_STITCHTYPE_STITCH;
     JSSVGFETurbulenceElementConstructorFunctions[5].name = "SVG_STITCHTYPE_NOSTITCH";
     JSSVGFETurbulenceElementConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFETurbulenceElementConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFETurbulenceElementConstructorFunctions[5].magic = WebCore::SVG_STITCHTYPE_NOSTITCH;
-    JSSVGFETurbulenceElementConstructorFunctions[5].u.getset.get.getter_magic = JSSVGFETurbulenceElementConstructor::getValueProperty;
-    JSSVGFETurbulenceElementConstructorFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFETurbulenceElementConstructorFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSSVGFETurbulenceElementConstructorFunctions[5].u.i32 = (int32_t)WebCore::SVG_STITCHTYPE_NOSTITCH;
 }
 
 JSValue JSSVGFETurbulenceElementConstructor::self(JSContext * ctx)
@@ -233,7 +214,7 @@ void JSSVGFETurbulenceElementConstructor::initConstructor(JSContext * ctx, JSVal
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFETurbulenceElementConstructorFunctions, countof(JSSVGFETurbulenceElementConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSSVGFETurbulenceElementPrototypeConstantsFunctions[6];
 static bool JSSVGFETurbulenceElementPrototypeConstantsFunctions_initialized = false;
@@ -245,40 +226,28 @@ static void init_JSSVGFETurbulenceElementPrototypeConstantsFunctions()
     memset(JSSVGFETurbulenceElementPrototypeConstantsFunctions, 0, sizeof(JSSVGFETurbulenceElementPrototypeConstantsFunctions));
     JSSVGFETurbulenceElementPrototypeConstantsFunctions[0].name = "SVG_TURBULENCE_TYPE_UNKNOWN";
     JSSVGFETurbulenceElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[0].magic = WebCore::SVG_TURBULENCE_TYPE_UNKNOWN;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGFETurbulenceElementPrototype::getValueProperty;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGFETurbulenceElementPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGFETurbulenceElementPrototypeConstantsFunctions[0].u.i32 = (int32_t)WebCore::SVG_TURBULENCE_TYPE_UNKNOWN;
     JSSVGFETurbulenceElementPrototypeConstantsFunctions[1].name = "SVG_TURBULENCE_TYPE_FRACTALNOISE";
     JSSVGFETurbulenceElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[1].magic = WebCore::SVG_TURBULENCE_TYPE_FRACTALNOISE;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGFETurbulenceElementPrototype::getValueProperty;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFETurbulenceElementPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGFETurbulenceElementPrototypeConstantsFunctions[1].u.i32 = (int32_t)WebCore::SVG_TURBULENCE_TYPE_FRACTALNOISE;
     JSSVGFETurbulenceElementPrototypeConstantsFunctions[2].name = "SVG_TURBULENCE_TYPE_TURBULENCE";
     JSSVGFETurbulenceElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[2].magic = WebCore::SVG_TURBULENCE_TYPE_TURBULENCE;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGFETurbulenceElementPrototype::getValueProperty;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFETurbulenceElementPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGFETurbulenceElementPrototypeConstantsFunctions[2].u.i32 = (int32_t)WebCore::SVG_TURBULENCE_TYPE_TURBULENCE;
     JSSVGFETurbulenceElementPrototypeConstantsFunctions[3].name = "SVG_STITCHTYPE_UNKNOWN";
     JSSVGFETurbulenceElementPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[3].magic = WebCore::SVG_STITCHTYPE_UNKNOWN;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGFETurbulenceElementPrototype::getValueProperty;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFETurbulenceElementPrototypeConstantsFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGFETurbulenceElementPrototypeConstantsFunctions[3].u.i32 = (int32_t)WebCore::SVG_STITCHTYPE_UNKNOWN;
     JSSVGFETurbulenceElementPrototypeConstantsFunctions[4].name = "SVG_STITCHTYPE_STITCH";
     JSSVGFETurbulenceElementPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[4].magic = WebCore::SVG_STITCHTYPE_STITCH;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGFETurbulenceElementPrototype::getValueProperty;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFETurbulenceElementPrototypeConstantsFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGFETurbulenceElementPrototypeConstantsFunctions[4].u.i32 = (int32_t)WebCore::SVG_STITCHTYPE_STITCH;
     JSSVGFETurbulenceElementPrototypeConstantsFunctions[5].name = "SVG_STITCHTYPE_NOSTITCH";
     JSSVGFETurbulenceElementPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[5].magic = WebCore::SVG_STITCHTYPE_NOSTITCH;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSSVGFETurbulenceElementPrototype::getValueProperty;
-    JSSVGFETurbulenceElementPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGFETurbulenceElementPrototypeConstantsFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSSVGFETurbulenceElementPrototypeConstantsFunctions[5].u.i32 = (int32_t)WebCore::SVG_STITCHTYPE_NOSTITCH;
 }
 
 /* Prototype functions table */
@@ -322,12 +291,6 @@ void JSSVGFETurbulenceElementPrototype::initPrototype(JSContext * ctx, JSValue t
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFETurbulenceElementPrototypeConstantsFunctions, countof(JSSVGFETurbulenceElementPrototypeConstantsFunctions));
     init_JSSVGFETurbulenceElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFETurbulenceElementPrototypeFunctions, countof(JSSVGFETurbulenceElementPrototypeFunctions));
-}
-
-JSValue JSSVGFETurbulenceElementPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSSVGFETurbulenceElementClassDefine;

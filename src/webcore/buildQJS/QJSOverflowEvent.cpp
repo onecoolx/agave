@@ -68,7 +68,7 @@ static void init_JSOverflowEventAttributesFunctions()
     JSOverflowEventAttributesFunctions[2].u.getset.set.setter_magic = NULL;
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSOverflowEventPrototypeConstantsFunctions[3];
 static bool JSOverflowEventPrototypeConstantsFunctions_initialized = false;
@@ -78,24 +78,18 @@ static void init_JSOverflowEventPrototypeConstantsFunctions()
     if (JSOverflowEventPrototypeConstantsFunctions_initialized) return;
     JSOverflowEventPrototypeConstantsFunctions_initialized = true;
     memset(JSOverflowEventPrototypeConstantsFunctions, 0, sizeof(JSOverflowEventPrototypeConstantsFunctions));
-    JSOverflowEventPrototypeConstantsFunctions[0].name = "BOTH";
+    JSOverflowEventPrototypeConstantsFunctions[0].name = "HORIZONTAL";
     JSOverflowEventPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSOverflowEventPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSOverflowEventPrototypeConstantsFunctions[0].magic = OverflowEvent::BOTH;
-    JSOverflowEventPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSOverflowEventPrototype::getValueProperty;
-    JSOverflowEventPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
-    JSOverflowEventPrototypeConstantsFunctions[1].name = "HORIZONTAL";
+    JSOverflowEventPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSOverflowEventPrototypeConstantsFunctions[0].u.i32 = (int32_t)OverflowEvent::HORIZONTAL;
+    JSOverflowEventPrototypeConstantsFunctions[1].name = "VERTICAL";
     JSOverflowEventPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSOverflowEventPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSOverflowEventPrototypeConstantsFunctions[1].magic = OverflowEvent::HORIZONTAL;
-    JSOverflowEventPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSOverflowEventPrototype::getValueProperty;
-    JSOverflowEventPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
-    JSOverflowEventPrototypeConstantsFunctions[2].name = "VERTICAL";
+    JSOverflowEventPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSOverflowEventPrototypeConstantsFunctions[1].u.i32 = (int32_t)OverflowEvent::VERTICAL;
+    JSOverflowEventPrototypeConstantsFunctions[2].name = "BOTH";
     JSOverflowEventPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSOverflowEventPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSOverflowEventPrototypeConstantsFunctions[2].magic = OverflowEvent::VERTICAL;
-    JSOverflowEventPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSOverflowEventPrototype::getValueProperty;
-    JSOverflowEventPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSOverflowEventPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSOverflowEventPrototypeConstantsFunctions[2].u.i32 = (int32_t)OverflowEvent::BOTH;
 }
 
 /* Prototype functions table */
@@ -139,12 +133,6 @@ void JSOverflowEventPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSOverflowEventPrototypeConstantsFunctions, countof(JSOverflowEventPrototypeConstantsFunctions));
     init_JSOverflowEventPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSOverflowEventPrototypeFunctions, countof(JSOverflowEventPrototypeFunctions));
-}
-
-JSValue JSOverflowEventPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSOverflowEventClassDefine;

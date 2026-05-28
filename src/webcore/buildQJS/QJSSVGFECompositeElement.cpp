@@ -161,14 +161,7 @@ class JSSVGFECompositeElementConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSSVGFECompositeElementConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -180,48 +173,34 @@ static void init_JSSVGFECompositeElementConstructorFunctions()
     if (JSSVGFECompositeElementConstructorFunctions_initialized) return;
     JSSVGFECompositeElementConstructorFunctions_initialized = true;
     memset(JSSVGFECompositeElementConstructorFunctions, 0, sizeof(JSSVGFECompositeElementConstructorFunctions));
-    JSSVGFECompositeElementConstructorFunctions[0].name = "SVG_FECOMPOSITE_OPERATOR_OUT";
+    JSSVGFECompositeElementConstructorFunctions[0].name = "SVG_FECOMPOSITE_OPERATOR_UNKNOWN";
     JSSVGFECompositeElementConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFECompositeElementConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFECompositeElementConstructorFunctions[0].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_OUT;
-    JSSVGFECompositeElementConstructorFunctions[0].u.getset.get.getter_magic = JSSVGFECompositeElementConstructor::getValueProperty;
-    JSSVGFECompositeElementConstructorFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGFECompositeElementConstructorFunctions[1].name = "SVG_FECOMPOSITE_OPERATOR_ATOP";
+    JSSVGFECompositeElementConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGFECompositeElementConstructorFunctions[0].u.i32 = (int32_t)WebCore::SVG_FECOMPOSITE_OPERATOR_UNKNOWN;
+    JSSVGFECompositeElementConstructorFunctions[1].name = "SVG_FECOMPOSITE_OPERATOR_OVER";
     JSSVGFECompositeElementConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFECompositeElementConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFECompositeElementConstructorFunctions[1].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_ATOP;
-    JSSVGFECompositeElementConstructorFunctions[1].u.getset.get.getter_magic = JSSVGFECompositeElementConstructor::getValueProperty;
-    JSSVGFECompositeElementConstructorFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGFECompositeElementConstructorFunctions[2].name = "SVG_FECOMPOSITE_OPERATOR_ARITHMETIC";
+    JSSVGFECompositeElementConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGFECompositeElementConstructorFunctions[1].u.i32 = (int32_t)WebCore::SVG_FECOMPOSITE_OPERATOR_OVER;
+    JSSVGFECompositeElementConstructorFunctions[2].name = "SVG_FECOMPOSITE_OPERATOR_IN";
     JSSVGFECompositeElementConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFECompositeElementConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFECompositeElementConstructorFunctions[2].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_ARITHMETIC;
-    JSSVGFECompositeElementConstructorFunctions[2].u.getset.get.getter_magic = JSSVGFECompositeElementConstructor::getValueProperty;
-    JSSVGFECompositeElementConstructorFunctions[2].u.getset.set.setter_magic = NULL;
-    JSSVGFECompositeElementConstructorFunctions[3].name = "SVG_FECOMPOSITE_OPERATOR_OVER";
+    JSSVGFECompositeElementConstructorFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGFECompositeElementConstructorFunctions[2].u.i32 = (int32_t)WebCore::SVG_FECOMPOSITE_OPERATOR_IN;
+    JSSVGFECompositeElementConstructorFunctions[3].name = "SVG_FECOMPOSITE_OPERATOR_OUT";
     JSSVGFECompositeElementConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFECompositeElementConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFECompositeElementConstructorFunctions[3].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_OVER;
-    JSSVGFECompositeElementConstructorFunctions[3].u.getset.get.getter_magic = JSSVGFECompositeElementConstructor::getValueProperty;
-    JSSVGFECompositeElementConstructorFunctions[3].u.getset.set.setter_magic = NULL;
-    JSSVGFECompositeElementConstructorFunctions[4].name = "SVG_FECOMPOSITE_OPERATOR_UNKNOWN";
+    JSSVGFECompositeElementConstructorFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGFECompositeElementConstructorFunctions[3].u.i32 = (int32_t)WebCore::SVG_FECOMPOSITE_OPERATOR_OUT;
+    JSSVGFECompositeElementConstructorFunctions[4].name = "SVG_FECOMPOSITE_OPERATOR_ATOP";
     JSSVGFECompositeElementConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFECompositeElementConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFECompositeElementConstructorFunctions[4].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_UNKNOWN;
-    JSSVGFECompositeElementConstructorFunctions[4].u.getset.get.getter_magic = JSSVGFECompositeElementConstructor::getValueProperty;
-    JSSVGFECompositeElementConstructorFunctions[4].u.getset.set.setter_magic = NULL;
-    JSSVGFECompositeElementConstructorFunctions[5].name = "SVG_FECOMPOSITE_OPERATOR_IN";
+    JSSVGFECompositeElementConstructorFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGFECompositeElementConstructorFunctions[4].u.i32 = (int32_t)WebCore::SVG_FECOMPOSITE_OPERATOR_ATOP;
+    JSSVGFECompositeElementConstructorFunctions[5].name = "SVG_FECOMPOSITE_OPERATOR_XOR";
     JSSVGFECompositeElementConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFECompositeElementConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFECompositeElementConstructorFunctions[5].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_IN;
-    JSSVGFECompositeElementConstructorFunctions[5].u.getset.get.getter_magic = JSSVGFECompositeElementConstructor::getValueProperty;
-    JSSVGFECompositeElementConstructorFunctions[5].u.getset.set.setter_magic = NULL;
-    JSSVGFECompositeElementConstructorFunctions[6].name = "SVG_FECOMPOSITE_OPERATOR_XOR";
+    JSSVGFECompositeElementConstructorFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSSVGFECompositeElementConstructorFunctions[5].u.i32 = (int32_t)WebCore::SVG_FECOMPOSITE_OPERATOR_XOR;
+    JSSVGFECompositeElementConstructorFunctions[6].name = "SVG_FECOMPOSITE_OPERATOR_ARITHMETIC";
     JSSVGFECompositeElementConstructorFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFECompositeElementConstructorFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFECompositeElementConstructorFunctions[6].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_XOR;
-    JSSVGFECompositeElementConstructorFunctions[6].u.getset.get.getter_magic = JSSVGFECompositeElementConstructor::getValueProperty;
-    JSSVGFECompositeElementConstructorFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementConstructorFunctions[6].def_type = JS_DEF_PROP_INT32;
+    JSSVGFECompositeElementConstructorFunctions[6].u.i32 = (int32_t)WebCore::SVG_FECOMPOSITE_OPERATOR_ARITHMETIC;
 }
 
 JSValue JSSVGFECompositeElementConstructor::self(JSContext * ctx)
@@ -244,7 +223,7 @@ void JSSVGFECompositeElementConstructor::initConstructor(JSContext * ctx, JSValu
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFECompositeElementConstructorFunctions, countof(JSSVGFECompositeElementConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSSVGFECompositeElementPrototypeConstantsFunctions[7];
 static bool JSSVGFECompositeElementPrototypeConstantsFunctions_initialized = false;
@@ -254,48 +233,34 @@ static void init_JSSVGFECompositeElementPrototypeConstantsFunctions()
     if (JSSVGFECompositeElementPrototypeConstantsFunctions_initialized) return;
     JSSVGFECompositeElementPrototypeConstantsFunctions_initialized = true;
     memset(JSSVGFECompositeElementPrototypeConstantsFunctions, 0, sizeof(JSSVGFECompositeElementPrototypeConstantsFunctions));
-    JSSVGFECompositeElementPrototypeConstantsFunctions[0].name = "SVG_FECOMPOSITE_OPERATOR_OUT";
+    JSSVGFECompositeElementPrototypeConstantsFunctions[0].name = "SVG_FECOMPOSITE_OPERATOR_UNKNOWN";
     JSSVGFECompositeElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[0].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_OUT;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGFECompositeElementPrototype::getValueProperty;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[1].name = "SVG_FECOMPOSITE_OPERATOR_ATOP";
+    JSSVGFECompositeElementPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[0].u.i32 = (int32_t)WebCore::SVG_FECOMPOSITE_OPERATOR_UNKNOWN;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[1].name = "SVG_FECOMPOSITE_OPERATOR_OVER";
     JSSVGFECompositeElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[1].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_ATOP;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGFECompositeElementPrototype::getValueProperty;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[2].name = "SVG_FECOMPOSITE_OPERATOR_ARITHMETIC";
+    JSSVGFECompositeElementPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[1].u.i32 = (int32_t)WebCore::SVG_FECOMPOSITE_OPERATOR_OVER;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[2].name = "SVG_FECOMPOSITE_OPERATOR_IN";
     JSSVGFECompositeElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[2].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_ARITHMETIC;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGFECompositeElementPrototype::getValueProperty;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[3].name = "SVG_FECOMPOSITE_OPERATOR_OVER";
+    JSSVGFECompositeElementPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[2].u.i32 = (int32_t)WebCore::SVG_FECOMPOSITE_OPERATOR_IN;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[3].name = "SVG_FECOMPOSITE_OPERATOR_OUT";
     JSSVGFECompositeElementPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[3].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_OVER;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGFECompositeElementPrototype::getValueProperty;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[4].name = "SVG_FECOMPOSITE_OPERATOR_UNKNOWN";
+    JSSVGFECompositeElementPrototypeConstantsFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[3].u.i32 = (int32_t)WebCore::SVG_FECOMPOSITE_OPERATOR_OUT;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[4].name = "SVG_FECOMPOSITE_OPERATOR_ATOP";
     JSSVGFECompositeElementPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[4].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_UNKNOWN;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGFECompositeElementPrototype::getValueProperty;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[5].name = "SVG_FECOMPOSITE_OPERATOR_IN";
+    JSSVGFECompositeElementPrototypeConstantsFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[4].u.i32 = (int32_t)WebCore::SVG_FECOMPOSITE_OPERATOR_ATOP;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[5].name = "SVG_FECOMPOSITE_OPERATOR_XOR";
     JSSVGFECompositeElementPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[5].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_IN;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSSVGFECompositeElementPrototype::getValueProperty;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[6].name = "SVG_FECOMPOSITE_OPERATOR_XOR";
+    JSSVGFECompositeElementPrototypeConstantsFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[5].u.i32 = (int32_t)WebCore::SVG_FECOMPOSITE_OPERATOR_XOR;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[6].name = "SVG_FECOMPOSITE_OPERATOR_ARITHMETIC";
     JSSVGFECompositeElementPrototypeConstantsFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[6].magic = WebCore::SVG_FECOMPOSITE_OPERATOR_XOR;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[6].u.getset.get.getter_magic = JSSVGFECompositeElementPrototype::getValueProperty;
-    JSSVGFECompositeElementPrototypeConstantsFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[6].def_type = JS_DEF_PROP_INT32;
+    JSSVGFECompositeElementPrototypeConstantsFunctions[6].u.i32 = (int32_t)WebCore::SVG_FECOMPOSITE_OPERATOR_ARITHMETIC;
 }
 
 /* Prototype functions table */
@@ -339,12 +304,6 @@ void JSSVGFECompositeElementPrototype::initPrototype(JSContext * ctx, JSValue th
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFECompositeElementPrototypeConstantsFunctions, countof(JSSVGFECompositeElementPrototypeConstantsFunctions));
     init_JSSVGFECompositeElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFECompositeElementPrototypeFunctions, countof(JSSVGFECompositeElementPrototypeFunctions));
-}
-
-JSValue JSSVGFECompositeElementPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSSVGFECompositeElementClassDefine;

@@ -166,14 +166,7 @@ class JSSVGMarkerElementConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSSVGMarkerElementConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -187,40 +180,28 @@ static void init_JSSVGMarkerElementConstructorFunctions()
     memset(JSSVGMarkerElementConstructorFunctions, 0, sizeof(JSSVGMarkerElementConstructorFunctions));
     JSSVGMarkerElementConstructorFunctions[0].name = "SVG_MARKERUNITS_UNKNOWN";
     JSSVGMarkerElementConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGMarkerElementConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGMarkerElementConstructorFunctions[0].magic = SVGMarkerElement::SVG_MARKERUNITS_UNKNOWN;
-    JSSVGMarkerElementConstructorFunctions[0].u.getset.get.getter_magic = JSSVGMarkerElementConstructor::getValueProperty;
-    JSSVGMarkerElementConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGMarkerElementConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGMarkerElementConstructorFunctions[0].u.i32 = (int32_t)SVGMarkerElement::SVG_MARKERUNITS_UNKNOWN;
     JSSVGMarkerElementConstructorFunctions[1].name = "SVG_MARKERUNITS_USERSPACEONUSE";
     JSSVGMarkerElementConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGMarkerElementConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGMarkerElementConstructorFunctions[1].magic = SVGMarkerElement::SVG_MARKERUNITS_USERSPACEONUSE;
-    JSSVGMarkerElementConstructorFunctions[1].u.getset.get.getter_magic = JSSVGMarkerElementConstructor::getValueProperty;
-    JSSVGMarkerElementConstructorFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGMarkerElementConstructorFunctions[2].name = "SVG_MARKER_ORIENT_UNKNOWN";
+    JSSVGMarkerElementConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGMarkerElementConstructorFunctions[1].u.i32 = (int32_t)SVGMarkerElement::SVG_MARKERUNITS_USERSPACEONUSE;
+    JSSVGMarkerElementConstructorFunctions[2].name = "SVG_MARKERUNITS_STROKEWIDTH";
     JSSVGMarkerElementConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGMarkerElementConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGMarkerElementConstructorFunctions[2].magic = SVGMarkerElement::SVG_MARKER_ORIENT_UNKNOWN;
-    JSSVGMarkerElementConstructorFunctions[2].u.getset.get.getter_magic = JSSVGMarkerElementConstructor::getValueProperty;
-    JSSVGMarkerElementConstructorFunctions[2].u.getset.set.setter_magic = NULL;
-    JSSVGMarkerElementConstructorFunctions[3].name = "SVG_MARKERUNITS_STROKEWIDTH";
+    JSSVGMarkerElementConstructorFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGMarkerElementConstructorFunctions[2].u.i32 = (int32_t)SVGMarkerElement::SVG_MARKERUNITS_STROKEWIDTH;
+    JSSVGMarkerElementConstructorFunctions[3].name = "SVG_MARKER_ORIENT_UNKNOWN";
     JSSVGMarkerElementConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGMarkerElementConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGMarkerElementConstructorFunctions[3].magic = SVGMarkerElement::SVG_MARKERUNITS_STROKEWIDTH;
-    JSSVGMarkerElementConstructorFunctions[3].u.getset.get.getter_magic = JSSVGMarkerElementConstructor::getValueProperty;
-    JSSVGMarkerElementConstructorFunctions[3].u.getset.set.setter_magic = NULL;
-    JSSVGMarkerElementConstructorFunctions[4].name = "SVG_MARKER_ORIENT_ANGLE";
+    JSSVGMarkerElementConstructorFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGMarkerElementConstructorFunctions[3].u.i32 = (int32_t)SVGMarkerElement::SVG_MARKER_ORIENT_UNKNOWN;
+    JSSVGMarkerElementConstructorFunctions[4].name = "SVG_MARKER_ORIENT_AUTO";
     JSSVGMarkerElementConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGMarkerElementConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGMarkerElementConstructorFunctions[4].magic = SVGMarkerElement::SVG_MARKER_ORIENT_ANGLE;
-    JSSVGMarkerElementConstructorFunctions[4].u.getset.get.getter_magic = JSSVGMarkerElementConstructor::getValueProperty;
-    JSSVGMarkerElementConstructorFunctions[4].u.getset.set.setter_magic = NULL;
-    JSSVGMarkerElementConstructorFunctions[5].name = "SVG_MARKER_ORIENT_AUTO";
+    JSSVGMarkerElementConstructorFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGMarkerElementConstructorFunctions[4].u.i32 = (int32_t)SVGMarkerElement::SVG_MARKER_ORIENT_AUTO;
+    JSSVGMarkerElementConstructorFunctions[5].name = "SVG_MARKER_ORIENT_ANGLE";
     JSSVGMarkerElementConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGMarkerElementConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGMarkerElementConstructorFunctions[5].magic = SVGMarkerElement::SVG_MARKER_ORIENT_AUTO;
-    JSSVGMarkerElementConstructorFunctions[5].u.getset.get.getter_magic = JSSVGMarkerElementConstructor::getValueProperty;
-    JSSVGMarkerElementConstructorFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGMarkerElementConstructorFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSSVGMarkerElementConstructorFunctions[5].u.i32 = (int32_t)SVGMarkerElement::SVG_MARKER_ORIENT_ANGLE;
 }
 
 JSValue JSSVGMarkerElementConstructor::self(JSContext * ctx)
@@ -243,7 +224,7 @@ void JSSVGMarkerElementConstructor::initConstructor(JSContext * ctx, JSValue thi
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGMarkerElementConstructorFunctions, countof(JSSVGMarkerElementConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSSVGMarkerElementPrototypeConstantsFunctions[6];
 static bool JSSVGMarkerElementPrototypeConstantsFunctions_initialized = false;
@@ -255,40 +236,28 @@ static void init_JSSVGMarkerElementPrototypeConstantsFunctions()
     memset(JSSVGMarkerElementPrototypeConstantsFunctions, 0, sizeof(JSSVGMarkerElementPrototypeConstantsFunctions));
     JSSVGMarkerElementPrototypeConstantsFunctions[0].name = "SVG_MARKERUNITS_UNKNOWN";
     JSSVGMarkerElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGMarkerElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGMarkerElementPrototypeConstantsFunctions[0].magic = SVGMarkerElement::SVG_MARKERUNITS_UNKNOWN;
-    JSSVGMarkerElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGMarkerElementPrototype::getValueProperty;
-    JSSVGMarkerElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGMarkerElementPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGMarkerElementPrototypeConstantsFunctions[0].u.i32 = (int32_t)SVGMarkerElement::SVG_MARKERUNITS_UNKNOWN;
     JSSVGMarkerElementPrototypeConstantsFunctions[1].name = "SVG_MARKERUNITS_USERSPACEONUSE";
     JSSVGMarkerElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGMarkerElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGMarkerElementPrototypeConstantsFunctions[1].magic = SVGMarkerElement::SVG_MARKERUNITS_USERSPACEONUSE;
-    JSSVGMarkerElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGMarkerElementPrototype::getValueProperty;
-    JSSVGMarkerElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGMarkerElementPrototypeConstantsFunctions[2].name = "SVG_MARKER_ORIENT_UNKNOWN";
+    JSSVGMarkerElementPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGMarkerElementPrototypeConstantsFunctions[1].u.i32 = (int32_t)SVGMarkerElement::SVG_MARKERUNITS_USERSPACEONUSE;
+    JSSVGMarkerElementPrototypeConstantsFunctions[2].name = "SVG_MARKERUNITS_STROKEWIDTH";
     JSSVGMarkerElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGMarkerElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGMarkerElementPrototypeConstantsFunctions[2].magic = SVGMarkerElement::SVG_MARKER_ORIENT_UNKNOWN;
-    JSSVGMarkerElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGMarkerElementPrototype::getValueProperty;
-    JSSVGMarkerElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
-    JSSVGMarkerElementPrototypeConstantsFunctions[3].name = "SVG_MARKERUNITS_STROKEWIDTH";
+    JSSVGMarkerElementPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGMarkerElementPrototypeConstantsFunctions[2].u.i32 = (int32_t)SVGMarkerElement::SVG_MARKERUNITS_STROKEWIDTH;
+    JSSVGMarkerElementPrototypeConstantsFunctions[3].name = "SVG_MARKER_ORIENT_UNKNOWN";
     JSSVGMarkerElementPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGMarkerElementPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGMarkerElementPrototypeConstantsFunctions[3].magic = SVGMarkerElement::SVG_MARKERUNITS_STROKEWIDTH;
-    JSSVGMarkerElementPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGMarkerElementPrototype::getValueProperty;
-    JSSVGMarkerElementPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
-    JSSVGMarkerElementPrototypeConstantsFunctions[4].name = "SVG_MARKER_ORIENT_ANGLE";
+    JSSVGMarkerElementPrototypeConstantsFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGMarkerElementPrototypeConstantsFunctions[3].u.i32 = (int32_t)SVGMarkerElement::SVG_MARKER_ORIENT_UNKNOWN;
+    JSSVGMarkerElementPrototypeConstantsFunctions[4].name = "SVG_MARKER_ORIENT_AUTO";
     JSSVGMarkerElementPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGMarkerElementPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGMarkerElementPrototypeConstantsFunctions[4].magic = SVGMarkerElement::SVG_MARKER_ORIENT_ANGLE;
-    JSSVGMarkerElementPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGMarkerElementPrototype::getValueProperty;
-    JSSVGMarkerElementPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
-    JSSVGMarkerElementPrototypeConstantsFunctions[5].name = "SVG_MARKER_ORIENT_AUTO";
+    JSSVGMarkerElementPrototypeConstantsFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGMarkerElementPrototypeConstantsFunctions[4].u.i32 = (int32_t)SVGMarkerElement::SVG_MARKER_ORIENT_AUTO;
+    JSSVGMarkerElementPrototypeConstantsFunctions[5].name = "SVG_MARKER_ORIENT_ANGLE";
     JSSVGMarkerElementPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGMarkerElementPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGMarkerElementPrototypeConstantsFunctions[5].magic = SVGMarkerElement::SVG_MARKER_ORIENT_AUTO;
-    JSSVGMarkerElementPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSSVGMarkerElementPrototype::getValueProperty;
-    JSSVGMarkerElementPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGMarkerElementPrototypeConstantsFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSSVGMarkerElementPrototypeConstantsFunctions[5].u.i32 = (int32_t)SVGMarkerElement::SVG_MARKER_ORIENT_ANGLE;
 }
 
 /* Prototype functions table */
@@ -346,12 +315,6 @@ void JSSVGMarkerElementPrototype::initPrototype(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGMarkerElementPrototypeConstantsFunctions, countof(JSSVGMarkerElementPrototypeConstantsFunctions));
     init_JSSVGMarkerElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGMarkerElementPrototypeFunctions, countof(JSSVGMarkerElementPrototypeFunctions));
-}
-
-JSValue JSSVGMarkerElementPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSSVGMarkerElementClassDefine;

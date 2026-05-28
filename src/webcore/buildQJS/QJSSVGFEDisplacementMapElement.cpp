@@ -149,14 +149,7 @@ class JSSVGFEDisplacementMapElementConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSSVGFEDisplacementMapElementConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -168,36 +161,26 @@ static void init_JSSVGFEDisplacementMapElementConstructorFunctions()
     if (JSSVGFEDisplacementMapElementConstructorFunctions_initialized) return;
     JSSVGFEDisplacementMapElementConstructorFunctions_initialized = true;
     memset(JSSVGFEDisplacementMapElementConstructorFunctions, 0, sizeof(JSSVGFEDisplacementMapElementConstructorFunctions));
-    JSSVGFEDisplacementMapElementConstructorFunctions[0].name = "SVG_CHANNEL_R";
+    JSSVGFEDisplacementMapElementConstructorFunctions[0].name = "SVG_CHANNEL_UNKNOWN";
     JSSVGFEDisplacementMapElementConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFEDisplacementMapElementConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFEDisplacementMapElementConstructorFunctions[0].magic = WebCore::SVG_CHANNEL_R;
-    JSSVGFEDisplacementMapElementConstructorFunctions[0].u.getset.get.getter_magic = JSSVGFEDisplacementMapElementConstructor::getValueProperty;
-    JSSVGFEDisplacementMapElementConstructorFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGFEDisplacementMapElementConstructorFunctions[1].name = "SVG_CHANNEL_UNKNOWN";
+    JSSVGFEDisplacementMapElementConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGFEDisplacementMapElementConstructorFunctions[0].u.i32 = (int32_t)WebCore::SVG_CHANNEL_UNKNOWN;
+    JSSVGFEDisplacementMapElementConstructorFunctions[1].name = "SVG_CHANNEL_R";
     JSSVGFEDisplacementMapElementConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFEDisplacementMapElementConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFEDisplacementMapElementConstructorFunctions[1].magic = WebCore::SVG_CHANNEL_UNKNOWN;
-    JSSVGFEDisplacementMapElementConstructorFunctions[1].u.getset.get.getter_magic = JSSVGFEDisplacementMapElementConstructor::getValueProperty;
-    JSSVGFEDisplacementMapElementConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEDisplacementMapElementConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGFEDisplacementMapElementConstructorFunctions[1].u.i32 = (int32_t)WebCore::SVG_CHANNEL_R;
     JSSVGFEDisplacementMapElementConstructorFunctions[2].name = "SVG_CHANNEL_G";
     JSSVGFEDisplacementMapElementConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFEDisplacementMapElementConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFEDisplacementMapElementConstructorFunctions[2].magic = WebCore::SVG_CHANNEL_G;
-    JSSVGFEDisplacementMapElementConstructorFunctions[2].u.getset.get.getter_magic = JSSVGFEDisplacementMapElementConstructor::getValueProperty;
-    JSSVGFEDisplacementMapElementConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEDisplacementMapElementConstructorFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGFEDisplacementMapElementConstructorFunctions[2].u.i32 = (int32_t)WebCore::SVG_CHANNEL_G;
     JSSVGFEDisplacementMapElementConstructorFunctions[3].name = "SVG_CHANNEL_B";
     JSSVGFEDisplacementMapElementConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFEDisplacementMapElementConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFEDisplacementMapElementConstructorFunctions[3].magic = WebCore::SVG_CHANNEL_B;
-    JSSVGFEDisplacementMapElementConstructorFunctions[3].u.getset.get.getter_magic = JSSVGFEDisplacementMapElementConstructor::getValueProperty;
-    JSSVGFEDisplacementMapElementConstructorFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFEDisplacementMapElementConstructorFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGFEDisplacementMapElementConstructorFunctions[3].u.i32 = (int32_t)WebCore::SVG_CHANNEL_B;
     JSSVGFEDisplacementMapElementConstructorFunctions[4].name = "SVG_CHANNEL_A";
     JSSVGFEDisplacementMapElementConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFEDisplacementMapElementConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFEDisplacementMapElementConstructorFunctions[4].magic = WebCore::SVG_CHANNEL_A;
-    JSSVGFEDisplacementMapElementConstructorFunctions[4].u.getset.get.getter_magic = JSSVGFEDisplacementMapElementConstructor::getValueProperty;
-    JSSVGFEDisplacementMapElementConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFEDisplacementMapElementConstructorFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGFEDisplacementMapElementConstructorFunctions[4].u.i32 = (int32_t)WebCore::SVG_CHANNEL_A;
 }
 
 JSValue JSSVGFEDisplacementMapElementConstructor::self(JSContext * ctx)
@@ -220,7 +203,7 @@ void JSSVGFEDisplacementMapElementConstructor::initConstructor(JSContext * ctx, 
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEDisplacementMapElementConstructorFunctions, countof(JSSVGFEDisplacementMapElementConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[5];
 static bool JSSVGFEDisplacementMapElementPrototypeConstantsFunctions_initialized = false;
@@ -230,36 +213,26 @@ static void init_JSSVGFEDisplacementMapElementPrototypeConstantsFunctions()
     if (JSSVGFEDisplacementMapElementPrototypeConstantsFunctions_initialized) return;
     JSSVGFEDisplacementMapElementPrototypeConstantsFunctions_initialized = true;
     memset(JSSVGFEDisplacementMapElementPrototypeConstantsFunctions, 0, sizeof(JSSVGFEDisplacementMapElementPrototypeConstantsFunctions));
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[0].name = "SVG_CHANNEL_R";
+    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[0].name = "SVG_CHANNEL_UNKNOWN";
     JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[0].magic = WebCore::SVG_CHANNEL_R;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGFEDisplacementMapElementPrototype::getValueProperty;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[1].name = "SVG_CHANNEL_UNKNOWN";
+    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[0].u.i32 = (int32_t)WebCore::SVG_CHANNEL_UNKNOWN;
+    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[1].name = "SVG_CHANNEL_R";
     JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[1].magic = WebCore::SVG_CHANNEL_UNKNOWN;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGFEDisplacementMapElementPrototype::getValueProperty;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[1].u.i32 = (int32_t)WebCore::SVG_CHANNEL_R;
     JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[2].name = "SVG_CHANNEL_G";
     JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[2].magic = WebCore::SVG_CHANNEL_G;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGFEDisplacementMapElementPrototype::getValueProperty;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[2].u.i32 = (int32_t)WebCore::SVG_CHANNEL_G;
     JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[3].name = "SVG_CHANNEL_B";
     JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[3].magic = WebCore::SVG_CHANNEL_B;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGFEDisplacementMapElementPrototype::getValueProperty;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
+    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[3].u.i32 = (int32_t)WebCore::SVG_CHANNEL_B;
     JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[4].name = "SVG_CHANNEL_A";
     JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[4].magic = WebCore::SVG_CHANNEL_A;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGFEDisplacementMapElementPrototype::getValueProperty;
-    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGFEDisplacementMapElementPrototypeConstantsFunctions[4].u.i32 = (int32_t)WebCore::SVG_CHANNEL_A;
 }
 
 /* Prototype functions table */
@@ -303,12 +276,6 @@ void JSSVGFEDisplacementMapElementPrototype::initPrototype(JSContext * ctx, JSVa
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEDisplacementMapElementPrototypeConstantsFunctions, countof(JSSVGFEDisplacementMapElementPrototypeConstantsFunctions));
     init_JSSVGFEDisplacementMapElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGFEDisplacementMapElementPrototypeFunctions, countof(JSSVGFEDisplacementMapElementPrototypeFunctions));
-}
-
-JSValue JSSVGFEDisplacementMapElementPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSSVGFEDisplacementMapElementClassDefine;

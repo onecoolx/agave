@@ -93,14 +93,7 @@ class JSMutationEventConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSMutationEventConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -114,22 +107,16 @@ static void init_JSMutationEventConstructorFunctions()
     memset(JSMutationEventConstructorFunctions, 0, sizeof(JSMutationEventConstructorFunctions));
     JSMutationEventConstructorFunctions[0].name = "MODIFICATION";
     JSMutationEventConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSMutationEventConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSMutationEventConstructorFunctions[0].magic = MutationEvent::MODIFICATION;
-    JSMutationEventConstructorFunctions[0].u.getset.get.getter_magic = JSMutationEventConstructor::getValueProperty;
-    JSMutationEventConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSMutationEventConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSMutationEventConstructorFunctions[0].u.i32 = (int32_t)MutationEvent::MODIFICATION;
     JSMutationEventConstructorFunctions[1].name = "ADDITION";
     JSMutationEventConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSMutationEventConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSMutationEventConstructorFunctions[1].magic = MutationEvent::ADDITION;
-    JSMutationEventConstructorFunctions[1].u.getset.get.getter_magic = JSMutationEventConstructor::getValueProperty;
-    JSMutationEventConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSMutationEventConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSMutationEventConstructorFunctions[1].u.i32 = (int32_t)MutationEvent::ADDITION;
     JSMutationEventConstructorFunctions[2].name = "REMOVAL";
     JSMutationEventConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSMutationEventConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSMutationEventConstructorFunctions[2].magic = MutationEvent::REMOVAL;
-    JSMutationEventConstructorFunctions[2].u.getset.get.getter_magic = JSMutationEventConstructor::getValueProperty;
-    JSMutationEventConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSMutationEventConstructorFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSMutationEventConstructorFunctions[2].u.i32 = (int32_t)MutationEvent::REMOVAL;
 }
 
 JSValue JSMutationEventConstructor::self(JSContext * ctx)
@@ -152,7 +139,7 @@ void JSMutationEventConstructor::initConstructor(JSContext * ctx, JSValue this_o
     JS_SetPropertyFunctionList(ctx, this_obj, JSMutationEventConstructorFunctions, countof(JSMutationEventConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSMutationEventPrototypeConstantsFunctions[3];
 static bool JSMutationEventPrototypeConstantsFunctions_initialized = false;
@@ -164,22 +151,16 @@ static void init_JSMutationEventPrototypeConstantsFunctions()
     memset(JSMutationEventPrototypeConstantsFunctions, 0, sizeof(JSMutationEventPrototypeConstantsFunctions));
     JSMutationEventPrototypeConstantsFunctions[0].name = "MODIFICATION";
     JSMutationEventPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSMutationEventPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSMutationEventPrototypeConstantsFunctions[0].magic = MutationEvent::MODIFICATION;
-    JSMutationEventPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSMutationEventPrototype::getValueProperty;
-    JSMutationEventPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSMutationEventPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSMutationEventPrototypeConstantsFunctions[0].u.i32 = (int32_t)MutationEvent::MODIFICATION;
     JSMutationEventPrototypeConstantsFunctions[1].name = "ADDITION";
     JSMutationEventPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSMutationEventPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSMutationEventPrototypeConstantsFunctions[1].magic = MutationEvent::ADDITION;
-    JSMutationEventPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSMutationEventPrototype::getValueProperty;
-    JSMutationEventPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSMutationEventPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSMutationEventPrototypeConstantsFunctions[1].u.i32 = (int32_t)MutationEvent::ADDITION;
     JSMutationEventPrototypeConstantsFunctions[2].name = "REMOVAL";
     JSMutationEventPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSMutationEventPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSMutationEventPrototypeConstantsFunctions[2].magic = MutationEvent::REMOVAL;
-    JSMutationEventPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSMutationEventPrototype::getValueProperty;
-    JSMutationEventPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSMutationEventPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSMutationEventPrototypeConstantsFunctions[2].u.i32 = (int32_t)MutationEvent::REMOVAL;
 }
 
 /* Prototype functions table */
@@ -223,12 +204,6 @@ void JSMutationEventPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSMutationEventPrototypeConstantsFunctions, countof(JSMutationEventPrototypeConstantsFunctions));
     init_JSMutationEventPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSMutationEventPrototypeFunctions, countof(JSMutationEventPrototypeFunctions));
-}
-
-JSValue JSMutationEventPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSMutationEventClassDefine;

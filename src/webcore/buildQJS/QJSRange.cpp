@@ -103,14 +103,7 @@ class JSRangeConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSRangeConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -124,52 +117,36 @@ static void init_JSRangeConstructorFunctions()
     memset(JSRangeConstructorFunctions, 0, sizeof(JSRangeConstructorFunctions));
     JSRangeConstructorFunctions[0].name = "START_TO_START";
     JSRangeConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangeConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangeConstructorFunctions[0].magic = Range::START_TO_START;
-    JSRangeConstructorFunctions[0].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
-    JSRangeConstructorFunctions[0].u.getset.set.setter_magic = NULL;
-    JSRangeConstructorFunctions[1].name = "NODE_AFTER";
+    JSRangeConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSRangeConstructorFunctions[0].u.i32 = (int32_t)Range::START_TO_START;
+    JSRangeConstructorFunctions[1].name = "START_TO_END";
     JSRangeConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangeConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangeConstructorFunctions[1].magic = Range::NODE_AFTER;
-    JSRangeConstructorFunctions[1].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
-    JSRangeConstructorFunctions[1].u.getset.set.setter_magic = NULL;
-    JSRangeConstructorFunctions[2].name = "NODE_BEFORE";
+    JSRangeConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSRangeConstructorFunctions[1].u.i32 = (int32_t)Range::START_TO_END;
+    JSRangeConstructorFunctions[2].name = "END_TO_END";
     JSRangeConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangeConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangeConstructorFunctions[2].magic = Range::NODE_BEFORE;
-    JSRangeConstructorFunctions[2].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
-    JSRangeConstructorFunctions[2].u.getset.set.setter_magic = NULL;
-    JSRangeConstructorFunctions[3].name = "START_TO_END";
+    JSRangeConstructorFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSRangeConstructorFunctions[2].u.i32 = (int32_t)Range::END_TO_END;
+    JSRangeConstructorFunctions[3].name = "END_TO_START";
     JSRangeConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangeConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangeConstructorFunctions[3].magic = Range::START_TO_END;
-    JSRangeConstructorFunctions[3].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
-    JSRangeConstructorFunctions[3].u.getset.set.setter_magic = NULL;
-    JSRangeConstructorFunctions[4].name = "END_TO_END";
+    JSRangeConstructorFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSRangeConstructorFunctions[3].u.i32 = (int32_t)Range::END_TO_START;
+    JSRangeConstructorFunctions[4].name = "NODE_BEFORE";
     JSRangeConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangeConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangeConstructorFunctions[4].magic = Range::END_TO_END;
-    JSRangeConstructorFunctions[4].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
-    JSRangeConstructorFunctions[4].u.getset.set.setter_magic = NULL;
-    JSRangeConstructorFunctions[5].name = "END_TO_START";
+    JSRangeConstructorFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSRangeConstructorFunctions[4].u.i32 = (int32_t)Range::NODE_BEFORE;
+    JSRangeConstructorFunctions[5].name = "NODE_AFTER";
     JSRangeConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangeConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangeConstructorFunctions[5].magic = Range::END_TO_START;
-    JSRangeConstructorFunctions[5].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
-    JSRangeConstructorFunctions[5].u.getset.set.setter_magic = NULL;
+    JSRangeConstructorFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSRangeConstructorFunctions[5].u.i32 = (int32_t)Range::NODE_AFTER;
     JSRangeConstructorFunctions[6].name = "NODE_BEFORE_AND_AFTER";
     JSRangeConstructorFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangeConstructorFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangeConstructorFunctions[6].magic = Range::NODE_BEFORE_AND_AFTER;
-    JSRangeConstructorFunctions[6].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
-    JSRangeConstructorFunctions[6].u.getset.set.setter_magic = NULL;
+    JSRangeConstructorFunctions[6].def_type = JS_DEF_PROP_INT32;
+    JSRangeConstructorFunctions[6].u.i32 = (int32_t)Range::NODE_BEFORE_AND_AFTER;
     JSRangeConstructorFunctions[7].name = "NODE_INSIDE";
     JSRangeConstructorFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangeConstructorFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangeConstructorFunctions[7].magic = Range::NODE_INSIDE;
-    JSRangeConstructorFunctions[7].u.getset.get.getter_magic = JSRangeConstructor::getValueProperty;
-    JSRangeConstructorFunctions[7].u.getset.set.setter_magic = NULL;
+    JSRangeConstructorFunctions[7].def_type = JS_DEF_PROP_INT32;
+    JSRangeConstructorFunctions[7].u.i32 = (int32_t)Range::NODE_INSIDE;
 }
 
 JSValue JSRangeConstructor::self(JSContext * ctx)
@@ -192,7 +169,7 @@ void JSRangeConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSRangeConstructorFunctions, countof(JSRangeConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSRangePrototypeConstantsFunctions[8];
 static bool JSRangePrototypeConstantsFunctions_initialized = false;
@@ -204,52 +181,36 @@ static void init_JSRangePrototypeConstantsFunctions()
     memset(JSRangePrototypeConstantsFunctions, 0, sizeof(JSRangePrototypeConstantsFunctions));
     JSRangePrototypeConstantsFunctions[0].name = "START_TO_START";
     JSRangePrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangePrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangePrototypeConstantsFunctions[0].magic = Range::START_TO_START;
-    JSRangePrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
-    JSRangePrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
-    JSRangePrototypeConstantsFunctions[1].name = "NODE_AFTER";
+    JSRangePrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSRangePrototypeConstantsFunctions[0].u.i32 = (int32_t)Range::START_TO_START;
+    JSRangePrototypeConstantsFunctions[1].name = "START_TO_END";
     JSRangePrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangePrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangePrototypeConstantsFunctions[1].magic = Range::NODE_AFTER;
-    JSRangePrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
-    JSRangePrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
-    JSRangePrototypeConstantsFunctions[2].name = "NODE_BEFORE";
+    JSRangePrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSRangePrototypeConstantsFunctions[1].u.i32 = (int32_t)Range::START_TO_END;
+    JSRangePrototypeConstantsFunctions[2].name = "END_TO_END";
     JSRangePrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangePrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangePrototypeConstantsFunctions[2].magic = Range::NODE_BEFORE;
-    JSRangePrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
-    JSRangePrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
-    JSRangePrototypeConstantsFunctions[3].name = "START_TO_END";
+    JSRangePrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSRangePrototypeConstantsFunctions[2].u.i32 = (int32_t)Range::END_TO_END;
+    JSRangePrototypeConstantsFunctions[3].name = "END_TO_START";
     JSRangePrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangePrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangePrototypeConstantsFunctions[3].magic = Range::START_TO_END;
-    JSRangePrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
-    JSRangePrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
-    JSRangePrototypeConstantsFunctions[4].name = "END_TO_END";
+    JSRangePrototypeConstantsFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSRangePrototypeConstantsFunctions[3].u.i32 = (int32_t)Range::END_TO_START;
+    JSRangePrototypeConstantsFunctions[4].name = "NODE_BEFORE";
     JSRangePrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangePrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangePrototypeConstantsFunctions[4].magic = Range::END_TO_END;
-    JSRangePrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
-    JSRangePrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
-    JSRangePrototypeConstantsFunctions[5].name = "END_TO_START";
+    JSRangePrototypeConstantsFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSRangePrototypeConstantsFunctions[4].u.i32 = (int32_t)Range::NODE_BEFORE;
+    JSRangePrototypeConstantsFunctions[5].name = "NODE_AFTER";
     JSRangePrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangePrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangePrototypeConstantsFunctions[5].magic = Range::END_TO_START;
-    JSRangePrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
-    JSRangePrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
+    JSRangePrototypeConstantsFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSRangePrototypeConstantsFunctions[5].u.i32 = (int32_t)Range::NODE_AFTER;
     JSRangePrototypeConstantsFunctions[6].name = "NODE_BEFORE_AND_AFTER";
     JSRangePrototypeConstantsFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangePrototypeConstantsFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangePrototypeConstantsFunctions[6].magic = Range::NODE_BEFORE_AND_AFTER;
-    JSRangePrototypeConstantsFunctions[6].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
-    JSRangePrototypeConstantsFunctions[6].u.getset.set.setter_magic = NULL;
+    JSRangePrototypeConstantsFunctions[6].def_type = JS_DEF_PROP_INT32;
+    JSRangePrototypeConstantsFunctions[6].u.i32 = (int32_t)Range::NODE_BEFORE_AND_AFTER;
     JSRangePrototypeConstantsFunctions[7].name = "NODE_INSIDE";
     JSRangePrototypeConstantsFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangePrototypeConstantsFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangePrototypeConstantsFunctions[7].magic = Range::NODE_INSIDE;
-    JSRangePrototypeConstantsFunctions[7].u.getset.get.getter_magic = JSRangePrototype::getValueProperty;
-    JSRangePrototypeConstantsFunctions[7].u.getset.set.setter_magic = NULL;
+    JSRangePrototypeConstantsFunctions[7].def_type = JS_DEF_PROP_INT32;
+    JSRangePrototypeConstantsFunctions[7].u.i32 = (int32_t)Range::NODE_INSIDE;
 }
 
 /* Prototype functions table */
@@ -447,12 +408,6 @@ void JSRangePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSRangePrototypeConstantsFunctions, countof(JSRangePrototypeConstantsFunctions));
     init_JSRangePrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSRangePrototypeFunctions, countof(JSRangePrototypeFunctions));
-}
-
-JSValue JSRangePrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSRangeClassDefine;

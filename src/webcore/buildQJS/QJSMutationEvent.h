@@ -65,7 +65,6 @@ class JSMutationEventPrototype {
 public:
     static JSValue self(JSContext * ctx);
     static void initPrototype(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext *ctx, JSValueConst this_val, int token);
 };
 
 class JSMutationEventPrototypeFunction {

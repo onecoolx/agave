@@ -250,7 +250,7 @@ static void init_JSSVGSVGElementAttributesFunctions()
     JSSVGSVGElementAttributesFunctions[26].u.getset.set.setter_magic = NULL;
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSSVGSVGElementPrototypeConstantsFunctions[3];
 static bool JSSVGSVGElementPrototypeConstantsFunctions_initialized = false;
@@ -262,22 +262,16 @@ static void init_JSSVGSVGElementPrototypeConstantsFunctions()
     memset(JSSVGSVGElementPrototypeConstantsFunctions, 0, sizeof(JSSVGSVGElementPrototypeConstantsFunctions));
     JSSVGSVGElementPrototypeConstantsFunctions[0].name = "SVG_ZOOMANDPAN_UNKNOWN";
     JSSVGSVGElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGSVGElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGSVGElementPrototypeConstantsFunctions[0].magic = SVGSVGElement::SVG_ZOOMANDPAN_UNKNOWN;
-    JSSVGSVGElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGSVGElementPrototype::getValueProperty;
-    JSSVGSVGElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGSVGElementPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGSVGElementPrototypeConstantsFunctions[0].u.i32 = (int32_t)SVGSVGElement::SVG_ZOOMANDPAN_UNKNOWN;
     JSSVGSVGElementPrototypeConstantsFunctions[1].name = "SVG_ZOOMANDPAN_DISABLE";
     JSSVGSVGElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGSVGElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGSVGElementPrototypeConstantsFunctions[1].magic = SVGSVGElement::SVG_ZOOMANDPAN_DISABLE;
-    JSSVGSVGElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGSVGElementPrototype::getValueProperty;
-    JSSVGSVGElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGSVGElementPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGSVGElementPrototypeConstantsFunctions[1].u.i32 = (int32_t)SVGSVGElement::SVG_ZOOMANDPAN_DISABLE;
     JSSVGSVGElementPrototypeConstantsFunctions[2].name = "SVG_ZOOMANDPAN_MAGNIFY";
     JSSVGSVGElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGSVGElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGSVGElementPrototypeConstantsFunctions[2].magic = SVGSVGElement::SVG_ZOOMANDPAN_MAGNIFY;
-    JSSVGSVGElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGSVGElementPrototype::getValueProperty;
-    JSSVGSVGElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGSVGElementPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGSVGElementPrototypeConstantsFunctions[2].u.i32 = (int32_t)SVGSVGElement::SVG_ZOOMANDPAN_MAGNIFY;
 }
 
 /* Prototype functions table */
@@ -510,12 +504,6 @@ void JSSVGSVGElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGSVGElementPrototypeConstantsFunctions, countof(JSSVGSVGElementPrototypeConstantsFunctions));
     init_JSSVGSVGElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGSVGElementPrototypeFunctions, countof(JSSVGSVGElementPrototypeFunctions));
-}
-
-JSValue JSSVGSVGElementPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSSVGSVGElementClassDefine;

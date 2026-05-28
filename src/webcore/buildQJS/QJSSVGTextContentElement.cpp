@@ -144,14 +144,7 @@ class JSSVGTextContentElementConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSSVGTextContentElementConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -163,24 +156,18 @@ static void init_JSSVGTextContentElementConstructorFunctions()
     if (JSSVGTextContentElementConstructorFunctions_initialized) return;
     JSSVGTextContentElementConstructorFunctions_initialized = true;
     memset(JSSVGTextContentElementConstructorFunctions, 0, sizeof(JSSVGTextContentElementConstructorFunctions));
-    JSSVGTextContentElementConstructorFunctions[0].name = "LENGTHADJUST_SPACING";
+    JSSVGTextContentElementConstructorFunctions[0].name = "LENGTHADJUST_UNKNOWN";
     JSSVGTextContentElementConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTextContentElementConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTextContentElementConstructorFunctions[0].magic = SVGTextContentElement::LENGTHADJUST_SPACING;
-    JSSVGTextContentElementConstructorFunctions[0].u.getset.get.getter_magic = JSSVGTextContentElementConstructor::getValueProperty;
-    JSSVGTextContentElementConstructorFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGTextContentElementConstructorFunctions[1].name = "LENGTHADJUST_UNKNOWN";
+    JSSVGTextContentElementConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGTextContentElementConstructorFunctions[0].u.i32 = (int32_t)SVGTextContentElement::LENGTHADJUST_UNKNOWN;
+    JSSVGTextContentElementConstructorFunctions[1].name = "LENGTHADJUST_SPACING";
     JSSVGTextContentElementConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTextContentElementConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTextContentElementConstructorFunctions[1].magic = SVGTextContentElement::LENGTHADJUST_UNKNOWN;
-    JSSVGTextContentElementConstructorFunctions[1].u.getset.get.getter_magic = JSSVGTextContentElementConstructor::getValueProperty;
-    JSSVGTextContentElementConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGTextContentElementConstructorFunctions[1].u.i32 = (int32_t)SVGTextContentElement::LENGTHADJUST_SPACING;
     JSSVGTextContentElementConstructorFunctions[2].name = "LENGTHADJUST_SPACINGANDGLYPHS";
     JSSVGTextContentElementConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTextContentElementConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTextContentElementConstructorFunctions[2].magic = SVGTextContentElement::LENGTHADJUST_SPACINGANDGLYPHS;
-    JSSVGTextContentElementConstructorFunctions[2].u.getset.get.getter_magic = JSSVGTextContentElementConstructor::getValueProperty;
-    JSSVGTextContentElementConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementConstructorFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGTextContentElementConstructorFunctions[2].u.i32 = (int32_t)SVGTextContentElement::LENGTHADJUST_SPACINGANDGLYPHS;
 }
 
 JSValue JSSVGTextContentElementConstructor::self(JSContext * ctx)
@@ -203,7 +190,7 @@ void JSSVGTextContentElementConstructor::initConstructor(JSContext * ctx, JSValu
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTextContentElementConstructorFunctions, countof(JSSVGTextContentElementConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSSVGTextContentElementPrototypeConstantsFunctions[3];
 static bool JSSVGTextContentElementPrototypeConstantsFunctions_initialized = false;
@@ -213,24 +200,18 @@ static void init_JSSVGTextContentElementPrototypeConstantsFunctions()
     if (JSSVGTextContentElementPrototypeConstantsFunctions_initialized) return;
     JSSVGTextContentElementPrototypeConstantsFunctions_initialized = true;
     memset(JSSVGTextContentElementPrototypeConstantsFunctions, 0, sizeof(JSSVGTextContentElementPrototypeConstantsFunctions));
-    JSSVGTextContentElementPrototypeConstantsFunctions[0].name = "LENGTHADJUST_SPACING";
+    JSSVGTextContentElementPrototypeConstantsFunctions[0].name = "LENGTHADJUST_UNKNOWN";
     JSSVGTextContentElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTextContentElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTextContentElementPrototypeConstantsFunctions[0].magic = SVGTextContentElement::LENGTHADJUST_SPACING;
-    JSSVGTextContentElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGTextContentElementPrototype::getValueProperty;
-    JSSVGTextContentElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGTextContentElementPrototypeConstantsFunctions[1].name = "LENGTHADJUST_UNKNOWN";
+    JSSVGTextContentElementPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGTextContentElementPrototypeConstantsFunctions[0].u.i32 = (int32_t)SVGTextContentElement::LENGTHADJUST_UNKNOWN;
+    JSSVGTextContentElementPrototypeConstantsFunctions[1].name = "LENGTHADJUST_SPACING";
     JSSVGTextContentElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTextContentElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTextContentElementPrototypeConstantsFunctions[1].magic = SVGTextContentElement::LENGTHADJUST_UNKNOWN;
-    JSSVGTextContentElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGTextContentElementPrototype::getValueProperty;
-    JSSVGTextContentElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGTextContentElementPrototypeConstantsFunctions[1].u.i32 = (int32_t)SVGTextContentElement::LENGTHADJUST_SPACING;
     JSSVGTextContentElementPrototypeConstantsFunctions[2].name = "LENGTHADJUST_SPACINGANDGLYPHS";
     JSSVGTextContentElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTextContentElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTextContentElementPrototypeConstantsFunctions[2].magic = SVGTextContentElement::LENGTHADJUST_SPACINGANDGLYPHS;
-    JSSVGTextContentElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGTextContentElementPrototype::getValueProperty;
-    JSSVGTextContentElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGTextContentElementPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGTextContentElementPrototypeConstantsFunctions[2].u.i32 = (int32_t)SVGTextContentElement::LENGTHADJUST_SPACINGANDGLYPHS;
 }
 
 /* Prototype functions table */
@@ -344,12 +325,6 @@ void JSSVGTextContentElementPrototype::initPrototype(JSContext * ctx, JSValue th
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTextContentElementPrototypeConstantsFunctions, countof(JSSVGTextContentElementPrototypeConstantsFunctions));
     init_JSSVGTextContentElementPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTextContentElementPrototypeFunctions, countof(JSSVGTextContentElementPrototypeFunctions));
-}
-
-JSValue JSSVGTextContentElementPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSSVGTextContentElementClassDefine;

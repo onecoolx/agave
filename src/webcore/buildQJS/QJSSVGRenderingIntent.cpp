@@ -68,14 +68,7 @@ class JSSVGRenderingIntentConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSSVGRenderingIntentConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -89,40 +82,28 @@ static void init_JSSVGRenderingIntentConstructorFunctions()
     memset(JSSVGRenderingIntentConstructorFunctions, 0, sizeof(JSSVGRenderingIntentConstructorFunctions));
     JSSVGRenderingIntentConstructorFunctions[0].name = "RENDERING_INTENT_UNKNOWN";
     JSSVGRenderingIntentConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGRenderingIntentConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGRenderingIntentConstructorFunctions[0].magic = SVGRenderingIntent::RENDERING_INTENT_UNKNOWN;
-    JSSVGRenderingIntentConstructorFunctions[0].u.getset.get.getter_magic = JSSVGRenderingIntentConstructor::getValueProperty;
-    JSSVGRenderingIntentConstructorFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGRenderingIntentConstructorFunctions[1].name = "RENDERING_INTENT_SATURATION";
+    JSSVGRenderingIntentConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGRenderingIntentConstructorFunctions[0].u.i32 = (int32_t)SVGRenderingIntent::RENDERING_INTENT_UNKNOWN;
+    JSSVGRenderingIntentConstructorFunctions[1].name = "RENDERING_INTENT_AUTO";
     JSSVGRenderingIntentConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGRenderingIntentConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGRenderingIntentConstructorFunctions[1].magic = SVGRenderingIntent::RENDERING_INTENT_SATURATION;
-    JSSVGRenderingIntentConstructorFunctions[1].u.getset.get.getter_magic = JSSVGRenderingIntentConstructor::getValueProperty;
-    JSSVGRenderingIntentConstructorFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGRenderingIntentConstructorFunctions[2].name = "RENDERING_INTENT_AUTO";
+    JSSVGRenderingIntentConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGRenderingIntentConstructorFunctions[1].u.i32 = (int32_t)SVGRenderingIntent::RENDERING_INTENT_AUTO;
+    JSSVGRenderingIntentConstructorFunctions[2].name = "RENDERING_INTENT_PERCEPTUAL";
     JSSVGRenderingIntentConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGRenderingIntentConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGRenderingIntentConstructorFunctions[2].magic = SVGRenderingIntent::RENDERING_INTENT_AUTO;
-    JSSVGRenderingIntentConstructorFunctions[2].u.getset.get.getter_magic = JSSVGRenderingIntentConstructor::getValueProperty;
-    JSSVGRenderingIntentConstructorFunctions[2].u.getset.set.setter_magic = NULL;
-    JSSVGRenderingIntentConstructorFunctions[3].name = "RENDERING_INTENT_PERCEPTUAL";
+    JSSVGRenderingIntentConstructorFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGRenderingIntentConstructorFunctions[2].u.i32 = (int32_t)SVGRenderingIntent::RENDERING_INTENT_PERCEPTUAL;
+    JSSVGRenderingIntentConstructorFunctions[3].name = "RENDERING_INTENT_RELATIVE_COLORIMETRIC";
     JSSVGRenderingIntentConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGRenderingIntentConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGRenderingIntentConstructorFunctions[3].magic = SVGRenderingIntent::RENDERING_INTENT_PERCEPTUAL;
-    JSSVGRenderingIntentConstructorFunctions[3].u.getset.get.getter_magic = JSSVGRenderingIntentConstructor::getValueProperty;
-    JSSVGRenderingIntentConstructorFunctions[3].u.getset.set.setter_magic = NULL;
-    JSSVGRenderingIntentConstructorFunctions[4].name = "RENDERING_INTENT_RELATIVE_COLORIMETRIC";
+    JSSVGRenderingIntentConstructorFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGRenderingIntentConstructorFunctions[3].u.i32 = (int32_t)SVGRenderingIntent::RENDERING_INTENT_RELATIVE_COLORIMETRIC;
+    JSSVGRenderingIntentConstructorFunctions[4].name = "RENDERING_INTENT_SATURATION";
     JSSVGRenderingIntentConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGRenderingIntentConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGRenderingIntentConstructorFunctions[4].magic = SVGRenderingIntent::RENDERING_INTENT_RELATIVE_COLORIMETRIC;
-    JSSVGRenderingIntentConstructorFunctions[4].u.getset.get.getter_magic = JSSVGRenderingIntentConstructor::getValueProperty;
-    JSSVGRenderingIntentConstructorFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGRenderingIntentConstructorFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGRenderingIntentConstructorFunctions[4].u.i32 = (int32_t)SVGRenderingIntent::RENDERING_INTENT_SATURATION;
     JSSVGRenderingIntentConstructorFunctions[5].name = "RENDERING_INTENT_ABSOLUTE_COLORIMETRIC";
     JSSVGRenderingIntentConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGRenderingIntentConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGRenderingIntentConstructorFunctions[5].magic = SVGRenderingIntent::RENDERING_INTENT_ABSOLUTE_COLORIMETRIC;
-    JSSVGRenderingIntentConstructorFunctions[5].u.getset.get.getter_magic = JSSVGRenderingIntentConstructor::getValueProperty;
-    JSSVGRenderingIntentConstructorFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGRenderingIntentConstructorFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSSVGRenderingIntentConstructorFunctions[5].u.i32 = (int32_t)SVGRenderingIntent::RENDERING_INTENT_ABSOLUTE_COLORIMETRIC;
 }
 
 JSValue JSSVGRenderingIntentConstructor::self(JSContext * ctx)
@@ -145,7 +126,7 @@ void JSSVGRenderingIntentConstructor::initConstructor(JSContext * ctx, JSValue t
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGRenderingIntentConstructorFunctions, countof(JSSVGRenderingIntentConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSSVGRenderingIntentPrototypeConstantsFunctions[6];
 static bool JSSVGRenderingIntentPrototypeConstantsFunctions_initialized = false;
@@ -157,40 +138,28 @@ static void init_JSSVGRenderingIntentPrototypeConstantsFunctions()
     memset(JSSVGRenderingIntentPrototypeConstantsFunctions, 0, sizeof(JSSVGRenderingIntentPrototypeConstantsFunctions));
     JSSVGRenderingIntentPrototypeConstantsFunctions[0].name = "RENDERING_INTENT_UNKNOWN";
     JSSVGRenderingIntentPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[0].magic = SVGRenderingIntent::RENDERING_INTENT_UNKNOWN;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGRenderingIntentPrototype::getValueProperty;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[1].name = "RENDERING_INTENT_SATURATION";
+    JSSVGRenderingIntentPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGRenderingIntentPrototypeConstantsFunctions[0].u.i32 = (int32_t)SVGRenderingIntent::RENDERING_INTENT_UNKNOWN;
+    JSSVGRenderingIntentPrototypeConstantsFunctions[1].name = "RENDERING_INTENT_AUTO";
     JSSVGRenderingIntentPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[1].magic = SVGRenderingIntent::RENDERING_INTENT_SATURATION;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGRenderingIntentPrototype::getValueProperty;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[2].name = "RENDERING_INTENT_AUTO";
+    JSSVGRenderingIntentPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGRenderingIntentPrototypeConstantsFunctions[1].u.i32 = (int32_t)SVGRenderingIntent::RENDERING_INTENT_AUTO;
+    JSSVGRenderingIntentPrototypeConstantsFunctions[2].name = "RENDERING_INTENT_PERCEPTUAL";
     JSSVGRenderingIntentPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[2].magic = SVGRenderingIntent::RENDERING_INTENT_AUTO;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGRenderingIntentPrototype::getValueProperty;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[3].name = "RENDERING_INTENT_PERCEPTUAL";
+    JSSVGRenderingIntentPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGRenderingIntentPrototypeConstantsFunctions[2].u.i32 = (int32_t)SVGRenderingIntent::RENDERING_INTENT_PERCEPTUAL;
+    JSSVGRenderingIntentPrototypeConstantsFunctions[3].name = "RENDERING_INTENT_RELATIVE_COLORIMETRIC";
     JSSVGRenderingIntentPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[3].magic = SVGRenderingIntent::RENDERING_INTENT_PERCEPTUAL;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGRenderingIntentPrototype::getValueProperty;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[4].name = "RENDERING_INTENT_RELATIVE_COLORIMETRIC";
+    JSSVGRenderingIntentPrototypeConstantsFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGRenderingIntentPrototypeConstantsFunctions[3].u.i32 = (int32_t)SVGRenderingIntent::RENDERING_INTENT_RELATIVE_COLORIMETRIC;
+    JSSVGRenderingIntentPrototypeConstantsFunctions[4].name = "RENDERING_INTENT_SATURATION";
     JSSVGRenderingIntentPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[4].magic = SVGRenderingIntent::RENDERING_INTENT_RELATIVE_COLORIMETRIC;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGRenderingIntentPrototype::getValueProperty;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGRenderingIntentPrototypeConstantsFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGRenderingIntentPrototypeConstantsFunctions[4].u.i32 = (int32_t)SVGRenderingIntent::RENDERING_INTENT_SATURATION;
     JSSVGRenderingIntentPrototypeConstantsFunctions[5].name = "RENDERING_INTENT_ABSOLUTE_COLORIMETRIC";
     JSSVGRenderingIntentPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[5].magic = SVGRenderingIntent::RENDERING_INTENT_ABSOLUTE_COLORIMETRIC;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSSVGRenderingIntentPrototype::getValueProperty;
-    JSSVGRenderingIntentPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
+    JSSVGRenderingIntentPrototypeConstantsFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSSVGRenderingIntentPrototypeConstantsFunctions[5].u.i32 = (int32_t)SVGRenderingIntent::RENDERING_INTENT_ABSOLUTE_COLORIMETRIC;
 }
 
 JSValue JSSVGRenderingIntentPrototype::self(JSContext * ctx)
@@ -213,12 +182,6 @@ void JSSVGRenderingIntentPrototype::initPrototype(JSContext * ctx, JSValue this_
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGRenderingIntentAttributesFunctions, countof(JSSVGRenderingIntentAttributesFunctions));
     init_JSSVGRenderingIntentPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGRenderingIntentPrototypeConstantsFunctions, countof(JSSVGRenderingIntentPrototypeConstantsFunctions));
-}
-
-JSValue JSSVGRenderingIntentPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSSVGRenderingIntentClassDefine;

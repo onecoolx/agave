@@ -87,14 +87,7 @@ class JSSVGTransformConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSSVGTransformConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -106,48 +99,34 @@ static void init_JSSVGTransformConstructorFunctions()
     if (JSSVGTransformConstructorFunctions_initialized) return;
     JSSVGTransformConstructorFunctions_initialized = true;
     memset(JSSVGTransformConstructorFunctions, 0, sizeof(JSSVGTransformConstructorFunctions));
-    JSSVGTransformConstructorFunctions[0].name = "SVG_TRANSFORM_SCALE";
+    JSSVGTransformConstructorFunctions[0].name = "SVG_TRANSFORM_UNKNOWN";
     JSSVGTransformConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTransformConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTransformConstructorFunctions[0].magic = SVGTransform::SVG_TRANSFORM_SCALE;
-    JSSVGTransformConstructorFunctions[0].u.getset.get.getter_magic = JSSVGTransformConstructor::getValueProperty;
-    JSSVGTransformConstructorFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGTransformConstructorFunctions[1].name = "SVG_TRANSFORM_UNKNOWN";
+    JSSVGTransformConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGTransformConstructorFunctions[0].u.i32 = (int32_t)SVGTransform::SVG_TRANSFORM_UNKNOWN;
+    JSSVGTransformConstructorFunctions[1].name = "SVG_TRANSFORM_MATRIX";
     JSSVGTransformConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTransformConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTransformConstructorFunctions[1].magic = SVGTransform::SVG_TRANSFORM_UNKNOWN;
-    JSSVGTransformConstructorFunctions[1].u.getset.get.getter_magic = JSSVGTransformConstructor::getValueProperty;
-    JSSVGTransformConstructorFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGTransformConstructorFunctions[2].name = "SVG_TRANSFORM_ROTATE";
+    JSSVGTransformConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGTransformConstructorFunctions[1].u.i32 = (int32_t)SVGTransform::SVG_TRANSFORM_MATRIX;
+    JSSVGTransformConstructorFunctions[2].name = "SVG_TRANSFORM_TRANSLATE";
     JSSVGTransformConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTransformConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTransformConstructorFunctions[2].magic = SVGTransform::SVG_TRANSFORM_ROTATE;
-    JSSVGTransformConstructorFunctions[2].u.getset.get.getter_magic = JSSVGTransformConstructor::getValueProperty;
-    JSSVGTransformConstructorFunctions[2].u.getset.set.setter_magic = NULL;
-    JSSVGTransformConstructorFunctions[3].name = "SVG_TRANSFORM_SKEWY";
+    JSSVGTransformConstructorFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGTransformConstructorFunctions[2].u.i32 = (int32_t)SVGTransform::SVG_TRANSFORM_TRANSLATE;
+    JSSVGTransformConstructorFunctions[3].name = "SVG_TRANSFORM_SCALE";
     JSSVGTransformConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTransformConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTransformConstructorFunctions[3].magic = SVGTransform::SVG_TRANSFORM_SKEWY;
-    JSSVGTransformConstructorFunctions[3].u.getset.get.getter_magic = JSSVGTransformConstructor::getValueProperty;
-    JSSVGTransformConstructorFunctions[3].u.getset.set.setter_magic = NULL;
-    JSSVGTransformConstructorFunctions[4].name = "SVG_TRANSFORM_MATRIX";
+    JSSVGTransformConstructorFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGTransformConstructorFunctions[3].u.i32 = (int32_t)SVGTransform::SVG_TRANSFORM_SCALE;
+    JSSVGTransformConstructorFunctions[4].name = "SVG_TRANSFORM_ROTATE";
     JSSVGTransformConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTransformConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTransformConstructorFunctions[4].magic = SVGTransform::SVG_TRANSFORM_MATRIX;
-    JSSVGTransformConstructorFunctions[4].u.getset.get.getter_magic = JSSVGTransformConstructor::getValueProperty;
-    JSSVGTransformConstructorFunctions[4].u.getset.set.setter_magic = NULL;
-    JSSVGTransformConstructorFunctions[5].name = "SVG_TRANSFORM_TRANSLATE";
+    JSSVGTransformConstructorFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGTransformConstructorFunctions[4].u.i32 = (int32_t)SVGTransform::SVG_TRANSFORM_ROTATE;
+    JSSVGTransformConstructorFunctions[5].name = "SVG_TRANSFORM_SKEWX";
     JSSVGTransformConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTransformConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTransformConstructorFunctions[5].magic = SVGTransform::SVG_TRANSFORM_TRANSLATE;
-    JSSVGTransformConstructorFunctions[5].u.getset.get.getter_magic = JSSVGTransformConstructor::getValueProperty;
-    JSSVGTransformConstructorFunctions[5].u.getset.set.setter_magic = NULL;
-    JSSVGTransformConstructorFunctions[6].name = "SVG_TRANSFORM_SKEWX";
+    JSSVGTransformConstructorFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSSVGTransformConstructorFunctions[5].u.i32 = (int32_t)SVGTransform::SVG_TRANSFORM_SKEWX;
+    JSSVGTransformConstructorFunctions[6].name = "SVG_TRANSFORM_SKEWY";
     JSSVGTransformConstructorFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTransformConstructorFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTransformConstructorFunctions[6].magic = SVGTransform::SVG_TRANSFORM_SKEWX;
-    JSSVGTransformConstructorFunctions[6].u.getset.get.getter_magic = JSSVGTransformConstructor::getValueProperty;
-    JSSVGTransformConstructorFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGTransformConstructorFunctions[6].def_type = JS_DEF_PROP_INT32;
+    JSSVGTransformConstructorFunctions[6].u.i32 = (int32_t)SVGTransform::SVG_TRANSFORM_SKEWY;
 }
 
 JSValue JSSVGTransformConstructor::self(JSContext * ctx)
@@ -170,7 +149,7 @@ void JSSVGTransformConstructor::initConstructor(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTransformConstructorFunctions, countof(JSSVGTransformConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSSVGTransformPrototypeConstantsFunctions[7];
 static bool JSSVGTransformPrototypeConstantsFunctions_initialized = false;
@@ -180,48 +159,34 @@ static void init_JSSVGTransformPrototypeConstantsFunctions()
     if (JSSVGTransformPrototypeConstantsFunctions_initialized) return;
     JSSVGTransformPrototypeConstantsFunctions_initialized = true;
     memset(JSSVGTransformPrototypeConstantsFunctions, 0, sizeof(JSSVGTransformPrototypeConstantsFunctions));
-    JSSVGTransformPrototypeConstantsFunctions[0].name = "SVG_TRANSFORM_SCALE";
+    JSSVGTransformPrototypeConstantsFunctions[0].name = "SVG_TRANSFORM_UNKNOWN";
     JSSVGTransformPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTransformPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTransformPrototypeConstantsFunctions[0].magic = SVGTransform::SVG_TRANSFORM_SCALE;
-    JSSVGTransformPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGTransformPrototype::getValueProperty;
-    JSSVGTransformPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGTransformPrototypeConstantsFunctions[1].name = "SVG_TRANSFORM_UNKNOWN";
+    JSSVGTransformPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGTransformPrototypeConstantsFunctions[0].u.i32 = (int32_t)SVGTransform::SVG_TRANSFORM_UNKNOWN;
+    JSSVGTransformPrototypeConstantsFunctions[1].name = "SVG_TRANSFORM_MATRIX";
     JSSVGTransformPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTransformPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTransformPrototypeConstantsFunctions[1].magic = SVGTransform::SVG_TRANSFORM_UNKNOWN;
-    JSSVGTransformPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGTransformPrototype::getValueProperty;
-    JSSVGTransformPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGTransformPrototypeConstantsFunctions[2].name = "SVG_TRANSFORM_ROTATE";
+    JSSVGTransformPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGTransformPrototypeConstantsFunctions[1].u.i32 = (int32_t)SVGTransform::SVG_TRANSFORM_MATRIX;
+    JSSVGTransformPrototypeConstantsFunctions[2].name = "SVG_TRANSFORM_TRANSLATE";
     JSSVGTransformPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTransformPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTransformPrototypeConstantsFunctions[2].magic = SVGTransform::SVG_TRANSFORM_ROTATE;
-    JSSVGTransformPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGTransformPrototype::getValueProperty;
-    JSSVGTransformPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
-    JSSVGTransformPrototypeConstantsFunctions[3].name = "SVG_TRANSFORM_SKEWY";
+    JSSVGTransformPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGTransformPrototypeConstantsFunctions[2].u.i32 = (int32_t)SVGTransform::SVG_TRANSFORM_TRANSLATE;
+    JSSVGTransformPrototypeConstantsFunctions[3].name = "SVG_TRANSFORM_SCALE";
     JSSVGTransformPrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTransformPrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTransformPrototypeConstantsFunctions[3].magic = SVGTransform::SVG_TRANSFORM_SKEWY;
-    JSSVGTransformPrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSSVGTransformPrototype::getValueProperty;
-    JSSVGTransformPrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
-    JSSVGTransformPrototypeConstantsFunctions[4].name = "SVG_TRANSFORM_MATRIX";
+    JSSVGTransformPrototypeConstantsFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSSVGTransformPrototypeConstantsFunctions[3].u.i32 = (int32_t)SVGTransform::SVG_TRANSFORM_SCALE;
+    JSSVGTransformPrototypeConstantsFunctions[4].name = "SVG_TRANSFORM_ROTATE";
     JSSVGTransformPrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTransformPrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTransformPrototypeConstantsFunctions[4].magic = SVGTransform::SVG_TRANSFORM_MATRIX;
-    JSSVGTransformPrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSSVGTransformPrototype::getValueProperty;
-    JSSVGTransformPrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
-    JSSVGTransformPrototypeConstantsFunctions[5].name = "SVG_TRANSFORM_TRANSLATE";
+    JSSVGTransformPrototypeConstantsFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSSVGTransformPrototypeConstantsFunctions[4].u.i32 = (int32_t)SVGTransform::SVG_TRANSFORM_ROTATE;
+    JSSVGTransformPrototypeConstantsFunctions[5].name = "SVG_TRANSFORM_SKEWX";
     JSSVGTransformPrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTransformPrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTransformPrototypeConstantsFunctions[5].magic = SVGTransform::SVG_TRANSFORM_TRANSLATE;
-    JSSVGTransformPrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSSVGTransformPrototype::getValueProperty;
-    JSSVGTransformPrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
-    JSSVGTransformPrototypeConstantsFunctions[6].name = "SVG_TRANSFORM_SKEWX";
+    JSSVGTransformPrototypeConstantsFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSSVGTransformPrototypeConstantsFunctions[5].u.i32 = (int32_t)SVGTransform::SVG_TRANSFORM_SKEWX;
+    JSSVGTransformPrototypeConstantsFunctions[6].name = "SVG_TRANSFORM_SKEWY";
     JSSVGTransformPrototypeConstantsFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGTransformPrototypeConstantsFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGTransformPrototypeConstantsFunctions[6].magic = SVGTransform::SVG_TRANSFORM_SKEWX;
-    JSSVGTransformPrototypeConstantsFunctions[6].u.getset.get.getter_magic = JSSVGTransformPrototype::getValueProperty;
-    JSSVGTransformPrototypeConstantsFunctions[6].u.getset.set.setter_magic = NULL;
+    JSSVGTransformPrototypeConstantsFunctions[6].def_type = JS_DEF_PROP_INT32;
+    JSSVGTransformPrototypeConstantsFunctions[6].u.i32 = (int32_t)SVGTransform::SVG_TRANSFORM_SKEWY;
 }
 
 /* Prototype functions table */
@@ -300,12 +265,6 @@ void JSSVGTransformPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTransformPrototypeConstantsFunctions, countof(JSSVGTransformPrototypeConstantsFunctions));
     init_JSSVGTransformPrototypeFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGTransformPrototypeFunctions, countof(JSSVGTransformPrototypeFunctions));
-}
-
-JSValue JSSVGTransformPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSSVGTransformClassDefine;

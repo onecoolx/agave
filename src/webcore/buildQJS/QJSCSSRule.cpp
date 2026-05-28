@@ -88,14 +88,7 @@ class JSCSSRuleConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSCSSRuleConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -107,48 +100,34 @@ static void init_JSCSSRuleConstructorFunctions()
     if (JSCSSRuleConstructorFunctions_initialized) return;
     JSCSSRuleConstructorFunctions_initialized = true;
     memset(JSCSSRuleConstructorFunctions, 0, sizeof(JSCSSRuleConstructorFunctions));
-    JSCSSRuleConstructorFunctions[0].name = "MEDIA_RULE";
+    JSCSSRuleConstructorFunctions[0].name = "UNKNOWN_RULE";
     JSCSSRuleConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSCSSRuleConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCSSRuleConstructorFunctions[0].magic = CSSRule::MEDIA_RULE;
-    JSCSSRuleConstructorFunctions[0].u.getset.get.getter_magic = JSCSSRuleConstructor::getValueProperty;
-    JSCSSRuleConstructorFunctions[0].u.getset.set.setter_magic = NULL;
-    JSCSSRuleConstructorFunctions[1].name = "IMPORT_RULE";
+    JSCSSRuleConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSCSSRuleConstructorFunctions[0].u.i32 = (int32_t)CSSRule::UNKNOWN_RULE;
+    JSCSSRuleConstructorFunctions[1].name = "STYLE_RULE";
     JSCSSRuleConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSCSSRuleConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCSSRuleConstructorFunctions[1].magic = CSSRule::IMPORT_RULE;
-    JSCSSRuleConstructorFunctions[1].u.getset.get.getter_magic = JSCSSRuleConstructor::getValueProperty;
-    JSCSSRuleConstructorFunctions[1].u.getset.set.setter_magic = NULL;
-    JSCSSRuleConstructorFunctions[2].name = "UNKNOWN_RULE";
+    JSCSSRuleConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSCSSRuleConstructorFunctions[1].u.i32 = (int32_t)CSSRule::STYLE_RULE;
+    JSCSSRuleConstructorFunctions[2].name = "CHARSET_RULE";
     JSCSSRuleConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSCSSRuleConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCSSRuleConstructorFunctions[2].magic = CSSRule::UNKNOWN_RULE;
-    JSCSSRuleConstructorFunctions[2].u.getset.get.getter_magic = JSCSSRuleConstructor::getValueProperty;
-    JSCSSRuleConstructorFunctions[2].u.getset.set.setter_magic = NULL;
-    JSCSSRuleConstructorFunctions[3].name = "STYLE_RULE";
+    JSCSSRuleConstructorFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSCSSRuleConstructorFunctions[2].u.i32 = (int32_t)CSSRule::CHARSET_RULE;
+    JSCSSRuleConstructorFunctions[3].name = "IMPORT_RULE";
     JSCSSRuleConstructorFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSCSSRuleConstructorFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCSSRuleConstructorFunctions[3].magic = CSSRule::STYLE_RULE;
-    JSCSSRuleConstructorFunctions[3].u.getset.get.getter_magic = JSCSSRuleConstructor::getValueProperty;
-    JSCSSRuleConstructorFunctions[3].u.getset.set.setter_magic = NULL;
-    JSCSSRuleConstructorFunctions[4].name = "PAGE_RULE";
+    JSCSSRuleConstructorFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSCSSRuleConstructorFunctions[3].u.i32 = (int32_t)CSSRule::IMPORT_RULE;
+    JSCSSRuleConstructorFunctions[4].name = "MEDIA_RULE";
     JSCSSRuleConstructorFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSCSSRuleConstructorFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCSSRuleConstructorFunctions[4].magic = CSSRule::PAGE_RULE;
-    JSCSSRuleConstructorFunctions[4].u.getset.get.getter_magic = JSCSSRuleConstructor::getValueProperty;
-    JSCSSRuleConstructorFunctions[4].u.getset.set.setter_magic = NULL;
-    JSCSSRuleConstructorFunctions[5].name = "CHARSET_RULE";
+    JSCSSRuleConstructorFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSCSSRuleConstructorFunctions[4].u.i32 = (int32_t)CSSRule::MEDIA_RULE;
+    JSCSSRuleConstructorFunctions[5].name = "FONT_FACE_RULE";
     JSCSSRuleConstructorFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSCSSRuleConstructorFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCSSRuleConstructorFunctions[5].magic = CSSRule::CHARSET_RULE;
-    JSCSSRuleConstructorFunctions[5].u.getset.get.getter_magic = JSCSSRuleConstructor::getValueProperty;
-    JSCSSRuleConstructorFunctions[5].u.getset.set.setter_magic = NULL;
-    JSCSSRuleConstructorFunctions[6].name = "FONT_FACE_RULE";
+    JSCSSRuleConstructorFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSCSSRuleConstructorFunctions[5].u.i32 = (int32_t)CSSRule::FONT_FACE_RULE;
+    JSCSSRuleConstructorFunctions[6].name = "PAGE_RULE";
     JSCSSRuleConstructorFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
-    JSCSSRuleConstructorFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCSSRuleConstructorFunctions[6].magic = CSSRule::FONT_FACE_RULE;
-    JSCSSRuleConstructorFunctions[6].u.getset.get.getter_magic = JSCSSRuleConstructor::getValueProperty;
-    JSCSSRuleConstructorFunctions[6].u.getset.set.setter_magic = NULL;
+    JSCSSRuleConstructorFunctions[6].def_type = JS_DEF_PROP_INT32;
+    JSCSSRuleConstructorFunctions[6].u.i32 = (int32_t)CSSRule::PAGE_RULE;
 }
 
 JSValue JSCSSRuleConstructor::self(JSContext * ctx)
@@ -171,7 +150,7 @@ void JSCSSRuleConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSRuleConstructorFunctions, countof(JSCSSRuleConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSCSSRulePrototypeConstantsFunctions[7];
 static bool JSCSSRulePrototypeConstantsFunctions_initialized = false;
@@ -181,48 +160,34 @@ static void init_JSCSSRulePrototypeConstantsFunctions()
     if (JSCSSRulePrototypeConstantsFunctions_initialized) return;
     JSCSSRulePrototypeConstantsFunctions_initialized = true;
     memset(JSCSSRulePrototypeConstantsFunctions, 0, sizeof(JSCSSRulePrototypeConstantsFunctions));
-    JSCSSRulePrototypeConstantsFunctions[0].name = "MEDIA_RULE";
+    JSCSSRulePrototypeConstantsFunctions[0].name = "UNKNOWN_RULE";
     JSCSSRulePrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSCSSRulePrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCSSRulePrototypeConstantsFunctions[0].magic = CSSRule::MEDIA_RULE;
-    JSCSSRulePrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSCSSRulePrototype::getValueProperty;
-    JSCSSRulePrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
-    JSCSSRulePrototypeConstantsFunctions[1].name = "IMPORT_RULE";
+    JSCSSRulePrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSCSSRulePrototypeConstantsFunctions[0].u.i32 = (int32_t)CSSRule::UNKNOWN_RULE;
+    JSCSSRulePrototypeConstantsFunctions[1].name = "STYLE_RULE";
     JSCSSRulePrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSCSSRulePrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCSSRulePrototypeConstantsFunctions[1].magic = CSSRule::IMPORT_RULE;
-    JSCSSRulePrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSCSSRulePrototype::getValueProperty;
-    JSCSSRulePrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
-    JSCSSRulePrototypeConstantsFunctions[2].name = "UNKNOWN_RULE";
+    JSCSSRulePrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSCSSRulePrototypeConstantsFunctions[1].u.i32 = (int32_t)CSSRule::STYLE_RULE;
+    JSCSSRulePrototypeConstantsFunctions[2].name = "CHARSET_RULE";
     JSCSSRulePrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSCSSRulePrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCSSRulePrototypeConstantsFunctions[2].magic = CSSRule::UNKNOWN_RULE;
-    JSCSSRulePrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSCSSRulePrototype::getValueProperty;
-    JSCSSRulePrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
-    JSCSSRulePrototypeConstantsFunctions[3].name = "STYLE_RULE";
+    JSCSSRulePrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSCSSRulePrototypeConstantsFunctions[2].u.i32 = (int32_t)CSSRule::CHARSET_RULE;
+    JSCSSRulePrototypeConstantsFunctions[3].name = "IMPORT_RULE";
     JSCSSRulePrototypeConstantsFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
-    JSCSSRulePrototypeConstantsFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCSSRulePrototypeConstantsFunctions[3].magic = CSSRule::STYLE_RULE;
-    JSCSSRulePrototypeConstantsFunctions[3].u.getset.get.getter_magic = JSCSSRulePrototype::getValueProperty;
-    JSCSSRulePrototypeConstantsFunctions[3].u.getset.set.setter_magic = NULL;
-    JSCSSRulePrototypeConstantsFunctions[4].name = "PAGE_RULE";
+    JSCSSRulePrototypeConstantsFunctions[3].def_type = JS_DEF_PROP_INT32;
+    JSCSSRulePrototypeConstantsFunctions[3].u.i32 = (int32_t)CSSRule::IMPORT_RULE;
+    JSCSSRulePrototypeConstantsFunctions[4].name = "MEDIA_RULE";
     JSCSSRulePrototypeConstantsFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
-    JSCSSRulePrototypeConstantsFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCSSRulePrototypeConstantsFunctions[4].magic = CSSRule::PAGE_RULE;
-    JSCSSRulePrototypeConstantsFunctions[4].u.getset.get.getter_magic = JSCSSRulePrototype::getValueProperty;
-    JSCSSRulePrototypeConstantsFunctions[4].u.getset.set.setter_magic = NULL;
-    JSCSSRulePrototypeConstantsFunctions[5].name = "CHARSET_RULE";
+    JSCSSRulePrototypeConstantsFunctions[4].def_type = JS_DEF_PROP_INT32;
+    JSCSSRulePrototypeConstantsFunctions[4].u.i32 = (int32_t)CSSRule::MEDIA_RULE;
+    JSCSSRulePrototypeConstantsFunctions[5].name = "FONT_FACE_RULE";
     JSCSSRulePrototypeConstantsFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
-    JSCSSRulePrototypeConstantsFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCSSRulePrototypeConstantsFunctions[5].magic = CSSRule::CHARSET_RULE;
-    JSCSSRulePrototypeConstantsFunctions[5].u.getset.get.getter_magic = JSCSSRulePrototype::getValueProperty;
-    JSCSSRulePrototypeConstantsFunctions[5].u.getset.set.setter_magic = NULL;
-    JSCSSRulePrototypeConstantsFunctions[6].name = "FONT_FACE_RULE";
+    JSCSSRulePrototypeConstantsFunctions[5].def_type = JS_DEF_PROP_INT32;
+    JSCSSRulePrototypeConstantsFunctions[5].u.i32 = (int32_t)CSSRule::FONT_FACE_RULE;
+    JSCSSRulePrototypeConstantsFunctions[6].name = "PAGE_RULE";
     JSCSSRulePrototypeConstantsFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
-    JSCSSRulePrototypeConstantsFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCSSRulePrototypeConstantsFunctions[6].magic = CSSRule::FONT_FACE_RULE;
-    JSCSSRulePrototypeConstantsFunctions[6].u.getset.get.getter_magic = JSCSSRulePrototype::getValueProperty;
-    JSCSSRulePrototypeConstantsFunctions[6].u.getset.set.setter_magic = NULL;
+    JSCSSRulePrototypeConstantsFunctions[6].def_type = JS_DEF_PROP_INT32;
+    JSCSSRulePrototypeConstantsFunctions[6].u.i32 = (int32_t)CSSRule::PAGE_RULE;
 }
 
 JSValue JSCSSRulePrototype::self(JSContext * ctx)
@@ -245,12 +210,6 @@ void JSCSSRulePrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSRuleAttributesFunctions, countof(JSCSSRuleAttributesFunctions));
     init_JSCSSRulePrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSRulePrototypeConstantsFunctions, countof(JSCSSRulePrototypeConstantsFunctions));
-}
-
-JSValue JSCSSRulePrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSCSSRuleClassDefine;

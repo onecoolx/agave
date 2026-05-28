@@ -60,14 +60,7 @@ class JSRangeExceptionConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSRangeExceptionConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -81,16 +74,12 @@ static void init_JSRangeExceptionConstructorFunctions()
     memset(JSRangeExceptionConstructorFunctions, 0, sizeof(JSRangeExceptionConstructorFunctions));
     JSRangeExceptionConstructorFunctions[0].name = "BAD_BOUNDARYPOINTS_ERR";
     JSRangeExceptionConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangeExceptionConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangeExceptionConstructorFunctions[0].magic = RangeException::BAD_BOUNDARYPOINTS_ERR;
-    JSRangeExceptionConstructorFunctions[0].u.getset.get.getter_magic = JSRangeExceptionConstructor::getValueProperty;
-    JSRangeExceptionConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSRangeExceptionConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSRangeExceptionConstructorFunctions[0].u.i32 = (int32_t)RangeException::BAD_BOUNDARYPOINTS_ERR;
     JSRangeExceptionConstructorFunctions[1].name = "INVALID_NODE_TYPE_ERR";
     JSRangeExceptionConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangeExceptionConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangeExceptionConstructorFunctions[1].magic = RangeException::INVALID_NODE_TYPE_ERR;
-    JSRangeExceptionConstructorFunctions[1].u.getset.get.getter_magic = JSRangeExceptionConstructor::getValueProperty;
-    JSRangeExceptionConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSRangeExceptionConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSRangeExceptionConstructorFunctions[1].u.i32 = (int32_t)RangeException::INVALID_NODE_TYPE_ERR;
 }
 
 JSValue JSRangeExceptionConstructor::self(JSContext * ctx)
@@ -113,7 +102,7 @@ void JSRangeExceptionConstructor::initConstructor(JSContext * ctx, JSValue this_
     JS_SetPropertyFunctionList(ctx, this_obj, JSRangeExceptionConstructorFunctions, countof(JSRangeExceptionConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSRangeExceptionPrototypeConstantsFunctions[2];
 static bool JSRangeExceptionPrototypeConstantsFunctions_initialized = false;
@@ -125,16 +114,12 @@ static void init_JSRangeExceptionPrototypeConstantsFunctions()
     memset(JSRangeExceptionPrototypeConstantsFunctions, 0, sizeof(JSRangeExceptionPrototypeConstantsFunctions));
     JSRangeExceptionPrototypeConstantsFunctions[0].name = "BAD_BOUNDARYPOINTS_ERR";
     JSRangeExceptionPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangeExceptionPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangeExceptionPrototypeConstantsFunctions[0].magic = RangeException::BAD_BOUNDARYPOINTS_ERR;
-    JSRangeExceptionPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSRangeExceptionPrototype::getValueProperty;
-    JSRangeExceptionPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSRangeExceptionPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSRangeExceptionPrototypeConstantsFunctions[0].u.i32 = (int32_t)RangeException::BAD_BOUNDARYPOINTS_ERR;
     JSRangeExceptionPrototypeConstantsFunctions[1].name = "INVALID_NODE_TYPE_ERR";
     JSRangeExceptionPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSRangeExceptionPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSRangeExceptionPrototypeConstantsFunctions[1].magic = RangeException::INVALID_NODE_TYPE_ERR;
-    JSRangeExceptionPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSRangeExceptionPrototype::getValueProperty;
-    JSRangeExceptionPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSRangeExceptionPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSRangeExceptionPrototypeConstantsFunctions[1].u.i32 = (int32_t)RangeException::INVALID_NODE_TYPE_ERR;
 }
 
 JSValue JSRangeExceptionPrototype::self(JSContext * ctx)
@@ -157,12 +142,6 @@ void JSRangeExceptionPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSRangeExceptionAttributesFunctions, countof(JSRangeExceptionAttributesFunctions));
     init_JSRangeExceptionPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSRangeExceptionPrototypeConstantsFunctions, countof(JSRangeExceptionPrototypeConstantsFunctions));
-}
-
-JSValue JSRangeExceptionPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSRangeExceptionClassDefine;

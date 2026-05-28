@@ -68,14 +68,7 @@ class JSSVGExceptionConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSSVGExceptionConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -87,24 +80,18 @@ static void init_JSSVGExceptionConstructorFunctions()
     if (JSSVGExceptionConstructorFunctions_initialized) return;
     JSSVGExceptionConstructorFunctions_initialized = true;
     memset(JSSVGExceptionConstructorFunctions, 0, sizeof(JSSVGExceptionConstructorFunctions));
-    JSSVGExceptionConstructorFunctions[0].name = "SVG_INVALID_VALUE_ERR";
+    JSSVGExceptionConstructorFunctions[0].name = "SVG_WRONG_TYPE_ERR";
     JSSVGExceptionConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGExceptionConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGExceptionConstructorFunctions[0].magic = SVGException::SVG_INVALID_VALUE_ERR;
-    JSSVGExceptionConstructorFunctions[0].u.getset.get.getter_magic = JSSVGExceptionConstructor::getValueProperty;
-    JSSVGExceptionConstructorFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGExceptionConstructorFunctions[1].name = "SVG_WRONG_TYPE_ERR";
+    JSSVGExceptionConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGExceptionConstructorFunctions[0].u.i32 = (int32_t)SVGException::SVG_WRONG_TYPE_ERR;
+    JSSVGExceptionConstructorFunctions[1].name = "SVG_INVALID_VALUE_ERR";
     JSSVGExceptionConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGExceptionConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGExceptionConstructorFunctions[1].magic = SVGException::SVG_WRONG_TYPE_ERR;
-    JSSVGExceptionConstructorFunctions[1].u.getset.get.getter_magic = JSSVGExceptionConstructor::getValueProperty;
-    JSSVGExceptionConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGExceptionConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGExceptionConstructorFunctions[1].u.i32 = (int32_t)SVGException::SVG_INVALID_VALUE_ERR;
     JSSVGExceptionConstructorFunctions[2].name = "SVG_MATRIX_NOT_INVERTABLE";
     JSSVGExceptionConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGExceptionConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGExceptionConstructorFunctions[2].magic = SVGException::SVG_MATRIX_NOT_INVERTABLE;
-    JSSVGExceptionConstructorFunctions[2].u.getset.get.getter_magic = JSSVGExceptionConstructor::getValueProperty;
-    JSSVGExceptionConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGExceptionConstructorFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGExceptionConstructorFunctions[2].u.i32 = (int32_t)SVGException::SVG_MATRIX_NOT_INVERTABLE;
 }
 
 JSValue JSSVGExceptionConstructor::self(JSContext * ctx)
@@ -127,7 +114,7 @@ void JSSVGExceptionConstructor::initConstructor(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGExceptionConstructorFunctions, countof(JSSVGExceptionConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSSVGExceptionPrototypeConstantsFunctions[3];
 static bool JSSVGExceptionPrototypeConstantsFunctions_initialized = false;
@@ -137,24 +124,18 @@ static void init_JSSVGExceptionPrototypeConstantsFunctions()
     if (JSSVGExceptionPrototypeConstantsFunctions_initialized) return;
     JSSVGExceptionPrototypeConstantsFunctions_initialized = true;
     memset(JSSVGExceptionPrototypeConstantsFunctions, 0, sizeof(JSSVGExceptionPrototypeConstantsFunctions));
-    JSSVGExceptionPrototypeConstantsFunctions[0].name = "SVG_INVALID_VALUE_ERR";
+    JSSVGExceptionPrototypeConstantsFunctions[0].name = "SVG_WRONG_TYPE_ERR";
     JSSVGExceptionPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGExceptionPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGExceptionPrototypeConstantsFunctions[0].magic = SVGException::SVG_INVALID_VALUE_ERR;
-    JSSVGExceptionPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGExceptionPrototype::getValueProperty;
-    JSSVGExceptionPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGExceptionPrototypeConstantsFunctions[1].name = "SVG_WRONG_TYPE_ERR";
+    JSSVGExceptionPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGExceptionPrototypeConstantsFunctions[0].u.i32 = (int32_t)SVGException::SVG_WRONG_TYPE_ERR;
+    JSSVGExceptionPrototypeConstantsFunctions[1].name = "SVG_INVALID_VALUE_ERR";
     JSSVGExceptionPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGExceptionPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGExceptionPrototypeConstantsFunctions[1].magic = SVGException::SVG_WRONG_TYPE_ERR;
-    JSSVGExceptionPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGExceptionPrototype::getValueProperty;
-    JSSVGExceptionPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGExceptionPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGExceptionPrototypeConstantsFunctions[1].u.i32 = (int32_t)SVGException::SVG_INVALID_VALUE_ERR;
     JSSVGExceptionPrototypeConstantsFunctions[2].name = "SVG_MATRIX_NOT_INVERTABLE";
     JSSVGExceptionPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGExceptionPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGExceptionPrototypeConstantsFunctions[2].magic = SVGException::SVG_MATRIX_NOT_INVERTABLE;
-    JSSVGExceptionPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGExceptionPrototype::getValueProperty;
-    JSSVGExceptionPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGExceptionPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGExceptionPrototypeConstantsFunctions[2].u.i32 = (int32_t)SVGException::SVG_MATRIX_NOT_INVERTABLE;
 }
 
 JSValue JSSVGExceptionPrototype::self(JSContext * ctx)
@@ -177,12 +158,6 @@ void JSSVGExceptionPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGExceptionAttributesFunctions, countof(JSSVGExceptionAttributesFunctions));
     init_JSSVGExceptionPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGExceptionPrototypeConstantsFunctions, countof(JSSVGExceptionPrototypeConstantsFunctions));
-}
-
-JSValue JSSVGExceptionPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSSVGExceptionClassDefine;

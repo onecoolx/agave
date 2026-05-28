@@ -68,14 +68,7 @@ class JSSVGUnitTypesConstructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 };
-
-JSValue JSSVGUnitTypesConstructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 /* Functions table for constructor */
 
@@ -89,22 +82,16 @@ static void init_JSSVGUnitTypesConstructorFunctions()
     memset(JSSVGUnitTypesConstructorFunctions, 0, sizeof(JSSVGUnitTypesConstructorFunctions));
     JSSVGUnitTypesConstructorFunctions[0].name = "SVG_UNIT_TYPE_UNKNOWN";
     JSSVGUnitTypesConstructorFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGUnitTypesConstructorFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGUnitTypesConstructorFunctions[0].magic = SVGUnitTypes::SVG_UNIT_TYPE_UNKNOWN;
-    JSSVGUnitTypesConstructorFunctions[0].u.getset.get.getter_magic = JSSVGUnitTypesConstructor::getValueProperty;
-    JSSVGUnitTypesConstructorFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGUnitTypesConstructorFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGUnitTypesConstructorFunctions[0].u.i32 = (int32_t)SVGUnitTypes::SVG_UNIT_TYPE_UNKNOWN;
     JSSVGUnitTypesConstructorFunctions[1].name = "SVG_UNIT_TYPE_USERSPACEONUSE";
     JSSVGUnitTypesConstructorFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGUnitTypesConstructorFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGUnitTypesConstructorFunctions[1].magic = SVGUnitTypes::SVG_UNIT_TYPE_USERSPACEONUSE;
-    JSSVGUnitTypesConstructorFunctions[1].u.getset.get.getter_magic = JSSVGUnitTypesConstructor::getValueProperty;
-    JSSVGUnitTypesConstructorFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGUnitTypesConstructorFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGUnitTypesConstructorFunctions[1].u.i32 = (int32_t)SVGUnitTypes::SVG_UNIT_TYPE_USERSPACEONUSE;
     JSSVGUnitTypesConstructorFunctions[2].name = "SVG_UNIT_TYPE_OBJECTBOUNDINGBOX";
     JSSVGUnitTypesConstructorFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGUnitTypesConstructorFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGUnitTypesConstructorFunctions[2].magic = SVGUnitTypes::SVG_UNIT_TYPE_OBJECTBOUNDINGBOX;
-    JSSVGUnitTypesConstructorFunctions[2].u.getset.get.getter_magic = JSSVGUnitTypesConstructor::getValueProperty;
-    JSSVGUnitTypesConstructorFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGUnitTypesConstructorFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGUnitTypesConstructorFunctions[2].u.i32 = (int32_t)SVGUnitTypes::SVG_UNIT_TYPE_OBJECTBOUNDINGBOX;
 }
 
 JSValue JSSVGUnitTypesConstructor::self(JSContext * ctx)
@@ -127,7 +114,7 @@ void JSSVGUnitTypesConstructor::initConstructor(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGUnitTypesConstructorFunctions, countof(JSSVGUnitTypesConstructorFunctions));
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSSVGUnitTypesPrototypeConstantsFunctions[3];
 static bool JSSVGUnitTypesPrototypeConstantsFunctions_initialized = false;
@@ -139,22 +126,16 @@ static void init_JSSVGUnitTypesPrototypeConstantsFunctions()
     memset(JSSVGUnitTypesPrototypeConstantsFunctions, 0, sizeof(JSSVGUnitTypesPrototypeConstantsFunctions));
     JSSVGUnitTypesPrototypeConstantsFunctions[0].name = "SVG_UNIT_TYPE_UNKNOWN";
     JSSVGUnitTypesPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGUnitTypesPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGUnitTypesPrototypeConstantsFunctions[0].magic = SVGUnitTypes::SVG_UNIT_TYPE_UNKNOWN;
-    JSSVGUnitTypesPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGUnitTypesPrototype::getValueProperty;
-    JSSVGUnitTypesPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGUnitTypesPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGUnitTypesPrototypeConstantsFunctions[0].u.i32 = (int32_t)SVGUnitTypes::SVG_UNIT_TYPE_UNKNOWN;
     JSSVGUnitTypesPrototypeConstantsFunctions[1].name = "SVG_UNIT_TYPE_USERSPACEONUSE";
     JSSVGUnitTypesPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGUnitTypesPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGUnitTypesPrototypeConstantsFunctions[1].magic = SVGUnitTypes::SVG_UNIT_TYPE_USERSPACEONUSE;
-    JSSVGUnitTypesPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGUnitTypesPrototype::getValueProperty;
-    JSSVGUnitTypesPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGUnitTypesPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGUnitTypesPrototypeConstantsFunctions[1].u.i32 = (int32_t)SVGUnitTypes::SVG_UNIT_TYPE_USERSPACEONUSE;
     JSSVGUnitTypesPrototypeConstantsFunctions[2].name = "SVG_UNIT_TYPE_OBJECTBOUNDINGBOX";
     JSSVGUnitTypesPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGUnitTypesPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGUnitTypesPrototypeConstantsFunctions[2].magic = SVGUnitTypes::SVG_UNIT_TYPE_OBJECTBOUNDINGBOX;
-    JSSVGUnitTypesPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGUnitTypesPrototype::getValueProperty;
-    JSSVGUnitTypesPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGUnitTypesPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGUnitTypesPrototypeConstantsFunctions[2].u.i32 = (int32_t)SVGUnitTypes::SVG_UNIT_TYPE_OBJECTBOUNDINGBOX;
 }
 
 JSValue JSSVGUnitTypesPrototype::self(JSContext * ctx)
@@ -177,12 +158,6 @@ void JSSVGUnitTypesPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGUnitTypesAttributesFunctions, countof(JSSVGUnitTypesAttributesFunctions));
     init_JSSVGUnitTypesPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGUnitTypesPrototypeConstantsFunctions, countof(JSSVGUnitTypesPrototypeConstantsFunctions));
-}
-
-JSValue JSSVGUnitTypesPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSSVGUnitTypesClassDefine;

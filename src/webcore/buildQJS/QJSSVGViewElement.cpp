@@ -93,7 +93,7 @@ static void init_JSSVGViewElementAttributesFunctions()
     JSSVGViewElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
 }
 
-/* Functions table */
+/* Constants table */
 
 static JSCFunctionListEntry JSSVGViewElementPrototypeConstantsFunctions[3];
 static bool JSSVGViewElementPrototypeConstantsFunctions_initialized = false;
@@ -105,22 +105,16 @@ static void init_JSSVGViewElementPrototypeConstantsFunctions()
     memset(JSSVGViewElementPrototypeConstantsFunctions, 0, sizeof(JSSVGViewElementPrototypeConstantsFunctions));
     JSSVGViewElementPrototypeConstantsFunctions[0].name = "SVG_ZOOMANDPAN_UNKNOWN";
     JSSVGViewElementPrototypeConstantsFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGViewElementPrototypeConstantsFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGViewElementPrototypeConstantsFunctions[0].magic = SVGViewElement::SVG_ZOOMANDPAN_UNKNOWN;
-    JSSVGViewElementPrototypeConstantsFunctions[0].u.getset.get.getter_magic = JSSVGViewElementPrototype::getValueProperty;
-    JSSVGViewElementPrototypeConstantsFunctions[0].u.getset.set.setter_magic = NULL;
+    JSSVGViewElementPrototypeConstantsFunctions[0].def_type = JS_DEF_PROP_INT32;
+    JSSVGViewElementPrototypeConstantsFunctions[0].u.i32 = (int32_t)SVGViewElement::SVG_ZOOMANDPAN_UNKNOWN;
     JSSVGViewElementPrototypeConstantsFunctions[1].name = "SVG_ZOOMANDPAN_DISABLE";
     JSSVGViewElementPrototypeConstantsFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGViewElementPrototypeConstantsFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGViewElementPrototypeConstantsFunctions[1].magic = SVGViewElement::SVG_ZOOMANDPAN_DISABLE;
-    JSSVGViewElementPrototypeConstantsFunctions[1].u.getset.get.getter_magic = JSSVGViewElementPrototype::getValueProperty;
-    JSSVGViewElementPrototypeConstantsFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGViewElementPrototypeConstantsFunctions[1].def_type = JS_DEF_PROP_INT32;
+    JSSVGViewElementPrototypeConstantsFunctions[1].u.i32 = (int32_t)SVGViewElement::SVG_ZOOMANDPAN_DISABLE;
     JSSVGViewElementPrototypeConstantsFunctions[2].name = "SVG_ZOOMANDPAN_MAGNIFY";
     JSSVGViewElementPrototypeConstantsFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
-    JSSVGViewElementPrototypeConstantsFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGViewElementPrototypeConstantsFunctions[2].magic = SVGViewElement::SVG_ZOOMANDPAN_MAGNIFY;
-    JSSVGViewElementPrototypeConstantsFunctions[2].u.getset.get.getter_magic = JSSVGViewElementPrototype::getValueProperty;
-    JSSVGViewElementPrototypeConstantsFunctions[2].u.getset.set.setter_magic = NULL;
+    JSSVGViewElementPrototypeConstantsFunctions[2].def_type = JS_DEF_PROP_INT32;
+    JSSVGViewElementPrototypeConstantsFunctions[2].u.i32 = (int32_t)SVGViewElement::SVG_ZOOMANDPAN_MAGNIFY;
 }
 
 JSValue JSSVGViewElementPrototype::self(JSContext * ctx)
@@ -143,12 +137,6 @@ void JSSVGViewElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGViewElementAttributesFunctions, countof(JSSVGViewElementAttributesFunctions));
     init_JSSVGViewElementPrototypeConstantsFunctions();
     JS_SetPropertyFunctionList(ctx, this_obj, JSSVGViewElementPrototypeConstantsFunctions, countof(JSSVGViewElementPrototypeConstantsFunctions));
-}
-
-JSValue JSSVGViewElementPrototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
 }
 
 static JSClassDef JSSVGViewElementClassDefine;

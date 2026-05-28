@@ -565,9 +565,6 @@ sub GenerateHeader
     if ($numFunctions > 0 || $numConstants > 0) {
         #<Debug>#push(@headerContent, "    bool getOwnPropertySlot(KJS::ExecState*, const KJS::Identifier&, KJS::PropertySlot&);\n");
     }
-    if ($numConstants ne 0) {
-        push(@headerContent, "    static JSValue getValueProperty(JSContext *ctx, JSValueConst this_val, int token);\n");
-    }
     push(@headerContent, "};\n\n");
 
     if ($numFunctions > 0) {
@@ -679,31 +676,30 @@ sub GenerateImplementation
         push(@implContent, constructorFor($className, $protoClassName, $interfaceName, $dataNode->extendedAttributes->{"CanBeConstructed"}));
 
         if ($numConstants > 0) {
-            # create constructor table
+            # create constructor constants table using JS_DEF_PROP_INT32
+            my $nameEntries = "${className}ConstructorFunctions";
 
-            $hashSize = $numConstants;
-            $hashName = $className . "Constructor";
+            push(@implContent, "/* Functions table for constructor */\n");
+            push(@implContent, "\nstatic JSCFunctionListEntry $nameEntries\[$numConstants\];\n");
+            push(@implContent, "static bool ${nameEntries}_initialized = false;\n\n");
+            push(@implContent, "static void init_${nameEntries}()\n{\n");
+            push(@implContent, "    if (${nameEntries}_initialized) return;\n");
+            push(@implContent, "    ${nameEntries}_initialized = true;\n");
+            push(@implContent, "    memset($nameEntries, 0, sizeof($nameEntries));\n");
 
-            @hashKeys = ();
-            @hashValues = ();
-            @hashParameters = ();
-            @hashReadonly = ();
-
+            my $idx = 0;
             foreach my $constant (@{$dataNode->constants}) {
                 my $name = $constant->name;
-                push(@hashKeys, $name);
-
                 my $value = HashValueForClassAndName($implClassName, $name);
-                push(@hashValues, $value);
 
-                my $numParameters = 0;
-                push(@hashParameters, $numParameters);
-                push(@hashReadonly, "1");
+                push(@implContent, "    $nameEntries\[$idx\].name = \"$name\";\n");
+                push(@implContent, "    $nameEntries\[$idx\].prop_flags = JS_PROP_CONFIGURABLE;\n");
+                push(@implContent, "    $nameEntries\[$idx\].def_type = JS_DEF_PROP_INT32;\n");
+                push(@implContent, "    $nameEntries\[$idx\].u.i32 = (int32_t)$value;\n");
+                $idx++;
             }
 
-            $object->GenerateHashTable($hashName, $hashSize,
-                                       \@hashKeys, \@hashValues,
-                                       \@hashParameters, \@hashReadonly);
+            push(@implContent, "}\n\n");
         }
 
         push(@implContent, "JSValue ${className}Constructor::self(JSContext * ctx)\n{\n");
@@ -738,28 +734,31 @@ sub GenerateImplementation
     }
 
     if ($numConstants > 0) {
-        # - Add constants
-        $hashSize = $numConstants;
-        $hashName = $className . "Prototype";
-        $hashType = "Constants";
+        # - Add constants using JS_DEF_PROP_INT32 (avoids int16_t magic overflow)
+        my $nameEntries = "${className}PrototypeConstantsFunctions";
+        my $numConsts = @{$dataNode->constants};
 
-        @hashKeys = ();
-        @hashValues = ();
-        @hashReadonly = ();
+        push(@implContent, "/* Constants table */\n");
+        push(@implContent, "\nstatic JSCFunctionListEntry $nameEntries\[$numConsts\];\n");
+        push(@implContent, "static bool ${nameEntries}_initialized = false;\n\n");
+        push(@implContent, "static void init_${nameEntries}()\n{\n");
+        push(@implContent, "    if (${nameEntries}_initialized) return;\n");
+        push(@implContent, "    ${nameEntries}_initialized = true;\n");
+        push(@implContent, "    memset($nameEntries, 0, sizeof($nameEntries));\n");
 
+        my $idx = 0;
         foreach my $constant (@{$dataNode->constants}) {
             my $name = $constant->name;
-            push(@hashKeys, $name);
-
             my $value = HashValueForClassAndName($implClassName, $name);
-            push(@hashValues, $value);
 
-            push(@hashReadonly, "1");
+            push(@implContent, "    $nameEntries\[$idx\].name = \"$name\";\n");
+            push(@implContent, "    $nameEntries\[$idx\].prop_flags = JS_PROP_CONFIGURABLE;\n");
+            push(@implContent, "    $nameEntries\[$idx\].def_type = JS_DEF_PROP_INT32;\n");
+            push(@implContent, "    $nameEntries\[$idx\].u.i32 = (int32_t)$value;\n");
+            $idx++;
         }
 
-        $object->GenerateAttributesTable($hashName, $hashSize, $hashType,
-                                   \@hashKeys, \@hashValues,
-                                   \@hashReadonly);
+        push(@implContent, "}\n\n");
     }
 
     if ($numFunctions > 0) {
@@ -844,9 +843,7 @@ sub GenerateImplementation
     }
     push(@implContent, "}\n\n");
     if ($numConstants ne 0) {
-        push(@implContent, "JSValue ${className}Prototype::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)\n{\n");
-        push(@implContent, "    // The token is the numeric value of its associated constant\n");
-        push(@implContent, "    return JS_NewInt32(ctx, token);\n}\n\n");
+        # Constants now use JS_DEF_PROP_INT32, no getter needed
     }
 
     # - Initialize static ClassInfo object
@@ -2058,7 +2055,6 @@ class ${className}Constructor {
 public:
     static JSValue self(JSContext* ctx);
     static void initConstructor(JSContext * ctx, JSValue this_obj);
-    static JSValue getValueProperty(JSContext*, JSValueConst this_val, int token);
 EOF
 
     if ($canConstruct) {
@@ -2069,12 +2065,6 @@ EOF
 
 $implContent .= << "EOF";
 };
-
-JSValue ${className}Constructor::getValueProperty(JSContext * ctx, JSValueConst this_val, int token)
-{
-    // The token is the numeric value of its associated constant
-    return JS_NewInt32(ctx, token);
-}
 
 EOF
 
