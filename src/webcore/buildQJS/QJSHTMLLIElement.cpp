@@ -113,19 +113,6 @@ void JSHTMLLIElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLLIElementAttributesFunctions, countof(JSHTMLLIElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLLIElementClassDefine;
-static bool JSHTMLLIElementClassDefine_initialized = false;
-
-static void init_JSHTMLLIElementClassDefine()
-{
-    if (JSHTMLLIElementClassDefine_initialized) return;
-    JSHTMLLIElementClassDefine_initialized = true;
-    memset(&JSHTMLLIElementClassDefine, 0, sizeof(JSHTMLLIElementClassDefine));
-    JSHTMLLIElementClassDefine.class_name = "HTMLLIElement";
-    JSHTMLLIElementClassDefine.finalizer = JSHTMLLIElement::finalizer;
-    JSHTMLLIElementClassDefine.gc_mark = JSHTMLLIElement::mark;
-}
-
 JSClassID JSHTMLLIElement::js_class_id = 0;
 
 void JSHTMLLIElement::init(JSContext* ctx)

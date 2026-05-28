@@ -112,19 +112,6 @@ void JSHTMLPreElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLPreElementAttributesFunctions, countof(JSHTMLPreElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLPreElementClassDefine;
-static bool JSHTMLPreElementClassDefine_initialized = false;
-
-static void init_JSHTMLPreElementClassDefine()
-{
-    if (JSHTMLPreElementClassDefine_initialized) return;
-    JSHTMLPreElementClassDefine_initialized = true;
-    memset(&JSHTMLPreElementClassDefine, 0, sizeof(JSHTMLPreElementClassDefine));
-    JSHTMLPreElementClassDefine.class_name = "HTMLPreElement";
-    JSHTMLPreElementClassDefine.finalizer = JSHTMLPreElement::finalizer;
-    JSHTMLPreElementClassDefine.gc_mark = JSHTMLPreElement::mark;
-}
-
 JSClassID JSHTMLPreElement::js_class_id = 0;
 
 void JSHTMLPreElement::init(JSContext* ctx)

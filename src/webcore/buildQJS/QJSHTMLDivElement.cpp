@@ -107,19 +107,6 @@ void JSHTMLDivElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLDivElementAttributesFunctions, countof(JSHTMLDivElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLDivElementClassDefine;
-static bool JSHTMLDivElementClassDefine_initialized = false;
-
-static void init_JSHTMLDivElementClassDefine()
-{
-    if (JSHTMLDivElementClassDefine_initialized) return;
-    JSHTMLDivElementClassDefine_initialized = true;
-    memset(&JSHTMLDivElementClassDefine, 0, sizeof(JSHTMLDivElementClassDefine));
-    JSHTMLDivElementClassDefine.class_name = "HTMLDivElement";
-    JSHTMLDivElementClassDefine.finalizer = JSHTMLDivElement::finalizer;
-    JSHTMLDivElementClassDefine.gc_mark = JSHTMLDivElement::mark;
-}
-
 JSClassID JSHTMLDivElement::js_class_id = 0;
 
 void JSHTMLDivElement::init(JSContext* ctx)

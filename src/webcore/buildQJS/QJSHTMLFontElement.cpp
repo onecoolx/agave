@@ -119,19 +119,6 @@ void JSHTMLFontElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLFontElementAttributesFunctions, countof(JSHTMLFontElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLFontElementClassDefine;
-static bool JSHTMLFontElementClassDefine_initialized = false;
-
-static void init_JSHTMLFontElementClassDefine()
-{
-    if (JSHTMLFontElementClassDefine_initialized) return;
-    JSHTMLFontElementClassDefine_initialized = true;
-    memset(&JSHTMLFontElementClassDefine, 0, sizeof(JSHTMLFontElementClassDefine));
-    JSHTMLFontElementClassDefine.class_name = "HTMLFontElement";
-    JSHTMLFontElementClassDefine.finalizer = JSHTMLFontElement::finalizer;
-    JSHTMLFontElementClassDefine.gc_mark = JSHTMLFontElement::mark;
-}
-
 JSClassID JSHTMLFontElement::js_class_id = 0;
 
 void JSHTMLFontElement::init(JSContext* ctx)

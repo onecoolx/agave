@@ -106,19 +106,6 @@ void JSHTMLDListElementPrototype::initPrototype(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLDListElementAttributesFunctions, countof(JSHTMLDListElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLDListElementClassDefine;
-static bool JSHTMLDListElementClassDefine_initialized = false;
-
-static void init_JSHTMLDListElementClassDefine()
-{
-    if (JSHTMLDListElementClassDefine_initialized) return;
-    JSHTMLDListElementClassDefine_initialized = true;
-    memset(&JSHTMLDListElementClassDefine, 0, sizeof(JSHTMLDListElementClassDefine));
-    JSHTMLDListElementClassDefine.class_name = "HTMLDListElement";
-    JSHTMLDListElementClassDefine.finalizer = JSHTMLDListElement::finalizer;
-    JSHTMLDListElementClassDefine.gc_mark = JSHTMLDListElement::mark;
-}
-
 JSClassID JSHTMLDListElement::js_class_id = 0;
 
 void JSHTMLDListElement::init(JSContext* ctx)

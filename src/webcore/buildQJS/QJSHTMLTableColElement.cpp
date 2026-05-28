@@ -137,19 +137,6 @@ void JSHTMLTableColElementPrototype::initPrototype(JSContext * ctx, JSValue this
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTableColElementAttributesFunctions, countof(JSHTMLTableColElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLTableColElementClassDefine;
-static bool JSHTMLTableColElementClassDefine_initialized = false;
-
-static void init_JSHTMLTableColElementClassDefine()
-{
-    if (JSHTMLTableColElementClassDefine_initialized) return;
-    JSHTMLTableColElementClassDefine_initialized = true;
-    memset(&JSHTMLTableColElementClassDefine, 0, sizeof(JSHTMLTableColElementClassDefine));
-    JSHTMLTableColElementClassDefine.class_name = "HTMLTableColElement";
-    JSHTMLTableColElementClassDefine.finalizer = JSHTMLTableColElement::finalizer;
-    JSHTMLTableColElementClassDefine.gc_mark = JSHTMLTableColElement::mark;
-}
-
 JSClassID JSHTMLTableColElement::js_class_id = 0;
 
 void JSHTMLTableColElement::init(JSContext* ctx)

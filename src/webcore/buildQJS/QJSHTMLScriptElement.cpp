@@ -143,19 +143,6 @@ void JSHTMLScriptElementPrototype::initPrototype(JSContext * ctx, JSValue this_o
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLScriptElementAttributesFunctions, countof(JSHTMLScriptElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLScriptElementClassDefine;
-static bool JSHTMLScriptElementClassDefine_initialized = false;
-
-static void init_JSHTMLScriptElementClassDefine()
-{
-    if (JSHTMLScriptElementClassDefine_initialized) return;
-    JSHTMLScriptElementClassDefine_initialized = true;
-    memset(&JSHTMLScriptElementClassDefine, 0, sizeof(JSHTMLScriptElementClassDefine));
-    JSHTMLScriptElementClassDefine.class_name = "HTMLScriptElement";
-    JSHTMLScriptElementClassDefine.finalizer = JSHTMLScriptElement::finalizer;
-    JSHTMLScriptElementClassDefine.gc_mark = JSHTMLScriptElement::mark;
-}
-
 JSClassID JSHTMLScriptElement::js_class_id = 0;
 
 void JSHTMLScriptElement::init(JSContext* ctx)

@@ -224,19 +224,6 @@ void JSHTMLTextAreaElementPrototype::initPrototype(JSContext * ctx, JSValue this
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTextAreaElementPrototypeFunctions, countof(JSHTMLTextAreaElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLTextAreaElementClassDefine;
-static bool JSHTMLTextAreaElementClassDefine_initialized = false;
-
-static void init_JSHTMLTextAreaElementClassDefine()
-{
-    if (JSHTMLTextAreaElementClassDefine_initialized) return;
-    JSHTMLTextAreaElementClassDefine_initialized = true;
-    memset(&JSHTMLTextAreaElementClassDefine, 0, sizeof(JSHTMLTextAreaElementClassDefine));
-    JSHTMLTextAreaElementClassDefine.class_name = "HTMLTextAreaElement";
-    JSHTMLTextAreaElementClassDefine.finalizer = JSHTMLTextAreaElement::finalizer;
-    JSHTMLTextAreaElementClassDefine.gc_mark = JSHTMLTextAreaElement::mark;
-}
-
 JSClassID JSHTMLTextAreaElement::js_class_id = 0;
 
 void JSHTMLTextAreaElement::init(JSContext* ctx)

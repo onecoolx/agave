@@ -115,19 +115,6 @@ void JSHTMLMapElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLMapElementAttributesFunctions, countof(JSHTMLMapElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLMapElementClassDefine;
-static bool JSHTMLMapElementClassDefine_initialized = false;
-
-static void init_JSHTMLMapElementClassDefine()
-{
-    if (JSHTMLMapElementClassDefine_initialized) return;
-    JSHTMLMapElementClassDefine_initialized = true;
-    memset(&JSHTMLMapElementClassDefine, 0, sizeof(JSHTMLMapElementClassDefine));
-    JSHTMLMapElementClassDefine.class_name = "HTMLMapElement";
-    JSHTMLMapElementClassDefine.finalizer = JSHTMLMapElement::finalizer;
-    JSHTMLMapElementClassDefine.gc_mark = JSHTMLMapElement::mark;
-}
-
 JSClassID JSHTMLMapElement::js_class_id = 0;
 
 void JSHTMLMapElement::init(JSContext* ctx)

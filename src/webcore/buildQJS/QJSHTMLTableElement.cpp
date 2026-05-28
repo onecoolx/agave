@@ -264,19 +264,6 @@ void JSHTMLTableElementPrototype::initPrototype(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTableElementPrototypeFunctions, countof(JSHTMLTableElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLTableElementClassDefine;
-static bool JSHTMLTableElementClassDefine_initialized = false;
-
-static void init_JSHTMLTableElementClassDefine()
-{
-    if (JSHTMLTableElementClassDefine_initialized) return;
-    JSHTMLTableElementClassDefine_initialized = true;
-    memset(&JSHTMLTableElementClassDefine, 0, sizeof(JSHTMLTableElementClassDefine));
-    JSHTMLTableElementClassDefine.class_name = "HTMLTableElement";
-    JSHTMLTableElementClassDefine.finalizer = JSHTMLTableElement::finalizer;
-    JSHTMLTableElementClassDefine.gc_mark = JSHTMLTableElement::mark;
-}
-
 JSClassID JSHTMLTableElement::js_class_id = 0;
 
 void JSHTMLTableElement::init(JSContext* ctx)

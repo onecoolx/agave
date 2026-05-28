@@ -128,19 +128,6 @@ void JSHTMLMarqueeElementPrototype::initPrototype(JSContext * ctx, JSValue this_
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLMarqueeElementPrototypeFunctions, countof(JSHTMLMarqueeElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLMarqueeElementClassDefine;
-static bool JSHTMLMarqueeElementClassDefine_initialized = false;
-
-static void init_JSHTMLMarqueeElementClassDefine()
-{
-    if (JSHTMLMarqueeElementClassDefine_initialized) return;
-    JSHTMLMarqueeElementClassDefine_initialized = true;
-    memset(&JSHTMLMarqueeElementClassDefine, 0, sizeof(JSHTMLMarqueeElementClassDefine));
-    JSHTMLMarqueeElementClassDefine.class_name = "HTMLMarqueeElement";
-    JSHTMLMarqueeElementClassDefine.finalizer = JSHTMLMarqueeElement::finalizer;
-    JSHTMLMarqueeElementClassDefine.gc_mark = JSHTMLMarqueeElement::mark;
-}
-
 JSClassID JSHTMLMarqueeElement::js_class_id = 0;
 
 void JSHTMLMarqueeElement::init(JSContext* ctx)

@@ -813,16 +813,18 @@ sub GenerateImplementation
     }
     push(@implContent, "}\n\n");
 
-    push(@implContent, "static JSClassDef ${className}ClassDefine;\n");
-    push(@implContent, "static bool ${className}ClassDefine_initialized = false;\n\n");
-    push(@implContent, "static void init_${className}ClassDefine()\n{\n");
-    push(@implContent, "    if (${className}ClassDefine_initialized) return;\n");
-    push(@implContent, "    ${className}ClassDefine_initialized = true;\n");
-    push(@implContent, "    memset(\&${className}ClassDefine, 0, sizeof(${className}ClassDefine));\n");
-    push(@implContent, "    ${className}ClassDefine.class_name = \"${interfaceName}\";\n");
-    push(@implContent, "    ${className}ClassDefine.finalizer = ${className}::finalizer;\n");
-    push(@implContent, "    ${className}ClassDefine.gc_mark = ${className}::mark;\n");
-    push(@implContent, "}\n\n");
+    if (!$object->IsNodeSubclass($dataNode) || $className eq "JSNode") {
+        push(@implContent, "static JSClassDef ${className}ClassDefine;\n");
+        push(@implContent, "static bool ${className}ClassDefine_initialized = false;\n\n");
+        push(@implContent, "static void init_${className}ClassDefine()\n{\n");
+        push(@implContent, "    if (${className}ClassDefine_initialized) return;\n");
+        push(@implContent, "    ${className}ClassDefine_initialized = true;\n");
+        push(@implContent, "    memset(\&${className}ClassDefine, 0, sizeof(${className}ClassDefine));\n");
+        push(@implContent, "    ${className}ClassDefine.class_name = \"${interfaceName}\";\n");
+        push(@implContent, "    ${className}ClassDefine.finalizer = ${className}::finalizer;\n");
+        push(@implContent, "    ${className}ClassDefine.gc_mark = ${className}::mark;\n");
+        push(@implContent, "}\n\n");
+    }
 
     push(@implContent, "JSClassID ${className}::js_class_id = 0;\n\n");
 

@@ -113,19 +113,6 @@ void JSNotationPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSNotationAttributesFunctions, countof(JSNotationAttributesFunctions));
 }
 
-static JSClassDef JSNotationClassDefine;
-static bool JSNotationClassDefine_initialized = false;
-
-static void init_JSNotationClassDefine()
-{
-    if (JSNotationClassDefine_initialized) return;
-    JSNotationClassDefine_initialized = true;
-    memset(&JSNotationClassDefine, 0, sizeof(JSNotationClassDefine));
-    JSNotationClassDefine.class_name = "Notation";
-    JSNotationClassDefine.finalizer = JSNotation::finalizer;
-    JSNotationClassDefine.gc_mark = JSNotation::mark;
-}
-
 JSClassID JSNotation::js_class_id = 0;
 
 void JSNotation::init(JSContext* ctx)

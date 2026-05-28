@@ -379,19 +379,6 @@ void JSElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSElementPrototypeFunctions, countof(JSElementPrototypeFunctions));
 }
 
-static JSClassDef JSElementClassDefine;
-static bool JSElementClassDefine_initialized = false;
-
-static void init_JSElementClassDefine()
-{
-    if (JSElementClassDefine_initialized) return;
-    JSElementClassDefine_initialized = true;
-    memset(&JSElementClassDefine, 0, sizeof(JSElementClassDefine));
-    JSElementClassDefine.class_name = "Element";
-    JSElementClassDefine.finalizer = JSElement::finalizer;
-    JSElementClassDefine.gc_mark = JSElement::mark;
-}
-
 JSClassID JSElement::js_class_id = 0;
 
 void JSElement::init(JSContext* ctx)

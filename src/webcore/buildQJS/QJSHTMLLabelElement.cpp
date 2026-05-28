@@ -142,19 +142,6 @@ void JSHTMLLabelElementPrototype::initPrototype(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLLabelElementPrototypeFunctions, countof(JSHTMLLabelElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLLabelElementClassDefine;
-static bool JSHTMLLabelElementClassDefine_initialized = false;
-
-static void init_JSHTMLLabelElementClassDefine()
-{
-    if (JSHTMLLabelElementClassDefine_initialized) return;
-    JSHTMLLabelElementClassDefine_initialized = true;
-    memset(&JSHTMLLabelElementClassDefine, 0, sizeof(JSHTMLLabelElementClassDefine));
-    JSHTMLLabelElementClassDefine.class_name = "HTMLLabelElement";
-    JSHTMLLabelElementClassDefine.finalizer = JSHTMLLabelElement::finalizer;
-    JSHTMLLabelElementClassDefine.gc_mark = JSHTMLLabelElement::mark;
-}
-
 JSClassID JSHTMLLabelElement::js_class_id = 0;
 
 void JSHTMLLabelElement::init(JSContext* ctx)

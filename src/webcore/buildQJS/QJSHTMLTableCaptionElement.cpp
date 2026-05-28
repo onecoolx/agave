@@ -107,19 +107,6 @@ void JSHTMLTableCaptionElementPrototype::initPrototype(JSContext * ctx, JSValue 
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTableCaptionElementAttributesFunctions, countof(JSHTMLTableCaptionElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLTableCaptionElementClassDefine;
-static bool JSHTMLTableCaptionElementClassDefine_initialized = false;
-
-static void init_JSHTMLTableCaptionElementClassDefine()
-{
-    if (JSHTMLTableCaptionElementClassDefine_initialized) return;
-    JSHTMLTableCaptionElementClassDefine_initialized = true;
-    memset(&JSHTMLTableCaptionElementClassDefine, 0, sizeof(JSHTMLTableCaptionElementClassDefine));
-    JSHTMLTableCaptionElementClassDefine.class_name = "HTMLTableCaptionElement";
-    JSHTMLTableCaptionElementClassDefine.finalizer = JSHTMLTableCaptionElement::finalizer;
-    JSHTMLTableCaptionElementClassDefine.gc_mark = JSHTMLTableCaptionElement::mark;
-}
-
 JSClassID JSHTMLTableCaptionElement::js_class_id = 0;
 
 void JSHTMLTableCaptionElement::init(JSContext* ctx)

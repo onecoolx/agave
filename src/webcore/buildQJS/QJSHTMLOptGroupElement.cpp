@@ -113,19 +113,6 @@ void JSHTMLOptGroupElementPrototype::initPrototype(JSContext * ctx, JSValue this
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLOptGroupElementAttributesFunctions, countof(JSHTMLOptGroupElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLOptGroupElementClassDefine;
-static bool JSHTMLOptGroupElementClassDefine_initialized = false;
-
-static void init_JSHTMLOptGroupElementClassDefine()
-{
-    if (JSHTMLOptGroupElementClassDefine_initialized) return;
-    JSHTMLOptGroupElementClassDefine_initialized = true;
-    memset(&JSHTMLOptGroupElementClassDefine, 0, sizeof(JSHTMLOptGroupElementClassDefine));
-    JSHTMLOptGroupElementClassDefine.class_name = "HTMLOptGroupElement";
-    JSHTMLOptGroupElementClassDefine.finalizer = JSHTMLOptGroupElement::finalizer;
-    JSHTMLOptGroupElementClassDefine.gc_mark = JSHTMLOptGroupElement::mark;
-}
-
 JSClassID JSHTMLOptGroupElement::js_class_id = 0;
 
 void JSHTMLOptGroupElement::init(JSContext* ctx)

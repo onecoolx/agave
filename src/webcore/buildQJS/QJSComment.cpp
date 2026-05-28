@@ -100,19 +100,6 @@ void JSCommentPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSCommentAttributesFunctions, countof(JSCommentAttributesFunctions));
 }
 
-static JSClassDef JSCommentClassDefine;
-static bool JSCommentClassDefine_initialized = false;
-
-static void init_JSCommentClassDefine()
-{
-    if (JSCommentClassDefine_initialized) return;
-    JSCommentClassDefine_initialized = true;
-    memset(&JSCommentClassDefine, 0, sizeof(JSCommentClassDefine));
-    JSCommentClassDefine.class_name = "Comment";
-    JSCommentClassDefine.finalizer = JSComment::finalizer;
-    JSCommentClassDefine.gc_mark = JSComment::mark;
-}
-
 JSClassID JSComment::js_class_id = 0;
 
 void JSComment::init(JSContext* ctx)

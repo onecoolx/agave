@@ -107,19 +107,6 @@ void JSHTMLQuoteElementPrototype::initPrototype(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLQuoteElementAttributesFunctions, countof(JSHTMLQuoteElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLQuoteElementClassDefine;
-static bool JSHTMLQuoteElementClassDefine_initialized = false;
-
-static void init_JSHTMLQuoteElementClassDefine()
-{
-    if (JSHTMLQuoteElementClassDefine_initialized) return;
-    JSHTMLQuoteElementClassDefine_initialized = true;
-    memset(&JSHTMLQuoteElementClassDefine, 0, sizeof(JSHTMLQuoteElementClassDefine));
-    JSHTMLQuoteElementClassDefine.class_name = "HTMLQuoteElement";
-    JSHTMLQuoteElementClassDefine.finalizer = JSHTMLQuoteElement::finalizer;
-    JSHTMLQuoteElementClassDefine.gc_mark = JSHTMLQuoteElement::mark;
-}
-
 JSClassID JSHTMLQuoteElement::js_class_id = 0;
 
 void JSHTMLQuoteElement::init(JSContext* ctx)

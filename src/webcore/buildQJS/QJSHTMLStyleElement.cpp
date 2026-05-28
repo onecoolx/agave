@@ -127,19 +127,6 @@ void JSHTMLStyleElementPrototype::initPrototype(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLStyleElementAttributesFunctions, countof(JSHTMLStyleElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLStyleElementClassDefine;
-static bool JSHTMLStyleElementClassDefine_initialized = false;
-
-static void init_JSHTMLStyleElementClassDefine()
-{
-    if (JSHTMLStyleElementClassDefine_initialized) return;
-    JSHTMLStyleElementClassDefine_initialized = true;
-    memset(&JSHTMLStyleElementClassDefine, 0, sizeof(JSHTMLStyleElementClassDefine));
-    JSHTMLStyleElementClassDefine.class_name = "HTMLStyleElement";
-    JSHTMLStyleElementClassDefine.finalizer = JSHTMLStyleElement::finalizer;
-    JSHTMLStyleElementClassDefine.gc_mark = JSHTMLStyleElement::mark;
-}
-
 JSClassID JSHTMLStyleElement::js_class_id = 0;
 
 void JSHTMLStyleElement::init(JSContext* ctx)

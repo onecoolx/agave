@@ -119,19 +119,6 @@ void JSEntityPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSEntityAttributesFunctions, countof(JSEntityAttributesFunctions));
 }
 
-static JSClassDef JSEntityClassDefine;
-static bool JSEntityClassDefine_initialized = false;
-
-static void init_JSEntityClassDefine()
-{
-    if (JSEntityClassDefine_initialized) return;
-    JSEntityClassDefine_initialized = true;
-    memset(&JSEntityClassDefine, 0, sizeof(JSEntityClassDefine));
-    JSEntityClassDefine.class_name = "Entity";
-    JSEntityClassDefine.finalizer = JSEntity::finalizer;
-    JSEntityClassDefine.gc_mark = JSEntity::mark;
-}
-
 JSClassID JSEntity::js_class_id = 0;
 
 void JSEntity::init(JSContext* ctx)

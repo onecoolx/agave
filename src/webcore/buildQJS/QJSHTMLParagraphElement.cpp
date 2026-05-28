@@ -107,19 +107,6 @@ void JSHTMLParagraphElementPrototype::initPrototype(JSContext * ctx, JSValue thi
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLParagraphElementAttributesFunctions, countof(JSHTMLParagraphElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLParagraphElementClassDefine;
-static bool JSHTMLParagraphElementClassDefine_initialized = false;
-
-static void init_JSHTMLParagraphElementClassDefine()
-{
-    if (JSHTMLParagraphElementClassDefine_initialized) return;
-    JSHTMLParagraphElementClassDefine_initialized = true;
-    memset(&JSHTMLParagraphElementClassDefine, 0, sizeof(JSHTMLParagraphElementClassDefine));
-    JSHTMLParagraphElementClassDefine.class_name = "HTMLParagraphElement";
-    JSHTMLParagraphElementClassDefine.finalizer = JSHTMLParagraphElement::finalizer;
-    JSHTMLParagraphElementClassDefine.gc_mark = JSHTMLParagraphElement::mark;
-}
-
 JSClassID JSHTMLParagraphElement::js_class_id = 0;
 
 void JSHTMLParagraphElement::init(JSContext* ctx)

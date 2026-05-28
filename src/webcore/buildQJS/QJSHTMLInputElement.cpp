@@ -259,19 +259,6 @@ void JSHTMLInputElementPrototype::initPrototype(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLInputElementPrototypeFunctions, countof(JSHTMLInputElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLInputElementClassDefine;
-static bool JSHTMLInputElementClassDefine_initialized = false;
-
-static void init_JSHTMLInputElementClassDefine()
-{
-    if (JSHTMLInputElementClassDefine_initialized) return;
-    JSHTMLInputElementClassDefine_initialized = true;
-    memset(&JSHTMLInputElementClassDefine, 0, sizeof(JSHTMLInputElementClassDefine));
-    JSHTMLInputElementClassDefine.class_name = "HTMLInputElement";
-    JSHTMLInputElementClassDefine.finalizer = JSHTMLInputElement::finalizer;
-    JSHTMLInputElementClassDefine.gc_mark = JSHTMLInputElement::mark;
-}
-
 JSClassID JSHTMLInputElement::js_class_id = 0;
 
 void JSHTMLInputElement::init(JSContext* ctx)

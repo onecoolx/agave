@@ -177,19 +177,6 @@ void JSHTMLIFrameElementPrototype::initPrototype(JSContext * ctx, JSValue this_o
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLIFrameElementAttributesFunctions, countof(JSHTMLIFrameElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLIFrameElementClassDefine;
-static bool JSHTMLIFrameElementClassDefine_initialized = false;
-
-static void init_JSHTMLIFrameElementClassDefine()
-{
-    if (JSHTMLIFrameElementClassDefine_initialized) return;
-    JSHTMLIFrameElementClassDefine_initialized = true;
-    memset(&JSHTMLIFrameElementClassDefine, 0, sizeof(JSHTMLIFrameElementClassDefine));
-    JSHTMLIFrameElementClassDefine.class_name = "HTMLIFrameElement";
-    JSHTMLIFrameElementClassDefine.finalizer = JSHTMLIFrameElement::finalizer;
-    JSHTMLIFrameElementClassDefine.gc_mark = JSHTMLIFrameElement::mark;
-}
-
 JSClassID JSHTMLIFrameElement::js_class_id = 0;
 
 void JSHTMLIFrameElement::init(JSContext* ctx)

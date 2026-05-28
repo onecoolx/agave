@@ -163,19 +163,6 @@ void JSHTMLLinkElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLLinkElementAttributesFunctions, countof(JSHTMLLinkElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLLinkElementClassDefine;
-static bool JSHTMLLinkElementClassDefine_initialized = false;
-
-static void init_JSHTMLLinkElementClassDefine()
-{
-    if (JSHTMLLinkElementClassDefine_initialized) return;
-    JSHTMLLinkElementClassDefine_initialized = true;
-    memset(&JSHTMLLinkElementClassDefine, 0, sizeof(JSHTMLLinkElementClassDefine));
-    JSHTMLLinkElementClassDefine.class_name = "HTMLLinkElement";
-    JSHTMLLinkElementClassDefine.finalizer = JSHTMLLinkElement::finalizer;
-    JSHTMLLinkElementClassDefine.gc_mark = JSHTMLLinkElement::mark;
-}
-
 JSClassID JSHTMLLinkElement::js_class_id = 0;
 
 void JSHTMLLinkElement::init(JSContext* ctx)

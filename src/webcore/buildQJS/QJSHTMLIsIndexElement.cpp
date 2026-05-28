@@ -115,19 +115,6 @@ void JSHTMLIsIndexElementPrototype::initPrototype(JSContext * ctx, JSValue this_
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLIsIndexElementAttributesFunctions, countof(JSHTMLIsIndexElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLIsIndexElementClassDefine;
-static bool JSHTMLIsIndexElementClassDefine_initialized = false;
-
-static void init_JSHTMLIsIndexElementClassDefine()
-{
-    if (JSHTMLIsIndexElementClassDefine_initialized) return;
-    JSHTMLIsIndexElementClassDefine_initialized = true;
-    memset(&JSHTMLIsIndexElementClassDefine, 0, sizeof(JSHTMLIsIndexElementClassDefine));
-    JSHTMLIsIndexElementClassDefine.class_name = "HTMLIsIndexElement";
-    JSHTMLIsIndexElementClassDefine.finalizer = JSHTMLIsIndexElement::finalizer;
-    JSHTMLIsIndexElementClassDefine.gc_mark = JSHTMLIsIndexElement::mark;
-}
-
 JSClassID JSHTMLIsIndexElement::js_class_id = 0;
 
 void JSHTMLIsIndexElement::init(JSContext* ctx)

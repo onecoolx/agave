@@ -100,19 +100,6 @@ void JSEntityReferencePrototype::initPrototype(JSContext * ctx, JSValue this_obj
     JS_SetPropertyFunctionList(ctx, this_obj, JSEntityReferenceAttributesFunctions, countof(JSEntityReferenceAttributesFunctions));
 }
 
-static JSClassDef JSEntityReferenceClassDefine;
-static bool JSEntityReferenceClassDefine_initialized = false;
-
-static void init_JSEntityReferenceClassDefine()
-{
-    if (JSEntityReferenceClassDefine_initialized) return;
-    JSEntityReferenceClassDefine_initialized = true;
-    memset(&JSEntityReferenceClassDefine, 0, sizeof(JSEntityReferenceClassDefine));
-    JSEntityReferenceClassDefine.class_name = "EntityReference";
-    JSEntityReferenceClassDefine.finalizer = JSEntityReference::finalizer;
-    JSEntityReferenceClassDefine.gc_mark = JSEntityReference::mark;
-}
-
 JSClassID JSEntityReference::js_class_id = 0;
 
 void JSEntityReference::init(JSContext* ctx)

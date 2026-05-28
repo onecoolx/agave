@@ -125,19 +125,6 @@ void JSHTMLMetaElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLMetaElementAttributesFunctions, countof(JSHTMLMetaElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLMetaElementClassDefine;
-static bool JSHTMLMetaElementClassDefine_initialized = false;
-
-static void init_JSHTMLMetaElementClassDefine()
-{
-    if (JSHTMLMetaElementClassDefine_initialized) return;
-    JSHTMLMetaElementClassDefine_initialized = true;
-    memset(&JSHTMLMetaElementClassDefine, 0, sizeof(JSHTMLMetaElementClassDefine));
-    JSHTMLMetaElementClassDefine.class_name = "HTMLMetaElement";
-    JSHTMLMetaElementClassDefine.finalizer = JSHTMLMetaElement::finalizer;
-    JSHTMLMetaElementClassDefine.gc_mark = JSHTMLMetaElement::mark;
-}
-
 JSClassID JSHTMLMetaElement::js_class_id = 0;
 
 void JSHTMLMetaElement::init(JSContext* ctx)

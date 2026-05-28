@@ -167,19 +167,6 @@ void JSHTMLAppletElementPrototype::initPrototype(JSContext * ctx, JSValue this_o
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLAppletElementAttributesFunctions, countof(JSHTMLAppletElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLAppletElementClassDefine;
-static bool JSHTMLAppletElementClassDefine_initialized = false;
-
-static void init_JSHTMLAppletElementClassDefine()
-{
-    if (JSHTMLAppletElementClassDefine_initialized) return;
-    JSHTMLAppletElementClassDefine_initialized = true;
-    memset(&JSHTMLAppletElementClassDefine, 0, sizeof(JSHTMLAppletElementClassDefine));
-    JSHTMLAppletElementClassDefine.class_name = "HTMLAppletElement";
-    JSHTMLAppletElementClassDefine.finalizer = JSHTMLAppletElement::finalizer;
-    JSHTMLAppletElementClassDefine.gc_mark = JSHTMLAppletElement::mark;
-}
-
 JSClassID JSHTMLAppletElement::js_class_id = 0;
 
 void JSHTMLAppletElement::init(JSContext* ctx)

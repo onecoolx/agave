@@ -231,19 +231,6 @@ void JSHTMLSelectElementPrototype::initPrototype(JSContext * ctx, JSValue this_o
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLSelectElementPrototypeFunctions, countof(JSHTMLSelectElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLSelectElementClassDefine;
-static bool JSHTMLSelectElementClassDefine_initialized = false;
-
-static void init_JSHTMLSelectElementClassDefine()
-{
-    if (JSHTMLSelectElementClassDefine_initialized) return;
-    JSHTMLSelectElementClassDefine_initialized = true;
-    memset(&JSHTMLSelectElementClassDefine, 0, sizeof(JSHTMLSelectElementClassDefine));
-    JSHTMLSelectElementClassDefine.class_name = "HTMLSelectElement";
-    JSHTMLSelectElementClassDefine.finalizer = JSHTMLSelectElement::finalizer;
-    JSHTMLSelectElementClassDefine.gc_mark = JSHTMLSelectElement::mark;
-}
-
 JSClassID JSHTMLSelectElement::js_class_id = 0;
 
 void JSHTMLSelectElement::init(JSContext* ctx)

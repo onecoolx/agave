@@ -121,19 +121,6 @@ void JSProcessingInstructionPrototype::initPrototype(JSContext * ctx, JSValue th
     JS_SetPropertyFunctionList(ctx, this_obj, JSProcessingInstructionAttributesFunctions, countof(JSProcessingInstructionAttributesFunctions));
 }
 
-static JSClassDef JSProcessingInstructionClassDefine;
-static bool JSProcessingInstructionClassDefine_initialized = false;
-
-static void init_JSProcessingInstructionClassDefine()
-{
-    if (JSProcessingInstructionClassDefine_initialized) return;
-    JSProcessingInstructionClassDefine_initialized = true;
-    memset(&JSProcessingInstructionClassDefine, 0, sizeof(JSProcessingInstructionClassDefine));
-    JSProcessingInstructionClassDefine.class_name = "ProcessingInstruction";
-    JSProcessingInstructionClassDefine.finalizer = JSProcessingInstruction::finalizer;
-    JSProcessingInstructionClassDefine.gc_mark = JSProcessingInstruction::mark;
-}
-
 JSClassID JSProcessingInstruction::js_class_id = 0;
 
 void JSProcessingInstruction::init(JSContext* ctx)

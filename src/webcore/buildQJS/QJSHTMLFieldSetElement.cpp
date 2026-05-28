@@ -108,19 +108,6 @@ void JSHTMLFieldSetElementPrototype::initPrototype(JSContext * ctx, JSValue this
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLFieldSetElementAttributesFunctions, countof(JSHTMLFieldSetElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLFieldSetElementClassDefine;
-static bool JSHTMLFieldSetElementClassDefine_initialized = false;
-
-static void init_JSHTMLFieldSetElementClassDefine()
-{
-    if (JSHTMLFieldSetElementClassDefine_initialized) return;
-    JSHTMLFieldSetElementClassDefine_initialized = true;
-    memset(&JSHTMLFieldSetElementClassDefine, 0, sizeof(JSHTMLFieldSetElementClassDefine));
-    JSHTMLFieldSetElementClassDefine.class_name = "HTMLFieldSetElement";
-    JSHTMLFieldSetElementClassDefine.finalizer = JSHTMLFieldSetElement::finalizer;
-    JSHTMLFieldSetElementClassDefine.gc_mark = JSHTMLFieldSetElement::mark;
-}
-
 JSClassID JSHTMLFieldSetElement::js_class_id = 0;
 
 void JSHTMLFieldSetElement::init(JSContext* ctx)

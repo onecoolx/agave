@@ -125,19 +125,6 @@ void JSHTMLParamElementPrototype::initPrototype(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLParamElementAttributesFunctions, countof(JSHTMLParamElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLParamElementClassDefine;
-static bool JSHTMLParamElementClassDefine_initialized = false;
-
-static void init_JSHTMLParamElementClassDefine()
-{
-    if (JSHTMLParamElementClassDefine_initialized) return;
-    JSHTMLParamElementClassDefine_initialized = true;
-    memset(&JSHTMLParamElementClassDefine, 0, sizeof(JSHTMLParamElementClassDefine));
-    JSHTMLParamElementClassDefine.class_name = "HTMLParamElement";
-    JSHTMLParamElementClassDefine.finalizer = JSHTMLParamElement::finalizer;
-    JSHTMLParamElementClassDefine.gc_mark = JSHTMLParamElement::mark;
-}
-
 JSClassID JSHTMLParamElement::js_class_id = 0;
 
 void JSHTMLParamElement::init(JSContext* ctx)

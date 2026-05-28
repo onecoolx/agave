@@ -163,19 +163,6 @@ void JSCharacterDataPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSCharacterDataPrototypeFunctions, countof(JSCharacterDataPrototypeFunctions));
 }
 
-static JSClassDef JSCharacterDataClassDefine;
-static bool JSCharacterDataClassDefine_initialized = false;
-
-static void init_JSCharacterDataClassDefine()
-{
-    if (JSCharacterDataClassDefine_initialized) return;
-    JSCharacterDataClassDefine_initialized = true;
-    memset(&JSCharacterDataClassDefine, 0, sizeof(JSCharacterDataClassDefine));
-    JSCharacterDataClassDefine.class_name = "CharacterData";
-    JSCharacterDataClassDefine.finalizer = JSCharacterData::finalizer;
-    JSCharacterDataClassDefine.gc_mark = JSCharacterData::mark;
-}
-
 JSClassID JSCharacterData::js_class_id = 0;
 
 void JSCharacterData::init(JSContext* ctx)

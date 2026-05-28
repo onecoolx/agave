@@ -106,19 +106,6 @@ void JSHTMLDirectoryElementPrototype::initPrototype(JSContext * ctx, JSValue thi
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLDirectoryElementAttributesFunctions, countof(JSHTMLDirectoryElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLDirectoryElementClassDefine;
-static bool JSHTMLDirectoryElementClassDefine_initialized = false;
-
-static void init_JSHTMLDirectoryElementClassDefine()
-{
-    if (JSHTMLDirectoryElementClassDefine_initialized) return;
-    JSHTMLDirectoryElementClassDefine_initialized = true;
-    memset(&JSHTMLDirectoryElementClassDefine, 0, sizeof(JSHTMLDirectoryElementClassDefine));
-    JSHTMLDirectoryElementClassDefine.class_name = "HTMLDirectoryElement";
-    JSHTMLDirectoryElementClassDefine.finalizer = JSHTMLDirectoryElement::finalizer;
-    JSHTMLDirectoryElementClassDefine.gc_mark = JSHTMLDirectoryElement::mark;
-}
-
 JSClassID JSHTMLDirectoryElement::js_class_id = 0;
 
 void JSHTMLDirectoryElement::init(JSContext* ctx)

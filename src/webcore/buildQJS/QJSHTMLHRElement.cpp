@@ -125,19 +125,6 @@ void JSHTMLHRElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLHRElementAttributesFunctions, countof(JSHTMLHRElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLHRElementClassDefine;
-static bool JSHTMLHRElementClassDefine_initialized = false;
-
-static void init_JSHTMLHRElementClassDefine()
-{
-    if (JSHTMLHRElementClassDefine_initialized) return;
-    JSHTMLHRElementClassDefine_initialized = true;
-    memset(&JSHTMLHRElementClassDefine, 0, sizeof(JSHTMLHRElementClassDefine));
-    JSHTMLHRElementClassDefine.class_name = "HTMLHRElement";
-    JSHTMLHRElementClassDefine.finalizer = JSHTMLHRElement::finalizer;
-    JSHTMLHRElementClassDefine.gc_mark = JSHTMLHRElement::mark;
-}
-
 JSClassID JSHTMLHRElement::js_class_id = 0;
 
 void JSHTMLHRElement::init(JSContext* ctx)

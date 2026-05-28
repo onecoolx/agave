@@ -259,19 +259,6 @@ void JSHTMLDocumentPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLDocumentPrototypeFunctions, countof(JSHTMLDocumentPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLDocumentClassDefine;
-static bool JSHTMLDocumentClassDefine_initialized = false;
-
-static void init_JSHTMLDocumentClassDefine()
-{
-    if (JSHTMLDocumentClassDefine_initialized) return;
-    JSHTMLDocumentClassDefine_initialized = true;
-    memset(&JSHTMLDocumentClassDefine, 0, sizeof(JSHTMLDocumentClassDefine));
-    JSHTMLDocumentClassDefine.class_name = "HTMLDocument";
-    JSHTMLDocumentClassDefine.finalizer = JSHTMLDocument::finalizer;
-    JSHTMLDocumentClassDefine.gc_mark = JSHTMLDocument::mark;
-}
-
 JSClassID JSHTMLDocument::js_class_id = 0;
 
 void JSHTMLDocument::init(JSContext* ctx)

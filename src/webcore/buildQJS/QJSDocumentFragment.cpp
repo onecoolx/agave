@@ -100,19 +100,6 @@ void JSDocumentFragmentPrototype::initPrototype(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSDocumentFragmentAttributesFunctions, countof(JSDocumentFragmentAttributesFunctions));
 }
 
-static JSClassDef JSDocumentFragmentClassDefine;
-static bool JSDocumentFragmentClassDefine_initialized = false;
-
-static void init_JSDocumentFragmentClassDefine()
-{
-    if (JSDocumentFragmentClassDefine_initialized) return;
-    JSDocumentFragmentClassDefine_initialized = true;
-    memset(&JSDocumentFragmentClassDefine, 0, sizeof(JSDocumentFragmentClassDefine));
-    JSDocumentFragmentClassDefine.class_name = "DocumentFragment";
-    JSDocumentFragmentClassDefine.finalizer = JSDocumentFragment::finalizer;
-    JSDocumentFragmentClassDefine.gc_mark = JSDocumentFragment::mark;
-}
-
 JSClassID JSDocumentFragment::js_class_id = 0;
 
 void JSDocumentFragment::init(JSContext* ctx)

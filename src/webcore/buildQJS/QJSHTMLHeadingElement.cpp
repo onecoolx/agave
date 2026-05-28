@@ -107,19 +107,6 @@ void JSHTMLHeadingElementPrototype::initPrototype(JSContext * ctx, JSValue this_
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLHeadingElementAttributesFunctions, countof(JSHTMLHeadingElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLHeadingElementClassDefine;
-static bool JSHTMLHeadingElementClassDefine_initialized = false;
-
-static void init_JSHTMLHeadingElementClassDefine()
-{
-    if (JSHTMLHeadingElementClassDefine_initialized) return;
-    JSHTMLHeadingElementClassDefine_initialized = true;
-    memset(&JSHTMLHeadingElementClassDefine, 0, sizeof(JSHTMLHeadingElementClassDefine));
-    JSHTMLHeadingElementClassDefine.class_name = "HTMLHeadingElement";
-    JSHTMLHeadingElementClassDefine.finalizer = JSHTMLHeadingElement::finalizer;
-    JSHTMLHeadingElementClassDefine.gc_mark = JSHTMLHeadingElement::mark;
-}
-
 JSClassID JSHTMLHeadingElement::js_class_id = 0;
 
 void JSHTMLHeadingElement::init(JSContext* ctx)

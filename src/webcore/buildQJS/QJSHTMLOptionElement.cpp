@@ -121,19 +121,6 @@ void JSHTMLOptionElementPrototype::initPrototype(JSContext * ctx, JSValue this_o
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLOptionElementAttributesFunctions, countof(JSHTMLOptionElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLOptionElementClassDefine;
-static bool JSHTMLOptionElementClassDefine_initialized = false;
-
-static void init_JSHTMLOptionElementClassDefine()
-{
-    if (JSHTMLOptionElementClassDefine_initialized) return;
-    JSHTMLOptionElementClassDefine_initialized = true;
-    memset(&JSHTMLOptionElementClassDefine, 0, sizeof(JSHTMLOptionElementClassDefine));
-    JSHTMLOptionElementClassDefine.class_name = "HTMLOptionElement";
-    JSHTMLOptionElementClassDefine.finalizer = JSHTMLOptionElement::finalizer;
-    JSHTMLOptionElementClassDefine.gc_mark = JSHTMLOptionElement::mark;
-}
-
 JSClassID JSHTMLOptionElement::js_class_id = 0;
 
 void JSHTMLOptionElement::init(JSContext* ctx)

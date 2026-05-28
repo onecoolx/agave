@@ -134,19 +134,6 @@ void JSHTMLCanvasElementPrototype::initPrototype(JSContext * ctx, JSValue this_o
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLCanvasElementPrototypeFunctions, countof(JSHTMLCanvasElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLCanvasElementClassDefine;
-static bool JSHTMLCanvasElementClassDefine_initialized = false;
-
-static void init_JSHTMLCanvasElementClassDefine()
-{
-    if (JSHTMLCanvasElementClassDefine_initialized) return;
-    JSHTMLCanvasElementClassDefine_initialized = true;
-    memset(&JSHTMLCanvasElementClassDefine, 0, sizeof(JSHTMLCanvasElementClassDefine));
-    JSHTMLCanvasElementClassDefine.class_name = "HTMLCanvasElement";
-    JSHTMLCanvasElementClassDefine.finalizer = JSHTMLCanvasElement::finalizer;
-    JSHTMLCanvasElementClassDefine.gc_mark = JSHTMLCanvasElement::mark;
-}
-
 JSClassID JSHTMLCanvasElement::js_class_id = 0;
 
 void JSHTMLCanvasElement::init(JSContext* ctx)

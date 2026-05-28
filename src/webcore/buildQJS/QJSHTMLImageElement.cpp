@@ -209,19 +209,6 @@ void JSHTMLImageElementPrototype::initPrototype(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLImageElementAttributesFunctions, countof(JSHTMLImageElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLImageElementClassDefine;
-static bool JSHTMLImageElementClassDefine_initialized = false;
-
-static void init_JSHTMLImageElementClassDefine()
-{
-    if (JSHTMLImageElementClassDefine_initialized) return;
-    JSHTMLImageElementClassDefine_initialized = true;
-    memset(&JSHTMLImageElementClassDefine, 0, sizeof(JSHTMLImageElementClassDefine));
-    JSHTMLImageElementClassDefine.class_name = "HTMLImageElement";
-    JSHTMLImageElementClassDefine.finalizer = JSHTMLImageElement::finalizer;
-    JSHTMLImageElementClassDefine.gc_mark = JSHTMLImageElement::mark;
-}
-
 JSClassID JSHTMLImageElement::js_class_id = 0;
 
 void JSHTMLImageElement::init(JSContext* ctx)

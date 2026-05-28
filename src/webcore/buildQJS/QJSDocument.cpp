@@ -565,19 +565,6 @@ void JSDocumentPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSDocumentPrototypeFunctions, countof(JSDocumentPrototypeFunctions));
 }
 
-static JSClassDef JSDocumentClassDefine;
-static bool JSDocumentClassDefine_initialized = false;
-
-static void init_JSDocumentClassDefine()
-{
-    if (JSDocumentClassDefine_initialized) return;
-    JSDocumentClassDefine_initialized = true;
-    memset(&JSDocumentClassDefine, 0, sizeof(JSDocumentClassDefine));
-    JSDocumentClassDefine.class_name = "Document";
-    JSDocumentClassDefine.finalizer = JSDocument::finalizer;
-    JSDocumentClassDefine.gc_mark = JSDocument::mark;
-}
-
 JSClassID JSDocument::js_class_id = 0;
 
 void JSDocument::init(JSContext* ctx)

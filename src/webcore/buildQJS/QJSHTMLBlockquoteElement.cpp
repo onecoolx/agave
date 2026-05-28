@@ -107,19 +107,6 @@ void JSHTMLBlockquoteElementPrototype::initPrototype(JSContext * ctx, JSValue th
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLBlockquoteElementAttributesFunctions, countof(JSHTMLBlockquoteElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLBlockquoteElementClassDefine;
-static bool JSHTMLBlockquoteElementClassDefine_initialized = false;
-
-static void init_JSHTMLBlockquoteElementClassDefine()
-{
-    if (JSHTMLBlockquoteElementClassDefine_initialized) return;
-    JSHTMLBlockquoteElementClassDefine_initialized = true;
-    memset(&JSHTMLBlockquoteElementClassDefine, 0, sizeof(JSHTMLBlockquoteElementClassDefine));
-    JSHTMLBlockquoteElementClassDefine.class_name = "HTMLBlockquoteElement";
-    JSHTMLBlockquoteElementClassDefine.finalizer = JSHTMLBlockquoteElement::finalizer;
-    JSHTMLBlockquoteElementClassDefine.gc_mark = JSHTMLBlockquoteElement::mark;
-}
-
 JSClassID JSHTMLBlockquoteElement::js_class_id = 0;
 
 void JSHTMLBlockquoteElement::init(JSContext* ctx)

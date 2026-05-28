@@ -106,19 +106,6 @@ void JSHTMLMenuElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLMenuElementAttributesFunctions, countof(JSHTMLMenuElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLMenuElementClassDefine;
-static bool JSHTMLMenuElementClassDefine_initialized = false;
-
-static void init_JSHTMLMenuElementClassDefine()
-{
-    if (JSHTMLMenuElementClassDefine_initialized) return;
-    JSHTMLMenuElementClassDefine_initialized = true;
-    memset(&JSHTMLMenuElementClassDefine, 0, sizeof(JSHTMLMenuElementClassDefine));
-    JSHTMLMenuElementClassDefine.class_name = "HTMLMenuElement";
-    JSHTMLMenuElementClassDefine.finalizer = JSHTMLMenuElement::finalizer;
-    JSHTMLMenuElementClassDefine.gc_mark = JSHTMLMenuElement::mark;
-}
-
 JSClassID JSHTMLMenuElement::js_class_id = 0;
 
 void JSHTMLMenuElement::init(JSContext* ctx)

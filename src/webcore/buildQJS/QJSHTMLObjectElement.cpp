@@ -220,19 +220,6 @@ void JSHTMLObjectElementPrototype::initPrototype(JSContext * ctx, JSValue this_o
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLObjectElementAttributesFunctions, countof(JSHTMLObjectElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLObjectElementClassDefine;
-static bool JSHTMLObjectElementClassDefine_initialized = false;
-
-static void init_JSHTMLObjectElementClassDefine()
-{
-    if (JSHTMLObjectElementClassDefine_initialized) return;
-    JSHTMLObjectElementClassDefine_initialized = true;
-    memset(&JSHTMLObjectElementClassDefine, 0, sizeof(JSHTMLObjectElementClassDefine));
-    JSHTMLObjectElementClassDefine.class_name = "HTMLObjectElement";
-    JSHTMLObjectElementClassDefine.finalizer = JSHTMLObjectElement::finalizer;
-    JSHTMLObjectElementClassDefine.gc_mark = JSHTMLObjectElement::mark;
-}
-
 JSClassID JSHTMLObjectElement::js_class_id = 0;
 
 void JSHTMLObjectElement::init(JSContext* ctx)

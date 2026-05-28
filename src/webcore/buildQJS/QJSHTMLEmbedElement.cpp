@@ -137,19 +137,6 @@ void JSHTMLEmbedElementPrototype::initPrototype(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLEmbedElementAttributesFunctions, countof(JSHTMLEmbedElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLEmbedElementClassDefine;
-static bool JSHTMLEmbedElementClassDefine_initialized = false;
-
-static void init_JSHTMLEmbedElementClassDefine()
-{
-    if (JSHTMLEmbedElementClassDefine_initialized) return;
-    JSHTMLEmbedElementClassDefine_initialized = true;
-    memset(&JSHTMLEmbedElementClassDefine, 0, sizeof(JSHTMLEmbedElementClassDefine));
-    JSHTMLEmbedElementClassDefine.class_name = "HTMLEmbedElement";
-    JSHTMLEmbedElementClassDefine.finalizer = JSHTMLEmbedElement::finalizer;
-    JSHTMLEmbedElementClassDefine.gc_mark = JSHTMLEmbedElement::mark;
-}
-
 JSClassID JSHTMLEmbedElement::js_class_id = 0;
 
 void JSHTMLEmbedElement::init(JSContext* ctx)

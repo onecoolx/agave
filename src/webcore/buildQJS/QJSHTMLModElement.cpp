@@ -113,19 +113,6 @@ void JSHTMLModElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLModElementAttributesFunctions, countof(JSHTMLModElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLModElementClassDefine;
-static bool JSHTMLModElementClassDefine_initialized = false;
-
-static void init_JSHTMLModElementClassDefine()
-{
-    if (JSHTMLModElementClassDefine_initialized) return;
-    JSHTMLModElementClassDefine_initialized = true;
-    memset(&JSHTMLModElementClassDefine, 0, sizeof(JSHTMLModElementClassDefine));
-    JSHTMLModElementClassDefine.class_name = "HTMLModElement";
-    JSHTMLModElementClassDefine.finalizer = JSHTMLModElement::finalizer;
-    JSHTMLModElementClassDefine.gc_mark = JSHTMLModElement::mark;
-}
-
 JSClassID JSHTMLModElement::js_class_id = 0;
 
 void JSHTMLModElement::init(JSContext* ctx)

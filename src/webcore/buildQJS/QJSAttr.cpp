@@ -136,19 +136,6 @@ void JSAttrPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSAttrAttributesFunctions, countof(JSAttrAttributesFunctions));
 }
 
-static JSClassDef JSAttrClassDefine;
-static bool JSAttrClassDefine_initialized = false;
-
-static void init_JSAttrClassDefine()
-{
-    if (JSAttrClassDefine_initialized) return;
-    JSAttrClassDefine_initialized = true;
-    memset(&JSAttrClassDefine, 0, sizeof(JSAttrClassDefine));
-    JSAttrClassDefine.class_name = "Attr";
-    JSAttrClassDefine.finalizer = JSAttr::finalizer;
-    JSAttrClassDefine.gc_mark = JSAttr::mark;
-}
-
 JSClassID JSAttr::js_class_id = 0;
 
 void JSAttr::init(JSContext* ctx)

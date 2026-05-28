@@ -161,19 +161,6 @@ void JSHTMLBodyElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLBodyElementAttributesFunctions, countof(JSHTMLBodyElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLBodyElementClassDefine;
-static bool JSHTMLBodyElementClassDefine_initialized = false;
-
-static void init_JSHTMLBodyElementClassDefine()
-{
-    if (JSHTMLBodyElementClassDefine_initialized) return;
-    JSHTMLBodyElementClassDefine_initialized = true;
-    memset(&JSHTMLBodyElementClassDefine, 0, sizeof(JSHTMLBodyElementClassDefine));
-    JSHTMLBodyElementClassDefine.class_name = "HTMLBodyElement";
-    JSHTMLBodyElementClassDefine.finalizer = JSHTMLBodyElement::finalizer;
-    JSHTMLBodyElementClassDefine.gc_mark = JSHTMLBodyElement::mark;
-}
-
 JSClassID JSHTMLBodyElement::js_class_id = 0;
 
 void JSHTMLBodyElement::init(JSContext* ctx)

@@ -107,19 +107,6 @@ void JSHTMLBRElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLBRElementAttributesFunctions, countof(JSHTMLBRElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLBRElementClassDefine;
-static bool JSHTMLBRElementClassDefine_initialized = false;
-
-static void init_JSHTMLBRElementClassDefine()
-{
-    if (JSHTMLBRElementClassDefine_initialized) return;
-    JSHTMLBRElementClassDefine_initialized = true;
-    memset(&JSHTMLBRElementClassDefine, 0, sizeof(JSHTMLBRElementClassDefine));
-    JSHTMLBRElementClassDefine.class_name = "HTMLBRElement";
-    JSHTMLBRElementClassDefine.finalizer = JSHTMLBRElement::finalizer;
-    JSHTMLBRElementClassDefine.gc_mark = JSHTMLBRElement::mark;
-}
-
 JSClassID JSHTMLBRElement::js_class_id = 0;
 
 void JSHTMLBRElement::init(JSContext* ctx)

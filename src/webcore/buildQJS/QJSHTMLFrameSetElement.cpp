@@ -113,19 +113,6 @@ void JSHTMLFrameSetElementPrototype::initPrototype(JSContext * ctx, JSValue this
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLFrameSetElementAttributesFunctions, countof(JSHTMLFrameSetElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLFrameSetElementClassDefine;
-static bool JSHTMLFrameSetElementClassDefine_initialized = false;
-
-static void init_JSHTMLFrameSetElementClassDefine()
-{
-    if (JSHTMLFrameSetElementClassDefine_initialized) return;
-    JSHTMLFrameSetElementClassDefine_initialized = true;
-    memset(&JSHTMLFrameSetElementClassDefine, 0, sizeof(JSHTMLFrameSetElementClassDefine));
-    JSHTMLFrameSetElementClassDefine.class_name = "HTMLFrameSetElement";
-    JSHTMLFrameSetElementClassDefine.finalizer = JSHTMLFrameSetElement::finalizer;
-    JSHTMLFrameSetElementClassDefine.gc_mark = JSHTMLFrameSetElement::mark;
-}
-
 JSClassID JSHTMLFrameSetElement::js_class_id = 0;
 
 void JSHTMLFrameSetElement::init(JSContext* ctx)

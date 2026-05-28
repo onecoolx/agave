@@ -123,19 +123,6 @@ void JSTextPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSTextPrototypeFunctions, countof(JSTextPrototypeFunctions));
 }
 
-static JSClassDef JSTextClassDefine;
-static bool JSTextClassDefine_initialized = false;
-
-static void init_JSTextClassDefine()
-{
-    if (JSTextClassDefine_initialized) return;
-    JSTextClassDefine_initialized = true;
-    memset(&JSTextClassDefine, 0, sizeof(JSTextClassDefine));
-    JSTextClassDefine.class_name = "Text";
-    JSTextClassDefine.finalizer = JSText::finalizer;
-    JSTextClassDefine.gc_mark = JSText::mark;
-}
-
 JSClassID JSText::js_class_id = 0;
 
 void JSText::init(JSContext* ctx)

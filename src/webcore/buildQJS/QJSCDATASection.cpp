@@ -100,19 +100,6 @@ void JSCDATASectionPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSCDATASectionAttributesFunctions, countof(JSCDATASectionAttributesFunctions));
 }
 
-static JSClassDef JSCDATASectionClassDefine;
-static bool JSCDATASectionClassDefine_initialized = false;
-
-static void init_JSCDATASectionClassDefine()
-{
-    if (JSCDATASectionClassDefine_initialized) return;
-    JSCDATASectionClassDefine_initialized = true;
-    memset(&JSCDATASectionClassDefine, 0, sizeof(JSCDATASectionClassDefine));
-    JSCDATASectionClassDefine.class_name = "CDATASection";
-    JSCDATASectionClassDefine.finalizer = JSCDATASection::finalizer;
-    JSCDATASectionClassDefine.gc_mark = JSCDATASection::mark;
-}
-
 JSClassID JSCDATASection::js_class_id = 0;
 
 void JSCDATASection::init(JSContext* ctx)

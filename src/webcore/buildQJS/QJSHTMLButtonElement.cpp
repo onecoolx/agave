@@ -166,19 +166,6 @@ void JSHTMLButtonElementPrototype::initPrototype(JSContext * ctx, JSValue this_o
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLButtonElementPrototypeFunctions, countof(JSHTMLButtonElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLButtonElementClassDefine;
-static bool JSHTMLButtonElementClassDefine_initialized = false;
-
-static void init_JSHTMLButtonElementClassDefine()
-{
-    if (JSHTMLButtonElementClassDefine_initialized) return;
-    JSHTMLButtonElementClassDefine_initialized = true;
-    memset(&JSHTMLButtonElementClassDefine, 0, sizeof(JSHTMLButtonElementClassDefine));
-    JSHTMLButtonElementClassDefine.class_name = "HTMLButtonElement";
-    JSHTMLButtonElementClassDefine.finalizer = JSHTMLButtonElement::finalizer;
-    JSHTMLButtonElementClassDefine.gc_mark = JSHTMLButtonElement::mark;
-}
-
 JSClassID JSHTMLButtonElement::js_class_id = 0;
 
 void JSHTMLButtonElement::init(JSContext* ctx)

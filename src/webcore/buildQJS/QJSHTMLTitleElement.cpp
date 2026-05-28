@@ -107,19 +107,6 @@ void JSHTMLTitleElementPrototype::initPrototype(JSContext * ctx, JSValue this_ob
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLTitleElementAttributesFunctions, countof(JSHTMLTitleElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLTitleElementClassDefine;
-static bool JSHTMLTitleElementClassDefine_initialized = false;
-
-static void init_JSHTMLTitleElementClassDefine()
-{
-    if (JSHTMLTitleElementClassDefine_initialized) return;
-    JSHTMLTitleElementClassDefine_initialized = true;
-    memset(&JSHTMLTitleElementClassDefine, 0, sizeof(JSHTMLTitleElementClassDefine));
-    JSHTMLTitleElementClassDefine.class_name = "HTMLTitleElement";
-    JSHTMLTitleElementClassDefine.finalizer = JSHTMLTitleElement::finalizer;
-    JSHTMLTitleElementClassDefine.gc_mark = JSHTMLTitleElement::mark;
-}
-
 JSClassID JSHTMLTitleElement::js_class_id = 0;
 
 void JSHTMLTitleElement::init(JSContext* ctx)

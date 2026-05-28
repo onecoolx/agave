@@ -142,19 +142,6 @@ void JSHTMLLegendElementPrototype::initPrototype(JSContext * ctx, JSValue this_o
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLLegendElementPrototypeFunctions, countof(JSHTMLLegendElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLLegendElementClassDefine;
-static bool JSHTMLLegendElementClassDefine_initialized = false;
-
-static void init_JSHTMLLegendElementClassDefine()
-{
-    if (JSHTMLLegendElementClassDefine_initialized) return;
-    JSHTMLLegendElementClassDefine_initialized = true;
-    memset(&JSHTMLLegendElementClassDefine, 0, sizeof(JSHTMLLegendElementClassDefine));
-    JSHTMLLegendElementClassDefine.class_name = "HTMLLegendElement";
-    JSHTMLLegendElementClassDefine.finalizer = JSHTMLLegendElement::finalizer;
-    JSHTMLLegendElementClassDefine.gc_mark = JSHTMLLegendElement::mark;
-}
-
 JSClassID JSHTMLLegendElement::js_class_id = 0;
 
 void JSHTMLLegendElement::init(JSContext* ctx)

@@ -185,19 +185,6 @@ void JSHTMLFormElementPrototype::initPrototype(JSContext * ctx, JSValue this_obj
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLFormElementPrototypeFunctions, countof(JSHTMLFormElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLFormElementClassDefine;
-static bool JSHTMLFormElementClassDefine_initialized = false;
-
-static void init_JSHTMLFormElementClassDefine()
-{
-    if (JSHTMLFormElementClassDefine_initialized) return;
-    JSHTMLFormElementClassDefine_initialized = true;
-    memset(&JSHTMLFormElementClassDefine, 0, sizeof(JSHTMLFormElementClassDefine));
-    JSHTMLFormElementClassDefine.class_name = "HTMLFormElement";
-    JSHTMLFormElementClassDefine.finalizer = JSHTMLFormElement::finalizer;
-    JSHTMLFormElementClassDefine.gc_mark = JSHTMLFormElement::mark;
-}
-
 JSClassID JSHTMLFormElement::js_class_id = 0;
 
 void JSHTMLFormElement::init(JSContext* ctx)

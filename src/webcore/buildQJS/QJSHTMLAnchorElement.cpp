@@ -256,19 +256,6 @@ void JSHTMLAnchorElementPrototype::initPrototype(JSContext * ctx, JSValue this_o
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLAnchorElementPrototypeFunctions, countof(JSHTMLAnchorElementPrototypeFunctions));
 }
 
-static JSClassDef JSHTMLAnchorElementClassDefine;
-static bool JSHTMLAnchorElementClassDefine_initialized = false;
-
-static void init_JSHTMLAnchorElementClassDefine()
-{
-    if (JSHTMLAnchorElementClassDefine_initialized) return;
-    JSHTMLAnchorElementClassDefine_initialized = true;
-    memset(&JSHTMLAnchorElementClassDefine, 0, sizeof(JSHTMLAnchorElementClassDefine));
-    JSHTMLAnchorElementClassDefine.class_name = "HTMLAnchorElement";
-    JSHTMLAnchorElementClassDefine.finalizer = JSHTMLAnchorElement::finalizer;
-    JSHTMLAnchorElementClassDefine.gc_mark = JSHTMLAnchorElement::mark;
-}
-
 JSClassID JSHTMLAnchorElement::js_class_id = 0;
 
 void JSHTMLAnchorElement::init(JSContext* ctx)

@@ -119,19 +119,6 @@ void JSHTMLBaseFontElementPrototype::initPrototype(JSContext * ctx, JSValue this
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLBaseFontElementAttributesFunctions, countof(JSHTMLBaseFontElementAttributesFunctions));
 }
 
-static JSClassDef JSHTMLBaseFontElementClassDefine;
-static bool JSHTMLBaseFontElementClassDefine_initialized = false;
-
-static void init_JSHTMLBaseFontElementClassDefine()
-{
-    if (JSHTMLBaseFontElementClassDefine_initialized) return;
-    JSHTMLBaseFontElementClassDefine_initialized = true;
-    memset(&JSHTMLBaseFontElementClassDefine, 0, sizeof(JSHTMLBaseFontElementClassDefine));
-    JSHTMLBaseFontElementClassDefine.class_name = "HTMLBaseFontElement";
-    JSHTMLBaseFontElementClassDefine.finalizer = JSHTMLBaseFontElement::finalizer;
-    JSHTMLBaseFontElementClassDefine.gc_mark = JSHTMLBaseFontElement::mark;
-}
-
 JSClassID JSHTMLBaseFontElement::js_class_id = 0;
 
 void JSHTMLBaseFontElement::init(JSContext* ctx)
