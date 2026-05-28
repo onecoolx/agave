@@ -27,7 +27,6 @@
 #include "ContextMenuClientMC.h"
 #include "EditorClientMC.h"
 #include "DragClientMC.h"
-#include "InspectorClientMC.h"
 #include "FrameLoaderClientMC.h"
 #include "FocusController.h"
 #include "GCController.h"
@@ -115,13 +114,8 @@ WebView::WebView(struct _mc_view* view, unsigned char* buffer, int width, int he
 	ps_set_text_antialias(d->m_context, isTextAntialias() ? True : False);
 	d->m_txtanti = isTextAntialias();
 	//FIXME: Chrome 's width and height is not view , is window
-#if ENABLE(INSPECTOR)
-    Page* page = new Page(new ChromeClientMC(view, width, height), new ContextMenuClientMC,
-                          new EditorClientMC(view), new DragClientMC, new InspectorClientMC);
-#else
     Page* page = new Page(new ChromeClientMC(view, width, height), new ContextMenuClientMC,
                           new EditorClientMC(view), new DragClientMC);
-#endif
     FrameLoaderClientMC *client = new FrameLoaderClientMC;
     Frame* frame = new Frame(page, 0, client);
 	client->setFrame(frame);

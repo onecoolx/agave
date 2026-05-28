@@ -39,9 +39,6 @@
 #include <wtf/RefPtr.h>
 #include <wtf/Vector.h>
 
-#if ENABLE(INSPECTOR)
-#include "InspectorController.h"
-#endif
 
 #if ENABLE(KJS)
 #include "kjs_window.h"
@@ -190,10 +187,6 @@ void Chrome::addMessageToConsole(MessageSource source, MessageLevel level, const
     if (source == JSMessageSource && level == ErrorMessageLevel)
         m_client->addMessageToConsole(message, lineNumber, sourceID);
 
-#if ENABLE(INSPECTOR)
-    if (InspectorController* inspector = m_page->inspectorController())
-        inspector->addMessageToConsole(source, level, message, lineNumber, sourceID);
-#endif
 }
 
 bool Chrome::canRunBeforeUnloadConfirmPanel()

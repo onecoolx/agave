@@ -65,7 +65,6 @@ list(REMOVE_ITEM SOURCES
     ${PROJ_ROOT}/src/webcore/buildQJS/CSSValueKeywords.c
     ${PROJ_ROOT}/src/webcore/buildQJS/DocTypeStrings.cpp
     ${PROJ_ROOT}/src/webcore/buildQJS/tokenizer.cpp
-    ${PROJ_ROOT}/src/webcore/page/InspectorController.cpp
     ${PROJ_ROOT}/src/wtf/FastMallocPCRE.cpp
 )
 endif()
