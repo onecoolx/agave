@@ -182,8 +182,6 @@ void ScriptController::initScriptIfNeeded()
     // Set up global object with DOMWindow properties
     JSValue globalObject = JS_GetGlobalObject(m_context);
 
-    // Register all properties directly on global object
-    JSDOMWindow::init(m_context);
     // Register only essential DOMWindow properties on global
     initEssentialDOMWindowProperties(m_context, globalObject);
     // Window functions override DOMWindow's generated versions (our impl has better null safety)

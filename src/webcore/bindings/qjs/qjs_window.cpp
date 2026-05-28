@@ -2096,36 +2096,6 @@ static JSValue js_window_func(JSContext* ctx, JSValueConst this_val, int argc, J
     return WindowFunc::callAsFunction(ctx, this_val, argc, argv, magic);
 }
 
-static JSCFunctionListEntry js_window_funcs[16];
-static bool js_window_funcs_initialized = false;
-
-static void init_js_window_funcs()
-{
-    if (js_window_funcs_initialized) return;
-    js_window_funcs_initialized = true;
-    memset(js_window_funcs, 0, sizeof(js_window_funcs));
-    struct { const char* n; int l; int m; } defs[] = {
-        {"open",3,Window::Open}, {"setTimeout",2,Window::SetTimeout},
-        {"clearTimeout",1,Window::ClearTimeout}, {"setInterval",2,Window::SetInterval},
-        {"clearInterval",1,Window::ClearInterval}, {"scrollBy",2,Window::ScrollBy},
-        {"scrollTo",2,Window::ScrollTo}, {"scroll",2,Window::Scroll},
-        {"moveBy",2,Window::MoveBy}, {"moveTo",2,Window::MoveTo},
-        {"resizeBy",2,Window::ResizeBy}, {"resizeTo",2,Window::ResizeTo},
-        {"atob",1,Window::AToB}, {"btoa",1,Window::BToA},
-        {"addEventListener",3,Window::AddEventListener},
-        {"removeEventListener",3,Window::RemoveEventListener},
-    };
-    for (int i = 0; i < 16; i++) {
-        js_window_funcs[i].name = defs[i].n;
-        js_window_funcs[i].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
-        js_window_funcs[i].def_type = JS_DEF_CFUNC;
-        js_window_funcs[i].magic = defs[i].m;
-        js_window_funcs[i].u.func.length = defs[i].l;
-        js_window_funcs[i].u.func.cproto = JS_CFUNC_generic_magic;
-        js_window_funcs[i].u.func.cfunc.generic_magic = js_window_func;
-    }
-}
-
 void WindowPrototype::initPrototype(JSContext* ctx, JSValue this_obj)
 {
     struct { const char* name; int nargs; int magic; } funcs[] = {
