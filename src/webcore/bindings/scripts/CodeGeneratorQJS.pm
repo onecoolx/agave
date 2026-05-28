@@ -78,13 +78,7 @@ sub finish
     $object->WriteData();
 }
 
-sub leftShift($$) {
-    my ($value, $distance) = @_;
-    return (($value << $distance) & 0xFFFFFFFF);
-}
-
-# Uppercase the first letter, while respecting WebKit style guidelines. 
-# E.g., xmlEncoding becomes XMLEncoding, but xmlllang becomes Xmllang.
+# Uppercase the first letter
 sub WK_ucfirst
 {
     my $param = shift;
@@ -162,7 +156,7 @@ sub GetLegacyHeaderIncludes
     my $legacyParent = shift;
 
     return "#include \"QJSHTMLInputElementBase.h\"\n\n" if $legacyParent eq "JSHTMLInputElementBase";
-    return "#include \"qjs_window.h\"\n\n" if $legacyParent eq "Window"; #<Debug> QJS::Window #
+    return "#include \"qjs_window.h\"\n\n" if $legacyParent eq "Window";
     return "#include \"qjs_events.h\"\n\n" if $module eq "events";
     return "#include \"qjs_css.h\"\n\n" if $module eq "css";
     return "#include \"qjs_html.h\"\n\n" if $module eq "html";
@@ -343,7 +337,6 @@ sub GenerateHeader
     AddClassForwardIfNeeded($implClassName) unless $podType;
 
     # Class declaration
-    #<Debug>#push(@headerContent, "class $className : public $parentClassName {\n");
     push(@headerContent, "class $className {\n");
     push(@headerContent, "public:\n");
 
@@ -361,7 +354,6 @@ sub GenerateHeader
 
     # Destructor
     if (!$hasParent or $interfaceName eq "Document") {
-        #<Debug>#push(@headerContent, "    virtual ~$className();\n");
     }
 
     push(@headerContent, "    static void finalizer(JSRuntime *rt, JSValue val);\n");
@@ -371,7 +363,6 @@ sub GenerateHeader
     if ($numAttributes > 0 || $dataNode->extendedAttributes->{"GenerateConstructor"}) {
         push(@headerContent, "    static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);\n");
         if ($dataNode->extendedAttributes->{"CustomGetOwnPropertySlot"}) {
-            #<Debug> #push(@headerContent, "    bool customGetOwnPropertySlot(KJS::ExecState*, const KJS::Identifier&, KJS::PropertySlot&);\n");
         }
     }
 
@@ -386,7 +377,6 @@ sub GenerateHeader
     if ($hasReadWriteProperties) {
         push(@headerContent, "    static JSValue putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue val, int token);\n");
         if ($dataNode->extendedAttributes->{"CustomPutFunction"}) {
-            #<Debug>#push(@headerContent, "    bool customPut(KJS::ExecState*, const KJS::Identifier&, KJS::JSValue*, int attr);\n");
         }
     }
 
@@ -398,7 +388,6 @@ sub GenerateHeader
 
     # Custom pushEventHandlerScope function
     if ($dataNode->extendedAttributes->{"CustomPushEventHandlerScope"}) {
-        #<Debug>#push(@headerContent, "    virtual void pushEventHandlerScope(KJS::ExecState*, KJS::ScopeChain&) const;\n\n");
     }
 
     # Custom call functions
@@ -466,8 +455,6 @@ sub GenerateHeader
             push(@headerContent, $value);
         }
     }
-
-
     push(@headerContent, "\n    };\n") if ($hasAttrFunctionEnum);
 
     if ($numCustomAttributes > 0) {
@@ -527,7 +514,6 @@ sub GenerateHeader
     # Name getter
     if ($dataNode->extendedAttributes->{"HasNameGetter"} || $dataNode->extendedAttributes->{"HasOverridingNameGetter"}) {
         push(@headerContent, "private:\n");
-        #<Debug>#push(@headerContent, "    static bool canGetItemsForName(KJS::ExecState*, $implClassName*, const KJS::Identifier&);\n");
         push(@headerContent, "    static JSValue nameGetter(JSContext *ctx, JSValueConst this_obj, const char* prop);\n");
     }
 
@@ -563,7 +549,6 @@ sub GenerateHeader
     push(@headerContent, "    static JSValue self(JSContext * ctx);\n");
     push(@headerContent, "    static void initPrototype(JSContext * ctx, JSValue this_obj);\n");
     if ($numFunctions > 0 || $numConstants > 0) {
-        #<Debug>#push(@headerContent, "    bool getOwnPropertySlot(KJS::ExecState*, const KJS::Identifier&, KJS::PropertySlot&);\n");
     }
     push(@headerContent, "};\n\n");
 
@@ -613,7 +598,6 @@ sub GenerateImplementation
     }
 
     push(@implContentHeader, "#include \"Q$className.h\"\n\n");
-    #<Debug>#push(@implContentHeader, "#include <wtf/GetPtr.h>\n\n");
 
     AddIncludesForType($interfaceName);
 
@@ -632,10 +616,8 @@ sub GenerateImplementation
         my $hashName = $className;
         my $hashType = "Attributes";
 
-        my @hashKeys = ();      # ie. 'insertBefore'
-        my @hashValues = ();    # ie. 'JSNode::InsertBefore'
-        my @hashSpecials = ();    # ie. 'DontDelete|Function'
-        my @hashParameters = ();  # ie. '2'
+        my @hashKeys = ();
+        my @hashValues = ();
         my @hashReadonly = ();
 
         foreach my $attribute (@{$dataNode->attributes}) {
@@ -816,18 +798,6 @@ sub GenerateImplementation
         push(@implContent, "    return obj;\n");
         push(@implContent, "}\n\n");
     }
-    if ($numConstants > 0 || $numFunctions > 0) {
-        #<Debug>#push(@implContent, "bool ${className}Prototype::getOwnPropertySlot(ExecState* exec, const Identifier& propertyName, PropertySlot& slot)\n");
-        #push(@implContent, "{\n");
-        #if ($numConstants eq 0) {
-        #    push(@implContent, "    return getStaticFunctionSlot<${className}PrototypeFunction, JSObject>(exec, &${className}PrototypeTable, this, propertyName, slot);\n");
-        #} elsif ($numFunctions eq 0) {
-         #   push(@implContent, "    return getStaticValueSlot<${className}Prototype, JSObject>(exec, &${className}PrototypeTable, this, propertyName, slot);\n");
-        #} else {
-        #    push(@implContent, "    return getStaticPropertySlot<${className}PrototypeFunction, ${className}Prototype, JSObject>(exec, &${className}PrototypeTable, this, propertyName, slot);\n");
-        #}
-        #push(@implContent, "}\n\n");
-    }
     push(@implContent, "void ${className}Prototype::initPrototype(JSContext * ctx, JSValue this_obj)\n{\n");
     if ($numAttributes > 0) {
         push(@implContent, "    init_${className}AttributesFunctions();\n");
@@ -842,25 +812,6 @@ sub GenerateImplementation
         push(@implContent, "    JS_SetPropertyFunctionList(ctx, this_obj, ${className}PrototypeFunctions, countof(${className}PrototypeFunctions));\n");
     }
     push(@implContent, "}\n\n");
-    if ($numConstants ne 0) {
-        # Constants now use JS_DEF_PROP_INT32, no getter needed
-    }
-
-    # - Initialize static ClassInfo object
-    #<Debug>#push(@implContent, "const ClassInfo $className" . "::info = { \"$interfaceName\", ");
-    #if ($hasParent) {
-    #    push(@implContent, "&" .$parentClassName . "::info, ");
-    #} else {
-    #    push(@implContent, "0, ");
-    #}
-
-    #if ($numAttributes > 0) {
-    #    push(@implContent, "&${className}Table, ");
-    #} else {
-    #    push(@implContent, "0, ")
-    #}
-    #push(@implContent, "0 };\n\n");
-
 
     push(@implContent, "static JSClassDef ${className}ClassDefine;\n");
     push(@implContent, "static bool ${className}ClassDefine_initialized = false;\n\n");
@@ -894,18 +845,6 @@ sub GenerateImplementation
         }
         push(@implContent, "    }\n");
     }
-
-
-
-
-
-
-
-
-
-
-
-
     push(@implContent, "}\n\n");
 
     # Get correct pass/store types respecting PODType flag
@@ -971,9 +910,6 @@ sub GenerateImplementation
     push(@implContent, "    impl->deref();\n");
     push(@implContent, "}\n\n");
 
-    # Document needs a special destructor because it's a special case for caching. It needs
-    # its own special handling rather than relying on the caching that Node normally does.
-
     if (!$dataNode->extendedAttributes->{"CustomMarkFunction"}) {
         push(@implContent, "void ${className}::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func)\n{\n");
         if ($hasParent) {
@@ -987,64 +923,6 @@ sub GenerateImplementation
 
     # Attributes
     if ($numAttributes ne 0) {
-#<Debug>#
-        #push(@implContent, "bool ${className}::getOwnPropertySlot(ExecState* exec, const Identifier& propertyName, PropertySlot& slot)\n");
-        #push(@implContent, "{\n");
-
-       #if ($interfaceName eq "NamedNodeMap" or $interfaceName eq "HTMLCollection") {
-       #     push(@implContent, "    JSValue* proto = prototype();\n");
-       #     push(@implContent, "    if (proto->isObject() && static_cast<JSObject*>(proto)->hasProperty(exec, propertyName))\n");
-       #     push(@implContent, "        return false;\n\n");
-       # }
-
-       #my $hasNameGetterGeneration = sub {
-       #     push(@implContent, "    if (canGetItemsForName(exec, static_cast<$implClassName*>(impl()), propertyName)) {\n");
-       #     push(@implContent, "        slot.setCustom(this, nameGetter);\n");
-       #     push(@implContent, "        return true;\n");
-       #     push(@implContent, "    }\n");
-       #     $implIncludes{"AtomicString.h"} = 1;
-       # };
-
-       # if ($dataNode->extendedAttributes->{"HasOverridingNameGetter"}) {
-       #     &$hasNameGetterGeneration();
-       # }
-
-       # my $requiresManualLookup = $dataNode->extendedAttributes->{"HasIndexGetter"} || $dataNode->extendedAttributes->{"HasNameGetter"};
-       # if ($requiresManualLookup) {
-       #     push(@implContent, "    const HashEntry* entry = Lookup::findEntry(&${className}Table, propertyName);\n");
-       #     push(@implContent, "    if (entry) {\n");
-       #     push(@implContent, "        slot.setStaticEntry(this, entry, staticValueGetter<$className>);\n");
-       #     push(@implContent, "        return true;\n");
-       #     push(@implContent, "    }\n");
-       # }
-
-       # if ($dataNode->extendedAttributes->{"HasIndexGetter"}) {
-       #     push(@implContent, "    bool ok;\n");
-       #     push(@implContent, "    unsigned index = propertyName.toUInt32(&ok, false);\n");
-       #     push(@implContent, "    if (ok && index < static_cast<$implClassName*>(impl())->length()) {\n");
-       #     push(@implContent, "        slot.setCustomIndex(this, index, indexGetter);\n");
-       #     push(@implContent, "        return true;\n");
-       #     push(@implContent, "    }\n");
-       # }
-
-       # if ($dataNode->extendedAttributes->{"HasNameGetter"}) {
-       #     &$hasNameGetterGeneration();
-       # }
-
-       # if ($dataNode->extendedAttributes->{"CustomGetOwnPropertySlot"}) {
-       #         push(@implContent, "    if (customGetOwnPropertySlot(exec, propertyName, slot))\n");
-       #         push(@implContent, "        return true;\n");
-       # }
-
-       # if ($requiresManualLookup) {
-       #     push(@implContent, "    return ${parentClassName}::getOwnPropertySlot(exec, propertyName, slot);\n");
-       # } else {
-       #     push(@implContent, "    return getStaticValueSlot<$className, $parentClassName>(exec, &${className}Table, this, propertyName, slot);\n");
-       # }
-       # push(@implContent, "}\n\n");
-
-
-
 
         push(@implContent, "JSValue ${className}::getValueProperty(JSContext *ctx, JSValueConst this_val, int token)\n{\n");
 
@@ -1145,23 +1023,6 @@ sub GenerateImplementation
             $hasReadWriteProperties = 1 if $attribute->type !~ /^readonly/;
         }
         if ($hasReadWriteProperties) {
-            #push(@implContent, "void ${className}::put(ExecState* exec, const Identifier& propertyName, JSValue* value, int attr)\n");
-            #push(@implContent, "{\n");
-            #if ($dataNode->extendedAttributes->{"HasCustomIndexSetter"}) {
-            #    push(@implContent, "    bool ok;\n");
-            #    push(@implContent, "    unsigned index = propertyName.toUInt32(&ok, false);\n");
-            #    push(@implContent, "    if (ok) {\n");
-            #    push(@implContent, "        indexSetter(exec, index, value, attr);\n");
-            #    push(@implContent, "        return;\n");
-            #    push(@implContent, "    }\n");
-            #}
-            #if ($dataNode->extendedAttributes->{"CustomPutFunction"}) {
-            #    push(@implContent, "    if (customPut(exec, propertyName, value, attr))\n");
-            #    push(@implContent, "        return;\n");
-            #}
-
-            #push(@implContent, "    lookupPut<$className, $parentClassName>(exec, propertyName, value, attr, &${className}Table, this);\n");
-            #push(@implContent, "}\n\n");
 
             push(@implContent, "JSValue ${className}::putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue value, int token)\n");
             push(@implContent, "{\n");
@@ -1771,8 +1632,6 @@ sub GeneratePrototypeFuncTable
 
     push(@implContent, "}\n\n");
 }
-
-
 # Internal helper
 sub WriteData
 {
