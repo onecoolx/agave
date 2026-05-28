@@ -591,10 +591,14 @@ JSValue Window::getValueProperty(JSContext* ctx, JSValueConst this_val, int toke
            if (!window->isSafeScript(ctx))
                return JS_UNDEFINED;
            {
-               static JSValue imgCtor = JS_UNDEFINED;
+               JSValue globalObj = JS_GetGlobalObject(ctx);
+               JSValue imgCtor = JS_GetPropertyStr(ctx, globalObj, "[[Image.constructor]]");
                if (JS_IsUndefined(imgCtor)) {
                    imgCtor = JS_NewCFunction2(ctx, qjs_image_constructor, "Image", 2, JS_CFUNC_constructor, 0);
+                   JS_SetPropertyStr(ctx, globalObj, "[[Image.constructor]]", imgCtor);
+                   imgCtor = JS_DupValue(ctx, imgCtor);
                }
+               JS_FreeValue(ctx, globalObj);
                return imgCtor;
            }
        case Option:
@@ -2083,11 +2087,15 @@ void DOMWindowTimer::fired()
 
 JSValue WindowPrototype::self(JSContext* ctx)
 {
-    static JSValue proto = JS_UNDEFINED;
+    JSValue globalObj = JS_GetGlobalObject(ctx);
+    JSValue proto = JS_GetPropertyStr(ctx, globalObj, "[[WindowPrototype]]");
     if (JS_IsUndefined(proto)) {
         proto = JS_NewObject(ctx);
         WindowPrototype::initPrototype(ctx, proto);
+        JS_SetPropertyStr(ctx, globalObj, "[[WindowPrototype]]", proto);
+        proto = JS_DupValue(ctx, proto);
     }
+    JS_FreeValue(ctx, globalObj);
     return proto;
 }
 
