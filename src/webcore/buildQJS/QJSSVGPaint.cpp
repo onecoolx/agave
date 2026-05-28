@@ -217,18 +217,18 @@ static void init_JSSVGPaintPrototypeFunctions()
     if (JSSVGPaintPrototypeFunctions_initialized) return;
     JSSVGPaintPrototypeFunctions_initialized = true;
     memset(JSSVGPaintPrototypeFunctions, 0, sizeof(JSSVGPaintPrototypeFunctions));
-    JSSVGPaintPrototypeFunctions[0].name = "setPaint";
+    JSSVGPaintPrototypeFunctions[0].name = "setUri";
     JSSVGPaintPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
     JSSVGPaintPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
-    JSSVGPaintPrototypeFunctions[0].magic = JSSVGPaint::SetPaintFuncNum;
-    JSSVGPaintPrototypeFunctions[0].u.func.length = 4;
+    JSSVGPaintPrototypeFunctions[0].magic = JSSVGPaint::SetUriFuncNum;
+    JSSVGPaintPrototypeFunctions[0].u.func.length = 1;
     JSSVGPaintPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
     JSSVGPaintPrototypeFunctions[0].u.func.cfunc.generic_magic = JSSVGPaintPrototypeFunction::callAsFunction;
-    JSSVGPaintPrototypeFunctions[1].name = "setUri";
+    JSSVGPaintPrototypeFunctions[1].name = "setPaint";
     JSSVGPaintPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
     JSSVGPaintPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
-    JSSVGPaintPrototypeFunctions[1].magic = JSSVGPaint::SetUriFuncNum;
-    JSSVGPaintPrototypeFunctions[1].u.func.length = 1;
+    JSSVGPaintPrototypeFunctions[1].magic = JSSVGPaint::SetPaintFuncNum;
+    JSSVGPaintPrototypeFunctions[1].u.func.length = 4;
     JSSVGPaintPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
     JSSVGPaintPrototypeFunctions[1].u.func.cfunc.generic_magic = JSSVGPaintPrototypeFunction::callAsFunction;
 }

@@ -56,16 +56,16 @@ static void init_JSSVGPathSegMovetoRelAttributesFunctions()
     if (JSSVGPathSegMovetoRelAttributesFunctions_initialized) return;
     JSSVGPathSegMovetoRelAttributesFunctions_initialized = true;
     memset(JSSVGPathSegMovetoRelAttributesFunctions, 0, sizeof(JSSVGPathSegMovetoRelAttributesFunctions));
-    JSSVGPathSegMovetoRelAttributesFunctions[0].name = "y";
+    JSSVGPathSegMovetoRelAttributesFunctions[0].name = "x";
     JSSVGPathSegMovetoRelAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegMovetoRelAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegMovetoRelAttributesFunctions[0].magic = JSSVGPathSegMovetoRel::YAttrNum;
+    JSSVGPathSegMovetoRelAttributesFunctions[0].magic = JSSVGPathSegMovetoRel::XAttrNum;
     JSSVGPathSegMovetoRelAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegMovetoRel::getValueProperty;
     JSSVGPathSegMovetoRelAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegMovetoRel::putValueProperty;
-    JSSVGPathSegMovetoRelAttributesFunctions[1].name = "x";
+    JSSVGPathSegMovetoRelAttributesFunctions[1].name = "y";
     JSSVGPathSegMovetoRelAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegMovetoRelAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegMovetoRelAttributesFunctions[1].magic = JSSVGPathSegMovetoRel::XAttrNum;
+    JSSVGPathSegMovetoRelAttributesFunctions[1].magic = JSSVGPathSegMovetoRel::YAttrNum;
     JSSVGPathSegMovetoRelAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegMovetoRel::getValueProperty;
     JSSVGPathSegMovetoRelAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegMovetoRel::putValueProperty;
 }

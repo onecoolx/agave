@@ -56,16 +56,16 @@ static void init_JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions()
     if (JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions_initialized) return;
     JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions_initialized = true;
     memset(JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions, 0, sizeof(JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions));
-    JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[0].name = "y";
+    JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[0].name = "x";
     JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[0].magic = JSSVGPathSegCurvetoQuadraticSmoothRel::YAttrNum;
+    JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[0].magic = JSSVGPathSegCurvetoQuadraticSmoothRel::XAttrNum;
     JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegCurvetoQuadraticSmoothRel::getValueProperty;
     JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegCurvetoQuadraticSmoothRel::putValueProperty;
-    JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[1].name = "x";
+    JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[1].name = "y";
     JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[1].magic = JSSVGPathSegCurvetoQuadraticSmoothRel::XAttrNum;
+    JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[1].magic = JSSVGPathSegCurvetoQuadraticSmoothRel::YAttrNum;
     JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegCurvetoQuadraticSmoothRel::getValueProperty;
     JSSVGPathSegCurvetoQuadraticSmoothRelAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegCurvetoQuadraticSmoothRel::putValueProperty;
 }

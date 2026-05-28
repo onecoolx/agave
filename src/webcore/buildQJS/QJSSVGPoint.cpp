@@ -57,16 +57,16 @@ static void init_JSSVGPointAttributesFunctions()
     if (JSSVGPointAttributesFunctions_initialized) return;
     JSSVGPointAttributesFunctions_initialized = true;
     memset(JSSVGPointAttributesFunctions, 0, sizeof(JSSVGPointAttributesFunctions));
-    JSSVGPointAttributesFunctions[0].name = "y";
+    JSSVGPointAttributesFunctions[0].name = "x";
     JSSVGPointAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPointAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPointAttributesFunctions[0].magic = JSSVGPoint::YAttrNum;
+    JSSVGPointAttributesFunctions[0].magic = JSSVGPoint::XAttrNum;
     JSSVGPointAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPoint::getValueProperty;
     JSSVGPointAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPoint::putValueProperty;
-    JSSVGPointAttributesFunctions[1].name = "x";
+    JSSVGPointAttributesFunctions[1].name = "y";
     JSSVGPointAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPointAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPointAttributesFunctions[1].magic = JSSVGPoint::XAttrNum;
+    JSSVGPointAttributesFunctions[1].magic = JSSVGPoint::YAttrNum;
     JSSVGPointAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPoint::getValueProperty;
     JSSVGPointAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPoint::putValueProperty;
 }

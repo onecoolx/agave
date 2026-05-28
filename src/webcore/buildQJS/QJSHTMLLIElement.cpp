@@ -49,24 +49,24 @@ static void init_JSHTMLLIElementAttributesFunctions()
     if (JSHTMLLIElementAttributesFunctions_initialized) return;
     JSHTMLLIElementAttributesFunctions_initialized = true;
     memset(JSHTMLLIElementAttributesFunctions, 0, sizeof(JSHTMLLIElementAttributesFunctions));
-    JSHTMLLIElementAttributesFunctions[0].name = "constructor";
+    JSHTMLLIElementAttributesFunctions[0].name = "type";
     JSHTMLLIElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLLIElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLLIElementAttributesFunctions[0].magic = JSHTMLLIElement::ConstructorAttrNum;
+    JSHTMLLIElementAttributesFunctions[0].magic = JSHTMLLIElement::TypeAttrNum;
     JSHTMLLIElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLLIElement::getValueProperty;
-    JSHTMLLIElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
-    JSHTMLLIElementAttributesFunctions[1].name = "type";
+    JSHTMLLIElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLLIElement::putValueProperty;
+    JSHTMLLIElementAttributesFunctions[1].name = "value";
     JSHTMLLIElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLLIElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLLIElementAttributesFunctions[1].magic = JSHTMLLIElement::TypeAttrNum;
+    JSHTMLLIElementAttributesFunctions[1].magic = JSHTMLLIElement::ValueAttrNum;
     JSHTMLLIElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLLIElement::getValueProperty;
     JSHTMLLIElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLLIElement::putValueProperty;
-    JSHTMLLIElementAttributesFunctions[2].name = "value";
+    JSHTMLLIElementAttributesFunctions[2].name = "constructor";
     JSHTMLLIElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLLIElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLLIElementAttributesFunctions[2].magic = JSHTMLLIElement::ValueAttrNum;
+    JSHTMLLIElementAttributesFunctions[2].magic = JSHTMLLIElement::ConstructorAttrNum;
     JSHTMLLIElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLLIElement::getValueProperty;
-    JSHTMLLIElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLLIElement::putValueProperty;
+    JSHTMLLIElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
 }
 
 class JSHTMLLIElementConstructor {

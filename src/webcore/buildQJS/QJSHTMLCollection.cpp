@@ -101,17 +101,17 @@ static void init_JSHTMLCollectionPrototypeFunctions()
     if (JSHTMLCollectionPrototypeFunctions_initialized) return;
     JSHTMLCollectionPrototypeFunctions_initialized = true;
     memset(JSHTMLCollectionPrototypeFunctions, 0, sizeof(JSHTMLCollectionPrototypeFunctions));
-    JSHTMLCollectionPrototypeFunctions[0].name = "namedItem";
+    JSHTMLCollectionPrototypeFunctions[0].name = "item";
     JSHTMLCollectionPrototypeFunctions[0].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
     JSHTMLCollectionPrototypeFunctions[0].def_type = JS_DEF_CFUNC;
-    JSHTMLCollectionPrototypeFunctions[0].magic = JSHTMLCollection::NamedItemFuncNum;
+    JSHTMLCollectionPrototypeFunctions[0].magic = JSHTMLCollection::ItemFuncNum;
     JSHTMLCollectionPrototypeFunctions[0].u.func.length = 1;
     JSHTMLCollectionPrototypeFunctions[0].u.func.cproto = JS_CFUNC_generic_magic;
     JSHTMLCollectionPrototypeFunctions[0].u.func.cfunc.generic_magic = JSHTMLCollectionPrototypeFunction::callAsFunction;
-    JSHTMLCollectionPrototypeFunctions[1].name = "item";
+    JSHTMLCollectionPrototypeFunctions[1].name = "namedItem";
     JSHTMLCollectionPrototypeFunctions[1].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
     JSHTMLCollectionPrototypeFunctions[1].def_type = JS_DEF_CFUNC;
-    JSHTMLCollectionPrototypeFunctions[1].magic = JSHTMLCollection::ItemFuncNum;
+    JSHTMLCollectionPrototypeFunctions[1].magic = JSHTMLCollection::NamedItemFuncNum;
     JSHTMLCollectionPrototypeFunctions[1].u.func.length = 1;
     JSHTMLCollectionPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
     JSHTMLCollectionPrototypeFunctions[1].u.func.cfunc.generic_magic = JSHTMLCollectionPrototypeFunction::callAsFunction;
@@ -150,11 +150,9 @@ static int js_htmlcollection_get_own_property(JSContext *ctx, JSPropertyDescript
                                                JSValueConst obj, JSAtom prop)
 {
     HTMLCollection* impl = (HTMLCollection*)JS_GetOpaque(obj, JSHTMLCollection::js_class_id);
-    if (!impl)
-        return 0;
+    if (!impl) return 0;
     const char* str = JS_AtomToCString(ctx, prop);
-    if (!str)
-        return 0;
+    if (!str) return 0;
     char* end;
     unsigned long index = strtoul(str, &end, 10);
     int is_index = (*end == '\0' && str[0] != '\0');
@@ -173,9 +171,7 @@ static int js_htmlcollection_get_own_property(JSContext *ctx, JSPropertyDescript
 
 static JSClassExoticMethods js_htmlcollection_exotic;
 static bool js_htmlcollection_exotic_initialized = false;
-
-static void init_js_htmlcollection_exotic()
-{
+static void init_js_htmlcollection_exotic() {
     if (js_htmlcollection_exotic_initialized) return;
     js_htmlcollection_exotic_initialized = true;
     memset(&js_htmlcollection_exotic, 0, sizeof(js_htmlcollection_exotic));

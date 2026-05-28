@@ -57,22 +57,22 @@ static void init_JSSVGPathSegAttributesFunctions()
     if (JSSVGPathSegAttributesFunctions_initialized) return;
     JSSVGPathSegAttributesFunctions_initialized = true;
     memset(JSSVGPathSegAttributesFunctions, 0, sizeof(JSSVGPathSegAttributesFunctions));
-    JSSVGPathSegAttributesFunctions[0].name = "constructor";
+    JSSVGPathSegAttributesFunctions[0].name = "pathSegType";
     JSSVGPathSegAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegAttributesFunctions[0].magic = JSSVGPathSeg::ConstructorAttrNum;
+    JSSVGPathSegAttributesFunctions[0].magic = JSSVGPathSeg::PathSegTypeAttrNum;
     JSSVGPathSegAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSeg::getValueProperty;
     JSSVGPathSegAttributesFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGPathSegAttributesFunctions[1].name = "pathSegType";
+    JSSVGPathSegAttributesFunctions[1].name = "pathSegTypeAsLetter";
     JSSVGPathSegAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegAttributesFunctions[1].magic = JSSVGPathSeg::PathSegTypeAttrNum;
+    JSSVGPathSegAttributesFunctions[1].magic = JSSVGPathSeg::PathSegTypeAsLetterAttrNum;
     JSSVGPathSegAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSeg::getValueProperty;
     JSSVGPathSegAttributesFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGPathSegAttributesFunctions[2].name = "pathSegTypeAsLetter";
+    JSSVGPathSegAttributesFunctions[2].name = "constructor";
     JSSVGPathSegAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegAttributesFunctions[2].magic = JSSVGPathSeg::PathSegTypeAsLetterAttrNum;
+    JSSVGPathSegAttributesFunctions[2].magic = JSSVGPathSeg::ConstructorAttrNum;
     JSSVGPathSegAttributesFunctions[2].u.getset.get.getter_magic = JSSVGPathSeg::getValueProperty;
     JSSVGPathSegAttributesFunctions[2].u.getset.set.setter_magic = NULL;
 }

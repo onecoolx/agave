@@ -49,24 +49,24 @@ static void init_JSHTMLCanvasElementAttributesFunctions()
     if (JSHTMLCanvasElementAttributesFunctions_initialized) return;
     JSHTMLCanvasElementAttributesFunctions_initialized = true;
     memset(JSHTMLCanvasElementAttributesFunctions, 0, sizeof(JSHTMLCanvasElementAttributesFunctions));
-    JSHTMLCanvasElementAttributesFunctions[0].name = "constructor";
+    JSHTMLCanvasElementAttributesFunctions[0].name = "width";
     JSHTMLCanvasElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLCanvasElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLCanvasElementAttributesFunctions[0].magic = JSHTMLCanvasElement::ConstructorAttrNum;
+    JSHTMLCanvasElementAttributesFunctions[0].magic = JSHTMLCanvasElement::WidthAttrNum;
     JSHTMLCanvasElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLCanvasElement::getValueProperty;
-    JSHTMLCanvasElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
-    JSHTMLCanvasElementAttributesFunctions[1].name = "width";
+    JSHTMLCanvasElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLCanvasElement::putValueProperty;
+    JSHTMLCanvasElementAttributesFunctions[1].name = "height";
     JSHTMLCanvasElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLCanvasElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLCanvasElementAttributesFunctions[1].magic = JSHTMLCanvasElement::WidthAttrNum;
+    JSHTMLCanvasElementAttributesFunctions[1].magic = JSHTMLCanvasElement::HeightAttrNum;
     JSHTMLCanvasElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLCanvasElement::getValueProperty;
     JSHTMLCanvasElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLCanvasElement::putValueProperty;
-    JSHTMLCanvasElementAttributesFunctions[2].name = "height";
+    JSHTMLCanvasElementAttributesFunctions[2].name = "constructor";
     JSHTMLCanvasElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLCanvasElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLCanvasElementAttributesFunctions[2].magic = JSHTMLCanvasElement::HeightAttrNum;
+    JSHTMLCanvasElementAttributesFunctions[2].magic = JSHTMLCanvasElement::ConstructorAttrNum;
     JSHTMLCanvasElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLCanvasElement::getValueProperty;
-    JSHTMLCanvasElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLCanvasElement::putValueProperty;
+    JSHTMLCanvasElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
 }
 
 class JSHTMLCanvasElementConstructor {

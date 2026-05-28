@@ -56,16 +56,16 @@ static void init_JSSVGPathSegMovetoAbsAttributesFunctions()
     if (JSSVGPathSegMovetoAbsAttributesFunctions_initialized) return;
     JSSVGPathSegMovetoAbsAttributesFunctions_initialized = true;
     memset(JSSVGPathSegMovetoAbsAttributesFunctions, 0, sizeof(JSSVGPathSegMovetoAbsAttributesFunctions));
-    JSSVGPathSegMovetoAbsAttributesFunctions[0].name = "y";
+    JSSVGPathSegMovetoAbsAttributesFunctions[0].name = "x";
     JSSVGPathSegMovetoAbsAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegMovetoAbsAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegMovetoAbsAttributesFunctions[0].magic = JSSVGPathSegMovetoAbs::YAttrNum;
+    JSSVGPathSegMovetoAbsAttributesFunctions[0].magic = JSSVGPathSegMovetoAbs::XAttrNum;
     JSSVGPathSegMovetoAbsAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegMovetoAbs::getValueProperty;
     JSSVGPathSegMovetoAbsAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegMovetoAbs::putValueProperty;
-    JSSVGPathSegMovetoAbsAttributesFunctions[1].name = "x";
+    JSSVGPathSegMovetoAbsAttributesFunctions[1].name = "y";
     JSSVGPathSegMovetoAbsAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegMovetoAbsAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegMovetoAbsAttributesFunctions[1].magic = JSSVGPathSegMovetoAbs::XAttrNum;
+    JSSVGPathSegMovetoAbsAttributesFunctions[1].magic = JSSVGPathSegMovetoAbs::YAttrNum;
     JSSVGPathSegMovetoAbsAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegMovetoAbs::getValueProperty;
     JSSVGPathSegMovetoAbsAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegMovetoAbs::putValueProperty;
 }

@@ -65,16 +65,16 @@ static void init_JSSVGScriptElementAttributesFunctions()
     JSSVGScriptElementAttributesFunctions[0].magic = JSSVGScriptElement::TypeAttrNum;
     JSSVGScriptElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGScriptElement::getValueProperty;
     JSSVGScriptElementAttributesFunctions[0].u.getset.set.setter_magic = JSSVGScriptElement::putValueProperty;
-    JSSVGScriptElementAttributesFunctions[1].name = "externalResourcesRequired";
+    JSSVGScriptElementAttributesFunctions[1].name = "href";
     JSSVGScriptElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGScriptElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGScriptElementAttributesFunctions[1].magic = JSSVGScriptElement::ExternalResourcesRequiredAttrNum;
+    JSSVGScriptElementAttributesFunctions[1].magic = JSSVGScriptElement::HrefAttrNum;
     JSSVGScriptElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGScriptElement::getValueProperty;
     JSSVGScriptElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGScriptElementAttributesFunctions[2].name = "href";
+    JSSVGScriptElementAttributesFunctions[2].name = "externalResourcesRequired";
     JSSVGScriptElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGScriptElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGScriptElementAttributesFunctions[2].magic = JSSVGScriptElement::HrefAttrNum;
+    JSSVGScriptElementAttributesFunctions[2].magic = JSSVGScriptElement::ExternalResourcesRequiredAttrNum;
     JSSVGScriptElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGScriptElement::getValueProperty;
     JSSVGScriptElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
 }

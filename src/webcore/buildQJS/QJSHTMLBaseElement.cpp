@@ -49,24 +49,24 @@ static void init_JSHTMLBaseElementAttributesFunctions()
     if (JSHTMLBaseElementAttributesFunctions_initialized) return;
     JSHTMLBaseElementAttributesFunctions_initialized = true;
     memset(JSHTMLBaseElementAttributesFunctions, 0, sizeof(JSHTMLBaseElementAttributesFunctions));
-    JSHTMLBaseElementAttributesFunctions[0].name = "constructor";
+    JSHTMLBaseElementAttributesFunctions[0].name = "href";
     JSHTMLBaseElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLBaseElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLBaseElementAttributesFunctions[0].magic = JSHTMLBaseElement::ConstructorAttrNum;
+    JSHTMLBaseElementAttributesFunctions[0].magic = JSHTMLBaseElement::HrefAttrNum;
     JSHTMLBaseElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLBaseElement::getValueProperty;
-    JSHTMLBaseElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
-    JSHTMLBaseElementAttributesFunctions[1].name = "href";
+    JSHTMLBaseElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLBaseElement::putValueProperty;
+    JSHTMLBaseElementAttributesFunctions[1].name = "target";
     JSHTMLBaseElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLBaseElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLBaseElementAttributesFunctions[1].magic = JSHTMLBaseElement::HrefAttrNum;
+    JSHTMLBaseElementAttributesFunctions[1].magic = JSHTMLBaseElement::TargetAttrNum;
     JSHTMLBaseElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLBaseElement::getValueProperty;
     JSHTMLBaseElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLBaseElement::putValueProperty;
-    JSHTMLBaseElementAttributesFunctions[2].name = "target";
+    JSHTMLBaseElementAttributesFunctions[2].name = "constructor";
     JSHTMLBaseElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLBaseElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLBaseElementAttributesFunctions[2].magic = JSHTMLBaseElement::TargetAttrNum;
+    JSHTMLBaseElementAttributesFunctions[2].magic = JSHTMLBaseElement::ConstructorAttrNum;
     JSHTMLBaseElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLBaseElement::getValueProperty;
-    JSHTMLBaseElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLBaseElement::putValueProperty;
+    JSHTMLBaseElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
 }
 
 class JSHTMLBaseElementConstructor {

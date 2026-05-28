@@ -56,16 +56,16 @@ static void init_JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions()
     if (JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions_initialized) return;
     JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions_initialized = true;
     memset(JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions, 0, sizeof(JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions));
-    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[0].name = "y";
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[0].name = "x";
     JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[0].magic = JSSVGPathSegCurvetoQuadraticSmoothAbs::YAttrNum;
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[0].magic = JSSVGPathSegCurvetoQuadraticSmoothAbs::XAttrNum;
     JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegCurvetoQuadraticSmoothAbs::getValueProperty;
     JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegCurvetoQuadraticSmoothAbs::putValueProperty;
-    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[1].name = "x";
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[1].name = "y";
     JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[1].magic = JSSVGPathSegCurvetoQuadraticSmoothAbs::XAttrNum;
+    JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[1].magic = JSSVGPathSegCurvetoQuadraticSmoothAbs::YAttrNum;
     JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegCurvetoQuadraticSmoothAbs::getValueProperty;
     JSSVGPathSegCurvetoQuadraticSmoothAbsAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegCurvetoQuadraticSmoothAbs::putValueProperty;
 }

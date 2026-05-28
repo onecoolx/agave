@@ -55,10 +55,10 @@ static void init_JSCounterAttributesFunctions()
     JSCounterAttributesFunctions[0].magic = JSCounter::IdentifierAttrNum;
     JSCounterAttributesFunctions[0].u.getset.get.getter_magic = JSCounter::getValueProperty;
     JSCounterAttributesFunctions[0].u.getset.set.setter_magic = NULL;
-    JSCounterAttributesFunctions[1].name = "constructor";
+    JSCounterAttributesFunctions[1].name = "listStyle";
     JSCounterAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSCounterAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCounterAttributesFunctions[1].magic = JSCounter::ConstructorAttrNum;
+    JSCounterAttributesFunctions[1].magic = JSCounter::ListStyleAttrNum;
     JSCounterAttributesFunctions[1].u.getset.get.getter_magic = JSCounter::getValueProperty;
     JSCounterAttributesFunctions[1].u.getset.set.setter_magic = NULL;
     JSCounterAttributesFunctions[2].name = "separator";
@@ -67,10 +67,10 @@ static void init_JSCounterAttributesFunctions()
     JSCounterAttributesFunctions[2].magic = JSCounter::SeparatorAttrNum;
     JSCounterAttributesFunctions[2].u.getset.get.getter_magic = JSCounter::getValueProperty;
     JSCounterAttributesFunctions[2].u.getset.set.setter_magic = NULL;
-    JSCounterAttributesFunctions[3].name = "listStyle";
+    JSCounterAttributesFunctions[3].name = "constructor";
     JSCounterAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
     JSCounterAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSCounterAttributesFunctions[3].magic = JSCounter::ListStyleAttrNum;
+    JSCounterAttributesFunctions[3].magic = JSCounter::ConstructorAttrNum;
     JSCounterAttributesFunctions[3].u.getset.get.getter_magic = JSCounter::getValueProperty;
     JSCounterAttributesFunctions[3].u.getset.set.setter_magic = NULL;
 }

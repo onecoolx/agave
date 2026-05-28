@@ -51,24 +51,24 @@ static void init_JSHTMLIsIndexElementAttributesFunctions()
     if (JSHTMLIsIndexElementAttributesFunctions_initialized) return;
     JSHTMLIsIndexElementAttributesFunctions_initialized = true;
     memset(JSHTMLIsIndexElementAttributesFunctions, 0, sizeof(JSHTMLIsIndexElementAttributesFunctions));
-    JSHTMLIsIndexElementAttributesFunctions[0].name = "constructor";
+    JSHTMLIsIndexElementAttributesFunctions[0].name = "form";
     JSHTMLIsIndexElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLIsIndexElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLIsIndexElementAttributesFunctions[0].magic = JSHTMLIsIndexElement::ConstructorAttrNum;
+    JSHTMLIsIndexElementAttributesFunctions[0].magic = JSHTMLIsIndexElement::FormAttrNum;
     JSHTMLIsIndexElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLIsIndexElement::getValueProperty;
     JSHTMLIsIndexElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
-    JSHTMLIsIndexElementAttributesFunctions[1].name = "form";
+    JSHTMLIsIndexElementAttributesFunctions[1].name = "prompt";
     JSHTMLIsIndexElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLIsIndexElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLIsIndexElementAttributesFunctions[1].magic = JSHTMLIsIndexElement::FormAttrNum;
+    JSHTMLIsIndexElementAttributesFunctions[1].magic = JSHTMLIsIndexElement::PromptAttrNum;
     JSHTMLIsIndexElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLIsIndexElement::getValueProperty;
-    JSHTMLIsIndexElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
-    JSHTMLIsIndexElementAttributesFunctions[2].name = "prompt";
+    JSHTMLIsIndexElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLIsIndexElement::putValueProperty;
+    JSHTMLIsIndexElementAttributesFunctions[2].name = "constructor";
     JSHTMLIsIndexElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLIsIndexElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLIsIndexElementAttributesFunctions[2].magic = JSHTMLIsIndexElement::PromptAttrNum;
+    JSHTMLIsIndexElementAttributesFunctions[2].magic = JSHTMLIsIndexElement::ConstructorAttrNum;
     JSHTMLIsIndexElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLIsIndexElement::getValueProperty;
-    JSHTMLIsIndexElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLIsIndexElement::putValueProperty;
+    JSHTMLIsIndexElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
 }
 
 class JSHTMLIsIndexElementConstructor {

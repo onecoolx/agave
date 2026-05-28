@@ -56,16 +56,16 @@ static void init_JSSVGPathSegLinetoRelAttributesFunctions()
     if (JSSVGPathSegLinetoRelAttributesFunctions_initialized) return;
     JSSVGPathSegLinetoRelAttributesFunctions_initialized = true;
     memset(JSSVGPathSegLinetoRelAttributesFunctions, 0, sizeof(JSSVGPathSegLinetoRelAttributesFunctions));
-    JSSVGPathSegLinetoRelAttributesFunctions[0].name = "y";
+    JSSVGPathSegLinetoRelAttributesFunctions[0].name = "x";
     JSSVGPathSegLinetoRelAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegLinetoRelAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegLinetoRelAttributesFunctions[0].magic = JSSVGPathSegLinetoRel::YAttrNum;
+    JSSVGPathSegLinetoRelAttributesFunctions[0].magic = JSSVGPathSegLinetoRel::XAttrNum;
     JSSVGPathSegLinetoRelAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegLinetoRel::getValueProperty;
     JSSVGPathSegLinetoRelAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegLinetoRel::putValueProperty;
-    JSSVGPathSegLinetoRelAttributesFunctions[1].name = "x";
+    JSSVGPathSegLinetoRelAttributesFunctions[1].name = "y";
     JSSVGPathSegLinetoRelAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegLinetoRelAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegLinetoRelAttributesFunctions[1].magic = JSSVGPathSegLinetoRel::XAttrNum;
+    JSSVGPathSegLinetoRelAttributesFunctions[1].magic = JSSVGPathSegLinetoRel::YAttrNum;
     JSSVGPathSegLinetoRelAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegLinetoRel::getValueProperty;
     JSSVGPathSegLinetoRelAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegLinetoRel::putValueProperty;
 }

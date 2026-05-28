@@ -49,10 +49,10 @@ static void init_JSHTMLMetaElementAttributesFunctions()
     if (JSHTMLMetaElementAttributesFunctions_initialized) return;
     JSHTMLMetaElementAttributesFunctions_initialized = true;
     memset(JSHTMLMetaElementAttributesFunctions, 0, sizeof(JSHTMLMetaElementAttributesFunctions));
-    JSHTMLMetaElementAttributesFunctions[0].name = "name";
+    JSHTMLMetaElementAttributesFunctions[0].name = "content";
     JSHTMLMetaElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLMetaElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLMetaElementAttributesFunctions[0].magic = JSHTMLMetaElement::NameAttrNum;
+    JSHTMLMetaElementAttributesFunctions[0].magic = JSHTMLMetaElement::ContentAttrNum;
     JSHTMLMetaElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLMetaElement::getValueProperty;
     JSHTMLMetaElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLMetaElement::putValueProperty;
     JSHTMLMetaElementAttributesFunctions[1].name = "httpEquiv";
@@ -61,24 +61,24 @@ static void init_JSHTMLMetaElementAttributesFunctions()
     JSHTMLMetaElementAttributesFunctions[1].magic = JSHTMLMetaElement::HttpEquivAttrNum;
     JSHTMLMetaElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLMetaElement::getValueProperty;
     JSHTMLMetaElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLMetaElement::putValueProperty;
-    JSHTMLMetaElementAttributesFunctions[2].name = "constructor";
+    JSHTMLMetaElementAttributesFunctions[2].name = "name";
     JSHTMLMetaElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLMetaElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLMetaElementAttributesFunctions[2].magic = JSHTMLMetaElement::ConstructorAttrNum;
+    JSHTMLMetaElementAttributesFunctions[2].magic = JSHTMLMetaElement::NameAttrNum;
     JSHTMLMetaElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLMetaElement::getValueProperty;
-    JSHTMLMetaElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
-    JSHTMLMetaElementAttributesFunctions[3].name = "content";
+    JSHTMLMetaElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLMetaElement::putValueProperty;
+    JSHTMLMetaElementAttributesFunctions[3].name = "scheme";
     JSHTMLMetaElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLMetaElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLMetaElementAttributesFunctions[3].magic = JSHTMLMetaElement::ContentAttrNum;
+    JSHTMLMetaElementAttributesFunctions[3].magic = JSHTMLMetaElement::SchemeAttrNum;
     JSHTMLMetaElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLMetaElement::getValueProperty;
     JSHTMLMetaElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLMetaElement::putValueProperty;
-    JSHTMLMetaElementAttributesFunctions[4].name = "scheme";
+    JSHTMLMetaElementAttributesFunctions[4].name = "constructor";
     JSHTMLMetaElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLMetaElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLMetaElementAttributesFunctions[4].magic = JSHTMLMetaElement::SchemeAttrNum;
+    JSHTMLMetaElementAttributesFunctions[4].magic = JSHTMLMetaElement::ConstructorAttrNum;
     JSHTMLMetaElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLMetaElement::getValueProperty;
-    JSHTMLMetaElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLMetaElement::putValueProperty;
+    JSHTMLMetaElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
 }
 
 class JSHTMLMetaElementConstructor {

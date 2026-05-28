@@ -55,30 +55,30 @@ static void init_JSHTMLHRElementAttributesFunctions()
     JSHTMLHRElementAttributesFunctions[0].magic = JSHTMLHRElement::AlignAttrNum;
     JSHTMLHRElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLHRElement::getValueProperty;
     JSHTMLHRElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLHRElement::putValueProperty;
-    JSHTMLHRElementAttributesFunctions[1].name = "width";
+    JSHTMLHRElementAttributesFunctions[1].name = "noShade";
     JSHTMLHRElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLHRElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLHRElementAttributesFunctions[1].magic = JSHTMLHRElement::WidthAttrNum;
+    JSHTMLHRElementAttributesFunctions[1].magic = JSHTMLHRElement::NoShadeAttrNum;
     JSHTMLHRElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLHRElement::getValueProperty;
     JSHTMLHRElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLHRElement::putValueProperty;
-    JSHTMLHRElementAttributesFunctions[2].name = "constructor";
+    JSHTMLHRElementAttributesFunctions[2].name = "size";
     JSHTMLHRElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLHRElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLHRElementAttributesFunctions[2].magic = JSHTMLHRElement::ConstructorAttrNum;
+    JSHTMLHRElementAttributesFunctions[2].magic = JSHTMLHRElement::SizeAttrNum;
     JSHTMLHRElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLHRElement::getValueProperty;
-    JSHTMLHRElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
-    JSHTMLHRElementAttributesFunctions[3].name = "size";
+    JSHTMLHRElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLHRElement::putValueProperty;
+    JSHTMLHRElementAttributesFunctions[3].name = "width";
     JSHTMLHRElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLHRElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLHRElementAttributesFunctions[3].magic = JSHTMLHRElement::SizeAttrNum;
+    JSHTMLHRElementAttributesFunctions[3].magic = JSHTMLHRElement::WidthAttrNum;
     JSHTMLHRElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLHRElement::getValueProperty;
     JSHTMLHRElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLHRElement::putValueProperty;
-    JSHTMLHRElementAttributesFunctions[4].name = "noShade";
+    JSHTMLHRElementAttributesFunctions[4].name = "constructor";
     JSHTMLHRElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLHRElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLHRElementAttributesFunctions[4].magic = JSHTMLHRElement::NoShadeAttrNum;
+    JSHTMLHRElementAttributesFunctions[4].magic = JSHTMLHRElement::ConstructorAttrNum;
     JSHTMLHRElementAttributesFunctions[4].u.getset.get.getter_magic = JSHTMLHRElement::getValueProperty;
-    JSHTMLHRElementAttributesFunctions[4].u.getset.set.setter_magic = JSHTMLHRElement::putValueProperty;
+    JSHTMLHRElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
 }
 
 class JSHTMLHRElementConstructor {

@@ -57,10 +57,10 @@ static void init_JSSVGFEPointLightElementAttributesFunctions()
     if (JSSVGFEPointLightElementAttributesFunctions_initialized) return;
     JSSVGFEPointLightElementAttributesFunctions_initialized = true;
     memset(JSSVGFEPointLightElementAttributesFunctions, 0, sizeof(JSSVGFEPointLightElementAttributesFunctions));
-    JSSVGFEPointLightElementAttributesFunctions[0].name = "z";
+    JSSVGFEPointLightElementAttributesFunctions[0].name = "x";
     JSSVGFEPointLightElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGFEPointLightElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFEPointLightElementAttributesFunctions[0].magic = JSSVGFEPointLightElement::ZAttrNum;
+    JSSVGFEPointLightElementAttributesFunctions[0].magic = JSSVGFEPointLightElement::XAttrNum;
     JSSVGFEPointLightElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGFEPointLightElement::getValueProperty;
     JSSVGFEPointLightElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
     JSSVGFEPointLightElementAttributesFunctions[1].name = "y";
@@ -69,10 +69,10 @@ static void init_JSSVGFEPointLightElementAttributesFunctions()
     JSSVGFEPointLightElementAttributesFunctions[1].magic = JSSVGFEPointLightElement::YAttrNum;
     JSSVGFEPointLightElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGFEPointLightElement::getValueProperty;
     JSSVGFEPointLightElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
-    JSSVGFEPointLightElementAttributesFunctions[2].name = "x";
+    JSSVGFEPointLightElementAttributesFunctions[2].name = "z";
     JSSVGFEPointLightElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGFEPointLightElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGFEPointLightElementAttributesFunctions[2].magic = JSSVGFEPointLightElement::XAttrNum;
+    JSSVGFEPointLightElementAttributesFunctions[2].magic = JSSVGFEPointLightElement::ZAttrNum;
     JSSVGFEPointLightElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGFEPointLightElement::getValueProperty;
     JSSVGFEPointLightElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
 }

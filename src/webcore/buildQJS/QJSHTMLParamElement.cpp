@@ -55,10 +55,10 @@ static void init_JSHTMLParamElementAttributesFunctions()
     JSHTMLParamElementAttributesFunctions[0].magic = JSHTMLParamElement::NameAttrNum;
     JSHTMLParamElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLParamElement::getValueProperty;
     JSHTMLParamElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLParamElement::putValueProperty;
-    JSHTMLParamElementAttributesFunctions[1].name = "valueType";
+    JSHTMLParamElementAttributesFunctions[1].name = "type";
     JSHTMLParamElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLParamElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLParamElementAttributesFunctions[1].magic = JSHTMLParamElement::ValueTypeAttrNum;
+    JSHTMLParamElementAttributesFunctions[1].magic = JSHTMLParamElement::TypeAttrNum;
     JSHTMLParamElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLParamElement::getValueProperty;
     JSHTMLParamElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLParamElement::putValueProperty;
     JSHTMLParamElementAttributesFunctions[2].name = "value";
@@ -67,10 +67,10 @@ static void init_JSHTMLParamElementAttributesFunctions()
     JSHTMLParamElementAttributesFunctions[2].magic = JSHTMLParamElement::ValueAttrNum;
     JSHTMLParamElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLParamElement::getValueProperty;
     JSHTMLParamElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLParamElement::putValueProperty;
-    JSHTMLParamElementAttributesFunctions[3].name = "type";
+    JSHTMLParamElementAttributesFunctions[3].name = "valueType";
     JSHTMLParamElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLParamElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLParamElementAttributesFunctions[3].magic = JSHTMLParamElement::TypeAttrNum;
+    JSHTMLParamElementAttributesFunctions[3].magic = JSHTMLParamElement::ValueTypeAttrNum;
     JSHTMLParamElementAttributesFunctions[3].u.getset.get.getter_magic = JSHTMLParamElement::getValueProperty;
     JSHTMLParamElementAttributesFunctions[3].u.getset.set.setter_magic = JSHTMLParamElement::putValueProperty;
     JSHTMLParamElementAttributesFunctions[4].name = "constructor";

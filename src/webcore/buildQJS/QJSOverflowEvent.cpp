@@ -54,16 +54,16 @@ static void init_JSOverflowEventAttributesFunctions()
     JSOverflowEventAttributesFunctions[0].magic = JSOverflowEvent::OrientAttrNum;
     JSOverflowEventAttributesFunctions[0].u.getset.get.getter_magic = JSOverflowEvent::getValueProperty;
     JSOverflowEventAttributesFunctions[0].u.getset.set.setter_magic = NULL;
-    JSOverflowEventAttributesFunctions[1].name = "verticalOverflow";
+    JSOverflowEventAttributesFunctions[1].name = "horizontalOverflow";
     JSOverflowEventAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSOverflowEventAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSOverflowEventAttributesFunctions[1].magic = JSOverflowEvent::VerticalOverflowAttrNum;
+    JSOverflowEventAttributesFunctions[1].magic = JSOverflowEvent::HorizontalOverflowAttrNum;
     JSOverflowEventAttributesFunctions[1].u.getset.get.getter_magic = JSOverflowEvent::getValueProperty;
     JSOverflowEventAttributesFunctions[1].u.getset.set.setter_magic = NULL;
-    JSOverflowEventAttributesFunctions[2].name = "horizontalOverflow";
+    JSOverflowEventAttributesFunctions[2].name = "verticalOverflow";
     JSOverflowEventAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
     JSOverflowEventAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSOverflowEventAttributesFunctions[2].magic = JSOverflowEvent::HorizontalOverflowAttrNum;
+    JSOverflowEventAttributesFunctions[2].magic = JSOverflowEvent::VerticalOverflowAttrNum;
     JSOverflowEventAttributesFunctions[2].u.getset.get.getter_magic = JSOverflowEvent::getValueProperty;
     JSOverflowEventAttributesFunctions[2].u.getset.set.setter_magic = NULL;
 }

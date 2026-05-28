@@ -137,11 +137,9 @@ static int js_nodelist_get_own_property(JSContext *ctx, JSPropertyDescriptor *de
                                          JSValueConst obj, JSAtom prop)
 {
     NodeList* impl = (NodeList*)JS_GetOpaque(obj, JSNodeList::js_class_id);
-    if (!impl)
-        return 0;
+    if (!impl) return 0;
     const char* str = JS_AtomToCString(ctx, prop);
-    if (!str)
-        return 0;
+    if (!str) return 0;
     char* end;
     unsigned long index = strtoul(str, &end, 10);
     int is_index = (*end == '\0' && str[0] != '\0');
@@ -160,9 +158,7 @@ static int js_nodelist_get_own_property(JSContext *ctx, JSPropertyDescriptor *de
 
 static JSClassExoticMethods js_nodelist_exotic;
 static bool js_nodelist_exotic_initialized = false;
-
-static void init_js_nodelist_exotic()
-{
+static void init_js_nodelist_exotic() {
     if (js_nodelist_exotic_initialized) return;
     js_nodelist_exotic_initialized = true;
     memset(&js_nodelist_exotic, 0, sizeof(js_nodelist_exotic));

@@ -56,16 +56,16 @@ static void init_JSSVGPathSegLinetoAbsAttributesFunctions()
     if (JSSVGPathSegLinetoAbsAttributesFunctions_initialized) return;
     JSSVGPathSegLinetoAbsAttributesFunctions_initialized = true;
     memset(JSSVGPathSegLinetoAbsAttributesFunctions, 0, sizeof(JSSVGPathSegLinetoAbsAttributesFunctions));
-    JSSVGPathSegLinetoAbsAttributesFunctions[0].name = "y";
+    JSSVGPathSegLinetoAbsAttributesFunctions[0].name = "x";
     JSSVGPathSegLinetoAbsAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegLinetoAbsAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegLinetoAbsAttributesFunctions[0].magic = JSSVGPathSegLinetoAbs::YAttrNum;
+    JSSVGPathSegLinetoAbsAttributesFunctions[0].magic = JSSVGPathSegLinetoAbs::XAttrNum;
     JSSVGPathSegLinetoAbsAttributesFunctions[0].u.getset.get.getter_magic = JSSVGPathSegLinetoAbs::getValueProperty;
     JSSVGPathSegLinetoAbsAttributesFunctions[0].u.getset.set.setter_magic = JSSVGPathSegLinetoAbs::putValueProperty;
-    JSSVGPathSegLinetoAbsAttributesFunctions[1].name = "x";
+    JSSVGPathSegLinetoAbsAttributesFunctions[1].name = "y";
     JSSVGPathSegLinetoAbsAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGPathSegLinetoAbsAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGPathSegLinetoAbsAttributesFunctions[1].magic = JSSVGPathSegLinetoAbs::XAttrNum;
+    JSSVGPathSegLinetoAbsAttributesFunctions[1].magic = JSSVGPathSegLinetoAbs::YAttrNum;
     JSSVGPathSegLinetoAbsAttributesFunctions[1].u.getset.get.getter_magic = JSSVGPathSegLinetoAbs::getValueProperty;
     JSSVGPathSegLinetoAbsAttributesFunctions[1].u.getset.set.setter_magic = JSSVGPathSegLinetoAbs::putValueProperty;
 }

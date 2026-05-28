@@ -1705,72 +1705,29 @@ sub GenerateAttributesTable
     my $values = shift;
     my $readonly = shift;
 
-    # Helpers
-    my @table = ();
-    my @links = ();
-
-    my $maxDepth = 0;
-    my $collisions = 0;
-    my $numEntries = $size;
-
-    # Collect hashtable information
-    my $i = 0;
-    foreach (@{$keys}) {
-        my $depth = 0;
-        my $h = $object->GenerateHashValue($_) % $numEntries;
-
-        while (defined($table[$h])) {
-            if (defined($links[$h])) {
-                $h = $links[$h];
-                $depth++;
-            } else {
-                $collisions++;
-                $links[$h] = $size;
-                $h = $size;
-                $size++;
-            }
-        }
-
-        $table[$h] = $i;
-
-        $i++;
-        $maxDepth = $depth if ($depth > $maxDepth);
-    }
-
-    if ($#table + 1 < $size) {
-        $#table = $size - 1;
-    }
-
     my $nameEntries = "". ${name}.${type}."Functions";
     $nameEntries =~ s/:/_/g;
 
-    my $actualCount = 0;
-    foreach $entry (@table) {
-        $actualCount++ if defined($entry);
-    }
+    my $numEntries = scalar @{$keys};
 
     push(@implContent, "/* Functions table */\n");
-    push(@implContent, "\nstatic JSCFunctionListEntry $nameEntries\[$actualCount\];\n");
+    push(@implContent, "\nstatic JSCFunctionListEntry $nameEntries\[$numEntries\];\n");
     push(@implContent, "static bool ${nameEntries}_initialized = false;\n\n");
     push(@implContent, "static void init_${nameEntries}()\n{\n");
     push(@implContent, "    if (${nameEntries}_initialized) return;\n");
     push(@implContent, "    ${nameEntries}_initialized = true;\n");
     push(@implContent, "    memset($nameEntries, 0, sizeof($nameEntries));\n");
 
-    my $idx = 0;
-    foreach $entry (@table) {
-        if (defined($entry)) {
-            my $key = @$keys[$entry];
-            my $setter = (@$readonly[$entry] eq "1") ? "NULL" : "${name}::putValueProperty";
+    for (my $i = 0; $i < $numEntries; $i++) {
+        my $key = @$keys[$i];
+        my $setter = (@$readonly[$i] eq "1") ? "NULL" : "${name}::putValueProperty";
 
-            push(@implContent, "    $nameEntries\[$idx\].name = \"$key\";\n");
-            push(@implContent, "    $nameEntries\[$idx\].prop_flags = JS_PROP_CONFIGURABLE;\n");
-            push(@implContent, "    $nameEntries\[$idx\].def_type = JS_DEF_CGETSET_MAGIC;\n");
-            push(@implContent, "    $nameEntries\[$idx\].magic = @$values[$entry];\n");
-            push(@implContent, "    $nameEntries\[$idx\].u.getset.get.getter_magic = ${name}::getValueProperty;\n");
-            push(@implContent, "    $nameEntries\[$idx\].u.getset.set.setter_magic = $setter;\n");
-            $idx++;
-        }
+        push(@implContent, "    $nameEntries\[$i\].name = \"$key\";\n");
+        push(@implContent, "    $nameEntries\[$i\].prop_flags = JS_PROP_CONFIGURABLE;\n");
+        push(@implContent, "    $nameEntries\[$i\].def_type = JS_DEF_CGETSET_MAGIC;\n");
+        push(@implContent, "    $nameEntries\[$i\].magic = @$values[$i];\n");
+        push(@implContent, "    $nameEntries\[$i\].u.getset.get.getter_magic = ${name}::getValueProperty;\n");
+        push(@implContent, "    $nameEntries\[$i\].u.getset.set.setter_magic = $setter;\n");
     }
 
     push(@implContent, "}\n\n");
@@ -1787,228 +1744,34 @@ sub GeneratePrototypeFuncTable
     my $values = shift;
     my $parameters = shift;
 
-    # Helpers
-    my @table = ();
-    my @links = ();
-
-    my $maxDepth = 0;
-    my $collisions = 0;
-    my $numEntries = $size;
-
-    my $i = 0;
-    foreach (@{$keys}) {
-        my $depth = 0;
-        my $h = $object->GenerateHashValue($_) % $numEntries;
-
-        while (defined($table[$h])) {
-            if (defined($links[$h])) {
-                $h = $links[$h];
-                $depth++;
-            } else {
-                $collisions++;
-                $links[$h] = $size;
-                $h = $size;
-                $size++;
-            }
-        }
-
-        $table[$h] = $i;
-
-        $i++;
-        $maxDepth = $depth if ($depth > $maxDepth);
-    }
-
-    if ($#table + 1 < $size) {
-        $#table = $size - 1;
-    }
-
     my $nameEntries = "${name}Functions";
     $nameEntries =~ s/:/_/g;
 
-    my $actualCount = 0;
-    foreach $entry (@table) {
-        $actualCount++ if defined($entry);
-    }
+    my $numEntries = scalar @{$keys};
 
     push(@implContent, "/* Prototype functions table */\n");
-    push(@implContent, "\nstatic JSCFunctionListEntry $nameEntries\[$actualCount\];\n");
+    push(@implContent, "\nstatic JSCFunctionListEntry $nameEntries\[$numEntries\];\n");
     push(@implContent, "static bool ${nameEntries}_initialized = false;\n\n");
     push(@implContent, "static void init_${nameEntries}()\n{\n");
     push(@implContent, "    if (${nameEntries}_initialized) return;\n");
     push(@implContent, "    ${nameEntries}_initialized = true;\n");
     push(@implContent, "    memset($nameEntries, 0, sizeof($nameEntries));\n");
 
-    my $idx = 0;
-    foreach $entry (@table) {
-        if (defined($entry)) {
-            my $key = @$keys[$entry];
+    for (my $i = 0; $i < $numEntries; $i++) {
+        my $key = @$keys[$i];
 
-            push(@implContent, "    $nameEntries\[$idx\].name = \"$key\";\n");
-            push(@implContent, "    $nameEntries\[$idx\].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;\n");
-            push(@implContent, "    $nameEntries\[$idx\].def_type = JS_DEF_CFUNC;\n");
-            push(@implContent, "    $nameEntries\[$idx\].magic = @$values[$entry];\n");
-            push(@implContent, "    $nameEntries\[$idx\].u.func.length = @$parameters[$entry];\n");
-            push(@implContent, "    $nameEntries\[$idx\].u.func.cproto = JS_CFUNC_generic_magic;\n");
-            push(@implContent, "    $nameEntries\[$idx\].u.func.cfunc.generic_magic = ${name}Function::callAsFunction;\n");
-            $idx++;
-        }
+        push(@implContent, "    $nameEntries\[$i\].name = \"$key\";\n");
+        push(@implContent, "    $nameEntries\[$i\].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;\n");
+        push(@implContent, "    $nameEntries\[$i\].def_type = JS_DEF_CFUNC;\n");
+        push(@implContent, "    $nameEntries\[$i\].magic = @$values[$i];\n");
+        push(@implContent, "    $nameEntries\[$i\].u.func.length = @$parameters[$i];\n");
+        push(@implContent, "    $nameEntries\[$i\].u.func.cproto = JS_CFUNC_generic_magic;\n");
+        push(@implContent, "    $nameEntries\[$i\].u.func.cfunc.generic_magic = ${name}Function::callAsFunction;\n");
     }
 
     push(@implContent, "}\n\n");
 }
 
-
-sub GenerateHashTable
-{
-    my $object = shift;
-
-    my $name = shift;
-    my $size = shift;
-    my $keys = shift;
-    my $values = shift;
-    my $parameters = shift;
-    my $readonly = shift;
-
-    # Helpers
-    my @table = ();
-    my @links = ();
-
-    my $maxDepth = 0;
-    my $collisions = 0;
-    my $numEntries = $size;
-
-    my $i = 0;
-    foreach (@{$keys}) {
-        my $depth = 0;
-        my $h = $object->GenerateHashValue($_) % $numEntries;
-
-        while (defined($table[$h])) {
-            if (defined($links[$h])) {
-                $h = $links[$h];
-                $depth++;
-            } else {
-                $collisions++;
-                $links[$h] = $size;
-                $h = $size;
-                $size++;
-            }
-        }
-
-        $table[$h] = $i;
-
-        $i++;
-        $maxDepth = $depth if ($depth > $maxDepth);
-    }
-
-    if ($#table + 1 < $size) {
-        $#table = $size - 1;
-    }
-
-    my $nameEntries = "${name}Functions";
-    $nameEntries =~ s/:/_/g;
-
-    my %soffset = ();
-    if (($name =~ /Prototype/) or ($name =~ /Constructor/)) {
-        my $type = $name;
-        my $implClass;
-
-        if ($name =~ /Prototype/) {
-            $type =~ s/Prototype.*//;
-            $implClass = $type; $implClass =~ s/Wrapper$//;
-            push(@implContent, "/* Functions table for prototype */\n");
-        } else {
-            $type =~ s/Constructor.*//;
-            $implClass = $type; $implClass =~ s/Constructor$//;
-            push(@implContent, "/* Functions table for constructor */\n");
-        }
-    } else {
-        push(@implContent, "/* Functions table */\n");
-    }
-
-    my $actualCount = 0;
-    foreach $entry (@table) {
-        $actualCount++ if defined($entry);
-    }
-
-    push(@implContent, "\nstatic JSCFunctionListEntry $nameEntries\[$actualCount\];\n");
-    push(@implContent, "static bool ${nameEntries}_initialized = false;\n\n");
-    push(@implContent, "static void init_${nameEntries}()\n{\n");
-    push(@implContent, "    if (${nameEntries}_initialized) return;\n");
-    push(@implContent, "    ${nameEntries}_initialized = true;\n");
-    push(@implContent, "    memset($nameEntries, 0, sizeof($nameEntries));\n");
-
-    my $idx = 0;
-    foreach $entry (@table) {
-        if (defined($entry)) {
-            my $key = @$keys[$entry];
-            my $setter = (@$readonly[$entry] eq "1") ? "NULL" : "${name}::putValueProperty";
-
-            push(@implContent, "    $nameEntries\[$idx\].name = \"$key\";\n");
-            push(@implContent, "    $nameEntries\[$idx\].prop_flags = JS_PROP_CONFIGURABLE;\n");
-            push(@implContent, "    $nameEntries\[$idx\].def_type = JS_DEF_CGETSET_MAGIC;\n");
-            push(@implContent, "    $nameEntries\[$idx\].magic = @$values[$entry];\n");
-            push(@implContent, "    $nameEntries\[$idx\].u.getset.get.getter_magic = ${name}::getValueProperty;\n");
-            push(@implContent, "    $nameEntries\[$idx\].u.getset.set.setter_magic = $setter;\n");
-            $idx++;
-        }
-    }
-
-    push(@implContent, "}\n\n");
-}
-
-# Internal helper
-sub GenerateHashValue
-{
-    my $object = shift;
-
-    @chars = split(/ */, $_[0]);
-
-    # This hash is designed to work on 16-bit chunks at a time. But since the normal case
-    # (above) is to hash UTF-16 characters, we just treat the 8-bit chars as if they
-    # were 16-bit chunks, which should give matching results
-
-    my $EXP2_32 = 4294967296;
-
-    my $hash = 0x9e3779b9;
-    my $l    = scalar @chars; #I wish this was in Ruby --- Maks
-    my $rem  = $l & 1;
-    $l = $l >> 1;
-
-    my $s = 0;
-
-    # Main loop
-    for (; $l > 0; $l--) {
-        $hash   += ord($chars[$s]);
-        my $tmp = leftShift(ord($chars[$s+1]), 11) ^ $hash;
-        $hash   = (leftShift($hash, 16)% $EXP2_32) ^ $tmp;
-        $s += 2;
-        $hash += $hash >> 11;
-        $hash %= $EXP2_32;
-    }
-
-    # Handle end case
-    if ($rem != 0) {
-        $hash += ord($chars[$s]);
-        $hash ^= (leftShift($hash, 11)% $EXP2_32);
-        $hash += $hash >> 17;
-    }
-
-    # Force "avalanching" of final 127 bits
-    $hash ^= leftShift($hash, 3);
-    $hash += ($hash >> 5);
-    $hash = ($hash% $EXP2_32);
-    $hash ^= (leftShift($hash, 2)% $EXP2_32);
-    $hash += ($hash >> 15);
-    $hash = $hash% $EXP2_32;
-    $hash ^= (leftShift($hash, 10)% $EXP2_32);
-
-    # this avoids ever returning a hash code of 0, since that is used to
-    # signal "hash not computed yet", using a value that is likely to be
-    # effectively the same as 0 when the low bits are masked
-    $hash = 0x80000000 if ($hash == 0);
-
-    return $hash;
-}
 
 # Internal helper
 sub WriteData

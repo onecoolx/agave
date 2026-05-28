@@ -49,24 +49,24 @@ static void init_JSHTMLModElementAttributesFunctions()
     if (JSHTMLModElementAttributesFunctions_initialized) return;
     JSHTMLModElementAttributesFunctions_initialized = true;
     memset(JSHTMLModElementAttributesFunctions, 0, sizeof(JSHTMLModElementAttributesFunctions));
-    JSHTMLModElementAttributesFunctions[0].name = "constructor";
+    JSHTMLModElementAttributesFunctions[0].name = "cite";
     JSHTMLModElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLModElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLModElementAttributesFunctions[0].magic = JSHTMLModElement::ConstructorAttrNum;
+    JSHTMLModElementAttributesFunctions[0].magic = JSHTMLModElement::CiteAttrNum;
     JSHTMLModElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLModElement::getValueProperty;
-    JSHTMLModElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
-    JSHTMLModElementAttributesFunctions[1].name = "cite";
+    JSHTMLModElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLModElement::putValueProperty;
+    JSHTMLModElementAttributesFunctions[1].name = "dateTime";
     JSHTMLModElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLModElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLModElementAttributesFunctions[1].magic = JSHTMLModElement::CiteAttrNum;
+    JSHTMLModElementAttributesFunctions[1].magic = JSHTMLModElement::DateTimeAttrNum;
     JSHTMLModElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLModElement::getValueProperty;
     JSHTMLModElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLModElement::putValueProperty;
-    JSHTMLModElementAttributesFunctions[2].name = "dateTime";
+    JSHTMLModElementAttributesFunctions[2].name = "constructor";
     JSHTMLModElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLModElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLModElementAttributesFunctions[2].magic = JSHTMLModElement::DateTimeAttrNum;
+    JSHTMLModElementAttributesFunctions[2].magic = JSHTMLModElement::ConstructorAttrNum;
     JSHTMLModElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLModElement::getValueProperty;
-    JSHTMLModElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLModElement::putValueProperty;
+    JSHTMLModElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
 }
 
 class JSHTMLModElementConstructor {

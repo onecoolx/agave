@@ -49,24 +49,24 @@ static void init_JSHTMLOptGroupElementAttributesFunctions()
     if (JSHTMLOptGroupElementAttributesFunctions_initialized) return;
     JSHTMLOptGroupElementAttributesFunctions_initialized = true;
     memset(JSHTMLOptGroupElementAttributesFunctions, 0, sizeof(JSHTMLOptGroupElementAttributesFunctions));
-    JSHTMLOptGroupElementAttributesFunctions[0].name = "constructor";
+    JSHTMLOptGroupElementAttributesFunctions[0].name = "disabled";
     JSHTMLOptGroupElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLOptGroupElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLOptGroupElementAttributesFunctions[0].magic = JSHTMLOptGroupElement::ConstructorAttrNum;
+    JSHTMLOptGroupElementAttributesFunctions[0].magic = JSHTMLOptGroupElement::DisabledAttrNum;
     JSHTMLOptGroupElementAttributesFunctions[0].u.getset.get.getter_magic = JSHTMLOptGroupElement::getValueProperty;
-    JSHTMLOptGroupElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
-    JSHTMLOptGroupElementAttributesFunctions[1].name = "disabled";
+    JSHTMLOptGroupElementAttributesFunctions[0].u.getset.set.setter_magic = JSHTMLOptGroupElement::putValueProperty;
+    JSHTMLOptGroupElementAttributesFunctions[1].name = "label";
     JSHTMLOptGroupElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLOptGroupElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLOptGroupElementAttributesFunctions[1].magic = JSHTMLOptGroupElement::DisabledAttrNum;
+    JSHTMLOptGroupElementAttributesFunctions[1].magic = JSHTMLOptGroupElement::LabelAttrNum;
     JSHTMLOptGroupElementAttributesFunctions[1].u.getset.get.getter_magic = JSHTMLOptGroupElement::getValueProperty;
     JSHTMLOptGroupElementAttributesFunctions[1].u.getset.set.setter_magic = JSHTMLOptGroupElement::putValueProperty;
-    JSHTMLOptGroupElementAttributesFunctions[2].name = "label";
+    JSHTMLOptGroupElementAttributesFunctions[2].name = "constructor";
     JSHTMLOptGroupElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLOptGroupElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLOptGroupElementAttributesFunctions[2].magic = JSHTMLOptGroupElement::LabelAttrNum;
+    JSHTMLOptGroupElementAttributesFunctions[2].magic = JSHTMLOptGroupElement::ConstructorAttrNum;
     JSHTMLOptGroupElementAttributesFunctions[2].u.getset.get.getter_magic = JSHTMLOptGroupElement::getValueProperty;
-    JSHTMLOptGroupElementAttributesFunctions[2].u.getset.set.setter_magic = JSHTMLOptGroupElement::putValueProperty;
+    JSHTMLOptGroupElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
 }
 
 class JSHTMLOptGroupElementConstructor {

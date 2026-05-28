@@ -61,36 +61,36 @@ static void init_JSSVGViewElementAttributesFunctions()
     if (JSSVGViewElementAttributesFunctions_initialized) return;
     JSSVGViewElementAttributesFunctions_initialized = true;
     memset(JSSVGViewElementAttributesFunctions, 0, sizeof(JSSVGViewElementAttributesFunctions));
-    JSSVGViewElementAttributesFunctions[0].name = "externalResourcesRequired";
+    JSSVGViewElementAttributesFunctions[0].name = "viewTarget";
     JSSVGViewElementAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGViewElementAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGViewElementAttributesFunctions[0].magic = JSSVGViewElement::ExternalResourcesRequiredAttrNum;
+    JSSVGViewElementAttributesFunctions[0].magic = JSSVGViewElement::ViewTargetAttrNum;
     JSSVGViewElementAttributesFunctions[0].u.getset.get.getter_magic = JSSVGViewElement::getValueProperty;
     JSSVGViewElementAttributesFunctions[0].u.getset.set.setter_magic = NULL;
-    JSSVGViewElementAttributesFunctions[1].name = "zoomAndPan";
+    JSSVGViewElementAttributesFunctions[1].name = "externalResourcesRequired";
     JSSVGViewElementAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGViewElementAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGViewElementAttributesFunctions[1].magic = JSSVGViewElement::ZoomAndPanAttrNum;
+    JSSVGViewElementAttributesFunctions[1].magic = JSSVGViewElement::ExternalResourcesRequiredAttrNum;
     JSSVGViewElementAttributesFunctions[1].u.getset.get.getter_magic = JSSVGViewElement::getValueProperty;
-    JSSVGViewElementAttributesFunctions[1].u.getset.set.setter_magic = JSSVGViewElement::putValueProperty;
-    JSSVGViewElementAttributesFunctions[2].name = "viewTarget";
+    JSSVGViewElementAttributesFunctions[1].u.getset.set.setter_magic = NULL;
+    JSSVGViewElementAttributesFunctions[2].name = "viewBox";
     JSSVGViewElementAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGViewElementAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGViewElementAttributesFunctions[2].magic = JSSVGViewElement::ViewTargetAttrNum;
+    JSSVGViewElementAttributesFunctions[2].magic = JSSVGViewElement::ViewBoxAttrNum;
     JSSVGViewElementAttributesFunctions[2].u.getset.get.getter_magic = JSSVGViewElement::getValueProperty;
     JSSVGViewElementAttributesFunctions[2].u.getset.set.setter_magic = NULL;
-    JSSVGViewElementAttributesFunctions[3].name = "viewBox";
+    JSSVGViewElementAttributesFunctions[3].name = "preserveAspectRatio";
     JSSVGViewElementAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGViewElementAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGViewElementAttributesFunctions[3].magic = JSSVGViewElement::ViewBoxAttrNum;
+    JSSVGViewElementAttributesFunctions[3].magic = JSSVGViewElement::PreserveAspectRatioAttrNum;
     JSSVGViewElementAttributesFunctions[3].u.getset.get.getter_magic = JSSVGViewElement::getValueProperty;
     JSSVGViewElementAttributesFunctions[3].u.getset.set.setter_magic = NULL;
-    JSSVGViewElementAttributesFunctions[4].name = "preserveAspectRatio";
+    JSSVGViewElementAttributesFunctions[4].name = "zoomAndPan";
     JSSVGViewElementAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
     JSSVGViewElementAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
-    JSSVGViewElementAttributesFunctions[4].magic = JSSVGViewElement::PreserveAspectRatioAttrNum;
+    JSSVGViewElementAttributesFunctions[4].magic = JSSVGViewElement::ZoomAndPanAttrNum;
     JSSVGViewElementAttributesFunctions[4].u.getset.get.getter_magic = JSSVGViewElement::getValueProperty;
-    JSSVGViewElementAttributesFunctions[4].u.getset.set.setter_magic = NULL;
+    JSSVGViewElementAttributesFunctions[4].u.getset.set.setter_magic = JSSVGViewElement::putValueProperty;
 }
 
 /* Constants table */
