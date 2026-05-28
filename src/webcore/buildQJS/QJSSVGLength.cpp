@@ -193,9 +193,9 @@ JSValue JSSVGLength::create(JSContext* ctx, JSSVGPODTypeWrapper<SVGLength>* impl
 void JSSVGLength::finalizer(JSRuntime* rt, JSValue val)
 {
     SVGLength* impl = (SVGLength*)JS_GetOpaque(val, JSSVGLength::js_class_id);
-    JSSVGPODTypeWrapperCache<SVGLength, SVGAnimatedLength>::forgetWrapper(impl);
     if (!impl)
         return;
+    JSSVGPODTypeWrapperCache<SVGLength, SVGAnimatedLength>::forgetWrapper(impl);
     ScriptInterpreter::forgetDOMObject(impl);
     impl->deref();
 }

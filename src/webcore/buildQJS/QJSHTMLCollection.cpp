@@ -109,41 +109,11 @@ void JSHTMLCollectionPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSHTMLCollectionPrototypeFunctions, countof(JSHTMLCollectionPrototypeFunctions));
 }
 
-static int js_htmlcollection_get_own_property(JSContext *ctx, JSPropertyDescriptor *desc,
-                                               JSValueConst obj, JSAtom prop)
-{
-    HTMLCollection* impl = (HTMLCollection*)JS_GetOpaque(obj, JSHTMLCollection::js_class_id);
-    if (!impl)
-        return 0;
-    const char* str = JS_AtomToCString(ctx, prop);
-    if (!str)
-        return 0;
-    char* end;
-    unsigned long index = strtoul(str, &end, 10);
-    int is_index = (*end == '\0' && str[0] != '\0');
-    JS_FreeCString(ctx, str);
-    if (is_index && index < impl->length()) {
-        if (desc) {
-            desc->flags = JS_PROP_ENUMERABLE;
-            desc->value = toJS(ctx, impl->item(index));
-            desc->getter = JS_UNDEFINED;
-            desc->setter = JS_UNDEFINED;
-        }
-        return 1;
-    }
-    return 0;
-}
-
-static JSClassExoticMethods js_htmlcollection_exotic = {
-    .get_own_property = js_htmlcollection_get_own_property,
-};
-
 static JSClassDef JSHTMLCollectionClassDefine = 
 {
     "HTMLCollection",
     .finalizer = JSHTMLCollection::finalizer,
     .gc_mark = JSHTMLCollection::mark,
-    .exotic = &js_htmlcollection_exotic,
 };
 
 JSClassID JSHTMLCollection::js_class_id = 0;
@@ -151,8 +121,8 @@ JSClassID JSHTMLCollection::js_class_id = 0;
 void JSHTMLCollection::init(JSContext* ctx)
 {
     if (JSHTMLCollection::js_class_id == 0) {
-        JS_NewClassID(&JSHTMLCollection::js_class_id);
-        JS_NewClass(JS_GetRuntime(ctx), JSHTMLCollection::js_class_id, &JSHTMLCollectionClassDefine);
+        JSNode::init(ctx);
+        JSHTMLCollection::js_class_id = JSNode::js_class_id;
     }
 }
 
@@ -160,7 +130,7 @@ JSValue JSHTMLCollection::create(JSContext* ctx, HTMLCollection* impl)
 {
     JSHTMLCollection::init(ctx);
     JSValue _proto = JSHTMLCollectionPrototype::self(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSHTMLCollection::js_class_id);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
     JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
@@ -172,7 +142,7 @@ JSValue JSHTMLCollection::create(JSContext* ctx, HTMLCollection* impl)
 
 void JSHTMLCollection::finalizer(JSRuntime* rt, JSValue val)
 {
-    HTMLCollection* impl = (HTMLCollection*)JS_GetOpaque(val, JSHTMLCollection::js_class_id);
+    HTMLCollection* impl = (HTMLCollection*)JS_GetOpaque(val, JSNode::js_class_id);
     if (!impl)
         return;
     ScriptInterpreter::forgetDOMObject(impl);
@@ -188,7 +158,7 @@ JSValue JSHTMLCollection::getValueProperty(JSContext *ctx, JSValueConst this_val
 {
     switch (token) {
         case LengthAttrNum: {
-            HTMLCollection* imp = (HTMLCollection*)JS_GetOpaque(this_val, JSHTMLCollection::js_class_id);
+            HTMLCollection* imp = (HTMLCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewInt32(ctx, imp->length());
         }
         case ConstructorAttrNum:
@@ -204,7 +174,7 @@ JSValue JSHTMLCollection::getConstructor(JSContext *ctx)
 
 JSValue JSHTMLCollectionPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token)
 {
-    HTMLCollection* imp = (HTMLCollection*)JS_GetOpaque(this_val, JSHTMLCollection::js_class_id);
+    HTMLCollection* imp = (HTMLCollection*)JS_GetOpaque(this_val, JSNode::js_class_id);
     if (!imp)
         return JS_ThrowTypeError(ctx, "Type error"); 
 

@@ -130,7 +130,7 @@ JSValue JSCharacterData::create(JSContext* ctx, CharacterData* impl)
 {
     JSCharacterData::init(ctx);
     JSValue _proto = JSCharacterDataPrototype::self(ctx);
-    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSCharacterData::js_class_id);
+    JSValue obj = JS_NewObjectProtoClass(ctx, _proto, JSNode::js_class_id);
     JS_FreeValue(ctx, _proto);
     if (JS_IsException(obj)) {
         return JS_EXCEPTION;
