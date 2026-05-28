@@ -10,7 +10,7 @@
 #include <sys/time.h>
 #endif
 #if COMPILER(MSVC)
-#include "DateMath.h"
+#include <windows.h>
 #endif
 #include "SystemTime.h"
 
@@ -29,7 +29,12 @@ namespace WebCore {
 #if COMPILER(MSVC)
 double currentTime()
 {
-    return KJS::getCurrentUTCTime() * 0.001;
+    FILETIME ft;
+    GetSystemTimeAsFileTime(&ft);
+    ULARGE_INTEGER uli;
+    uli.LowPart = ft.dwLowDateTime;
+    uli.HighPart = ft.dwHighDateTime;
+    return (uli.QuadPart - 116444736000000000ULL) / 10000000.0;
 }
 #else
 double currentTime()
