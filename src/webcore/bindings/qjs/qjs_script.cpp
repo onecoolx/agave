@@ -51,6 +51,8 @@ using namespace QJS;
 
 namespace WebCore {
 
+void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global);
+
 ScriptController::ScriptController(Frame* frame)
 {
     m_frame = frame;
@@ -183,10 +185,7 @@ void ScriptController::initScriptIfNeeded()
     // Register all properties directly on global object
     JSDOMWindow::init(m_context);
     // Register only essential DOMWindow properties on global
-    {
-        extern void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global);
-        initEssentialDOMWindowProperties(m_context, globalObject);
-    }
+    initEssentialDOMWindowProperties(m_context, globalObject);
     // Window functions override DOMWindow's generated versions (our impl has better null safety)
     WindowPrototype::initPrototype(m_context, globalObject);
 
