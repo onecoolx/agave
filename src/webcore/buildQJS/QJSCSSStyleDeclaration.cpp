@@ -194,6 +194,27 @@ void JSCSSStyleDeclarationPrototype::initPrototype(JSContext * ctx, JSValue this
     JS_SetPropertyFunctionList(ctx, this_obj, JSCSSStyleDeclarationPrototypeFunctions, countof(JSCSSStyleDeclarationPrototypeFunctions));
 }
 
+static String cssPropertyName(const char* name)
+{
+    if (!name || !name[0])
+        return String();
+    Vector<char> buf;
+    for (int i = 0; name[i]; ++i) {
+        char c = name[i];
+        if (c >= 'A' && c <= 'Z') {
+            buf.append('-');
+            buf.append(c - 'A' + 'a');
+        } else {
+            buf.append(c);
+        }
+    }
+    buf.append('\0');
+    String prop(buf.data());
+    if (prop.startsWith("webkit-") || prop.startsWith("khtml-"))
+        prop = "-" + prop;
+    return prop;
+}
+
 static int js_cssstyledecl_get_own_property(JSContext *ctx, JSPropertyDescriptor *desc,
                                              JSValueConst obj, JSAtom prop)
 {
@@ -217,6 +238,26 @@ static int js_cssstyledecl_get_own_property(JSContext *ctx, JSPropertyDescriptor
     return 1;
 }
 
+static int js_cssstyledecl_set_property(JSContext *ctx, JSValueConst obj, JSAtom atom,
+                                         JSValueConst value, JSValueConst receiver, int flags)
+{
+    CSSStyleDeclaration* impl = (CSSStyleDeclaration*)JS_GetOpaque(obj, JSCSSStyleDeclaration::js_class_id);
+    if (!impl)
+        return 0;
+    const char* str = JS_AtomToCString(ctx, atom);
+    if (!str)
+        return 0;
+    if ((str[0] >= '0' && str[0] <= '9') || !strcmp(str, "length") || !strcmp(str, "cssText") || !strcmp(str, "constructor")) {
+        JS_FreeCString(ctx, str);
+        return 0; // let QuickJS handle built-in properties normally
+    }
+    String val = valueToString(ctx, value);
+    ExceptionCode ec = 0;
+    impl->setProperty(cssPropertyName(str), val, ec);
+    JS_FreeCString(ctx, str);
+    return 1;
+}
+
 static JSClassExoticMethods js_cssstyledecl_exotic;
 static bool js_cssstyledecl_exotic_initialized = false;
 
@@ -226,6 +267,7 @@ static void init_js_cssstyledecl_exotic()
     js_cssstyledecl_exotic_initialized = true;
     memset(&js_cssstyledecl_exotic, 0, sizeof(js_cssstyledecl_exotic));
     js_cssstyledecl_exotic.get_own_property = js_cssstyledecl_get_own_property;
+    js_cssstyledecl_exotic.set_property = js_cssstyledecl_set_property;
 }
 
 static JSClassDef JSCSSStyleDeclarationClassDefine;
