@@ -79,9 +79,6 @@ using namespace WebCore;
 @end
 */
 
-static const JSCFunctionListEntry JSXMLHttpRequestFunctions[] = {
-};
-
 static JSClassDef JSXMLHttpRequestClassDefine;
 static bool JSXMLHttpRequestClassDefine_inited = false;
 
@@ -105,7 +102,6 @@ void JSXMLHttpRequest::init(JSContext* ctx, Document* d)
         JS_NewClass(JS_GetRuntime(ctx), JSXMLHttpRequest::js_class_id, &JSXMLHttpRequestClassDefine);
 
         JSValue proto = JS_NewObject(ctx);
-        JS_SetPropertyFunctionList(ctx, proto, JSXMLHttpRequestFunctions, countof(JSXMLHttpRequestFunctions));
 
         JS_SetConstructor(ctx, JSXMLHttpRequestConstructor::self(ctx, d), proto);
         JS_SetClassProto(ctx, JSXMLHttpRequest::js_class_id, proto);
