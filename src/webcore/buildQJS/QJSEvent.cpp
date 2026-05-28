@@ -260,7 +260,7 @@ static void init_JSEventConstructorFunctions()
     JSEventConstructorFunctions[18].name = "CHANGE";
     JSEventConstructorFunctions[18].prop_flags = JS_PROP_CONFIGURABLE;
     JSEventConstructorFunctions[18].def_type = JS_DEF_CGETSET_MAGIC;
-    JSEventConstructorFunctions[18].magic = Event::CHANGE;
+    JSEventConstructorFunctions[18].magic = (int16_t)Event::CHANGE;
     JSEventConstructorFunctions[18].u.getset.get.getter_magic = JSEventConstructor::getValueProperty;
     JSEventConstructorFunctions[18].u.getset.set.setter_magic = NULL;
 }
@@ -406,7 +406,7 @@ static void init_JSEventPrototypeConstantsFunctions()
     JSEventPrototypeConstantsFunctions[18].name = "CHANGE";
     JSEventPrototypeConstantsFunctions[18].prop_flags = JS_PROP_CONFIGURABLE;
     JSEventPrototypeConstantsFunctions[18].def_type = JS_DEF_CGETSET_MAGIC;
-    JSEventPrototypeConstantsFunctions[18].magic = Event::CHANGE;
+    JSEventPrototypeConstantsFunctions[18].magic = (int16_t)Event::CHANGE;
     JSEventPrototypeConstantsFunctions[18].u.getset.get.getter_magic = JSEventPrototype::getValueProperty;
     JSEventPrototypeConstantsFunctions[18].u.getset.set.setter_magic = NULL;
 }

@@ -23,6 +23,8 @@
 #include "config.h"
 #include "qjs_window.h"
 
+#include <string.h>
+
 #include "Base64.h"
 #include "CString.h"
 #include "Chrome.h"
@@ -1726,35 +1728,113 @@ public:
     static JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token);
 };
 
-static const JSCFunctionListEntry LocationAttributesFunctions[] =
-{
-    JS_CGETSET_MAGIC_DEF("hash", Location::getValueProperty, Location::putValueProperty, Location::Hash),
-    JS_CGETSET_MAGIC_DEF("host", Location::getValueProperty, Location::putValueProperty, Location::Host),
-    JS_CGETSET_MAGIC_DEF("hostname", Location::getValueProperty, Location::putValueProperty, Location::Hostname),
-    JS_CGETSET_MAGIC_DEF("href", Location::getValueProperty, Location::putValueProperty, Location::Href),
-    JS_CGETSET_MAGIC_DEF("pathname", Location::getValueProperty, Location::putValueProperty, Location::Pathname),
-    JS_CGETSET_MAGIC_DEF("port", Location::getValueProperty, Location::putValueProperty, Location::Port),
-    JS_CGETSET_MAGIC_DEF("protocol", Location::getValueProperty, Location::putValueProperty, Location::Protocol),
-    JS_CGETSET_MAGIC_DEF("search", Location::getValueProperty, Location::putValueProperty, Location::Search),
-    JS_CFUNC_MAGIC_DEF("replace", 1, LocationFunc::callAsFunction, Location::Replace),
-    JS_CFUNC_MAGIC_DEF("reload", 0, LocationFunc::callAsFunction, Location::Reload),
-    JS_CFUNC_MAGIC_DEF("assign", 1, LocationFunc::callAsFunction, Location::Assign),
-    JS_CFUNC_MAGIC_DEF("toString", 0, LocationFunc::callAsFunction, Location::ToString),
-};
+static JSCFunctionListEntry LocationAttributesFunctions[12];
+static bool LocationAttributesFunctions_initialized = false;
 
-static JSClassDef LocationClassDefine = 
+static void init_LocationAttributesFunctions()
 {
-    "Location",
-};
+    if (LocationAttributesFunctions_initialized) return;
+    LocationAttributesFunctions_initialized = true;
+    memset(LocationAttributesFunctions, 0, sizeof(LocationAttributesFunctions));
+    LocationAttributesFunctions[0].name = "hash";
+    LocationAttributesFunctions[0].prop_flags = JS_PROP_CONFIGURABLE;
+    LocationAttributesFunctions[0].def_type = JS_DEF_CGETSET_MAGIC;
+    LocationAttributesFunctions[0].magic = Location::Hash;
+    LocationAttributesFunctions[0].u.getset.get.getter_magic = Location::getValueProperty;
+    LocationAttributesFunctions[0].u.getset.set.setter_magic = Location::putValueProperty;
+    LocationAttributesFunctions[1].name = "host";
+    LocationAttributesFunctions[1].prop_flags = JS_PROP_CONFIGURABLE;
+    LocationAttributesFunctions[1].def_type = JS_DEF_CGETSET_MAGIC;
+    LocationAttributesFunctions[1].magic = Location::Host;
+    LocationAttributesFunctions[1].u.getset.get.getter_magic = Location::getValueProperty;
+    LocationAttributesFunctions[1].u.getset.set.setter_magic = Location::putValueProperty;
+    LocationAttributesFunctions[2].name = "hostname";
+    LocationAttributesFunctions[2].prop_flags = JS_PROP_CONFIGURABLE;
+    LocationAttributesFunctions[2].def_type = JS_DEF_CGETSET_MAGIC;
+    LocationAttributesFunctions[2].magic = Location::Hostname;
+    LocationAttributesFunctions[2].u.getset.get.getter_magic = Location::getValueProperty;
+    LocationAttributesFunctions[2].u.getset.set.setter_magic = Location::putValueProperty;
+    LocationAttributesFunctions[3].name = "href";
+    LocationAttributesFunctions[3].prop_flags = JS_PROP_CONFIGURABLE;
+    LocationAttributesFunctions[3].def_type = JS_DEF_CGETSET_MAGIC;
+    LocationAttributesFunctions[3].magic = Location::Href;
+    LocationAttributesFunctions[3].u.getset.get.getter_magic = Location::getValueProperty;
+    LocationAttributesFunctions[3].u.getset.set.setter_magic = Location::putValueProperty;
+    LocationAttributesFunctions[4].name = "pathname";
+    LocationAttributesFunctions[4].prop_flags = JS_PROP_CONFIGURABLE;
+    LocationAttributesFunctions[4].def_type = JS_DEF_CGETSET_MAGIC;
+    LocationAttributesFunctions[4].magic = Location::Pathname;
+    LocationAttributesFunctions[4].u.getset.get.getter_magic = Location::getValueProperty;
+    LocationAttributesFunctions[4].u.getset.set.setter_magic = Location::putValueProperty;
+    LocationAttributesFunctions[5].name = "port";
+    LocationAttributesFunctions[5].prop_flags = JS_PROP_CONFIGURABLE;
+    LocationAttributesFunctions[5].def_type = JS_DEF_CGETSET_MAGIC;
+    LocationAttributesFunctions[5].magic = Location::Port;
+    LocationAttributesFunctions[5].u.getset.get.getter_magic = Location::getValueProperty;
+    LocationAttributesFunctions[5].u.getset.set.setter_magic = Location::putValueProperty;
+    LocationAttributesFunctions[6].name = "protocol";
+    LocationAttributesFunctions[6].prop_flags = JS_PROP_CONFIGURABLE;
+    LocationAttributesFunctions[6].def_type = JS_DEF_CGETSET_MAGIC;
+    LocationAttributesFunctions[6].magic = Location::Protocol;
+    LocationAttributesFunctions[6].u.getset.get.getter_magic = Location::getValueProperty;
+    LocationAttributesFunctions[6].u.getset.set.setter_magic = Location::putValueProperty;
+    LocationAttributesFunctions[7].name = "search";
+    LocationAttributesFunctions[7].prop_flags = JS_PROP_CONFIGURABLE;
+    LocationAttributesFunctions[7].def_type = JS_DEF_CGETSET_MAGIC;
+    LocationAttributesFunctions[7].magic = Location::Search;
+    LocationAttributesFunctions[7].u.getset.get.getter_magic = Location::getValueProperty;
+    LocationAttributesFunctions[7].u.getset.set.setter_magic = Location::putValueProperty;
+    LocationAttributesFunctions[8].name = "replace";
+    LocationAttributesFunctions[8].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    LocationAttributesFunctions[8].def_type = JS_DEF_CFUNC;
+    LocationAttributesFunctions[8].magic = Location::Replace;
+    LocationAttributesFunctions[8].u.func.length = 1;
+    LocationAttributesFunctions[8].u.func.cproto = JS_CFUNC_generic_magic;
+    LocationAttributesFunctions[8].u.func.cfunc.generic_magic = LocationFunc::callAsFunction;
+    LocationAttributesFunctions[9].name = "reload";
+    LocationAttributesFunctions[9].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    LocationAttributesFunctions[9].def_type = JS_DEF_CFUNC;
+    LocationAttributesFunctions[9].magic = Location::Reload;
+    LocationAttributesFunctions[9].u.func.length = 0;
+    LocationAttributesFunctions[9].u.func.cproto = JS_CFUNC_generic_magic;
+    LocationAttributesFunctions[9].u.func.cfunc.generic_magic = LocationFunc::callAsFunction;
+    LocationAttributesFunctions[10].name = "assign";
+    LocationAttributesFunctions[10].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    LocationAttributesFunctions[10].def_type = JS_DEF_CFUNC;
+    LocationAttributesFunctions[10].magic = Location::Assign;
+    LocationAttributesFunctions[10].u.func.length = 1;
+    LocationAttributesFunctions[10].u.func.cproto = JS_CFUNC_generic_magic;
+    LocationAttributesFunctions[10].u.func.cfunc.generic_magic = LocationFunc::callAsFunction;
+    LocationAttributesFunctions[11].name = "toString";
+    LocationAttributesFunctions[11].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    LocationAttributesFunctions[11].def_type = JS_DEF_CFUNC;
+    LocationAttributesFunctions[11].magic = Location::ToString;
+    LocationAttributesFunctions[11].u.func.length = 0;
+    LocationAttributesFunctions[11].u.func.cproto = JS_CFUNC_generic_magic;
+    LocationAttributesFunctions[11].u.func.cfunc.generic_magic = LocationFunc::callAsFunction;
+}
+
+static JSClassDef LocationClassDefine;
+static bool LocationClassDefine_initialized = false;
+
+static void init_LocationClassDefine()
+{
+    if (LocationClassDefine_initialized) return;
+    LocationClassDefine_initialized = true;
+    memset(&LocationClassDefine, 0, sizeof(LocationClassDefine));
+    LocationClassDefine.class_name = "Location";
+}
 
 JSClassID Location::js_class_id = 0;
 
 void Location::init(JSContext* ctx)
 {
     if (Location::js_class_id == 0) {
+        init_LocationClassDefine();
         JS_NewClassID(&Location::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), Location::js_class_id, &LocationClassDefine);
 
+        init_LocationAttributesFunctions();
         JSValue proto = JS_NewObject(ctx);
         JS_SetPropertyFunctionList(ctx, proto, LocationAttributesFunctions, countof(LocationAttributesFunctions));
 
@@ -2016,24 +2096,35 @@ static JSValue js_window_func(JSContext* ctx, JSValueConst this_val, int argc, J
     return WindowFunc::callAsFunction(ctx, this_val, argc, argv, magic);
 }
 
-static const JSCFunctionListEntry js_window_funcs[] = {
-    JS_CFUNC_MAGIC_DEF("open", 3, js_window_func, Window::Open),
-    JS_CFUNC_MAGIC_DEF("setTimeout", 2, js_window_func, Window::SetTimeout),
-    JS_CFUNC_MAGIC_DEF("clearTimeout", 1, js_window_func, Window::ClearTimeout),
-    JS_CFUNC_MAGIC_DEF("setInterval", 2, js_window_func, Window::SetInterval),
-    JS_CFUNC_MAGIC_DEF("clearInterval", 1, js_window_func, Window::ClearInterval),
-    JS_CFUNC_MAGIC_DEF("scrollBy", 2, js_window_func, Window::ScrollBy),
-    JS_CFUNC_MAGIC_DEF("scrollTo", 2, js_window_func, Window::ScrollTo),
-    JS_CFUNC_MAGIC_DEF("scroll", 2, js_window_func, Window::Scroll),
-    JS_CFUNC_MAGIC_DEF("moveBy", 2, js_window_func, Window::MoveBy),
-    JS_CFUNC_MAGIC_DEF("moveTo", 2, js_window_func, Window::MoveTo),
-    JS_CFUNC_MAGIC_DEF("resizeBy", 2, js_window_func, Window::ResizeBy),
-    JS_CFUNC_MAGIC_DEF("resizeTo", 2, js_window_func, Window::ResizeTo),
-    JS_CFUNC_MAGIC_DEF("atob", 1, js_window_func, Window::AToB),
-    JS_CFUNC_MAGIC_DEF("btoa", 1, js_window_func, Window::BToA),
-    JS_CFUNC_MAGIC_DEF("addEventListener", 3, js_window_func, Window::AddEventListener),
-    JS_CFUNC_MAGIC_DEF("removeEventListener", 3, js_window_func, Window::RemoveEventListener),
-};
+static JSCFunctionListEntry js_window_funcs[16];
+static bool js_window_funcs_initialized = false;
+
+static void init_js_window_funcs()
+{
+    if (js_window_funcs_initialized) return;
+    js_window_funcs_initialized = true;
+    memset(js_window_funcs, 0, sizeof(js_window_funcs));
+    struct { const char* n; int l; int m; } defs[] = {
+        {"open",3,Window::Open}, {"setTimeout",2,Window::SetTimeout},
+        {"clearTimeout",1,Window::ClearTimeout}, {"setInterval",2,Window::SetInterval},
+        {"clearInterval",1,Window::ClearInterval}, {"scrollBy",2,Window::ScrollBy},
+        {"scrollTo",2,Window::ScrollTo}, {"scroll",2,Window::Scroll},
+        {"moveBy",2,Window::MoveBy}, {"moveTo",2,Window::MoveTo},
+        {"resizeBy",2,Window::ResizeBy}, {"resizeTo",2,Window::ResizeTo},
+        {"atob",1,Window::AToB}, {"btoa",1,Window::BToA},
+        {"addEventListener",3,Window::AddEventListener},
+        {"removeEventListener",3,Window::RemoveEventListener},
+    };
+    for (int i = 0; i < 16; i++) {
+        js_window_funcs[i].name = defs[i].n;
+        js_window_funcs[i].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+        js_window_funcs[i].def_type = JS_DEF_CFUNC;
+        js_window_funcs[i].magic = defs[i].m;
+        js_window_funcs[i].u.func.length = defs[i].l;
+        js_window_funcs[i].u.func.cproto = JS_CFUNC_generic_magic;
+        js_window_funcs[i].u.func.cfunc.generic_magic = js_window_func;
+    }
+}
 
 void WindowPrototype::initPrototype(JSContext* ctx, JSValue this_obj)
 {
