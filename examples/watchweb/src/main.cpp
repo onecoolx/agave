@@ -2,7 +2,9 @@
  * Copyright (C) 2026 Zhang Ji Peng <onecoolx@gmail.com>
  */
 #define SDL_MAIN_HANDLED
-#include <SDL.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
 #include "lvgl.h"
 #include "macross.h"
 #include "webview.h"
@@ -28,7 +30,10 @@ int main(int argc, char** argv)
     lv_sdl_mouse_create();
     lv_sdl_keyboard_create();
 
-    macross_initialize(PIXEL_FORMAT_BGRA32, SCREEN_WIDTH, SCREEN_HEIGHT);
+    if (macross_initialize(PIXEL_FORMAT_BGRA32, SCREEN_WIDTH, SCREEN_HEIGHT) != MC_STATUS_SUCCESS) {
+        fprintf(stderr, "Failed to initialize Agave engine\n");
+        return -1;
+    }
 
     g_webview.create(CONTENT_WIDTH, CONTENT_HEIGHT);
     g_webview.setUpdateCb(on_update, nullptr);
@@ -36,15 +41,16 @@ int main(int argc, char** argv)
 
     g_ui.create(&g_webview);
 
-    const char* url = (argc > 1) ? argv[1] : "https://www.baidu.com";
+    const char* url = (argc > 1) ? argv[1] : "about:blank";
     g_webview.loadUrl(url);
     g_ui.updateUrl(url);
 
-    lv_timer_create(engine_tick, 16, nullptr);
+    lv_timer_create(engine_tick, 30, nullptr);
 
     while (1) {
         uint32_t ms = lv_timer_handler();
-        SDL_Delay(ms < 5 ? 5 : ms);
+        if (ms < 5) ms = 5;
+        usleep(ms * 1000);
     }
     return 0;
 }
