@@ -9,7 +9,8 @@
 
 class WebView;
 
-class WatchUI {
+class WatchUI
+{
 public:
     WatchUI();
     ~WatchUI();

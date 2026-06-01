@@ -161,8 +161,9 @@ void WatchUI::on_addr_ready(lv_event_t* e)
 {
     WatchUI* ui = (WatchUI*)lv_event_get_user_data(e);
     const char* text = lv_textarea_get_text(ui->m_addr);
-    if (text && text[0])
+    if (text && text[0]) {
         ui->m_wv->loadUrl(text);
+    }
 }
 
 void WatchUI::on_canvas_press(lv_event_t* e)
@@ -183,8 +184,9 @@ void WatchUI::on_canvas_move(lv_event_t* e)
     int dx = ui->m_tx - p.x;
     int dy = ui->m_ty - p.y;
 
-    if (!ui->m_dragging && (abs(dx) > 5 || abs(dy) > 5))
+    if (!ui->m_dragging && (abs(dx) > 5 || abs(dy) > 5)) {
         ui->m_dragging = true;
+    }
 
     if (ui->m_dragging) {
         ui->m_wv->scrollBy(dx, dy);

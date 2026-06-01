@@ -8,7 +8,8 @@
 #include <stdint.h>
 #include "macross.h"
 
-class WebView {
+class WebView
+{
 public:
     WebView();
     ~WebView();
@@ -71,8 +72,10 @@ private:
     unsigned int m_progress;
     char m_title[256];
     char m_url[1024];
-    Callback m_on_update; void* m_ud;
-    Callback m_on_state; void* m_sd;
+    Callback m_on_update;
+    void* m_ud;
+    Callback m_on_state;
+    void* m_sd;
 };
 
 #endif

@@ -59,7 +59,7 @@ int main(int argc, char** argv)
 
         /* Process LVGL (renders + handles SDL input) */
         uint32_t ms = lv_timer_handler();
-        if (ms < 5) ms = 5;
+        if (ms < 5) { ms = 5; }
         usleep(ms * 1000);
     }
     return 0;
