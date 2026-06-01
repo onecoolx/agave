@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(Agave LANGUAGES C CXX ASM HOMEPAGE_URL https://github.com/onecoolx/agave)
 
-set (CMAKE_CXX_STANDARD 98)
+set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -70,6 +70,8 @@ endif()
 
 option(OPT_EXAMPLES "Build examples" OFF)
 if (OPT_EXAMPLES)
+option(OPT_EXAMPLES_TOUCH "Build example touch phone" ON)
+option(OPT_EXAMPLES_WATCH "Build example watch" OFF)
 include (${CMAKE_CURRENT_LIST_DIR}/examples/examples.cmake)
 endif()
 

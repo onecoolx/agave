@@ -5,7 +5,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "lvgl.h"
+#include <lvgl.h>
+#include <src/drivers/sdl/lv_sdl_window.h>
+#include <src/drivers/sdl/lv_sdl_mouse.h>
+#include <src/drivers/sdl/lv_sdl_keyboard.h>
+#include <src/drivers/sdl/lv_sdl_window.h>
+#include <src/drivers/sdl/lv_sdl_mouse.h>
+#include <src/drivers/sdl/lv_sdl_keyboard.h>
 #include "macross.h"
 #include "webview.h"
 #include "ui.h"

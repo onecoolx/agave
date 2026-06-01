@@ -4,8 +4,11 @@
 # Contact: onecoolx@gmail.com
 
 # TouchWeb - mobile browser (Qt5/Win32)
+if (OPT_EXAMPLES_TOUCH)
 include(${PROJ_ROOT}/examples/touchweb/touchweb.cmake)
+endif()
 
 # WatchWeb - smartwatch browser (LVGL/SDL) - standalone build
-# Build separately: cd examples/watchweb/build && cmake .. && make
+if (OPT_EXAMPLES_WATCH)
 include(${PROJ_ROOT}/examples/watchweb/watchweb.cmake)
+endif()
