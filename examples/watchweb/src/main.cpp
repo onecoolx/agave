@@ -13,15 +13,11 @@
 
 static WebView g_webview;
 static WatchUI g_ui;
+static volatile bool g_dirty = false;
+static volatile bool g_state_dirty = false;
 
-static void on_update(void*) { g_ui.updateCanvas(); }
-static void on_state(void*)
-{
-    g_ui.updateProgress(g_webview.progress(), g_webview.isLoading());
-    g_ui.updateUrl(g_webview.url());
-}
-
-static void engine_tick(lv_timer_t*) { macross_event_dispatch(); }
+static void on_update(void*) { g_dirty = true; }
+static void on_state(void*) { g_state_dirty = true; }
 
 int main(int argc, char** argv)
 {
@@ -45,12 +41,24 @@ int main(int argc, char** argv)
     g_webview.loadUrl(url);
     g_ui.updateUrl(url);
 
-    lv_timer_create(engine_tick, 16, nullptr);
-
     while (1) {
+        /* Dispatch Agave engine events */
+        macross_event_dispatch();
+
+        /* Check if webview needs repaint */
+        if (g_dirty) {
+            g_dirty = false;
+            g_ui.updateCanvas();
+        }
+        if (g_state_dirty) {
+            g_state_dirty = false;
+            g_ui.updateProgress(g_webview.progress(), g_webview.isLoading());
+            g_ui.updateUrl(g_webview.url());
+        }
+
+        /* Process LVGL (renders + handles SDL input) */
         uint32_t ms = lv_timer_handler();
-        if (ms < 1) ms = 1;
-        printf ("sleep %u\n", ms);
+        if (ms < 5) ms = 5;
         usleep(ms * 1000);
     }
     return 0;
