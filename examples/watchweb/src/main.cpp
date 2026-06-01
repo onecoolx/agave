@@ -45,11 +45,12 @@ int main(int argc, char** argv)
     g_webview.loadUrl(url);
     g_ui.updateUrl(url);
 
-    lv_timer_create(engine_tick, 30, nullptr);
+    lv_timer_create(engine_tick, 16, nullptr);
 
     while (1) {
         uint32_t ms = lv_timer_handler();
-        if (ms < 5) ms = 5;
+        if (ms < 1) ms = 1;
+        printf ("sleep %u\n", ms);
         usleep(ms * 1000);
     }
     return 0;
