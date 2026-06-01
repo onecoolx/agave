@@ -1,59 +1,39 @@
-/* config.h - WatchWeb (circular smartwatch browser)
- *
- * Copyright (C) 2026 Zhang Ji Peng
- * Contact : onecoolx@gmail.com
+/* config.h - WatchWeb smartwatch browser
+ * Copyright (C) 2026 Zhang Ji Peng <onecoolx@gmail.com>
  */
+#ifndef _WATCHWEB_CONFIG_H_
+#define _WATCHWEB_CONFIG_H_
 
-#define APP_VERSION "100000"
-#define VERSION_STRING "1.0.0"
+/* Display */
+#define SCREEN_WIDTH    480
+#define SCREEN_HEIGHT   480
+#define SCREEN_RADIUS   240
 
-#define MOBILE_PHONE 0
+/* Content area (inscribed usable rect in circle) */
+#define CONTENT_INSET   40
+#define CONTENT_TOP     56
+#define CONTENT_WIDTH   (SCREEN_WIDTH - 2 * CONTENT_INSET)
+#define CONTENT_HEIGHT  (SCREEN_HEIGHT - CONTENT_TOP - CONTENT_INSET - 50)
 
-#define THREAD_RENDER 0
+/* Tile buffer (2x width, 3x height for smooth scrolling) */
+#define TILE_BUF_W      (CONTENT_WIDTH * 2)
+#define TILE_BUF_H      (CONTENT_HEIGHT * 3)
 
-#define SETUI(x)  (x)
+/* UI metrics */
+#define ADDR_BAR_H      40
+#define ADDR_BAR_Y      6
+#define ADDR_BAR_X      70
+#define ADDR_BAR_W      (SCREEN_WIDTH - 2 * ADDR_BAR_X)
+#define NAV_BTN_SIZE    36
+#define PROGRESS_WIDTH  3
 
-/* 480x480 circular display */
-#define DEFAULT_WIDTH   480
-#define DEFAULT_HEIGHT  480
+/* Zoom */
+#define DEFAULT_ZOOM    1.5f
+#define MIN_ZOOM        0.5f
+#define MAX_ZOOM        4.0f
 
-#define GLOBAL_SCALE  1
+/* Gesture */
+#define SWIPE_THRESHOLD 40
+#define SCROLL_DECEL    0.95f
 
-#define TOOLBAR_HEIGHT  (SETUI(44)*GLOBAL_SCALE)
-#define TITLE_HEIGHT    (SETUI(32)*GLOBAL_SCALE)
-#define DASH_TITLE_HEIGHT   (SETUI(44)*GLOBAL_SCALE)
-#define BUTTON_HEIGHT (TITLE_HEIGHT*1.4)
-
-#define MAX_TABS        3
-#define MAX_DRAG_STEP   2
-#define PAGE_ITEMS      10
-
-#include <stdint.h>
-#include <string.h>
-#include <stdio.h>
-#ifdef __cplusplus
-#include <string>
-#endif
-
-#define PATHMAX     512
-#define LINUX 1
-typedef unsigned short uchar_t;
-#ifdef __cplusplus
-typedef std::basic_string<uchar_t> ustring;
-#endif
-#define U(text) ((uchar_t*)(u##text))
-#define DATA_PATH(path) path
-#define FILENAME_UNICODE 0
-
-#define IS_PRINT(c) iswprint(c)
-#define P16(utext) (reinterpret_cast<ps_uchar16*>(utext))
-
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define ABS(x)  (((x) < 0) ? -(x) : (x))
-
-#include <stdio.h>
-
-/* Disable sqlite encryption (not needed on watch) */
-#define sqlite3_key(db, key, len) 0
-#define sqlite3_rekey(db, key, len) 0
+#endif /* _WATCHWEB_CONFIG_H_ */
