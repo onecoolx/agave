@@ -21,17 +21,22 @@ FetchContent_Declare(
     GIT_TAG v9.2.2
     GIT_SHALLOW TRUE
 )
-FetchContent_MakeAvailable(lvgl)
+FetchContent_Populate(lvgl)
 
-# LVGL config
-target_compile_definitions(lvgl PUBLIC
-    LV_USE_SDL=1
-    LV_USE_OS=LV_OS_NONE
-    LV_COLOR_DEPTH=32
-    LV_FONT_MONTSERRAT_14=1
-    LV_USE_LOG=0
+# Remove ARM assembly files (not needed on x86)
+file(GLOB_RECURSE _asm_files ${lvgl_SOURCE_DIR}/src/*.S)
+if(_asm_files)
+    file(REMOVE ${_asm_files})
+endif()
+
+add_subdirectory(${lvgl_SOURCE_DIR} ${lvgl_BINARY_DIR})
+
+# LVGL config: use our lv_conf.h (placed next to lvgl source via include path)
+target_include_directories(lvgl PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}   # lv_conf.h is here
+    ${SDL2_INCLUDE_DIRS}
 )
-target_include_directories(lvgl PUBLIC ${SDL2_INCLUDE_DIRS})
+target_compile_definitions(lvgl PUBLIC LV_CONF_INCLUDE_SIMPLE)
 target_link_libraries(lvgl PUBLIC ${SDL2_LIBRARIES})
 
 # WatchWeb sources
