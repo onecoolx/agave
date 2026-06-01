@@ -77,22 +77,17 @@ void WatchUI::createAddressBar()
 
 void WatchUI::createCanvas()
 {
-    /* Image object displays the visible portion of the tile buffer */
-    m_canvas_img = lv_image_create(m_bg);
+    /* Use canvas with its own buffer - we blit from tile buffer into it */
+    m_canvas_img = lv_canvas_create(m_bg);
     lv_obj_set_pos(m_canvas_img, CONTENT_INSET, CONTENT_TOP);
     lv_obj_set_size(m_canvas_img, CONTENT_WIDTH, CONTENT_HEIGHT);
     lv_obj_set_style_radius(m_canvas_img, 8, 0);
     lv_obj_set_style_clip_corner(m_canvas_img, true, 0);
     lv_obj_add_flag(m_canvas_img, LV_OBJ_FLAG_CLICKABLE);
 
-    /* Setup image descriptor */
-    m_img_dsc.header.w = CONTENT_WIDTH;
-    m_img_dsc.header.h = CONTENT_HEIGHT;
-    m_img_dsc.header.cf = LV_COLOR_FORMAT_ARGB8888;
-    m_img_dsc.header.stride = TILE_BUF_W * 4;
-    m_img_dsc.data_size = TILE_BUF_W * TILE_BUF_H * 4;
-    m_img_dsc.data = m_wv->buffer() + (m_wv->offsetY() * TILE_BUF_W + m_wv->offsetX()) * 4;
-    lv_image_set_src(m_canvas_img, &m_img_dsc);
+    static uint8_t* canvas_buf = (uint8_t*)malloc(CONTENT_WIDTH * CONTENT_HEIGHT * 4);
+    memset(canvas_buf, 0xFF, CONTENT_WIDTH * CONTENT_HEIGHT * 4);
+    lv_canvas_set_buffer(m_canvas_img, canvas_buf, CONTENT_WIDTH, CONTENT_HEIGHT, LV_COLOR_FORMAT_ARGB8888);
 
     /* Touch events */
     lv_obj_add_event_cb(m_canvas_img, on_canvas_press, LV_EVENT_PRESSED, this);
@@ -129,9 +124,19 @@ void WatchUI::createNavBar()
 
 void WatchUI::updateCanvas()
 {
-    /* Point image data to current visible region in tile buffer */
-    m_img_dsc.data = m_wv->buffer() + (m_wv->offsetY() * TILE_BUF_W + m_wv->offsetX()) * 4;
-    lv_image_set_src(m_canvas_img, &m_img_dsc);
+    /* Blit visible region from tile buffer into canvas buffer */
+    uint8_t* dst = (uint8_t*)lv_canvas_get_buf(m_canvas_img);
+    const uint8_t* src = m_wv->buffer();
+    int ox = m_wv->offsetX();
+    int oy = m_wv->offsetY();
+    int src_stride = TILE_BUF_W * 4;
+    int dst_stride = CONTENT_WIDTH * 4;
+
+    for (int row = 0; row < CONTENT_HEIGHT; row++) {
+        memcpy(dst + row * dst_stride,
+               src + (oy + row) * src_stride + ox * 4,
+               dst_stride);
+    }
     lv_obj_invalidate(m_canvas_img);
 }
 
