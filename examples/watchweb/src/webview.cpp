@@ -23,7 +23,8 @@ void WebView::create(int vw, int vh)
 {
     m_view_w = vw;
     m_view_h = vh;
-    m_buffer = (uint8_t*)calloc(TILE_BUF_W * TILE_BUF_H, 4);
+    m_buffer = (uint8_t*)malloc(TILE_BUF_W * TILE_BUF_H * 4);
+    memset(m_buffer, 0xFF, TILE_BUF_W * TILE_BUF_H * 4);
 
     /* Register global callbacks */
     MC_CALLBACK_INFO cb = {};

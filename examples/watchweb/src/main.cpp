@@ -2,6 +2,7 @@
  * Copyright (C) 2026 Zhang Ji Peng <onecoolx@gmail.com>
  */
 #define SDL_MAIN_HANDLED
+#include <SDL.h>
 #include "lvgl.h"
 #include "macross.h"
 #include "webview.h"
@@ -43,7 +44,7 @@ int main(int argc, char** argv)
 
     while (1) {
         uint32_t ms = lv_timer_handler();
-        lv_delay_ms(ms < 5 ? 5 : ms);
+        SDL_Delay(ms < 5 ? 5 : ms);
     }
     return 0;
 }
