@@ -48,6 +48,7 @@ int main(int argc, char** argv)
         /* Check if webview needs repaint */
         if (g_dirty) {
             g_dirty = false;
+            macross_view_update(g_webview.view(), NULL);
             g_ui.updateCanvas();
         }
         if (g_state_dirty) {

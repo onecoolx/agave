@@ -47,6 +47,8 @@ public:
     void mouseMove(int x, int y);
     void mouseRelease(int x, int y);
 
+    MaCrossView* view() const { return m_view; }
+
     typedef void (*Callback)(void*);
     void setUpdateCb(Callback cb, void* d) { m_on_update = cb; m_ud = d; }
     void setStateCb(Callback cb, void* d) { m_on_state = cb; m_sd = d; }
