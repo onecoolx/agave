@@ -79,7 +79,7 @@
             #define LV_SDL_RENDER_MODE      LV_DISPLAY_RENDER_MODE_DIRECT
             #define LV_SDL_BUF_COUNT        2
             #define LV_SDL_FULLSCREEN       0
-            #define LV_SDL_DIRECT_EXIT      1
+            #define LV_SDL_DIRECT_EXIT      0
         #endif
 
     #endif /*LV_CONF_H*/

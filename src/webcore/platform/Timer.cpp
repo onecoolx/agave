@@ -210,11 +210,8 @@ inline void TimerBase::checkConsistency() const
 {
     // Timers should be in the heap if and only if they have a non-zero next fire time.
     ASSERT(inHeap() == (m_nextFireTime != 0));
-    if (inHeap()) {
-        ASSERT(m_heapIndex >= 0);
-        if (m_heapIndex >= 0)
-            checkHeapIndex();
-    }
+    if (inHeap())
+        checkHeapIndex();
 }
 
 void TimerBase::heapDecreaseKey()
