@@ -53,9 +53,10 @@ public:
     typedef void (*Callback)(void*);
     void setUpdateCb(Callback cb, void* d) { m_on_update = cb; m_ud = d; }
     void setStateCb(Callback cb, void* d) { m_on_state = cb; m_sd = d; }
+    void setBlitCb(Callback cb, void* d) { m_on_blit = cb; m_bd = d; }
 
 private:
-    void recalcOffset();
+    void repositionEngine();
     static void s_dirty(MaCrossView*, const MC_RECT*);
     static void s_update(MaCrossView*);
     static void s_loading(MaCrossView*, unsigned int, MC_BOOL);
@@ -65,8 +66,10 @@ private:
     MaCrossView* m_view;
     uint8_t* m_buffer;
     int m_view_w, m_view_h;
-    int m_pos_x, m_pos_y;
-    int m_off_x, m_off_y;
+    int m_pos_x, m_pos_y; /* viewport position in content coords */
+    int m_engine_x, m_engine_y; /* tile buffer top-left in content coords */
+    int m_off_x, m_off_y; /* viewport offset within tile buffer */
+    bool m_engine_repaint;
     float m_zoom;
     bool m_loading;
     unsigned int m_progress;
@@ -76,6 +79,8 @@ private:
     void* m_ud;
     Callback m_on_state;
     void* m_sd;
+    Callback m_on_blit;
+    void* m_bd;
 };
 
 #endif

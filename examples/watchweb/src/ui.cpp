@@ -192,7 +192,6 @@ void WatchUI::on_canvas_move(lv_event_t* e)
         ui->m_wv->scrollBy(dx, dy);
         ui->m_tx = p.x;
         ui->m_ty = p.y;
-        ui->updateCanvas();
     }
 }
 

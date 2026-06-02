@@ -8,10 +8,13 @@
 WebView::WebView()
     : m_view(nullptr), m_buffer(nullptr)
     , m_view_w(0), m_view_h(0)
-    , m_pos_x(0), m_pos_y(0), m_off_x(0), m_off_y(0)
+    , m_pos_x(0), m_pos_y(0)
+    , m_engine_x(0), m_engine_y(0)
+    , m_off_x(0), m_off_y(0), m_engine_repaint(false)
     , m_zoom(DEFAULT_ZOOM), m_loading(false), m_progress(0)
     , m_on_update(nullptr), m_ud(nullptr)
     , m_on_state(nullptr), m_sd(nullptr)
+    , m_on_blit(nullptr), m_bd(nullptr)
 {
     m_title[0] = 0;
     m_url[0] = 0;
@@ -39,7 +42,10 @@ void WebView::create(int vw, int vh)
     m_view = macross_view_create(m_buffer, TILE_BUF_W, TILE_BUF_H, TILE_BUF_W * 4, this);
     macross_view_set_minimum_layout_size(m_view, &lsize);
     macross_view_set_scale_factor(m_view, (int)(100 * m_zoom));
-    recalcOffset();
+    m_engine_x = 0;
+    m_engine_y = 0;
+    m_off_x = 0;
+    m_off_y = 0;
 }
 
 void WebView::destroy()
@@ -63,13 +69,48 @@ void WebView::scrollBy(int dx, int dy)
     m_pos_y += dy;
     if (m_pos_x < 0) { m_pos_x = 0; }
     if (m_pos_y < 0) { m_pos_y = 0; }
-    if (m_pos_x > sz.w - m_view_w) { m_pos_x = sz.w - m_view_w; }
-    if (m_pos_y > sz.h - m_view_h) { m_pos_y = sz.h - m_view_h; }
+    if (sz.w > m_view_w && m_pos_x > sz.w - m_view_w) { m_pos_x = sz.w - m_view_w; }
+    if (sz.h > m_view_h && m_pos_y > sz.h - m_view_h) { m_pos_y = sz.h - m_view_h; }
     if (m_pos_x < 0) { m_pos_x = 0; }
     if (m_pos_y < 0) { m_pos_y = 0; }
 
-    recalcOffset();
-    macross_view_set_position(m_view, m_pos_x - m_off_x, m_pos_y - m_off_y);
+    /* Offset of viewport within the tile buffer (relative to engine render pos) */
+    m_off_x = m_pos_x - m_engine_x;
+    m_off_y = m_pos_y - m_engine_y;
+
+    /* If viewport still fits inside the rendered tile buffer, just blit (no
+       engine repaint - avoids triggering re-layout during drag). */
+    if (m_off_x >= 0 && m_off_y >= 0
+        && m_off_x <= TILE_BUF_W - m_view_w
+        && m_off_y <= TILE_BUF_H - m_view_h) {
+        if (m_on_blit) { m_on_blit(m_bd); }
+        return;
+    }
+
+    /* Viewport moved outside the buffered tile: re-center engine render
+       position and request a fresh engine paint. */
+    repositionEngine();
+}
+
+void WebView::repositionEngine()
+{
+    MC_SIZE sz = {0, 0};
+    macross_view_get_contents_size(m_view, &sz);
+
+    /* Center the viewport within the tile buffer, clamped to content edges */
+    int cx = (TILE_BUF_W - m_view_w) / 2;
+    int cy = (TILE_BUF_H - m_view_h) / 2;
+
+    m_engine_x = m_pos_x - cx;
+    m_engine_y = m_pos_y - cy;
+    if (m_engine_x < 0) { m_engine_x = 0; }
+    if (m_engine_y < 0) { m_engine_y = 0; }
+
+    m_off_x = m_pos_x - m_engine_x;
+    m_off_y = m_pos_y - m_engine_y;
+
+    macross_view_set_position(m_view, m_engine_x, m_engine_y);
+    m_engine_repaint = true;
     if (m_on_update) { m_on_update(m_ud); }
 }
 
@@ -80,7 +121,9 @@ void WebView::setZoom(float f)
     m_zoom = f;
     if (m_view) { macross_view_set_scale_factor(m_view, (int)(100 * f)); }
     m_pos_x = m_pos_y = 0;
-    recalcOffset();
+    m_engine_x = m_engine_y = 0;
+    m_off_x = m_off_y = 0;
+    if (m_view) { macross_view_set_position(m_view, 0, 0); }
 }
 
 int WebView::contentsWidth() const
@@ -94,30 +137,6 @@ int WebView::contentsHeight() const
     MC_SIZE s = {0, 0};
     if (m_view) { macross_view_get_contents_size(m_view, &s); }
     return s.h;
-}
-
-void WebView::recalcOffset()
-{
-    /* Center viewport in tile buffer when possible */
-    int cx = (TILE_BUF_W - m_view_w) / 2;
-    int cy = (TILE_BUF_H - m_view_h) / 2;
-
-    MC_SIZE sz = {0, 0};
-    if (m_view) { macross_view_get_contents_size(m_view, &sz); }
-
-    /* Clamp at edges */
-    if (m_pos_x < cx) { m_off_x = m_pos_x; }
-    else if (sz.w - m_pos_x - m_view_w < cx) { m_off_x = TILE_BUF_W - m_view_w - (sz.w - m_pos_x - m_view_w); }
-    else { m_off_x = cx; }
-
-    if (m_pos_y < cy) { m_off_y = m_pos_y; }
-    else if (sz.h - m_pos_y - m_view_h < cy) { m_off_y = TILE_BUF_H - m_view_h - (sz.h - m_pos_y - m_view_h); }
-    else { m_off_y = cy; }
-
-    if (m_off_x < 0) { m_off_x = 0; }
-    if (m_off_y < 0) { m_off_y = 0; }
-    if (m_off_x > TILE_BUF_W - m_view_w) { m_off_x = TILE_BUF_W - m_view_w; }
-    if (m_off_y > TILE_BUF_H - m_view_h) { m_off_y = TILE_BUF_H - m_view_h; }
 }
 
 void WebView::mousePress(int x, int y)

@@ -17,10 +17,12 @@
 
 static WebView* g_webview = nullptr;
 static WatchUI* g_ui = nullptr;
-static volatile bool g_dirty = false;
+static volatile bool g_dirty = false; /* engine rendered: paint+blit */
+static volatile bool g_blit = false; /* scroll only: blit visible region */
 static volatile bool g_state_dirty = false;
 
 static void on_update(void*) { g_dirty = true; }
+static void on_blit(void*) { g_blit = true; }
 static void on_state(void*) { g_state_dirty = true; }
 
 int main(int argc, char** argv)
@@ -41,6 +43,7 @@ int main(int argc, char** argv)
     g_webview->create(CONTENT_WIDTH, CONTENT_HEIGHT);
     g_webview->setUpdateCb(on_update, nullptr);
     g_webview->setStateCb(on_state, nullptr);
+    g_webview->setBlitCb(on_blit, nullptr);
 
     g_ui->create(g_webview);
 
@@ -60,7 +63,14 @@ int main(int argc, char** argv)
 
         if (g_dirty) {
             g_dirty = false;
+            /* Engine signalled content changed (layout done): render tile
+               buffer, then blit visible region to canvas. */
             macross_view_update(g_webview->view(), NULL);
+            g_ui->updateCanvas();
+        } else if (g_blit) {
+            g_blit = false;
+            /* Scroll within already-rendered tile buffer: blit only, no
+               engine paint (engine layout may still be pending). */
             g_ui->updateCanvas();
         }
         if (g_state_dirty) {
@@ -78,7 +88,7 @@ int main(int argc, char** argv)
        destruction order fiasco where timerHeap is gone before Page::~Page) */
     delete g_ui;
     g_ui = nullptr;
-    delete g_webview;       /* macross_view_destroy -> Page::~Page -> timer stop */
+    delete g_webview; /* macross_view_destroy -> Page::~Page -> timer stop */
     g_webview = nullptr;
     macross_shutdown();
 
