@@ -74,6 +74,7 @@ namespace WebCore {
 
     protected:
         mutable JSValue m_listener;
+        mutable JSContext* m_ctx;
 
     private:
         QJS::Window* m_win;

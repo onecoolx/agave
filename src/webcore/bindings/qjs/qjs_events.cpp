@@ -105,12 +105,21 @@ void JSUnprotectedEventListener::mark()
 JSEventListener::JSEventListener(JSValue listener, Window* win, bool html)
     : JSAbstractEventListener(html)
     , m_listener(listener)
+    , m_ctx(0)
     , m_win(win)
 {
+    // Protect the listener function from GC by holding a strong reference.
+    if (win && win->impl() && win->impl()->frame() && win->impl()->frame()->script()) {
+        m_ctx = win->impl()->frame()->script()->context();
+        if (m_ctx && !JS_IsNull(m_listener) && !JS_IsUndefined(m_listener))
+            m_listener = JS_DupValue(m_ctx, m_listener);
+    }
 }
 
 JSEventListener::~JSEventListener()
 {
+    if (m_ctx && !JS_IsNull(m_listener) && !JS_IsUndefined(m_listener))
+        JS_FreeValue(m_ctx, m_listener);
 }
 
 JSValue JSEventListener::listenerObj() const
@@ -170,6 +179,7 @@ void JSLazyEventListener::parseCode() const
         return;
 
     JSContext* ctx = script->context();
+    m_ctx = ctx;
     String code = "function " + m_functionName + "(event){" + m_code + "}";
     JSValue result = JS_Eval(ctx, code.utf8().data(), code.utf8().length(), "", JS_EVAL_TYPE_GLOBAL);
     if (!JS_IsException(result)) {
