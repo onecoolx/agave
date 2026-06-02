@@ -486,7 +486,7 @@ void CacheManager::save()
     lock();
 	unsigned count = m_data->entrys.size();
 
-	CacheIndexFileHeader header;
+	CacheIndexFileHeader header = {0};
 
 	memcpy(&header.m_magic, cMagic, sizeof(cMagic)-1);
 	header.m_numCacheFiles = count;
