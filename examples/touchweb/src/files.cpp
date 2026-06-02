@@ -126,19 +126,19 @@ ustring File::GetCurrentDir(void)
         d = dir;
     }
     ustring cdir(d);
-    delete dir;
+    delete[] dir;
     return cdir;
 #elif defined(WIN32)
     uchar_t* dir = new uchar_t[PATHMAX];
     _wgetcwd(dir, PATHMAX);
     ustring cdir(dir);
-    delete dir;
+    delete[] dir;
     return cdir;
 #elif defined(LINUX)
     char* dir = new char[PATHMAX];
     getcwd(dir, PATHMAX);
     ustring cdir = Unicode::ConvertUTF8ToUTF16(dir);
-    delete dir;
+    delete[] dir;
     return cdir;
 #else
 #error need file operation.
