@@ -215,6 +215,14 @@ ScriptInterpreter::ScriptInterpreter(JSContext* ctx, JSValue global, Frame* fram
 {
 }
 
+// DOM wrapper cache (weak-reference model). The cache maps a C++ DOM object to
+// its JS wrapper for identity, but does NOT hold a reference: put*() stores the
+// raw JSValue without JS_DupValue, and forget*() only removes the entry without
+// JS_FreeValue. A wrapper stays alive purely by real JS references; when its
+// refcount hits 0 the finalizer runs and calls forget*() to drop the stale entry.
+// Cache hits in toJS() must JS_DupValue() the returned handle. This mirrors KJS's
+// "weak cache kept alive by GC marking" semantics under QuickJS pure refcounting,
+// avoiding both leaks (no pinning) and the wrapper<->object reference cycle.
 JSValue ScriptInterpreter::getDOMObject(void* objectHandle) 
 {
     if (!domObjects())

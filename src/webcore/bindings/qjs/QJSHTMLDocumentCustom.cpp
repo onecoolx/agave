@@ -89,6 +89,9 @@ void JSHTMLDocument::setAll(JSContext *ctx, JSValueConst this_val, JSValue value
 }
 
 // Custom functions
+// NOTE: this_val/argv are borrowed handles. Per QuickJS's ownership contract the
+// return value's reference is transferred to the caller, so JS_DupValue() any
+// borrowed handle before returning it (otherwise QuickJS over-frees it).
 JSValue JSHTMLDocument::open(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, HTMLDocument *impl)
 {
     // For compatibility with other browsers, pass open calls with more than 2 parameters to the window.

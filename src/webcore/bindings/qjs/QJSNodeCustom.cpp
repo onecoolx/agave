@@ -67,6 +67,11 @@ namespace WebCore {
 
 typedef int ExpectionCode;
 
+// QuickJS reference-counting contract: a C function transfers ownership of one
+// reference on its return value to the caller (QuickJS frees it once). An incoming
+// argv[]/this_val is only borrowed (the caller still owns it), so returning one
+// directly would make QuickJS over-free it. Always JS_DupValue() before returning
+// a borrowed handle. (KJS used GC and returned raw JSValue*, so it needed no dup.)
 JSValue JSNode::insertBefore(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl)
 {
     ExceptionCode ec = 0;
