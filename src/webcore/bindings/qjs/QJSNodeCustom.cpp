@@ -73,7 +73,7 @@ JSValue JSNode::insertBefore(JSContext *ctx, JSValueConst this_val, int argc, JS
     bool ok = impl->insertBefore(toNode(argv[0]), toNode(argv[1]), ec);
     QJS::setDOMException(ctx, ec);
     if (ok)
-        return argv[0];
+        return JS_DupValue(ctx, argv[0]);
     return JS_NULL;
 }
 
@@ -83,7 +83,7 @@ JSValue JSNode::replaceChild(JSContext *ctx, JSValueConst this_val, int argc, JS
     bool ok = impl->replaceChild(toNode(argv[0]), toNode(argv[1]), ec);
     QJS::setDOMException(ctx, ec);
     if (ok)
-        return argv[1];
+        return JS_DupValue(ctx, argv[1]);
     return JS_NULL;
 }
 
@@ -93,7 +93,7 @@ JSValue JSNode::removeChild(JSContext *ctx, JSValueConst this_val, int argc, JSV
     bool ok = impl->removeChild(toNode(argv[0]), ec);
     QJS::setDOMException(ctx, ec);
     if (ok)
-        return argv[0];
+        return JS_DupValue(ctx, argv[0]);
     return JS_NULL;
 }
 
@@ -103,7 +103,7 @@ JSValue JSNode::appendChild(JSContext *ctx, JSValueConst this_val, int argc, JSV
     bool ok = impl->appendChild(toNode(argv[0]), ec);
     QJS::setDOMException(ctx, ec);
     if (ok)
-        return argv[0];
+        return JS_DupValue(ctx, argv[0]);
     return JS_NULL;
 }
 

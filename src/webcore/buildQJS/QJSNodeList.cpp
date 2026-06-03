@@ -130,9 +130,6 @@ void JSNodeListPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
     JS_SetPropertyFunctionList(ctx, this_obj, JSNodeListPrototypeFunctions, countof(JSNodeListPrototypeFunctions));
 }
 
-static JSClassDef JSNodeListClassDefine;
-static bool JSNodeListClassDefine_initialized = false;
-
 static int js_nodelist_get_own_property(JSContext *ctx, JSPropertyDescriptor *desc,
                                          JSValueConst obj, JSAtom prop)
 {
@@ -164,6 +161,9 @@ static void init_js_nodelist_exotic() {
     memset(&js_nodelist_exotic, 0, sizeof(js_nodelist_exotic));
     js_nodelist_exotic.get_own_property = js_nodelist_get_own_property;
 }
+
+static JSClassDef JSNodeListClassDefine;
+static bool JSNodeListClassDefine_initialized = false;
 
 static void init_JSNodeListClassDefine()
 {

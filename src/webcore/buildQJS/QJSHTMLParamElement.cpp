@@ -154,7 +154,7 @@ void JSHTMLParamElement::finalizer(JSRuntime* rt, JSValue val)
     HTMLParamElement* impl = (HTMLParamElement*)JS_GetOpaque(val, JSNode::js_class_id);
     if (!impl)
         return;
-    ScriptInterpreter::forgetDOMObject(impl);
+    ScriptInterpreter::forgetDOMNodeForDocument(impl->document(), impl);
     impl->deref();
 }
 

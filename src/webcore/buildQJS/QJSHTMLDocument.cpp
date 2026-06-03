@@ -288,7 +288,7 @@ void JSHTMLDocument::finalizer(JSRuntime* rt, JSValue val)
     HTMLDocument* impl = (HTMLDocument*)JS_GetOpaque(val, JSNode::js_class_id);
     if (!impl)
         return;
-    ScriptInterpreter::forgetDOMObject(impl);
+    ScriptInterpreter::forgetDOMNodeForDocument(impl->document(), impl);
     impl->deref();
 }
 

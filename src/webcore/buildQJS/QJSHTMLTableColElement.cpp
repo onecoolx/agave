@@ -166,7 +166,7 @@ void JSHTMLTableColElement::finalizer(JSRuntime* rt, JSValue val)
     HTMLTableColElement* impl = (HTMLTableColElement*)JS_GetOpaque(val, JSNode::js_class_id);
     if (!impl)
         return;
-    ScriptInterpreter::forgetDOMObject(impl);
+    ScriptInterpreter::forgetDOMNodeForDocument(impl->document(), impl);
     impl->deref();
 }
 

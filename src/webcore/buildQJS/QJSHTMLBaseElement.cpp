@@ -142,7 +142,7 @@ void JSHTMLBaseElement::finalizer(JSRuntime* rt, JSValue val)
     HTMLBaseElement* impl = (HTMLBaseElement*)JS_GetOpaque(val, JSNode::js_class_id);
     if (!impl)
         return;
-    ScriptInterpreter::forgetDOMObject(impl);
+    ScriptInterpreter::forgetDOMNodeForDocument(impl->document(), impl);
     impl->deref();
 }
 

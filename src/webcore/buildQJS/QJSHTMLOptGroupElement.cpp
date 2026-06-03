@@ -142,7 +142,7 @@ void JSHTMLOptGroupElement::finalizer(JSRuntime* rt, JSValue val)
     HTMLOptGroupElement* impl = (HTMLOptGroupElement*)JS_GetOpaque(val, JSNode::js_class_id);
     if (!impl)
         return;
-    ScriptInterpreter::forgetDOMObject(impl);
+    ScriptInterpreter::forgetDOMNodeForDocument(impl->document(), impl);
     impl->deref();
 }
 

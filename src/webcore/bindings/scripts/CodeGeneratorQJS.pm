@@ -147,6 +147,8 @@ sub IsNodeSubclass
     return 1 if $name eq "EntityReference";
     return 1 if $name eq "Notation";
     return 1 if $name eq "ProcessingInstruction";
+    # HTML*Element types are Node subclasses, but HTML collections are not.
+    return 0 if $name eq "HTMLCollection" or $name eq "HTMLOptionsCollection";
     return 1 if $name =~ /^HTML/;
     return 0;
 }
@@ -894,7 +896,7 @@ sub GenerateImplementation
     push(@implContent, "    if (!impl)\n");
     push(@implContent, "        return;\n");
 
-    if ($interfaceName eq "Node") {
+    if ($object->IsNodeSubclass($dataNode)) {
         push(@implContent, "    ScriptInterpreter::forgetDOMNodeForDocument(impl->document(), impl);\n");
     } else {
         if ($podType) {

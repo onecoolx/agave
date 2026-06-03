@@ -113,13 +113,13 @@ JSValue JSHTMLDocument::open(JSContext *ctx, JSValueConst this_val, int argc, JS
             }
         }
         /* Fix a bug about the return value of document.open method. The original return value is jsUndefined().*/
-        return this_val;
+        return JS_DupValue(ctx, this_val);
     }
 
     // In the case of two parameters or fewer, do a normal document open.
     impl->open();
     /* Fix a bug about the return value of document.open method. The original return value is jsUndefined().*/
-    return this_val;
+    return JS_DupValue(ctx, this_val);
 }
 
 static String writeHelper(JSContext *ctx, int argc, JSValueConst *argv)

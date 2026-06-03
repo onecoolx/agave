@@ -226,7 +226,7 @@ void ScriptInterpreter::putDOMObject(void* objectHandle, JSValue obj)
 {
     if (!domObjects())
         return;
-    domObjects()->set(objectHandle, JS_DupValueRT(GLOBAL()->runtime, obj));
+    domObjects()->set(objectHandle, obj);
 }
 
 void ScriptInterpreter::forgetDOMObject(void* objectHandle)
@@ -270,11 +270,10 @@ void ScriptInterpreter::forgetDOMNodeForDocument(Document* document, Node* node)
 
 void ScriptInterpreter::putDOMNodeForDocument(Document* document, Node* node, JSValue obj)
 {
-    JSRuntime* rt = GLOBAL()->runtime;
     if (!document) {
         if (!domObjects())
             return;
-        domObjects()->set(node, JS_DupValueRT(rt, obj));
+        domObjects()->set(node, obj);
         return;
     }
     if (!domNodesPerDocument())
@@ -284,7 +283,7 @@ void ScriptInterpreter::putDOMNodeForDocument(Document* document, Node* node, JS
         documentDict = new NodeMap;
         domNodesPerDocument()->set(document, documentDict);
     }
-    documentDict->set(node, JS_DupValueRT(rt, obj));
+    documentDict->set(node, obj);
 }
 
 void ScriptInterpreter::forgetAllDOMNodesForDocument(Document* document)

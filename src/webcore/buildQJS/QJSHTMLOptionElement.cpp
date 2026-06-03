@@ -150,7 +150,7 @@ void JSHTMLOptionElement::finalizer(JSRuntime* rt, JSValue val)
     HTMLOptionElement* impl = (HTMLOptionElement*)JS_GetOpaque(val, JSNode::js_class_id);
     if (!impl)
         return;
-    ScriptInterpreter::forgetDOMObject(impl);
+    ScriptInterpreter::forgetDOMNodeForDocument(impl->document(), impl);
     impl->deref();
 }
 

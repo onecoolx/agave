@@ -201,6 +201,7 @@ void JSHTMLCollection::init(JSContext* ctx)
         init_JSHTMLCollectionClassDefine();
         JS_NewClassID(&JSHTMLCollection::js_class_id);
         JS_NewClass(JS_GetRuntime(ctx), JSHTMLCollection::js_class_id, &JSHTMLCollectionClassDefine);
+        JS_SetConstructor(ctx, JSHTMLCollectionConstructor::self(ctx), JSHTMLCollectionPrototype::self(ctx));
         JS_SetClassProto(ctx, JSHTMLCollection::js_class_id, JSHTMLCollectionPrototype::self(ctx));
     }
 }
