@@ -38,6 +38,14 @@ void WebView::create(int vw, int vh)
     cb.cb_set_location = s_url;
     macross_set_callback(&cb);
 
+    /* Tile-buffer mode scrolls the whole page itself; the engine must not draw
+       its own scrollbars (they would smear across the tile buffer). */
+    MC_CONFIG config;
+    if (macross_get_config(&config)) {
+        config.scrollbar_width = 0;
+        macross_set_config(&config);
+    }
+
     MC_SIZE lsize = {vw, vh};
     m_view = macross_view_create(m_buffer, TILE_BUF_W, TILE_BUF_H, TILE_BUF_W * 4, this);
     macross_view_set_minimum_layout_size(m_view, &lsize);
