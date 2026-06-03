@@ -64,8 +64,10 @@ GCController::GCController(JSRuntime* runtime)
 
 void GCController::garbageCollectSoon()
 {
-    // GC cycle detection disabled - incompatible with DOM cache strong references.
-    // Cyclic JS objects are freed when JS_FreeContext destroys the context.
+    // No-op: QuickJS cycle GC is disabled (see _global_initialize). The ported
+    // DOM gc_mark functions don't follow QuickJS's gc_decref protocol, and the
+    // weak-reference cache makes GC unnecessary. Cyclic JS garbage is freed when
+    // JS_FreeContext destroys the context.
 }
 
 void GCController::gcTimerFired(Timer<GCController>*)

@@ -141,6 +141,13 @@ bool _global_initialize(void)
     if (_globalData.runtime)
         return true;
     _globalData.runtime = JS_NewRuntime2(&qjs_malloc_funcs, NULL);
+    // Disable QuickJS cycle-collecting GC. The DOM wrappers' gc_mark functions
+    // were ported from KJS's mark-sweep semantics (they mark the wrapper itself),
+    // which is incompatible with QuickJS's gc_decref protocol (mark must only
+    // visit child references) and trips its assertions. The weak-reference DOM
+    // cache needs no GC anyway: reference counting reclaims every non-cyclic
+    // object, and any JS-level reference cycles are freed when JS_FreeContext
+    // tears the context down. So GC is both unsafe (mark mismatch) and unneeded.
     JS_SetGCThreshold(_globalData.runtime, (size_t)-1);
     _globalData.utilContext = JS_NewContext(_globalData.runtime);
     _globalData.domObjects = new DOMObjectMap;
@@ -197,13 +204,12 @@ void _global_shutdown(void)
         _globalData.jsValWindows = 0;
     }
 
-    // Release DOM cache DupValue references. Only FreeValue if refcount > 1
-    // to avoid triggering recursive free that corrupts gc_obj_list.
-    // Objects with refcount == 1 will be freed by JS_FreeRuntime's JS_RunGC.
+    // Weak-reference DOM cache: the maps store raw JSValues without holding any
+    // refcount, so tearing them down is just deleting the containers. The wrapper
+    // objects themselves are owned by JS references and reclaimed by JS_FreeRuntime.
     if (_globalData.domObjects) {
         DOMObjectMap* objs = _globalData.domObjects;
         _globalData.domObjects = 0;
-        // domObjects handled by JS_FreeRuntime
         delete objs;
     }
 

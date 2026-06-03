@@ -161,11 +161,11 @@ JSValue JSXMLHttpRequest::getValueProperty(JSContext * ctx, JSValueConst this_va
         }
         case JSXMLHttpRequest::Onreadystatechange:
             if (JSUnprotectedEventListener* listener = static_cast<JSUnprotectedEventListener*>(imp->onReadyStateChangeListener()))
-                return listener->listenerObj();
+                return JS_DupValue(ctx, listener->listenerObj());
             return JS_NULL;
         case JSXMLHttpRequest::Onload:
             if (JSUnprotectedEventListener* listener = static_cast<JSUnprotectedEventListener*>(imp->onLoadListener()))
-                return listener->listenerObj();
+                return JS_DupValue(ctx, listener->listenerObj());
             return JS_NULL;
         default:
             return JS_NULL;

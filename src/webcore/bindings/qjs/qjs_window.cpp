@@ -299,7 +299,9 @@ JSValue Window::location(JSContext* ctx) const
     if (JS_IsNull(d->loc)) {
         d->loc = Location::create(ctx, impl()->frame());
     }
-    return d->loc;
+    // d->loc keeps a strong reference (the cached singleton); hand the caller its
+    // own reference per the QuickJS return-value ownership contract.
+    return JS_DupValue(ctx, d->loc);
 }
 
 void Window::mark(JSRuntime *rt)
@@ -1041,7 +1043,7 @@ JSValue Window::getListener(JSContext *ctx, const AtomicString &eventType) const
     if (listener) {
         JSValue obj = static_cast<JSEventListener*>(listener)->listenerObj();
         if (!JS_IsNull(obj) && !JS_IsUndefined(obj))
-            return obj;
+            return JS_DupValue(ctx, obj);
     }
     return JS_NULL;
 }
