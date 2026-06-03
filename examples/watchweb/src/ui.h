@@ -5,6 +5,7 @@
 #define _WATCHWEB_UI_H_
 
 #include "config.h"
+#include <stdint.h>
 #include "lvgl.h"
 
 class WebView;
@@ -37,6 +38,7 @@ private:
 
     lv_obj_t* m_bg;
     lv_obj_t* m_canvas_img;
+    uint8_t* m_canvas_buf;
     lv_obj_t* m_progress;
     lv_obj_t* m_nav_bar; /* bottom pop-up navigation panel */
     lv_obj_t* m_fab; /* floating toggle icon */

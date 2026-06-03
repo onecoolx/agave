@@ -8,13 +8,17 @@
 #include "webview.h"
 
 WatchUI::WatchUI()
-    : m_bg(nullptr), m_canvas_img(nullptr), m_progress(nullptr)
+    : m_bg(nullptr), m_canvas_img(nullptr), m_canvas_buf(nullptr)
+    , m_progress(nullptr)
     , m_nav_bar(nullptr), m_fab(nullptr), m_wv(nullptr)
     , m_tx(0), m_ty(0), m_dragging(false), m_nav_visible(false)
 {
 }
 
-WatchUI::~WatchUI() {}
+WatchUI::~WatchUI()
+{
+    if (m_canvas_buf) { free(m_canvas_buf); m_canvas_buf = nullptr; }
+}
 
 void WatchUI::create(WebView* wv)
 {
@@ -46,9 +50,10 @@ void WatchUI::createCanvas()
     lv_obj_set_size(m_canvas_img, CONTENT_WIDTH, CONTENT_HEIGHT);
     lv_obj_add_flag(m_canvas_img, LV_OBJ_FLAG_CLICKABLE);
 
-    static uint8_t* canvas_buf = (uint8_t*)malloc(CONTENT_WIDTH * CONTENT_HEIGHT * 4);
-    memset(canvas_buf, 0xFF, CONTENT_WIDTH * CONTENT_HEIGHT * 4);
-    lv_canvas_set_buffer(m_canvas_img, canvas_buf, CONTENT_WIDTH, CONTENT_HEIGHT, LV_COLOR_FORMAT_ARGB8888);
+    m_canvas_buf = (uint8_t*)malloc(CONTENT_WIDTH * CONTENT_HEIGHT * 4);
+    if (!m_canvas_buf) { return; }
+    memset(m_canvas_buf, 0xFF, CONTENT_WIDTH * CONTENT_HEIGHT * 4);
+    lv_canvas_set_buffer(m_canvas_img, m_canvas_buf, CONTENT_WIDTH, CONTENT_HEIGHT, LV_COLOR_FORMAT_ARGB8888);
 
     lv_obj_add_event_cb(m_canvas_img, on_canvas_press, LV_EVENT_PRESSED, this);
     lv_obj_add_event_cb(m_canvas_img, on_canvas_move, LV_EVENT_PRESSING, this);
