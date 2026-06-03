@@ -178,8 +178,12 @@ void WebView::mouseRelease(int x, int y)
 /* Static callbacks */
 void WebView::s_dirty(MaCrossView* v, const MC_RECT* r)
 {
-    WebView* self = (WebView*)macross_view_additional_data(v);
-    if (self->m_on_update) { self->m_on_update(self->m_ud); }
+    /* cb_invalidate_rect only marks a region dirty (like Qt's QWidget::update);
+       it can fire while the engine's layout is still pending. We must NOT paint
+       here, or paintView() would call RenderView::paint() with needsLayout()
+       true and hit its assertion. The actual paint is driven by
+       cb_update_view_now (s_update), which the engine sends once it is safe to
+       flush drawing (after layout). This mirrors the touchweb/Qt model. */
 }
 void WebView::s_update(MaCrossView* v)
 {
