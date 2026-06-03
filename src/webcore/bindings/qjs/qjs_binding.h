@@ -98,6 +98,16 @@ namespace QJS {
         WebCore::Frame* m_frame;
         WebCore::Event* m_currentEvent;
         bool m_timerCallback;
+
+    public:
+        // Strong reference to the document wrapper, keyed by the current
+        // Document*. Under the weak-reference cache the document wrapper has no
+        // persistent JS owner, so plain `document` access would rebuild it every
+        // time (churn). Holding one strong ref here pins it for the page lifetime
+        // (mirrors KJS Window::mark keeping the document alive), and re-validating
+        // m_documentPtr handles document replacement (e.g. document.open).
+        WebCore::Document* m_documentPtr;
+        JSValue m_documentWrapper;
     };
 
     /**

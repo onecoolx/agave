@@ -63,6 +63,14 @@ ScriptController::~ScriptController()
 {
     if (m_script) {
         JS_SetContextOpaque(m_context, 0);
+
+        // Release the pinned document wrapper while the context is still valid.
+        if (!JS_IsUndefined(m_script->m_documentWrapper)) {
+            JS_FreeValue(m_context, m_script->m_documentWrapper);
+            m_script->m_documentWrapper = JS_UNDEFINED;
+            m_script->m_documentPtr = 0;
+        }
+
         m_script = 0;
 
         // Release DOM cache first - detach C++ pointers from JS wrappers
@@ -228,7 +236,20 @@ static JSValue js_get_document(JSContext *ctx, JSValueConst this_val, int argc, 
     QJS::ScriptInterpreter* interp = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx);
     if (!interp || !interp->frame() || !interp->frame()->domWindow())
         return JS_UNDEFINED;
-    WebCore::Document* doc = interp->frame()->domWindow()->document(); return doc ? toJS(ctx, static_cast<WebCore::Node*>(doc)) : JS_NULL;
+    WebCore::Document* doc = interp->frame()->domWindow()->document();
+    if (!doc)
+        return JS_NULL;
+    // Reuse the pinned wrapper unless the document was replaced (document.open,
+    // navigation). This keeps the wrapper alive for the page lifetime and avoids
+    // rebuilding it on every `document` access under the weak-reference cache.
+    if (interp->m_documentPtr == doc && JS_VALUE_GET_TAG(interp->m_documentWrapper) == JS_TAG_OBJECT)
+        return JS_DupValue(ctx, interp->m_documentWrapper);
+    if (!JS_IsUndefined(interp->m_documentWrapper))
+        JS_FreeValue(ctx, interp->m_documentWrapper);
+    JSValue wrapper = toJS(ctx, static_cast<WebCore::Node*>(doc));
+    interp->m_documentPtr = doc;
+    interp->m_documentWrapper = JS_DupValue(ctx, wrapper);
+    return wrapper;
 }
 
 void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global)

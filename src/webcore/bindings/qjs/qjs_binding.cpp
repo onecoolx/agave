@@ -212,6 +212,8 @@ ScriptInterpreter::ScriptInterpreter(JSContext* ctx, JSValue global, Frame* fram
     , m_frame(frame)
     , m_currentEvent(0)
     , m_timerCallback(false)
+    , m_documentPtr(0)
+    , m_documentWrapper(JS_UNDEFINED)
 {
 }
 
