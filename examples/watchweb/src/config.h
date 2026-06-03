@@ -9,23 +9,24 @@
 #define SCREEN_HEIGHT   480
 #define SCREEN_RADIUS   240
 
-/* Content area (inscribed usable rect in circle) */
-#define CONTENT_INSET   40
-#define CONTENT_TOP     56
-#define CONTENT_WIDTH   (SCREEN_WIDTH - 2 * CONTENT_INSET)
-#define CONTENT_HEIGHT  (SCREEN_HEIGHT - CONTENT_TOP - CONTENT_INSET - 50)
+/* Content area - full screen (the round display clips corners itself) */
+#define CONTENT_INSET   0
+#define CONTENT_TOP     0
+#define CONTENT_WIDTH   SCREEN_WIDTH
+#define CONTENT_HEIGHT  SCREEN_HEIGHT
 
 /* Tile buffer (2x width, 3x height for smooth scrolling) */
 #define TILE_BUF_W      (CONTENT_WIDTH * 2)
 #define TILE_BUF_H      (CONTENT_HEIGHT * 3)
 
 /* UI metrics */
-#define ADDR_BAR_H      40
-#define ADDR_BAR_Y      6
-#define ADDR_BAR_X      70
-#define ADDR_BAR_W      (SCREEN_WIDTH - 2 * ADDR_BAR_X)
-#define NAV_BTN_SIZE    36
-#define PROGRESS_WIDTH  3
+#define NAV_BTN_SIZE    56
+#define PROGRESS_WIDTH  4
+/* Floating toggle icon at bottom-center */
+#define FAB_SIZE        40
+#define FAB_MARGIN      8
+/* Bottom navigation panel (slides up from bottom) */
+#define NAV_BAR_H       88
 
 /* Zoom */
 #define DEFAULT_ZOOM    1.5f

@@ -49,7 +49,6 @@ int main(int argc, char** argv)
 
     const char* url = (argc > 1) ? argv[1] : "about:blank";
     g_webview->loadUrl(url);
-    g_ui->updateUrl(url);
 
     bool running = true;
     while (running) {
@@ -76,7 +75,6 @@ int main(int argc, char** argv)
         if (g_state_dirty) {
             g_state_dirty = false;
             g_ui->updateProgress(g_webview->progress(), g_webview->isLoading());
-            g_ui->updateUrl(g_webview->url());
         }
 
         uint32_t ms = lv_timer_handler();
