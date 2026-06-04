@@ -75,12 +75,58 @@ RenderObject 子类 / CSS 属性 / 独立模块（可补），还是需要改渲
 
 **目标**：解决"现代页面布局错乱"这个最大兼容性痛点。
 
-1. **现代 Flexbox**（~5k 行）
+1. **现代 Flexbox**（~7-8k 行，详细评估见下）
    - 在现有 RenderBlock/RenderStyle 框架上**重新实现** flex 布局算法（参考 CSS Flexbox 规范，
      写适配 Agave 老框架的代码，**不移植现代 WebKit 代码**——避免依赖级联）
    - 加 flex 相关 CSS 属性到 CSSPropertyNames（现 211 个属性）
    - 改动点：rendering/RenderFlexibleBox.cpp、css/CSSStyleSelector.cpp、rendering/style/RenderStyle.h
    - **作为分叉路线的试金石**：验证"在老架构上补现代布局"是否走得通
+
+#### Flexbox 详细工作量评估（第一里程碑）
+
+**现状基线（已查证 commit 21fe09f8）**：
+- RenderFlexibleBox 现有 **1148 行老式 `-webkit-box`**（2009 草案）：
+  layoutHorizontalBox 342 行 + layoutVerticalBox 409 行 + flex 分配
+- 老式 CSS 属性齐全（box-orient/flex/align/pack/direction）
+- **现代 flex 属性全部缺失**（flex-grow/shrink/basis、justify-content、
+  align-items/self/content、flex-wrap、flex-direction、order）
+- 关键结论：老式 box 与现代 flex 是**算法模型本质不同**（老式=单行+整数权重+无wrap；
+  现代=grow/shrink/basis三元+多行wrap+双轴对齐+order）。**属算法重写，非改造**，
+  但可复用老式 box 的脚手架（calcPrefWidths 框架、placeChild、水平/垂直分派、与 RenderBlock 集成）。
+
+**工作分解（WBS）**：
+
+| # | 任务 | 代码量 | 估算 |
+|---|------|--------|------|
+| 1 | CSS 属性接入（CSSPropertyNames + CSSParser 解析 + 值映射） | ~1.5-2k | 3-5 天 |
+| 2 | RenderStyle 承载（StyleFlexibleBoxData 现代字段 + 枚举 + inherit/diff） | ~1-1.5k | 2-4 天 |
+| 3 | CSSStyleSelector 应用（属性→RenderStyle） | ~0.5-1k | 2-3 天 |
+| 4 | **核心布局算法**（main 轴 grow/shrink/basis 分配 + cross 轴对齐 + 多行 wrap + align-content + auto margin + order） | ~3-4k | 3-5 周 |
+| 5 | pref widths（flex 容器 min/max-content 固有尺寸） | ~0.5-1k | 3-5 天 |
+| 6 | 测试 + 调试（flex 测试页、对照浏览器、嵌套/百分比/min-max 边界） | — | 2-3 周 |
+
+**时间估算（单人全职）**：
+
+| 口径 | 代码量 | 工时 |
+|------|--------|------|
+| 乐观（熟悉 WebKit+规范，无意外） | ~6k | 5-6 周 |
+| **现实（含调试/边界/架构磨合）** | ~7-8k | **8-10 周（2-2.5 月）** |
+| 保守（架构磨合困难/规范坑） | ~9k | 12-14 周（3 月+） |
+
+**建议的里程碑切分（降风险、早验证）**：
+- **里程碑 1a（4-5 周）**：单行 flex 核心——flex-direction(row/column) + grow/shrink/basis
+  + justify-content + align-items。**覆盖约 80% 真实页面 flex 用法**，且验证
+  "老架构能否承载现代布局"这一关键问题。
+- **里程碑 1b（3-4 周）**：补全——flex-wrap 多行 + align-content + order + auto margin + 边界完善。
+
+**关键风险（决定落在哪个区间）**：
+1. **与老架构磨合（最大变量）**：现代 flex 依赖的尺寸协商（definite/indefinite、
+   min-content/max-content 传播）在 2007 年 RenderBlock 框架里**可能不完整**。
+   若 calcWidth/calcHeight 协议不支持，需先补这层基础设施 → 工期往保守端走。
+   **这是第一里程碑作为试金石的核心验证点，只能动手 1a 才能消除该不确定性。**
+2. **嵌套 flex + 百分比尺寸**：规范最复杂、bug 最多处，调试耗时。
+3. **规范范围控制**：第一里程碑应砍低频特性（order/align-content 后置），聚焦高频，
+   把现实估算压到 6-8 周。
 
 2. **CSS Grid**（~10k 行）
    - 新增 RenderGrid : RenderBlock，实现 layout()
@@ -166,14 +212,16 @@ JS 绑定 UAF、整数溢出、DOM 生命周期错误等。**分叉切断了上�
 
 | 阶段 | 内容 | 代码量 | 估算 |
 |------|------|--------|------|
-| 阶段 1 | 现代 Flexbox + CSS Grid | ~15k | 4-6 人月 |
+| 阶段 1 | 现代 Flexbox（7-8k, 2-2.5月）+ CSS Grid（~10k） | ~18k | 5-7 人月 |
 | 阶段 2 | CSS3 视觉 + 选择器 | ~5k | 2-3 人月 |
 | 阶段 3 | localStorage/Fetch/WebSocket/表单 | ~15k | 4-6 人月 |
 | 安全 | 审计 + 加固 + CVE 排查（并行） | — | 持续 |
-| **合计** | 类别 A 全集 | **~30-40k 行** | **~1-1.5 人年** |
+| **合计** | 类别 A 全集 | **~35-40k 行** | **~1.5 人年** |
 
-**最小可行起点**：只做阶段 1 的 Flexbox（~5k 行），即可显著改善现代页面兼容性，
-并验证整条分叉路线的可行性。建议以此为第一里程碑。
+**最小可行起点（第一里程碑）**：阶段 1 的 **Flexbox 里程碑 1a**（单行 flex 核心：
+flex-direction + grow/shrink/basis + justify-content + align-items，~4-5k 行，**4-5 周**）。
+它覆盖约 80% 真实页面的 flex 用法，且是验证"老架构能否承载现代布局"这一关键问题的
+最小试金石。跑通 1a 后再决定是否继续 1b 及后续阶段。详见阶段 1 的 Flexbox 详细评估。
 
 ---
 
@@ -184,7 +232,7 @@ JS 绑定 UAF、整数溢出、DOM 生命周期错误等。**分叉切断了上�
 1. **生态位验证**：是否存在具体的"无 GPU + 中端内存 + 可信内容渲染"设备品类有真实需求？
    （这是整个路线的前提，找不到则应转为纯技术储备定位）
 2. **资源承诺**：是否有 ~1 人年的持续开发投入？安全是长期负担。
-3. **第一里程碑**：先做 Flexbox，跑通后再评估是否继续后续阶段。
+3. **第一里程碑**：先做 Flexbox 里程碑 1a（单行 flex，4-5 周），跑通后再评估是否继续 1b 及后续阶段。
 
 ---
 
