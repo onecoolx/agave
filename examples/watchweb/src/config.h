@@ -22,13 +22,16 @@
 #define TILE_BUF_H      (CONTENT_HEIGHT * 3)
 
 /* UI metrics */
-#define NAV_BTN_SIZE    56
+#define NAV_BTN_SIZE    72
 #define PROGRESS_WIDTH  4
 /* Floating toggle icon at bottom-center */
 #define FAB_SIZE        40
 #define FAB_MARGIN      8
-/* Bottom navigation panel (slides up from bottom) */
-#define NAV_BAR_H       88
+/* Overlay button grid: kept inside the round display's safe (inscribed) area */
+#define GRID_COLS       3
+#define GRID_ROWS       2
+#define GRID_HGAP       16
+#define GRID_VGAP       20
 
 /* Zoom (1.0 = render the 480px-wide layout 1:1; user may zoom in for detail) */
 #define DEFAULT_ZOOM    1.0f

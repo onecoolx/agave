@@ -24,9 +24,11 @@ private:
     void createBackground();
     void createCanvas();
     void createProgress();
-    void createNavBar();
+    void createToolLayer();
+    void createAddrLayer();
     void createFab();
-    void setNavVisible(bool visible);
+    void showToolLayer(bool show);
+    void showAddrLayer(bool show);
 
     static void on_canvas_press(lv_event_t* e);
     static void on_canvas_move(lv_event_t* e);
@@ -35,17 +37,24 @@ private:
     static void on_back(lv_event_t* e);
     static void on_fwd(lv_event_t* e);
     static void on_refresh(lv_event_t* e);
+    static void on_settings(lv_event_t* e);
+    static void on_close_tool(lv_event_t* e);
+    static void on_open_addr(lv_event_t* e);
+    static void on_addr_go(lv_event_t* e);
+    static void on_addr_cancel(lv_event_t* e);
 
     lv_obj_t* m_bg;
     lv_obj_t* m_canvas_img;
     uint8_t* m_canvas_buf;
     lv_obj_t* m_progress;
-    lv_obj_t* m_nav_bar; /* bottom pop-up navigation panel */
+    lv_obj_t* m_tool_layer; /* full-screen translucent toolbar overlay */
+    lv_obj_t* m_addr_layer; /* full-screen translucent URL-input overlay */
+    lv_obj_t* m_addr_ta; /* URL text area */
+    lv_obj_t* m_addr_kb; /* on-screen keyboard */
     lv_obj_t* m_fab; /* floating toggle icon */
     WebView* m_wv;
     int m_tx, m_ty;
     bool m_dragging;
-    bool m_nav_visible;
 };
 
 #endif

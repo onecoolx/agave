@@ -10,8 +10,9 @@
 WatchUI::WatchUI()
     : m_bg(nullptr), m_canvas_img(nullptr), m_canvas_buf(nullptr)
     , m_progress(nullptr)
-    , m_nav_bar(nullptr), m_fab(nullptr), m_wv(nullptr)
-    , m_tx(0), m_ty(0), m_dragging(false), m_nav_visible(false)
+    , m_tool_layer(nullptr), m_addr_layer(nullptr)
+    , m_addr_ta(nullptr), m_addr_kb(nullptr), m_fab(nullptr), m_wv(nullptr)
+    , m_tx(0), m_ty(0), m_dragging(false)
 {
 }
 
@@ -26,7 +27,8 @@ void WatchUI::create(WebView* wv)
     createBackground();
     createCanvas();
     createProgress();
-    createNavBar();
+    createToolLayer();
+    createAddrLayer();
     createFab();
 }
 
@@ -77,45 +79,114 @@ void WatchUI::createProgress()
     lv_obj_add_flag(m_progress, LV_OBJ_FLAG_HIDDEN);
 }
 
-void WatchUI::createNavBar()
+/* Helper: make a round icon button on a parent at (x,y). */
+static lv_obj_t* make_icon_btn(lv_obj_t* parent, int x, int y, int size,
+                               const char* icon, lv_color_t bg,
+                               lv_event_cb_t cb, void* ud)
 {
-    /* Bottom panel that slides up when the FAB is tapped. Hidden by default. */
-    m_nav_bar = lv_obj_create(m_bg);
-    lv_obj_set_size(m_nav_bar, SCREEN_WIDTH, NAV_BAR_H);
-    lv_obj_set_pos(m_nav_bar, 0, SCREEN_HEIGHT); /* off-screen (hidden) */
-    lv_obj_set_style_radius(m_nav_bar, 0, 0);
-    lv_obj_set_style_bg_color(m_nav_bar, lv_color_make(30, 30, 30), 0);
-    lv_obj_set_style_bg_opa(m_nav_bar, LV_OPA_90, 0);
-    lv_obj_set_style_border_width(m_nav_bar, 0, 0);
-    lv_obj_set_style_pad_all(m_nav_bar, 0, 0);
-    lv_obj_clear_flag(m_nav_bar, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_t* btn = lv_button_create(parent);
+    lv_obj_set_size(btn, size, size);
+    lv_obj_set_pos(btn, x, y);
+    lv_obj_set_style_radius(btn, size / 2, 0);
+    lv_obj_set_style_bg_color(btn, bg, 0);
+    lv_obj_set_style_bg_color(btn, lv_color_lighten(bg, 40), LV_STATE_PRESSED);
+    lv_obj_t* lbl = lv_label_create(btn);
+    lv_label_set_text(lbl, icon);
+    lv_obj_set_style_text_color(lbl, lv_color_white(), 0);
+    lv_obj_center(lbl);
+    lv_obj_add_event_cb(btn, cb, LV_EVENT_CLICKED, ud);
+    return btn;
+}
 
-    int cx = SCREEN_WIDTH / 2;
-    int y = (NAV_BAR_H - NAV_BTN_SIZE) / 2;
-    int gap = NAV_BTN_SIZE + 40;
+void WatchUI::createToolLayer()
+{
+    /* Full-screen translucent overlay holding the navigation buttons. The
+       buttons sit in a centered 2x3 grid so they stay inside the round
+       display's inscribed safe area. Hidden by default. */
+    m_tool_layer = lv_obj_create(m_bg);
+    lv_obj_set_size(m_tool_layer, SCREEN_WIDTH, SCREEN_HEIGHT);
+    lv_obj_set_pos(m_tool_layer, 0, 0);
+    lv_obj_set_style_radius(m_tool_layer, 0, 0);
+    lv_obj_set_style_bg_color(m_tool_layer, lv_color_black(), 0);
+    lv_obj_set_style_bg_opa(m_tool_layer, LV_OPA_70, 0);
+    lv_obj_set_style_border_width(m_tool_layer, 0, 0);
+    lv_obj_set_style_pad_all(m_tool_layer, 0, 0);
+    lv_obj_clear_flag(m_tool_layer, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(m_tool_layer, LV_OBJ_FLAG_HIDDEN);
 
-    auto make_btn = [&](int x, const char* icon, lv_event_cb_t cb) {
-        lv_obj_t* btn = lv_button_create(m_nav_bar);
-        lv_obj_set_size(btn, NAV_BTN_SIZE, NAV_BTN_SIZE);
-        lv_obj_set_pos(btn, x - NAV_BTN_SIZE / 2, y);
-        lv_obj_set_style_radius(btn, NAV_BTN_SIZE / 2, 0);
-        lv_obj_set_style_bg_color(btn, lv_color_make(60, 60, 60), 0);
-        lv_obj_set_style_bg_color(btn, lv_color_make(90, 90, 90), LV_STATE_PRESSED);
-        lv_obj_t* lbl = lv_label_create(btn);
-        lv_label_set_text(lbl, icon);
-        lv_obj_set_style_text_color(lbl, lv_color_white(), 0);
-        lv_obj_center(lbl);
-        lv_obj_add_event_cb(btn, cb, LV_EVENT_CLICKED, this);
-    };
+    int gw = GRID_COLS * NAV_BTN_SIZE + (GRID_COLS - 1) * GRID_HGAP;
+    int gh = GRID_ROWS * NAV_BTN_SIZE + (GRID_ROWS - 1) * GRID_VGAP;
+    int x0 = (SCREEN_WIDTH - gw) / 2;
+    int y0 = (SCREEN_HEIGHT - gh) / 2;
+    int dx = NAV_BTN_SIZE + GRID_HGAP;
+    int dy = NAV_BTN_SIZE + GRID_VGAP;
 
-    make_btn(cx - gap, LV_SYMBOL_LEFT, on_back);
-    make_btn(cx, LV_SYMBOL_REFRESH, on_refresh);
-    make_btn(cx + gap, LV_SYMBOL_RIGHT, on_fwd);
+    lv_color_t nav = lv_color_make(60, 60, 60);
+    lv_color_t act = lv_color_make(0, 110, 200);
+    lv_color_t red = lv_color_make(150, 50, 50);
+
+    /* Row 0: back, forward, refresh */
+    make_icon_btn(m_tool_layer, x0, y0, NAV_BTN_SIZE, LV_SYMBOL_LEFT, nav, on_back, this);
+    make_icon_btn(m_tool_layer, x0 + dx, y0, NAV_BTN_SIZE, LV_SYMBOL_RIGHT, nav, on_fwd, this);
+    make_icon_btn(m_tool_layer, x0 + 2 * dx, y0, NAV_BTN_SIZE, LV_SYMBOL_REFRESH, nav, on_refresh, this);
+    /* Row 1: URL (globe), settings, close */
+    make_icon_btn(m_tool_layer, x0, y0 + dy, NAV_BTN_SIZE, LV_SYMBOL_GPS, act, on_open_addr, this);
+    make_icon_btn(m_tool_layer, x0 + dx, y0 + dy, NAV_BTN_SIZE, LV_SYMBOL_SETTINGS, nav, on_settings, this);
+    make_icon_btn(m_tool_layer, x0 + 2 * dx, y0 + dy, NAV_BTN_SIZE, LV_SYMBOL_CLOSE, red, on_close_tool, this);
+}
+
+void WatchUI::createAddrLayer()
+{
+    /* Full-screen translucent overlay for URL input. Hidden by default. */
+    m_addr_layer = lv_obj_create(m_bg);
+    lv_obj_set_size(m_addr_layer, SCREEN_WIDTH, SCREEN_HEIGHT);
+    lv_obj_set_pos(m_addr_layer, 0, 0);
+    lv_obj_set_style_radius(m_addr_layer, 0, 0);
+    lv_obj_set_style_bg_color(m_addr_layer, lv_color_black(), 0);
+    lv_obj_set_style_bg_opa(m_addr_layer, LV_OPA_80, 0);
+    lv_obj_set_style_border_width(m_addr_layer, 0, 0);
+    lv_obj_set_style_pad_all(m_addr_layer, 0, 0);
+    lv_obj_clear_flag(m_addr_layer, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_flag(m_addr_layer, LV_OBJ_FLAG_HIDDEN);
+
+    /* URL text area near the top (above the keyboard). */
+    m_addr_ta = lv_textarea_create(m_addr_layer);
+    lv_textarea_set_one_line(m_addr_ta, true);
+    lv_textarea_set_placeholder_text(m_addr_ta, "Enter URL");
+    lv_obj_set_size(m_addr_ta, SCREEN_WIDTH - 80, 44);
+    lv_obj_set_pos(m_addr_ta, 40, 40);
+    lv_obj_set_style_text_font(m_addr_ta, &lv_font_montserrat_14, 0);
+
+    /* Go / Cancel buttons below the text area. */
+    int bw = 110, bh = 44, by = 96;
+    lv_obj_t* go = lv_button_create(m_addr_layer);
+    lv_obj_set_size(go, bw, bh);
+    lv_obj_set_pos(go, SCREEN_WIDTH / 2 - bw - 8, by);
+    lv_obj_set_style_bg_color(go, lv_color_make(0, 110, 200), 0);
+    lv_obj_t* gl = lv_label_create(go);
+    lv_label_set_text(gl, LV_SYMBOL_OK " Go");
+    lv_obj_center(gl);
+    lv_obj_add_event_cb(go, on_addr_go, LV_EVENT_CLICKED, this);
+
+    lv_obj_t* cancel = lv_button_create(m_addr_layer);
+    lv_obj_set_size(cancel, bw, bh);
+    lv_obj_set_pos(cancel, SCREEN_WIDTH / 2 + 8, by);
+    lv_obj_set_style_bg_color(cancel, lv_color_make(80, 80, 80), 0);
+    lv_obj_t* cl = lv_label_create(cancel);
+    lv_label_set_text(cl, LV_SYMBOL_CLOSE " Cancel");
+    lv_obj_center(cl);
+    lv_obj_add_event_cb(cancel, on_addr_cancel, LV_EVENT_CLICKED, this);
+
+    /* On-screen keyboard occupying the lower half. */
+    m_addr_kb = lv_keyboard_create(m_addr_layer);
+    lv_obj_set_size(m_addr_kb, SCREEN_WIDTH, SCREEN_HEIGHT / 2);
+    lv_obj_align(m_addr_kb, LV_ALIGN_BOTTOM_MID, 0, 0);
+    lv_keyboard_set_textarea(m_addr_kb, m_addr_ta);
 }
 
 void WatchUI::createFab()
 {
-    /* Small floating toggle at the bottom-center; tapping shows/hides nav. */
+    /* Small floating toggle at the bottom-center; tapping opens the tool layer. */
     m_fab = lv_button_create(m_bg);
     lv_obj_set_size(m_fab, FAB_SIZE, FAB_SIZE);
     lv_obj_set_pos(m_fab, (SCREEN_WIDTH - FAB_SIZE) / 2,
@@ -125,22 +196,32 @@ void WatchUI::createFab()
     lv_obj_set_style_bg_opa(m_fab, LV_OPA_70, 0);
     lv_obj_set_style_bg_color(m_fab, lv_color_make(0, 110, 200), LV_STATE_PRESSED);
     lv_obj_t* lbl = lv_label_create(m_fab);
-    lv_label_set_text(lbl, LV_SYMBOL_UP);
+    lv_label_set_text(lbl, LV_SYMBOL_BARS);
     lv_obj_set_style_text_color(lbl, lv_color_white(), 0);
     lv_obj_center(lbl);
     lv_obj_add_event_cb(m_fab, on_fab, LV_EVENT_CLICKED, this);
 }
 
-void WatchUI::setNavVisible(bool visible)
+void WatchUI::showToolLayer(bool show)
 {
-    m_nav_visible = visible;
-    /* Slide the bar in/out and flip the FAB arrow + reposition above the bar. */
-    lv_obj_set_y(m_nav_bar, visible ? (SCREEN_HEIGHT - NAV_BAR_H) : SCREEN_HEIGHT);
-    int fab_y = visible ? (SCREEN_HEIGHT - NAV_BAR_H - FAB_SIZE - FAB_MARGIN)
-                : (SCREEN_HEIGHT - FAB_SIZE - FAB_MARGIN);
-    lv_obj_set_y(m_fab, fab_y);
-    lv_obj_t* lbl = lv_obj_get_child(m_fab, 0);
-    if (lbl) { lv_label_set_text(lbl, visible ? LV_SYMBOL_DOWN : LV_SYMBOL_UP); }
+    if (show) {
+        lv_obj_clear_flag(m_tool_layer, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(m_fab, LV_OBJ_FLAG_HIDDEN);
+    } else {
+        lv_obj_add_flag(m_tool_layer, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(m_fab, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+void WatchUI::showAddrLayer(bool show)
+{
+    if (show) {
+        lv_obj_add_flag(m_tool_layer, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(m_addr_layer, LV_OBJ_FLAG_HIDDEN);
+    } else {
+        lv_obj_add_flag(m_addr_layer, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(m_fab, LV_OBJ_FLAG_HIDDEN);
+    }
 }
 
 /* --- Public update methods --- */
@@ -218,23 +299,61 @@ void WatchUI::on_canvas_release(lv_event_t* e)
 void WatchUI::on_fab(lv_event_t* e)
 {
     WatchUI* ui = (WatchUI*)lv_event_get_user_data(e);
-    ui->setNavVisible(!ui->m_nav_visible);
+    ui->showToolLayer(true);
 }
 
 void WatchUI::on_back(lv_event_t* e)
 {
     WatchUI* ui = (WatchUI*)lv_event_get_user_data(e);
     ui->m_wv->goBack();
+    ui->showToolLayer(false);
 }
 
 void WatchUI::on_fwd(lv_event_t* e)
 {
     WatchUI* ui = (WatchUI*)lv_event_get_user_data(e);
     ui->m_wv->goForward();
+    ui->showToolLayer(false);
 }
 
 void WatchUI::on_refresh(lv_event_t* e)
 {
     WatchUI* ui = (WatchUI*)lv_event_get_user_data(e);
     ui->m_wv->reload();
+    ui->showToolLayer(false);
+}
+
+void WatchUI::on_settings(lv_event_t* e)
+{
+    /* Settings page not implemented yet; just close the tool layer for now. */
+    WatchUI* ui = (WatchUI*)lv_event_get_user_data(e);
+    ui->showToolLayer(false);
+}
+
+void WatchUI::on_close_tool(lv_event_t* e)
+{
+    WatchUI* ui = (WatchUI*)lv_event_get_user_data(e);
+    ui->showToolLayer(false);
+}
+
+void WatchUI::on_open_addr(lv_event_t* e)
+{
+    WatchUI* ui = (WatchUI*)lv_event_get_user_data(e);
+    const char* cur = ui->m_wv->url();
+    lv_textarea_set_text(ui->m_addr_ta, cur ? cur : "");
+    ui->showAddrLayer(true);
+}
+
+void WatchUI::on_addr_go(lv_event_t* e)
+{
+    WatchUI* ui = (WatchUI*)lv_event_get_user_data(e);
+    const char* url = lv_textarea_get_text(ui->m_addr_ta);
+    if (url && url[0]) { ui->m_wv->loadUrl(url); }
+    ui->showAddrLayer(false);
+}
+
+void WatchUI::on_addr_cancel(lv_event_t* e)
+{
+    WatchUI* ui = (WatchUI*)lv_event_get_user_data(e);
+    ui->showAddrLayer(false);
 }
