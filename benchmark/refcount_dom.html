@@ -1,0 +1,68 @@
+<html><body><div id="c"></div><script>
+/* refcount_dom.html - DOM wrapper lifetime / refcount stress test.
+   Covers the patterns that previously triggered use-after-free in the
+   QuickJS DOM bindings: createElement + appendChild + array retention +
+   setAttribute + removeChild + dropping references. Run via headless_test;
+   a clean run (no crash) and PASS counts are the regression signal. */
+var R=[], P=0, F=0;
+function T(n,v){if(v){P++;R.push(n+":PASS");}else{F++;R.push(n+":FAIL");}}
+
+var c=document.getElementById("c");
+
+/* 1. create + append + retain in JS array + setAttribute + remove + drop.
+   This exact combination caused the array-finalizer UAF. */
+(function(){
+    var arr=[];
+    for(var i=0;i<500;i++){
+        var p=document.createElement("p");
+        c.appendChild(p);
+        arr.push(p);
+    }
+    T("create+append count", c.childNodes.length===500);
+    for(var i=0;i<arr.length;i++){ arr[i].setAttribute("data-i", ""+i); }
+    T("setAttribute applied", arr[100].getAttribute("data-i")==="100");
+    for(var i=0;i<arr.length;i++){ c.removeChild(arr[i]); }
+    T("removeChild all", c.childNodes.length===0);
+    arr=null; /* drop array -> array finalizer frees wrappers */
+})();
+
+/* 2. appendChild return value identity (returned wrapper must be valid). */
+(function(){
+    var d=document.createElement("div");
+    var ret=c.appendChild(d);
+    T("appendChild returns node", ret===d);
+    T("appendChild ret tag", ret.tagName==="DIV");
+    c.removeChild(d);
+})();
+
+/* 3. insertBefore / replaceChild return identity. */
+(function(){
+    var a=document.createElement("span");
+    var b=document.createElement("span");
+    c.appendChild(a);
+    var r1=c.insertBefore(b, a);
+    T("insertBefore returns new", r1===b);
+    var e=document.createElement("em");
+    var r2=c.replaceChild(e, a); /* replace a with e, returns removed a */
+    T("replaceChild returns old", r2===a);
+    c.removeChild(b); c.removeChild(e);
+    T("cleanup", c.childNodes.length===0);
+})();
+
+/* 4. repeated document access (was: document wrapper churn). */
+(function(){
+    var ok=true;
+    for(var i=0;i<2000;i++){
+        if(document.getElementById("c")!==c){ ok=false; break; }
+    }
+    T("document identity stable", ok && document===document);
+})();
+
+/* 5. transient wrappers not retained (create without keeping ref). */
+(function(){
+    for(var i=0;i<1000;i++){ document.createElement("b"); }
+    T("transient create survives", true); /* no crash = pass */
+})();
+
+alert("RESULT:"+P+"/"+(P+F)+"|"+R.join("|"));
+</script></body></html>

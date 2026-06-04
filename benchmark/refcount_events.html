@@ -1,0 +1,69 @@
+<html><body><div id="c"></div><script>
+/* refcount_events.html - event listener / attribute / style refcount stress.
+   Event listeners retain JS callbacks; getAttribute/style return wrappers.
+   These are refcount-sensitive borrow/own boundaries. Clean run + PASS = ok. */
+var R=[], P=0, F=0;
+function T(n,v){if(v){P++;R.push(n+":PASS");}else{F++;R.push(n+":FAIL");}}
+
+var c=document.getElementById("c");
+
+/* 1. add/remove event listeners repeatedly (callback retention). */
+(function(){
+    var fired=0;
+    for(var i=0;i<300;i++){
+        var b=document.createElement("button");
+        var fn=function(){ fired++; };
+        b.onclick=fn;
+        c.appendChild(b);
+        var got=b.onclick; /* read back handler: borrowed-ref getter path */
+        if(i===0){ T("onclick getter returns fn", typeof got==="function"); }
+    }
+    T("listeners attached", c.childNodes.length===300);
+    /* overwrite handlers -> old callbacks released */
+    for(var i=0;i<c.childNodes.length;i++){ c.childNodes[i].onclick=null; }
+    T("listeners cleared", true);
+    while(c.firstChild){ c.removeChild(c.firstChild); }
+})();
+
+/* 2. setAttribute / getAttribute / removeAttribute churn. */
+(function(){
+    var e=document.createElement("div");
+    c.appendChild(e);
+    for(var i=0;i<1000;i++){
+        e.setAttribute("data-x", ""+i);
+        var v=e.getAttribute("data-x");
+        if(i===999){ T("attr roundtrip", v==="999"); }
+    }
+    e.removeAttribute("data-x");
+    T("attr removed", e.getAttribute("data-x")===null || e.getAttribute("data-x")==="");
+    c.removeChild(e);
+})();
+
+/* 3. style declaration access (CSSStyleDeclaration wrapper). */
+(function(){
+    var e=document.createElement("div");
+    c.appendChild(e);
+    for(var i=0;i<500;i++){
+        e.style.color="red";
+        e.style.width=(i%100)+"px";
+    }
+    T("style.color set", e.style.color==="red" || e.style.color.indexOf("red")>=0);
+    c.removeChild(e);
+})();
+
+/* 4. XHR object create/discard (onreadystatechange borrowed-ref getter). */
+(function(){
+    var ok=true;
+    for(var i=0;i<50;i++){
+        try{
+            var x=new XMLHttpRequest();
+            x.onreadystatechange=function(){};
+            var h=x.onreadystatechange; /* borrowed-ref getter */
+            if(typeof h!=="function"){ ok=false; }
+        }catch(e){ /* XHR may be unavailable; not a refcount failure */ }
+    }
+    T("xhr handler getter", ok);
+})();
+
+alert("RESULT:"+P+"/"+(P+F)+"|"+R.join("|"));
+</script></body></html>

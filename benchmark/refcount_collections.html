@@ -1,0 +1,68 @@
+<html><body><div id="c"></div><script>
+/* refcount_collections.html - collection / NodeList / traversal refcount.
+   getElementsByTagName, childNodes, and indexed access return wrappers via
+   exotic get_own_property; tree traversal repeatedly creates node wrappers.
+   Clean run + PASS = ok. */
+var R=[], P=0, F=0;
+function T(n,v){if(v){P++;R.push(n+":PASS");}else{F++;R.push(n+":FAIL");}}
+
+var c=document.getElementById("c");
+
+/* build a tree */
+for(var i=0;i<200;i++){
+    var p=document.createElement("p");
+    p.appendChild(document.createTextNode("item"+i));
+    c.appendChild(p);
+}
+
+/* 1. getElementsByTagName + indexed access (HTMLCollection exotic). */
+(function(){
+    var ps=document.getElementsByTagName("p");
+    T("collection length", ps.length===200);
+    var ok=true;
+    for(var r=0;r<5;r++){
+        for(var i=0;i<ps.length;i++){
+            var n=ps[i]; /* indexed access -> wrapper each time */
+            if(!n || n.tagName!=="P"){ ok=false; break; }
+        }
+    }
+    T("collection indexed access", ok);
+})();
+
+/* 2. childNodes NodeList repeated traversal. */
+(function(){
+    var ok=true;
+    for(var r=0;r<5;r++){
+        var ch=c.childNodes;
+        for(var i=0;i<ch.length;i++){
+            if(ch[i].nodeType!==1){ ok=false; break; }
+        }
+    }
+    T("childNodes traversal", ok);
+})();
+
+/* 3. sibling/parent traversal (wrapper churn on each step). */
+(function(){
+    var ok=true, count=0;
+    for(var r=0;r<10;r++){
+        var n=c.firstChild;
+        while(n){ count++; if(n.parentNode!==c){ ok=false; } n=n.nextSibling; }
+    }
+    T("sibling traversal", ok && count===2000);
+})();
+
+/* 4. firstChild/lastChild repeated access. */
+(function(){
+    var ok=true;
+    for(var i=0;i<2000;i++){
+        if(c.firstChild.tagName!=="P" || c.lastChild.tagName!=="P"){ ok=false; break; }
+    }
+    T("first/last child", ok);
+})();
+
+/* cleanup */
+while(c.firstChild){ c.removeChild(c.firstChild); }
+T("cleanup", c.childNodes.length===0);
+
+alert("RESULT:"+P+"/"+(P+F)+"|"+R.join("|"));
+</script></body></html>
