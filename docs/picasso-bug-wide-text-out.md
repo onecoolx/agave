@@ -1,5 +1,9 @@
 # Picasso Bug Report: ps_wide_text_out_length 读取未初始化值
 
+> 状态：**已由 picasso 官方修复**（新版将 `while (*p && len)` 改为
+> `while (len && *p)`，靠 `&&` 短路先判 `len`，消除数组末尾越界读）。
+> Agave 侧无需改动，**后续升级 picasso 即可**。本文档保留作为发现/分析记录。
+>
 > 报告日期：2026-06-04
 > Picasso 版本：2.8.0（proj/picasso/src/picasso）
 > 发现工具：Valgrind memcheck（--track-origins=yes）
