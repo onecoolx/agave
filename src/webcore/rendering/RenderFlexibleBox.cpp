@@ -247,10 +247,20 @@ void RenderFlexibleBox::layoutBlock(bool relayoutChildren)
             m_layer->setHasVerticalScrollbar(true);
     }
 
+#if ENABLE(MODERN_FLEXBOX)
+    // Probe: route horizontal (row) flex through the modern single-line path.
+    // Vertical still uses the legacy box layout. Default build keeps the macro
+    // off, so the stable -webkit-box path is unaffected.
+    if (isHorizontal())
+        layoutModernFlexbox(relayoutChildren);
+    else
+        layoutVerticalBox(relayoutChildren);
+#else
     if (isHorizontal())
         layoutHorizontalBox(relayoutChildren);
     else
         layoutVerticalBox(relayoutChildren);
+#endif
 
     int oldHeight = m_height;
     calcHeight();
@@ -1075,6 +1085,87 @@ void RenderFlexibleBox::placeChild(RenderObject* child, int x, int y)
     if (!selfNeedsLayout() && child->checkForRepaintDuringLayout())
         child->repaintDuringLayoutIfMoved(oldRect);
 }
+
+#if ENABLE(MODERN_FLEXBOX)
+// PROBE: minimal modern single-line, main-axis (row) flexbox.
+// Purpose: validate that the existing RenderBlock framework can carry flex
+// child size negotiation (lay out children at preferred widths, then distribute
+// remaining free space by flex-grow weight). This is NOT a complete flexbox:
+// single line, row direction, align top, no shrink/basis/wrap/order. It reuses
+// boxFlex() as the grow weight so the probe needs no new CSS/style plumbing.
+// Coordinates/sizing follow the legacy layoutHorizontalBox conventions.
+void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
+{
+    int yPos = borderTop() + paddingTop();
+    int xPos = borderLeft() + paddingLeft();
+    int contentWidth = m_width - borderLeft() - paddingLeft() - borderRight() - paddingRight();
+
+    m_overflowHeight = m_height;
+
+    // Pass 1: lay out each child at its preferred size; sum widths and flex grow.
+    int usedMainSize = 0;
+    float totalGrow = 0.0f;
+    int maxChildHeight = 0;
+
+    FlexBoxIterator iterator(this);
+    RenderObject* child = iterator.first();
+    while (child) {
+        if (child->isPositioned()) {
+            child = iterator.next();
+            continue;
+        }
+        if (relayoutChildren)
+            child->setChildNeedsLayout(true, false);
+        child->setOverrideSize(-1);
+        child->calcWidth();
+        child->layoutIfNeeded();
+
+        usedMainSize += child->width() + child->marginLeft() + child->marginRight();
+        totalGrow += child->style()->boxFlex();
+        int h = child->height() + child->marginTop() + child->marginBottom();
+        if (h > maxChildHeight)
+            maxChildHeight = h;
+        child = iterator.next();
+    }
+
+    // Pass 2: distribute remaining free space by grow weight, then position
+    // children left-to-right (justify start, align top).
+    int remaining = contentWidth - usedMainSize;
+    if (remaining < 0)
+        remaining = 0;
+
+    // RenderBox::calcWidth only honours a child's override size while the parent
+    // flex box reports isFlexingChildren(); set it so grow distribution sticks.
+    m_flexingChildren = true;
+
+    int x = xPos;
+    child = iterator.first();
+    while (child) {
+        if (child->isPositioned()) {
+            child = iterator.next();
+            continue;
+        }
+        if (totalGrow > 0.0f && remaining > 0) {
+            float grow = child->style()->boxFlex();
+            if (grow > 0.0f) {
+                int add = (int)(remaining * (grow / totalGrow));
+                child->setOverrideSize(child->width() + add);
+                child->setChildNeedsLayout(true, false);
+                child->layoutIfNeeded();
+            }
+        }
+        x += child->marginLeft();
+        placeChild(child, x, yPos + child->marginTop());
+        x += child->width() + child->marginRight();
+        child = iterator.next();
+    }
+
+    // Container height = tallest child, plus our vertical borders/padding.
+    m_height = yPos + maxChildHeight + borderBottom() + paddingBottom();
+    m_overflowHeight = max(m_overflowHeight, m_height);
+    m_overflowWidth = max(m_overflowWidth, x + borderRight() + paddingRight());
+}
+#endif // ENABLE(MODERN_FLEXBOX)
 
 int RenderFlexibleBox::allowedChildFlex(RenderObject* child, bool expanding, unsigned int group)
 {

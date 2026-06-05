@@ -42,6 +42,14 @@ public:
     void layoutHorizontalBox(bool relayoutChildren);
     void layoutVerticalBox(bool relayoutChildren);
 
+#if ENABLE(MODERN_FLEXBOX)
+    // Probe: minimal modern single-line main-axis layout, isolated behind
+    // ENABLE_MODERN_FLEXBOX so the stable -webkit-box path stays the default.
+    // Goal is to validate that the existing RenderBlock framework can carry
+    // flex child size negotiation, not to be a complete flexbox.
+    void layoutModernFlexbox(bool relayoutChildren);
+#endif
+
     virtual bool avoidsFloats() const { return true; }
 
     virtual bool isFlexibleBox() const { return true; }
