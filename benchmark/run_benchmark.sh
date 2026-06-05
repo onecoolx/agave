@@ -22,7 +22,7 @@ if [ ! -x "$HEADLESS" ]; then
 fi
 
 # Correctness pages assert via T()/RESULT; perf pages just must not crash.
-CORRECTNESS="dom_test refcount_dom refcount_events refcount_collections full_test"
+CORRECTNESS="dom_test refcount_dom refcount_events refcount_collections layout_prefwidth full_test"
 PERF="perf_test full_perf"
 
 rc=0

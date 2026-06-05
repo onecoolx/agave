@@ -1,0 +1,60 @@
+<html><head><style>
+/* Force pref-width (min/max content) calculation paths that call
+   RenderText::trimmedPrefWidths, including its early-out for empty /
+   whitespace-only text nodes. Tables and shrink-to-fit boxes compute
+   intrinsic widths, exercising calcInlinePrefWidths over mixed text. */
+table { border-collapse: collapse; }
+td { border: 1px solid #ccc; padding: 2px; }
+.fit { display: table; }      /* shrink-to-fit -> intrinsic width calc */
+.pre { white-space: pre; }
+</style></head><body>
+<!-- Whitespace-only and empty text nodes interleaved with real text.
+     These hit trimmedPrefWidths' early-return (len==0 / only-whitespace),
+     which previously left out-params uninitialised -> UB in caller. -->
+<table><tr>
+  <td>   </td>
+  <td></td>
+  <td>Real text</td>
+  <td>
+  </td>
+  <td><span></span><span>   </span><span>x</span></td>
+</tr></table>
+
+<div class="fit">      <b></b>   mixed   <i>   </i> content   </div>
+<div class="fit"></div>
+<div class="fit">   </div>
+<p class="pre">   leading spaces preserved</p>
+
+<script>
+var R=[], P=0, F=0;
+function T(n,v){if(v){P++;R.push(n+":PASS");}else{F++;R.push(n+":FAIL");}}
+
+/* Dynamically add empty / whitespace text nodes and force relayout by
+   reading offsetWidth (triggers pref-width calc on the fresh nodes). */
+var host=document.getElementsByClassName ? null : null;
+var d=document.createElement("div");
+d.className="fit";
+document.body.appendChild(d);
+for (var i=0;i<200;i++){
+    var s=document.createElement("span");
+    /* alternate empty, whitespace-only, and real text nodes */
+    if (i%3===0) s.appendChild(document.createTextNode(""));
+    else if (i%3===1) s.appendChild(document.createTextNode("   "));
+    else s.appendChild(document.createTextNode("w"+i));
+    d.appendChild(s);
+    /* force intrinsic width recalculation */
+    var w = d.offsetWidth;
+}
+T("dynamic mixed text layout", d.childNodes.length===200);
+
+/* table cells with empty/ws content recalculated */
+var tbl=document.getElementsByTagName("table")[0];
+T("table laid out", tbl.offsetWidth >= 0);
+
+/* removing nodes then re-measuring (more pref-width passes) */
+while (d.firstChild) d.removeChild(d.firstChild);
+var w2 = d.offsetWidth;
+T("relayout after clear", d.childNodes.length===0);
+
+alert("RESULT:"+P+"/"+(P+F)+"|"+R.join("|"));
+</script></body></html>

@@ -431,7 +431,18 @@ void RenderText::trimmedPrefWidths(int leadWidth,
 
     int len = textLength();
     if (!len || (stripFrontSpaces && m_text->containsOnlyWhitespace())) {
+        // Early-out: initialise ALL out-params so callers never read
+        // uninitialised values (e.g. RenderBlock::calcInlinePrefWidths reads
+        // beginWS/endWS on this path). Only maxW/hasBreak were set before.
+        minW = 0;
         maxW = 0;
+        beginMinW = 0;
+        endMinW = 0;
+        beginMaxW = 0;
+        endMaxW = 0;
+        beginWS = false;
+        endWS = false;
+        hasBreakableChar = false;
         hasBreak = false;
         return;
     }
