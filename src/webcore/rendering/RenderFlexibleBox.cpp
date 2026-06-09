@@ -1096,9 +1096,6 @@ void RenderFlexibleBox::placeChild(RenderObject* child, int x, int y)
 }
 
 #if ENABLE(MODERN_FLEXBOX)
-// Modern single-line flexbox layout (1a-4).
-// Implements: flex-direction(row/column), flex-basis, flex-grow, flex-shrink,
-// justify-content, align-items. No wrap/order/align-self yet.
 void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
 {
     const EFlexDirection dir = style()->flexDirection();
@@ -1107,33 +1104,28 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
     const EFlexJustify justify = style()->justifyContent();
     const EFlexAlign align = style()->alignItems();
 
-    const int cbStart = isRow ? (borderLeft() + paddingLeft()) : (borderTop() + paddingTop());
+    const int mainStart = isRow ? (borderLeft() + paddingLeft()) : (borderTop() + paddingTop());
     const int crossStart = isRow ? (borderTop() + paddingTop()) : (borderLeft() + paddingLeft());
-    // For column, m_height was reset to 0 by layoutBlock before calling us.
-    // Use the style height (definite) for mainAvail in column mode.
-    int containerMainSize = 0;
+
+    // Resolve container main-axis available size.
+    // For column, m_height was reset to 0 by layoutBlock; resolve from style.
+    int mainAvail = 0;
     if (isRow) {
-        containerMainSize = m_width;
+        mainAvail = m_width - borderLeft() - paddingLeft() - borderRight() - paddingRight();
     } else {
         if (style()->height().isFixed())
-            containerMainSize = style()->height().value() + borderTop() + paddingTop() + borderBottom() + paddingBottom();
+            mainAvail = style()->height().value();
         else if (style()->height().isPercent() && containingBlock())
-            containerMainSize = (int)(style()->height().percent() * containingBlock()->contentHeight() / 100.0)
-                + borderTop() + paddingTop() + borderBottom() + paddingBottom();
-        else
-            containerMainSize = 0; // auto height — will be determined by content
+            mainAvail = (int)(style()->height().percent() * containingBlock()->contentHeight() / 100.0);
     }
-    const int mainAvail = isRow
-        ? (containerMainSize - borderLeft() - paddingLeft() - borderRight() - paddingRight())
-        : (containerMainSize - borderTop() - paddingTop() - borderBottom() - paddingBottom());
-    // For row mode cross-axis (height), get from style since m_height was reset
+
+    // Resolve container cross-axis size for alignment.
     int crossContainerSize = 0;
     if (isRow) {
         if (style()->height().isFixed())
             crossContainerSize = style()->height().value();
         else if (style()->height().isPercent() && containingBlock())
             crossContainerSize = (int)(style()->height().percent() * containingBlock()->contentHeight() / 100.0);
-        // else auto — will use maxCrossSize
     } else {
         crossContainerSize = m_width - borderLeft() - paddingLeft() - borderRight() - paddingRight();
     }
@@ -1141,23 +1133,20 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
     m_overflowHeight = m_height;
     m_overflowWidth = m_width;
 
-    // Temporarily set boxOrient so calcWidth/calcHeight override logic works.
+    // Set boxOrient to match direction so calcWidth/calcHeight override works.
     EBoxOrient savedOrient = style()->boxOrient();
-    if (isRow)
-        style()->setBoxOrient(HORIZONTAL);
-    else
-        style()->setBoxOrient(VERTICAL);
+    style()->setBoxOrient(isRow ? HORIZONTAL : VERTICAL);
 
-    // --- Pass 1: determine hypothetical main size (flex basis) for each child ---
+    // --- Collect items and resolve flex basis ---
     struct FlexItem {
         RenderObject* child;
-        int baseSize;      // flex-basis resolved size (main axis content+border+padding+margin)
-        int mainMargin;    // main-axis margins
-        int crossMargin;   // cross-axis margins
+        int baseSize;
+        int mainMargin;
+        int crossMargin;
         float grow;
         float shrink;
-        int mainSize;      // final main-axis outer size after grow/shrink
-        int crossSize;     // final cross-axis outer size
+        int mainSize;
+        int crossSize;
     };
 
     Vector<FlexItem> items;
@@ -1170,96 +1159,75 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
     for (RenderObject* child = iterator.first(); child; child = iterator.next()) {
         if (child->isPositioned())
             continue;
-
         if (relayoutChildren)
             child->setChildNeedsLayout(true, false);
 
-        // Resolve flex-basis
-        Length basis = child->style()->flexBasis();
-        int basisPx = 0;
-
-        // Always do initial layout so cross-axis size and margins are resolved
         child->setOverrideSize(-1);
         if (isRow)
             child->calcWidth();
         child->layoutIfNeeded();
 
+        Length basis = child->style()->flexBasis();
+        int basisPx;
         if (basis.isAuto()) {
-            // auto = use child's preferred (laid-out) size
             basisPx = isRow ? child->width() : child->height();
+        } else if (basis.isPercent()) {
+            basisPx = (int)(basis.percent() * mainAvail / 100.0);
+            basisPx += isRow ? (child->borderLeft() + child->paddingLeft() + child->borderRight() + child->paddingRight())
+                             : (child->borderTop() + child->paddingTop() + child->borderBottom() + child->paddingBottom());
         } else {
-            // Specified length/percent
-            if (basis.isPercent())
-                basisPx = (int)(basis.percent() * mainAvail / 100.0);
-            else
-                basisPx = basis.value();
-            // Add borders/padding (basis is content-box by default)
-            if (isRow)
-                basisPx += child->borderLeft() + child->paddingLeft() + child->borderRight() + child->paddingRight();
-            else
-                basisPx += child->borderTop() + child->paddingTop() + child->borderBottom() + child->paddingBottom();
+            basisPx = basis.value();
+            basisPx += isRow ? (child->borderLeft() + child->paddingLeft() + child->borderRight() + child->paddingRight())
+                             : (child->borderTop() + child->paddingTop() + child->borderBottom() + child->paddingBottom());
         }
 
-        int mainMarg = isRow ? (child->marginLeft() + child->marginRight()) : (child->marginTop() + child->marginBottom());
-        int crossMarg = isRow ? (child->marginTop() + child->marginBottom()) : (child->marginLeft() + child->marginRight());
-        int crossSz = isRow ? (child->height() + crossMarg) : (child->width() + crossMarg);
+        int mm = isRow ? (child->marginLeft() + child->marginRight()) : (child->marginTop() + child->marginBottom());
+        int cm = isRow ? (child->marginTop() + child->marginBottom()) : (child->marginLeft() + child->marginRight());
 
-        FlexItem item;
-        item.child = child;
-        item.baseSize = basisPx + mainMarg;
-        item.mainMargin = mainMarg;
-        item.crossMargin = crossMarg;
-        item.grow = child->style()->flexGrow();
-        item.shrink = child->style()->flexShrink();
-        item.mainSize = item.baseSize;
-        item.crossSize = crossSz;
+        FlexItem item = { child, basisPx + mm, mm, cm,
+                          child->style()->flexGrow(), child->style()->flexShrink(),
+                          basisPx + mm,
+                          (isRow ? child->height() : child->width()) + cm };
         items.append(item);
 
         usedMainSize += item.baseSize;
         totalGrow += item.grow;
-        totalShrinkScaled += item.shrink * (basisPx > 0 ? basisPx : 0);
-        if (crossSz > maxCrossSize)
-            maxCrossSize = crossSz;
+        totalShrinkScaled += item.shrink * max(0, basisPx);
+        if (item.crossSize > maxCrossSize)
+            maxCrossSize = item.crossSize;
     }
 
-    // --- Pass 2: distribute free space (grow) or shrink ---
+    // --- Grow or shrink ---
     int freeSpace = mainAvail - usedMainSize;
-
     m_flexingChildren = true;
 
     if (freeSpace > 0 && totalGrow > 0.0f) {
-        // Grow
         for (size_t i = 0; i < items.size(); i++) {
             if (items[i].grow > 0.0f) {
-                int add = (int)(freeSpace * (items[i].grow / totalGrow));
-                int newMain = items[i].baseSize - items[i].mainMargin + add;
+                int newMain = items[i].baseSize - items[i].mainMargin
+                    + (int)(freeSpace * (items[i].grow / totalGrow));
                 items[i].child->setOverrideSize(newMain);
                 items[i].child->setNeedsLayout(true, false);
                 items[i].child->layoutIfNeeded();
                 items[i].mainSize = (isRow ? items[i].child->width() : items[i].child->height()) + items[i].mainMargin;
-                items[i].crossSize = (isRow ? items[i].child->height() : items[i].child->width())
-                    + items[i].crossMargin;
+                items[i].crossSize = (isRow ? items[i].child->height() : items[i].child->width()) + items[i].crossMargin;
                 if (items[i].crossSize > maxCrossSize)
                     maxCrossSize = items[i].crossSize;
             }
         }
         freeSpace = 0;
     } else if (freeSpace < 0 && totalShrinkScaled > 0.0f) {
-        // Shrink
-        int shrinkTotal = -freeSpace;
+        int deficit = -freeSpace;
         for (size_t i = 0; i < items.size(); i++) {
             if (items[i].shrink > 0.0f) {
                 int basePx = items[i].baseSize - items[i].mainMargin;
-                float ratio = (items[i].shrink * basePx) / totalShrinkScaled;
-                int sub = (int)(shrinkTotal * ratio);
-                int newMain = basePx - sub;
+                int newMain = basePx - (int)(deficit * (items[i].shrink * basePx) / totalShrinkScaled);
                 if (newMain < 0) newMain = 0;
                 items[i].child->setOverrideSize(newMain);
                 items[i].child->setNeedsLayout(true, false);
                 items[i].child->layoutIfNeeded();
                 items[i].mainSize = (isRow ? items[i].child->width() : items[i].child->height()) + items[i].mainMargin;
-                items[i].crossSize = (isRow ? items[i].child->height() : items[i].child->width())
-                    + items[i].crossMargin;
+                items[i].crossSize = (isRow ? items[i].child->height() : items[i].child->width()) + items[i].crossMargin;
                 if (items[i].crossSize > maxCrossSize)
                     maxCrossSize = items[i].crossSize;
             }
@@ -1267,56 +1235,45 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
         freeSpace = 0;
     }
 
-    // --- Clamp to min/max constraints and redistribute ---
-    bool needsRedistribute = false;
+    // --- Clamp to min/max and redistribute ---
+    bool needsRedist = false;
     int frozenSpace = 0;
     float unfrozenGrow = 0.0f;
     for (size_t i = 0; i < items.size(); i++) {
         RenderObject* child = items[i].child;
-        int mainContent = items[i].mainSize - items[i].mainMargin;
-        int clamped = mainContent;
+        int cur = items[i].mainSize - items[i].mainMargin;
+        int clamped = cur;
         if (isRow) {
-            if (child->style()->minWidth().isFixed() && child->style()->minWidth().value() > 0) {
-                int minW = child->style()->minWidth().value()
-                    + child->borderLeft() + child->paddingLeft() + child->borderRight() + child->paddingRight();
-                if (mainContent < minW) clamped = minW;
-            }
-            if (child->style()->maxWidth().isFixed() && !child->style()->maxWidth().isUndefined()) {
-                int maxW = child->style()->maxWidth().value()
-                    + child->borderLeft() + child->paddingLeft() + child->borderRight() + child->paddingRight();
-                if (clamped > maxW) clamped = maxW;
-            }
+            int bp = child->borderLeft() + child->paddingLeft() + child->borderRight() + child->paddingRight();
+            if (child->style()->minWidth().isFixed() && child->style()->minWidth().value() > 0)
+                clamped = max(clamped, child->style()->minWidth().value() + bp);
+            if (child->style()->maxWidth().isFixed() && !child->style()->maxWidth().isUndefined())
+                clamped = min(clamped, child->style()->maxWidth().value() + bp);
         } else {
-            if (child->style()->minHeight().isFixed() && child->style()->minHeight().value() > 0) {
-                int minH = child->style()->minHeight().value()
-                    + child->borderTop() + child->paddingTop() + child->borderBottom() + child->paddingBottom();
-                if (mainContent < minH) clamped = minH;
-            }
-            if (child->style()->maxHeight().isFixed() && !child->style()->maxHeight().isUndefined()) {
-                int maxH = child->style()->maxHeight().value()
-                    + child->borderTop() + child->paddingTop() + child->borderBottom() + child->paddingBottom();
-                if (clamped > maxH) clamped = maxH;
-            }
+            int bp = child->borderTop() + child->paddingTop() + child->borderBottom() + child->paddingBottom();
+            if (child->style()->minHeight().isFixed() && child->style()->minHeight().value() > 0)
+                clamped = max(clamped, child->style()->minHeight().value() + bp);
+            if (child->style()->maxHeight().isFixed() && !child->style()->maxHeight().isUndefined())
+                clamped = min(clamped, child->style()->maxHeight().value() + bp);
         }
-        if (clamped != mainContent) {
+        if (clamped != cur) {
             child->setOverrideSize(clamped);
             child->setNeedsLayout(true, false);
             child->layoutIfNeeded();
             items[i].mainSize = (isRow ? child->width() : child->height()) + items[i].mainMargin;
             items[i].crossSize = (isRow ? child->height() : child->width()) + items[i].crossMargin;
-            items[i].grow = 0; // freeze
-            needsRedistribute = true;
+            items[i].grow = 0;
+            needsRedist = true;
             frozenSpace += items[i].mainSize;
         } else {
             unfrozenGrow += items[i].grow;
         }
     }
-    // Redistribute remaining space to unfrozen items
-    if (needsRedistribute && unfrozenGrow > 0.0f) {
-        int spaceForUnfrozen = mainAvail - frozenSpace;
+    if (needsRedist && unfrozenGrow > 0.0f) {
+        int avail = mainAvail - frozenSpace;
         for (size_t i = 0; i < items.size(); i++) {
             if (items[i].grow > 0.0f) {
-                int newMain = (int)(spaceForUnfrozen * (items[i].grow / unfrozenGrow)) - items[i].mainMargin;
+                int newMain = (int)(avail * (items[i].grow / unfrozenGrow)) - items[i].mainMargin;
                 if (newMain < 0) newMain = 0;
                 items[i].child->setOverrideSize(newMain);
                 items[i].child->setNeedsLayout(true, false);
@@ -1329,10 +1286,8 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
         }
     }
 
-    // Recalculate freeSpace after grow/shrink for justify-content
-    if (freeSpace != 0) {
-        // No grow/shrink happened, freeSpace stays as-is for justify
-    } else {
+    // Recalculate free space for justify-content
+    {
         int totalUsed = 0;
         for (size_t i = 0; i < items.size(); i++)
             totalUsed += items[i].mainSize;
@@ -1340,92 +1295,62 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
         if (freeSpace < 0) freeSpace = 0;
     }
 
-    // --- Pass 3: justify-content (main-axis positioning) ---
-    int mainOffset = 0;  // offset before first item
-    int mainGap = 0;     // gap between items
+    // --- Justify-content ---
+    int mainOffset = 0, mainGap = 0;
     int n = (int)items.size();
-
     switch (justify) {
-        case JustifyFlexStart:
-            mainOffset = 0;
-            break;
-        case JustifyFlexEnd:
-            mainOffset = freeSpace;
-            break;
-        case JustifyCenter:
-            mainOffset = freeSpace / 2;
-            break;
+        case JustifyFlexStart:  break;
+        case JustifyFlexEnd:    mainOffset = freeSpace; break;
+        case JustifyCenter:     mainOffset = freeSpace / 2; break;
         case JustifySpaceBetween:
-            mainOffset = 0;
             if (n > 1) mainGap = freeSpace / (n - 1);
             break;
         case JustifySpaceAround:
-            if (n > 0) {
-                mainGap = freeSpace / n;
-                mainOffset = mainGap / 2;
-            }
+            if (n > 0) { mainGap = freeSpace / n; mainOffset = mainGap / 2; }
             break;
     }
 
-    if (isReverse)
-        mainOffset = freeSpace - mainOffset; // flip for reverse
-
-    // --- Pass 4: position children (main + cross axis) ---
-    // For cross-axis: use container definite size if available, else maxCrossSize
-    int crossExtent = maxCrossSize;
-    if (crossContainerSize > 0)
-        crossExtent = crossContainerSize;
-
-    // For reverse: start from the end of main axis
-    int mainPos;
-    if (isReverse)
-        mainPos = cbStart + mainAvail;
-    else
-        mainPos = cbStart + mainOffset;
+    // --- Position children ---
+    int crossExtent = crossContainerSize > 0 ? crossContainerSize : maxCrossSize;
+    int mainPos = isReverse ? (mainStart + mainAvail) : (mainStart + mainOffset);
 
     for (size_t i = 0; i < items.size(); i++) {
         FlexItem& item = items[i];
         RenderObject* child = item.child;
-
-        int childMain = item.mainSize - item.mainMargin; // content+border+padding
+        int childMain = item.mainSize - item.mainMargin;
         int childCross = item.crossSize - item.crossMargin;
-        int childMainMarginBefore = isRow ? child->marginLeft() : child->marginTop();
-        int childCrossMarginBefore = isRow ? child->marginTop() : child->marginLeft();
-        int childCrossMarginAfter = isRow ? child->marginBottom() : child->marginRight();
+        int crossMarginBefore = isRow ? child->marginTop() : child->marginLeft();
+        int crossMarginAfter = isRow ? child->marginBottom() : child->marginRight();
 
-        // Align-items: cross-axis position
+        // Cross-axis alignment
         int crossPos = crossStart;
         switch (align) {
             case AlignFlexStart:
-                crossPos += childCrossMarginBefore;
+            case AlignBaseline:
+                crossPos += crossMarginBefore;
                 break;
             case AlignFlexEnd:
-                crossPos += crossExtent - childCross - childCrossMarginAfter;
+                crossPos += crossExtent - childCross - crossMarginAfter;
                 break;
             case AlignCenter:
-                crossPos += (crossExtent - childCross - childCrossMarginBefore - childCrossMarginAfter) / 2 + childCrossMarginBefore;
-                break;
-            case AlignBaseline:
-                // Simplified: treat as flex-start for now
-                crossPos += childCrossMarginBefore;
+                crossPos += (crossExtent - childCross - crossMarginBefore - crossMarginAfter) / 2 + crossMarginBefore;
                 break;
             case AlignStretch:
-                crossPos += childCrossMarginBefore;
-                // Stretch: expand child cross size to fill
+                crossPos += crossMarginBefore;
                 if (isRow && child->style()->height().isAuto()) {
-                    int stretchH = crossExtent - childCrossMarginBefore - childCrossMarginAfter
+                    int h = crossExtent - crossMarginBefore - crossMarginAfter
                         - child->borderTop() - child->paddingTop() - child->borderBottom() - child->paddingBottom();
-                    if (stretchH > 0 && stretchH != child->contentHeight()) {
-                        child->style()->setHeight(Length(stretchH, Fixed));
+                    if (h > 0 && h != child->contentHeight()) {
+                        child->style()->setHeight(Length(h, Fixed));
                         child->setChildNeedsLayout(true, false);
                         child->layoutIfNeeded();
                         child->style()->setHeight(Length(Auto));
                     }
                 } else if (!isRow && child->style()->width().isAuto()) {
-                    int stretchW = crossExtent - childCrossMarginBefore - childCrossMarginAfter
+                    int w = crossExtent - crossMarginBefore - crossMarginAfter
                         - child->borderLeft() - child->paddingLeft() - child->borderRight() - child->paddingRight();
-                    if (stretchW > 0 && stretchW != child->contentWidth()) {
-                        child->setOverrideSize(stretchW + child->borderLeft() + child->paddingLeft()
+                    if (w > 0 && w != child->contentWidth()) {
+                        child->setOverrideSize(w + child->borderLeft() + child->paddingLeft()
                             + child->borderRight() + child->paddingRight());
                         child->setChildNeedsLayout(true, false);
                         child->layoutIfNeeded();
@@ -1434,7 +1359,7 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
                 break;
         }
 
-        // Place child
+        // Main-axis placement
         int x, y;
         if (isRow) {
             if (isReverse) {
@@ -1442,9 +1367,8 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
                 x = mainPos;
                 mainPos -= child->marginLeft() + mainGap;
             } else {
-                mainPos += childMainMarginBefore;
-                x = mainPos;
-                mainPos += childMain + child->marginRight() + mainGap;
+                x = mainPos + child->marginLeft();
+                mainPos += item.mainSize + mainGap;
             }
             y = crossPos;
         } else {
@@ -1453,36 +1377,31 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
                 y = mainPos;
                 mainPos -= child->marginTop() + mainGap;
             } else {
-                mainPos += childMainMarginBefore;
-                y = mainPos;
-                mainPos += childMain + child->marginBottom() + mainGap;
+                y = mainPos + child->marginTop();
+                mainPos += item.mainSize + mainGap;
             }
             x = crossPos;
         }
-
         placeChild(child, x, y);
     }
 
     m_flexingChildren = false;
-
-    // Restore orient
     style()->setBoxOrient(savedOrient);
 
-    // Update container size
+    // Update container height
     if (isRow) {
         if (style()->height().isAuto())
             m_height = crossStart + maxCrossSize + borderBottom() + paddingBottom();
-        m_overflowHeight = max(m_overflowHeight, m_height);
-        m_overflowWidth = max(m_overflowWidth, m_width);
     } else {
-        int usedMain = 0;
-        for (size_t i = 0; i < items.size(); i++)
-            usedMain += items[i].mainSize;
-        if (style()->height().isAuto())
-            m_height = cbStart + usedMain + borderBottom() + paddingBottom();
-        m_overflowHeight = max(m_overflowHeight, m_height);
-        m_overflowWidth = max(m_overflowWidth, m_width);
+        if (style()->height().isAuto()) {
+            int usedMain = 0;
+            for (size_t i = 0; i < items.size(); i++)
+                usedMain += items[i].mainSize;
+            m_height = mainStart + usedMain + borderBottom() + paddingBottom();
+        }
     }
+    m_overflowHeight = max(m_overflowHeight, m_height);
+    m_overflowWidth = max(m_overflowWidth, m_width);
 }
 #endif // ENABLE(MODERN_FLEXBOX)
 
