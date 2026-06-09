@@ -569,3 +569,6 @@ flex-end
 # center (already defined above)
 space-between
 space-around
+# CSS_PROP_FLEX_WRAP
+wrap
+wrap-reverse

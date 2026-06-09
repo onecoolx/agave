@@ -1101,14 +1101,14 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
     const EFlexDirection dir = style()->flexDirection();
     const bool isRow = (dir == FlowRow || dir == FlowRowReverse);
     const bool isReverse = (dir == FlowRowReverse || dir == FlowColumnReverse);
+    const EFlexWrap wrapMode = style()->flexWrap();
+    const bool doWrap = (wrapMode != FlexNoWrap);
     const EFlexJustify justify = style()->justifyContent();
     const EFlexAlign align = style()->alignItems();
 
     const int mainStart = isRow ? (borderLeft() + paddingLeft()) : (borderTop() + paddingTop());
     const int crossStart = isRow ? (borderTop() + paddingTop()) : (borderLeft() + paddingLeft());
 
-    // Resolve container main-axis available size.
-    // For column, m_height was reset to 0 by layoutBlock; resolve from style.
     int mainAvail = 0;
     if (isRow) {
         mainAvail = m_width - borderLeft() - paddingLeft() - borderRight() - paddingRight();
@@ -1119,7 +1119,6 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
             mainAvail = (int)(style()->height().percent() * containingBlock()->contentHeight() / 100.0);
     }
 
-    // Resolve container cross-axis size for alignment.
     int crossContainerSize = 0;
     if (isRow) {
         if (style()->height().isFixed())
@@ -1133,28 +1132,17 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
     m_overflowHeight = m_height;
     m_overflowWidth = m_width;
 
-    // Set boxOrient to match direction so calcWidth/calcHeight override works.
     EBoxOrient savedOrient = style()->boxOrient();
     style()->setBoxOrient(isRow ? HORIZONTAL : VERTICAL);
 
-    // --- Collect items and resolve flex basis ---
     struct FlexItem {
         RenderObject* child;
-        int baseSize;
-        int mainMargin;
-        int crossMargin;
-        float grow;
-        float shrink;
-        int mainSize;
-        int crossSize;
+        int baseSize, mainMargin, crossMargin;
+        float grow, shrink;
+        int mainSize, crossSize;
     };
 
-    Vector<FlexItem> items;
-    int usedMainSize = 0;
-    float totalGrow = 0.0f;
-    float totalShrinkScaled = 0.0f;
-    int maxCrossSize = 0;
-
+    Vector<FlexItem> allItems;
     FlexBoxIterator iterator(this);
     for (RenderObject* child = iterator.first(); child; child = iterator.next()) {
         if (child->isPositioned())
@@ -1171,12 +1159,8 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
         int basisPx;
         if (basis.isAuto()) {
             basisPx = isRow ? child->width() : child->height();
-        } else if (basis.isPercent()) {
-            basisPx = (int)(basis.percent() * mainAvail / 100.0);
-            basisPx += isRow ? (child->borderLeft() + child->paddingLeft() + child->borderRight() + child->paddingRight())
-                             : (child->borderTop() + child->paddingTop() + child->borderBottom() + child->paddingBottom());
         } else {
-            basisPx = basis.value();
+            basisPx = basis.isPercent() ? (int)(basis.percent() * mainAvail / 100.0) : basis.value();
             basisPx += isRow ? (child->borderLeft() + child->paddingLeft() + child->borderRight() + child->paddingRight())
                              : (child->borderTop() + child->paddingTop() + child->borderBottom() + child->paddingBottom());
         }
@@ -1188,215 +1172,245 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
                           child->style()->flexGrow(), child->style()->flexShrink(),
                           basisPx + mm,
                           (isRow ? child->height() : child->width()) + cm };
-        items.append(item);
-
-        usedMainSize += item.baseSize;
-        totalGrow += item.grow;
-        totalShrinkScaled += item.shrink * max(0, basisPx);
-        if (item.crossSize > maxCrossSize)
-            maxCrossSize = item.crossSize;
+        allItems.append(item);
     }
 
-    // --- Grow or shrink ---
-    int freeSpace = mainAvail - usedMainSize;
+    // Break into lines
+    struct FlexLine { size_t start, end; int maxCrossSize; };
+    Vector<FlexLine> lines;
+    size_t lineStart = 0;
+    while (lineStart < allItems.size()) {
+        size_t i = lineStart;
+        int lineUsed = 0;
+        while (i < allItems.size()) {
+            if (doWrap && i > lineStart && mainAvail > 0 && lineUsed + allItems[i].baseSize > mainAvail)
+                break;
+            lineUsed += allItems[i].baseSize;
+            i++;
+        }
+        FlexLine line = { lineStart, i, 0 };
+        lines.append(line);
+        lineStart = i;
+    }
+
+    // Process each line
     m_flexingChildren = true;
 
-    if (freeSpace > 0 && totalGrow > 0.0f) {
-        for (size_t i = 0; i < items.size(); i++) {
-            if (items[i].grow > 0.0f) {
-                int newMain = items[i].baseSize - items[i].mainMargin
-                    + (int)(freeSpace * (items[i].grow / totalGrow));
-                items[i].child->setOverrideSize(newMain);
-                items[i].child->setNeedsLayout(true, false);
-                items[i].child->layoutIfNeeded();
-                items[i].mainSize = (isRow ? items[i].child->width() : items[i].child->height()) + items[i].mainMargin;
-                items[i].crossSize = (isRow ? items[i].child->height() : items[i].child->width()) + items[i].crossMargin;
-                if (items[i].crossSize > maxCrossSize)
-                    maxCrossSize = items[i].crossSize;
-            }
+    for (size_t li = 0; li < lines.size(); li++) {
+        FlexLine& line = lines[li];
+        int lineUsed = 0;
+        float totalGrow = 0, totalShrinkScaled = 0;
+        for (size_t i = line.start; i < line.end; i++) {
+            lineUsed += allItems[i].baseSize;
+            totalGrow += allItems[i].grow;
+            int bp = allItems[i].baseSize - allItems[i].mainMargin;
+            totalShrinkScaled += allItems[i].shrink * max(0, bp);
         }
-        freeSpace = 0;
-    } else if (freeSpace < 0 && totalShrinkScaled > 0.0f) {
-        int deficit = -freeSpace;
-        for (size_t i = 0; i < items.size(); i++) {
-            if (items[i].shrink > 0.0f) {
-                int basePx = items[i].baseSize - items[i].mainMargin;
-                int newMain = basePx - (int)(deficit * (items[i].shrink * basePx) / totalShrinkScaled);
-                if (newMain < 0) newMain = 0;
-                items[i].child->setOverrideSize(newMain);
-                items[i].child->setNeedsLayout(true, false);
-                items[i].child->layoutIfNeeded();
-                items[i].mainSize = (isRow ? items[i].child->width() : items[i].child->height()) + items[i].mainMargin;
-                items[i].crossSize = (isRow ? items[i].child->height() : items[i].child->width()) + items[i].crossMargin;
-                if (items[i].crossSize > maxCrossSize)
-                    maxCrossSize = items[i].crossSize;
-            }
-        }
-        freeSpace = 0;
-    }
 
-    // --- Clamp to min/max and redistribute ---
-    bool needsRedist = false;
-    int frozenSpace = 0;
-    float unfrozenGrow = 0.0f;
-    for (size_t i = 0; i < items.size(); i++) {
-        RenderObject* child = items[i].child;
-        int cur = items[i].mainSize - items[i].mainMargin;
-        int clamped = cur;
-        if (isRow) {
-            int bp = child->borderLeft() + child->paddingLeft() + child->borderRight() + child->paddingRight();
-            if (child->style()->minWidth().isFixed() && child->style()->minWidth().value() > 0)
-                clamped = max(clamped, child->style()->minWidth().value() + bp);
-            if (child->style()->maxWidth().isFixed() && !child->style()->maxWidth().isUndefined())
-                clamped = min(clamped, child->style()->maxWidth().value() + bp);
-        } else {
-            int bp = child->borderTop() + child->paddingTop() + child->borderBottom() + child->paddingBottom();
-            if (child->style()->minHeight().isFixed() && child->style()->minHeight().value() > 0)
-                clamped = max(clamped, child->style()->minHeight().value() + bp);
-            if (child->style()->maxHeight().isFixed() && !child->style()->maxHeight().isUndefined())
-                clamped = min(clamped, child->style()->maxHeight().value() + bp);
-        }
-        if (clamped != cur) {
-            child->setOverrideSize(clamped);
-            child->setNeedsLayout(true, false);
-            child->layoutIfNeeded();
-            items[i].mainSize = (isRow ? child->width() : child->height()) + items[i].mainMargin;
-            items[i].crossSize = (isRow ? child->height() : child->width()) + items[i].crossMargin;
-            items[i].grow = 0;
-            needsRedist = true;
-            frozenSpace += items[i].mainSize;
-        } else {
-            unfrozenGrow += items[i].grow;
-        }
-    }
-    if (needsRedist && unfrozenGrow > 0.0f) {
-        int avail = mainAvail - frozenSpace;
-        for (size_t i = 0; i < items.size(); i++) {
-            if (items[i].grow > 0.0f) {
-                int newMain = (int)(avail * (items[i].grow / unfrozenGrow)) - items[i].mainMargin;
-                if (newMain < 0) newMain = 0;
-                items[i].child->setOverrideSize(newMain);
-                items[i].child->setNeedsLayout(true, false);
-                items[i].child->layoutIfNeeded();
-                items[i].mainSize = (isRow ? items[i].child->width() : items[i].child->height()) + items[i].mainMargin;
-                items[i].crossSize = (isRow ? items[i].child->height() : items[i].child->width()) + items[i].crossMargin;
-                if (items[i].crossSize > maxCrossSize)
-                    maxCrossSize = items[i].crossSize;
-            }
-        }
-    }
+        int freeSpace = mainAvail - lineUsed;
 
-    // Recalculate free space for justify-content
-    {
-        int totalUsed = 0;
-        for (size_t i = 0; i < items.size(); i++)
-            totalUsed += items[i].mainSize;
-        freeSpace = mainAvail - totalUsed;
-        if (freeSpace < 0) freeSpace = 0;
-    }
-
-    // --- Justify-content ---
-    int mainOffset = 0, mainGap = 0;
-    int n = (int)items.size();
-    switch (justify) {
-        case JustifyFlexStart:  break;
-        case JustifyFlexEnd:    mainOffset = freeSpace; break;
-        case JustifyCenter:     mainOffset = freeSpace / 2; break;
-        case JustifySpaceBetween:
-            if (n > 1) mainGap = freeSpace / (n - 1);
-            break;
-        case JustifySpaceAround:
-            if (n > 0) { mainGap = freeSpace / n; mainOffset = mainGap / 2; }
-            break;
-    }
-
-    // --- Position children ---
-    int crossExtent = crossContainerSize > 0 ? crossContainerSize : maxCrossSize;
-    int mainPos = isReverse ? (mainStart + mainAvail) : (mainStart + mainOffset);
-
-    for (size_t i = 0; i < items.size(); i++) {
-        FlexItem& item = items[i];
-        RenderObject* child = item.child;
-        int childMain = item.mainSize - item.mainMargin;
-        int childCross = item.crossSize - item.crossMargin;
-        int crossMarginBefore = isRow ? child->marginTop() : child->marginLeft();
-        int crossMarginAfter = isRow ? child->marginBottom() : child->marginRight();
-
-        // Cross-axis alignment
-        int crossPos = crossStart;
-        switch (align) {
-            case AlignFlexStart:
-            case AlignBaseline:
-                crossPos += crossMarginBefore;
-                break;
-            case AlignFlexEnd:
-                crossPos += crossExtent - childCross - crossMarginAfter;
-                break;
-            case AlignCenter:
-                crossPos += (crossExtent - childCross - crossMarginBefore - crossMarginAfter) / 2 + crossMarginBefore;
-                break;
-            case AlignStretch:
-                crossPos += crossMarginBefore;
-                if (isRow && child->style()->height().isAuto()) {
-                    int h = crossExtent - crossMarginBefore - crossMarginAfter
-                        - child->borderTop() - child->paddingTop() - child->borderBottom() - child->paddingBottom();
-                    if (h > 0 && h != child->contentHeight()) {
-                        child->style()->setHeight(Length(h, Fixed));
-                        child->setChildNeedsLayout(true, false);
-                        child->layoutIfNeeded();
-                        child->style()->setHeight(Length(Auto));
-                    }
-                } else if (!isRow && child->style()->width().isAuto()) {
-                    int w = crossExtent - crossMarginBefore - crossMarginAfter
-                        - child->borderLeft() - child->paddingLeft() - child->borderRight() - child->paddingRight();
-                    if (w > 0 && w != child->contentWidth()) {
-                        child->setOverrideSize(w + child->borderLeft() + child->paddingLeft()
-                            + child->borderRight() + child->paddingRight());
-                        child->setChildNeedsLayout(true, false);
-                        child->layoutIfNeeded();
-                    }
+        if (freeSpace > 0 && totalGrow > 0.0f) {
+            for (size_t i = line.start; i < line.end; i++) {
+                if (allItems[i].grow > 0.0f) {
+                    int newMain = allItems[i].baseSize - allItems[i].mainMargin + (int)(freeSpace * (allItems[i].grow / totalGrow));
+                    allItems[i].child->setOverrideSize(newMain);
+                    allItems[i].child->setNeedsLayout(true, false);
+                    allItems[i].child->layoutIfNeeded();
+                    allItems[i].mainSize = (isRow ? allItems[i].child->width() : allItems[i].child->height()) + allItems[i].mainMargin;
+                    allItems[i].crossSize = (isRow ? allItems[i].child->height() : allItems[i].child->width()) + allItems[i].crossMargin;
                 }
+            }
+        } else if (freeSpace < 0 && totalShrinkScaled > 0.0f) {
+            int deficit = -freeSpace;
+            for (size_t i = line.start; i < line.end; i++) {
+                if (allItems[i].shrink > 0.0f) {
+                    int bp = allItems[i].baseSize - allItems[i].mainMargin;
+                    int newMain = bp - (int)(deficit * (allItems[i].shrink * bp) / totalShrinkScaled);
+                    if (newMain < 0) newMain = 0;
+                    allItems[i].child->setOverrideSize(newMain);
+                    allItems[i].child->setNeedsLayout(true, false);
+                    allItems[i].child->layoutIfNeeded();
+                    allItems[i].mainSize = (isRow ? allItems[i].child->width() : allItems[i].child->height()) + allItems[i].mainMargin;
+                    allItems[i].crossSize = (isRow ? allItems[i].child->height() : allItems[i].child->width()) + allItems[i].crossMargin;
+                }
+            }
+        }
+
+        // Clamp min/max
+        bool needsRedist = false;
+        int frozenSpace = 0;
+        float unfrozenGrow = 0;
+        for (size_t i = line.start; i < line.end; i++) {
+            RenderObject* child = allItems[i].child;
+            int cur = allItems[i].mainSize - allItems[i].mainMargin;
+            int clamped = cur;
+            if (isRow) {
+                int bp = child->borderLeft() + child->paddingLeft() + child->borderRight() + child->paddingRight();
+                if (child->style()->minWidth().isFixed() && child->style()->minWidth().value() > 0)
+                    clamped = max(clamped, child->style()->minWidth().value() + bp);
+                if (child->style()->maxWidth().isFixed() && !child->style()->maxWidth().isUndefined())
+                    clamped = min(clamped, child->style()->maxWidth().value() + bp);
+            } else {
+                int bp = child->borderTop() + child->paddingTop() + child->borderBottom() + child->paddingBottom();
+                if (child->style()->minHeight().isFixed() && child->style()->minHeight().value() > 0)
+                    clamped = max(clamped, child->style()->minHeight().value() + bp);
+                if (child->style()->maxHeight().isFixed() && !child->style()->maxHeight().isUndefined())
+                    clamped = min(clamped, child->style()->maxHeight().value() + bp);
+            }
+            if (clamped != cur) {
+                child->setOverrideSize(clamped);
+                child->setNeedsLayout(true, false);
+                child->layoutIfNeeded();
+                allItems[i].mainSize = (isRow ? child->width() : child->height()) + allItems[i].mainMargin;
+                allItems[i].crossSize = (isRow ? child->height() : child->width()) + allItems[i].crossMargin;
+                allItems[i].grow = 0;
+                needsRedist = true;
+                frozenSpace += allItems[i].mainSize;
+            } else {
+                unfrozenGrow += allItems[i].grow;
+            }
+        }
+        if (needsRedist && unfrozenGrow > 0.0f) {
+            int avail = mainAvail - frozenSpace;
+            for (size_t i = line.start; i < line.end; i++) {
+                if (allItems[i].grow > 0.0f) {
+                    int newMain = (int)(avail * (allItems[i].grow / unfrozenGrow)) - allItems[i].mainMargin;
+                    if (newMain < 0) newMain = 0;
+                    allItems[i].child->setOverrideSize(newMain);
+                    allItems[i].child->setNeedsLayout(true, false);
+                    allItems[i].child->layoutIfNeeded();
+                    allItems[i].mainSize = (isRow ? allItems[i].child->width() : allItems[i].child->height()) + allItems[i].mainMargin;
+                    allItems[i].crossSize = (isRow ? allItems[i].child->height() : allItems[i].child->width()) + allItems[i].crossMargin;
+                }
+            }
+        }
+
+        // Line cross size
+        int lineCross = 0;
+        for (size_t i = line.start; i < line.end; i++)
+            if (allItems[i].crossSize > lineCross)
+                lineCross = allItems[i].crossSize;
+        line.maxCrossSize = lineCross;
+    }
+
+    // Position lines and items
+    int totalCrossUsed = 0;
+    for (size_t li = 0; li < lines.size(); li++)
+        totalCrossUsed += lines[li].maxCrossSize;
+
+    int crossPos = crossStart;
+    for (size_t lineIdx = 0; lineIdx < lines.size(); lineIdx++) {
+        size_t li = (wrapMode == FlexWrapReverse) ? (lines.size() - 1 - lineIdx) : lineIdx;
+        FlexLine& line = lines[li];
+        int lineCross = line.maxCrossSize;
+        // Single line with definite cross container: use full cross size for alignment
+        if (lines.size() == 1 && crossContainerSize > 0)
+            lineCross = crossContainerSize;
+
+        int lineMainUsed = 0;
+        for (size_t i = line.start; i < line.end; i++)
+            lineMainUsed += allItems[i].mainSize;
+        int freeSpace = mainAvail - lineMainUsed;
+        if (freeSpace < 0) freeSpace = 0;
+
+        int mainOffset = 0, mainGap = 0;
+        int n = (int)(line.end - line.start);
+        switch (justify) {
+            case JustifyFlexStart:  break;
+            case JustifyFlexEnd:    mainOffset = freeSpace; break;
+            case JustifyCenter:     mainOffset = freeSpace / 2; break;
+            case JustifySpaceBetween:
+                if (n > 1) mainGap = freeSpace / (n - 1);
+                break;
+            case JustifySpaceAround:
+                if (n > 0) { mainGap = freeSpace / n; mainOffset = mainGap / 2; }
                 break;
         }
 
-        // Main-axis placement
-        int x, y;
-        if (isRow) {
-            if (isReverse) {
-                mainPos -= child->marginRight() + childMain;
-                x = mainPos;
-                mainPos -= child->marginLeft() + mainGap;
-            } else {
-                x = mainPos + child->marginLeft();
-                mainPos += item.mainSize + mainGap;
+        int mainPos = isReverse ? (mainStart + mainAvail) : (mainStart + mainOffset);
+
+        for (size_t i = line.start; i < line.end; i++) {
+            FlexItem& item = allItems[i];
+            RenderObject* child = item.child;
+            int childMain = item.mainSize - item.mainMargin;
+            int childCross = item.crossSize - item.crossMargin;
+            int crossMarginBefore = isRow ? child->marginTop() : child->marginLeft();
+            int crossMarginAfter = isRow ? child->marginBottom() : child->marginRight();
+
+            int itemCrossPos = crossPos;
+            switch (align) {
+                case AlignFlexStart:
+                case AlignBaseline:
+                    itemCrossPos += crossMarginBefore;
+                    break;
+                case AlignFlexEnd:
+                    itemCrossPos += lineCross - childCross - crossMarginAfter;
+                    break;
+                case AlignCenter:
+                    itemCrossPos += (lineCross - childCross - crossMarginBefore - crossMarginAfter) / 2 + crossMarginBefore;
+                    break;
+                case AlignStretch:
+                    itemCrossPos += crossMarginBefore;
+                    if (isRow && child->style()->height().isAuto()) {
+                        int h = lineCross - crossMarginBefore - crossMarginAfter
+                            - child->borderTop() - child->paddingTop() - child->borderBottom() - child->paddingBottom();
+                        if (h > 0 && h != child->contentHeight()) {
+                            child->style()->setHeight(Length(h, Fixed));
+                            child->setChildNeedsLayout(true, false);
+                            child->layoutIfNeeded();
+                            child->style()->setHeight(Length(Auto));
+                        }
+                    } else if (!isRow && child->style()->width().isAuto()) {
+                        int w = lineCross - crossMarginBefore - crossMarginAfter
+                            - child->borderLeft() - child->paddingLeft() - child->borderRight() - child->paddingRight();
+                        if (w > 0 && w != child->contentWidth()) {
+                            child->setOverrideSize(w + child->borderLeft() + child->paddingLeft()
+                                + child->borderRight() + child->paddingRight());
+                            child->setChildNeedsLayout(true, false);
+                            child->layoutIfNeeded();
+                        }
+                    }
+                    break;
             }
-            y = crossPos;
-        } else {
-            if (isReverse) {
-                mainPos -= child->marginBottom() + childMain;
-                y = mainPos;
-                mainPos -= child->marginTop() + mainGap;
+
+            int x, y;
+            if (isRow) {
+                if (isReverse) {
+                    mainPos -= child->marginRight() + childMain;
+                    x = mainPos;
+                    mainPos -= child->marginLeft() + mainGap;
+                } else {
+                    x = mainPos + child->marginLeft();
+                    mainPos += item.mainSize + mainGap;
+                }
+                y = itemCrossPos;
             } else {
-                y = mainPos + child->marginTop();
-                mainPos += item.mainSize + mainGap;
+                if (isReverse) {
+                    mainPos -= child->marginBottom() + childMain;
+                    y = mainPos;
+                    mainPos -= child->marginTop() + mainGap;
+                } else {
+                    y = mainPos + child->marginTop();
+                    mainPos += item.mainSize + mainGap;
+                }
+                x = itemCrossPos;
             }
-            x = crossPos;
+            placeChild(child, x, y);
         }
-        placeChild(child, x, y);
+        crossPos += lineCross;
     }
 
     m_flexingChildren = false;
     style()->setBoxOrient(savedOrient);
 
-    // Update container height
     if (isRow) {
         if (style()->height().isAuto())
-            m_height = crossStart + maxCrossSize + borderBottom() + paddingBottom();
+            m_height = crossStart + totalCrossUsed + borderBottom() + paddingBottom();
     } else {
         if (style()->height().isAuto()) {
             int usedMain = 0;
-            for (size_t i = 0; i < items.size(); i++)
-                usedMain += items[i].mainSize;
+            for (size_t i = 0; i < allItems.size(); i++)
+                usedMain += allItems[i].mainSize;
             m_height = mainStart + usedMain + borderBottom() + paddingBottom();
         }
     }

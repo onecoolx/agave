@@ -220,7 +220,7 @@ findProp (register const char *str, register size_t len)
 {
   enum
     {
-      TOTAL_KEYWORDS = 209,
+      TOTAL_KEYWORDS = 211,
       MIN_WORD_LENGTH = 3,
       MAX_WORD_LENGTH = 43,
       MIN_HASH_VALUE = 3,
@@ -311,7 +311,7 @@ findProp (register const char *str, register size_t len)
       {"unicode-bidi", CSS_PROP_UNICODE_BIDI},
 #line 47 "CSSPropertyNames.gperf"
       {"counter-reset", CSS_PROP_COUNTER_RESET},
-#line 217 "CSSPropertyNames.gperf"
+#line 219 "CSSPropertyNames.gperf"
       {"align-items", CSS_PROP_ALIGN_ITEMS},
 #line 88 "CSSPropertyNames.gperf"
       {"padding-bottom", CSS_PROP_PADDING_BOTTOM},
@@ -547,7 +547,7 @@ findProp (register const char *str, register size_t len)
       {"border-left-width", CSS_PROP_BORDER_LEFT_WIDTH},
 #line 82 "CSSPropertyNames.gperf"
       {"outline-style", CSS_PROP_OUTLINE_STYLE},
-#line 215 "CSSPropertyNames.gperf"
+#line 216 "CSSPropertyNames.gperf"
       {"flex-grow", CSS_PROP_FLEX_GROW},
 #line 75 "CSSPropertyNames.gperf"
       {"min-height", CSS_PROP_MIN_HEIGHT},
@@ -555,6 +555,8 @@ findProp (register const char *str, register size_t len)
       {"list-style-image", CSS_PROP_LIST_STYLE_IMAGE},
 #line 149 "CSSPropertyNames.gperf"
       {"-webkit-border-bottom-left-radius", CSS_PROP__WEBKIT_BORDER_BOTTOM_LEFT_RADIUS},
+#line 218 "CSSPropertyNames.gperf"
+      {"flex-wrap", CSS_PROP_FLEX_WRAP},
 #line 59 "CSSPropertyNames.gperf"
       {"font-weight", CSS_PROP_FONT_WEIGHT},
 #line 169 "CSSPropertyNames.gperf"
@@ -599,7 +601,7 @@ findProp (register const char *str, register size_t len)
       {"-webkit-transform-origin-x", CSS_PROP__WEBKIT_TRANSFORM_ORIGIN_X},
 #line 27 "CSSPropertyNames.gperf"
       {"border-left-style", CSS_PROP_BORDER_LEFT_STYLE},
-#line 216 "CSSPropertyNames.gperf"
+#line 217 "CSSPropertyNames.gperf"
       {"flex-shrink", CSS_PROP_FLEX_SHRINK},
 #line 194 "CSSPropertyNames.gperf"
       {"-webkit-match-nearest-mail-blockquote-color", CSS_PROP__WEBKIT_MATCH_NEAREST_MAIL_BLOCKQUOTE_COLOR},
@@ -613,11 +615,13 @@ findProp (register const char *str, register size_t len)
       {"-webkit-column-rule-style", CSS_PROP__WEBKIT_COLUMN_RULE_STYLE},
 #line 160 "CSSPropertyNames.gperf"
       {"-webkit-box-flex", CSS_PROP__WEBKIT_BOX_FLEX},
+#line 215 "CSSPropertyNames.gperf"
+      {"flex-flow", CSS_PROP_FLEX_FLOW},
 #line 73 "CSSPropertyNames.gperf"
       {"max-height", CSS_PROP_MAX_HEIGHT},
 #line 129 "CSSPropertyNames.gperf"
       {"text-underline-style", CSS_PROP_TEXT_UNDERLINE_STYLE},
-#line 218 "CSSPropertyNames.gperf"
+#line 220 "CSSPropertyNames.gperf"
       {"justify-content", CSS_PROP_JUSTIFY_CONTENT},
 #line 200 "CSSPropertyNames.gperf"
       {"-webkit-text-security", CSS_PROP__WEBKIT_TEXT_SECURITY},
@@ -697,39 +701,37 @@ findProp (register const char *str, register size_t len)
        -1,  -1,  -1,  -1, 150,  -1,  -1,  -1, 151,  -1,
        -1, 152,  -1, 153,  -1,  -1,  -1,  -1,  -1, 154,
       155, 156, 157,  -1,  -1,  -1,  -1,  -1, 158, 159,
-      160, 161,  -1, 162,  -1,  -1, 163, 164, 165, 166,
+      160, 161,  -1, 162, 163,  -1, 164, 165, 166, 167,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-      167, 168,  -1,  -1,  -1,  -1,  -1, 169,  -1, 170,
-       -1,  -1,  -1, 171,  -1,  -1,  -1,  -1,  -1,  -1,
-      172,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 173,
-       -1,  -1,  -1,  -1,  -1, 174,  -1,  -1,  -1,  -1,
-       -1, 175,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-      176,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1, 177,  -1,  -1,  -1,  -1,  -1,
+      168, 169,  -1,  -1,  -1,  -1,  -1, 170,  -1, 171,
+       -1,  -1,  -1, 172,  -1,  -1,  -1,  -1,  -1,  -1,
+      173,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 174,
+       -1,  -1,  -1,  -1,  -1, 175,  -1,  -1,  -1,  -1,
+       -1, 176,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+      177,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1, 178,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 178,
-       -1,  -1,  -1, 179,  -1,  -1,  -1,  -1,  -1,  -1,
-      180,  -1,  -1, 181,  -1, 182, 183, 184,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1, 185,  -1, 186,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-      187,  -1, 188,  -1,  -1,  -1, 189,  -1,  -1,  -1,
-      190,  -1,  -1,  -1,  -1,  -1, 191,  -1,  -1,  -1,
-      192,  -1,  -1,  -1,  -1, 193,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1, 194, 195, 196,  -1,  -1,
-       -1,  -1,  -1, 197,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1, 198,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1, 199,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1, 200,  -1,  -1,  -1, 201,
-       -1, 202,  -1,  -1,  -1,  -1,  -1, 203,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1, 204,  -1, 205,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 179,
+       -1,  -1,  -1, 180,  -1,  -1,  -1,  -1,  -1,  -1,
+      181,  -1,  -1, 182,  -1, 183, 184, 185,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1, 186,  -1, 187,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+      188,  -1, 189,  -1,  -1,  -1, 190,  -1,  -1,  -1,
+      191,  -1,  -1,  -1,  -1,  -1, 192,  -1,  -1, 193,
+      194,  -1,  -1,  -1,  -1, 195,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1, 196, 197, 198,  -1,  -1,
+       -1,  -1,  -1, 199,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1, 200,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1, 201,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1, 202,  -1,  -1,  -1, 203,
+       -1, 204,  -1,  -1,  -1,  -1,  -1, 205,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1, 206,  -1, 207,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
@@ -738,12 +740,12 @@ findProp (register const char *str, register size_t len)
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1, 206,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 207,  -1,
+       -1, 208,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 209,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
@@ -755,7 +757,9 @@ findProp (register const char *str, register size_t len)
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1, 208
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1, 210
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
@@ -777,7 +781,7 @@ findProp (register const char *str, register size_t len)
     }
   return 0;
 }
-#line 219 "CSSPropertyNames.gperf"
+#line 221 "CSSPropertyNames.gperf"
 
 static const char * const propertyList[] = {
 "",
@@ -986,8 +990,10 @@ static const char * const propertyList[] = {
 "flex", 
 "flex-basis", 
 "flex-direction", 
+"flex-flow", 
 "flex-grow", 
 "flex-shrink", 
+"flex-wrap", 
 "align-items", 
 "justify-content", 
     0

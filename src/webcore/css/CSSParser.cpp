@@ -1215,6 +1215,15 @@ bool CSSParser::parseValue(int propId, bool important)
             id == CSS_VAL_COLUMN || id == CSS_VAL_COLUMN_REVERSE)
             valid_primitive = true;
         break;
+    case CSS_PROP_FLEX_WRAP:            // nowrap | wrap | wrap-reverse
+        if (id == CSS_VAL_NOWRAP || id == CSS_VAL_WRAP || id == CSS_VAL_WRAP_REVERSE)
+            valid_primitive = true;
+        break;
+    case CSS_PROP_FLEX_FLOW: {
+        // flex-flow: <flex-direction> || <flex-wrap>
+        const int properties[2] = { CSS_PROP_FLEX_DIRECTION, CSS_PROP_FLEX_WRAP };
+        return parseShorthand(propId, properties, 2, important);
+    }
     case CSS_PROP_FLEX_GROW:
     case CSS_PROP_FLEX_SHRINK:          // <number> (non-negative)
         valid_primitive = validUnit(value, FNumber | FNonNeg, strict);

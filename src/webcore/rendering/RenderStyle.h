@@ -674,6 +674,7 @@ public:
 // Modern CSS Flexbox Properties (ENABLE_MODERN_FLEXBOX)
 
 enum EFlexDirection { FlowRow, FlowRowReverse, FlowColumn, FlowColumnReverse };
+enum EFlexWrap { FlexNoWrap, FlexWrap, FlexWrapReverse };
 enum EFlexJustify { JustifyFlexStart, JustifyFlexEnd, JustifyCenter, JustifySpaceBetween, JustifySpaceAround };
 enum EFlexAlign { AlignFlexStart, AlignFlexEnd, AlignCenter, AlignBaseline, AlignStretch };
 
@@ -689,6 +690,7 @@ public:
     float flexShrink;
     Length flexBasis;
     unsigned direction : 2;  // EFlexDirection
+    unsigned wrap : 2;       // EFlexWrap
     unsigned justify : 3;    // EFlexJustify
     unsigned align : 3;      // EFlexAlign
 };
@@ -1505,6 +1507,7 @@ public:
 
     // Modern Flexbox getters
     EFlexDirection flexDirection() const { return static_cast<EFlexDirection>(rareNonInheritedData->modernFlex->direction); }
+    EFlexWrap flexWrap() const { return static_cast<EFlexWrap>(rareNonInheritedData->modernFlex->wrap); }
     float flexGrow() const { return rareNonInheritedData->modernFlex->flexGrow; }
     float flexShrink() const { return rareNonInheritedData->modernFlex->flexShrink; }
     Length flexBasis() const { return rareNonInheritedData->modernFlex->flexBasis; }
@@ -1760,6 +1763,7 @@ public:
 
     // Modern Flexbox setters
     void setFlexDirection(EFlexDirection d) { SET_VAR(rareNonInheritedData.access()->modernFlex, direction, d); }
+    void setFlexWrap(EFlexWrap w) { SET_VAR(rareNonInheritedData.access()->modernFlex, wrap, w); }
     void setFlexGrow(float f) { SET_VAR(rareNonInheritedData.access()->modernFlex, flexGrow, f); }
     void setFlexShrink(float f) { SET_VAR(rareNonInheritedData.access()->modernFlex, flexShrink, f); }
     void setFlexBasis(Length b) { SET_VAR(rareNonInheritedData.access()->modernFlex, flexBasis, b); }
@@ -1923,6 +1927,7 @@ public:
 
     // Modern Flexbox initial values
     static EFlexDirection initialFlexDirection() { return FlowRow; }
+    static EFlexWrap initialFlexWrap() { return FlexNoWrap; }
     static float initialFlexGrow() { return 0.0f; }
     static float initialFlexShrink() { return 1.0f; }
     static Length initialFlexBasis() { return Length(Auto); }

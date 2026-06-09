@@ -3992,6 +3992,19 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
             default: return;
         }
         return;
+    case CSS_PROP_FLEX_WRAP:
+        HANDLE_INHERIT_AND_INITIAL(flexWrap, FlexWrap)
+        if (!primitiveValue) return;
+        switch (primitiveValue->getIdent()) {
+            case CSS_VAL_NOWRAP: style->setFlexWrap(FlexNoWrap); break;
+            case CSS_VAL_WRAP: style->setFlexWrap(FlexWrap); break;
+            case CSS_VAL_WRAP_REVERSE: style->setFlexWrap(FlexWrapReverse); break;
+            default: return;
+        }
+        return;
+    case CSS_PROP_FLEX_FLOW:
+        // Shorthand — handled by CSSParser decomposition.
+        return;
     case CSS_PROP_FLEX_GROW:
         HANDLE_INHERIT_AND_INITIAL(flexGrow, FlexGrow)
         if (!primitiveValue || primitiveValue->primitiveType() != CSSPrimitiveValue::CSS_NUMBER)

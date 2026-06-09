@@ -393,6 +393,7 @@ StyleModernFlexData::StyleModernFlexData()
     , flexShrink(RenderStyle::initialFlexShrink())
     , flexBasis(RenderStyle::initialFlexBasis())
     , direction(RenderStyle::initialFlexDirection())
+    , wrap(RenderStyle::initialFlexWrap())
     , justify(RenderStyle::initialJustifyContent())
     , align(RenderStyle::initialAlignItems())
 {
@@ -404,6 +405,7 @@ StyleModernFlexData::StyleModernFlexData(const StyleModernFlexData& o)
     , flexShrink(o.flexShrink)
     , flexBasis(o.flexBasis)
     , direction(o.direction)
+    , wrap(o.wrap)
     , justify(o.justify)
     , align(o.align)
 {
@@ -413,7 +415,7 @@ bool StyleModernFlexData::operator==(const StyleModernFlexData& o) const
 {
     return flexGrow == o.flexGrow && flexShrink == o.flexShrink &&
            flexBasis == o.flexBasis && direction == o.direction &&
-           justify == o.justify && align == o.align;
+           wrap == o.wrap && justify == o.justify && align == o.align;
 }
 
 StyleMultiColData::StyleMultiColData()

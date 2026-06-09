@@ -370,4 +370,6 @@ flex-start, CSS_VAL_FLEX_START
 flex-end, CSS_VAL_FLEX_END
 space-between, CSS_VAL_SPACE_BETWEEN
 space-around, CSS_VAL_SPACE_AROUND
+wrap, CSS_VAL_WRAP
+wrap-reverse, CSS_VAL_WRAP_REVERSE
 %%

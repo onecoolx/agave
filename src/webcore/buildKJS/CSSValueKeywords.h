@@ -369,5 +369,7 @@ WebCore::String getValueName(unsigned short id);
 #define CSS_VAL_FLEX_END 360
 #define CSS_VAL_SPACE_BETWEEN 361
 #define CSS_VAL_SPACE_AROUND 362
-#define CSS_VAL_TOTAL 363
+#define CSS_VAL_WRAP 363
+#define CSS_VAL_WRAP_REVERSE 364
+#define CSS_VAL_TOTAL 365
 #endif

@@ -212,8 +212,10 @@ zoom, CSS_PROP_ZOOM
 flex, CSS_PROP_FLEX
 flex-basis, CSS_PROP_FLEX_BASIS
 flex-direction, CSS_PROP_FLEX_DIRECTION
+flex-flow, CSS_PROP_FLEX_FLOW
 flex-grow, CSS_PROP_FLEX_GROW
 flex-shrink, CSS_PROP_FLEX_SHRINK
+flex-wrap, CSS_PROP_FLEX_WRAP
 align-items, CSS_PROP_ALIGN_ITEMS
 justify-content, CSS_PROP_JUSTIFY_CONTENT
 %%

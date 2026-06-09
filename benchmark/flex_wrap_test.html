@@ -1,0 +1,38 @@
+<html>
+<head><style>
+#w1 { display:flex; flex-wrap:wrap; width:300px; }
+#w1 div { width:120px; height:40px; }
+#w2 { display:flex; flex-wrap:wrap-reverse; width:300px; }
+#w2 div { width:120px; height:40px; }
+#w3 { display:flex; flex-wrap:wrap; width:300px; }
+#w3a { width:100px; height:30px; }
+#w3b { width:100px; height:30px; }
+#w3c { width:100px; height:30px; }
+#w3d { width:100px; height:50px; }
+</style></head>
+<body>
+<div id="w1"><div id="w1a">1</div><div id="w1b">2</div><div id="w1c">3</div></div>
+<div id="w2"><div id="w2a">1</div><div id="w2b">2</div><div id="w2c">3</div></div>
+<div id="w3"><div id="w3a">A</div><div id="w3b">B</div><div id="w3c">C</div><div id="w3d">D</div></div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+var w1=document.getElementById('w1');
+// 300px, 3 items of 120px each -> line1: 120+120=240, line2: 120
+ck('w1-line1', document.getElementById('w1b').offsetTop - w1.offsetTop, 0);
+ck('w1-line2', document.getElementById('w1c').offsetTop - w1.offsetTop, 40);
+ck('w1-height', w1.offsetHeight, 80);
+// wrap-reverse: lines stacked bottom-to-top
+var w2=document.getElementById('w2');
+ck('w2-first-line-bottom', document.getElementById('w2a').offsetTop - w2.offsetTop, 40);
+ck('w2-second-line-top', document.getElementById('w2c').offsetTop - w2.offsetTop, 0);
+// 4 items of 100px in 300px: line1=3 items, line2=1 item
+var w3=document.getElementById('w3');
+ck('w3-line1', document.getElementById('w3c').offsetTop - w3.offsetTop, 0);
+ck('w3-line2', document.getElementById('w3d').offsetTop - w3.offsetTop, 30);
+ck('w3-height', w3.offsetHeight, 80);
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

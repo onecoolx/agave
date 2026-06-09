@@ -213,7 +213,9 @@ zoom
 flex
 flex-basis
 flex-direction
+flex-flow
 flex-grow
 flex-shrink
+flex-wrap
 align-items
 justify-content
