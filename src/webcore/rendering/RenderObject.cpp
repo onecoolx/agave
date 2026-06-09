@@ -154,6 +154,8 @@ RenderObject* RenderObject::createObject(Node* node, RenderStyle* style)
             break;
         case BOX:
         case INLINE_BOX:
+        case FLEX:
+        case INLINE_FLEX:
             o = new (arena) RenderFlexibleBox(node);
             break;
     }

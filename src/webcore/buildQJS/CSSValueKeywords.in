@@ -257,6 +257,8 @@ table-cell
 table-caption
 -webkit-box
 -webkit-inline-box
+flex
+inline-flex
 #none
 #
 # CSS_PROP_CURSOR:
@@ -550,3 +552,20 @@ visual
 # CSS_PROP__WEBKIT_BORDER_FIT
 #
 lines
+
+#
+# CSS_PROP_FLEX_DIRECTION
+#
+row
+row-reverse
+column
+column-reverse
+
+#
+# CSS_PROP_JUSTIFY_CONTENT / CSS_PROP_ALIGN_ITEMS
+#
+flex-start
+flex-end
+# center (already defined above)
+space-between
+space-around

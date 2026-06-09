@@ -210,3 +210,10 @@ zoom
 -webkit-user-drag
 -webkit-user-modify
 -webkit-user-select
+flex
+flex-basis
+flex-direction
+flex-grow
+flex-shrink
+align-items
+justify-content

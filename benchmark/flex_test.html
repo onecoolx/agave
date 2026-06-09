@@ -1,0 +1,136 @@
+<html>
+<head>
+<style>
+/* Basic tests (existing) */
+#t1 { display:flex; width:400px; height:100px; }
+#t1a, #t1b { flex-grow:1; flex-basis:0%; }
+#t2 { display:flex; width:300px; height:50px; }
+#t2a { flex-grow:1; flex-basis:0%; }
+#t2b { flex-grow:2; flex-basis:0%; }
+#t3 { display:flex; width:400px; justify-content:center; }
+#t3a, #t3b { width:100px; height:50px; }
+#t4 { display:flex; width:400px; justify-content:space-between; }
+#t4a, #t4b, #t4c { width:50px; height:50px; }
+#t5 { display:flex; width:400px; height:100px; align-items:center; }
+#t5a { width:50px; height:30px; }
+#t6 { display:flex; flex-direction:column; width:100px; height:300px; }
+#t6a, #t6b { flex-grow:1; flex-basis:0%; }
+#t7 { display:flex; width:200px; }
+#t7a, #t7b { width:150px; height:50px; flex-shrink:1; }
+
+/* Edge cases */
+/* t8: nested flex */
+#t8 { display:flex; width:400px; height:60px; }
+#t8a { display:flex; flex:1; }
+#t8a1, #t8a2 { flex:1; }
+#t8b { width:100px; }
+
+/* t9: percentage width child */
+#t9 { display:flex; width:500px; height:50px; }
+#t9a { width:50%; height:50px; }
+#t9b { width:25%; height:50px; }
+
+/* t10: min-width constraint */
+#t10 { display:flex; width:200px; }
+#t10a { flex:1; min-width:120px; height:30px; }
+#t10b { flex:1; height:30px; }
+
+/* t11: max-width constraint */
+#t11 { display:flex; width:400px; }
+#t11a { flex-grow:1; max-width:100px; height:30px; }
+#t11b { flex-grow:1; height:30px; }
+
+/* t12: flex-basis:auto with content */
+#t12 { display:flex; width:400px; }
+#t12a { flex-basis:auto; height:30px; width:80px; }
+#t12b { flex-grow:1; height:30px; }
+
+/* t13: align-items:stretch (default) */
+#t13 { display:flex; width:300px; height:80px; }
+#t13a { flex:1; }
+
+/* t14: flex-end justify */
+#t14 { display:flex; width:400px; justify-content:flex-end; }
+#t14a { width:100px; height:30px; }
+
+/* t15: row-reverse */
+#t15 { display:flex; width:300px; flex-direction:row-reverse; }
+#t15a { width:80px; height:30px; }
+#t15b { width:60px; height:30px; }
+</style>
+</head>
+<body>
+<div id="t1"><div id="t1a">A</div><div id="t1b">B</div></div>
+<div id="t2"><div id="t2a">A</div><div id="t2b">B</div></div>
+<div id="t3"><div id="t3a">A</div><div id="t3b">B</div></div>
+<div id="t4"><div id="t4a">A</div><div id="t4b">B</div><div id="t4c">C</div></div>
+<div id="t5"><div id="t5a">A</div></div>
+<div id="t6"><div id="t6a">A</div><div id="t6b">B</div></div>
+<div id="t7"><div id="t7a">A</div><div id="t7b">B</div></div>
+<div id="t8"><div id="t8a"><div id="t8a1">X</div><div id="t8a2">Y</div></div><div id="t8b">Z</div></div>
+<div id="t9"><div id="t9a">A</div><div id="t9b">B</div></div>
+<div id="t10"><div id="t10a">A</div><div id="t10b">B</div></div>
+<div id="t11"><div id="t11a">A</div><div id="t11b">B</div></div>
+<div id="t12"><div id="t12a">A</div><div id="t12b">B</div></div>
+<div id="t13"><div id="t13a">A</div></div>
+<div id="t14"><div id="t14a">A</div></div>
+<div id="t15"><div id="t15a">A</div><div id="t15b">B</div></div>
+<script>
+var r = [];
+function ck(name, actual, expected, tol) {
+  tol = tol || 2;
+  var pass = Math.abs(actual - expected) <= tol;
+  r.push(name + ':' + (pass ? 'PASS' : 'FAIL(' + actual + '!=' + expected + ')'));
+}
+// Basic
+ck('t1-eq', document.getElementById('t1a').offsetWidth, 200);
+ck('t1-eqb', document.getElementById('t1b').offsetWidth, 200);
+ck('t2-100', document.getElementById('t2a').offsetWidth, 100);
+ck('t2-200', document.getElementById('t2b').offsetWidth, 200);
+var t3=document.getElementById('t3');
+ck('t3-ctr', document.getElementById('t3a').offsetLeft - t3.offsetLeft, 100);
+var t4=document.getElementById('t4'), t4o=t4.offsetLeft;
+ck('t4-a', document.getElementById('t4a').offsetLeft - t4o, 0);
+ck('t4-c', document.getElementById('t4c').offsetLeft - t4o, 350);
+var t5=document.getElementById('t5');
+ck('t5-cy', document.getElementById('t5a').offsetTop - t5.offsetTop, 35);
+ck('t6-h', document.getElementById('t6a').offsetHeight, 150);
+ck('t7-sh', document.getElementById('t7a').offsetWidth, 100);
+
+// Edge: nested flex — inner flex container gets 300px (400-100), each inner child 150
+ck('t8-outer', document.getElementById('t8a').offsetWidth, 300);
+ck('t8-inner', document.getElementById('t8a1').offsetWidth, 150);
+
+// Edge: percentage width — 50% of 500=250, 25% of 500=125
+ck('t9-50pct', document.getElementById('t9a').offsetWidth, 250);
+ck('t9-25pct', document.getElementById('t9b').offsetWidth, 125);
+
+// Edge: min-width — t10a min 120, so t10b gets 200-120=80
+ck('t10-min', document.getElementById('t10a').offsetWidth, 120);
+ck('t10-rest', document.getElementById('t10b').offsetWidth, 80);
+
+// Edge: max-width — t11a capped at 100, t11b gets rest=300
+ck('t11-max', document.getElementById('t11a').offsetWidth, 100);
+ck('t11-rest', document.getElementById('t11b').offsetWidth, 300);
+
+// Edge: flex-basis:auto with explicit width=80, b grows to fill 400-80=320
+ck('t12-basis', document.getElementById('t12a').offsetWidth, 80);
+ck('t12-grow', document.getElementById('t12b').offsetWidth, 320);
+
+// Edge: align-items:stretch — child fills container height=80
+ck('t13-str', document.getElementById('t13a').offsetHeight, 80);
+
+// Edge: justify-content:flex-end — item at right edge
+var t14=document.getElementById('t14');
+ck('t14-end', document.getElementById('t14a').offsetLeft - t14.offsetLeft, 300);
+
+// Edge: row-reverse — first child at right, second to its left
+var t15=document.getElementById('t15');
+ck('t15-a-right', document.getElementById('t15a').offsetLeft - t15.offsetLeft, 220);
+ck('t15-b-left', document.getElementById('t15b').offsetLeft - t15.offsetLeft, 160);
+
+var allpass = r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((allpass?'ALL PASS':'FAILURES') + '|' + r.join('|'));
+</script>
+</body>
+</html>

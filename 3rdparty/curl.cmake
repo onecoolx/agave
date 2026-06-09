@@ -21,8 +21,6 @@ ExternalProject_Add(
   BUILD_IN_SOURCE
   CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-    -DBUILD_SHARED_LIBS=OFF
-    -DBUILD_STATIC_LIBS=ON
     -DBUILD_CURL_EXE=OFF
     -DCURL_USE_MBEDTLS=ON
     -DCURL_DISABLE_LDAP=ON
@@ -46,9 +44,16 @@ link_directories(${PROJ_OUT}/lib)
 
 add_dependencies(${CURL_LIB} ${ZLIB_NAME} ${MTLS_NAME})
 
+if (OPT_EXT_LIBS_SHARED)
+add_library(curl SHARED IMPORTED)
+set_target_properties(curl PROPERTIES
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/libcurl${CMAKE_SHARED_LIBRARY_SUFFIX}
+)
+else()
 add_library(curl STATIC IMPORTED)
 set_target_properties(curl PROPERTIES
   IMPORTED_LOCATION ${PROJ_OUT}/lib/libcurl${CMAKE_STATIC_LIBRARY_SUFFIX}
 )
+endif()
 
 set(LIB_DEPS curl ${LIB_DEPS})

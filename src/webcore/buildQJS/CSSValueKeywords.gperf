@@ -196,6 +196,8 @@ table-cell, CSS_VAL_TABLE_CELL
 table-caption, CSS_VAL_TABLE_CAPTION
 -webkit-box, CSS_VAL__WEBKIT_BOX
 -webkit-inline-box, CSS_VAL__WEBKIT_INLINE_BOX
+flex, CSS_VAL_FLEX
+inline-flex, CSS_VAL_INLINE_FLEX
 auto, CSS_VAL_AUTO
 crosshair, CSS_VAL_CROSSHAIR
 default, CSS_VAL_DEFAULT
@@ -360,4 +362,12 @@ content-box, CSS_VAL_CONTENT_BOX
 logical, CSS_VAL_LOGICAL
 visual, CSS_VAL_VISUAL
 lines, CSS_VAL_LINES
+row, CSS_VAL_ROW
+row-reverse, CSS_VAL_ROW_REVERSE
+column, CSS_VAL_COLUMN
+column-reverse, CSS_VAL_COLUMN_REVERSE
+flex-start, CSS_VAL_FLEX_START
+flex-end, CSS_VAL_FLEX_END
+space-between, CSS_VAL_SPACE_BETWEEN
+space-around, CSS_VAL_SPACE_AROUND
 %%

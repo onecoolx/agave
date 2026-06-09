@@ -1006,6 +1006,10 @@ PassRefPtr<CSSValue> CSSComputedStyleDeclaration::getPropertyCSSValue(int proper
                     return new CSSPrimitiveValue(CSS_VAL__WEBKIT_BOX);
                 case INLINE_BOX:
                     return new CSSPrimitiveValue(CSS_VAL__WEBKIT_INLINE_BOX);
+                case FLEX:
+                    return new CSSPrimitiveValue(CSS_VAL_FLEX);
+                case INLINE_FLEX:
+                    return new CSSPrimitiveValue(CSS_VAL_INLINE_FLEX);
                 case NONE:
                     return new CSSPrimitiveValue(CSS_VAL_NONE);
             }
@@ -1699,6 +1703,13 @@ PassRefPtr<CSSValue> CSSComputedStyleDeclaration::getPropertyCSSValue(int proper
         case CSS_PROP__WEBKIT_TRANSFORM_ORIGIN:
         case CSS_PROP__WEBKIT_TRANSFORM_ORIGIN_X:
         case CSS_PROP__WEBKIT_TRANSFORM_ORIGIN_Y:
+        case CSS_PROP_FLEX:
+        case CSS_PROP_FLEX_BASIS:
+        case CSS_PROP_FLEX_DIRECTION:
+        case CSS_PROP_FLEX_GROW:
+        case CSS_PROP_FLEX_SHRINK:
+        case CSS_PROP_ALIGN_ITEMS:
+        case CSS_PROP_JUSTIFY_CONTENT:
             // FIXME: The above are unimplemented.
             break;
 #if ENABLE(SVG)

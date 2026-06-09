@@ -388,6 +388,34 @@ bool StyleFlexibleBoxData::operator==(const StyleFlexibleBoxData& o) const
            pack == o.pack && orient == o.orient && lines == o.lines;
 }
 
+StyleModernFlexData::StyleModernFlexData()
+    : flexGrow(RenderStyle::initialFlexGrow())
+    , flexShrink(RenderStyle::initialFlexShrink())
+    , flexBasis(RenderStyle::initialFlexBasis())
+    , direction(RenderStyle::initialFlexDirection())
+    , justify(RenderStyle::initialJustifyContent())
+    , align(RenderStyle::initialAlignItems())
+{
+}
+
+StyleModernFlexData::StyleModernFlexData(const StyleModernFlexData& o)
+    : Shared<StyleModernFlexData>()
+    , flexGrow(o.flexGrow)
+    , flexShrink(o.flexShrink)
+    , flexBasis(o.flexBasis)
+    , direction(o.direction)
+    , justify(o.justify)
+    , align(o.align)
+{
+}
+
+bool StyleModernFlexData::operator==(const StyleModernFlexData& o) const
+{
+    return flexGrow == o.flexGrow && flexShrink == o.flexShrink &&
+           flexBasis == o.flexBasis && direction == o.direction &&
+           justify == o.justify && align == o.align;
+}
+
 StyleMultiColData::StyleMultiColData()
     : m_width(0)
     , m_count(RenderStyle::initialColumnCount())
@@ -462,6 +490,7 @@ StyleRareNonInheritedData::StyleRareNonInheritedData(const StyleRareNonInherited
     , lineClamp(o.lineClamp)
     , opacity(o.opacity)
     , flexibleBox(o.flexibleBox)
+    , modernFlex(o.modernFlex)
     , marquee(o.marquee)
     , m_multiCol(o.m_multiCol)
     , m_transform(o.m_transform)
@@ -509,6 +538,7 @@ bool StyleRareNonInheritedData::operator==(const StyleRareNonInheritedData& o) c
         && m_dashboardRegions == o.m_dashboardRegions
         && opacity == o.opacity
         && flexibleBox == o.flexibleBox
+        && modernFlex == o.modernFlex
         && marquee == o.marquee
         && m_multiCol == o.m_multiCol
         && m_transform == o.m_transform
@@ -753,6 +783,7 @@ RenderStyle::RenderStyle(bool)
     surround.init();
     rareNonInheritedData.init();
     rareNonInheritedData.access()->flexibleBox.init();
+    rareNonInheritedData.access()->modernFlex.init();
     rareNonInheritedData.access()->marquee.init();
     rareNonInheritedData.access()->m_multiCol.init();
     rareNonInheritedData.access()->m_transform.init();

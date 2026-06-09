@@ -3981,6 +3981,64 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
         else
             style->setBoxSizing(BORDER_BOX);
         return;
+    case CSS_PROP_FLEX_DIRECTION:
+        HANDLE_INHERIT_AND_INITIAL(flexDirection, FlexDirection)
+        if (!primitiveValue) return;
+        switch (primitiveValue->getIdent()) {
+            case CSS_VAL_ROW: style->setFlexDirection(FlowRow); break;
+            case CSS_VAL_ROW_REVERSE: style->setFlexDirection(FlowRowReverse); break;
+            case CSS_VAL_COLUMN: style->setFlexDirection(FlowColumn); break;
+            case CSS_VAL_COLUMN_REVERSE: style->setFlexDirection(FlowColumnReverse); break;
+            default: return;
+        }
+        return;
+    case CSS_PROP_FLEX_GROW:
+        HANDLE_INHERIT_AND_INITIAL(flexGrow, FlexGrow)
+        if (!primitiveValue || primitiveValue->primitiveType() != CSSPrimitiveValue::CSS_NUMBER)
+            return;
+        style->setFlexGrow(primitiveValue->getFloatValue());
+        return;
+    case CSS_PROP_FLEX_SHRINK:
+        HANDLE_INHERIT_AND_INITIAL(flexShrink, FlexShrink)
+        if (!primitiveValue || primitiveValue->primitiveType() != CSSPrimitiveValue::CSS_NUMBER)
+            return;
+        style->setFlexShrink(primitiveValue->getFloatValue());
+        return;
+    case CSS_PROP_FLEX_BASIS:
+        HANDLE_INHERIT_AND_INITIAL(flexBasis, FlexBasis)
+        if (!primitiveValue) return;
+        if (primitiveValue->getIdent() == CSS_VAL_AUTO)
+            style->setFlexBasis(Length(Auto));
+        else
+            style->setFlexBasis(convertToLength(primitiveValue, style, zoomFactor));
+        return;
+    case CSS_PROP_JUSTIFY_CONTENT:
+        HANDLE_INHERIT_AND_INITIAL(justifyContent, JustifyContent)
+        if (!primitiveValue) return;
+        switch (primitiveValue->getIdent()) {
+            case CSS_VAL_FLEX_START: style->setJustifyContent(JustifyFlexStart); break;
+            case CSS_VAL_FLEX_END: style->setJustifyContent(JustifyFlexEnd); break;
+            case CSS_VAL_CENTER: style->setJustifyContent(JustifyCenter); break;
+            case CSS_VAL_SPACE_BETWEEN: style->setJustifyContent(JustifySpaceBetween); break;
+            case CSS_VAL_SPACE_AROUND: style->setJustifyContent(JustifySpaceAround); break;
+            default: return;
+        }
+        return;
+    case CSS_PROP_ALIGN_ITEMS:
+        HANDLE_INHERIT_AND_INITIAL(alignItems, AlignItems)
+        if (!primitiveValue) return;
+        switch (primitiveValue->getIdent()) {
+            case CSS_VAL_FLEX_START: style->setAlignItems(AlignFlexStart); break;
+            case CSS_VAL_FLEX_END: style->setAlignItems(AlignFlexEnd); break;
+            case CSS_VAL_CENTER: style->setAlignItems(AlignCenter); break;
+            case CSS_VAL_BASELINE: style->setAlignItems(AlignBaseline); break;
+            case CSS_VAL_STRETCH: style->setAlignItems(AlignStretch); break;
+            default: return;
+        }
+        return;
+    case CSS_PROP_FLEX:
+        // Shorthand — handled by CSSParser decomposition into longhands.
+        return;
     case CSS_PROP__WEBKIT_COLUMN_COUNT: {
         if (isInherit) {
             if (parentStyle->hasAutoColumnCount())

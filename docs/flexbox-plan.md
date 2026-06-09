@@ -40,17 +40,17 @@
 - [x] **探针**（前置）：display:flex 最小骨架（单行 main 轴，2-3 固定宽度 item）+ 测试页，
       验证现有 RenderBlock 框架能否承载 flex 尺寸协商。**结论：架构足够，无需补基础设施**
       （详见进度日志 2026-06-05）。
-- [ ] **1a-1 CSS 属性接入**：`display:flex/inline-flex`、`flex-direction`(row/column)、
+- [x] **1a-1 CSS 属性接入**：`display:flex/inline-flex`、`flex-direction`(row/column)、
       `flex-grow`、`flex-shrink`、`flex-basis`、`justify-content`、`align-items`、
       `flex`(简写) → CSSPropertyNames + CSSParser + 值映射
-- [ ] **1a-2 RenderStyle 承载**：StyleFlexibleBoxData（现代字段）+ 枚举
+- [x] **1a-2 RenderStyle 承载**：StyleFlexibleBoxData（现代字段）+ 枚举
       (EFlexDirection/EJustifyContent/EAlignItems) + 存取 + inherit/diff
       （与老式 box 数据隔离，避免冲突）
-- [ ] **1a-3 样式应用**：CSSStyleSelector 应用 flex 属性；`display:flex` 分派到
+- [x] **1a-3 样式应用**：CSSStyleSelector 应用 flex 属性；`display:flex` 分派到
       modern flex 路径（宏隔离）
-- [ ] **1a-4 核心布局算法**：main 轴 basis→grow/shrink 分配 + cross 轴 align-items 对齐
+- [x] **1a-4 核心布局算法**：main 轴 basis→grow/shrink 分配 + cross 轴 align-items 对齐
       + justify-content 主轴分布（**单行**，暂不 wrap）
-- [ ] **1a-5 固有尺寸**：flex 容器 min/max-content 计算，接入 calcPrefWidths 协议
+- [x] **1a-5 固有尺寸**：flex 容器 min/max-content 计算，接入 calcPrefWidths 协议
 - [ ] **1a-6 测试+调试**：flex 测试页对照 Chrome 几何，修边界（嵌套/百分比/min-max），
       沉淀 benchmark 回归页
 
@@ -136,3 +136,54 @@ min/max-content 传播）可能不支持现代 flex 所需。若需先补基础�
   - 默认态（关宏）：编译正常，unit_tests 565 全过，旧 -webkit-box 页面无回归。
   - **影响**：1a 最大风险（架构磨合需补尺寸协商基础设施）已排除 → 工期可落乐观~现实区间。
   - 探针代码保留为 1a-4 的起点骨架（宏隔离，主干默认稳定）。
+- 2026-06-09：**1a-1 CSS 属性接入完成。**
+  - **CSSPropertyNames.in**：添加 `flex`、`flex-basis`、`flex-direction`、`flex-grow`、
+    `flex-shrink`、`align-items`、`justify-content`（ID 203-209）。
+  - **CSSValueKeywords.in**：在 display 段添加 `flex`(189)、`inline-flex`(190)；
+    末尾添加 `row`、`row-reverse`、`column`、`column-reverse`、`flex-start`、`flex-end`、
+    `space-between`、`space-around`。
+  - **CSSParser.cpp**：display 范围扩展至 `CSS_VAL_INLINE_FLEX`；新增 flex-direction
+    (row/row-reverse/column/column-reverse)、flex-grow/shrink (FNumber|FNonNeg)、
+    flex-basis (length/percent/auto)、justify-content/align-items 关键字解析；
+    flex 简写（none → 0 0 auto，单数字 → grow 1 0%）。
+  - **RenderStyle.h**：EDisplay 枚举添加 `FLEX`/`INLINE_FLEX`（位于 INLINE_BOX 之后、
+    NONE 之前）；`isDisplayReplacedType`/`isOriginalDisplayInlineType` 覆盖 INLINE_FLEX。
+  - **RenderObject.cpp**：`createObject()` 中 FLEX/INLINE_FLEX 分派到 RenderFlexibleBox。
+  - **CSSComputedStyleDeclaration.cpp**：display switch 支持 FLEX/INLINE_FLEX 返值；
+    新属性暂列入 unimplemented 占位（待 1a-2 RenderStyle 承载后补全）。
+  - 编译 0 error，unit_tests 全过，无回归。
+- 2026-06-09：**1a-2 RenderStyle 承载完成。**
+  - **枚举**：`EFlexDirection`(FlowRow/FlowRowReverse/FlowColumn/FlowColumnReverse)、
+    `EFlexJustify`(JustifyFlexStart/.../JustifySpaceAround)、
+    `EFlexAlign`(AlignFlexStart/.../AlignStretch)。
+  - **StyleModernFlexData**：`Shared<>` 基类，字段 flexGrow(float)、flexShrink(float)、
+    flexBasis(Length)、direction(2bit)、justify(3bit)、align(3bit)。
+    独立于旧 StyleFlexibleBoxData，无冲突。
+  - **DataRef** 集成到 `StyleRareNonInheritedData`：init/copy/operator== 全链路。
+  - **RenderStyle 存取器**：get/set 各 6 个 + initial* 6 个。
+  - 编译 0 error 0 new warning，unit_tests 全过。
+- 2026-06-09：**1a-3 样式应用完成。**
+  - **CSSStyleSelector::applyProperty**：新增 FLEX_DIRECTION/FLEX_GROW/FLEX_SHRINK/
+    FLEX_BASIS/JUSTIFY_CONTENT/ALIGN_ITEMS/FLEX 的 case 处理，含 inherit/initial。
+  - display:flex/inline-flex 的 EDisplay 映射通过已有算术公式自动生效（无需额外代码）。
+  - CSS 全链路打通：解析→应用→RenderStyle→RenderFlexibleBox。编译 0 error，测试全过。
+- 2026-06-09：**1a-4 核心布局算法完成。**
+  - 完全重写 `layoutModernFlexbox()`，替换探针硬编码：
+    - flex-direction: row/row-reverse/column/column-reverse
+    - flex-basis: auto（取 preferred size）/ length / percent
+    - flex-grow: 按权重分配正向剩余空间
+    - flex-shrink: 按 shrink×basis 加权比例收缩
+    - justify-content: flex-start/flex-end/center/space-between/space-around
+    - align-items: flex-start/flex-end/center/baseline/stretch
+  - 启用 `ENABLE_MODERN_FLEXBOX` 编译宏（CMakeLists + mconfig.h.in），display:flex 走
+    modern 路径，-webkit-box 走 legacy 路径。
+  - 关键修复：Length::percent() 替代 value() 避免 assert；container 高度从 style
+    获取（layoutBlock 在调用前将 m_height 重置为 0）；crossContainerSize 同理。
+  - headless 测试 12/12 全过（等分/比例grow/shrink/center/space-between/column/align）。
+  - unit_tests 全过，无回归。
+- 2026-06-09：**1a-5 固有尺寸完成。**
+  - `calcPrefWidths()` 中为 display:flex/inline-flex 添加方向感知路由：
+    row/row-reverse → calcHorizontalPrefWidths（子项 min/max 求和）；
+    column/column-reverse → calcVerticalPrefWidths（子项 min/max 取最大）。
+  - 验证：inline-flex 容器正确收缩到内容宽度（80+120=200px）。
+  - 编译 0 error，unit_tests + flex_test 全过。

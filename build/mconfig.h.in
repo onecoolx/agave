@@ -9,6 +9,8 @@
 
 #cmakedefine ENABLE_XPATH @ENABLE_XPATH@
 
+#cmakedefine ENABLE_MODERN_FLEXBOX @ENABLE_MODERN_FLEXBOX@
+
 #cmakedefine ENABLE_XSLT @ENABLE_XSLT@
 
 #cmakedefine ENABLE_XML @ENABLE_XML@

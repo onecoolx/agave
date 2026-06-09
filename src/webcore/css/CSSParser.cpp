@@ -665,7 +665,7 @@ bool CSSParser::parseValue(int propId, bool important)
         // inline | block | list-item | run-in | inline-block | table |
         // inline-table | table-row-group | table-header-group | table-footer-group | table-row |
         // table-column-group | table-column | table-cell | table-caption | box | inline-box | none | inherit
-        if ((id >= CSS_VAL_INLINE && id <= CSS_VAL__WEBKIT_INLINE_BOX) || id == CSS_VAL_NONE)
+        if ((id >= CSS_VAL_INLINE && id <= CSS_VAL_INLINE_FLEX) || id == CSS_VAL_NONE)
             valid_primitive = true;
         break;
 
@@ -1209,6 +1209,55 @@ bool CSSParser::parseValue(int propId, bool important)
     case CSS_PROP__WEBKIT_BOX_SIZING:
         valid_primitive = id == CSS_VAL_BORDER_BOX || id == CSS_VAL_CONTENT_BOX;
         break;
+
+    case CSS_PROP_FLEX_DIRECTION:        // row | row-reverse | column | column-reverse
+        if (id == CSS_VAL_ROW || id == CSS_VAL_ROW_REVERSE ||
+            id == CSS_VAL_COLUMN || id == CSS_VAL_COLUMN_REVERSE)
+            valid_primitive = true;
+        break;
+    case CSS_PROP_FLEX_GROW:
+    case CSS_PROP_FLEX_SHRINK:          // <number> (non-negative)
+        valid_primitive = validUnit(value, FNumber | FNonNeg, strict);
+        break;
+    case CSS_PROP_FLEX_BASIS:           // <length> | <percentage> | auto
+        if (id == CSS_VAL_AUTO)
+            valid_primitive = true;
+        else
+            valid_primitive = validUnit(value, FLength | FPercent | FNonNeg, strict);
+        break;
+    case CSS_PROP_JUSTIFY_CONTENT:      // flex-start | flex-end | center | space-between | space-around
+        if (id == CSS_VAL_FLEX_START || id == CSS_VAL_FLEX_END ||
+            id == CSS_VAL_CENTER || id == CSS_VAL_SPACE_BETWEEN ||
+            id == CSS_VAL_SPACE_AROUND)
+            valid_primitive = true;
+        break;
+    case CSS_PROP_ALIGN_ITEMS:          // flex-start | flex-end | center | baseline | stretch
+        if (id == CSS_VAL_FLEX_START || id == CSS_VAL_FLEX_END ||
+            id == CSS_VAL_CENTER || id == CSS_VAL_BASELINE ||
+            id == CSS_VAL_STRETCH)
+            valid_primitive = true;
+        break;
+    case CSS_PROP_FLEX: {
+        // flex shorthand: none | [ <flex-grow> <flex-shrink>? || <flex-basis> ]
+        // Simplified: accept 1 number (grow, shrink=1, basis=0%), or 'none' (0 0 auto)
+        if (id == CSS_VAL_NONE) {
+            ShorthandScope scope(this, propId);
+            addProperty(CSS_PROP_FLEX_GROW, new CSSPrimitiveValue(0.0, CSSPrimitiveValue::CSS_NUMBER), important);
+            addProperty(CSS_PROP_FLEX_SHRINK, new CSSPrimitiveValue(0.0, CSSPrimitiveValue::CSS_NUMBER), important);
+            addProperty(CSS_PROP_FLEX_BASIS, new CSSPrimitiveValue(CSS_VAL_AUTO), important);
+            return true;
+        }
+        // Single number → flex: <grow> 1 0%
+        if (validUnit(value, FNumber | FNonNeg, strict)) {
+            ShorthandScope scope(this, propId);
+            addProperty(CSS_PROP_FLEX_GROW, new CSSPrimitiveValue(value->fValue, CSSPrimitiveValue::CSS_NUMBER), important);
+            addProperty(CSS_PROP_FLEX_SHRINK, new CSSPrimitiveValue(1.0, CSSPrimitiveValue::CSS_NUMBER), important);
+            addProperty(CSS_PROP_FLEX_BASIS, new CSSPrimitiveValue(0.0, CSSPrimitiveValue::CSS_PERCENTAGE), important);
+            return true;
+        }
+        return false;
+    }
+
     case CSS_PROP__WEBKIT_MARQUEE: {
         const int properties[5] = { CSS_PROP__WEBKIT_MARQUEE_DIRECTION, CSS_PROP__WEBKIT_MARQUEE_INCREMENT,
                                     CSS_PROP__WEBKIT_MARQUEE_REPETITION,

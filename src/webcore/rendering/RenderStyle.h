@@ -670,6 +670,29 @@ public:
     unsigned lines : 1; // EBoxLines
 };
 
+//------------------------------------------------
+// Modern CSS Flexbox Properties (ENABLE_MODERN_FLEXBOX)
+
+enum EFlexDirection { FlowRow, FlowRowReverse, FlowColumn, FlowColumnReverse };
+enum EFlexJustify { JustifyFlexStart, JustifyFlexEnd, JustifyCenter, JustifySpaceBetween, JustifySpaceAround };
+enum EFlexAlign { AlignFlexStart, AlignFlexEnd, AlignCenter, AlignBaseline, AlignStretch };
+
+class StyleModernFlexData : public Shared<StyleModernFlexData> {
+public:
+    StyleModernFlexData();
+    StyleModernFlexData(const StyleModernFlexData& o);
+
+    bool operator==(const StyleModernFlexData& o) const;
+    bool operator!=(const StyleModernFlexData& o) const { return !(*this == o); }
+
+    float flexGrow;
+    float flexShrink;
+    Length flexBasis;
+    unsigned direction : 2;  // EFlexDirection
+    unsigned justify : 3;    // EFlexJustify
+    unsigned align : 3;      // EFlexAlign
+};
+
 // This struct holds information about shadows for the text-shadow and box-shadow properties.
 struct ShadowData {
     ShadowData(int _x, int _y, int _blur, const Color& _color)
@@ -860,6 +883,7 @@ public:
     float opacity; // Whether or not we're transparent.
 
     DataRef<StyleFlexibleBoxData> flexibleBox; // Flexible box properties 
+    DataRef<StyleModernFlexData> modernFlex; // Modern CSS flexbox properties
     DataRef<StyleMarqueeData> marquee; // Marquee properties
     DataRef<StyleMultiColData> m_multiCol; //  CSS3 multicol properties
     DataRef<StyleTransformData> m_transform; // Transform properties (rotate, scale, skew, etc.)
@@ -1030,7 +1054,7 @@ enum EDisplay {
     TABLE, INLINE_TABLE, TABLE_ROW_GROUP,
     TABLE_HEADER_GROUP, TABLE_FOOTER_GROUP, TABLE_ROW,
     TABLE_COLUMN_GROUP, TABLE_COLUMN, TABLE_CELL,
-    TABLE_CAPTION, BOX, INLINE_BOX, NONE
+    TABLE_CAPTION, BOX, INLINE_BOX, FLEX, INLINE_FLEX, NONE
 };
 
 class RenderStyle {
@@ -1478,6 +1502,15 @@ public:
     unsigned int boxOrdinalGroup() const { return rareNonInheritedData->flexibleBox->ordinal_group; }
     EBoxOrient boxOrient() const { return static_cast<EBoxOrient>(rareNonInheritedData->flexibleBox->orient); }
     EBoxAlignment boxPack() const { return static_cast<EBoxAlignment>(rareNonInheritedData->flexibleBox->pack); }
+
+    // Modern Flexbox getters
+    EFlexDirection flexDirection() const { return static_cast<EFlexDirection>(rareNonInheritedData->modernFlex->direction); }
+    float flexGrow() const { return rareNonInheritedData->modernFlex->flexGrow; }
+    float flexShrink() const { return rareNonInheritedData->modernFlex->flexShrink; }
+    Length flexBasis() const { return rareNonInheritedData->modernFlex->flexBasis; }
+    EFlexJustify justifyContent() const { return static_cast<EFlexJustify>(rareNonInheritedData->modernFlex->justify); }
+    EFlexAlign alignItems() const { return static_cast<EFlexAlign>(rareNonInheritedData->modernFlex->align); }
+
     ShadowData* boxShadow() const { return rareNonInheritedData->m_boxShadow; }
     EBoxSizing boxSizing() const { return static_cast<EBoxSizing>(box->boxSizing); }
     Length marqueeIncrement() const { return rareNonInheritedData->marquee->increment; }
@@ -1724,6 +1757,15 @@ public:
     void setBoxOrdinalGroup(unsigned int og) { SET_VAR(rareNonInheritedData.access()->flexibleBox, ordinal_group, og); }
     void setBoxOrient(EBoxOrient o) { SET_VAR(rareNonInheritedData.access()->flexibleBox, orient, o); }
     void setBoxPack(EBoxAlignment p) { SET_VAR(rareNonInheritedData.access()->flexibleBox, pack, p); }
+
+    // Modern Flexbox setters
+    void setFlexDirection(EFlexDirection d) { SET_VAR(rareNonInheritedData.access()->modernFlex, direction, d); }
+    void setFlexGrow(float f) { SET_VAR(rareNonInheritedData.access()->modernFlex, flexGrow, f); }
+    void setFlexShrink(float f) { SET_VAR(rareNonInheritedData.access()->modernFlex, flexShrink, f); }
+    void setFlexBasis(Length b) { SET_VAR(rareNonInheritedData.access()->modernFlex, flexBasis, b); }
+    void setJustifyContent(EFlexJustify j) { SET_VAR(rareNonInheritedData.access()->modernFlex, justify, j); }
+    void setAlignItems(EFlexAlign a) { SET_VAR(rareNonInheritedData.access()->modernFlex, align, a); }
+
     void setBoxShadow(ShadowData* val, bool add=false);
     void setBoxSizing(EBoxSizing s) { SET_VAR(box, boxSizing, s); }
     void setMarqueeIncrement(const Length& f) { SET_VAR(rareNonInheritedData.access()->marquee, increment, f); }
@@ -1793,14 +1835,15 @@ public:
     Diff diff( const RenderStyle *other ) const;
 
     bool isDisplayReplacedType() {
-        return display() == INLINE_BLOCK || display() == INLINE_BOX || display() == INLINE_TABLE;
+        return display() == INLINE_BLOCK || display() == INLINE_BOX || display() == INLINE_TABLE || display() == INLINE_FLEX;
     }
     bool isDisplayInlineType() {
         return display() == INLINE || isDisplayReplacedType();
     }
     bool isOriginalDisplayInlineType() {
         return originalDisplay() == INLINE || originalDisplay() == INLINE_BLOCK ||
-               originalDisplay() == INLINE_BOX || originalDisplay() == INLINE_TABLE;
+               originalDisplay() == INLINE_BOX || originalDisplay() == INLINE_TABLE ||
+               originalDisplay() == INLINE_FLEX;
     }
     
     // To obtain at any time the pseudo state for a given link.
@@ -1877,6 +1920,15 @@ public:
     static int initialBoxFlexGroup() { return 1; }
     static int initialBoxOrdinalGroup() { return 1; }
     static EBoxSizing initialBoxSizing() { return CONTENT_BOX; }
+
+    // Modern Flexbox initial values
+    static EFlexDirection initialFlexDirection() { return FlowRow; }
+    static float initialFlexGrow() { return 0.0f; }
+    static float initialFlexShrink() { return 1.0f; }
+    static Length initialFlexBasis() { return Length(Auto); }
+    static EFlexJustify initialJustifyContent() { return JustifyFlexStart; }
+    static EFlexAlign initialAlignItems() { return AlignStretch; }
+
     static int initialMarqueeLoopCount() { return -1; }
     static int initialMarqueeSpeed() { return 85; }
     static Length initialMarqueeIncrement() { return Length(6, Fixed); }
