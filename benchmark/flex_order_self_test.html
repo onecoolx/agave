@@ -1,0 +1,53 @@
+<html>
+<head><style>
+/* order reorder */
+#o1 { display:flex; width:300px; }
+#o1a { width:100px; height:30px; order:2; }
+#o1b { width:100px; height:30px; order:1; }
+#o1c { width:100px; height:30px; order:3; }
+
+/* align-self override */
+#s1 { display:flex; width:300px; height:100px; align-items:flex-start; }
+#s1a { width:50px; height:30px; }
+#s1b { width:50px; height:30px; align-self:flex-end; }
+#s1c { width:50px; height:30px; align-self:center; }
+
+/* auto margin: push right */
+#m1 { display:flex; width:400px; }
+#m1a { width:80px; height:30px; }
+#m1b { width:80px; height:30px; margin-left:auto; }
+
+/* auto margin: center single item */
+#m2 { display:flex; width:400px; }
+#m2a { width:100px; height:30px; margin-left:auto; margin-right:auto; }
+</style></head>
+<body>
+<div id="o1"><div id="o1a">A</div><div id="o1b">B</div><div id="o1c">C</div></div>
+<div id="s1"><div id="s1a">A</div><div id="s1b">B</div><div id="s1c">C</div></div>
+<div id="m1"><div id="m1a">A</div><div id="m1b">B</div></div>
+<div id="m2"><div id="m2a">A</div></div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+// order: visual order B(1),A(2),C(3) -> B at x=0, A at x=100, C at x=200
+var o=document.getElementById('o1');
+ck('order-B-first', document.getElementById('o1b').offsetLeft - o.offsetLeft, 0);
+ck('order-A-second', document.getElementById('o1a').offsetLeft - o.offsetLeft, 100);
+ck('order-C-third', document.getElementById('o1c').offsetLeft - o.offsetLeft, 200);
+// align-self: a=flex-start(top 0), b=flex-end(top 70), c=center(top 35)
+var s=document.getElementById('s1');
+ck('self-a-start', document.getElementById('s1a').offsetTop - s.offsetTop, 0);
+ck('self-b-end', document.getElementById('s1b').offsetTop - s.offsetTop, 70);
+ck('self-c-center', document.getElementById('s1c').offsetTop - s.offsetTop, 35);
+// auto margin push: a at 0, b at 400-80=320
+var m=document.getElementById('m1');
+ck('automargin-a', document.getElementById('m1a').offsetLeft - m.offsetLeft, 0);
+ck('automargin-b-right', document.getElementById('m1b').offsetLeft - m.offsetLeft, 320);
+// auto margin center: (400-100)/2=150
+var m2=document.getElementById('m2');
+ck('automargin-center', document.getElementById('m2a').offsetLeft - m2.offsetLeft, 150);
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

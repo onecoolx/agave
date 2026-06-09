@@ -218,5 +218,7 @@ flex-shrink, CSS_PROP_FLEX_SHRINK
 flex-wrap, CSS_PROP_FLEX_WRAP
 align-content, CSS_PROP_ALIGN_CONTENT
 align-items, CSS_PROP_ALIGN_ITEMS
+align-self, CSS_PROP_ALIGN_SELF
 justify-content, CSS_PROP_JUSTIFY_CONTENT
+order, CSS_PROP_ORDER
 %%

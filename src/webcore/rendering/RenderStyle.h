@@ -677,6 +677,7 @@ enum EFlexDirection { FlowRow, FlowRowReverse, FlowColumn, FlowColumnReverse };
 enum EFlexWrap { FlexNoWrap, FlexWrap, FlexWrapReverse };
 enum EFlexJustify { JustifyFlexStart, JustifyFlexEnd, JustifyCenter, JustifySpaceBetween, JustifySpaceAround };
 enum EFlexAlign { AlignFlexStart, AlignFlexEnd, AlignCenter, AlignBaseline, AlignStretch };
+enum EFlexAlignSelf { AlignSelfAuto, AlignSelfFlexStart, AlignSelfFlexEnd, AlignSelfCenter, AlignSelfBaseline, AlignSelfStretch };
 enum EFlexAlignContent { ContentFlexStart, ContentFlexEnd, ContentCenter, ContentSpaceBetween, ContentSpaceAround, ContentStretch };
 
 class StyleModernFlexData : public Shared<StyleModernFlexData> {
@@ -690,11 +691,13 @@ public:
     float flexGrow;
     float flexShrink;
     Length flexBasis;
+    int order;
     unsigned direction : 2;  // EFlexDirection
     unsigned wrap : 2;       // EFlexWrap
     unsigned justify : 3;    // EFlexJustify
     unsigned align : 3;      // EFlexAlign
     unsigned alignContent : 3; // EFlexAlignContent
+    unsigned alignSelf : 3;  // EFlexAlignSelf
 };
 
 // This struct holds information about shadows for the text-shadow and box-shadow properties.
@@ -1516,6 +1519,8 @@ public:
     EFlexJustify justifyContent() const { return static_cast<EFlexJustify>(rareNonInheritedData->modernFlex->justify); }
     EFlexAlign alignItems() const { return static_cast<EFlexAlign>(rareNonInheritedData->modernFlex->align); }
     EFlexAlignContent alignContent() const { return static_cast<EFlexAlignContent>(rareNonInheritedData->modernFlex->alignContent); }
+    EFlexAlignSelf alignSelf() const { return static_cast<EFlexAlignSelf>(rareNonInheritedData->modernFlex->alignSelf); }
+    int flexOrder() const { return rareNonInheritedData->modernFlex->order; }
 
     ShadowData* boxShadow() const { return rareNonInheritedData->m_boxShadow; }
     EBoxSizing boxSizing() const { return static_cast<EBoxSizing>(box->boxSizing); }
@@ -1773,6 +1778,8 @@ public:
     void setJustifyContent(EFlexJustify j) { SET_VAR(rareNonInheritedData.access()->modernFlex, justify, j); }
     void setAlignItems(EFlexAlign a) { SET_VAR(rareNonInheritedData.access()->modernFlex, align, a); }
     void setAlignContent(EFlexAlignContent a) { SET_VAR(rareNonInheritedData.access()->modernFlex, alignContent, a); }
+    void setAlignSelf(EFlexAlignSelf a) { SET_VAR(rareNonInheritedData.access()->modernFlex, alignSelf, a); }
+    void setFlexOrder(int o) { SET_VAR(rareNonInheritedData.access()->modernFlex, order, o); }
 
     void setBoxShadow(ShadowData* val, bool add=false);
     void setBoxSizing(EBoxSizing s) { SET_VAR(box, boxSizing, s); }
@@ -1938,6 +1945,8 @@ public:
     static EFlexJustify initialJustifyContent() { return JustifyFlexStart; }
     static EFlexAlign initialAlignItems() { return AlignStretch; }
     static EFlexAlignContent initialAlignContent() { return ContentStretch; }
+    static EFlexAlignSelf initialAlignSelf() { return AlignSelfAuto; }
+    static int initialFlexOrder() { return 0; }
 
     static int initialMarqueeLoopCount() { return -1; }
     static int initialMarqueeSpeed() { return 85; }

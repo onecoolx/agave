@@ -78,9 +78,9 @@ min/max-content 传播）可能不支持现代 flex 所需。若需先补基础�
 
 ### Checklist
 
-- [ ] **1b-1 多行 wrap**：`flex-wrap`(wrap/nowrap/wrap-reverse) + 多行分行算法
-- [ ] **1b-2 多行对齐**：`align-content`（多行交叉轴分布）
-- [ ] **1b-3 次要特性**：`order`（重排）、`align-self`（单项覆盖）、auto margin
+- [x] **1b-1 多行 wrap**：`flex-wrap`(wrap/nowrap/wrap-reverse) + 多行分行算法
+- [x] **1b-2 多行对齐**：`align-content`（多行交叉轴分布）
+- [x] **1b-3 次要特性**：`order`（重排）、`align-self`（单项覆盖）、auto margin
 - [ ] **1b-4 边界完善+回归**：column wrap、嵌套 flex、与 table/float 交互、
       百分比 basis 边界；扩充 benchmark 回归页
 
@@ -196,3 +196,15 @@ min/max-content 传播）可能不支持现代 flex 所需。若需先补基础�
   - 修复 row-reverse：mainPos 从 cbStart+mainAvail（右边缘）开始向左放置，移除错误的
     mainOffset 翻转。
   - 全部 22/22 测试通过，unit_tests 无回归。
+
+- 2026-06-09：**1b-1/1b-2/1b-3 完成。**
+  - 1b-1 flex-wrap 多行：布局重构为收集→分行→每行独立 grow/shrink/clamp/justify→堆叠行
+    （wrap-reverse 反向）。flex-flow 简写支持。
+  - 1b-2 align-content：6 种模式（flex-start/flex-end/center/space-between/space-around/stretch）
+    分配行间交叉轴空间。
+  - 1b-3 次要特性：order（FlexItem 按 order 稳定排序）、align-self（单项覆盖容器
+    align-items，auto 回退）、auto margin（主轴 auto margin 均分吸收 free space，
+    覆盖 justify-content）。
+  - 测试：单元测试 24 条（flexbox_layout_test.cpp），benchmark 51 条
+    （flex_test 22 + flex_wrap 8 + flex_align_content 12 + flex_order_self 9）。
+  - 全部 589 单元测试通过，ASan 无内存错误。

@@ -392,11 +392,13 @@ StyleModernFlexData::StyleModernFlexData()
     : flexGrow(RenderStyle::initialFlexGrow())
     , flexShrink(RenderStyle::initialFlexShrink())
     , flexBasis(RenderStyle::initialFlexBasis())
+    , order(RenderStyle::initialFlexOrder())
     , direction(RenderStyle::initialFlexDirection())
     , wrap(RenderStyle::initialFlexWrap())
     , justify(RenderStyle::initialJustifyContent())
     , align(RenderStyle::initialAlignItems())
     , alignContent(RenderStyle::initialAlignContent())
+    , alignSelf(RenderStyle::initialAlignSelf())
 {
 }
 
@@ -405,20 +407,23 @@ StyleModernFlexData::StyleModernFlexData(const StyleModernFlexData& o)
     , flexGrow(o.flexGrow)
     , flexShrink(o.flexShrink)
     , flexBasis(o.flexBasis)
+    , order(o.order)
     , direction(o.direction)
     , wrap(o.wrap)
     , justify(o.justify)
     , align(o.align)
     , alignContent(o.alignContent)
+    , alignSelf(o.alignSelf)
 {
 }
 
 bool StyleModernFlexData::operator==(const StyleModernFlexData& o) const
 {
     return flexGrow == o.flexGrow && flexShrink == o.flexShrink &&
-           flexBasis == o.flexBasis && direction == o.direction &&
-           wrap == o.wrap && justify == o.justify && align == o.align &&
-           alignContent == o.alignContent;
+           flexBasis == o.flexBasis && order == o.order &&
+           direction == o.direction && wrap == o.wrap &&
+           justify == o.justify && align == o.align &&
+           alignContent == o.alignContent && alignSelf == o.alignSelf;
 }
 
 StyleMultiColData::StyleMultiColData()

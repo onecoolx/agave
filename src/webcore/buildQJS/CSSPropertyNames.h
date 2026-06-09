@@ -216,10 +216,12 @@ enum CSSPropertyID {
     CSS_PROP_FLEX_WRAP = 209,
     CSS_PROP_ALIGN_CONTENT = 210,
     CSS_PROP_ALIGN_ITEMS = 211,
-    CSS_PROP_JUSTIFY_CONTENT = 212,
+    CSS_PROP_ALIGN_SELF = 212,
+    CSS_PROP_JUSTIFY_CONTENT = 213,
+    CSS_PROP_ORDER = 214,
 };
 
-const int numCSSProperties = 213;
+const int numCSSProperties = 215;
 const size_t maxCSSPropertyNameLength = 43;
 
 const char* getPropertyName(CSSPropertyID);

@@ -4062,6 +4062,25 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
             default: return;
         }
         return;
+    case CSS_PROP_ALIGN_SELF:
+        HANDLE_INHERIT_AND_INITIAL(alignSelf, AlignSelf)
+        if (!primitiveValue) return;
+        switch (primitiveValue->getIdent()) {
+            case CSS_VAL_AUTO: style->setAlignSelf(AlignSelfAuto); break;
+            case CSS_VAL_FLEX_START: style->setAlignSelf(AlignSelfFlexStart); break;
+            case CSS_VAL_FLEX_END: style->setAlignSelf(AlignSelfFlexEnd); break;
+            case CSS_VAL_CENTER: style->setAlignSelf(AlignSelfCenter); break;
+            case CSS_VAL_BASELINE: style->setAlignSelf(AlignSelfBaseline); break;
+            case CSS_VAL_STRETCH: style->setAlignSelf(AlignSelfStretch); break;
+            default: return;
+        }
+        return;
+    case CSS_PROP_ORDER:
+        HANDLE_INHERIT_AND_INITIAL(flexOrder, FlexOrder)
+        if (!primitiveValue || primitiveValue->primitiveType() != CSSPrimitiveValue::CSS_NUMBER)
+            return;
+        style->setFlexOrder((int)primitiveValue->getFloatValue());
+        return;
     case CSS_PROP_FLEX:
         // Shorthand — handled by CSSParser decomposition into longhands.
         return;

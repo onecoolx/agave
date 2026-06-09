@@ -256,4 +256,73 @@ TEST_F(FlexboxLayoutTest, AlignContentSpaceBetween)
     EXPECT_NEAR(d->yPos() - c->yPos(), 260, 2);
 }
 
+TEST_F(FlexboxLayoutTest, OrderParsing)
+{
+    loadHtml("<div style='display:flex;'><div id='a' style='order:3;'>A</div></div>");
+    RenderObject* r = renderer("a");
+    ASSERT_TRUE(r);
+    EXPECT_EQ(r->style()->flexOrder(), 3);
+}
+
+TEST_F(FlexboxLayoutTest, AlignSelfParsing)
+{
+    loadHtml("<div style='display:flex;'><div id='a' style='align-self:flex-end;'>A</div></div>");
+    RenderObject* r = renderer("a");
+    ASSERT_TRUE(r);
+    EXPECT_EQ(r->style()->alignSelf(), AlignSelfFlexEnd);
+}
+
+TEST_F(FlexboxLayoutTest, OrderReorder)
+{
+    loadHtml("<div id='c' style='display:flex; width:300px;'>"
+             "<div id='a' style='width:100px; height:30px; order:2;'>A</div>"
+             "<div id='b' style='width:100px; height:30px; order:1;'>B</div>"
+             "<div id='d' style='width:100px; height:30px; order:3;'>C</div></div>");
+    RenderObject* c = renderer("c");
+    RenderObject* a = renderer("a");
+    RenderObject* b = renderer("b");
+    RenderObject* d = renderer("d");
+    ASSERT_TRUE(c && a && b && d);
+    // Visual order: B(1), A(2), C(3)
+    EXPECT_NEAR(b->xPos() - c->xPos(), 0, 2);
+    EXPECT_NEAR(a->xPos() - c->xPos(), 100, 2);
+    EXPECT_NEAR(d->xPos() - c->xPos(), 200, 2);
+}
+
+TEST_F(FlexboxLayoutTest, AlignSelfOverride)
+{
+    loadHtml("<div id='c' style='display:flex; width:300px; height:100px; align-items:flex-start;'>"
+             "<div id='a' style='width:50px; height:30px;'>A</div>"
+             "<div id='b' style='width:50px; height:30px; align-self:flex-end;'>B</div></div>");
+    RenderObject* c = renderer("c");
+    RenderObject* a = renderer("a");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(c && a && b);
+    EXPECT_NEAR(a->yPos() - c->yPos(), 0, 2); // container align-items:flex-start
+    EXPECT_NEAR(b->yPos() - c->yPos(), 70, 2); // overridden to flex-end (100-30)
+}
+
+TEST_F(FlexboxLayoutTest, AutoMarginPushRight)
+{
+    loadHtml("<div id='c' style='display:flex; width:400px;'>"
+             "<div id='a' style='width:80px; height:30px;'>A</div>"
+             "<div id='b' style='width:80px; height:30px; margin-left:auto;'>B</div></div>");
+    RenderObject* c = renderer("c");
+    RenderObject* a = renderer("a");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(c && a && b);
+    EXPECT_NEAR(a->xPos() - c->xPos(), 0, 2);
+    EXPECT_NEAR(b->xPos() - c->xPos(), 320, 2); // pushed to right edge
+}
+
+TEST_F(FlexboxLayoutTest, AutoMarginCenter)
+{
+    loadHtml("<div id='c' style='display:flex; width:400px;'>"
+             "<div id='a' style='width:100px; height:30px; margin-left:auto; margin-right:auto;'>A</div></div>");
+    RenderObject* c = renderer("c");
+    RenderObject* a = renderer("a");
+    ASSERT_TRUE(c && a);
+    EXPECT_NEAR(a->xPos() - c->xPos(), 150, 2); // (400-100)/2
+}
+
 #endif // ENABLE(MODERN_FLEXBOX)

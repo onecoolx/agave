@@ -1140,6 +1140,9 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
         int baseSize, mainMargin, crossMargin;
         float grow, shrink;
         int mainSize, crossSize;
+        int order;
+        EFlexAlignSelf alignSelf;
+        bool autoMarginMainStart, autoMarginMainEnd;
     };
 
     Vector<FlexItem> allItems;
@@ -1165,14 +1168,32 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
                              : (child->borderTop() + child->paddingTop() + child->borderBottom() + child->paddingBottom());
         }
 
-        int mm = isRow ? (child->marginLeft() + child->marginRight()) : (child->marginTop() + child->marginBottom());
+        bool autoStart = isRow ? child->style()->marginLeft().isAuto() : child->style()->marginTop().isAuto();
+        bool autoEnd = isRow ? child->style()->marginRight().isAuto() : child->style()->marginBottom().isAuto();
+
+        int mainMarginStart = isRow ? child->marginLeft() : child->marginTop();
+        int mainMarginEnd = isRow ? child->marginRight() : child->marginBottom();
+        int mm = (autoStart ? 0 : mainMarginStart) + (autoEnd ? 0 : mainMarginEnd);
         int cm = isRow ? (child->marginTop() + child->marginBottom()) : (child->marginLeft() + child->marginRight());
 
         FlexItem item = { child, basisPx + mm, mm, cm,
                           child->style()->flexGrow(), child->style()->flexShrink(),
                           basisPx + mm,
-                          (isRow ? child->height() : child->width()) + cm };
+                          (isRow ? child->height() : child->width()) + cm,
+                          child->style()->flexOrder(), child->style()->alignSelf(),
+                          autoStart, autoEnd };
         allItems.append(item);
+    }
+
+    // Stable sort by order (CSS keeps document order for equal order values)
+    for (size_t i = 1; i < allItems.size(); i++) {
+        FlexItem key = allItems[i];
+        size_t j = i;
+        while (j > 0 && allItems[j - 1].order > key.order) {
+            allItems[j] = allItems[j - 1];
+            j--;
+        }
+        allItems[j] = key;
     }
 
     // Break into lines
@@ -1345,18 +1366,31 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
         int freeSpace = mainAvail - lineMainUsed;
         if (freeSpace < 0) freeSpace = 0;
 
+        // Count auto margins on the main axis; they absorb free space before justify.
+        int autoMarginCount = 0;
+        for (size_t i = line.start; i < line.end; i++) {
+            if (allItems[i].autoMarginMainStart) autoMarginCount++;
+            if (allItems[i].autoMarginMainEnd) autoMarginCount++;
+        }
+        int autoMarginSize = (autoMarginCount > 0 && freeSpace > 0) ? (freeSpace / autoMarginCount) : 0;
+
         int mainOffset = 0, mainGap = 0;
         int n = (int)(line.end - line.start);
-        switch (justify) {
-            case JustifyFlexStart:  break;
-            case JustifyFlexEnd:    mainOffset = freeSpace; break;
-            case JustifyCenter:     mainOffset = freeSpace / 2; break;
-            case JustifySpaceBetween:
-                if (n > 1) mainGap = freeSpace / (n - 1);
-                break;
-            case JustifySpaceAround:
-                if (n > 0) { mainGap = freeSpace / n; mainOffset = mainGap / 2; }
-                break;
+        if (autoMarginCount > 0) {
+            // Auto margins consume all free space; justify-content has no effect.
+            freeSpace = 0;
+        } else {
+            switch (justify) {
+                case JustifyFlexStart:  break;
+                case JustifyFlexEnd:    mainOffset = freeSpace; break;
+                case JustifyCenter:     mainOffset = freeSpace / 2; break;
+                case JustifySpaceBetween:
+                    if (n > 1) mainGap = freeSpace / (n - 1);
+                    break;
+                case JustifySpaceAround:
+                    if (n > 0) { mainGap = freeSpace / n; mainOffset = mainGap / 2; }
+                    break;
+            }
         }
 
         int mainPos = isReverse ? (mainStart + mainAvail) : (mainStart + mainOffset);
@@ -1370,7 +1404,17 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
             int crossMarginAfter = isRow ? child->marginBottom() : child->marginRight();
 
             int itemCrossPos = crossPos;
-            switch (align) {
+            // Resolve align-self (auto falls back to container align-items).
+            EFlexAlign effAlign = align;
+            switch (item.alignSelf) {
+                case AlignSelfAuto: effAlign = align; break;
+                case AlignSelfFlexStart: effAlign = AlignFlexStart; break;
+                case AlignSelfFlexEnd: effAlign = AlignFlexEnd; break;
+                case AlignSelfCenter: effAlign = AlignCenter; break;
+                case AlignSelfBaseline: effAlign = AlignBaseline; break;
+                case AlignSelfStretch: effAlign = AlignStretch; break;
+            }
+            switch (effAlign) {
                 case AlignFlexStart:
                 case AlignBaseline:
                     itemCrossPos += crossMarginBefore;
@@ -1412,8 +1456,10 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
                     x = mainPos;
                     mainPos -= child->marginLeft() + mainGap;
                 } else {
-                    x = mainPos + child->marginLeft();
+                    if (item.autoMarginMainStart) mainPos += autoMarginSize;
+                    x = mainPos + (item.autoMarginMainStart ? 0 : child->marginLeft());
                     mainPos += item.mainSize + mainGap;
+                    if (item.autoMarginMainEnd) mainPos += autoMarginSize;
                 }
                 y = itemCrossPos;
             } else {
@@ -1422,8 +1468,10 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
                     y = mainPos;
                     mainPos -= child->marginTop() + mainGap;
                 } else {
-                    y = mainPos + child->marginTop();
+                    if (item.autoMarginMainStart) mainPos += autoMarginSize;
+                    y = mainPos + (item.autoMarginMainStart ? 0 : child->marginTop());
                     mainPos += item.mainSize + mainGap;
+                    if (item.autoMarginMainEnd) mainPos += autoMarginSize;
                 }
                 x = itemCrossPos;
             }

@@ -219,4 +219,6 @@ flex-shrink
 flex-wrap
 align-content
 align-items
+align-self
 justify-content
+order

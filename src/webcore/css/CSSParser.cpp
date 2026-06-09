@@ -1252,6 +1252,14 @@ bool CSSParser::parseValue(int propId, bool important)
             id == CSS_VAL_SPACE_AROUND || id == CSS_VAL_STRETCH)
             valid_primitive = true;
         break;
+    case CSS_PROP_ALIGN_SELF:           // auto | flex-start | flex-end | center | baseline | stretch
+        if (id == CSS_VAL_AUTO || id == CSS_VAL_FLEX_START || id == CSS_VAL_FLEX_END ||
+            id == CSS_VAL_CENTER || id == CSS_VAL_BASELINE || id == CSS_VAL_STRETCH)
+            valid_primitive = true;
+        break;
+    case CSS_PROP_ORDER:                // <integer>
+        valid_primitive = validUnit(value, FInteger, true);
+        break;
     case CSS_PROP_FLEX: {
         // flex shorthand: none | [ <flex-grow> <flex-shrink>? || <flex-basis> ]
         // Simplified: accept 1 number (grow, shrink=1, basis=0%), or 'none' (0 0 auto)

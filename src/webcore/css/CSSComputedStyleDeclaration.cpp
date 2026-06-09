@@ -1712,7 +1712,9 @@ PassRefPtr<CSSValue> CSSComputedStyleDeclaration::getPropertyCSSValue(int proper
         case CSS_PROP_FLEX_WRAP:
         case CSS_PROP_ALIGN_CONTENT:
         case CSS_PROP_ALIGN_ITEMS:
+        case CSS_PROP_ALIGN_SELF:
         case CSS_PROP_JUSTIFY_CONTENT:
+        case CSS_PROP_ORDER:
             // FIXME: The above are unimplemented.
             break;
 #if ENABLE(SVG)
