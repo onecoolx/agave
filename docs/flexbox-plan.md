@@ -208,3 +208,27 @@ min/max-content 传播）可能不支持现代 flex 所需。若需先补基础�
   - 测试：单元测试 24 条（flexbox_layout_test.cpp），benchmark 51 条
     （flex_test 22 + flex_wrap 8 + flex_align_content 12 + flex_order_self 9）。
   - 全部 589 单元测试通过，ASan 无内存错误。
+
+- 2026-06-09：**代码审查 + 重构（正反向审视法）。**
+  - 正向：确认 direction/wrap/basis/grow/shrink/min-max/justify/align-items/
+    align-content/order/align-self/auto-margin 功能完整。
+  - 反向：识别 grow/shrink/clamp/redistribute 四处重复的「设 override→重排→刷新尺寸」
+    代码块。提取为成员函数 `resolveFlexItemMainSize()`（不用 lambda，保持编译器兼容性）。
+  - 已知限制（1b 范围外，留待后续）：reverse 与 auto-margin 不组合；交叉轴 auto-margin
+    未实现；单行 + align-content 的边界。
+  - 验证：`layoutModernFlexbox`/`resolveFlexItemMainSize` 符号确认在 libagave.so，
+    `ENABLE_MODERN_FLEXBOX=1` 编译宏生效，单元测试走新版路径。
+  - 全部 24 flexbox 单元测试 + 51 benchmark 断言通过，ASan 干净。
+
+## 当前代码架构（截至 1b-3）
+
+- **CSS 层**：CSSPropertyNames.in / CSSValueKeywords.in 定义 flex 属性与关键字；
+  CSSParser 解析；CSSStyleSelector::applyProperty 映射到 RenderStyle。
+- **RenderStyle**：StyleModernFlexData（DataRef，rareNonInheritedData 中）承载
+  flexGrow/Shrink/Basis/order/direction/wrap/justify/align/alignContent/alignSelf。
+  与旧 StyleFlexibleBoxData（-webkit-box）隔离。
+- **布局**：RenderFlexibleBox::layoutModernFlexbox 实现单子集多行 flex 算法
+  （宏 ENABLE_MODERN_FLEXBOX 隔离）。display:flex/inline-flex 走此路径，
+  -webkit-box 走 legacy layoutHorizontalBox/layoutVerticalBox。
+- **测试**：unit_tests/rendering/flexbox_layout_test.cpp（gtest，需 OPT_UNITTEST=ON）；
+  benchmark/flex_*.html（headless 几何验证）。

@@ -1096,6 +1096,18 @@ void RenderFlexibleBox::placeChild(RenderObject* child, int x, int y)
 }
 
 #if ENABLE(MODERN_FLEXBOX)
+void RenderFlexibleBox::resolveFlexItemMainSize(RenderObject* child, bool isRow, int newMainContent,
+                                                int mainMargin, int crossMargin, int& mainSize, int& crossSize)
+{
+    if (newMainContent < 0)
+        newMainContent = 0;
+    child->setOverrideSize(newMainContent);
+    child->setNeedsLayout(true, false);
+    child->layoutIfNeeded();
+    mainSize = (isRow ? child->width() : child->height()) + mainMargin;
+    crossSize = (isRow ? child->height() : child->width()) + crossMargin;
+}
+
 void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
 {
     const EFlexDirection dir = style()->flexDirection();
@@ -1232,32 +1244,24 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
 
         if (freeSpace > 0 && totalGrow > 0.0f) {
             for (size_t i = line.start; i < line.end; i++) {
-                if (allItems[i].grow > 0.0f) {
-                    int newMain = allItems[i].baseSize - allItems[i].mainMargin + (int)(freeSpace * (allItems[i].grow / totalGrow));
-                    allItems[i].child->setOverrideSize(newMain);
-                    allItems[i].child->setNeedsLayout(true, false);
-                    allItems[i].child->layoutIfNeeded();
-                    allItems[i].mainSize = (isRow ? allItems[i].child->width() : allItems[i].child->height()) + allItems[i].mainMargin;
-                    allItems[i].crossSize = (isRow ? allItems[i].child->height() : allItems[i].child->width()) + allItems[i].crossMargin;
-                }
+                if (allItems[i].grow > 0.0f)
+                    resolveFlexItemMainSize(allItems[i].child, isRow,
+                        allItems[i].baseSize - allItems[i].mainMargin + (int)(freeSpace * (allItems[i].grow / totalGrow)),
+                        allItems[i].mainMargin, allItems[i].crossMargin, allItems[i].mainSize, allItems[i].crossSize);
             }
         } else if (freeSpace < 0 && totalShrinkScaled > 0.0f) {
             int deficit = -freeSpace;
             for (size_t i = line.start; i < line.end; i++) {
                 if (allItems[i].shrink > 0.0f) {
                     int bp = allItems[i].baseSize - allItems[i].mainMargin;
-                    int newMain = bp - (int)(deficit * (allItems[i].shrink * bp) / totalShrinkScaled);
-                    if (newMain < 0) newMain = 0;
-                    allItems[i].child->setOverrideSize(newMain);
-                    allItems[i].child->setNeedsLayout(true, false);
-                    allItems[i].child->layoutIfNeeded();
-                    allItems[i].mainSize = (isRow ? allItems[i].child->width() : allItems[i].child->height()) + allItems[i].mainMargin;
-                    allItems[i].crossSize = (isRow ? allItems[i].child->height() : allItems[i].child->width()) + allItems[i].crossMargin;
+                    resolveFlexItemMainSize(allItems[i].child, isRow,
+                        bp - (int)(deficit * (allItems[i].shrink * bp) / totalShrinkScaled),
+                        allItems[i].mainMargin, allItems[i].crossMargin, allItems[i].mainSize, allItems[i].crossSize);
                 }
             }
         }
 
-        // Clamp min/max
+        // Clamp min/max and freeze clamped items
         bool needsRedist = false;
         int frozenSpace = 0;
         float unfrozenGrow = 0;
@@ -1279,11 +1283,8 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
                     clamped = min(clamped, child->style()->maxHeight().value() + bp);
             }
             if (clamped != cur) {
-                child->setOverrideSize(clamped);
-                child->setNeedsLayout(true, false);
-                child->layoutIfNeeded();
-                allItems[i].mainSize = (isRow ? child->width() : child->height()) + allItems[i].mainMargin;
-                allItems[i].crossSize = (isRow ? child->height() : child->width()) + allItems[i].crossMargin;
+                resolveFlexItemMainSize(child, isRow, clamped,
+                    allItems[i].mainMargin, allItems[i].crossMargin, allItems[i].mainSize, allItems[i].crossSize);
                 allItems[i].grow = 0;
                 needsRedist = true;
                 frozenSpace += allItems[i].mainSize;
@@ -1294,15 +1295,10 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
         if (needsRedist && unfrozenGrow > 0.0f) {
             int avail = mainAvail - frozenSpace;
             for (size_t i = line.start; i < line.end; i++) {
-                if (allItems[i].grow > 0.0f) {
-                    int newMain = (int)(avail * (allItems[i].grow / unfrozenGrow)) - allItems[i].mainMargin;
-                    if (newMain < 0) newMain = 0;
-                    allItems[i].child->setOverrideSize(newMain);
-                    allItems[i].child->setNeedsLayout(true, false);
-                    allItems[i].child->layoutIfNeeded();
-                    allItems[i].mainSize = (isRow ? allItems[i].child->width() : allItems[i].child->height()) + allItems[i].mainMargin;
-                    allItems[i].crossSize = (isRow ? allItems[i].child->height() : allItems[i].child->width()) + allItems[i].crossMargin;
-                }
+                if (allItems[i].grow > 0.0f)
+                    resolveFlexItemMainSize(allItems[i].child, isRow,
+                        (int)(avail * (allItems[i].grow / unfrozenGrow)) - allItems[i].mainMargin,
+                        allItems[i].mainMargin, allItems[i].crossMargin, allItems[i].mainSize, allItems[i].crossSize);
             }
         }
 

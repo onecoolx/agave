@@ -46,6 +46,11 @@ public:
     // Modern CSS Flexbox layout: single-line flex with direction, basis,
     // grow/shrink, justify-content, align-items. Used for display:flex/inline-flex.
     void layoutModernFlexbox(bool relayoutChildren);
+
+    // Sets a flex item's override main-axis size, relays it out, and refreshes
+    // the cached outer main/cross sizes. Shared by grow/shrink/clamp passes.
+    void resolveFlexItemMainSize(RenderObject* child, bool isRow, int newMainContent,
+                                 int mainMargin, int crossMargin, int& mainSize, int& crossSize);
 #endif
 
     virtual bool avoidsFloats() const { return true; }
