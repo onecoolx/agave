@@ -1,0 +1,59 @@
+<html>
+<head><style>
+.c { display:flex; flex-wrap:wrap; width:200px; height:300px; }
+.c div { width:80px; height:40px; }
+#ac1 { align-content:flex-start; }
+#ac2 { align-content:flex-end; }
+#ac3 { align-content:center; }
+#ac4 { align-content:space-between; }
+#ac5 { align-content:space-around; }
+#ac6 { align-content:stretch; }
+</style></head>
+<body>
+<div id="ac1" class="c"><div id="a1a">1</div><div id="a1b">2</div><div id="a1c">3</div><div id="a1d">4</div></div>
+<div id="ac2" class="c"><div id="a2a">1</div><div id="a2b">2</div><div id="a2c">3</div><div id="a2d">4</div></div>
+<div id="ac3" class="c"><div id="a3a">1</div><div id="a3b">2</div><div id="a3c">3</div><div id="a3d">4</div></div>
+<div id="ac4" class="c"><div id="a4a">1</div><div id="a4b">2</div><div id="a4c">3</div><div id="a4d">4</div></div>
+<div id="ac5" class="c"><div id="a5a">1</div><div id="a5b">2</div><div id="a5c">3</div><div id="a5d">4</div></div>
+<div id="ac6" class="c"><div id="a6a">1</div><div id="a6b">2</div><div id="a6c">3</div><div id="a6d">4</div></div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+// 200px wide, items 80px each -> 2 per line, 4 items = 2 lines of 40px each
+// Total lines height = 80px, container = 300px, free cross = 220px
+
+// flex-start: lines at top
+var p=document.getElementById('ac1');
+ck('ac1-line1', document.getElementById('a1a').offsetTop - p.offsetTop, 0);
+ck('ac1-line2', document.getElementById('a1c').offsetTop - p.offsetTop, 40);
+
+// flex-end: lines at bottom, line2 ends at 300 -> line2 top=300-40=260, line1 top=260-40=220
+p=document.getElementById('ac2');
+ck('ac2-line1', document.getElementById('a2a').offsetTop - p.offsetTop, 220);
+ck('ac2-line2', document.getElementById('a2c').offsetTop - p.offsetTop, 260);
+
+// center: offset=(300-80)/2=110
+p=document.getElementById('ac3');
+ck('ac3-line1', document.getElementById('a3a').offsetTop - p.offsetTop, 110);
+ck('ac3-line2', document.getElementById('a3c').offsetTop - p.offsetTop, 150);
+
+// space-between: line1 at 0, line2 at 300-40=260 (gap=220)
+p=document.getElementById('ac4');
+ck('ac4-line1', document.getElementById('a4a').offsetTop - p.offsetTop, 0);
+ck('ac4-line2', document.getElementById('a4c').offsetTop - p.offsetTop, 260);
+
+// space-around: gap=220/2=110, offset=55; line1=55, line2=55+40+110=205
+p=document.getElementById('ac5');
+ck('ac5-line1', document.getElementById('a5a').offsetTop - p.offsetTop, 55);
+ck('ac5-line2', document.getElementById('a5c').offsetTop - p.offsetTop, 205);
+
+// stretch: each line gets extra 220/2=110 -> line height=150; line1=0, line2=150
+p=document.getElementById('ac6');
+ck('ac6-line1', document.getElementById('a6a').offsetTop - p.offsetTop, 0);
+ck('ac6-line2', document.getElementById('a6c').offsetTop - p.offsetTop, 150);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

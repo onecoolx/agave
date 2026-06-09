@@ -677,6 +677,7 @@ enum EFlexDirection { FlowRow, FlowRowReverse, FlowColumn, FlowColumnReverse };
 enum EFlexWrap { FlexNoWrap, FlexWrap, FlexWrapReverse };
 enum EFlexJustify { JustifyFlexStart, JustifyFlexEnd, JustifyCenter, JustifySpaceBetween, JustifySpaceAround };
 enum EFlexAlign { AlignFlexStart, AlignFlexEnd, AlignCenter, AlignBaseline, AlignStretch };
+enum EFlexAlignContent { ContentFlexStart, ContentFlexEnd, ContentCenter, ContentSpaceBetween, ContentSpaceAround, ContentStretch };
 
 class StyleModernFlexData : public Shared<StyleModernFlexData> {
 public:
@@ -693,6 +694,7 @@ public:
     unsigned wrap : 2;       // EFlexWrap
     unsigned justify : 3;    // EFlexJustify
     unsigned align : 3;      // EFlexAlign
+    unsigned alignContent : 3; // EFlexAlignContent
 };
 
 // This struct holds information about shadows for the text-shadow and box-shadow properties.
@@ -1513,6 +1515,7 @@ public:
     Length flexBasis() const { return rareNonInheritedData->modernFlex->flexBasis; }
     EFlexJustify justifyContent() const { return static_cast<EFlexJustify>(rareNonInheritedData->modernFlex->justify); }
     EFlexAlign alignItems() const { return static_cast<EFlexAlign>(rareNonInheritedData->modernFlex->align); }
+    EFlexAlignContent alignContent() const { return static_cast<EFlexAlignContent>(rareNonInheritedData->modernFlex->alignContent); }
 
     ShadowData* boxShadow() const { return rareNonInheritedData->m_boxShadow; }
     EBoxSizing boxSizing() const { return static_cast<EBoxSizing>(box->boxSizing); }
@@ -1769,6 +1772,7 @@ public:
     void setFlexBasis(Length b) { SET_VAR(rareNonInheritedData.access()->modernFlex, flexBasis, b); }
     void setJustifyContent(EFlexJustify j) { SET_VAR(rareNonInheritedData.access()->modernFlex, justify, j); }
     void setAlignItems(EFlexAlign a) { SET_VAR(rareNonInheritedData.access()->modernFlex, align, a); }
+    void setAlignContent(EFlexAlignContent a) { SET_VAR(rareNonInheritedData.access()->modernFlex, alignContent, a); }
 
     void setBoxShadow(ShadowData* val, bool add=false);
     void setBoxSizing(EBoxSizing s) { SET_VAR(box, boxSizing, s); }
@@ -1933,6 +1937,7 @@ public:
     static Length initialFlexBasis() { return Length(Auto); }
     static EFlexJustify initialJustifyContent() { return JustifyFlexStart; }
     static EFlexAlign initialAlignItems() { return AlignStretch; }
+    static EFlexAlignContent initialAlignContent() { return ContentStretch; }
 
     static int initialMarqueeLoopCount() { return -1; }
     static int initialMarqueeSpeed() { return 85; }

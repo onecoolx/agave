@@ -1299,6 +1299,38 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
         totalCrossUsed += lines[li].maxCrossSize;
 
     int crossPos = crossStart;
+
+    // align-content: distribute cross-axis free space among lines
+    const EFlexAlignContent ac = style()->alignContent();
+    int crossFree = (crossContainerSize > 0 ? crossContainerSize : totalCrossUsed) - totalCrossUsed;
+    if (crossFree < 0) crossFree = 0;
+    int lineOffset = 0, lineGap = 0;
+    int numLines = (int)lines.size();
+
+    if (numLines > 0) {
+        switch (ac) {
+            case ContentFlexStart:  break;
+            case ContentFlexEnd:    lineOffset = crossFree; break;
+            case ContentCenter:     lineOffset = crossFree / 2; break;
+            case ContentSpaceBetween:
+                if (numLines > 1) lineGap = crossFree / (numLines - 1);
+                break;
+            case ContentSpaceAround:
+                lineGap = crossFree / numLines;
+                lineOffset = lineGap / 2;
+                break;
+            case ContentStretch:
+                // Distribute extra space equally to each line
+                if (numLines > 0) {
+                    int extra = crossFree / numLines;
+                    for (size_t li = 0; li < lines.size(); li++)
+                        lines[li].maxCrossSize += extra;
+                }
+                break;
+        }
+    }
+    crossPos += lineOffset;
+
     for (size_t lineIdx = 0; lineIdx < lines.size(); lineIdx++) {
         size_t li = (wrapMode == FlexWrapReverse) ? (lines.size() - 1 - lineIdx) : lineIdx;
         FlexLine& line = lines[li];
@@ -1397,7 +1429,7 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
             }
             placeChild(child, x, y);
         }
-        crossPos += lineCross;
+        crossPos += lineCross + lineGap;
     }
 
     m_flexingChildren = false;

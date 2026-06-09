@@ -217,5 +217,6 @@ flex-flow
 flex-grow
 flex-shrink
 flex-wrap
+align-content
 align-items
 justify-content

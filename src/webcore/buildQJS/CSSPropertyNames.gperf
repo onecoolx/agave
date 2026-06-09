@@ -216,6 +216,7 @@ flex-flow, CSS_PROP_FLEX_FLOW
 flex-grow, CSS_PROP_FLEX_GROW
 flex-shrink, CSS_PROP_FLEX_SHRINK
 flex-wrap, CSS_PROP_FLEX_WRAP
+align-content, CSS_PROP_ALIGN_CONTENT
 align-items, CSS_PROP_ALIGN_ITEMS
 justify-content, CSS_PROP_JUSTIFY_CONTENT
 %%

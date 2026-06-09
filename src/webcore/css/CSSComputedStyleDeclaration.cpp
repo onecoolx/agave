@@ -1710,6 +1710,7 @@ PassRefPtr<CSSValue> CSSComputedStyleDeclaration::getPropertyCSSValue(int proper
         case CSS_PROP_FLEX_GROW:
         case CSS_PROP_FLEX_SHRINK:
         case CSS_PROP_FLEX_WRAP:
+        case CSS_PROP_ALIGN_CONTENT:
         case CSS_PROP_ALIGN_ITEMS:
         case CSS_PROP_JUSTIFY_CONTENT:
             // FIXME: The above are unimplemented.
