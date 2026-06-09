@@ -1267,6 +1267,68 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
         freeSpace = 0;
     }
 
+    // --- Clamp to min/max constraints and redistribute ---
+    bool needsRedistribute = false;
+    int frozenSpace = 0;
+    float unfrozenGrow = 0.0f;
+    for (size_t i = 0; i < items.size(); i++) {
+        RenderObject* child = items[i].child;
+        int mainContent = items[i].mainSize - items[i].mainMargin;
+        int clamped = mainContent;
+        if (isRow) {
+            if (child->style()->minWidth().isFixed() && child->style()->minWidth().value() > 0) {
+                int minW = child->style()->minWidth().value()
+                    + child->borderLeft() + child->paddingLeft() + child->borderRight() + child->paddingRight();
+                if (mainContent < minW) clamped = minW;
+            }
+            if (child->style()->maxWidth().isFixed() && !child->style()->maxWidth().isUndefined()) {
+                int maxW = child->style()->maxWidth().value()
+                    + child->borderLeft() + child->paddingLeft() + child->borderRight() + child->paddingRight();
+                if (clamped > maxW) clamped = maxW;
+            }
+        } else {
+            if (child->style()->minHeight().isFixed() && child->style()->minHeight().value() > 0) {
+                int minH = child->style()->minHeight().value()
+                    + child->borderTop() + child->paddingTop() + child->borderBottom() + child->paddingBottom();
+                if (mainContent < minH) clamped = minH;
+            }
+            if (child->style()->maxHeight().isFixed() && !child->style()->maxHeight().isUndefined()) {
+                int maxH = child->style()->maxHeight().value()
+                    + child->borderTop() + child->paddingTop() + child->borderBottom() + child->paddingBottom();
+                if (clamped > maxH) clamped = maxH;
+            }
+        }
+        if (clamped != mainContent) {
+            child->setOverrideSize(clamped);
+            child->setNeedsLayout(true, false);
+            child->layoutIfNeeded();
+            items[i].mainSize = (isRow ? child->width() : child->height()) + items[i].mainMargin;
+            items[i].crossSize = (isRow ? child->height() : child->width()) + items[i].crossMargin;
+            items[i].grow = 0; // freeze
+            needsRedistribute = true;
+            frozenSpace += items[i].mainSize;
+        } else {
+            unfrozenGrow += items[i].grow;
+        }
+    }
+    // Redistribute remaining space to unfrozen items
+    if (needsRedistribute && unfrozenGrow > 0.0f) {
+        int spaceForUnfrozen = mainAvail - frozenSpace;
+        for (size_t i = 0; i < items.size(); i++) {
+            if (items[i].grow > 0.0f) {
+                int newMain = (int)(spaceForUnfrozen * (items[i].grow / unfrozenGrow)) - items[i].mainMargin;
+                if (newMain < 0) newMain = 0;
+                items[i].child->setOverrideSize(newMain);
+                items[i].child->setNeedsLayout(true, false);
+                items[i].child->layoutIfNeeded();
+                items[i].mainSize = (isRow ? items[i].child->width() : items[i].child->height()) + items[i].mainMargin;
+                items[i].crossSize = (isRow ? items[i].child->height() : items[i].child->width()) + items[i].crossMargin;
+                if (items[i].crossSize > maxCrossSize)
+                    maxCrossSize = items[i].crossSize;
+            }
+        }
+    }
+
     // Recalculate freeSpace after grow/shrink for justify-content
     if (freeSpace != 0) {
         // No grow/shrink happened, freeSpace stays as-is for justify
@@ -1314,11 +1376,15 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
     if (crossContainerSize > 0)
         crossExtent = crossContainerSize;
 
-    int mainPos = cbStart + (isReverse ? (mainAvail - mainOffset) : mainOffset);
+    // For reverse: start from the end of main axis
+    int mainPos;
+    if (isReverse)
+        mainPos = cbStart + mainAvail;
+    else
+        mainPos = cbStart + mainOffset;
 
     for (size_t i = 0; i < items.size(); i++) {
-        size_t idx = isReverse ? (items.size() - 1 - i) : i;
-        FlexItem& item = items[idx];
+        FlexItem& item = items[i];
         RenderObject* child = item.child;
 
         int childMain = item.mainSize - item.mainMargin; // content+border+padding

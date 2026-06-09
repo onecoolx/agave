@@ -51,7 +51,7 @@
 - [x] **1a-4 核心布局算法**：main 轴 basis→grow/shrink 分配 + cross 轴 align-items 对齐
       + justify-content 主轴分布（**单行**，暂不 wrap）
 - [x] **1a-5 固有尺寸**：flex 容器 min/max-content 计算，接入 calcPrefWidths 协议
-- [ ] **1a-6 测试+调试**：flex 测试页对照 Chrome 几何，修边界（嵌套/百分比/min-max），
+- [x] **1a-6 测试+调试**：flex 测试页对照 Chrome 几何，修边界（嵌套/百分比/min-max），
       沉淀 benchmark 回归页
 
 ### 工期（人类熟练工单人全职）
@@ -187,3 +187,12 @@ min/max-content 传播）可能不支持现代 flex 所需。若需先补基础�
     column/column-reverse → calcVerticalPrefWidths（子项 min/max 取最大）。
   - 验证：inline-flex 容器正确收缩到内容宽度（80+120=200px）。
   - 编译 0 error，unit_tests + flex_test 全过。
+- 2026-06-09：**1a-6 测试+调试完成。里程碑 1a 全部完成。**
+  - 测试扩充到 22 条断言，新增覆盖：嵌套 flex、百分比 width 子项、min-width/max-width
+    约束+空间再分配、flex-basis:auto+显式宽度、align-items:stretch、justify-content:flex-end、
+    row-reverse。
+  - 修复 min-width/max-width：添加 clamp 阶段（冻结已夹紧项 → 重新分配给未冻结项）。
+    条件修正：仅 minWidth>0 和非 undefined maxWidth 时触发。
+  - 修复 row-reverse：mainPos 从 cbStart+mainAvail（右边缘）开始向左放置，移除错误的
+    mainOffset 翻转。
+  - 全部 22/22 测试通过，unit_tests 无回归。
