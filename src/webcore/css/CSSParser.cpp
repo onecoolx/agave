@@ -426,6 +426,8 @@ bool CSSParser::validUnit(Value* value, Units unitflags, bool strict)
     case CSSPrimitiveValue::CSS_DEG:
     case CSSPrimitiveValue::CSS_RAD:
     case CSSPrimitiveValue::CSS_GRAD:
+        b = (unitflags & FAngle) ? true : false;
+        break;
     case CSSPrimitiveValue::CSS_HZ:
     case CSSPrimitiveValue::CSS_KHZ:
     case CSSPrimitiveValue::CSS_DIMENSION:
@@ -3659,7 +3661,7 @@ PassRefPtr<CSSValue> CSSParser::parseTransform()
                 return 0;
             
             // Add the value to the current transform operation.
-            transformValue->addValue(new CSSPrimitiveValue(value->fValue, (CSSPrimitiveValue::UnitTypes) value->unit));
+            transformValue->addValue(new CSSPrimitiveValue(a->fValue, (CSSPrimitiveValue::UnitTypes) a->unit));
 
             a = args->next();
             if (!a)

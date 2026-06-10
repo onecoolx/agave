@@ -22,6 +22,7 @@
 #include "config.h"
 #include "RenderStyle.h"
 
+#include "AffineTransform.h"
 #include "CSSStyleSelector.h"
 #include "RenderArena.h"
 
@@ -534,12 +535,68 @@ StyleTransformData::StyleTransformData(const StyleTransformData& o)
     : Shared<StyleTransformData>()
     , m_x(o.m_x)
     , m_y(o.m_y)
+#if ENABLE(MODERN_CSS3)
+    , m_operations(o.m_operations)
+#endif
 {}
 
 bool StyleTransformData::operator==(const StyleTransformData& o) const
 {
+#if ENABLE(MODERN_CSS3)
+    if (m_operations != o.m_operations)
+        return false;
+#endif
     return m_x == o.m_x && m_y == o.m_y;
 }
+
+#if ENABLE(MODERN_CSS3)
+void RenderStyle::applyTransform(AffineTransform& t, int boxWidth, int boxHeight) const
+{
+    const Vector<TransformOperation>& ops = rareNonInheritedData->m_transform->m_operations;
+    if (ops.isEmpty())
+        return;
+
+    // Resolve transform-origin (default 50% 50%) to a point within the box.
+    Length ox = rareNonInheritedData->m_transform->m_x;
+    Length oy = rareNonInheritedData->m_transform->m_y;
+    float originX = ox.isPercent() ? (float)(ox.percent() / 100.0 * boxWidth) : (float)ox.value();
+    float originY = oy.isPercent() ? (float)(oy.percent() / 100.0 * boxHeight) : (float)oy.value();
+
+    // The matrix primitives post-concatenate (each op left-multiplies the
+    // current matrix: M <- Op * M), and mapPoint computes M * p. To obtain the
+    // effective transform T(origin) * [op0 * op1 * ...] * T(-origin) applied as
+    // M * p, build in reverse: translate(-origin) first, the operations in
+    // reverse CSS order, then translate(origin) last.
+    t.translate(-originX, -originY);
+    for (size_t i = ops.size(); i-- > 0; ) {
+        const TransformOperation& op = ops[i];
+        switch (op.type) {
+            case TransformOperation::TranslateOp: {
+                float tx = op.isPercentX ? (op.x / 100.0f) * boxWidth : op.x;
+                float ty = op.isPercentY ? (op.y / 100.0f) * boxHeight : op.y;
+                t.translate(tx, ty);
+                break;
+            }
+            case TransformOperation::ScaleOp:
+                t.scaleNonUniform(op.x, op.y);
+                break;
+            case TransformOperation::RotateOp:
+                t.rotate(op.angleX);
+                break;
+            case TransformOperation::SkewOp:
+                t.skewX(op.angleX);
+                t.skewY(op.angleY);
+                break;
+            case TransformOperation::MatrixOp: {
+                AffineTransform m(op.ma, op.mb, op.mc, op.md, op.me, op.mf);
+                t.multiply(m);
+                break;
+            }
+        }
+    }
+    t.translate(originX, originY);
+}
+#endif // ENABLE(MODERN_CSS3)
 
 StyleRareNonInheritedData::StyleRareNonInheritedData()
     : lineClamp(RenderStyle::initialLineClamp())

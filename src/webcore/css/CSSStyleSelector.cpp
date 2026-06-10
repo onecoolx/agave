@@ -32,6 +32,7 @@
 #include "CSSFontFaceRule.h"
 #include "CSSImageValue.h"
 #include "CSSGradientValue.h"
+#include "CSSTransformValue.h"
 #include "CSSImportRule.h"
 #include "CSSMediaRule.h"
 #include "CSSProperty.h"
@@ -4798,6 +4799,106 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
         style->setTextStrokeWidth(width);
         return;
     }
+    case CSS_PROP__WEBKIT_TRANSFORM: {
+        if (isInherit) {
+            style->setTransformOperations(parentStyle->transformOperations());
+            return;
+        }
+        if (isInitial || (primitiveValue && primitiveValue->getIdent() == CSS_VAL_NONE)) {
+            style->clearTransformOperations();
+            return;
+        }
+        if (!value->isValueList())
+            return;
+
+        Vector<TransformOperation> ops;
+        CSSValueList* list = static_cast<CSSValueList*>(value);
+        for (unsigned i = 0; i < list->length(); i++) {
+            CSSValue* item = list->item(i);
+            if (!item->isTransformValue())
+                continue;
+            CSSTransformValue* tv = static_cast<CSSTransformValue*>(item);
+            CSSValueList* args = tv->values();
+            if (!args)
+                continue;
+
+            TransformOperation op;
+            CSSPrimitiveValue* a0 = args->length() > 0 ? static_cast<CSSPrimitiveValue*>(args->item(0)) : 0;
+            CSSPrimitiveValue* a1 = args->length() > 1 ? static_cast<CSSPrimitiveValue*>(args->item(1)) : 0;
+
+            switch (tv->type()) {
+                case CSSTransformValue::TranslateTransformOperation:
+                case CSSTransformValue::TranslateXTransformOperation:
+                case CSSTransformValue::TranslateYTransformOperation: {
+                    op.type = TransformOperation::TranslateOp;
+                    bool isY = (tv->type() == CSSTransformValue::TranslateYTransformOperation);
+                    CSSPrimitiveValue* primaryV = a0;
+                    if (primaryV) {
+                        bool pct = primaryV->primitiveType() == CSSPrimitiveValue::CSS_PERCENTAGE;
+                        float v = pct ? (float)primaryV->getDoubleValue()
+                                      : (float)primaryV->computeLengthIntForLength(style, zoomFactor);
+                        if (isY) { op.y = v; op.isPercentY = pct; }
+                        else { op.x = v; op.isPercentX = pct; }
+                    }
+                    if (tv->type() == CSSTransformValue::TranslateTransformOperation && a1) {
+                        bool pct = a1->primitiveType() == CSSPrimitiveValue::CSS_PERCENTAGE;
+                        op.y = pct ? (float)a1->getDoubleValue()
+                                   : (float)a1->computeLengthIntForLength(style, zoomFactor);
+                        op.isPercentY = pct;
+                    }
+                    break;
+                }
+                case CSSTransformValue::ScaleTransformOperation:
+                case CSSTransformValue::ScaleXTransformOperation:
+                case CSSTransformValue::ScaleYTransformOperation: {
+                    op.type = TransformOperation::ScaleOp;
+                    op.x = 1.0f; op.y = 1.0f;
+                    float v0 = a0 ? (float)a0->getDoubleValue() : 1.0f;
+                    if (tv->type() == CSSTransformValue::ScaleXTransformOperation)
+                        op.x = v0;
+                    else if (tv->type() == CSSTransformValue::ScaleYTransformOperation)
+                        op.y = v0;
+                    else {
+                        op.x = v0;
+                        op.y = a1 ? (float)a1->getDoubleValue() : v0; // scale(x) => uniform
+                    }
+                    break;
+                }
+                case CSSTransformValue::RotateTransformOperation:
+                    op.type = TransformOperation::RotateOp;
+                    op.angleX = a0 ? (float)a0->getDoubleValue() : 0.0f;
+                    break;
+                case CSSTransformValue::SkewTransformOperation:
+                case CSSTransformValue::SkewXTransformOperation:
+                case CSSTransformValue::SkewYTransformOperation: {
+                    op.type = TransformOperation::SkewOp;
+                    float v0 = a0 ? (float)a0->getDoubleValue() : 0.0f;
+                    if (tv->type() == CSSTransformValue::SkewXTransformOperation)
+                        op.angleX = v0;
+                    else if (tv->type() == CSSTransformValue::SkewYTransformOperation)
+                        op.angleY = v0;
+                    else {
+                        op.angleX = v0;
+                        op.angleY = a1 ? (float)a1->getDoubleValue() : 0.0f;
+                    }
+                    break;
+                }
+                case CSSTransformValue::MatrixTransformOperation: {
+                    op.type = TransformOperation::MatrixOp;
+                    float m[6] = {1, 0, 0, 1, 0, 0};
+                    for (unsigned k = 0; k < 6 && k < args->length(); k++)
+                        m[k] = (float)static_cast<CSSPrimitiveValue*>(args->item(k))->getDoubleValue();
+                    op.ma = m[0]; op.mb = m[1]; op.mc = m[2]; op.md = m[3]; op.me = m[4]; op.mf = m[5];
+                    break;
+                }
+                default:
+                    continue;
+            }
+            ops.append(op);
+        }
+        style->setTransformOperations(ops);
+        return;
+    }
     case CSS_PROP__WEBKIT_TRANSFORM_ORIGIN:
         HANDLE_INHERIT_AND_INITIAL(transformOriginX, TransformOriginX)
         HANDLE_INHERIT_AND_INITIAL(transformOriginY, TransformOriginY)
@@ -4863,7 +4964,6 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
     case CSS_PROP__WEBKIT_PADDING_START:
     case CSS_PROP__WEBKIT_TEXT_DECORATIONS_IN_EFFECT:
     case CSS_PROP__WEBKIT_TEXT_STROKE:
-    case CSS_PROP__WEBKIT_TRANSFORM:
         return;
 #if ENABLE(SVG)
     default:

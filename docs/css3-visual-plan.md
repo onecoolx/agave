@@ -158,3 +158,26 @@
     多重背景、复杂 radial 形状/尺寸关键字后置。
   - 测试：6 解析单元测试 + 8 benchmark 断言（线性/角度/方向/径向/渐变+圆角组合）。
     668 全套通过，ASan 无内存错误，三维审查通过。
+
+- 2026-06-10：**里程碑 3c 完成（HTML transform 渲染接入，完整）。**
+  - 数据模型：RenderStyle.h 加 TransformOperation（translate/scale/rotate/skew/
+    matrix），StyleTransformData 存 Vector<TransformOperation>；加 hasTransform()、
+    transformOperations()、applyTransform(AffineTransform&, w, h)。
+  - 应用：CSSStyleSelector 实现 -webkit-transform apply（从 CSSTransformValue 列表
+    提取操作，translate 支持百分比）；从 unimplemented 列表移除。
+  - 几何：applyTransform 按 transform-origin（默认 50%）构造矩阵。注意底层矩阵原语
+    为后乘语义（M <- Op*M），故按 translate(-origin)、逆序操作、translate(origin)
+    构建，使 mapPoint 得到 T(o)·ops·T(-o)·p。
+  - 绘制：RenderLayer::paintLayer 对变换层 save() + concatCTM(平移到绝对位置∘局部
+    变换∘反平移) 包裹，末尾 restore()。
+  - 命中测试：hitTestLayer 开头用 RAII 守卫，按逆矩阵映射命中点到元素局部坐标
+    （isInvertible 守卫），各 return 路径自动恢复原点。
+  - 重绘区域：computeAbsoluteRepaintRect 对变换盒用 mapRect 扩展 box-local 重绘矩形，
+    避免变换后残影。
+  - 封装边界：webcore 层只用 AffineTransform 封装对象与 GraphicsContext::concatCTM/
+    save/restore；实现 concatCTM（GraphicsContextPS，经 setMatrix）；picasso ps_* 仅
+    限 platform/picasso/ 内，不泄漏到 webcore。
+  - 修复 4 个 bug：矩阵组合顺序、validUnit 不支持 FAngle（致 rotate/skew 全被拒）、
+    percent Length 误用 value() 触发断言崩溃、parseTransform 的 a->fValue 笔误。
+  - 测试：8 解析+几何单元测试 + 6 benchmark 断言（含点击命中变换后位置、原位置不
+    命中）。676 全套通过（唯一失败为预存 flaky 计时基准，重跑通过）。三维审查通过。

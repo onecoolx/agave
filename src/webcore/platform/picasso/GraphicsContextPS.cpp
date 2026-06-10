@@ -774,6 +774,17 @@ void GraphicsContext::setMatrix (const AffineTransform & matrix)
     m_data->matrix = matrix;
 }
 
+void GraphicsContext::concatCTM(const AffineTransform& transform)
+{
+    if (paintingDisabled())
+        return;
+    // Compose the given transform onto the current CTM via the AffineTransform
+    // wrapper, then push the result to the backend through setMatrix().
+    AffineTransform composed = m_data->matrix;
+    composed.multiply(transform);
+    setMatrix(composed);
+}
+
 void GraphicsContext::setPlatformStrokeStyle(const StrokeStyle& style)
 {
 }

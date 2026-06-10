@@ -44,6 +44,7 @@
 #include "config.h"
 #include "RenderLayer.h"
 
+#include "AffineTransform.h"
 #include "CSSPropertyNames.h"
 #include "Document.h"
 #include "EventHandler.h"
@@ -1442,6 +1443,29 @@ RenderLayer::paintLayer(RenderLayer* rootLayer, GraphicsContext* p,
     // If this layer is totally invisible then there is nothing to paint.
     if (!m_object->opacity())
         return;
+
+#if ENABLE(MODERN_CSS3)
+    // Apply a CSS transform around the whole layer paint. The transform is
+    // built in box-local coordinates (about transform-origin); compose it with
+    // a translation to the box's absolute position so painting at absolute
+    // coordinates is transformed correctly.
+    bool appliedTransform = false;
+    if (renderer()->style()->hasTransform()) {
+        int boxW = renderer()->width();
+        int boxH = renderer()->height();
+        AffineTransform local;
+        renderer()->style()->applyTransform(local, boxW, boxH);
+        if (!local.isIdentity()) {
+            AffineTransform ctm;
+            ctm.translate(x, y);
+            ctm.multiply(local);
+            ctm.translate(-x, -y);
+            p->save();
+            p->concatCTM(ctm);
+            appliedTransform = true;
+        }
+    }
+#endif
         
     bool selectionOnly = paintRestriction == PaintRestrictionSelectionOnly || paintRestriction == PaintRestrictionSelectionOnlyBlackText;
     bool forceBlackText = paintRestriction == PaintRestrictionSelectionOnlyBlackText;
@@ -1535,6 +1559,11 @@ RenderLayer::paintLayer(RenderLayer* rootLayer, GraphicsContext* p,
         p->restore();
         m_usedTransparency = false;
     }
+
+#if ENABLE(MODERN_CSS3)
+    if (appliedTransform)
+        p->restore();
+#endif
 }
 
 static inline IntRect frameVisibleRect(RenderObject* renderer)
@@ -1586,6 +1615,39 @@ Node* RenderLayer::enclosingElement() const
 RenderLayer* RenderLayer::hitTestLayer(RenderLayer* rootLayer, const HitTestRequest& request,
     HitTestResult& result, const IntRect& hitTestRect)
 {
+#if ENABLE(MODERN_CSS3)
+    // For a transformed layer, map the hit-test point back through the inverse
+    // transform so the (untransformed) layer geometry comparisons below are
+    // performed in the element's own coordinate space. The original point is
+    // restored on every exit path by the guard below.
+    struct TransformPointGuard {
+        HitTestResult& result;
+        IntPoint saved;
+        bool active;
+        TransformPointGuard(HitTestResult& r) : result(r), saved(r.point()), active(false) { }
+        ~TransformPointGuard() { if (active) result.setPoint(saved); }
+    } pointGuard(result);
+
+    if (renderer()->style()->hasTransform()) {
+        IntRect b;
+        IntRect tmp1, tmp2, tmp3;
+        calculateRects(rootLayer, hitTestRect, b, tmp1, tmp2, tmp3);
+        int boxW = renderer()->width();
+        int boxH = renderer()->height();
+        AffineTransform local;
+        renderer()->style()->applyTransform(local, boxW, boxH);
+        if (!local.isIdentity() && local.isInvertible()) {
+            AffineTransform ctm;
+            ctm.translate(b.x(), b.y());
+            ctm.multiply(local);
+            ctm.translate(-b.x(), -b.y());
+            IntPoint mapped = ctm.inverse().mapPoint(result.point());
+            result.setPoint(mapped);
+            pointGuard.active = true;
+        }
+    }
+#endif
+
     // Calculate the clip rects we should use.
     IntRect layerBounds;
     IntRect bgRect;

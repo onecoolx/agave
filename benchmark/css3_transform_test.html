@@ -1,0 +1,45 @@
+<html>
+<head><style>
+* { box-sizing:border-box; margin:0; }
+#t1 { width:100px; height:100px; background:red; transform:translate(50px, 30px); }
+#t2 { width:100px; height:100px; background:green; transform:scale(2); transform-origin:0 0; }
+#t3 { width:100px; height:100px; background:blue; transform:rotate(45deg); }
+#stack { position:relative; width:300px; height:300px; }
+#hit { position:absolute; left:50px; top:50px; width:80px; height:80px; background:orange;
+       transform:translate(100px, 0); }
+</style></head>
+<body>
+<div id="t1">1</div>
+<div id="t2">2</div>
+<div id="t3">3</div>
+<div id="stack"><div id="hit">H</div></div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function ckTrue(n,c){r.push(n+':'+(c?'PASS':'FAIL'));}
+function E(id){return document.getElementById(id);}
+
+// transform 不改变布局盒尺寸/位置(规范)
+ck('t1-w', E('t1').offsetWidth, 100);
+ck('t1-left', E('t1').offsetLeft, 0);
+ck('t2-h', E('t2').offsetHeight, 100);
+
+// 命中测试: #hit 视觉上被 translate(100px,0) 移动。
+// 用 #stack 的实际屏幕位置 + 偏移计算点击坐标，避免受上方元素布局影响。
+var st = E('stack');
+var sx = st.offsetLeft, sy = st.offsetTop;
+// 变换后 #hit 像素在 stack 内 x:[150,230] y:[50,130]，取中心 (190,90)
+var hitInTransformed = document.elementFromPoint(sx + 190, sy + 90);
+// 原布局位置 (90,90) 变换后已空出
+var hitInOriginal = document.elementFromPoint(sx + 90, sy + 90);
+ckTrue('hit-transformed', hitInTransformed && hitInTransformed.id === 'hit');
+ckTrue('miss-original', !hitInOriginal || hitInOriginal.id !== 'hit');
+
+// 存活
+ckTrue('survived', E('t3').offsetWidth === 100);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

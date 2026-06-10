@@ -30,6 +30,7 @@
 #include "CachedImage.h"
 #include "CanvasGradient.h"
 #include "Color.h"
+#include "AffineTransform.h"
 #include "Document.h"
 #include "FrameView.h"
 #include "GraphicsContext.h"
@@ -994,6 +995,17 @@ IntRect RenderBox::absoluteClippedOverflowRect()
 
 void RenderBox::computeAbsoluteRepaintRect(IntRect& rect, bool fixed)
 {
+#if ENABLE(MODERN_CSS3)
+    // If this box is transformed, expand the (box-local) repaint rect to the
+    // bounding box of its transformed shape, so the dirty region covers the
+    // painted (transformed) pixels and no residue is left behind.
+    if (style() && style()->hasTransform()) {
+        AffineTransform t;
+        style()->applyTransform(t, width(), height());
+        if (!t.isIdentity())
+            rect = t.mapRect(rect);
+    }
+#endif
     if (RenderView* v = view()) {
         if (LayoutState* layoutState = v->layoutState()) {
             rect.move(m_x, m_y);

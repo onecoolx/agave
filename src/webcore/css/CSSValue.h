@@ -47,6 +47,7 @@ public:
     virtual bool isValue() { return true; }
     virtual bool isFontValue() { return false; }
     virtual bool isGradientValue() const { return false; }
+    virtual bool isTransformValue() const { return false; }
     virtual bool isImplicitInitialValue() const { return false; }
 };
 

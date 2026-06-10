@@ -53,6 +53,11 @@ public:
     void addValue(CSSValue*);
     
     virtual String cssText() const;
+
+    TransformOperationType type() const { return m_type; }
+    CSSValueList* values() const { return m_values.get(); }
+
+    virtual bool isTransformValue() const { return true; }
  
 protected:
     TransformOperationType m_type;

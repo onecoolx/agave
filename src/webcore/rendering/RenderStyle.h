@@ -65,6 +65,7 @@ namespace WebCore {
 
 using std::max;
 
+class AffineTransform;
 class CSSStyleSelector;
 class CSSValueList;
 class CachedImage;
@@ -669,6 +670,35 @@ public:
 
 // CSS Transforms (may become part of CSS3)
 
+#if ENABLE(MODERN_CSS3)
+// A single CSS transform function (translate/scale/rotate/skew/matrix).
+// Lengths are stored in pixels; percentages 0..100 are resolved against the
+// box size at apply time (isPercentX/Y mark a translate component as percent).
+// Angles are stored in degrees.
+struct TransformOperation {
+    enum Type { TranslateOp, ScaleOp, RotateOp, SkewOp, MatrixOp };
+    TransformOperation()
+        : type(TranslateOp), x(0), y(0), isPercentX(false), isPercentY(false)
+        , angleX(0), angleY(0)
+        , ma(1), mb(0), mc(0), md(1), me(0), mf(0) { }
+
+    bool operator==(const TransformOperation& o) const {
+        return type == o.type && x == o.x && y == o.y
+            && isPercentX == o.isPercentX && isPercentY == o.isPercentY
+            && angleX == o.angleX && angleY == o.angleY
+            && ma == o.ma && mb == o.mb && mc == o.mc
+            && md == o.md && me == o.me && mf == o.mf;
+    }
+    bool operator!=(const TransformOperation& o) const { return !(*this == o); }
+
+    Type type;
+    float x, y;              // translate offsets / scale factors
+    bool isPercentX, isPercentY; // translate component is a percentage
+    float angleX, angleY;    // rotate uses angleX; skew uses angleX (x) and angleY (y)
+    float ma, mb, mc, md, me, mf; // matrix() components
+};
+#endif // ENABLE(MODERN_CSS3)
+
 class StyleTransformData : public Shared<StyleTransformData> {
 public:
     StyleTransformData();
@@ -679,10 +709,11 @@ public:
         return !(*this == o);
     }
 
-    // This will eventually hold the parsed transform operations as well.
-    // In this first landing, we're just mapping in the transform origin.
     Length m_x;
     Length m_y;
+#if ENABLE(MODERN_CSS3)
+    Vector<TransformOperation> m_operations;
+#endif
 };
 
 //------------------------------------------------
@@ -1727,6 +1758,15 @@ public:
     EPageBreak columnBreakAfter() const { return static_cast<EPageBreak>(rareNonInheritedData->m_multiCol->m_breakAfter); }
     Length transformOriginX() const { return rareNonInheritedData->m_transform->m_x; }
     Length transformOriginY() const { return rareNonInheritedData->m_transform->m_y; }
+#if ENABLE(MODERN_CSS3)
+    const Vector<TransformOperation>& transformOperations() const { return rareNonInheritedData->m_transform->m_operations; }
+    bool hasTransform() const { return !rareNonInheritedData->m_transform->m_operations.isEmpty(); }
+    // Builds the affine transform for this element's box (width x height),
+    // resolving transform-origin and percentage translations. The matrix maps
+    // local coordinates to transformed coordinates, pre/post-translated so the
+    // transform is applied about the transform-origin.
+    void applyTransform(AffineTransform&, int boxWidth, int boxHeight) const;
+#endif
     // End CSS3 Getters
 
     // Apple-specific property getter methods
@@ -2008,6 +2048,10 @@ public:
     void setColumnBreakAfter(EPageBreak p) { SET_VAR(rareNonInheritedData.access()->m_multiCol, m_breakAfter, p); }
     void setTransformOriginX(Length l) { SET_VAR(rareNonInheritedData.access()->m_transform, m_x, l); }
     void setTransformOriginY(Length l) { SET_VAR(rareNonInheritedData.access()->m_transform, m_y, l); }
+#if ENABLE(MODERN_CSS3)
+    void setTransformOperations(const Vector<TransformOperation>& ops) { SET_VAR(rareNonInheritedData.access()->m_transform, m_operations, ops); }
+    void clearTransformOperations() { if (!rareNonInheritedData->m_transform->m_operations.isEmpty()) rareNonInheritedData.access()->m_transform.access()->m_operations.clear(); }
+#endif
     // End CSS3 Setters
    
     // Apple-specific property setters
