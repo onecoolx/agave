@@ -1,0 +1,76 @@
+<html>
+<head><style>
+/* column wrap: main=height, cross=width */
+#cw { display:flex; flex-direction:column; flex-wrap:wrap; width:300px; height:200px; }
+#cw div { width:100px; height:80px; }
+
+/* nested flex */
+#nf { display:flex; width:400px; height:100px; }
+#nf-inner { display:flex; flex:1; }
+#nf-i1, #nf-i2 { flex:1; }
+#nf-fixed { width:100px; }
+
+/* multi-level nested */
+#ml { display:flex; flex-direction:column; width:200px; height:200px; }
+#ml-row { display:flex; flex:1; }
+#ml-a, #ml-b { flex:1; }
+
+/* percentage basis */
+#pb { display:flex; width:400px; }
+#pb-a { flex-basis:25%; }
+#pb-b { flex-basis:50%; }
+
+/* nested percentage */
+#np { display:flex; width:400px; height:100px; }
+#np-inner { display:flex; flex-basis:50%; }
+#np-c { flex-basis:50%; }
+
+/* column percentage basis */
+#cp { display:flex; flex-direction:column; width:100px; height:400px; }
+#cp-a { flex-basis:25%; }
+#cp-b { flex-basis:50%; }
+</style></head>
+<body>
+<div id="cw"><div id="cw1">1</div><div id="cw2">2</div><div id="cw3">3</div></div>
+<div id="nf"><div id="nf-inner"><div id="nf-i1">A</div><div id="nf-i2">B</div></div><div id="nf-fixed">F</div></div>
+<div id="ml"><div id="ml-row"><div id="ml-a">A</div><div id="ml-b">B</div></div></div>
+<div id="pb"><div id="pb-a">A</div><div id="pb-b">B</div></div>
+<div id="np"><div id="np-inner"><div id="np-c">C</div></div></div>
+<div id="cp"><div id="cp-a">A</div><div id="cp-b">B</div></div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+
+// column wrap: 200px height fits 2 items (80+80=160, third wraps to col 2)
+// align-content defaults to stretch: 2 columns share 300px width -> 150 each
+var cw=document.getElementById('cw');
+ck('cw-item1-top', document.getElementById('cw1').offsetTop - cw.offsetTop, 0);
+ck('cw-item2-top', document.getElementById('cw2').offsetTop - cw.offsetTop, 80);
+ck('cw-item3-col2-left', document.getElementById('cw3').offsetLeft - cw.offsetLeft, 150);
+ck('cw-item3-col2-top', document.getElementById('cw3').offsetTop - cw.offsetTop, 0);
+
+// nested: inner flex gets 400-100=300, each inner child 150
+ck('nf-inner-w', document.getElementById('nf-inner').offsetWidth, 300);
+ck('nf-i1-w', document.getElementById('nf-i1').offsetWidth, 150);
+
+// multi-level: row gets full 200 height (flex:1 in column 200), a/b each 100 wide
+ck('ml-row-h', document.getElementById('ml-row').offsetHeight, 200);
+ck('ml-a-w', document.getElementById('ml-a').offsetWidth, 100);
+
+// percentage basis: 25% of 400=100, 50%=200
+ck('pb-a-w', document.getElementById('pb-a').offsetWidth, 100);
+ck('pb-b-w', document.getElementById('pb-b').offsetWidth, 200);
+
+// nested percentage: inner 50% of 400=200, c 50% of 200=100
+ck('np-inner-w', document.getElementById('np-inner').offsetWidth, 200);
+ck('np-c-w', document.getElementById('np-c').offsetWidth, 100);
+
+// column percentage basis: 25% of 400=100, 50%=200
+ck('cp-a-h', document.getElementById('cp-a').offsetHeight, 100);
+ck('cp-b-h', document.getElementById('cp-b').offsetHeight, 200);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

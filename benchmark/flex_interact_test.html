@@ -1,0 +1,45 @@
+<html>
+<head><style>
+/* absolute child excluded from flex sizing */
+#fa { display:flex; width:300px; position:relative; }
+#fa-a { flex:1; height:30px; }
+#fa-abs { position:absolute; width:50px; height:50px; }
+#fa-b { flex:1; height:30px; }
+
+/* flex container nested inside a block with float sibling */
+#fl { width:400px; }
+#fl-float { float:left; width:100px; height:30px; }
+#fl-flex { display:flex; }
+#fl-a { flex:1; height:30px; }
+#fl-b { flex:1; height:30px; }
+
+/* basic flex */
+#fc { display:flex; width:200px; }
+#fc-a { flex:1; height:30px; }
+#fc-b { flex:1; height:30px; }
+</style></head>
+<body>
+<div id="fa"><div id="fa-a">A</div><div id="fa-abs">X</div><div id="fa-b">B</div></div>
+<div id="fl"><div id="fl-float">F</div><div id="fl-flex"><div id="fl-a">A</div><div id="fl-b">B</div></div></div>
+<div id="fc"><div id="fc-a">A</div><div id="fc-b">B</div></div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+
+// absolute child excluded: a and b each get half of 300 = 150
+ck('fa-a-w', document.getElementById('fa-a').offsetWidth, 150);
+ck('fa-b-w', document.getElementById('fa-b').offsetWidth, 150);
+
+// flex container shrinks to available width beside float (400-100=300), a/b each 150
+ck('fl-a-w', document.getElementById('fl-a').offsetWidth, 150);
+ck('fl-b-w', document.getElementById('fl-b').offsetWidth, 150);
+
+// basic flex
+ck('fc-a-w', document.getElementById('fc-a').offsetWidth, 100);
+ck('fc-b-w', document.getElementById('fc-b').offsetWidth, 100);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

@@ -1146,6 +1146,7 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
 
     EBoxOrient savedOrient = style()->boxOrient();
     style()->setBoxOrient(isRow ? HORIZONTAL : VERTICAL);
+    m_flexingChildren = true;
 
     struct FlexItem {
         RenderObject* child;
@@ -1160,8 +1161,16 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
     Vector<FlexItem> allItems;
     FlexBoxIterator iterator(this);
     for (RenderObject* child = iterator.first(); child; child = iterator.next()) {
-        if (child->isPositioned())
+        if (child->isPositioned()) {
+            // Positioned children are laid out later by layoutPositionedObjects;
+            // give them a static position at the current main-axis start.
+            child->containingBlock()->insertPositionedObject(child);
+            if (child->hasStaticX())
+                child->setStaticX(style()->direction() == LTR ? mainStart : width() - mainStart);
+            if (child->hasStaticY())
+                child->setStaticY(crossStart);
             continue;
+        }
         if (relayoutChildren)
             child->setChildNeedsLayout(true, false);
 
@@ -1178,6 +1187,10 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
             basisPx = basis.isPercent() ? (int)(basis.percent() * mainAvail / 100.0) : basis.value();
             basisPx += isRow ? (child->borderLeft() + child->paddingLeft() + child->borderRight() + child->paddingRight())
                              : (child->borderTop() + child->paddingTop() + child->borderBottom() + child->paddingBottom());
+            // Apply the basis size now so items without grow/shrink still honor it.
+            child->setOverrideSize(basisPx);
+            child->setNeedsLayout(true, false);
+            child->layoutIfNeeded();
         }
 
         bool autoStart = isRow ? child->style()->marginLeft().isAuto() : child->style()->marginTop().isAuto();
@@ -1227,8 +1240,6 @@ void RenderFlexibleBox::layoutModernFlexbox(bool relayoutChildren)
     }
 
     // Process each line
-    m_flexingChildren = true;
-
     for (size_t li = 0; li < lines.size(); li++) {
         FlexLine& line = lines[li];
         int lineUsed = 0;

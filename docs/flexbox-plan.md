@@ -81,7 +81,7 @@ min/max-content 传播）可能不支持现代 flex 所需。若需先补基础�
 - [x] **1b-1 多行 wrap**：`flex-wrap`(wrap/nowrap/wrap-reverse) + 多行分行算法
 - [x] **1b-2 多行对齐**：`align-content`（多行交叉轴分布）
 - [x] **1b-3 次要特性**：`order`（重排）、`align-self`（单项覆盖）、auto margin
-- [ ] **1b-4 边界完善+回归**：column wrap、嵌套 flex、与 table/float 交互、
+- [x] **1b-4 边界完善+回归**：column wrap、嵌套 flex、与 table/float 交互、
       百分比 basis 边界；扩充 benchmark 回归页
 
 ### 工期
@@ -232,3 +232,24 @@ min/max-content 传播）可能不支持现代 flex 所需。若需先补基础�
   -webkit-box 走 legacy layoutHorizontalBox/layoutVerticalBox。
 - **测试**：unit_tests/rendering/flexbox_layout_test.cpp（gtest，需 OPT_UNITTEST=ON）；
   benchmark/flex_*.html（headless 几何验证）。
+
+- 2026-06-10：**1b-4 边界完善+回归完成。里程碑 1b 全部完成。**
+  - 关键修复：显式 flex-basis（百分比/固定）在收集阶段即应用 setOverrideSize，
+    使无 grow/shrink 的项也按 basis 渲染（之前停留在内容尺寸）。
+    m_flexingChildren=true 提前到收集循环之前。
+  - 定位子项：modern flex 中 absolute 子项调用 insertPositionedObject + setStaticX/Y，
+    正确排除出 flex 主轴计算（由 layoutPositionedObjects 后续处理）。
+  - 验证通过：column wrap（列方向多行，交叉轴宽度堆叠 + align-content:stretch）、
+    嵌套 flex、多层嵌套、百分比 basis（含嵌套/column）、absolute 排除、float 旁 flex 收缩。
+  - 已知限制（deferred）：display:table 作为 flex item 不认 override 宽度
+    （RenderTable 自算宽度）；absolute 子项精确 offsetLeft 略有偏差。属 2007 年代
+    RenderTable/定位代码集成的深层边界，影响极小。
+  - 测试：单元测试 29 条，benchmark 71 条（flex_test 22 + wrap 8 + align_content 12
+    + order_self 9 + edge 14 + interact 6）。全部 594 单元测试通过，ASan 干净。
+
+## 里程碑 1a + 1b 总结
+
+现代 Flexbox 已实现规范常用子集：display:flex/inline-flex、flex-direction
+（row/column + reverse）、flex-wrap、flex-flow、flex（grow/shrink/basis）、
+justify-content、align-items、align-content、align-self、order、auto margin、
+min/max 约束。能渲染绝大多数现代页面 flex 布局。

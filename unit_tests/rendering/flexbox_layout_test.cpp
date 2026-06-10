@@ -325,4 +325,72 @@ TEST_F(FlexboxLayoutTest, AutoMarginCenter)
     EXPECT_NEAR(a->xPos() - c->xPos(), 150, 2); // (400-100)/2
 }
 
+TEST_F(FlexboxLayoutTest, PercentageBasis)
+{
+    loadHtml("<div style='display:flex; width:400px;'>"
+             "<div id='a' style='flex-basis:25%;'>A</div>"
+             "<div id='b' style='flex-basis:50%;'>B</div></div>");
+    RenderObject* a = renderer("a");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(a && b);
+    EXPECT_NEAR(a->width(), 100, 2); // 25% of 400
+    EXPECT_NEAR(b->width(), 200, 2); // 50% of 400
+}
+
+TEST_F(FlexboxLayoutTest, ColumnPercentageBasis)
+{
+    loadHtml("<div style='display:flex; flex-direction:column; width:100px; height:400px;'>"
+             "<div id='a' style='flex-basis:25%;'>A</div>"
+             "<div id='b' style='flex-basis:50%;'>B</div></div>");
+    RenderObject* a = renderer("a");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(a && b);
+    EXPECT_NEAR(a->height(), 100, 2); // 25% of 400
+    EXPECT_NEAR(b->height(), 200, 2); // 50% of 400
+}
+
+TEST_F(FlexboxLayoutTest, NestedFlex)
+{
+    loadHtml("<div style='display:flex; width:400px; height:100px;'>"
+             "<div id='inner' style='display:flex; flex:1;'>"
+             "<div id='i1' style='flex:1;'>A</div>"
+             "<div id='i2' style='flex:1;'>B</div></div>"
+             "<div id='fixed' style='width:100px;'>F</div></div>");
+    RenderObject* inner = renderer("inner");
+    RenderObject* i1 = renderer("i1");
+    ASSERT_TRUE(inner && i1);
+    EXPECT_NEAR(inner->width(), 300, 2); // 400 - 100 fixed
+    EXPECT_NEAR(i1->width(), 150, 2); // half of inner
+}
+
+TEST_F(FlexboxLayoutTest, ColumnWrap)
+{
+    loadHtml("<div id='c' style='display:flex; flex-direction:column; flex-wrap:wrap; width:300px; height:200px;'>"
+             "<div id='a' style='width:100px; height:80px;'>1</div>"
+             "<div id='b' style='width:100px; height:80px;'>2</div>"
+             "<div id='d' style='width:100px; height:80px;'>3</div></div>");
+    RenderObject* c = renderer("c");
+    RenderObject* a = renderer("a");
+    RenderObject* d = renderer("d");
+    ASSERT_TRUE(c && a && d);
+    // a,b fit in column 1 (80+80=160<=200); d wraps to column 2 at top
+    EXPECT_NEAR(a->yPos() - c->yPos(), 0, 2);
+    EXPECT_NEAR(d->yPos() - c->yPos(), 0, 2);
+    EXPECT_GT(d->xPos(), a->xPos()); // d is in a later column
+}
+
+TEST_F(FlexboxLayoutTest, AbsoluteChildExcluded)
+{
+    loadHtml("<div style='display:flex; width:300px; position:relative;'>"
+             "<div id='a' style='flex:1; height:30px;'>A</div>"
+             "<div id='x' style='position:absolute; width:50px; height:50px;'>X</div>"
+             "<div id='b' style='flex:1; height:30px;'>B</div></div>");
+    RenderObject* a = renderer("a");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(a && b);
+    // Absolute child does not consume main-axis space: a and b each get half.
+    EXPECT_NEAR(a->width(), 150, 2);
+    EXPECT_NEAR(b->width(), 150, 2);
+}
+
 #endif // ENABLE(MODERN_FLEXBOX)
