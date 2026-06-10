@@ -1206,6 +1206,7 @@ bool CSSParser::parseValue(int propId, bool important)
     case CSS_PROP__WEBKIT_BOX_ORDINAL_GROUP:
         valid_primitive = validUnit(value, FInteger|FNonNeg, true);
         break;
+    case CSS_PROP_BOX_SIZING:
     case CSS_PROP__WEBKIT_BOX_SIZING:
         valid_primitive = id == CSS_VAL_BORDER_BOX || id == CSS_VAL_CONTENT_BOX;
         break;
@@ -2507,6 +2508,11 @@ bool CSSParser::parseShape(int propId, bool important)
 }
 
 #if ENABLE(MODERN_GRID)
+// Upper bound on the number of explicit grid tracks produced by parsing.
+// Caps repeat() expansion and long track lists so untrusted CSS cannot
+// exhaust memory at parse time.
+static const int kMaxGridTracks = 10000;
+
 // Builds a CSSPrimitiveValue for one grid track from a parser Value.
 // Returns 0 if the value is not a valid track size.
 // Supports: <length> | <percentage> | <number>fr | auto.
@@ -2568,7 +2574,7 @@ CSSValue* CSSParser::createGridTrack(Value* v)
 }
 
 // grid-template-columns / grid-template-rows
-// 2a subset: none | <track-size>+ | repeat( <integer> , <track-size>+ )
+// Grid track list: none | <track-size>+ | repeat( <integer> , <track-size>+ )
 bool CSSParser::parseGridTrackList(int propId, bool important)
 {
     Value* value = valueList->current();
@@ -2591,7 +2597,11 @@ bool CSSParser::parseGridTrackList(int propId, bool important)
                 delete list;
                 return false;
             }
+            // Clamp the repeat count: an unbounded count (e.g. repeat(1e9, 1px))
+            // would expand into a huge track list and exhaust memory.
             int count = (int)a->fValue;
+            if (count > kMaxGridTracks)
+                count = kMaxGridTracks;
             a = args->next();
             if (!a || a->unit != Value::Operator || a->iValue != ',') {
                 delete list;
@@ -2607,6 +2617,10 @@ bool CSSParser::parseGridTrackList(int propId, bool important)
             }
             for (int n = 0; n < count; n++) {
                 for (size_t k = 0; k < templateValues.size(); k++) {
+                    if (list->length() >= (unsigned)kMaxGridTracks) {
+                        n = count; // stop outer loop too
+                        break;
+                    }
                     CSSValue* t = createGridTrack(templateValues[k]);
                     if (!t) {
                         delete list;
@@ -2616,6 +2630,10 @@ bool CSSParser::parseGridTrackList(int propId, bool important)
                 }
             }
         } else {
+            if (list->length() >= (unsigned)kMaxGridTracks) {
+                value = valueList->next();
+                continue;
+            }
             CSSValue* t = createGridTrack(value);
             if (!t) {
                 delete list;

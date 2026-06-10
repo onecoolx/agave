@@ -39,6 +39,7 @@ border-top-style
 border-top-width
 border-width
 bottom
+box-sizing
 caption-side
 clear
 clip

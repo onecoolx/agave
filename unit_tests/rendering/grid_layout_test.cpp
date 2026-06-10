@@ -494,4 +494,38 @@ TEST_F(GridLayoutTest, AbsoluteChildExcludedFromGrid)
     EXPECT_NEAR(b->width(), 100, 2);
 }
 
+// Hardening: untrusted CSS with pathological repeat()/span must not crash,
+// hang, or exhaust memory. The layout simply completes with clamped values.
+TEST_F(GridLayoutTest, HugeRepeatCountIsClamped)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:repeat(999999999, 1px); width:100px;'>"
+             "<div id='a'>A</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* a = renderer("a");
+    ASSERT_TRUE(g && a);
+    // Survives and produces a finite layout.
+    EXPECT_GE(a->width(), 0);
+}
+
+TEST_F(GridLayoutTest, HugeSpanIsClamped)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:50px 50px; width:100px;'>"
+             "<div id='a' style='grid-row:1 / span 2000000000;'>A</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* a = renderer("a");
+    ASSERT_TRUE(g && a);
+    EXPECT_GE(g->height(), 0);
+    EXPECT_GE(a->width(), 0);
+}
+
+TEST_F(GridLayoutTest, HugeLineNumberIsClamped)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:50px; width:100px;'>"
+             "<div id='a' style='grid-column:999999999;'>A</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* a = renderer("a");
+    ASSERT_TRUE(g && a);
+    EXPECT_GE(a->width(), 0);
+}
+
 #endif // ENABLE(MODERN_GRID)

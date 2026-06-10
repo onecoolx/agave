@@ -220,7 +220,7 @@ findProp (register const char *str, register size_t len)
 {
   enum
     {
-      TOTAL_KEYWORDS = 232,
+      TOTAL_KEYWORDS = 233,
       MIN_WORD_LENGTH = 3,
       MAX_WORD_LENGTH = 43,
       MIN_HASH_VALUE = 3,
@@ -229,57 +229,57 @@ findProp (register const char *str, register size_t len)
 
   static const struct props wordlist_prop[] =
     {
-#line 131 "CSSPropertyNames.gperf"
+#line 132 "CSSPropertyNames.gperf"
       {"top", CSS_PROP_TOP},
-#line 43 "CSSPropertyNames.gperf"
-      {"clip", CSS_PROP_CLIP},
 #line 44 "CSSPropertyNames.gperf"
+      {"clip", CSS_PROP_CLIP},
+#line 45 "CSSPropertyNames.gperf"
       {"color", CSS_PROP_COLOR},
-#line 223 "CSSPropertyNames.gperf"
+#line 224 "CSSPropertyNames.gperf"
       {"order", CSS_PROP_ORDER},
-#line 232 "CSSPropertyNames.gperf"
+#line 233 "CSSPropertyNames.gperf"
       {"gap", CSS_PROP_GAP},
-#line 92 "CSSPropertyNames.gperf"
+#line 93 "CSSPropertyNames.gperf"
       {"page", CSS_PROP_PAGE},
-#line 42 "CSSPropertyNames.gperf"
+#line 43 "CSSPropertyNames.gperf"
       {"clear", CSS_PROP_CLEAR},
-#line 49 "CSSPropertyNames.gperf"
+#line 50 "CSSPropertyNames.gperf"
       {"direction", CSS_PROP_DIRECTION},
 #line 18 "CSSPropertyNames.gperf"
       {"border", CSS_PROP_BORDER},
-#line 45 "CSSPropertyNames.gperf"
+#line 46 "CSSPropertyNames.gperf"
       {"content", CSS_PROP_CONTENT},
-#line 108 "CSSPropertyNames.gperf"
+#line 109 "CSSPropertyNames.gperf"
       {"src", CSS_PROP_SRC},
 #line 35 "CSSPropertyNames.gperf"
       {"border-top", CSS_PROP_BORDER_TOP},
 #line 24 "CSSPropertyNames.gperf"
       {"border-color", CSS_PROP_BORDER_COLOR},
-#line 241 "CSSPropertyNames.gperf"
+#line 242 "CSSPropertyNames.gperf"
       {"grid-area", CSS_PROP_GRID_AREA},
 #line 36 "CSSPropertyNames.gperf"
       {"border-top-color", CSS_PROP_BORDER_TOP_COLOR},
-#line 87 "CSSPropertyNames.gperf"
+#line 88 "CSSPropertyNames.gperf"
       {"padding", CSS_PROP_PADDING},
-#line 91 "CSSPropertyNames.gperf"
+#line 92 "CSSPropertyNames.gperf"
       {"padding-top", CSS_PROP_PADDING_TOP},
-#line 96 "CSSPropertyNames.gperf"
+#line 97 "CSSPropertyNames.gperf"
       {"position", CSS_PROP_POSITION},
 #line 40 "CSSPropertyNames.gperf"
       {"bottom", CSS_PROP_BOTTOM},
-#line 219 "CSSPropertyNames.gperf"
+#line 220 "CSSPropertyNames.gperf"
       {"align-content", CSS_PROP_ALIGN_CONTENT},
-#line 68 "CSSPropertyNames.gperf"
+#line 69 "CSSPropertyNames.gperf"
       {"margin", CSS_PROP_MARGIN},
-#line 62 "CSSPropertyNames.gperf"
+#line 63 "CSSPropertyNames.gperf"
       {"letter-spacing", CSS_PROP_LETTER_SPACING},
-#line 72 "CSSPropertyNames.gperf"
+#line 73 "CSSPropertyNames.gperf"
       {"margin-top", CSS_PROP_MARGIN_TOP},
-#line 41 "CSSPropertyNames.gperf"
+#line 42 "CSSPropertyNames.gperf"
       {"caption-side", CSS_PROP_CAPTION_SIDE},
-#line 231 "CSSPropertyNames.gperf"
+#line 232 "CSSPropertyNames.gperf"
       {"grid-row", CSS_PROP_GRID_ROW},
-#line 233 "CSSPropertyNames.gperf"
+#line 234 "CSSPropertyNames.gperf"
       {"row-gap", CSS_PROP_ROW_GAP},
 #line 23 "CSSPropertyNames.gperf"
       {"border-collapse", CSS_PROP_BORDER_COLLAPSE},
@@ -287,411 +287,413 @@ findProp (register const char *str, register size_t len)
       {"border-bottom", CSS_PROP_BORDER_BOTTOM},
 #line 33 "CSSPropertyNames.gperf"
       {"border-spacing", CSS_PROP_BORDER_SPACING},
-#line 229 "CSSPropertyNames.gperf"
+#line 230 "CSSPropertyNames.gperf"
       {"grid-row-end", CSS_PROP_GRID_ROW_END},
 #line 20 "CSSPropertyNames.gperf"
       {"border-bottom-color", CSS_PROP_BORDER_BOTTOM_COLOR},
-#line 220 "CSSPropertyNames.gperf"
+#line 221 "CSSPropertyNames.gperf"
       {"align-items", CSS_PROP_ALIGN_ITEMS},
-#line 88 "CSSPropertyNames.gperf"
+#line 89 "CSSPropertyNames.gperf"
       {"padding-bottom", CSS_PROP_PADDING_BOTTOM},
-#line 228 "CSSPropertyNames.gperf"
+#line 229 "CSSPropertyNames.gperf"
       {"grid-row-start", CSS_PROP_GRID_ROW_START},
-#line 69 "CSSPropertyNames.gperf"
+#line 70 "CSSPropertyNames.gperf"
       {"margin-bottom", CSS_PROP_MARGIN_BOTTOM},
-#line 240 "CSSPropertyNames.gperf"
+#line 241 "CSSPropertyNames.gperf"
       {"grid-template-areas", CSS_PROP_GRID_TEMPLATE_AREAS},
-#line 139 "CSSPropertyNames.gperf"
-      {"word-spacing", CSS_PROP_WORD_SPACING},
-#line 133 "CSSPropertyNames.gperf"
-      {"vertical-align", CSS_PROP_VERTICAL_ALIGN},
-#line 99 "CSSPropertyNames.gperf"
-      {"right", CSS_PROP_RIGHT},
-#line 106 "CSSPropertyNames.gperf"
-      {"scrollbar-track-color", CSS_PROP_SCROLLBAR_TRACK_COLOR},
 #line 140 "CSSPropertyNames.gperf"
+      {"word-spacing", CSS_PROP_WORD_SPACING},
+#line 134 "CSSPropertyNames.gperf"
+      {"vertical-align", CSS_PROP_VERTICAL_ALIGN},
+#line 100 "CSSPropertyNames.gperf"
+      {"right", CSS_PROP_RIGHT},
+#line 107 "CSSPropertyNames.gperf"
+      {"scrollbar-track-color", CSS_PROP_SCROLLBAR_TRACK_COLOR},
+#line 141 "CSSPropertyNames.gperf"
       {"word-wrap", CSS_PROP_WORD_WRAP},
-#line 138 "CSSPropertyNames.gperf"
+#line 139 "CSSPropertyNames.gperf"
       {"word-break", CSS_PROP_WORD_BREAK},
-#line 101 "CSSPropertyNames.gperf"
+#line 102 "CSSPropertyNames.gperf"
       {"scrollbar-arrow-color", CSS_PROP_SCROLLBAR_ARROW_COLOR},
-#line 95 "CSSPropertyNames.gperf"
+#line 96 "CSSPropertyNames.gperf"
       {"page-break-inside", CSS_PROP_PAGE_BREAK_INSIDE},
-#line 136 "CSSPropertyNames.gperf"
+#line 137 "CSSPropertyNames.gperf"
       {"widows", CSS_PROP_WIDOWS},
-#line 225 "CSSPropertyNames.gperf"
+#line 226 "CSSPropertyNames.gperf"
       {"grid-template-rows", CSS_PROP_GRID_TEMPLATE_ROWS},
-#line 197 "CSSPropertyNames.gperf"
+#line 198 "CSSPropertyNames.gperf"
       {"-webkit-rtl-ordering", CSS_PROP__WEBKIT_RTL_ORDERING},
 #line 29 "CSSPropertyNames.gperf"
       {"border-right", CSS_PROP_BORDER_RIGHT},
 #line 30 "CSSPropertyNames.gperf"
       {"border-right-color", CSS_PROP_BORDER_RIGHT_COLOR},
-#line 90 "CSSPropertyNames.gperf"
+#line 91 "CSSPropertyNames.gperf"
       {"padding-right", CSS_PROP_PADDING_RIGHT},
-#line 148 "CSSPropertyNames.gperf"
+#line 149 "CSSPropertyNames.gperf"
       {"-webkit-binding", CSS_PROP__WEBKIT_BINDING},
-#line 79 "CSSPropertyNames.gperf"
-      {"outline", CSS_PROP_OUTLINE},
-#line 143 "CSSPropertyNames.gperf"
-      {"-webkit-appearance", CSS_PROP__WEBKIT_APPEARANCE},
-#line 78 "CSSPropertyNames.gperf"
-      {"orphans", CSS_PROP_ORPHANS},
 #line 80 "CSSPropertyNames.gperf"
+      {"outline", CSS_PROP_OUTLINE},
+#line 144 "CSSPropertyNames.gperf"
+      {"-webkit-appearance", CSS_PROP__WEBKIT_APPEARANCE},
+#line 79 "CSSPropertyNames.gperf"
+      {"orphans", CSS_PROP_ORPHANS},
+#line 81 "CSSPropertyNames.gperf"
       {"outline-color", CSS_PROP_OUTLINE_COLOR},
-#line 107 "CSSPropertyNames.gperf"
+#line 108 "CSSPropertyNames.gperf"
       {"size", CSS_PROP_SIZE},
-#line 98 "CSSPropertyNames.gperf"
+#line 99 "CSSPropertyNames.gperf"
       {"resize", CSS_PROP_RESIZE},
-#line 183 "CSSPropertyNames.gperf"
+#line 184 "CSSPropertyNames.gperf"
       {"-webkit-line-clamp", CSS_PROP__WEBKIT_LINE_CLAMP},
-#line 142 "CSSPropertyNames.gperf"
+#line 143 "CSSPropertyNames.gperf"
       {"zoom", CSS_PROP_ZOOM},
-#line 137 "CSSPropertyNames.gperf"
+#line 138 "CSSPropertyNames.gperf"
       {"width", CSS_PROP_WIDTH},
-#line 48 "CSSPropertyNames.gperf"
+#line 49 "CSSPropertyNames.gperf"
       {"cursor", CSS_PROP_CURSOR},
-#line 71 "CSSPropertyNames.gperf"
+#line 72 "CSSPropertyNames.gperf"
       {"margin-right", CSS_PROP_MARGIN_RIGHT},
-#line 153 "CSSPropertyNames.gperf"
+#line 154 "CSSPropertyNames.gperf"
       {"-webkit-border-image", CSS_PROP__WEBKIT_BORDER_IMAGE},
-#line 110 "CSSPropertyNames.gperf"
-      {"text-align", CSS_PROP_TEXT_ALIGN},
-#line 196 "CSSPropertyNames.gperf"
-      {"-webkit-padding-start", CSS_PROP__WEBKIT_PADDING_START},
-#line 132 "CSSPropertyNames.gperf"
-      {"unicode-bidi", CSS_PROP_UNICODE_BIDI},
-#line 47 "CSSPropertyNames.gperf"
-      {"counter-reset", CSS_PROP_COUNTER_RESET},
-#line 112 "CSSPropertyNames.gperf"
-      {"text-indent", CSS_PROP_TEXT_INDENT},
-#line 182 "CSSPropertyNames.gperf"
-      {"-webkit-line-break", CSS_PROP__WEBKIT_LINE_BREAK},
 #line 111 "CSSPropertyNames.gperf"
+      {"text-align", CSS_PROP_TEXT_ALIGN},
+#line 197 "CSSPropertyNames.gperf"
+      {"-webkit-padding-start", CSS_PROP__WEBKIT_PADDING_START},
+#line 133 "CSSPropertyNames.gperf"
+      {"unicode-bidi", CSS_PROP_UNICODE_BIDI},
+#line 48 "CSSPropertyNames.gperf"
+      {"counter-reset", CSS_PROP_COUNTER_RESET},
+#line 113 "CSSPropertyNames.gperf"
+      {"text-indent", CSS_PROP_TEXT_INDENT},
+#line 183 "CSSPropertyNames.gperf"
+      {"-webkit-line-break", CSS_PROP__WEBKIT_LINE_BREAK},
+#line 112 "CSSPropertyNames.gperf"
       {"text-decoration", CSS_PROP_TEXT_DECORATION},
-#line 230 "CSSPropertyNames.gperf"
+#line 231 "CSSPropertyNames.gperf"
       {"grid-column", CSS_PROP_GRID_COLUMN},
 #line 39 "CSSPropertyNames.gperf"
       {"border-width", CSS_PROP_BORDER_WIDTH},
-#line 100 "CSSPropertyNames.gperf"
+#line 101 "CSSPropertyNames.gperf"
       {"scrollbar-3dlight-color", CSS_PROP_SCROLLBAR_3DLIGHT_COLOR},
-#line 234 "CSSPropertyNames.gperf"
+#line 235 "CSSPropertyNames.gperf"
       {"column-gap", CSS_PROP_COLUMN_GAP},
 #line 38 "CSSPropertyNames.gperf"
       {"border-top-width", CSS_PROP_BORDER_TOP_WIDTH},
-#line 195 "CSSPropertyNames.gperf"
+#line 196 "CSSPropertyNames.gperf"
       {"-webkit-nbsp-mode", CSS_PROP__WEBKIT_NBSP_MODE},
-#line 186 "CSSPropertyNames.gperf"
-      {"-webkit-margin-start", CSS_PROP__WEBKIT_MARGIN_START},
-#line 135 "CSSPropertyNames.gperf"
-      {"white-space", CSS_PROP_WHITE_SPACE},
-#line 185 "CSSPropertyNames.gperf"
-      {"-webkit-margin-collapse", CSS_PROP__WEBKIT_MARGIN_COLLAPSE},
 #line 187 "CSSPropertyNames.gperf"
+      {"-webkit-margin-start", CSS_PROP__WEBKIT_MARGIN_START},
+#line 136 "CSSPropertyNames.gperf"
+      {"white-space", CSS_PROP_WHITE_SPACE},
+#line 186 "CSSPropertyNames.gperf"
+      {"-webkit-margin-collapse", CSS_PROP__WEBKIT_MARGIN_COLLAPSE},
+#line 188 "CSSPropertyNames.gperf"
       {"-webkit-margin-top-collapse", CSS_PROP__WEBKIT_MARGIN_TOP_COLLAPSE},
-#line 76 "CSSPropertyNames.gperf"
+#line 77 "CSSPropertyNames.gperf"
       {"min-width", CSS_PROP_MIN_WIDTH},
-#line 227 "CSSPropertyNames.gperf"
+#line 228 "CSSPropertyNames.gperf"
       {"grid-column-end", CSS_PROP_GRID_COLUMN_END},
-#line 46 "CSSPropertyNames.gperf"
+#line 47 "CSSPropertyNames.gperf"
       {"counter-increment", CSS_PROP_COUNTER_INCREMENT},
 #line 10 "CSSPropertyNames.gperf"
       {"background", CSS_PROP_BACKGROUND},
-#line 60 "CSSPropertyNames.gperf"
+#line 61 "CSSPropertyNames.gperf"
       {"height", CSS_PROP_HEIGHT},
 #line 12 "CSSPropertyNames.gperf"
       {"background-color", CSS_PROP_BACKGROUND_COLOR},
-#line 226 "CSSPropertyNames.gperf"
+#line 227 "CSSPropertyNames.gperf"
       {"grid-column-start", CSS_PROP_GRID_COLUMN_START},
-#line 97 "CSSPropertyNames.gperf"
+#line 98 "CSSPropertyNames.gperf"
       {"quotes", CSS_PROP_QUOTES},
-#line 237 "CSSPropertyNames.gperf"
+#line 238 "CSSPropertyNames.gperf"
       {"grid-auto-rows", CSS_PROP_GRID_AUTO_ROWS},
-#line 63 "CSSPropertyNames.gperf"
+#line 64 "CSSPropertyNames.gperf"
       {"line-height", CSS_PROP_LINE_HEIGHT},
 #line 17 "CSSPropertyNames.gperf"
       {"background-repeat", CSS_PROP_BACKGROUND_REPEAT},
 #line 22 "CSSPropertyNames.gperf"
       {"border-bottom-width", CSS_PROP_BORDER_BOTTOM_WIDTH},
-#line 119 "CSSPropertyNames.gperf"
-      {"text-overline", CSS_PROP_TEXT_OVERLINE},
 #line 120 "CSSPropertyNames.gperf"
+      {"text-overline", CSS_PROP_TEXT_OVERLINE},
+#line 121 "CSSPropertyNames.gperf"
       {"text-overline-color", CSS_PROP_TEXT_OVERLINE_COLOR},
-#line 184 "CSSPropertyNames.gperf"
+#line 185 "CSSPropertyNames.gperf"
       {"-webkit-margin-bottom-collapse", CSS_PROP__WEBKIT_MARGIN_BOTTOM_COLLAPSE},
-#line 224 "CSSPropertyNames.gperf"
+#line 225 "CSSPropertyNames.gperf"
       {"grid-template-columns", CSS_PROP_GRID_TEMPLATE_COLUMNS},
-#line 105 "CSSPropertyNames.gperf"
+#line 106 "CSSPropertyNames.gperf"
       {"scrollbar-shadow-color", CSS_PROP_SCROLLBAR_SHADOW_COLOR},
 #line 14 "CSSPropertyNames.gperf"
       {"background-position", CSS_PROP_BACKGROUND_POSITION},
-#line 75 "CSSPropertyNames.gperf"
+#line 76 "CSSPropertyNames.gperf"
       {"min-height", CSS_PROP_MIN_HEIGHT},
 #line 13 "CSSPropertyNames.gperf"
       {"background-image", CSS_PROP_BACKGROUND_IMAGE},
-#line 157 "CSSPropertyNames.gperf"
-      {"-webkit-border-vertical-spacing", CSS_PROP__WEBKIT_BORDER_VERTICAL_SPACING},
-#line 121 "CSSPropertyNames.gperf"
-      {"text-overline-mode", CSS_PROP_TEXT_OVERLINE_MODE},
-#line 209 "CSSPropertyNames.gperf"
-      {"-webkit-user-drag", CSS_PROP__WEBKIT_USER_DRAG},
-#line 164 "CSSPropertyNames.gperf"
-      {"-webkit-box-orient", CSS_PROP__WEBKIT_BOX_ORIENT},
-#line 159 "CSSPropertyNames.gperf"
-      {"-webkit-box-direction", CSS_PROP__WEBKIT_BOX_DIRECTION},
 #line 158 "CSSPropertyNames.gperf"
+      {"-webkit-border-vertical-spacing", CSS_PROP__WEBKIT_BORDER_VERTICAL_SPACING},
+#line 122 "CSSPropertyNames.gperf"
+      {"text-overline-mode", CSS_PROP_TEXT_OVERLINE_MODE},
+#line 210 "CSSPropertyNames.gperf"
+      {"-webkit-user-drag", CSS_PROP__WEBKIT_USER_DRAG},
+#line 165 "CSSPropertyNames.gperf"
+      {"-webkit-box-orient", CSS_PROP__WEBKIT_BOX_ORIENT},
+#line 160 "CSSPropertyNames.gperf"
+      {"-webkit-box-direction", CSS_PROP__WEBKIT_BOX_DIRECTION},
+#line 159 "CSSPropertyNames.gperf"
       {"-webkit-box-align", CSS_PROP__WEBKIT_BOX_ALIGN},
-#line 172 "CSSPropertyNames.gperf"
+#line 173 "CSSPropertyNames.gperf"
       {"-webkit-column-gap", CSS_PROP__WEBKIT_COLUMN_GAP},
-#line 211 "CSSPropertyNames.gperf"
+#line 212 "CSSPropertyNames.gperf"
       {"-webkit-user-select", CSS_PROP__WEBKIT_USER_SELECT},
-#line 141 "CSSPropertyNames.gperf"
+#line 142 "CSSPropertyNames.gperf"
       {"z-index", CSS_PROP_Z_INDEX},
 #line 32 "CSSPropertyNames.gperf"
       {"border-right-width", CSS_PROP_BORDER_RIGHT_WIDTH},
-#line 179 "CSSPropertyNames.gperf"
+#line 180 "CSSPropertyNames.gperf"
       {"-webkit-dashboard-region", CSS_PROP__WEBKIT_DASHBOARD_REGION},
-#line 61 "CSSPropertyNames.gperf"
+#line 62 "CSSPropertyNames.gperf"
       {"left", CSS_PROP_LEFT},
-#line 178 "CSSPropertyNames.gperf"
+#line 179 "CSSPropertyNames.gperf"
       {"-webkit-columns", CSS_PROP__WEBKIT_COLUMNS},
-#line 154 "CSSPropertyNames.gperf"
+#line 155 "CSSPropertyNames.gperf"
       {"-webkit-border-radius", CSS_PROP__WEBKIT_BORDER_RADIUS},
-#line 162 "CSSPropertyNames.gperf"
+#line 163 "CSSPropertyNames.gperf"
       {"-webkit-box-lines", CSS_PROP__WEBKIT_BOX_LINES},
-#line 102 "CSSPropertyNames.gperf"
+#line 103 "CSSPropertyNames.gperf"
       {"scrollbar-darkshadow-color", CSS_PROP_SCROLLBAR_DARKSHADOW_COLOR},
-#line 83 "CSSPropertyNames.gperf"
+#line 84 "CSSPropertyNames.gperf"
       {"outline-width", CSS_PROP_OUTLINE_WIDTH},
-#line 53 "CSSPropertyNames.gperf"
+#line 54 "CSSPropertyNames.gperf"
       {"font", CSS_PROP_FONT},
-#line 52 "CSSPropertyNames.gperf"
+#line 53 "CSSPropertyNames.gperf"
       {"float", CSS_PROP_FLOAT},
-#line 126 "CSSPropertyNames.gperf"
-      {"text-underline", CSS_PROP_TEXT_UNDERLINE},
-#line 165 "CSSPropertyNames.gperf"
-      {"-webkit-box-pack", CSS_PROP__WEBKIT_BOX_PACK},
-#line 202 "CSSPropertyNames.gperf"
-      {"-webkit-text-stroke", CSS_PROP__WEBKIT_TEXT_STROKE},
 #line 127 "CSSPropertyNames.gperf"
-      {"text-underline-color", CSS_PROP_TEXT_UNDERLINE_COLOR},
-#line 144 "CSSPropertyNames.gperf"
-      {"-webkit-background-clip", CSS_PROP__WEBKIT_BACKGROUND_CLIP},
+      {"text-underline", CSS_PROP_TEXT_UNDERLINE},
+#line 166 "CSSPropertyNames.gperf"
+      {"-webkit-box-pack", CSS_PROP__WEBKIT_BOX_PACK},
 #line 203 "CSSPropertyNames.gperf"
+      {"-webkit-text-stroke", CSS_PROP__WEBKIT_TEXT_STROKE},
+#line 128 "CSSPropertyNames.gperf"
+      {"text-underline-color", CSS_PROP_TEXT_UNDERLINE_COLOR},
+#line 145 "CSSPropertyNames.gperf"
+      {"-webkit-background-clip", CSS_PROP__WEBKIT_BACKGROUND_CLIP},
+#line 204 "CSSPropertyNames.gperf"
       {"-webkit-text-stroke-color", CSS_PROP__WEBKIT_TEXT_STROKE_COLOR},
 #line 25 "CSSPropertyNames.gperf"
       {"border-left", CSS_PROP_BORDER_LEFT},
+#line 41 "CSSPropertyNames.gperf"
+      {"box-sizing", CSS_PROP_BOX_SIZING},
 #line 26 "CSSPropertyNames.gperf"
       {"border-left-color", CSS_PROP_BORDER_LEFT_COLOR},
-#line 146 "CSSPropertyNames.gperf"
+#line 147 "CSSPropertyNames.gperf"
       {"-webkit-background-origin", CSS_PROP__WEBKIT_BACKGROUND_ORIGIN},
-#line 89 "CSSPropertyNames.gperf"
+#line 90 "CSSPropertyNames.gperf"
       {"padding-left", CSS_PROP_PADDING_LEFT},
-#line 188 "CSSPropertyNames.gperf"
-      {"-webkit-marquee", CSS_PROP__WEBKIT_MARQUEE},
-#line 124 "CSSPropertyNames.gperf"
-      {"text-shadow", CSS_PROP_TEXT_SHADOW},
-#line 74 "CSSPropertyNames.gperf"
-      {"max-width", CSS_PROP_MAX_WIDTH},
-#line 221 "CSSPropertyNames.gperf"
-      {"align-self", CSS_PROP_ALIGN_SELF},
-#line 128 "CSSPropertyNames.gperf"
-      {"text-underline-mode", CSS_PROP_TEXT_UNDERLINE_MODE},
-#line 70 "CSSPropertyNames.gperf"
-      {"margin-left", CSS_PROP_MARGIN_LEFT},
-#line 238 "CSSPropertyNames.gperf"
-      {"grid-auto-columns", CSS_PROP_GRID_AUTO_COLUMNS},
-#line 191 "CSSPropertyNames.gperf"
-      {"-webkit-marquee-repetition", CSS_PROP__WEBKIT_MARQUEE_REPETITION},
 #line 189 "CSSPropertyNames.gperf"
-      {"-webkit-marquee-direction", CSS_PROP__WEBKIT_MARQUEE_DIRECTION},
-#line 103 "CSSPropertyNames.gperf"
-      {"scrollbar-face-color", CSS_PROP_SCROLLBAR_FACE_COLOR},
+      {"-webkit-marquee", CSS_PROP__WEBKIT_MARQUEE},
+#line 125 "CSSPropertyNames.gperf"
+      {"text-shadow", CSS_PROP_TEXT_SHADOW},
+#line 75 "CSSPropertyNames.gperf"
+      {"max-width", CSS_PROP_MAX_WIDTH},
+#line 222 "CSSPropertyNames.gperf"
+      {"align-self", CSS_PROP_ALIGN_SELF},
+#line 129 "CSSPropertyNames.gperf"
+      {"text-underline-mode", CSS_PROP_TEXT_UNDERLINE_MODE},
+#line 71 "CSSPropertyNames.gperf"
+      {"margin-left", CSS_PROP_MARGIN_LEFT},
+#line 239 "CSSPropertyNames.gperf"
+      {"grid-auto-columns", CSS_PROP_GRID_AUTO_COLUMNS},
 #line 192 "CSSPropertyNames.gperf"
-      {"-webkit-marquee-speed", CSS_PROP__WEBKIT_MARQUEE_SPEED},
-#line 145 "CSSPropertyNames.gperf"
-      {"-webkit-background-composite", CSS_PROP__WEBKIT_BACKGROUND_COMPOSITE},
+      {"-webkit-marquee-repetition", CSS_PROP__WEBKIT_MARQUEE_REPETITION},
+#line 190 "CSSPropertyNames.gperf"
+      {"-webkit-marquee-direction", CSS_PROP__WEBKIT_MARQUEE_DIRECTION},
 #line 104 "CSSPropertyNames.gperf"
+      {"scrollbar-face-color", CSS_PROP_SCROLLBAR_FACE_COLOR},
+#line 193 "CSSPropertyNames.gperf"
+      {"-webkit-marquee-speed", CSS_PROP__WEBKIT_MARQUEE_SPEED},
+#line 146 "CSSPropertyNames.gperf"
+      {"-webkit-background-composite", CSS_PROP__WEBKIT_BACKGROUND_COMPOSITE},
+#line 105 "CSSPropertyNames.gperf"
       {"scrollbar-highlight-color", CSS_PROP_SCROLLBAR_HIGHLIGHT_COLOR},
 #line 11 "CSSPropertyNames.gperf"
       {"background-attachment", CSS_PROP_BACKGROUND_ATTACHMENT},
-#line 170 "CSSPropertyNames.gperf"
+#line 171 "CSSPropertyNames.gperf"
       {"-webkit-column-break-inside", CSS_PROP__WEBKIT_COLUMN_BREAK_INSIDE},
-#line 93 "CSSPropertyNames.gperf"
-      {"page-break-after", CSS_PROP_PAGE_BREAK_AFTER},
 #line 94 "CSSPropertyNames.gperf"
+      {"page-break-after", CSS_PROP_PAGE_BREAK_AFTER},
+#line 95 "CSSPropertyNames.gperf"
       {"page-break-before", CSS_PROP_PAGE_BREAK_BEFORE},
-#line 123 "CSSPropertyNames.gperf"
+#line 124 "CSSPropertyNames.gperf"
       {"text-overline-width", CSS_PROP_TEXT_OVERLINE_WIDTH},
-#line 190 "CSSPropertyNames.gperf"
+#line 191 "CSSPropertyNames.gperf"
       {"-webkit-marquee-increment", CSS_PROP__WEBKIT_MARQUEE_INCREMENT},
-#line 73 "CSSPropertyNames.gperf"
+#line 74 "CSSPropertyNames.gperf"
       {"max-height", CSS_PROP_MAX_HEIGHT},
 #line 15 "CSSPropertyNames.gperf"
       {"background-position-x", CSS_PROP_BACKGROUND_POSITION_X},
-#line 77 "CSSPropertyNames.gperf"
+#line 78 "CSSPropertyNames.gperf"
       {"opacity", CSS_PROP_OPACITY},
-#line 58 "CSSPropertyNames.gperf"
+#line 59 "CSSPropertyNames.gperf"
       {"font-variant", CSS_PROP_FONT_VARIANT},
-#line 173 "CSSPropertyNames.gperf"
-      {"-webkit-column-rule", CSS_PROP__WEBKIT_COLUMN_RULE},
-#line 156 "CSSPropertyNames.gperf"
-      {"-webkit-border-top-right-radius", CSS_PROP__WEBKIT_BORDER_TOP_RIGHT_RADIUS},
-#line 84 "CSSPropertyNames.gperf"
-      {"overflow", CSS_PROP_OVERFLOW},
 #line 174 "CSSPropertyNames.gperf"
+      {"-webkit-column-rule", CSS_PROP__WEBKIT_COLUMN_RULE},
+#line 157 "CSSPropertyNames.gperf"
+      {"-webkit-border-top-right-radius", CSS_PROP__WEBKIT_BORDER_TOP_RIGHT_RADIUS},
+#line 85 "CSSPropertyNames.gperf"
+      {"overflow", CSS_PROP_OVERFLOW},
+#line 175 "CSSPropertyNames.gperf"
       {"-webkit-column-rule-color", CSS_PROP__WEBKIT_COLUMN_RULE_COLOR},
-#line 171 "CSSPropertyNames.gperf"
+#line 172 "CSSPropertyNames.gperf"
       {"-webkit-column-count", CSS_PROP__WEBKIT_COLUMN_COUNT},
-#line 181 "CSSPropertyNames.gperf"
+#line 182 "CSSPropertyNames.gperf"
       {"-webkit-highlight", CSS_PROP__WEBKIT_HIGHLIGHT},
-#line 151 "CSSPropertyNames.gperf"
-      {"-webkit-border-fit", CSS_PROP__WEBKIT_BORDER_FIT},
-#line 50 "CSSPropertyNames.gperf"
-      {"display", CSS_PROP_DISPLAY},
-#line 167 "CSSPropertyNames.gperf"
-      {"-webkit-box-sizing", CSS_PROP__WEBKIT_BOX_SIZING},
-#line 163 "CSSPropertyNames.gperf"
-      {"-webkit-box-ordinal-group", CSS_PROP__WEBKIT_BOX_ORDINAL_GROUP},
 #line 152 "CSSPropertyNames.gperf"
+      {"-webkit-border-fit", CSS_PROP__WEBKIT_BORDER_FIT},
+#line 51 "CSSPropertyNames.gperf"
+      {"display", CSS_PROP_DISPLAY},
+#line 168 "CSSPropertyNames.gperf"
+      {"-webkit-box-sizing", CSS_PROP__WEBKIT_BOX_SIZING},
+#line 164 "CSSPropertyNames.gperf"
+      {"-webkit-box-ordinal-group", CSS_PROP__WEBKIT_BOX_ORDINAL_GROUP},
+#line 153 "CSSPropertyNames.gperf"
       {"-webkit-border-horizontal-spacing", CSS_PROP__WEBKIT_BORDER_HORIZONTAL_SPACING},
-#line 177 "CSSPropertyNames.gperf"
+#line 178 "CSSPropertyNames.gperf"
       {"-webkit-column-width", CSS_PROP__WEBKIT_COLUMN_WIDTH},
 #line 34 "CSSPropertyNames.gperf"
       {"border-style", CSS_PROP_BORDER_STYLE},
-#line 64 "CSSPropertyNames.gperf"
+#line 65 "CSSPropertyNames.gperf"
       {"list-style", CSS_PROP_LIST_STYLE},
 #line 37 "CSSPropertyNames.gperf"
       {"border-top-style", CSS_PROP_BORDER_TOP_STYLE},
-#line 56 "CSSPropertyNames.gperf"
+#line 57 "CSSPropertyNames.gperf"
       {"font-stretch", CSS_PROP_FONT_STRETCH},
-#line 212 "CSSPropertyNames.gperf"
+#line 213 "CSSPropertyNames.gperf"
       {"flex", CSS_PROP_FLEX},
-#line 51 "CSSPropertyNames.gperf"
+#line 52 "CSSPropertyNames.gperf"
       {"empty-cells", CSS_PROP_EMPTY_CELLS},
-#line 166 "CSSPropertyNames.gperf"
+#line 167 "CSSPropertyNames.gperf"
       {"-webkit-box-shadow", CSS_PROP__WEBKIT_BOX_SHADOW},
-#line 150 "CSSPropertyNames.gperf"
+#line 151 "CSSPropertyNames.gperf"
       {"-webkit-border-bottom-right-radius", CSS_PROP__WEBKIT_BORDER_BOTTOM_RIGHT_RADIUS},
-#line 55 "CSSPropertyNames.gperf"
+#line 56 "CSSPropertyNames.gperf"
       {"font-size", CSS_PROP_FONT_SIZE},
-#line 59 "CSSPropertyNames.gperf"
+#line 60 "CSSPropertyNames.gperf"
       {"font-weight", CSS_PROP_FONT_WEIGHT},
-#line 214 "CSSPropertyNames.gperf"
+#line 215 "CSSPropertyNames.gperf"
       {"flex-direction", CSS_PROP_FLEX_DIRECTION},
-#line 147 "CSSPropertyNames.gperf"
+#line 148 "CSSPropertyNames.gperf"
       {"-webkit-background-size", CSS_PROP__WEBKIT_BACKGROUND_SIZE},
-#line 130 "CSSPropertyNames.gperf"
+#line 131 "CSSPropertyNames.gperf"
       {"text-underline-width", CSS_PROP_TEXT_UNDERLINE_WIDTH},
-#line 205 "CSSPropertyNames.gperf"
+#line 206 "CSSPropertyNames.gperf"
       {"-webkit-transform", CSS_PROP__WEBKIT_TRANSFORM},
-#line 204 "CSSPropertyNames.gperf"
+#line 205 "CSSPropertyNames.gperf"
       {"-webkit-text-stroke-width", CSS_PROP__WEBKIT_TEXT_STROKE_WIDTH},
-#line 66 "CSSPropertyNames.gperf"
+#line 67 "CSSPropertyNames.gperf"
       {"list-style-position", CSS_PROP_LIST_STYLE_POSITION},
-#line 65 "CSSPropertyNames.gperf"
+#line 66 "CSSPropertyNames.gperf"
       {"list-style-image", CSS_PROP_LIST_STYLE_IMAGE},
 #line 28 "CSSPropertyNames.gperf"
       {"border-left-width", CSS_PROP_BORDER_LEFT_WIDTH},
 #line 21 "CSSPropertyNames.gperf"
       {"border-bottom-style", CSS_PROP_BORDER_BOTTOM_STYLE},
-#line 206 "CSSPropertyNames.gperf"
+#line 207 "CSSPropertyNames.gperf"
       {"-webkit-transform-origin", CSS_PROP__WEBKIT_TRANSFORM_ORIGIN},
-#line 216 "CSSPropertyNames.gperf"
+#line 217 "CSSPropertyNames.gperf"
       {"flex-grow", CSS_PROP_FLEX_GROW},
-#line 239 "CSSPropertyNames.gperf"
+#line 240 "CSSPropertyNames.gperf"
       {"grid-auto-flow", CSS_PROP_GRID_AUTO_FLOW},
-#line 134 "CSSPropertyNames.gperf"
+#line 135 "CSSPropertyNames.gperf"
       {"visibility", CSS_PROP_VISIBILITY},
-#line 218 "CSSPropertyNames.gperf"
+#line 219 "CSSPropertyNames.gperf"
       {"flex-wrap", CSS_PROP_FLEX_WRAP},
-#line 113 "CSSPropertyNames.gperf"
-      {"text-line-through", CSS_PROP_TEXT_LINE_THROUGH},
 #line 114 "CSSPropertyNames.gperf"
-      {"text-line-through-color", CSS_PROP_TEXT_LINE_THROUGH_COLOR},
-#line 213 "CSSPropertyNames.gperf"
-      {"flex-basis", CSS_PROP_FLEX_BASIS},
-#line 125 "CSSPropertyNames.gperf"
-      {"text-transform", CSS_PROP_TEXT_TRANSFORM},
+      {"text-line-through", CSS_PROP_TEXT_LINE_THROUGH},
 #line 115 "CSSPropertyNames.gperf"
+      {"text-line-through-color", CSS_PROP_TEXT_LINE_THROUGH_COLOR},
+#line 214 "CSSPropertyNames.gperf"
+      {"flex-basis", CSS_PROP_FLEX_BASIS},
+#line 126 "CSSPropertyNames.gperf"
+      {"text-transform", CSS_PROP_TEXT_TRANSFORM},
+#line 116 "CSSPropertyNames.gperf"
       {"text-line-through-mode", CSS_PROP_TEXT_LINE_THROUGH_MODE},
 #line 31 "CSSPropertyNames.gperf"
       {"border-right-style", CSS_PROP_BORDER_RIGHT_STYLE},
-#line 199 "CSSPropertyNames.gperf"
+#line 200 "CSSPropertyNames.gperf"
       {"-webkit-text-fill-color", CSS_PROP__WEBKIT_TEXT_FILL_COLOR},
-#line 109 "CSSPropertyNames.gperf"
+#line 110 "CSSPropertyNames.gperf"
       {"table-layout", CSS_PROP_TABLE_LAYOUT},
-#line 82 "CSSPropertyNames.gperf"
+#line 83 "CSSPropertyNames.gperf"
       {"outline-style", CSS_PROP_OUTLINE_STYLE},
-#line 85 "CSSPropertyNames.gperf"
+#line 86 "CSSPropertyNames.gperf"
       {"overflow-x", CSS_PROP_OVERFLOW_X},
-#line 118 "CSSPropertyNames.gperf"
+#line 119 "CSSPropertyNames.gperf"
       {"text-overflow", CSS_PROP_TEXT_OVERFLOW},
-#line 176 "CSSPropertyNames.gperf"
+#line 177 "CSSPropertyNames.gperf"
       {"-webkit-column-rule-width", CSS_PROP__WEBKIT_COLUMN_RULE_WIDTH},
-#line 201 "CSSPropertyNames.gperf"
+#line 202 "CSSPropertyNames.gperf"
       {"-webkit-text-size-adjust", CSS_PROP__WEBKIT_TEXT_SIZE_ADJUST},
-#line 180 "CSSPropertyNames.gperf"
+#line 181 "CSSPropertyNames.gperf"
       {"-webkit-font-size-delta", CSS_PROP__WEBKIT_FONT_SIZE_DELTA},
-#line 194 "CSSPropertyNames.gperf"
+#line 195 "CSSPropertyNames.gperf"
       {"-webkit-match-nearest-mail-blockquote-color", CSS_PROP__WEBKIT_MATCH_NEAREST_MAIL_BLOCKQUOTE_COLOR},
-#line 155 "CSSPropertyNames.gperf"
+#line 156 "CSSPropertyNames.gperf"
       {"-webkit-border-top-left-radius", CSS_PROP__WEBKIT_BORDER_TOP_LEFT_RADIUS},
-#line 217 "CSSPropertyNames.gperf"
+#line 218 "CSSPropertyNames.gperf"
       {"flex-shrink", CSS_PROP_FLEX_SHRINK},
-#line 207 "CSSPropertyNames.gperf"
+#line 208 "CSSPropertyNames.gperf"
       {"-webkit-transform-origin-x", CSS_PROP__WEBKIT_TRANSFORM_ORIGIN_X},
 #line 16 "CSSPropertyNames.gperf"
       {"background-position-y", CSS_PROP_BACKGROUND_POSITION_Y},
-#line 149 "CSSPropertyNames.gperf"
+#line 150 "CSSPropertyNames.gperf"
       {"-webkit-border-bottom-left-radius", CSS_PROP__WEBKIT_BORDER_BOTTOM_LEFT_RADIUS},
-#line 122 "CSSPropertyNames.gperf"
+#line 123 "CSSPropertyNames.gperf"
       {"text-overline-style", CSS_PROP_TEXT_OVERLINE_STYLE},
-#line 168 "CSSPropertyNames.gperf"
-      {"-webkit-column-break-after", CSS_PROP__WEBKIT_COLUMN_BREAK_AFTER},
 #line 169 "CSSPropertyNames.gperf"
+      {"-webkit-column-break-after", CSS_PROP__WEBKIT_COLUMN_BREAK_AFTER},
+#line 170 "CSSPropertyNames.gperf"
       {"-webkit-column-break-before", CSS_PROP__WEBKIT_COLUMN_BREAK_BEFORE},
-#line 117 "CSSPropertyNames.gperf"
+#line 118 "CSSPropertyNames.gperf"
       {"text-line-through-width", CSS_PROP_TEXT_LINE_THROUGH_WIDTH},
-#line 160 "CSSPropertyNames.gperf"
+#line 161 "CSSPropertyNames.gperf"
       {"-webkit-box-flex", CSS_PROP__WEBKIT_BOX_FLEX},
-#line 57 "CSSPropertyNames.gperf"
+#line 58 "CSSPropertyNames.gperf"
       {"font-style", CSS_PROP_FONT_STYLE},
-#line 129 "CSSPropertyNames.gperf"
+#line 130 "CSSPropertyNames.gperf"
       {"text-underline-style", CSS_PROP_TEXT_UNDERLINE_STYLE},
 #line 27 "CSSPropertyNames.gperf"
       {"border-left-style", CSS_PROP_BORDER_LEFT_STYLE},
-#line 193 "CSSPropertyNames.gperf"
+#line 194 "CSSPropertyNames.gperf"
       {"-webkit-marquee-style", CSS_PROP__WEBKIT_MARQUEE_STYLE},
-#line 81 "CSSPropertyNames.gperf"
+#line 82 "CSSPropertyNames.gperf"
       {"outline-offset", CSS_PROP_OUTLINE_OFFSET},
-#line 215 "CSSPropertyNames.gperf"
+#line 216 "CSSPropertyNames.gperf"
       {"flex-flow", CSS_PROP_FLEX_FLOW},
-#line 200 "CSSPropertyNames.gperf"
+#line 201 "CSSPropertyNames.gperf"
       {"-webkit-text-security", CSS_PROP__WEBKIT_TEXT_SECURITY},
-#line 86 "CSSPropertyNames.gperf"
+#line 87 "CSSPropertyNames.gperf"
       {"overflow-y", CSS_PROP_OVERFLOW_Y},
-#line 175 "CSSPropertyNames.gperf"
+#line 176 "CSSPropertyNames.gperf"
       {"-webkit-column-rule-style", CSS_PROP__WEBKIT_COLUMN_RULE_STYLE},
-#line 67 "CSSPropertyNames.gperf"
+#line 68 "CSSPropertyNames.gperf"
       {"list-style-type", CSS_PROP_LIST_STYLE_TYPE},
-#line 161 "CSSPropertyNames.gperf"
+#line 162 "CSSPropertyNames.gperf"
       {"-webkit-box-flex-group", CSS_PROP__WEBKIT_BOX_FLEX_GROUP},
-#line 222 "CSSPropertyNames.gperf"
+#line 223 "CSSPropertyNames.gperf"
       {"justify-content", CSS_PROP_JUSTIFY_CONTENT},
-#line 208 "CSSPropertyNames.gperf"
+#line 209 "CSSPropertyNames.gperf"
       {"-webkit-transform-origin-y", CSS_PROP__WEBKIT_TRANSFORM_ORIGIN_Y},
-#line 235 "CSSPropertyNames.gperf"
-      {"justify-items", CSS_PROP_JUSTIFY_ITEMS},
-#line 198 "CSSPropertyNames.gperf"
-      {"-webkit-text-decorations-in-effect", CSS_PROP__WEBKIT_TEXT_DECORATIONS_IN_EFFECT},
-#line 116 "CSSPropertyNames.gperf"
-      {"text-line-through-style", CSS_PROP_TEXT_LINE_THROUGH_STYLE},
-#line 210 "CSSPropertyNames.gperf"
-      {"-webkit-user-modify", CSS_PROP__WEBKIT_USER_MODIFY},
-#line 54 "CSSPropertyNames.gperf"
-      {"font-family", CSS_PROP_FONT_FAMILY},
 #line 236 "CSSPropertyNames.gperf"
+      {"justify-items", CSS_PROP_JUSTIFY_ITEMS},
+#line 199 "CSSPropertyNames.gperf"
+      {"-webkit-text-decorations-in-effect", CSS_PROP__WEBKIT_TEXT_DECORATIONS_IN_EFFECT},
+#line 117 "CSSPropertyNames.gperf"
+      {"text-line-through-style", CSS_PROP_TEXT_LINE_THROUGH_STYLE},
+#line 211 "CSSPropertyNames.gperf"
+      {"-webkit-user-modify", CSS_PROP__WEBKIT_USER_MODIFY},
+#line 55 "CSSPropertyNames.gperf"
+      {"font-family", CSS_PROP_FONT_FAMILY},
+#line 237 "CSSPropertyNames.gperf"
       {"justify-self", CSS_PROP_JUSTIFY_SELF}
     };
 
@@ -733,87 +735,84 @@ findProp (register const char *str, register size_t len)
       112, 113, 114,  -1,  -1,  -1, 115,  -1, 116, 117,
       118,  -1,  -1,  -1, 119,  -1, 120,  -1,  -1, 121,
       122,  -1,  -1, 123,  -1, 124, 125,  -1,  -1,  -1,
-       -1,  -1, 126,  -1,  -1, 127,  -1, 128,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1, 129, 130,  -1,  -1, 131,
-      132,  -1,  -1,  -1, 133,  -1, 134, 135,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1, 136,  -1,  -1,  -1,
-      137,  -1,  -1,  -1,  -1, 138,  -1,  -1,  -1,  -1,
-       -1, 139,  -1, 140,  -1,  -1,  -1,  -1,  -1,  -1,
-      141, 142, 143,  -1,  -1,  -1, 144,  -1,  -1,  -1,
-       -1,  -1, 145,  -1, 146, 147,  -1,  -1,  -1,  -1,
-      148, 149, 150,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1, 151,  -1, 152,  -1, 153,  -1, 154,  -1,
-      155,  -1,  -1,  -1,  -1, 156,  -1, 157, 158,  -1,
-       -1,  -1, 159, 160,  -1, 161,  -1,  -1, 162,  -1,
-      163,  -1, 164,  -1,  -1, 165, 166, 167,  -1, 168,
-       -1, 169,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1, 170, 171,  -1,  -1,  -1,  -1, 172,
-       -1, 173,  -1,  -1, 174,  -1,  -1,  -1, 175,  -1,
-      176,  -1, 177,  -1,  -1, 178,  -1,  -1,  -1, 179,
-       -1, 180, 181,  -1, 182,  -1,  -1,  -1,  -1, 183,
-       -1,  -1,  -1,  -1, 184,  -1,  -1,  -1,  -1, 185,
-      186,  -1,  -1,  -1, 187,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1, 188,  -1,  -1,  -1,  -1,  -1, 189,  -1,
-      190,  -1,  -1,  -1, 191,  -1,  -1,  -1,  -1,  -1,
+      126,  -1, 127,  -1,  -1, 128,  -1, 129,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1, 130, 131,  -1,  -1, 132,
+      133,  -1,  -1,  -1, 134,  -1, 135, 136,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1, 137,  -1,  -1,  -1,
+      138,  -1,  -1,  -1,  -1, 139,  -1,  -1,  -1,  -1,
+       -1, 140,  -1, 141,  -1,  -1,  -1,  -1,  -1,  -1,
+      142, 143, 144,  -1,  -1,  -1, 145,  -1,  -1,  -1,
+       -1,  -1, 146,  -1, 147, 148,  -1,  -1,  -1,  -1,
+      149, 150, 151,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1, 152,  -1, 153,  -1, 154,  -1, 155,  -1,
+      156,  -1,  -1,  -1,  -1, 157,  -1, 158, 159,  -1,
+       -1,  -1, 160, 161,  -1, 162,  -1,  -1, 163,  -1,
+      164,  -1, 165,  -1,  -1, 166, 167, 168,  -1, 169,
+       -1, 170,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1, 171, 172,  -1,  -1,  -1,  -1, 173,
+       -1, 174,  -1,  -1, 175,  -1,  -1,  -1, 176,  -1,
+      177,  -1, 178,  -1,  -1, 179,  -1,  -1,  -1, 180,
+       -1, 181, 182,  -1, 183,  -1,  -1,  -1,  -1, 184,
+       -1,  -1,  -1,  -1, 185,  -1,  -1,  -1,  -1, 186,
+      187,  -1,  -1,  -1, 188,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1, 189,  -1,  -1,  -1,  -1,  -1, 190,  -1,
+      191,  -1,  -1,  -1, 192,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1, 192, 193,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1, 194,  -1,  -1,  -1, 195, 196,  -1,
-      197,  -1,  -1, 198,  -1,  -1,  -1,  -1,  -1,  -1,
-      199,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 200,
-       -1,  -1,  -1, 201,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 202,  -1,
-       -1,  -1,  -1,  -1,  -1, 203,  -1,  -1,  -1,  -1,
+       -1,  -1, 193, 194,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1, 195,  -1,  -1,  -1, 196, 197,  -1,
+      198,  -1,  -1, 199,  -1,  -1,  -1,  -1,  -1,  -1,
+      200,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 201,
+       -1,  -1,  -1, 202,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 203,  -1,
+       -1,  -1,  -1,  -1,  -1, 204,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1, 204,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1, 205,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1, 205,  -1,  -1,  -1,  -1, 206,  -1,  -1,  -1,
-       -1,  -1,  -1, 207, 208,  -1, 209,  -1,  -1,  -1,
-       -1,  -1, 210,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 211,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1, 212,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1, 213,  -1,  -1,  -1,  -1,
-      214,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1, 215,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1, 216,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1, 217,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 218,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1, 219,  -1,  -1,  -1, 220,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-      221,  -1,  -1,  -1,  -1, 222,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1, 223,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1, 224,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1, 225,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 226,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 227,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 228,  -1,
+       -1, 206,  -1,  -1,  -1,  -1, 207,  -1,  -1,  -1,
+       -1,  -1,  -1, 208, 209,  -1, 210,  -1,  -1,  -1,
+       -1,  -1, 211,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 212,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1, 213,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1, 214,  -1,  -1,  -1,  -1,
+      215,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1, 216,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 229,
+       -1, 217,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1, 218,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 219,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1, 220,  -1,  -1,  -1, 221,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+      222,  -1,  -1,  -1,  -1, 223,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1, 224,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1, 225,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1, 226,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 227,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 228,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 229,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1,  -1,  -1,  -1,  -1, 230,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1, 230,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1, 231,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
@@ -825,7 +824,10 @@ findProp (register const char *str, register size_t len)
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
        -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
-       -1,  -1, 231
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,  -1,
+       -1,  -1, 232
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
@@ -847,7 +849,7 @@ findProp (register const char *str, register size_t len)
     }
   return 0;
 }
-#line 242 "CSSPropertyNames.gperf"
+#line 243 "CSSPropertyNames.gperf"
 
 static const char * const propertyList[] = {
 "",
@@ -882,6 +884,7 @@ static const char * const propertyList[] = {
 "border-top-width", 
 "border-width", 
 "bottom", 
+"box-sizing", 
 "caption-side", 
 "clear", 
 "clip", 

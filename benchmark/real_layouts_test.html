@@ -1,0 +1,91 @@
+<html>
+<head><style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { width:1000px; }
+
+/* 1. 导航栏 (flex): logo 左, 菜单中间撑开, 按钮右 */
+#nav { display:flex; align-items:center; width:1000px; height:60px; padding:0 20px; }
+#logo { width:120px; height:30px; }
+#menu { flex:1; display:flex; justify-content:center; }
+#menu .item { width:80px; height:30px; }
+#navbtn { width:100px; height:36px; }
+
+/* 2. 卡片网格 (grid): 3 列等宽, 行高自适应 */
+#cards { display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; width:1000px; padding:20px; }
+#cards .card { height:150px; }
+
+/* 3. 仪表盘 (grid): 不等宽列 + 跨列大卡 */
+#dash { display:grid; grid-template-columns:2fr 1fr 1fr; grid-template-rows:100px 100px; gap:16px; width:1000px; padding:16px; }
+#dash .big { grid-column:1 / 2; grid-row:1 / 3; }
+
+/* 4. 经典三栏 (grid areas): header/nav/main/aside/footer */
+#page { display:grid;
+        grid-template-columns:200px 1fr 200px;
+        grid-template-rows:80px 1fr 60px;
+        grid-template-areas:"hd hd hd" "nav main aside" "ft ft ft";
+        width:1000px; height:600px; gap:10px; }
+#p-hd { grid-area:hd; }
+#p-nav { grid-area:nav; }
+#p-main { grid-area:main; }
+#p-aside { grid-area:aside; }
+#p-ft { grid-area:ft; }
+
+/* 5. flex + grid 混合: grid 容器内某格是 flex 工具栏 */
+#mix { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:50px; width:1000px; }
+#mixbar { display:flex; justify-content:space-between; align-items:center; padding:0 10px; }
+#mixbar .l { width:100px; height:30px; }
+#mixbar .r { width:80px; height:30px; }
+</style></head>
+<body>
+<div id="nav"><div id="logo">L</div><div id="menu"><div class="item">A</div><div class="item">B</div><div class="item">C</div></div><div id="navbtn">Btn</div></div>
+
+<div id="cards"><div class="card" id="c1">1</div><div class="card" id="c2">2</div><div class="card" id="c3">3</div><div class="card" id="c4">4</div><div class="card" id="c5">5</div><div class="card" id="c6">6</div></div>
+
+<div id="dash"><div class="big" id="dbig">BIG</div><div id="d1">1</div><div id="d2">2</div><div id="d3">3</div><div id="d4">4</div></div>
+
+<div id="page"><div id="p-hd">HD</div><div id="p-nav">NAV</div><div id="p-main">MAIN</div><div id="p-aside">ASIDE</div><div id="p-ft">FT</div></div>
+
+<div id="mix"><div id="mixbar"><div class="l">L</div><div class="r">R</div></div><div id="mixcell">cell</div></div>
+
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function E(id){return document.getElementById(id);}
+
+// 1. 导航栏: logo左(x≈20), btn 右(right at 980)
+var nav=E('nav');
+ck('nav-logo-x', E('logo').offsetLeft - nav.offsetLeft, 20);
+ck('nav-btn-right', E('navbtn').offsetLeft + E('navbtn').offsetWidth - nav.offsetLeft, 980);
+// menu 3项居中: menu 宽=1000-40-120-100=740; 3*80=240; offset=(740-240)/2=250
+var menu=E('menu');
+ck('nav-menu-center', E('menu').firstChild.offsetLeft - menu.offsetLeft, 250);
+
+// 2. 卡片网格: 内容宽=960, gap40, 列宽=(960-40)/3≈307
+ck('card-w', E('c1').offsetWidth, 307, 3);
+ck('card2-x', E('c2').offsetLeft, 347, 3); // 20 + 307 + 20
+ck('card4-x', E('c4').offsetLeft, 20, 3);  // 换行回第1列
+ck('card4-row2', E('c4').offsetTop > E('c1').offsetTop + 100, 1);
+
+// 3. 仪表盘: 单位=(968-32)/4=234, big=468
+ck('dash-big-w', E('dbig').offsetWidth, 468, 3);
+ck('dash-big-spanrow', E('dbig').offsetHeight, 216, 3); // 100+100+16
+ck('dash-d1-x', E('d1').offsetLeft, 500, 3); // 16 + 468 + 16
+
+// 4. 经典三栏
+ck('page-hd-w', E('p-hd').offsetWidth, 1000);
+ck('page-nav-w', E('p-nav').offsetWidth, 200);
+ck('page-main-w', E('p-main').offsetWidth, 580); // 1000-200-200-20
+ck('page-aside-x', E('p-aside').offsetLeft - E('page').offsetLeft, 800); // 200+10+580+10
+ck('page-ft-w', E('p-ft').offsetWidth, 1000);
+
+// 5. flex+grid 混合
+ck('mix-bar-w', E('mixbar').offsetWidth, 500);
+var bar=E('mixbar');
+ck('mix-l-x', bar.firstChild.offsetLeft - bar.offsetLeft, 10);
+ck('mix-r-right', bar.lastChild.offsetLeft + bar.lastChild.offsetWidth - bar.offsetLeft, 490);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

@@ -30,6 +30,11 @@ using namespace std;
 
 namespace WebCore {
 
+// Upper bound on grid line indices and spans. Caps positions derived from
+// untrusted CSS so occupancy-grid sizing (rows * cols) cannot overflow or
+// request a pathological allocation. Matches the parser's track cap.
+static const int kMaxGridLines = 10000;
+
 RenderGrid::RenderGrid(Node* node)
     : RenderBlock(node)
 {
@@ -451,6 +456,19 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
             }
         }
 
+        // Clamp positions and spans to sane bounds. Untrusted CSS can request
+        // huge line numbers or spans (e.g. grid-row: 1 / span 1e9); without a
+        // cap the derived row count would overflow when sizing the occupancy
+        // grid (maxRows * numCols) and trigger a huge allocation.
+        if (p.rowSpan > kMaxGridLines)
+            p.rowSpan = kMaxGridLines;
+        if (p.colSpan > kMaxGridLines)
+            p.colSpan = kMaxGridLines;
+        if (p.row > kMaxGridLines)
+            p.row = kMaxGridLines;
+        if (p.col > kMaxGridLines)
+            p.col = kMaxGridLines;
+
         // Clamp column span to the number of columns.
         if (p.colSpan > numCols) p.colSpan = numCols;
         if (p.col >= 0 && p.col + p.colSpan > numCols)
@@ -474,6 +492,12 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
     int maxRows = max(explicitRows, maxDefiniteRow) + autoCount + 1;
     if (maxRows < 1)
         maxRows = 1;
+
+    // Bound the occupancy grid so a combination of large row and column counts
+    // cannot allocate a pathologically large buffer.
+    const int kMaxGridCells = 1 << 20; // ~1M cells
+    if (numCols > 0 && maxRows > kMaxGridCells / numCols)
+        maxRows = max(1, kMaxGridCells / numCols);
 
     // The 2-arg Vector constructor fills every cell with false.
     Vector<bool> occupied(maxRows * numCols, false);

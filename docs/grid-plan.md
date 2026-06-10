@@ -333,3 +333,22 @@ CSS Grid 规范常用子集完整：minmax()、min-content/max-content、命名�
 测试：grid 单元测试 60 条 + benchmark 7 页约 90 条断言。
 已知后置：fit-content、auto-fill/auto-fit、嵌套 repeat(minmax())、命名网格线
 （低频或受 CSS 语法嵌套函数限制）。
+
+## 阶段 1 收尾（真实页面验证 + 安全加固）
+
+- 2026-06-10：**真实布局样例页验证。** 5 个典型现代布局（导航栏 flex、卡片网格、
+  仪表盘、经典三栏 grid-template-areas、flex+grid 混合）共 18 断言全过。
+  - 发现并修复真实兼容性 bug：标准无前缀 `box-sizing` 此前未被识别（仅
+    `-webkit-box-sizing`）。补属性名别名 + CSSParser/CSSStyleSelector fall-through。
+    现代 CSS reset 普遍依赖无前缀 box-sizing，影响面大。
+- 2026-06-10：**安全加固（路线图第 2/3 层）。** 审计 grid 解析器/布局的无界输入：
+  - repeat() count 无上限 → 解析期 OOM。加 kMaxGridTracks=10000 钳制（展开计数 +
+    总轨道数双重保护）。
+  - grid span / line 无上限 → 布局期 maxRows*numCols 整数溢出 + 巨量分配。在布局入口
+    钳制 row/col/span 到 kMaxGridLines=10000，并对 occupancy 总单元数加 kMaxGridCells
+    上限（~1M）。
+  - 复核 fr 分配、content 分布、track 尺寸的除零与越界：均有保护。
+  - flexbox 按子节点迭代，无基于 CSS 值的分配，无同类风险。
+  - 3 个恶意输入单元测试（repeat 1e9 / span 2e9 / line 1e9）固化进回归；ASan 下
+    headless 验证无崩溃、无 OOM、无内存错误。
+  - 657 单元测试 + 9 benchmark 全过，加固无功能副作用。
