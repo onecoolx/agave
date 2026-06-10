@@ -704,19 +704,32 @@ public:
 // Modern CSS Grid Properties (ENABLE_MODERN_GRID)
 
 // A single track size in grid-template-columns/rows.
-// 2a subset: fixed length | percentage | fr (flexible) | auto.
+// Kinds: fixed length | percentage | fr | auto | min-content | max-content.
+// When isMinMax is true the track is minmax(): the primary (kind/length/fr)
+// fields hold the MIN component and the max* fields hold the MAX component.
 struct GridTrackSize {
-    enum Kind { FixedTrack, PercentTrack, FrTrack, AutoTrack };
-    GridTrackSize() : kind(AutoTrack), length(0), fr(0.0f) { }
+    enum Kind { FixedTrack, PercentTrack, FrTrack, AutoTrack,
+                MinContentTrack, MaxContentTrack };
+    GridTrackSize()
+        : kind(AutoTrack), length(0), fr(0.0f), isMinMax(false)
+        , maxKind(AutoTrack), maxLength(0), maxFr(0.0f) { }
 
     bool operator==(const GridTrackSize& o) const {
-        return kind == o.kind && length == o.length && fr == o.fr;
+        return kind == o.kind && length == o.length && fr == o.fr
+            && isMinMax == o.isMinMax
+            && maxKind == o.maxKind && maxLength == o.maxLength && maxFr == o.maxFr;
     }
     bool operator!=(const GridTrackSize& o) const { return !(*this == o); }
 
-    Kind kind;
+    Kind kind;    // min component kind (or the sole kind when !isMinMax)
     int length;   // px for FixedTrack, percentage 0-100 for PercentTrack
     float fr;     // fraction for FrTrack
+    bool isMinMax;
+
+    // minmax() max component (valid only when isMinMax).
+    Kind maxKind;
+    int maxLength;
+    float maxFr;
 };
 
 // A grid-line placement for grid-column/row start/end.

@@ -576,3 +576,6 @@ wrap
 wrap-reverse
 # CSS_PROP_GRID_* span keyword
 span
+# CSS Grid content-sized track keywords
+min-content
+max-content

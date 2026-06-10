@@ -2438,8 +2438,8 @@ bool CSSParser::parseShape(int propId, bool important)
 // Supports: <length> | <percentage> | <number>fr | auto.
 CSSPrimitiveValue* CSSParser::createGridTrackValue(Value* v)
 {
-    if (v->id == CSS_VAL_AUTO)
-        return new CSSPrimitiveValue(CSS_VAL_AUTO);
+    if (v->id == CSS_VAL_AUTO || v->id == CSS_VAL_MIN_CONTENT || v->id == CSS_VAL_MAX_CONTENT)
+        return new CSSPrimitiveValue(v->id);
 
     // fr unit arrives as a CSS_DIMENSION token whose text ends with "fr".
     if (v->unit == CSSPrimitiveValue::CSS_DIMENSION) {
@@ -2459,6 +2459,40 @@ CSSPrimitiveValue* CSSParser::createGridTrackValue(Value* v)
     return 0;
 }
 
+// Builds one track entry: a primitive value, or a 2-element CSSValueList
+// [min, max] for minmax(min, max). Returns 0 on invalid input.
+CSSValue* CSSParser::createGridTrack(Value* v)
+{
+    if (v->unit == Value::QFunction && v->function) {
+        String fname = domString(v->function->name).lower();
+        if (fname == "minmax(") {
+            ValueList* args = v->function->args;
+            if (!args || args->size() != 3)
+                return 0;
+            Value* a = args->current();
+            CSSPrimitiveValue* minV = createGridTrackValue(a);
+            a = args->next();
+            if (!a || a->unit != Value::Operator || a->iValue != ',') {
+                delete minV;
+                return 0;
+            }
+            a = args->next();
+            CSSPrimitiveValue* maxV = createGridTrackValue(a);
+            if (!minV || !maxV) {
+                delete minV;
+                delete maxV;
+                return 0;
+            }
+            CSSValueList* mm = new CSSValueList;
+            mm->append(minV);
+            mm->append(maxV);
+            return mm;
+        }
+        return 0; // other functions (e.g. repeat) handled by the caller
+    }
+    return createGridTrackValue(v);
+}
+
 // grid-template-columns / grid-template-rows
 // 2a subset: none | <track-size>+ | repeat( <integer> , <track-size>+ )
 bool CSSParser::parseGridTrackList(int propId, bool important)
@@ -2471,12 +2505,8 @@ bool CSSParser::parseGridTrackList(int propId, bool important)
 
     CSSValueList* list = new CSSValueList;
     while (value) {
-        if (value->unit == Value::QFunction && value->function) {
-            String fname = domString(value->function->name).lower();
-            if (fname != "repeat(") {
-                delete list;
-                return false;
-            }
+        if (value->unit == Value::QFunction && value->function
+            && domString(value->function->name).lower() == "repeat(") {
             ValueList* args = value->function->args;
             if (!args || args->size() < 3) {
                 delete list;
@@ -2503,7 +2533,7 @@ bool CSSParser::parseGridTrackList(int propId, bool important)
             }
             for (int n = 0; n < count; n++) {
                 for (size_t k = 0; k < templateValues.size(); k++) {
-                    CSSPrimitiveValue* t = createGridTrackValue(templateValues[k]);
+                    CSSValue* t = createGridTrack(templateValues[k]);
                     if (!t) {
                         delete list;
                         return false;
@@ -2512,7 +2542,7 @@ bool CSSParser::parseGridTrackList(int propId, bool important)
                 }
             }
         } else {
-            CSSPrimitiveValue* t = createGridTrackValue(value);
+            CSSValue* t = createGridTrack(value);
             if (!t) {
                 delete list;
                 return false;

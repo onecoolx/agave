@@ -202,4 +202,31 @@ TEST_F(GridStyleTest, RowColumnGapSeparate)
     EXPECT_EQ(s->gridColumnGap(), 15);
 }
 
+TEST_F(GridStyleTest, MinMaxTrackParsed)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:minmax(100px, 1fr) 200px;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    const Vector<GridTrackSize>& cols = s->gridTemplateColumns();
+    ASSERT_EQ(cols.size(), 2u);
+    EXPECT_TRUE(cols[0].isMinMax);
+    EXPECT_EQ(cols[0].kind, GridTrackSize::FixedTrack); // min component
+    EXPECT_EQ(cols[0].length, 100);
+    EXPECT_EQ(cols[0].maxKind, GridTrackSize::FrTrack); // max component
+    EXPECT_FLOAT_EQ(cols[0].maxFr, 1.0f);
+    EXPECT_FALSE(cols[1].isMinMax);
+    EXPECT_EQ(cols[1].kind, GridTrackSize::FixedTrack);
+}
+
+TEST_F(GridStyleTest, MinContentMaxContentParsed)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:min-content max-content;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    const Vector<GridTrackSize>& cols = s->gridTemplateColumns();
+    ASSERT_EQ(cols.size(), 2u);
+    EXPECT_EQ(cols[0].kind, GridTrackSize::MinContentTrack);
+    EXPECT_EQ(cols[1].kind, GridTrackSize::MaxContentTrack);
+}
+
 #endif // ENABLE(MODERN_GRID)

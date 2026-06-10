@@ -1860,6 +1860,34 @@ static void applyCounterList(RenderStyle* style, CSSValueList* list, bool isRese
     }
 }
 
+#if ENABLE(MODERN_GRID)
+// Fills a track component (kind/length/fr) from a CSSPrimitiveValue.
+static void fillGridTrackComponent(CSSPrimitiveValue* pv, RenderStyle* style, float zoomFactor,
+                                   GridTrackSize::Kind& kind, int& length, float& fr)
+{
+    int type = pv->primitiveType();
+    int ident = pv->getIdent();
+    fr = 0.0f;
+    length = 0;
+    if (ident == CSS_VAL_AUTO) {
+        kind = GridTrackSize::AutoTrack;
+    } else if (ident == CSS_VAL_MIN_CONTENT) {
+        kind = GridTrackSize::MinContentTrack;
+    } else if (ident == CSS_VAL_MAX_CONTENT) {
+        kind = GridTrackSize::MaxContentTrack;
+    } else if (type == CSSPrimitiveValue::CSS_FR) {
+        kind = GridTrackSize::FrTrack;
+        fr = (float)pv->getFloatValue();
+    } else if (type == CSSPrimitiveValue::CSS_PERCENTAGE) {
+        kind = GridTrackSize::PercentTrack;
+        length = (int)pv->getFloatValue();
+    } else {
+        kind = GridTrackSize::FixedTrack;
+        length = pv->computeLengthInt(style, zoomFactor);
+    }
+}
+#endif
+
 void CSSStyleSelector::applyProperty(int id, CSSValue *value)
 {
     CSSPrimitiveValue *primitiveValue = 0;
@@ -4094,22 +4122,24 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
             CSSValueList* list = static_cast<CSSValueList*>(value);
             for (unsigned i = 0; i < list->length(); i++) {
                 CSSValue* item = list->item(i);
-                if (!item->isPrimitiveValue())
-                    continue;
-                CSSPrimitiveValue* pv = static_cast<CSSPrimitiveValue*>(item);
                 GridTrackSize t;
-                int type = pv->primitiveType();
-                if (pv->getIdent() == CSS_VAL_AUTO) {
-                    t.kind = GridTrackSize::AutoTrack;
-                } else if (type == CSSPrimitiveValue::CSS_FR) {
-                    t.kind = GridTrackSize::FrTrack;
-                    t.fr = (float)pv->getFloatValue();
-                } else if (type == CSSPrimitiveValue::CSS_PERCENTAGE) {
-                    t.kind = GridTrackSize::PercentTrack;
-                    t.length = (int)pv->getFloatValue();
+                if (item->isValueList()) {
+                    // minmax(min, max) encoded as a 2-element list.
+                    CSSValueList* mm = static_cast<CSSValueList*>(item);
+                    if (mm->length() == 2 && mm->item(0)->isPrimitiveValue() && mm->item(1)->isPrimitiveValue()) {
+                        t.isMinMax = true;
+                        fillGridTrackComponent(static_cast<CSSPrimitiveValue*>(mm->item(0)),
+                                               style, zoomFactor, t.kind, t.length, t.fr);
+                        fillGridTrackComponent(static_cast<CSSPrimitiveValue*>(mm->item(1)),
+                                               style, zoomFactor, t.maxKind, t.maxLength, t.maxFr);
+                    } else {
+                        continue;
+                    }
+                } else if (item->isPrimitiveValue()) {
+                    fillGridTrackComponent(static_cast<CSSPrimitiveValue*>(item),
+                                           style, zoomFactor, t.kind, t.length, t.fr);
                 } else {
-                    t.kind = GridTrackSize::FixedTrack;
-                    t.length = pv->computeLengthInt(style, zoomFactor);
+                    continue;
                 }
                 tracks.append(t);
             }

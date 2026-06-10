@@ -374,5 +374,7 @@ WebCore::String getValueName(unsigned short id);
 #define CSS_VAL_WRAP 365
 #define CSS_VAL_WRAP_REVERSE 366
 #define CSS_VAL_SPAN 367
-#define CSS_VAL_TOTAL 368
+#define CSS_VAL_MIN_CONTENT 368
+#define CSS_VAL_MAX_CONTENT 369
+#define CSS_VAL_TOTAL 370
 #endif

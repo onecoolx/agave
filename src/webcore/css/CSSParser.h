@@ -153,6 +153,7 @@ namespace WebCore {
         bool parseGridPosition(int propId, bool important);
         bool parseGridLineShorthand(int propId, bool important);
         CSSPrimitiveValue* createGridTrackValue(Value* v);
+        CSSValue* createGridTrack(Value* v); // primitive, or 2-elem list for minmax()
 
         bool parseFont(bool important);
         CSSValueList* parseFontFamily();

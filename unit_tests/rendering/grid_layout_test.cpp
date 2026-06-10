@@ -255,4 +255,48 @@ TEST_F(GridLayoutTest, GridNestingFlex)
     EXPECT_NEAR(f->width(), 200, 2); // grid column width
 }
 
+TEST_F(GridLayoutTest, MinMaxFixedClampsToMax)
+{
+    loadHtml("<div style='display:grid; grid-template-columns:minmax(100px, 200px) 200px; grid-template-rows:50px; width:400px;'>"
+             "<div id='a'>A</div><div id='b'>B</div></div>");
+    RenderObject* a = renderer("a");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(a && b);
+    EXPECT_NEAR(a->width(), 200, 2); // non-flexible minmax uses definite max
+    EXPECT_NEAR(b->width(), 200, 2);
+}
+
+TEST_F(GridLayoutTest, MinMaxWithFrFlexible)
+{
+    loadHtml("<div style='display:grid; grid-template-columns:minmax(50px, 1fr) 1fr; grid-template-rows:50px; width:400px;'>"
+             "<div id='a'>A</div><div id='b'>B</div></div>");
+    RenderObject* a = renderer("a");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(a && b);
+    EXPECT_NEAR(a->width(), 200, 2); // both flexible, split evenly
+    EXPECT_NEAR(b->width(), 200, 2);
+}
+
+TEST_F(GridLayoutTest, MinMaxFrPlusFixed)
+{
+    loadHtml("<div style='display:grid; grid-template-columns:minmax(100px, 1fr) 100px; grid-template-rows:50px; width:400px;'>"
+             "<div id='a'>A</div><div id='b'>B</div></div>");
+    RenderObject* a = renderer("a");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(a && b);
+    EXPECT_NEAR(a->width(), 300, 2); // flexible takes 400-100
+    EXPECT_NEAR(b->width(), 100, 2);
+}
+
+TEST_F(GridLayoutTest, MinMaxZeroFrEqualSplit)
+{
+    loadHtml("<div style='display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); grid-template-rows:50px; width:300px;'>"
+             "<div id='a'>A</div><div id='b'>B</div></div>");
+    RenderObject* a = renderer("a");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(a && b);
+    EXPECT_NEAR(a->width(), 150, 2);
+    EXPECT_NEAR(b->width(), 150, 2);
+}
+
 #endif // ENABLE(MODERN_GRID)

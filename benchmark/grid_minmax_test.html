@@ -1,0 +1,42 @@
+<html>
+<head><style>
+/* minmax 固定下限上限：内容小于上限取下限或内容 */
+#g1 { display:grid; grid-template-columns:minmax(100px, 200px) 200px; grid-template-rows:50px; width:400px; }
+/* minmax(min, 1fr)：base=min, 增长到 fr 份额 */
+#g2 { display:grid; grid-template-columns:minmax(50px, 1fr) 1fr; grid-template-rows:50px; width:400px; }
+/* minmax 固定下限 + auto 上限 */
+#g3 { display:grid; grid-template-columns:minmax(100px, 1fr) 100px; grid-template-rows:50px; width:400px; }
+/* 两个 minmax(0, 1fr) 等分 */
+#g4 { display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); grid-template-rows:50px; width:300px; }
+</style></head>
+<body>
+<div id="g1"><div id="a1">A</div><div id="b1">B</div></div>
+<div id="g2"><div id="a2">A</div><div id="b2">B</div></div>
+<div id="g3"><div id="a3">A</div><div id="b3">B</div></div>
+<div id="g4"><div id="a4">A</div><div id="b4">B</div></div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function E(id){return document.getElementById(id);}
+
+// g1: minmax(100,200) 非flex, max=200固定 -> 取200; 第二列200; 总400
+ck('g1-a-w', E('a1').offsetWidth, 200);
+ck('g1-b-w', E('b1').offsetWidth, 200);
+
+// g2: minmax(50,1fr) + 1fr, 两个flex均分400 -> 200/200 (base50<200)
+ck('g2-a-w', E('a2').offsetWidth, 200);
+ck('g2-b-w', E('b2').offsetWidth, 200);
+
+// g3: minmax(100,1fr) flex + 100px固定; flex得400-100=300
+ck('g3-a-w', E('a3').offsetWidth, 300);
+ck('g3-b-w', E('b3').offsetWidth, 100);
+
+// g4: minmax(0,1fr) x2 等分300 -> 150/150
+ck('g4-a-w', E('a4').offsetWidth, 150);
+ck('g4-b-w', E('b4').offsetWidth, 150);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

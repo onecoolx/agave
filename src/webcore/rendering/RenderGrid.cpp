@@ -213,38 +213,74 @@ void RenderGrid::resolveTrackSizes(const Vector<GridTrackSize>& templates, int a
     int usedSpace = 0;
     float totalFr = 0.0f;
 
-    // Pass 1: resolve non-flexible tracks; accumulate fr weights.
+    // Pass 1: resolve base sizes; accumulate fr weights for flexible tracks.
+    // A track is flexible if it is an fr track, or a minmax() whose max is fr.
     for (size_t i = 0; i < n; i++) {
         const GridTrackSize& t = templates[i];
+        int content = (i < contentSizes.size()) ? contentSizes[i] : 0;
         int size = 0;
-        switch (t.kind) {
-            case GridTrackSize::FixedTrack:
-                size = t.length;
-                break;
-            case GridTrackSize::PercentTrack:
-                size = availableSpace > 0 ? (int)(t.length * availableSpace / 100.0) : 0;
-                break;
-            case GridTrackSize::AutoTrack:
-                size = (i < contentSizes.size()) ? contentSizes[i] : 0;
-                break;
-            case GridTrackSize::FrTrack:
-                totalFr += t.fr;
-                size = 0; // resolved in pass 2
-                break;
+        bool flexible = false;
+
+        if (t.isMinMax) {
+            // Base size from the min component.
+            switch (t.kind) {
+                case GridTrackSize::FixedTrack:   size = t.length; break;
+                case GridTrackSize::PercentTrack: size = availableSpace > 0 ? (int)(t.length * availableSpace / 100.0) : 0; break;
+                case GridTrackSize::MaxContentTrack:
+                case GridTrackSize::MinContentTrack:
+                case GridTrackSize::AutoTrack:    size = content; break;
+                case GridTrackSize::FrTrack:      size = 0; break; // fr as min is invalid; treat as 0
+            }
+            if (t.maxKind == GridTrackSize::FrTrack) {
+                flexible = true;
+                totalFr += t.maxFr;
+            } else {
+                // Clamp base up to a definite max where applicable.
+                int maxSize = size;
+                switch (t.maxKind) {
+                    case GridTrackSize::FixedTrack:   maxSize = t.maxLength; break;
+                    case GridTrackSize::PercentTrack: maxSize = availableSpace > 0 ? (int)(t.maxLength * availableSpace / 100.0) : size; break;
+                    case GridTrackSize::MaxContentTrack:
+                    case GridTrackSize::MinContentTrack:
+                    case GridTrackSize::AutoTrack:    maxSize = content; break;
+                    case GridTrackSize::FrTrack:      break;
+                }
+                if (maxSize > size)
+                    size = maxSize;
+            }
+        } else {
+            switch (t.kind) {
+                case GridTrackSize::FixedTrack:   size = t.length; break;
+                case GridTrackSize::PercentTrack: size = availableSpace > 0 ? (int)(t.length * availableSpace / 100.0) : 0; break;
+                case GridTrackSize::MaxContentTrack:
+                case GridTrackSize::MinContentTrack:
+                case GridTrackSize::AutoTrack:    size = content; break;
+                case GridTrackSize::FrTrack:      flexible = true; totalFr += t.fr; size = 0; break;
+            }
         }
+
         outSizes[i] = size;
-        if (t.kind != GridTrackSize::FrTrack)
+        if (!flexible)
             usedSpace += size;
     }
 
-    // Pass 2: distribute remaining space across fr tracks.
+    // Pass 2: distribute remaining space across flexible (fr) tracks.
     int freeSpace = availableSpace - usedSpace;
     if (freeSpace < 0)
         freeSpace = 0;
     if (totalFr > 0.0f) {
         for (size_t i = 0; i < n; i++) {
-            if (templates[i].kind == GridTrackSize::FrTrack)
-                outSizes[i] = (int)(freeSpace * (templates[i].fr / totalFr));
+            const GridTrackSize& t = templates[i];
+            bool isFr = (!t.isMinMax && t.kind == GridTrackSize::FrTrack);
+            bool isMinMaxFr = (t.isMinMax && t.maxKind == GridTrackSize::FrTrack);
+            if (isFr) {
+                outSizes[i] = (int)(freeSpace * (t.fr / totalFr));
+            } else if (isMinMaxFr) {
+                // Flexible length grows from its base (min) by its fr share.
+                int grow = (int)(freeSpace * (t.maxFr / totalFr));
+                if (grow > outSizes[i])
+                    outSizes[i] = grow;
+            }
         }
     }
 }

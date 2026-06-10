@@ -141,8 +141,9 @@ calcPrefWidths 协议可用，降低此风险）。
 
 ### Checklist
 
-- [ ] **2b-1 minmax + 更多轨道函数**：`minmax(min, max)`、`min-content`/`max-content`、
-      `fit-content`、`repeat(auto-fill/auto-fit)`
+- [x] **2b-1 minmax + 更多轨道函数**：`minmax(min, max)`、`min-content`/`max-content`
+      （高频，已完成）；`fit-content`、`repeat(auto-fill/auto-fit)` 及嵌套
+      `repeat(minmax())` 后置（低频 + 受 CSS 语法嵌套函数限制）
 - [ ] **2b-2 命名线 + 区域**：`grid-template-areas`、命名网格线、`grid-area`
 - [ ] **2b-3 隐式网格 + 自动流补全**：`grid-auto-rows/columns`、
       `grid-auto-flow: column/dense`
@@ -271,3 +272,16 @@ calcPrefWidths 协议可用，降低此风险）。
 轨道尺寸算法、item 放置（显式定位 + auto-flow:row + span + 隐式行）、固有尺寸。
 覆盖常见卡片网格/等分布局用法。测试：grid 单元测试 31 条（CSS 14 + 布局 17）
 + benchmark 42 条断言（track 19 + placement 15 + intrinsic 8）。
+
+- 2026-06-10：**2b-1 minmax + content 轨道函数完成。**
+  - 数据模型：GridTrackSize 加 isMinMax 标志 + max 分量字段（maxKind/maxLength/maxFr），
+    加 MinContentTrack/MaxContentTrack 两种 kind。
+  - CSS：min-content/max-content 关键字；CSSParser createGridTrack 解析 minmax(min,max)
+    函数（编码为 2 元素 CSSValueList）；CSSStyleSelector fillGridTrackComponent 辅助 +
+    minmax 子列表读取。
+  - 算法：resolveTrackSizes 支持 minmax——base 用 min 分量；max 为 fr 则该轨道 flexible
+    参与 fr 分配，否则 base clamp 到 max 分量。min-content/max-content 用内容尺寸。
+  - 测试：minmax 4 单元测试（固定 clamp/fr flexible/fr+fixed/0fr 等分）+ 8 benchmark；
+    content 解析 2 单元测试。630/631 通过。
+  - 已知限制：嵌套 `repeat(n, minmax())`、fit-content、auto-fill/auto-fit 后置
+    （受 CSS 语法嵌套函数限制 / 低频）。
