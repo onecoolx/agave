@@ -38,7 +38,13 @@ border-top-color
 border-top-style
 border-top-width
 border-width
+border-radius
+border-top-left-radius
+border-top-right-radius
+border-bottom-left-radius
+border-bottom-right-radius
 bottom
+box-shadow
 box-sizing
 caption-side
 clear
@@ -131,6 +137,8 @@ text-underline-mode
 text-underline-style
 text-underline-width
 top
+transform
+transform-origin
 unicode-bidi
 vertical-align
 visibility

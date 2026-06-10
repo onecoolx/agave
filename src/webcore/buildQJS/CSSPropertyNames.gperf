@@ -37,7 +37,13 @@ border-top-color, CSS_PROP_BORDER_TOP_COLOR
 border-top-style, CSS_PROP_BORDER_TOP_STYLE
 border-top-width, CSS_PROP_BORDER_TOP_WIDTH
 border-width, CSS_PROP_BORDER_WIDTH
+border-radius, CSS_PROP_BORDER_RADIUS
+border-top-left-radius, CSS_PROP_BORDER_TOP_LEFT_RADIUS
+border-top-right-radius, CSS_PROP_BORDER_TOP_RIGHT_RADIUS
+border-bottom-left-radius, CSS_PROP_BORDER_BOTTOM_LEFT_RADIUS
+border-bottom-right-radius, CSS_PROP_BORDER_BOTTOM_RIGHT_RADIUS
 bottom, CSS_PROP_BOTTOM
+box-shadow, CSS_PROP_BOX_SHADOW
 box-sizing, CSS_PROP_BOX_SIZING
 caption-side, CSS_PROP_CAPTION_SIDE
 clear, CSS_PROP_CLEAR
@@ -130,6 +136,8 @@ text-underline-mode, CSS_PROP_TEXT_UNDERLINE_MODE
 text-underline-style, CSS_PROP_TEXT_UNDERLINE_STYLE
 text-underline-width, CSS_PROP_TEXT_UNDERLINE_WIDTH
 top, CSS_PROP_TOP
+transform, CSS_PROP_TRANSFORM
+transform-origin, CSS_PROP_TRANSFORM_ORIGIN
 unicode-bidi, CSS_PROP_UNICODE_BIDI
 vertical-align, CSS_PROP_VERTICAL_ALIGN
 visibility, CSS_PROP_VISIBILITY

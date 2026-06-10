@@ -514,6 +514,22 @@ bool CSSParser::parseValue(int propId, bool important)
     if (!value)
         return false;
 
+    // Map standard unprefixed CSS3 visual properties onto their existing
+    // -webkit- implementations. The parse, apply (CSSStyleSelector) and paint
+    // paths are all keyed on the -webkit- IDs, so remapping here keeps a single
+    // code path and lets pages using the standard names work unchanged.
+    switch (propId) {
+        case CSS_PROP_BORDER_RADIUS:                propId = CSS_PROP__WEBKIT_BORDER_RADIUS; break;
+        case CSS_PROP_BORDER_TOP_LEFT_RADIUS:       propId = CSS_PROP__WEBKIT_BORDER_TOP_LEFT_RADIUS; break;
+        case CSS_PROP_BORDER_TOP_RIGHT_RADIUS:      propId = CSS_PROP__WEBKIT_BORDER_TOP_RIGHT_RADIUS; break;
+        case CSS_PROP_BORDER_BOTTOM_LEFT_RADIUS:    propId = CSS_PROP__WEBKIT_BORDER_BOTTOM_LEFT_RADIUS; break;
+        case CSS_PROP_BORDER_BOTTOM_RIGHT_RADIUS:   propId = CSS_PROP__WEBKIT_BORDER_BOTTOM_RIGHT_RADIUS; break;
+        case CSS_PROP_BOX_SHADOW:                   propId = CSS_PROP__WEBKIT_BOX_SHADOW; break;
+        case CSS_PROP_TRANSFORM:                    propId = CSS_PROP__WEBKIT_TRANSFORM; break;
+        case CSS_PROP_TRANSFORM_ORIGIN:             propId = CSS_PROP__WEBKIT_TRANSFORM_ORIGIN; break;
+        default: break;
+    }
+
     int id = value->id;
 
     int num = inShorthand() ? 1 : valueList->size();

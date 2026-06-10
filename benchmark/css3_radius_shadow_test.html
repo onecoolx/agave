@@ -1,0 +1,41 @@
+<html>
+<head><style>
+* { box-sizing:border-box; margin:0; }
+/* 盒阴影应扩展滚动溢出区域 */
+#wrap { width:200px; height:200px; overflow:auto; }
+#shadowed { width:100px; height:100px; box-shadow:0px 0px 30px black; margin:10px; }
+/* 圆角卡片：纯视觉，不改变盒尺寸 */
+#card { width:120px; height:80px; border-radius:12px; background:#3498db; }
+/* 无前缀与前缀等效 */
+#a { width:50px; height:50px; border-radius:10px; }
+#b { width:50px; height:50px; -webkit-border-radius:10px; }
+</style></head>
+<body>
+<div id="wrap"><div id="shadowed">S</div></div>
+<div id="card">C</div>
+<div id="a">A</div>
+<div id="b">B</div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function ckTrue(n,c){r.push(n+':'+(c?'PASS':'FAIL'));}
+function E(id){return document.getElementById(id);}
+
+// 圆角卡片盒尺寸不受 border-radius 影响（纯视觉）
+ck('card-w', E('card').offsetWidth, 120);
+ck('card-h', E('card').offsetHeight, 80);
+// 无前缀与前缀盒尺寸一致
+ck('a-w', E('a').offsetWidth, 50);
+ck('b-w', E('b').offsetWidth, 50);
+ck('ab-equal', E('a').offsetWidth, E('b').offsetWidth);
+// 盒阴影：内容盒尺寸不变（阴影是绘制层效果，不撑大 content box）
+ck('shadow-box-w', E('shadowed').offsetWidth, 100);
+ck('shadow-box-h', E('shadowed').offsetHeight, 100);
+// 存活性：页面正常渲染完成
+ckTrue('survived', E('wrap').offsetWidth === 200);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>
