@@ -221,4 +221,15 @@ align-items, CSS_PROP_ALIGN_ITEMS
 align-self, CSS_PROP_ALIGN_SELF
 justify-content, CSS_PROP_JUSTIFY_CONTENT
 order, CSS_PROP_ORDER
+grid-template-columns, CSS_PROP_GRID_TEMPLATE_COLUMNS
+grid-template-rows, CSS_PROP_GRID_TEMPLATE_ROWS
+grid-column-start, CSS_PROP_GRID_COLUMN_START
+grid-column-end, CSS_PROP_GRID_COLUMN_END
+grid-row-start, CSS_PROP_GRID_ROW_START
+grid-row-end, CSS_PROP_GRID_ROW_END
+grid-column, CSS_PROP_GRID_COLUMN
+grid-row, CSS_PROP_GRID_ROW
+gap, CSS_PROP_GAP
+row-gap, CSS_PROP_ROW_GAP
+column-gap, CSS_PROP_COLUMN_GAP
 %%

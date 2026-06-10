@@ -374,4 +374,5 @@ space-between, CSS_VAL_SPACE_BETWEEN
 space-around, CSS_VAL_SPACE_AROUND
 wrap, CSS_VAL_WRAP
 wrap-reverse, CSS_VAL_WRAP_REVERSE
+span, CSS_VAL_SPAN
 %%

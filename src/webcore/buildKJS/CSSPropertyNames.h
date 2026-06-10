@@ -219,9 +219,20 @@ enum CSSPropertyID {
     CSS_PROP_ALIGN_SELF = 212,
     CSS_PROP_JUSTIFY_CONTENT = 213,
     CSS_PROP_ORDER = 214,
+    CSS_PROP_GRID_TEMPLATE_COLUMNS = 215,
+    CSS_PROP_GRID_TEMPLATE_ROWS = 216,
+    CSS_PROP_GRID_COLUMN_START = 217,
+    CSS_PROP_GRID_COLUMN_END = 218,
+    CSS_PROP_GRID_ROW_START = 219,
+    CSS_PROP_GRID_ROW_END = 220,
+    CSS_PROP_GRID_COLUMN = 221,
+    CSS_PROP_GRID_ROW = 222,
+    CSS_PROP_GAP = 223,
+    CSS_PROP_ROW_GAP = 224,
+    CSS_PROP_COLUMN_GAP = 225,
 };
 
-const int numCSSProperties = 215;
+const int numCSSProperties = 226;
 const size_t maxCSSPropertyNameLength = 43;
 
 const char* getPropertyName(CSSPropertyID);

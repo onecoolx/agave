@@ -4084,6 +4084,89 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
     case CSS_PROP_FLEX:
         // Shorthand — handled by CSSParser decomposition into longhands.
         return;
+#if ENABLE(MODERN_GRID)
+    case CSS_PROP_GRID_TEMPLATE_COLUMNS:
+    case CSS_PROP_GRID_TEMPLATE_ROWS: {
+        Vector<GridTrackSize> tracks;
+        if (primitiveValue && primitiveValue->getIdent() == CSS_VAL_NONE) {
+            // empty track list
+        } else if (value->isValueList()) {
+            CSSValueList* list = static_cast<CSSValueList*>(value);
+            for (unsigned i = 0; i < list->length(); i++) {
+                CSSValue* item = list->item(i);
+                if (!item->isPrimitiveValue())
+                    continue;
+                CSSPrimitiveValue* pv = static_cast<CSSPrimitiveValue*>(item);
+                GridTrackSize t;
+                int type = pv->primitiveType();
+                if (pv->getIdent() == CSS_VAL_AUTO) {
+                    t.kind = GridTrackSize::AutoTrack;
+                } else if (type == CSSPrimitiveValue::CSS_FR) {
+                    t.kind = GridTrackSize::FrTrack;
+                    t.fr = (float)pv->getFloatValue();
+                } else if (type == CSSPrimitiveValue::CSS_PERCENTAGE) {
+                    t.kind = GridTrackSize::PercentTrack;
+                    t.length = (int)pv->getFloatValue();
+                } else {
+                    t.kind = GridTrackSize::FixedTrack;
+                    t.length = pv->computeLengthInt(style, zoomFactor);
+                }
+                tracks.append(t);
+            }
+        }
+        if (id == CSS_PROP_GRID_TEMPLATE_COLUMNS)
+            style->setGridTemplateColumns(tracks);
+        else
+            style->setGridTemplateRows(tracks);
+        return;
+    }
+    case CSS_PROP_GRID_COLUMN_START:
+    case CSS_PROP_GRID_COLUMN_END:
+    case CSS_PROP_GRID_ROW_START:
+    case CSS_PROP_GRID_ROW_END: {
+        GridPosition pos;
+        if (value->isValueList()) {
+            // span <n>
+            CSSValueList* list = static_cast<CSSValueList*>(value);
+            if (list->length() == 2 && list->item(1)->isPrimitiveValue()) {
+                pos.isAuto = false;
+                pos.isSpan = true;
+                pos.line = (int)static_cast<CSSPrimitiveValue*>(list->item(1))->getFloatValue();
+            }
+        } else if (primitiveValue) {
+            if (primitiveValue->getIdent() == CSS_VAL_AUTO) {
+                pos.isAuto = true;
+            } else if (primitiveValue->primitiveType() == CSSPrimitiveValue::CSS_NUMBER) {
+                pos.isAuto = false;
+                pos.line = (int)primitiveValue->getFloatValue();
+            }
+        }
+        if (id == CSS_PROP_GRID_COLUMN_START)
+            style->setGridColumnStart(pos);
+        else if (id == CSS_PROP_GRID_COLUMN_END)
+            style->setGridColumnEnd(pos);
+        else if (id == CSS_PROP_GRID_ROW_START)
+            style->setGridRowStart(pos);
+        else
+            style->setGridRowEnd(pos);
+        return;
+    }
+    case CSS_PROP_GRID_COLUMN:
+    case CSS_PROP_GRID_ROW:
+        // Shorthand — handled by CSSParser decomposition into longhands.
+        return;
+    case CSS_PROP_ROW_GAP:
+        if (!primitiveValue) return;
+        style->setGridRowGap(primitiveValue->computeLengthInt(style, zoomFactor));
+        return;
+    case CSS_PROP_COLUMN_GAP:
+        if (!primitiveValue) return;
+        style->setGridColumnGap(primitiveValue->computeLengthInt(style, zoomFactor));
+        return;
+    case CSS_PROP_GAP:
+        // Shorthand — handled by CSSParser decomposition into longhands.
+        return;
+#endif // ENABLE(MODERN_GRID)
     case CSS_PROP__WEBKIT_COLUMN_COUNT: {
         if (isInherit) {
             if (parentStyle->hasAutoColumnCount())

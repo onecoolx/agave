@@ -700,6 +700,58 @@ public:
     unsigned alignSelf : 3;  // EFlexAlignSelf
 };
 
+//------------------------------------------------
+// Modern CSS Grid Properties (ENABLE_MODERN_GRID)
+
+// A single track size in grid-template-columns/rows.
+// 2a subset: fixed length | percentage | fr (flexible) | auto.
+struct GridTrackSize {
+    enum Kind { FixedTrack, PercentTrack, FrTrack, AutoTrack };
+    GridTrackSize() : kind(AutoTrack), length(0), fr(0.0f) { }
+
+    bool operator==(const GridTrackSize& o) const {
+        return kind == o.kind && length == o.length && fr == o.fr;
+    }
+    bool operator!=(const GridTrackSize& o) const { return !(*this == o); }
+
+    Kind kind;
+    int length;   // px for FixedTrack, percentage 0-100 for PercentTrack
+    float fr;     // fraction for FrTrack
+};
+
+// A grid-line placement for grid-column/row start/end.
+// 2a subset: auto | <line number> | span <n>.
+struct GridPosition {
+    GridPosition() : isAuto(true), isSpan(false), line(0) { }
+
+    bool operator==(const GridPosition& o) const {
+        return isAuto == o.isAuto && isSpan == o.isSpan && line == o.line;
+    }
+    bool operator!=(const GridPosition& o) const { return !(*this == o); }
+
+    bool isAuto;
+    bool isSpan;
+    int line;     // 1-based line number, or span count when isSpan
+};
+
+class StyleGridData : public Shared<StyleGridData> {
+public:
+    StyleGridData();
+    StyleGridData(const StyleGridData& o);
+
+    bool operator==(const StyleGridData& o) const;
+    bool operator!=(const StyleGridData& o) const { return !(*this == o); }
+
+    Vector<GridTrackSize> templateColumns;
+    Vector<GridTrackSize> templateRows;
+    GridPosition columnStart;
+    GridPosition columnEnd;
+    GridPosition rowStart;
+    GridPosition rowEnd;
+    int columnGap;
+    int rowGap;
+};
+
 // This struct holds information about shadows for the text-shadow and box-shadow properties.
 struct ShadowData {
     ShadowData(int _x, int _y, int _blur, const Color& _color)
@@ -891,6 +943,7 @@ public:
 
     DataRef<StyleFlexibleBoxData> flexibleBox; // Flexible box properties 
     DataRef<StyleModernFlexData> modernFlex; // Modern CSS flexbox properties
+    DataRef<StyleGridData> grid; // Modern CSS grid properties
     DataRef<StyleMarqueeData> marquee; // Marquee properties
     DataRef<StyleMultiColData> m_multiCol; //  CSS3 multicol properties
     DataRef<StyleTransformData> m_transform; // Transform properties (rotate, scale, skew, etc.)
@@ -1522,6 +1575,16 @@ public:
     EFlexAlignSelf alignSelf() const { return static_cast<EFlexAlignSelf>(rareNonInheritedData->modernFlex->alignSelf); }
     int flexOrder() const { return rareNonInheritedData->modernFlex->order; }
 
+    // Grid getters
+    const Vector<GridTrackSize>& gridTemplateColumns() const { return rareNonInheritedData->grid->templateColumns; }
+    const Vector<GridTrackSize>& gridTemplateRows() const { return rareNonInheritedData->grid->templateRows; }
+    const GridPosition& gridColumnStart() const { return rareNonInheritedData->grid->columnStart; }
+    const GridPosition& gridColumnEnd() const { return rareNonInheritedData->grid->columnEnd; }
+    const GridPosition& gridRowStart() const { return rareNonInheritedData->grid->rowStart; }
+    const GridPosition& gridRowEnd() const { return rareNonInheritedData->grid->rowEnd; }
+    int gridColumnGap() const { return rareNonInheritedData->grid->columnGap; }
+    int gridRowGap() const { return rareNonInheritedData->grid->rowGap; }
+
     ShadowData* boxShadow() const { return rareNonInheritedData->m_boxShadow; }
     EBoxSizing boxSizing() const { return static_cast<EBoxSizing>(box->boxSizing); }
     Length marqueeIncrement() const { return rareNonInheritedData->marquee->increment; }
@@ -1781,6 +1844,16 @@ public:
     void setAlignSelf(EFlexAlignSelf a) { SET_VAR(rareNonInheritedData.access()->modernFlex, alignSelf, a); }
     void setFlexOrder(int o) { SET_VAR(rareNonInheritedData.access()->modernFlex, order, o); }
 
+    // Grid setters
+    void setGridTemplateColumns(const Vector<GridTrackSize>& t) { SET_VAR(rareNonInheritedData.access()->grid, templateColumns, t); }
+    void setGridTemplateRows(const Vector<GridTrackSize>& t) { SET_VAR(rareNonInheritedData.access()->grid, templateRows, t); }
+    void setGridColumnStart(const GridPosition& p) { SET_VAR(rareNonInheritedData.access()->grid, columnStart, p); }
+    void setGridColumnEnd(const GridPosition& p) { SET_VAR(rareNonInheritedData.access()->grid, columnEnd, p); }
+    void setGridRowStart(const GridPosition& p) { SET_VAR(rareNonInheritedData.access()->grid, rowStart, p); }
+    void setGridRowEnd(const GridPosition& p) { SET_VAR(rareNonInheritedData.access()->grid, rowEnd, p); }
+    void setGridColumnGap(int g) { SET_VAR(rareNonInheritedData.access()->grid, columnGap, g); }
+    void setGridRowGap(int g) { SET_VAR(rareNonInheritedData.access()->grid, rowGap, g); }
+
     void setBoxShadow(ShadowData* val, bool add=false);
     void setBoxSizing(EBoxSizing s) { SET_VAR(box, boxSizing, s); }
     void setMarqueeIncrement(const Length& f) { SET_VAR(rareNonInheritedData.access()->marquee, increment, f); }
@@ -1947,6 +2020,8 @@ public:
     static EFlexAlignContent initialAlignContent() { return ContentStretch; }
     static EFlexAlignSelf initialAlignSelf() { return AlignSelfAuto; }
     static int initialFlexOrder() { return 0; }
+    static int initialGridGap() { return 0; }
+    static GridPosition initialGridPosition() { return GridPosition(); }
 
     static int initialMarqueeLoopCount() { return -1; }
     static int initialMarqueeSpeed() { return 85; }

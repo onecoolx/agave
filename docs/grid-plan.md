@@ -103,12 +103,12 @@ struct GridPosition {
 - [x] **2a-0 探针（前置）**：display:grid 最小骨架（RenderGrid 子类 + 创建分派），
       2x2 固定轨道 + item 按 DOM 顺序自动放置，验证 RenderBlock 框架能承载二维定位。
       **结论：架构足够，setOverrideSize 二维尺寸协商可复用，无需补基础设施。**
-- [ ] **2a-1 CSS 属性接入**：`display:grid/inline-grid`、`grid-template-columns/rows`
+- [x] **2a-1 CSS 属性接入**：`display:grid/inline-grid`、`grid-template-columns/rows`
       （fixed/percent/fr/auto + repeat 展开）、`grid-column/row`（start/end/span）、
       `gap`(row-gap/column-gap) → CSSPropertyNames + CSSValueKeywords + CSSParser + 值映射
-- [ ] **2a-2 RenderStyle 承载**：StyleGridData（GridTrackSize 列表、GridPosition、gap）
+- [x] **2a-2 RenderStyle 承载**：StyleGridData（GridTrackSize 列表、GridPosition、gap）
       + 存取 + inherit/diff（与其他 style 数据隔离）
-- [ ] **2a-3 样式应用**：CSSStyleSelector 应用 grid 属性；display:grid 分派到 RenderGrid
+- [x] **2a-3 样式应用**：CSSStyleSelector 应用 grid 属性；display:grid 分派到 RenderGrid
 - [ ] **2a-4 轨道尺寸算法**：列轨道尺寸（fixed → 占用；auto → 内容；fr → 分配剩余）
       + 行轨道尺寸（同理）；先单维独立计算（列优先）
 - [ ] **2a-5 item 放置 + 定位**：显式 grid-column/row 定位 + span；
@@ -221,3 +221,16 @@ calcPrefWidths 协议可用，降低此风险）。
   - 默认态：编译正常，flexbox 29 单元测试全过，无回归
     （唯一失败的 MicroBenchmark 是预存的计时阈值 flaky，ASan 下 2050ms>2000ms，与 grid 无关）。
   - **影响**：2a 最大风险（二维尺寸协商能否复用）已排除 → 可继续 2a 全量。
+
+- 2026-06-10：**2a-1 CSS 属性接入完成（含 2a-2 RenderStyle、2a-3 样式应用）。**
+  - 属性：grid-template-columns/rows、grid-column/row-start/end、grid-column/row 简写、
+    gap/row-gap/column-gap（CSSPropertyNames）。
+  - 数据模型：GridTrackSize（fixed/percent/fr/auto）、GridPosition（auto/line/span）、
+    StyleGridData（DataRef，rareNonInheritedData，与其他 style 隔离）+ 存取器 + initial。
+  - 新增 CSS_FR 基元单位（1fr 经 CSS_DIMENSION token，按 "fr" 后缀识别）；span 关键字。
+  - CSSParser：parseGridTrackList（含 repeat(n,...) 展开）、parseGridPosition（auto/数字/span）、
+    parseGridLineShorthand（start / end）、gap 简写（1-2 值）。track list 编码为
+    CSSValueList<CSSPrimitiveValue>，position 用 list 编码 span。
+  - CSSStyleSelector applyProperty 读入 StyleGridData。
+  - 修复：parseGridPosition 各成功分支补 valueList->next() 推进，修正 "/" 简写解析。
+  - 测试：14 条 CSS 解析单元测试（grid_style_test.cpp）全过，608 全套通过，grid 探针无回归。

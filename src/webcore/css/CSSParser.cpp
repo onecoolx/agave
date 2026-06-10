@@ -1260,6 +1260,35 @@ bool CSSParser::parseValue(int propId, bool important)
     case CSS_PROP_ORDER:                // <integer>
         valid_primitive = validUnit(value, FInteger, true);
         break;
+    case CSS_PROP_GRID_TEMPLATE_COLUMNS:
+    case CSS_PROP_GRID_TEMPLATE_ROWS:
+        return parseGridTrackList(propId, important);
+    case CSS_PROP_GRID_COLUMN_START:
+    case CSS_PROP_GRID_COLUMN_END:
+    case CSS_PROP_GRID_ROW_START:
+    case CSS_PROP_GRID_ROW_END:
+        return parseGridPosition(propId, important);
+    case CSS_PROP_GRID_COLUMN:
+    case CSS_PROP_GRID_ROW:
+        return parseGridLineShorthand(propId, important);
+    case CSS_PROP_ROW_GAP:
+    case CSS_PROP_COLUMN_GAP:
+        valid_primitive = validUnit(value, FLength | FNonNeg, strict);
+        break;
+    case CSS_PROP_GAP: {
+        // gap: <row-gap> <column-gap>?
+        ShorthandScope scope(this, propId);
+        if (num < 1 || num > 2)
+            return false;
+        if (!parseValue(CSS_PROP_ROW_GAP, important))
+            return false;
+        CSSValue* rowVal = parsedProperties[numParsedProperties - 1]->value();
+        if (num == 1)
+            addProperty(CSS_PROP_COLUMN_GAP, rowVal, important);
+        else if (!parseValue(CSS_PROP_COLUMN_GAP, important))
+            return false;
+        return true;
+    }
     case CSS_PROP_FLEX: {
         // flex shorthand: none | [ <flex-grow> <flex-shrink>? || <flex-basis> ]
         // Simplified: accept 1 number (grow, shrink=1, basis=0%), or 'none' (0 0 auto)
@@ -2402,6 +2431,158 @@ bool CSSParser::parseShape(int propId, bool important)
     delete rect;
     return false;
 }
+
+#if ENABLE(MODERN_GRID)
+// Builds a CSSPrimitiveValue for one grid track from a parser Value.
+// Returns 0 if the value is not a valid track size.
+// Supports: <length> | <percentage> | <number>fr | auto.
+CSSPrimitiveValue* CSSParser::createGridTrackValue(Value* v)
+{
+    if (v->id == CSS_VAL_AUTO)
+        return new CSSPrimitiveValue(CSS_VAL_AUTO);
+
+    // fr unit arrives as a CSS_DIMENSION token whose text ends with "fr".
+    if (v->unit == CSSPrimitiveValue::CSS_DIMENSION) {
+        String s = domString(v->string).lower();
+        if (s.endsWith("fr")) {
+            bool ok = false;
+            double fr = s.left(s.length() - 2).toDouble(&ok);
+            if (ok && fr >= 0)
+                return new CSSPrimitiveValue(fr, CSSPrimitiveValue::CSS_FR);
+        }
+        return 0;
+    }
+    if (validUnit(v, FLength | FNonNeg, strict))
+        return new CSSPrimitiveValue(v->fValue, (CSSPrimitiveValue::UnitTypes)v->unit);
+    if (v->unit == CSSPrimitiveValue::CSS_PERCENTAGE && v->fValue >= 0)
+        return new CSSPrimitiveValue(v->fValue, CSSPrimitiveValue::CSS_PERCENTAGE);
+    return 0;
+}
+
+// grid-template-columns / grid-template-rows
+// 2a subset: none | <track-size>+ | repeat( <integer> , <track-size>+ )
+bool CSSParser::parseGridTrackList(int propId, bool important)
+{
+    Value* value = valueList->current();
+    if (value->id == CSS_VAL_NONE) {
+        addProperty(propId, new CSSPrimitiveValue(CSS_VAL_NONE), important);
+        return true;
+    }
+
+    CSSValueList* list = new CSSValueList;
+    while (value) {
+        if (value->unit == Value::QFunction && value->function) {
+            String fname = domString(value->function->name).lower();
+            if (fname != "repeat(") {
+                delete list;
+                return false;
+            }
+            ValueList* args = value->function->args;
+            if (!args || args->size() < 3) {
+                delete list;
+                return false;
+            }
+            Value* a = args->current();
+            if (!a->isInt || a->fValue < 1) {
+                delete list;
+                return false;
+            }
+            int count = (int)a->fValue;
+            a = args->next();
+            if (!a || a->unit != Value::Operator || a->iValue != ',') {
+                delete list;
+                return false;
+            }
+            // Collect the repeated track template Values, then expand count times.
+            Vector<Value*> templateValues;
+            for (a = args->next(); a; a = args->next())
+                templateValues.append(a);
+            if (templateValues.isEmpty()) {
+                delete list;
+                return false;
+            }
+            for (int n = 0; n < count; n++) {
+                for (size_t k = 0; k < templateValues.size(); k++) {
+                    CSSPrimitiveValue* t = createGridTrackValue(templateValues[k]);
+                    if (!t) {
+                        delete list;
+                        return false;
+                    }
+                    list->append(t);
+                }
+            }
+        } else {
+            CSSPrimitiveValue* t = createGridTrackValue(value);
+            if (!t) {
+                delete list;
+                return false;
+            }
+            list->append(t);
+        }
+        value = valueList->next();
+    }
+
+    if (list->length() == 0) {
+        delete list;
+        return false;
+    }
+    addProperty(propId, list, important);
+    return true;
+}
+
+// grid-column-start/end, grid-row-start/end
+// 2a subset: auto | <integer> | span <integer>
+bool CSSParser::parseGridPosition(int propId, bool important)
+{
+    Value* value = valueList->current();
+    if (value->id == CSS_VAL_AUTO) {
+        addProperty(propId, new CSSPrimitiveValue(CSS_VAL_AUTO), important);
+        valueList->next();
+        return true;
+    }
+    if (value->id == CSS_VAL_SPAN) {
+        value = valueList->next();
+        if (!value || !value->isInt || value->fValue < 1)
+            return false;
+        // Encode span as a list: [span ident, <number>].
+        CSSValueList* list = new CSSValueList;
+        list->append(new CSSPrimitiveValue(CSS_VAL_SPAN));
+        list->append(new CSSPrimitiveValue(value->fValue, CSSPrimitiveValue::CSS_NUMBER));
+        addProperty(propId, list, important);
+        valueList->next();
+        return true;
+    }
+    if (value->isInt) {
+        addProperty(propId, new CSSPrimitiveValue(value->fValue, CSSPrimitiveValue::CSS_NUMBER), important);
+        valueList->next();
+        return true;
+    }
+    return false;
+}
+
+// grid-column / grid-row shorthand: <start> [ / <end> ]?
+bool CSSParser::parseGridLineShorthand(int propId, bool important)
+{
+    int startProp = (propId == CSS_PROP_GRID_COLUMN) ? CSS_PROP_GRID_COLUMN_START : CSS_PROP_GRID_ROW_START;
+    int endProp = (propId == CSS_PROP_GRID_COLUMN) ? CSS_PROP_GRID_COLUMN_END : CSS_PROP_GRID_ROW_END;
+
+    ShorthandScope scope(this, propId);
+    if (!parseValue(startProp, important))
+        return false;
+
+    // Optional " / <end>".
+    Value* sep = valueList->current();
+    if (sep && sep->unit == Value::Operator && sep->iValue == '/') {
+        valueList->next();
+        if (!parseValue(endProp, important))
+            return false;
+    } else {
+        // No explicit end → auto.
+        addProperty(endProp, new CSSPrimitiveValue(CSS_VAL_AUTO), important);
+    }
+    return true;
+}
+#endif // ENABLE(MODERN_GRID)
 
 // [ 'font-style' || 'font-variant' || 'font-weight' ]? 'font-size' [ / 'line-height' ]? 'font-family'
 bool CSSParser::parseFont(bool important)

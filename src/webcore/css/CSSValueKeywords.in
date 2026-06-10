@@ -574,3 +574,5 @@ space-around
 # CSS_PROP_FLEX_WRAP
 wrap
 wrap-reverse
+# CSS_PROP_GRID_* span keyword
+span

@@ -1,0 +1,205 @@
+/*
+ * Agave - A lightweight web browser engine
+ *
+ * Copyright (c) 2026, Zhang Ji Peng
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
+ *   and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#include "test.h"
+#include "RenderObject.h"
+#include "RenderStyle.h"
+
+#if ENABLE(MODERN_GRID)
+
+class GridStyleTest : public ::testing::Test
+{
+protected:
+    static void SetUpTestSuite() { Test_Init(); }
+    static void TearDownTestSuite() { Test_Shutdown(); }
+
+    void SetUp() override { view = new TestWebView(); }
+    void TearDown() override { delete view; }
+
+    void loadHtml(const char* html)
+    {
+        view->loadHtml(html, "http://localhost/test");
+        TestWebView::waitForDocumentComplete(view);
+    }
+
+    RenderStyle* styleById(const char* id)
+    {
+        Element* el = view->mainframe()->document()->getElementById(String(id));
+        return el ? el->renderStyle() : 0;
+    }
+
+    TestWebView* view;
+};
+
+TEST_F(GridStyleTest, DisplayGridParsed)
+{
+    loadHtml("<div id='g' style='display:grid;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    EXPECT_EQ(s->display(), GRID);
+}
+
+TEST_F(GridStyleTest, TemplateColumnsFixed)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:100px 200px 50px;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    const Vector<GridTrackSize>& cols = s->gridTemplateColumns();
+    ASSERT_EQ(cols.size(), 3u);
+    EXPECT_EQ(cols[0].kind, GridTrackSize::FixedTrack);
+    EXPECT_EQ(cols[0].length, 100);
+    EXPECT_EQ(cols[1].length, 200);
+    EXPECT_EQ(cols[2].length, 50);
+}
+
+TEST_F(GridStyleTest, TemplateColumnsFr)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:1fr 2fr;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    const Vector<GridTrackSize>& cols = s->gridTemplateColumns();
+    ASSERT_EQ(cols.size(), 2u);
+    EXPECT_EQ(cols[0].kind, GridTrackSize::FrTrack);
+    EXPECT_FLOAT_EQ(cols[0].fr, 1.0f);
+    EXPECT_EQ(cols[1].kind, GridTrackSize::FrTrack);
+    EXPECT_FLOAT_EQ(cols[1].fr, 2.0f);
+}
+
+TEST_F(GridStyleTest, TemplateColumnsMixed)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:100px 1fr auto;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    const Vector<GridTrackSize>& cols = s->gridTemplateColumns();
+    ASSERT_EQ(cols.size(), 3u);
+    EXPECT_EQ(cols[0].kind, GridTrackSize::FixedTrack);
+    EXPECT_EQ(cols[1].kind, GridTrackSize::FrTrack);
+    EXPECT_EQ(cols[2].kind, GridTrackSize::AutoTrack);
+}
+
+TEST_F(GridStyleTest, TemplateColumnsRepeat)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:repeat(3, 100px);'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    const Vector<GridTrackSize>& cols = s->gridTemplateColumns();
+    ASSERT_EQ(cols.size(), 3u);
+    EXPECT_EQ(cols[0].length, 100);
+    EXPECT_EQ(cols[1].length, 100);
+    EXPECT_EQ(cols[2].length, 100);
+}
+
+TEST_F(GridStyleTest, TemplatePercentTracks)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:25% 75%;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    const Vector<GridTrackSize>& cols = s->gridTemplateColumns();
+    ASSERT_EQ(cols.size(), 2u);
+    EXPECT_EQ(cols[0].kind, GridTrackSize::PercentTrack);
+    EXPECT_EQ(cols[0].length, 25);
+    EXPECT_EQ(cols[1].length, 75);
+}
+
+TEST_F(GridStyleTest, TemplateRows)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-rows:50px 1fr;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    const Vector<GridTrackSize>& rows = s->gridTemplateRows();
+    ASSERT_EQ(rows.size(), 2u);
+    EXPECT_EQ(rows[0].kind, GridTrackSize::FixedTrack);
+    EXPECT_EQ(rows[1].kind, GridTrackSize::FrTrack);
+}
+
+TEST_F(GridStyleTest, GridColumnLine)
+{
+    loadHtml("<div style='display:grid;'><div id='i' style='grid-column-start:2; grid-column-end:4;'>A</div></div>");
+    RenderStyle* s = styleById("i");
+    ASSERT_TRUE(s);
+    EXPECT_FALSE(s->gridColumnStart().isAuto);
+    EXPECT_EQ(s->gridColumnStart().line, 2);
+    EXPECT_FALSE(s->gridColumnEnd().isAuto);
+    EXPECT_EQ(s->gridColumnEnd().line, 4);
+}
+
+TEST_F(GridStyleTest, GridColumnSpan)
+{
+    loadHtml("<div style='display:grid;'><div id='i' style='grid-column-end:span 2;'>A</div></div>");
+    RenderStyle* s = styleById("i");
+    ASSERT_TRUE(s);
+    EXPECT_TRUE(s->gridColumnEnd().isSpan);
+    EXPECT_EQ(s->gridColumnEnd().line, 2);
+}
+
+TEST_F(GridStyleTest, GridColumnShorthand)
+{
+    loadHtml("<div style='display:grid;'><div id='i' style='grid-column:1 / 3;'>A</div></div>");
+    RenderStyle* s = styleById("i");
+    ASSERT_TRUE(s);
+    EXPECT_EQ(s->gridColumnStart().line, 1);
+    EXPECT_EQ(s->gridColumnEnd().line, 3);
+}
+
+TEST_F(GridStyleTest, GridRowShorthand)
+{
+    loadHtml("<div style='display:grid;'><div id='i' style='grid-row:2 / 4;'>A</div></div>");
+    RenderStyle* s = styleById("i");
+    ASSERT_TRUE(s);
+    EXPECT_EQ(s->gridRowStart().line, 2);
+    EXPECT_EQ(s->gridRowEnd().line, 4);
+}
+
+TEST_F(GridStyleTest, GapShorthandSingle)
+{
+    loadHtml("<div id='g' style='display:grid; gap:10px;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    EXPECT_EQ(s->gridRowGap(), 10);
+    EXPECT_EQ(s->gridColumnGap(), 10);
+}
+
+TEST_F(GridStyleTest, GapShorthandTwo)
+{
+    loadHtml("<div id='g' style='display:grid; gap:10px 20px;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    EXPECT_EQ(s->gridRowGap(), 10);
+    EXPECT_EQ(s->gridColumnGap(), 20);
+}
+
+TEST_F(GridStyleTest, RowColumnGapSeparate)
+{
+    loadHtml("<div id='g' style='display:grid; row-gap:5px; column-gap:15px;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    EXPECT_EQ(s->gridRowGap(), 5);
+    EXPECT_EQ(s->gridColumnGap(), 15);
+}
+
+#endif // ENABLE(MODERN_GRID)

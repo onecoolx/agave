@@ -148,6 +148,12 @@ namespace WebCore {
 
         bool parseShape(int propId, bool important);
 
+        // CSS Grid (ENABLE_MODERN_GRID)
+        bool parseGridTrackList(int propId, bool important);
+        bool parseGridPosition(int propId, bool important);
+        bool parseGridLineShorthand(int propId, bool important);
+        CSSPrimitiveValue* createGridTrackValue(Value* v);
+
         bool parseFont(bool important);
         CSSValueList* parseFontFamily();
 
