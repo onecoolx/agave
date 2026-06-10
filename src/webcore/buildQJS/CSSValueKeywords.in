@@ -581,3 +581,5 @@ min-content
 max-content
 # CSS Grid auto-flow dense keyword
 dense
+# CSS3 gradient direction keyword
+to

@@ -28,6 +28,8 @@
 #include "RenderBox.h"
 
 #include "CachedImage.h"
+#include "CanvasGradient.h"
+#include "Color.h"
 #include "Document.h"
 #include "FrameView.h"
 #include "GraphicsContext.h"
@@ -677,6 +679,13 @@ void RenderBox::paintBackgroundExtended(GraphicsContext* context, const Color& c
             context->fillRect(rect, bgColor);
     }
 
+#if ENABLE(MODERN_CSS3)
+    // Paint a CSS gradient background (linear/radial) over the box, between the
+    // background color and any background image.
+    if (bgLayer->hasBackgroundGradient())
+        paintGradientBackground(context, bgLayer->backgroundGradient(), tx, ty, w, h);
+#endif
+
     // no progressive loading of the background image
     if (shouldPaintBackgroundImage) {
         IntRect destRect;
@@ -696,6 +705,53 @@ void RenderBox::paintBackgroundExtended(GraphicsContext* context, const Color& c
         // Undo the border radius clip
         context->restore();
 }
+
+#if ENABLE(MODERN_CSS3)
+void RenderBox::paintGradientBackground(GraphicsContext* context, StyleGradient* spec, int tx, int ty, int w, int h)
+{
+    if (!spec || w <= 0 || h <= 0)
+        return;
+
+    int stopCount = (int)spec->stops.size();
+    if (stopCount < 2)
+        return;
+
+    FloatRect rect(tx, ty, w, h);
+    RefPtr<CanvasGradient> gradient;
+
+    if (spec->type == StyleGradient::Linear) {
+        // Angle: 0deg points to the top, increasing clockwise. Build a gradient
+        // line through the box center; the start is the "from" edge.
+        float rad = (float)(spec->angle * M_PI / 180.0);
+        float cx = tx + w / 2.0f;
+        float cy = ty + h / 2.0f;
+        // Direction vector pointing toward the gradient end (the angle target).
+        float dx = sinf(rad);
+        float dy = -cosf(rad);
+        // Half-length so the line spans the box along the direction.
+        float halfLen = (fabsf(dx) * w + fabsf(dy) * h) / 2.0f;
+        FloatPoint p0(cx - dx * halfLen, cy - dy * halfLen);
+        FloatPoint p1(cx + dx * halfLen, cy + dy * halfLen);
+        gradient = adoptRef(new CanvasGradient(p0, p1));
+    } else {
+        // Radial: centered, radius extends to the nearer box half-extent.
+        FloatPoint center(tx + w / 2.0f, ty + h / 2.0f);
+        float radius = (w < h ? w : h) / 2.0f;
+        gradient = adoptRef(new CanvasGradient(center, 0.0f, center, radius));
+    }
+
+    // Add color stops. Positions default to even spacing when unspecified.
+    for (int i = 0; i < stopCount; i++) {
+        const GradientColorStop& s = spec->stops[i];
+        float pos = s.position;
+        if (pos < 0.0f)
+            pos = (stopCount > 1) ? (float)i / (stopCount - 1) : 0.0f;
+        gradient->addColorStop(pos, Color(s.color).name());
+    }
+
+    context->fillRect(rect, gradient.get());
+}
+#endif // ENABLE(MODERN_CSS3)
 
 #if PLATFORM(MAC)
 void RenderBox::paintCustomHighlight(int tx, int ty, const AtomicString& type, bool behindText)

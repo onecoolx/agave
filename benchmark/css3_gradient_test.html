@@ -1,0 +1,35 @@
+<html>
+<head><style>
+* { box-sizing:border-box; margin:0; }
+#lin { width:200px; height:100px; background-image:linear-gradient(to right, red, blue); }
+#linang { width:150px; height:150px; background-image:linear-gradient(45deg, #ff0000, #00ff00, #0000ff); }
+#rad { width:120px; height:120px; background-image:radial-gradient(yellow, green); }
+#btn { width:160px; height:40px; border-radius:8px; background-image:linear-gradient(to bottom, #4facfe, #00f2fe); }
+</style></head>
+<body>
+<div id="lin">L</div>
+<div id="linang">A</div>
+<div id="rad">R</div>
+<div id="btn">B</div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function E(id){return document.getElementById(id);}
+
+// 渐变是绘制层效果，不改变盒尺寸
+ck('lin-w', E('lin').offsetWidth, 200);
+ck('lin-h', E('lin').offsetHeight, 100);
+ck('linang-w', E('linang').offsetWidth, 150);
+ck('rad-w', E('rad').offsetWidth, 120);
+ck('rad-h', E('rad').offsetHeight, 120);
+// 渐变 + 圆角组合
+ck('btn-w', E('btn').offsetWidth, 160);
+ck('btn-h', E('btn').offsetHeight, 40);
+// 存活
+ck('survived', E('lin').offsetWidth + E('btn').offsetHeight, 240);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

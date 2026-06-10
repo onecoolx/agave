@@ -31,6 +31,7 @@
 #include "CSSFontFaceSource.h"
 #include "CSSFontFaceRule.h"
 #include "CSSImageValue.h"
+#include "CSSGradientValue.h"
 #include "CSSImportRule.h"
 #include "CSSMediaRule.h"
 #include "CSSProperty.h"
@@ -2663,6 +2664,14 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
     
 // uri || inherit
     case CSS_PROP_BACKGROUND_IMAGE:
+#if ENABLE(MODERN_CSS3)
+        // A gradient value is neither a primitive value nor a value list, so it
+        // bypasses HANDLE_BACKGROUND_VALUE; map it onto the first layer directly.
+        if (value->isGradientValue()) {
+            mapBackgroundImage(style->accessBackgroundLayers(), value);
+            return;
+        }
+#endif
         HANDLE_BACKGROUND_VALUE(backgroundImage, BackgroundImage, value)
         return;
     case CSS_PROP_LIST_STYLE_IMAGE:
@@ -4991,9 +5000,22 @@ void CSSStyleSelector::mapBackgroundImage(BackgroundLayer* layer, CSSValue* valu
 {
     if (value->cssValueType() == CSSValue::CSS_INITIAL) {
         layer->setBackgroundImage(RenderStyle::initialBackgroundImage());
+#if ENABLE(MODERN_CSS3)
+        layer->clearBackgroundGradient();
+#endif
         return;
     }
-    
+
+#if ENABLE(MODERN_CSS3)
+    if (value->isGradientValue()) {
+        layer->setBackgroundGradient(static_cast<CSSGradientValue*>(value)->gradient());
+        layer->setBackgroundImage(0);
+        return;
+    }
+    // A non-gradient image value replaces any previously set gradient.
+    layer->clearBackgroundGradient();
+#endif
+
     if (!value->isPrimitiveValue()) return;
     CSSPrimitiveValue* primitiveValue = static_cast<CSSPrimitiveValue*>(value);
     layer->setBackgroundImage(static_cast<CSSImageValue*>(primitiveValue)->image(element->document()->docLoader()));

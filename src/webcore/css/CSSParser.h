@@ -148,6 +148,9 @@ namespace WebCore {
 
         bool parseShape(int propId, bool important);
 
+        // CSS3 gradients (ENABLE_MODERN_CSS3)
+        CSSValue* parseGradient(Value* function);
+
         // CSS Grid (ENABLE_MODERN_GRID)
         bool parseGridTrackList(int propId, bool important);
         bool parseGridPosition(int propId, bool important);

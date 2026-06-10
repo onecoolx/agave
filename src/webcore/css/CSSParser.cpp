@@ -29,6 +29,7 @@
 #include "CSSCursorImageValue.h"
 #include "CSSHelper.h"
 #include "CSSImageValue.h"
+#include "CSSGradientValue.h"
 #include "CSSFontFaceRule.h"
 #include "CSSFontFaceSrcValue.h"
 #include "CSSImportRule.h"
@@ -2032,6 +2033,17 @@ bool CSSParser::parseBackgroundImage(CSSValue*& value)
                                          styleElement);
         return true;
     }
+#if ENABLE(MODERN_CSS3)
+    // linear-gradient()/radial-gradient() as a background-image value.
+    if (valueList->current()->unit == Value::QFunction) {
+        CSSValue* gradient = parseGradient(valueList->current());
+        if (gradient) {
+            value = gradient;
+            return true;
+        }
+        return false;
+    }
+#endif
     return false;
 }
 
@@ -2522,6 +2534,120 @@ bool CSSParser::parseShape(int propId, bool important)
     delete rect;
     return false;
 }
+
+#if ENABLE(MODERN_CSS3)
+// Maximum number of color stops accepted in a single gradient. Bounds
+// untrusted CSS so a pathological stop list cannot exhaust memory.
+static const int kMaxGradientStops = 64;
+
+// Converts a CSS "to <side>[ <side>]" direction into a gradient angle in
+// degrees, where 0deg points to the top and angles increase clockwise.
+static float sideToAngle(int side1, int side2)
+{
+    // Single side.
+    if (!side2) {
+        switch (side1) {
+            case CSS_VAL_TOP:    return 0.0f;
+            case CSS_VAL_RIGHT:  return 90.0f;
+            case CSS_VAL_BOTTOM: return 180.0f;
+            case CSS_VAL_LEFT:   return 270.0f;
+            default:             return 180.0f;
+        }
+    }
+    // Corner (order-independent): average of the two adjacent sides.
+    int lo = side1 < side2 ? side1 : side2;
+    int hi = side1 < side2 ? side2 : side1;
+    if (lo == CSS_VAL_TOP && hi == CSS_VAL_RIGHT)    return 45.0f;
+    if (lo == CSS_VAL_RIGHT && hi == CSS_VAL_BOTTOM)  return 135.0f;
+    if (lo == CSS_VAL_BOTTOM && hi == CSS_VAL_LEFT)   return 225.0f;
+    if (lo == CSS_VAL_TOP && hi == CSS_VAL_LEFT)      return 315.0f;
+    // CSS value ordering may differ; fall back to a reasonable default.
+    return 180.0f;
+}
+
+// Parses linear-gradient()/radial-gradient() into a CSSGradientValue.
+//   linear-gradient( [ <angle> | to <side-or-corner> ] ,? <color-stop>{2,} )
+//   radial-gradient( <color-stop>{2,} )   (centered, extends to the box)
+// A color stop is <color> [ <percentage> ]?. Returns 0 on any parse error.
+CSSValue* CSSParser::parseGradient(Value* function)
+{
+    if (!function->function || !function->function->args)
+        return 0;
+
+    String name = domString(function->function->name).lower();
+    bool linear = (name == "linear-gradient(");
+    bool radial = (name == "radial-gradient(");
+    if (!linear && !radial)
+        return 0;
+
+    ValueList* args = function->function->args;
+    RefPtr<StyleGradient> gradient = new StyleGradient;
+    gradient->type = linear ? StyleGradient::Linear : StyleGradient::Radial;
+    gradient->angle = 180.0f; // default: to bottom
+
+    Value* a = args->current();
+
+    // Optional leading direction for linear gradients.
+    if (linear && a) {
+        if (a->unit == CSSPrimitiveValue::CSS_DEG) {
+            gradient->angle = (float)a->fValue;
+            a = args->next();
+            if (!a || a->unit != Value::Operator || a->iValue != ',')
+                return 0;
+            a = args->next();
+        } else if (a->id == CSS_VAL_TO) {
+            // "to <side>" / "to <corner>"
+            int side1 = 0, side2 = 0;
+            a = args->next();
+            while (a && !(a->unit == Value::Operator && a->iValue == ',')) {
+                if (a->id == CSS_VAL_TOP || a->id == CSS_VAL_BOTTOM
+                    || a->id == CSS_VAL_LEFT || a->id == CSS_VAL_RIGHT) {
+                    if (!side1) side1 = a->id;
+                    else side2 = a->id;
+                } else
+                    return 0;
+                a = args->next();
+            }
+            gradient->angle = sideToAngle(side1, side2);
+            if (!a || a->unit != Value::Operator || a->iValue != ',')
+                return 0;
+            a = args->next();
+        }
+    }
+
+    // Color stops, comma separated.
+    while (a) {
+        if ((int)gradient->stops.size() >= kMaxGradientStops)
+            return 0;
+        RGBA32 color = Color::transparent;
+        if (!parseColorFromValue(a, color))
+            return 0;
+        float pos = -1.0f; // auto
+        a = args->next();
+        if (a && a->unit == CSSPrimitiveValue::CSS_PERCENTAGE) {
+            pos = (float)(a->fValue / 100.0);
+            if (pos < 0.0f) pos = 0.0f;
+            if (pos > 1.0f) pos = 1.0f;
+            a = args->next();
+        }
+        gradient->stops.append(GradientColorStop(color, pos));
+
+        if (!a)
+            break;
+        if (a->unit != Value::Operator || a->iValue != ',')
+            return 0;
+        a = args->next();
+        if (!a)
+            return 0; // trailing comma
+    }
+
+    // A usable gradient needs at least two color stops.
+    if (gradient->stops.size() < 2)
+        return 0;
+
+    return new CSSGradientValue(gradient.release());
+}
+#endif // ENABLE(MODERN_CSS3)
 
 #if ENABLE(MODERN_GRID)
 // Upper bound on the number of explicit grid tracks produced by parsing.

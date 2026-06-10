@@ -132,6 +132,9 @@ BackgroundLayer::BackgroundLayer()
 
 BackgroundLayer::BackgroundLayer(const BackgroundLayer& o)
     : m_image(o.m_image)
+#if ENABLE(MODERN_CSS3)
+    , m_gradient(o.m_gradient)
+#endif
     , m_xPosition(o.m_xPosition)
     , m_yPosition(o.m_yPosition)
     , m_bgAttachment(o.m_bgAttachment)
@@ -166,6 +169,9 @@ BackgroundLayer& BackgroundLayer::operator=(const BackgroundLayer& o)
     }
 
     m_image = o.m_image;
+#if ENABLE(MODERN_CSS3)
+    m_gradient = o.m_gradient;
+#endif
     m_xPosition = o.m_xPosition;
     m_yPosition = o.m_yPosition;
     m_bgAttachment = o.m_bgAttachment;
@@ -192,6 +198,12 @@ bool BackgroundLayer::operator==(const BackgroundLayer& o) const
 {
     // We do not check the "isSet" booleans for each property, since those are only used during initial construction
     // to propagate patterns into layers.  All layer comparisons happen after values have all been filled in anyway.
+#if ENABLE(MODERN_CSS3)
+    bool gradientsEqual = (m_gradient && o.m_gradient) ? (*m_gradient == *o.m_gradient)
+                                                       : (m_gradient == o.m_gradient);
+    if (!gradientsEqual)
+        return false;
+#endif
     return m_image == o.m_image && m_xPosition == o.m_xPosition && m_yPosition == o.m_yPosition &&
            m_bgAttachment == o.m_bgAttachment && m_bgClip == o.m_bgClip && 
            m_bgComposite == o.m_bgComposite && m_bgOrigin == o.m_bgOrigin && m_bgRepeat == o.m_bgRepeat &&

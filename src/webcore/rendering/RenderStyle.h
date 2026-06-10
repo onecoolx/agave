@@ -452,12 +452,52 @@ struct LengthSize {
     Length height;
 };
 
+#if ENABLE(MODERN_CSS3)
+// A single gradient color stop: a color plus its position along the gradient
+// line in the range [0,1]. A negative position means "auto" (evenly spaced).
+struct GradientColorStop {
+    GradientColorStop() : color(0), position(-1.0f) { }
+    GradientColorStop(RGBA32 c, float p) : color(c), position(p) { }
+    bool operator==(const GradientColorStop& o) const {
+        return color == o.color && position == o.position;
+    }
+    bool operator!=(const GradientColorStop& o) const { return !(*this == o); }
+
+    RGBA32 color;
+    float position; // 0..1, or <0 for auto
+};
+
+// A parsed CSS gradient used as a background-image value. Supports
+// linear-gradient() (angle in degrees, 0 = to top, growing clockwise) and
+// radial-gradient() (centered, extending to the box). Isolated behind
+// ENABLE_MODERN_CSS3.
+struct StyleGradient : public Shared<StyleGradient> {
+    enum Type { Linear, Radial };
+    StyleGradient() : type(Linear), angle(180.0f) { }
+
+    bool operator==(const StyleGradient& o) const {
+        return type == o.type && angle == o.angle && stops == o.stops;
+    }
+    bool operator!=(const StyleGradient& o) const { return !(*this == o); }
+
+    Type type;
+    float angle;                        // degrees, for Linear
+    Vector<GradientColorStop> stops;
+};
+#endif // ENABLE(MODERN_CSS3)
+
 struct BackgroundLayer {
 public:
     BackgroundLayer();
     ~BackgroundLayer();
 
     CachedImage* backgroundImage() const { return m_image; }
+#if ENABLE(MODERN_CSS3)
+    StyleGradient* backgroundGradient() const { return m_gradient.get(); }
+    bool hasBackgroundGradient() const { return m_gradient; }
+    void setBackgroundGradient(PassRefPtr<StyleGradient> g) { m_gradient = g; }
+    void clearBackgroundGradient() { m_gradient = 0; }
+#endif
     Length backgroundXPosition() const { return m_xPosition; }
     Length backgroundYPosition() const { return m_yPosition; }
     bool backgroundAttachment() const { return m_bgAttachment; }
@@ -527,6 +567,9 @@ public:
     void cullEmptyLayers();
 
     CachedImage* m_image;
+#if ENABLE(MODERN_CSS3)
+    RefPtr<StyleGradient> m_gradient;
+#endif
 
     Length m_xPosition;
     Length m_yPosition;

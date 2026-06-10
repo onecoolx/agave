@@ -60,6 +60,7 @@ OPTION_MACRO_DEFINE(OPT_USE_KJS ENABLE_KJS "Build with KJS JavaScript engine." O
 OPTION_MACRO_DEFINE(OPT_USE_QJS ENABLE_QJS "Build with QuickJS JavaScript engine." ON)
 OPTION_MACRO_DEFINE(OPT_MODERN_FLEXBOX ENABLE_MODERN_FLEXBOX "Build with modern CSS Flexbox layout." ON)
 OPTION_MACRO_DEFINE(OPT_MODERN_GRID ENABLE_MODERN_GRID "Build with modern CSS Grid layout." ON)
+OPTION_MACRO_DEFINE(OPT_MODERN_CSS3 ENABLE_MODERN_CSS3 "Build with modern CSS3 visual features (gradients)." ON)
 
 include (${CMAKE_CURRENT_LIST_DIR}/src/src.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/test/test.cmake)

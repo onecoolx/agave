@@ -133,3 +133,28 @@
   - 测试：5 解析单元测试（无前缀/前缀 border-radius、四角、box-shadow、
     transform-origin）+ 8 benchmark 断言（圆角/阴影纯视觉不改盒尺寸、前缀等效、
     存活）。662 全套通过，无回归。三维审查（正向/反向/安全）通过。
+
+- 2026-06-10：**里程碑 3b 完成（CSS 渐变）。**
+  - 新增编译宏 ENABLE_MODERN_CSS3（默认 ON），隔离 CSS3 视觉新实现。
+  - 数据模型：RenderStyle.h 加 StyleGradient（Linear/Radial + 角度 + 色标向量）
+    与 GradientColorStop；BackgroundLayer 并行存 RefPtr<StyleGradient>，拷贝/赋值/
+    相等比较都纳入（gradient 按值比较）。
+  - 解析：CSSParser::parseGradient 解析 linear-gradient()（<angle>deg 或 "to side/
+    corner" 方向，0deg=top 顺时针）与 radial-gradient()（居中），多色标
+    （color [percentage]?）。新增 CSSGradientValue（CSSValue 子类）承载解析结果；
+    在 parseBackgroundImage 识别 QFunction 调 parseGradient。
+  - 应用：mapBackgroundImage 对 isGradientValue 存入 BackgroundLayer；因 gradient 非
+    primitive/list 值会被 HANDLE_BACKGROUND_VALUE 宏跳过，故在 background-image apply
+    case 里直接处理。
+  - 绘制：RenderBox::paintGradientBackground 在背景色之后、图片之前构造 CanvasGradient
+    （线性按角度求过盒中心的端点，径向用 center+min(w,h)/2），走
+    fillRect(FloatRect, CanvasGradient*)。
+  - 修复关键 bug：StyleGradient 误用 adoptRef 致引用计数从 0 起，CSSGradientValue
+    析构时提前删除而 BackgroundLayer 仍持有 → use-after-free（ASan 捕获）；改用普通
+    RefPtr 使计数正确。
+  - 安全：色标上限 kMaxGradientStops=64、位置钳制 [0,1]、≥2 色标方有效；角度 float
+    安全；无未受信输入放大向量。
+  - 已知限制：CSSGradientValue::cssText() 返回空（序列化不完整，不影响渲染）；
+    多重背景、复杂 radial 形状/尺寸关键字后置。
+  - 测试：6 解析单元测试 + 8 benchmark 断言（线性/角度/方向/径向/渐变+圆角组合）。
+    668 全套通过，ASan 无内存错误，三维审查通过。
