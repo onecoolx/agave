@@ -362,4 +362,55 @@ TEST_F(GridLayoutTest, JustifyContentSpaceBetweenGrid)
     EXPECT_NEAR(b->xPos() - g->xPos(), 150, 2);
 }
 
+TEST_F(GridLayoutTest, AutoRowsImplicitSize)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:100px 100px; grid-auto-rows:60px; width:200px;'>"
+             "<div id='a'>A</div><div id='b'>B</div><div id='c'>C</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* c = renderer("c");
+    ASSERT_TRUE(g && c);
+    EXPECT_NEAR(c->yPos() - g->yPos(), 60, 2); // second (implicit) row
+    EXPECT_NEAR(c->height(), 60, 2); // grid-auto-rows size
+}
+
+TEST_F(GridLayoutTest, AutoRowsAfterExplicit)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:50px 50px; grid-template-rows:40px; grid-auto-rows:70px; width:100px;'>"
+             "<div id='a'>A</div><div id='b'>B</div><div id='c'>C</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* c = renderer("c");
+    ASSERT_TRUE(g && c);
+    EXPECT_NEAR(c->yPos() - g->yPos(), 40, 2); // after explicit 40px row
+    EXPECT_NEAR(c->height(), 70, 2); // implicit row uses auto-rows
+}
+
+TEST_F(GridLayoutTest, AutoFlowColumn)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-rows:50px 50px; grid-template-columns:100px 100px; grid-auto-flow:column; width:200px;'>"
+             "<div id='a'>A</div><div id='b'>B</div><div id='c'>C</div><div id='d'>D</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* b = renderer("b");
+    RenderObject* c = renderer("c");
+    ASSERT_TRUE(g && b && c);
+    // Column flow: A(0,0) B(row1,col0) C(row0,col1) D(row1,col1)
+    EXPECT_NEAR(b->yPos() - g->yPos(), 50, 2); // B below A
+    EXPECT_NEAR(b->xPos() - g->xPos(), 0, 2);
+    EXPECT_NEAR(c->xPos() - g->xPos(), 100, 2); // C in second column
+    EXPECT_NEAR(c->yPos() - g->yPos(), 0, 2);
+}
+
+TEST_F(GridLayoutTest, AutoFlowDense)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:50px 50px 50px; grid-template-rows:40px 40px; grid-auto-flow:dense; width:150px;'>"
+             "<div class='wide' id='w' style='grid-column:1 / 3;'>W</div>"
+             "<div id='a'>A</div><div id='b'>B</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* w = renderer("w");
+    RenderObject* a = renderer("a");
+    ASSERT_TRUE(g && w && a);
+    EXPECT_NEAR(w->width(), 100, 2); // spans 2 columns
+    EXPECT_NEAR(a->xPos() - g->xPos(), 100, 2); // A flows to column 3 of row 1
+    EXPECT_NEAR(a->yPos() - g->yPos(), 0, 2);
+}
+
 #endif // ENABLE(MODERN_GRID)

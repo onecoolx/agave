@@ -1887,6 +1887,26 @@ static void fillGridTrackComponent(CSSPrimitiveValue* pv, RenderStyle* style, fl
     }
 }
 
+// Builds a GridTrackSize from a CSSValue (primitive, or 2-element list for minmax).
+static GridTrackSize readGridTrack(CSSValue* item, RenderStyle* style, float zoomFactor)
+{
+    GridTrackSize t;
+    if (item->isValueList()) {
+        CSSValueList* mm = static_cast<CSSValueList*>(item);
+        if (mm->length() == 2 && mm->item(0)->isPrimitiveValue() && mm->item(1)->isPrimitiveValue()) {
+            t.isMinMax = true;
+            fillGridTrackComponent(static_cast<CSSPrimitiveValue*>(mm->item(0)),
+                                   style, zoomFactor, t.kind, t.length, t.fr);
+            fillGridTrackComponent(static_cast<CSSPrimitiveValue*>(mm->item(1)),
+                                   style, zoomFactor, t.maxKind, t.maxLength, t.maxFr);
+        }
+    } else if (item->isPrimitiveValue()) {
+        fillGridTrackComponent(static_cast<CSSPrimitiveValue*>(item),
+                               style, zoomFactor, t.kind, t.length, t.fr);
+    }
+    return t;
+}
+
 // Maps a box-alignment CSS value id to EGridAlign. Returns -1 for auto/unknown.
 static int gridAlignFromValue(int ident)
 {
@@ -4157,6 +4177,36 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
         if (!primitiveValue) return;
         style->setGridJustifySelf(gridAlignFromValue(primitiveValue->getIdent())); // -1 = auto
         return;
+    case CSS_PROP_GRID_AUTO_ROWS:
+        if (!value) return;
+        style->setGridAutoRows(readGridTrack(value, style, zoomFactor));
+        return;
+    case CSS_PROP_GRID_AUTO_COLUMNS:
+        if (!value) return;
+        style->setGridAutoColumns(readGridTrack(value, style, zoomFactor));
+        return;
+    case CSS_PROP_GRID_AUTO_FLOW: {
+        EGridAutoFlow flow = GridAutoFlowRow;
+        bool dense = false;
+        if (value->isValueList()) {
+            CSSValueList* list = static_cast<CSSValueList*>(value);
+            for (unsigned i = 0; i < list->length(); i++) {
+                if (!list->item(i)->isPrimitiveValue())
+                    continue;
+                int ident = static_cast<CSSPrimitiveValue*>(list->item(i))->getIdent();
+                if (ident == CSS_VAL_ROW) flow = GridAutoFlowRow;
+                else if (ident == CSS_VAL_COLUMN) flow = GridAutoFlowColumn;
+                else if (ident == CSS_VAL_DENSE) dense = true;
+            }
+        } else if (primitiveValue) {
+            int ident = primitiveValue->getIdent();
+            if (ident == CSS_VAL_COLUMN) flow = GridAutoFlowColumn;
+            else if (ident == CSS_VAL_DENSE) dense = true;
+        }
+        style->setGridAutoFlow(flow);
+        style->setGridAutoFlowDense(dense);
+        return;
+    }
 #endif
     case CSS_PROP_ORDER:
         HANDLE_INHERIT_AND_INITIAL(flexOrder, FlexOrder)

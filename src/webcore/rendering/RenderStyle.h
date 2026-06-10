@@ -752,6 +752,8 @@ enum EGridAlign { GridAlignStart, GridAlignEnd, GridAlignCenter, GridAlignStretc
 // Distribution of grid tracks within the container.
 enum EGridContent { GridContentStart, GridContentEnd, GridContentCenter,
                     GridContentSpaceBetween, GridContentSpaceAround, GridContentStretch };
+// Auto-placement direction.
+enum EGridAutoFlow { GridAutoFlowRow, GridAutoFlowColumn };
 
 class StyleGridData : public Shared<StyleGridData> {
 public:
@@ -777,6 +779,11 @@ public:
     int alignSelf;               // EGridAlign, or -1 for auto
     unsigned justifyContent : 3; // EGridContent (column tracks in container)
     unsigned alignContent : 3;   // EGridContent (row tracks in container)
+
+    GridTrackSize autoRows;      // grid-auto-rows (implicit row size)
+    GridTrackSize autoColumns;   // grid-auto-columns (implicit column size)
+    unsigned autoFlow : 1;       // EGridAutoFlow
+    bool autoFlowDense;          // dense packing
 };
 
 // This struct holds information about shadows for the text-shadow and box-shadow properties.
@@ -1617,6 +1624,10 @@ public:
     int gridAlignSelf() const { return rareNonInheritedData->grid->alignSelf; }     // EGridAlign or -1
     EGridContent gridJustifyContent() const { return static_cast<EGridContent>(rareNonInheritedData->grid->justifyContent); }
     EGridContent gridAlignContent() const { return static_cast<EGridContent>(rareNonInheritedData->grid->alignContent); }
+    const GridTrackSize& gridAutoRows() const { return rareNonInheritedData->grid->autoRows; }
+    const GridTrackSize& gridAutoColumns() const { return rareNonInheritedData->grid->autoColumns; }
+    EGridAutoFlow gridAutoFlow() const { return static_cast<EGridAutoFlow>(rareNonInheritedData->grid->autoFlow); }
+    bool gridAutoFlowDense() const { return rareNonInheritedData->grid->autoFlowDense; }
 
     ShadowData* boxShadow() const { return rareNonInheritedData->m_boxShadow; }
     EBoxSizing boxSizing() const { return static_cast<EBoxSizing>(box->boxSizing); }
@@ -1892,6 +1903,10 @@ public:
     void setGridAlignSelf(int a) { SET_VAR(rareNonInheritedData.access()->grid, alignSelf, a); }
     void setGridJustifyContent(EGridContent c) { SET_VAR(rareNonInheritedData.access()->grid, justifyContent, c); }
     void setGridAlignContent(EGridContent c) { SET_VAR(rareNonInheritedData.access()->grid, alignContent, c); }
+    void setGridAutoRows(const GridTrackSize& t) { SET_VAR(rareNonInheritedData.access()->grid, autoRows, t); }
+    void setGridAutoColumns(const GridTrackSize& t) { SET_VAR(rareNonInheritedData.access()->grid, autoColumns, t); }
+    void setGridAutoFlow(EGridAutoFlow f) { SET_VAR(rareNonInheritedData.access()->grid, autoFlow, f); }
+    void setGridAutoFlowDense(bool d) { SET_VAR(rareNonInheritedData.access()->grid, autoFlowDense, d); }
 
     void setBoxShadow(ShadowData* val, bool add=false);
     void setBoxSizing(EBoxSizing s) { SET_VAR(box, boxSizing, s); }
@@ -2066,6 +2081,7 @@ public:
     static int initialGridJustifySelf() { return -1; }
     static int initialGridAlignSelf() { return -1; }
     static EGridContent initialGridContent() { return GridContentStart; }
+    static EGridAutoFlow initialGridAutoFlow() { return GridAutoFlowRow; }
     static GridPosition initialGridPosition() { return GridPosition(); }
 
     static int initialMarqueeLoopCount() { return -1; }

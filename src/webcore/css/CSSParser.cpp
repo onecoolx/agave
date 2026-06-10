@@ -1289,6 +1289,40 @@ bool CSSParser::parseValue(int propId, bool important)
             id == CSS_VAL_CENTER || id == CSS_VAL_STRETCH)
             valid_primitive = true;
         break;
+    case CSS_PROP_GRID_AUTO_ROWS:
+    case CSS_PROP_GRID_AUTO_COLUMNS: {
+        // A single track size (fixed/percent/fr/auto/min-content/max-content/minmax).
+        CSSValue* track = createGridTrack(value);
+        if (!track)
+            return false;
+        addProperty(propId, track, important);
+        return true;
+    }
+    case CSS_PROP_GRID_AUTO_FLOW: {
+        // row | column | dense | row dense | column dense (order-independent)
+        CSSValueList* list = new CSSValueList;
+        bool sawDir = false, sawDense = false, ok = true;
+        for (Value* v = value; v; v = valueList->next()) {
+            if (v->id == CSS_VAL_ROW || v->id == CSS_VAL_COLUMN) {
+                if (sawDir) { ok = false; break; }
+                sawDir = true;
+                list->append(new CSSPrimitiveValue(v->id));
+            } else if (v->id == CSS_VAL_DENSE) {
+                if (sawDense) { ok = false; break; }
+                sawDense = true;
+                list->append(new CSSPrimitiveValue(v->id));
+            } else {
+                ok = false;
+                break;
+            }
+        }
+        if (!ok || list->length() == 0) {
+            delete list;
+            return false;
+        }
+        addProperty(propId, list, important);
+        return true;
+    }
     case CSS_PROP_GAP: {
         // gap: <row-gap> <column-gap>?
         ShorthandScope scope(this, propId);

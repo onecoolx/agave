@@ -377,4 +377,5 @@ wrap-reverse, CSS_VAL_WRAP_REVERSE
 span, CSS_VAL_SPAN
 min-content, CSS_VAL_MIN_CONTENT
 max-content, CSS_VAL_MAX_CONTENT
+dense, CSS_VAL_DENSE
 %%

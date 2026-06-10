@@ -235,3 +235,6 @@ row-gap
 column-gap
 justify-items
 justify-self
+grid-auto-rows
+grid-auto-columns
+grid-auto-flow

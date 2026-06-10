@@ -579,3 +579,5 @@ span
 # CSS Grid content-sized track keywords
 min-content
 max-content
+# CSS Grid auto-flow dense keyword
+dense

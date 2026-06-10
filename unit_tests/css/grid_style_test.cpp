@@ -253,4 +253,31 @@ TEST_F(GridStyleTest, AlignItemsGridParsed)
     EXPECT_EQ(s->gridAlignItems(), GridAlignStart);
 }
 
+TEST_F(GridStyleTest, AutoRowsParsed)
+{
+    loadHtml("<div id='g' style='display:grid; grid-auto-rows:80px;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    EXPECT_EQ(s->gridAutoRows().kind, GridTrackSize::FixedTrack);
+    EXPECT_EQ(s->gridAutoRows().length, 80);
+}
+
+TEST_F(GridStyleTest, AutoFlowColumnParsed)
+{
+    loadHtml("<div id='g' style='display:grid; grid-auto-flow:column;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    EXPECT_EQ(s->gridAutoFlow(), GridAutoFlowColumn);
+    EXPECT_FALSE(s->gridAutoFlowDense());
+}
+
+TEST_F(GridStyleTest, AutoFlowColumnDenseParsed)
+{
+    loadHtml("<div id='g' style='display:grid; grid-auto-flow:column dense;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    EXPECT_EQ(s->gridAutoFlow(), GridAutoFlowColumn);
+    EXPECT_TRUE(s->gridAutoFlowDense());
+}
+
 #endif // ENABLE(MODERN_GRID)

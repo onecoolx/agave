@@ -435,6 +435,8 @@ StyleGridData::StyleGridData()
     , alignSelf(RenderStyle::initialGridAlignSelf())
     , justifyContent(RenderStyle::initialGridContent())
     , alignContent(RenderStyle::initialGridContent())
+    , autoFlow(RenderStyle::initialGridAutoFlow())
+    , autoFlowDense(false)
 {
 }
 
@@ -454,6 +456,10 @@ StyleGridData::StyleGridData(const StyleGridData& o)
     , alignSelf(o.alignSelf)
     , justifyContent(o.justifyContent)
     , alignContent(o.alignContent)
+    , autoRows(o.autoRows)
+    , autoColumns(o.autoColumns)
+    , autoFlow(o.autoFlow)
+    , autoFlowDense(o.autoFlowDense)
 {
 }
 
@@ -465,7 +471,9 @@ bool StyleGridData::operator==(const StyleGridData& o) const
            columnGap == o.columnGap && rowGap == o.rowGap &&
            justifyItems == o.justifyItems && alignItems == o.alignItems &&
            justifySelf == o.justifySelf && alignSelf == o.alignSelf &&
-           justifyContent == o.justifyContent && alignContent == o.alignContent;
+           justifyContent == o.justifyContent && alignContent == o.alignContent &&
+           autoRows == o.autoRows && autoColumns == o.autoColumns &&
+           autoFlow == o.autoFlow && autoFlowDense == o.autoFlowDense;
 }
 
 StyleMultiColData::StyleMultiColData()

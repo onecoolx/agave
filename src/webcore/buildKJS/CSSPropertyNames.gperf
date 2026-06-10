@@ -234,4 +234,7 @@ row-gap, CSS_PROP_ROW_GAP
 column-gap, CSS_PROP_COLUMN_GAP
 justify-items, CSS_PROP_JUSTIFY_ITEMS
 justify-self, CSS_PROP_JUSTIFY_SELF
+grid-auto-rows, CSS_PROP_GRID_AUTO_ROWS
+grid-auto-columns, CSS_PROP_GRID_AUTO_COLUMNS
+grid-auto-flow, CSS_PROP_GRID_AUTO_FLOW
 %%

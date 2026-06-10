@@ -145,7 +145,7 @@ calcPrefWidths 协议可用，降低此风险）。
       （高频，已完成）；`fit-content`、`repeat(auto-fill/auto-fit)` 及嵌套
       `repeat(minmax())` 后置（低频 + 受 CSS 语法嵌套函数限制）
 - [ ] **2b-2 命名线 + 区域**：`grid-template-areas`、命名网格线、`grid-area`
-- [ ] **2b-3 隐式网格 + 自动流补全**：`grid-auto-rows/columns`、
+- [x] **2b-3 隐式网格 + 自动流补全**：`grid-auto-rows/columns`、
       `grid-auto-flow: column/dense`
 - [x] **2b-4 对齐**：`justify-items/self`、`align-items/self`、
       `justify-content`、`align-content`
@@ -298,3 +298,12 @@ calcPrefWidths 协议可用，降低此风险）。
     加 `&& !cb->isRenderGrid()` 排除 grid 子项。
   - 测试：9 单元测试（6 布局对齐 + 3 解析）+ 10 benchmark 断言。46 grid 单元测试全过，
     640 全套通过。
+
+- 2026-06-10：**2b-3 隐式网格 + 自动流补全完成。**
+  - grid-auto-rows/columns：GridTrackSize 字段；resolveImplicitTrack 解析超出显式
+    模板的隐式轨道尺寸（fixed/percent 用声明值，auto/fr/content 回退内容）。
+  - grid-auto-flow：EGridAutoFlow（row/column）+ autoFlowDense 标志；row dense /
+    column dense 顺序无关解析。
+  - 布局：统一重写 Phase 2 流式放置——row 流（行优先）、column 流（列优先，numCols
+    按需扩展以容纳所有项）、dense（每个 auto 项从 (0,0) 起扫描首个空位回填）。
+  - 测试：4 布局 + 3 解析单元测试 + 13 benchmark 断言。53 grid 单元测试全过，647 全套通过。

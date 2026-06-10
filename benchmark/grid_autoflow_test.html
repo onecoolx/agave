@@ -1,0 +1,50 @@
+<html>
+<head><style>
+/* grid-auto-rows: 隐式行用固定尺寸（3项2列->第2行隐式） */
+#g1 { display:grid; grid-template-columns:100px 100px; grid-auto-rows:60px; width:200px; }
+#g1 div { }
+/* grid-auto-rows 默认(无)时隐式行取内容; 这里显式行1个+隐式 */
+#g2 { display:grid; grid-template-columns:50px 50px; grid-template-rows:40px; grid-auto-rows:70px; width:100px; }
+#g2 div { }
+/* auto-flow: column（固定2行，按列填充） */
+#g3 { display:grid; grid-template-rows:50px 50px; grid-template-columns:100px 100px; grid-auto-flow:column; width:200px; }
+#g3 div { }
+/* dense: 第一项跨2列占满第1行，小项回填 */
+#g4 { display:grid; grid-template-columns:50px 50px 50px; grid-template-rows:40px 40px; grid-auto-flow:dense; width:150px; }
+#g4 .wide { grid-column:1 / 3; }
+</style></head>
+<body>
+<div id="g1"><div id="a1">A</div><div id="b1">B</div><div id="c1">C</div></div>
+<div id="g2"><div id="a2">A</div><div id="b2">B</div><div id="c2">C</div></div>
+<div id="g3"><div id="a3">A</div><div id="b3">B</div><div id="c3">C</div><div id="d3">D</div></div>
+<div id="g4"><div class="wide" id="w4">W</div><div id="a4">A</div><div id="b4">B</div></div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function E(id){return document.getElementById(id);}
+
+// g1: 3项2列，C在第2行(隐式), auto-rows:60 -> C top=60, height=60
+ck('g1-c-top', E('c1').offsetTop - E('g1').offsetTop, 60);
+ck('g1-c-h', E('c1').offsetHeight, 60);
+// g2: 行1显式40, 行2隐式70. C在第2行 top=40 height=70
+ck('g2-c-top', E('c2').offsetTop - E('g2').offsetTop, 40);
+ck('g2-c-h', E('c2').offsetHeight, 70);
+// g3 column flow: A=(0,0) B=(row1,col0) C=(row0,col1) D=(row1,col1)
+var g3=E('g3');
+ck('g3-a', E('a3').offsetTop - g3.offsetTop, 0);
+ck('g3-b-top', E('b3').offsetTop - g3.offsetTop, 50);   // B below A (column flow)
+ck('g3-b-left', E('b3').offsetLeft - g3.offsetLeft, 0);
+ck('g3-c-left', E('c3').offsetLeft - g3.offsetLeft, 100); // C in column 2
+ck('g3-c-top', E('c3').offsetTop - g3.offsetTop, 0);
+// g4 dense: W spans col1-2 row1. A=(row1,col3), B dense backfills... 
+// W at row0 cols0-1(width100). A flows to row0 col2. B to row1 col0.
+ck('g4-w-w', E('w4').offsetWidth, 100);
+ck('g4-a-left', E('a4').offsetLeft - E('g4').offsetLeft, 100); // col3
+ck('g4-a-top', E('a4').offsetTop - E('g4').offsetTop, 0);
+ck('g4-b-top', E('b4').offsetTop - E('g4').offsetTop, 40);  // row2
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>
