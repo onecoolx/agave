@@ -4207,6 +4207,57 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
         style->setGridAutoFlowDense(dense);
         return;
     }
+    case CSS_PROP_GRID_TEMPLATE_AREAS: {
+        Vector<GridNamedArea> areas;
+        if (value->isValueList()) {
+            CSSValueList* list = static_cast<CSSValueList*>(value);
+            // Each list item is one row string; tokens are column cells.
+            for (unsigned row = 0; row < list->length(); row++) {
+                if (!list->item(row)->isPrimitiveValue())
+                    continue;
+                String rowStr = static_cast<CSSPrimitiveValue*>(list->item(row))->getStringValue();
+                // Tokenize on whitespace.
+                Vector<String> tokens;
+                unsigned i = 0, n = rowStr.length();
+                while (i < n) {
+                    while (i < n && rowStr[i] == ' ') i++;
+                    unsigned start = i;
+                    while (i < n && rowStr[i] != ' ') i++;
+                    if (i > start)
+                        tokens.append(rowStr.substring(start, i - start));
+                }
+                for (unsigned col = 0; col < tokens.size(); col++) {
+                    if (tokens[col] == ".")
+                        continue; // empty cell
+                    // Extend an existing area or create a new one.
+                    bool found = false;
+                    for (size_t a = 0; a < areas.size(); a++) {
+                        if (areas[a].name == tokens[col]) {
+                            if ((int)col < areas[a].colStart) areas[a].colStart = col;
+                            if ((int)col + 1 > areas[a].colEnd) areas[a].colEnd = col + 1;
+                            if ((int)row < areas[a].rowStart) areas[a].rowStart = row;
+                            if ((int)row + 1 > areas[a].rowEnd) areas[a].rowEnd = row + 1;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        GridNamedArea na;
+                        na.name = tokens[col];
+                        na.colStart = col; na.colEnd = col + 1;
+                        na.rowStart = row; na.rowEnd = row + 1;
+                        areas.append(na);
+                    }
+                }
+            }
+        }
+        style->setGridTemplateAreas(areas);
+        return;
+    }
+    case CSS_PROP_GRID_AREA:
+        if (primitiveValue && primitiveValue->primitiveType() == CSSPrimitiveValue::CSS_STRING)
+            style->setGridArea(primitiveValue->getStringValue());
+        return;
 #endif
     case CSS_PROP_ORDER:
         HANDLE_INHERIT_AND_INITIAL(flexOrder, FlexOrder)

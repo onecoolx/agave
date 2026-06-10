@@ -755,6 +755,20 @@ enum EGridContent { GridContentStart, GridContentEnd, GridContentCenter,
 // Auto-placement direction.
 enum EGridAutoFlow { GridAutoFlowRow, GridAutoFlowColumn };
 
+// A named grid area from grid-template-areas (0-based, half-open ranges).
+struct GridNamedArea {
+    GridNamedArea() : rowStart(0), rowEnd(0), colStart(0), colEnd(0) { }
+    bool operator==(const GridNamedArea& o) const {
+        return name == o.name && rowStart == o.rowStart && rowEnd == o.rowEnd
+            && colStart == o.colStart && colEnd == o.colEnd;
+    }
+    bool operator!=(const GridNamedArea& o) const { return !(*this == o); }
+
+    String name;
+    int rowStart, rowEnd; // [rowStart, rowEnd)
+    int colStart, colEnd; // [colStart, colEnd)
+};
+
 class StyleGridData : public Shared<StyleGridData> {
 public:
     StyleGridData();
@@ -784,6 +798,9 @@ public:
     GridTrackSize autoColumns;   // grid-auto-columns (implicit column size)
     unsigned autoFlow : 1;       // EGridAutoFlow
     bool autoFlowDense;          // dense packing
+
+    Vector<GridNamedArea> templateAreas; // grid-template-areas regions
+    String area;                 // grid-area name on a grid item (empty if none)
 };
 
 // This struct holds information about shadows for the text-shadow and box-shadow properties.
@@ -1628,6 +1645,8 @@ public:
     const GridTrackSize& gridAutoColumns() const { return rareNonInheritedData->grid->autoColumns; }
     EGridAutoFlow gridAutoFlow() const { return static_cast<EGridAutoFlow>(rareNonInheritedData->grid->autoFlow); }
     bool gridAutoFlowDense() const { return rareNonInheritedData->grid->autoFlowDense; }
+    const Vector<GridNamedArea>& gridTemplateAreas() const { return rareNonInheritedData->grid->templateAreas; }
+    const String& gridArea() const { return rareNonInheritedData->grid->area; }
 
     ShadowData* boxShadow() const { return rareNonInheritedData->m_boxShadow; }
     EBoxSizing boxSizing() const { return static_cast<EBoxSizing>(box->boxSizing); }
@@ -1907,6 +1926,8 @@ public:
     void setGridAutoColumns(const GridTrackSize& t) { SET_VAR(rareNonInheritedData.access()->grid, autoColumns, t); }
     void setGridAutoFlow(EGridAutoFlow f) { SET_VAR(rareNonInheritedData.access()->grid, autoFlow, f); }
     void setGridAutoFlowDense(bool d) { SET_VAR(rareNonInheritedData.access()->grid, autoFlowDense, d); }
+    void setGridTemplateAreas(const Vector<GridNamedArea>& a) { SET_VAR(rareNonInheritedData.access()->grid, templateAreas, a); }
+    void setGridArea(const String& a) { SET_VAR(rareNonInheritedData.access()->grid, area, a); }
 
     void setBoxShadow(ShadowData* val, bool add=false);
     void setBoxSizing(EBoxSizing s) { SET_VAR(box, boxSizing, s); }

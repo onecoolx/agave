@@ -237,4 +237,6 @@ justify-self, CSS_PROP_JUSTIFY_SELF
 grid-auto-rows, CSS_PROP_GRID_AUTO_ROWS
 grid-auto-columns, CSS_PROP_GRID_AUTO_COLUMNS
 grid-auto-flow, CSS_PROP_GRID_AUTO_FLOW
+grid-template-areas, CSS_PROP_GRID_TEMPLATE_AREAS
+grid-area, CSS_PROP_GRID_AREA
 %%

@@ -1323,6 +1323,32 @@ bool CSSParser::parseValue(int propId, bool important)
         addProperty(propId, list, important);
         return true;
     }
+    case CSS_PROP_GRID_TEMPLATE_AREAS: {
+        // none | <string>+ (each string is one row of area names)
+        if (id == CSS_VAL_NONE) {
+            addProperty(propId, new CSSPrimitiveValue(CSS_VAL_NONE), important);
+            return true;
+        }
+        CSSValueList* list = new CSSValueList;
+        bool ok = true;
+        for (Value* v = value; v; v = valueList->next()) {
+            if (v->unit != CSSPrimitiveValue::CSS_STRING) { ok = false; break; }
+            list->append(new CSSPrimitiveValue(domString(v->string), CSSPrimitiveValue::CSS_STRING));
+        }
+        if (!ok || list->length() == 0) {
+            delete list;
+            return false;
+        }
+        addProperty(propId, list, important);
+        return true;
+    }
+    case CSS_PROP_GRID_AREA:
+        // 2a subset: a single <custom-ident> naming a template area.
+        if (value->unit == CSSPrimitiveValue::CSS_IDENT || value->id) {
+            addProperty(propId, new CSSPrimitiveValue(domString(value->string), CSSPrimitiveValue::CSS_STRING), important);
+            return true;
+        }
+        return false;
     case CSS_PROP_GAP: {
         // gap: <row-gap> <column-gap>?
         ShorthandScope scope(this, propId);

@@ -435,6 +435,22 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
         p.naturalH = 0;
         resolveGridSpan(child->style()->gridColumnStart(), child->style()->gridColumnEnd(), p.col, p.colSpan);
         resolveGridSpan(child->style()->gridRowStart(), child->style()->gridRowEnd(), p.row, p.rowSpan);
+
+        // grid-area naming a template area overrides line-based placement.
+        const String& areaName = child->style()->gridArea();
+        if (!areaName.isEmpty()) {
+            const Vector<GridNamedArea>& areas = style()->gridTemplateAreas();
+            for (size_t a = 0; a < areas.size(); a++) {
+                if (areas[a].name == areaName) {
+                    p.col = areas[a].colStart;
+                    p.colSpan = max(1, areas[a].colEnd - areas[a].colStart);
+                    p.row = areas[a].rowStart;
+                    p.rowSpan = max(1, areas[a].rowEnd - areas[a].rowStart);
+                    break;
+                }
+            }
+        }
+
         // Clamp column span to the number of columns.
         if (p.colSpan > numCols) p.colSpan = numCols;
         if (p.col >= 0 && p.col + p.colSpan > numCols)

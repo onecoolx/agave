@@ -460,6 +460,8 @@ StyleGridData::StyleGridData(const StyleGridData& o)
     , autoColumns(o.autoColumns)
     , autoFlow(o.autoFlow)
     , autoFlowDense(o.autoFlowDense)
+    , templateAreas(o.templateAreas)
+    , area(o.area)
 {
 }
 
@@ -473,7 +475,8 @@ bool StyleGridData::operator==(const StyleGridData& o) const
            justifySelf == o.justifySelf && alignSelf == o.alignSelf &&
            justifyContent == o.justifyContent && alignContent == o.alignContent &&
            autoRows == o.autoRows && autoColumns == o.autoColumns &&
-           autoFlow == o.autoFlow && autoFlowDense == o.autoFlowDense;
+           autoFlow == o.autoFlow && autoFlowDense == o.autoFlowDense &&
+           templateAreas == o.templateAreas && area == o.area;
 }
 
 StyleMultiColData::StyleMultiColData()

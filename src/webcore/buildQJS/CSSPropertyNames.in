@@ -238,3 +238,5 @@ justify-self
 grid-auto-rows
 grid-auto-columns
 grid-auto-flow
+grid-template-areas
+grid-area

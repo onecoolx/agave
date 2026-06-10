@@ -144,7 +144,7 @@ calcPrefWidths 协议可用，降低此风险）。
 - [x] **2b-1 minmax + 更多轨道函数**：`minmax(min, max)`、`min-content`/`max-content`
       （高频，已完成）；`fit-content`、`repeat(auto-fill/auto-fit)` 及嵌套
       `repeat(minmax())` 后置（低频 + 受 CSS 语法嵌套函数限制）
-- [ ] **2b-2 命名线 + 区域**：`grid-template-areas`、命名网格线、`grid-area`
+- [x] **2b-2 命名区域**：`grid-template-areas`、`grid-area`（命名网格线后置，低频）
 - [x] **2b-3 隐式网格 + 自动流补全**：`grid-auto-rows/columns`、
       `grid-auto-flow: column/dense`
 - [x] **2b-4 对齐**：`justify-items/self`、`align-items/self`、
@@ -307,3 +307,12 @@ calcPrefWidths 协议可用，降低此风险）。
   - 布局：统一重写 Phase 2 流式放置——row 流（行优先）、column 流（列优先，numCols
     按需扩展以容纳所有项）、dense（每个 auto 项从 (0,0) 起扫描首个空位回填）。
   - 测试：4 布局 + 3 解析单元测试 + 13 benchmark 断言。53 grid 单元测试全过，647 全套通过。
+
+- 2026-06-10：**2b-2 命名区域完成。**
+  - grid-template-areas：解析字符串行（每行一组列单元格名），CSSStyleSelector 按
+    bounding box 聚合同名单元格为 GridNamedArea 矩形（row/col 半开区间，"." 为空）。
+  - grid-area：item 上的区域名；layoutGrid Phase 1 据名查区域矩形，覆盖 col/row/span
+    显式定位。
+  - 命名网格线（如 grid-column:start-line）后置（低频）。
+  - 测试：1 布局（header/sidebar/main/footer 经典布局）+ 2 解析单元测试 + 15 benchmark
+    断言。56 grid 单元测试全过，650 全套通过。

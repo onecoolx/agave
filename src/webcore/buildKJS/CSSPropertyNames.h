@@ -235,9 +235,11 @@ enum CSSPropertyID {
     CSS_PROP_GRID_AUTO_ROWS = 228,
     CSS_PROP_GRID_AUTO_COLUMNS = 229,
     CSS_PROP_GRID_AUTO_FLOW = 230,
+    CSS_PROP_GRID_TEMPLATE_AREAS = 231,
+    CSS_PROP_GRID_AREA = 232,
 };
 
-const int numCSSProperties = 231;
+const int numCSSProperties = 233;
 const size_t maxCSSPropertyNameLength = 43;
 
 const char* getPropertyName(CSSPropertyID);

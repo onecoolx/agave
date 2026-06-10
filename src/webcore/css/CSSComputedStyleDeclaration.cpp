@@ -1735,6 +1735,8 @@ PassRefPtr<CSSValue> CSSComputedStyleDeclaration::getPropertyCSSValue(int proper
         case CSS_PROP_GRID_AUTO_ROWS:
         case CSS_PROP_GRID_AUTO_COLUMNS:
         case CSS_PROP_GRID_AUTO_FLOW:
+        case CSS_PROP_GRID_TEMPLATE_AREAS:
+        case CSS_PROP_GRID_AREA:
             // FIXME: The above are unimplemented.
             break;
 #if ENABLE(SVG)

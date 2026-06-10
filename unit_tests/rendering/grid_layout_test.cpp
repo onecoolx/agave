@@ -413,4 +413,34 @@ TEST_F(GridLayoutTest, AutoFlowDense)
     EXPECT_NEAR(a->yPos() - g->yPos(), 0, 2);
 }
 
+TEST_F(GridLayoutTest, TemplateAreasLayout)
+{
+    loadHtml("<div id='g' style='display:grid; "
+             "grid-template-columns:100px 200px; grid-template-rows:50px 100px 40px; "
+             "grid-template-areas:\"header header\" \"sidebar main\" \"footer footer\"; width:300px;'>"
+             "<div id='hd' style='grid-area:header;'>H</div>"
+             "<div id='sb' style='grid-area:sidebar;'>S</div>"
+             "<div id='mn' style='grid-area:main;'>M</div>"
+             "<div id='ft' style='grid-area:footer;'>F</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* hd = renderer("hd");
+    RenderObject* sb = renderer("sb");
+    RenderObject* mn = renderer("mn");
+    RenderObject* ft = renderer("ft");
+    ASSERT_TRUE(g && hd && sb && mn && ft);
+    // header spans both columns of row 0
+    EXPECT_NEAR(hd->width(), 300, 2);
+    EXPECT_NEAR(hd->yPos() - g->yPos(), 0, 2);
+    // sidebar: col0 row1
+    EXPECT_NEAR(sb->xPos() - g->xPos(), 0, 2);
+    EXPECT_NEAR(sb->yPos() - g->yPos(), 50, 2);
+    EXPECT_NEAR(sb->width(), 100, 2);
+    // main: col1 row1
+    EXPECT_NEAR(mn->xPos() - g->xPos(), 100, 2);
+    EXPECT_NEAR(mn->width(), 200, 2);
+    // footer spans both columns of row 2
+    EXPECT_NEAR(ft->width(), 300, 2);
+    EXPECT_NEAR(ft->yPos() - g->yPos(), 150, 2);
+}
+
 #endif // ENABLE(MODERN_GRID)

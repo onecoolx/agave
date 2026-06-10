@@ -280,4 +280,31 @@ TEST_F(GridStyleTest, AutoFlowColumnDenseParsed)
     EXPECT_TRUE(s->gridAutoFlowDense());
 }
 
+TEST_F(GridStyleTest, TemplateAreasParsed)
+{
+    loadHtml("<div id='g' style='display:grid; "
+             "grid-template-areas:\"a a b\" \"a a c\";'><div>X</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    const Vector<GridNamedArea>& areas = s->gridTemplateAreas();
+    ASSERT_EQ(areas.size(), 3u); // a, b, c
+    // 'a' spans cols 0-2, rows 0-2
+    for (size_t i = 0; i < areas.size(); i++) {
+        if (areas[i].name == "a") {
+            EXPECT_EQ(areas[i].colStart, 0);
+            EXPECT_EQ(areas[i].colEnd, 2);
+            EXPECT_EQ(areas[i].rowStart, 0);
+            EXPECT_EQ(areas[i].rowEnd, 2);
+        }
+    }
+}
+
+TEST_F(GridStyleTest, GridAreaNameParsed)
+{
+    loadHtml("<div style='display:grid;'><div id='i' style='grid-area:main;'>M</div></div>");
+    RenderStyle* s = styleById("i");
+    ASSERT_TRUE(s);
+    EXPECT_EQ(s->gridArea(), String("main"));
+}
+
 #endif // ENABLE(MODERN_GRID)

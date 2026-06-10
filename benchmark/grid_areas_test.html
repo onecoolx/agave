@@ -1,0 +1,41 @@
+<html>
+<head><style>
+#g { display:grid;
+     grid-template-columns:100px 200px;
+     grid-template-rows:50px 100px 40px;
+     grid-template-areas:"header header" "sidebar main" "footer footer";
+     width:300px; }
+#hd { grid-area:header; }
+#sb { grid-area:sidebar; }
+#mn { grid-area:main; }
+#ft { grid-area:footer; }
+</style></head>
+<body>
+<div id="g"><div id="hd">H</div><div id="sb">S</div><div id="mn">M</div><div id="ft">F</div></div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function E(id){return document.getElementById(id);}
+var g=E('g'),gx=g.offsetLeft,gy=g.offsetTop;
+
+ck('hd-x', E('hd').offsetLeft - gx, 0);
+ck('hd-y', E('hd').offsetTop - gy, 0);
+ck('hd-w', E('hd').offsetWidth, 300);
+ck('hd-h', E('hd').offsetHeight, 50);
+ck('sb-x', E('sb').offsetLeft - gx, 0);
+ck('sb-y', E('sb').offsetTop - gy, 50);
+ck('sb-w', E('sb').offsetWidth, 100);
+ck('sb-h', E('sb').offsetHeight, 100);
+ck('mn-x', E('mn').offsetLeft - gx, 100);
+ck('mn-y', E('mn').offsetTop - gy, 50);
+ck('mn-w', E('mn').offsetWidth, 200);
+ck('ft-x', E('ft').offsetLeft - gx, 0);
+ck('ft-y', E('ft').offsetTop - gy, 150);
+ck('ft-w', E('ft').offsetWidth, 300);
+ck('ft-h', E('ft').offsetHeight, 40);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>
