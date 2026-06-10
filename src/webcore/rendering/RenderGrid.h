@@ -48,6 +48,13 @@ public:
 
 #if ENABLE(MODERN_GRID)
     void layoutGrid(bool relayoutChildren);
+
+private:
+    // Resolves a list of track sizes (fixed/percent/fr/auto) into pixel sizes,
+    // given the available space and the per-track content-based minimums.
+    // contentSizes may be empty (treats auto/content as 0).
+    void resolveTrackSizes(const Vector<GridTrackSize>& templates, int availableSpace,
+                           const Vector<int>& contentSizes, Vector<int>& outSizes);
 #endif
 
 private:

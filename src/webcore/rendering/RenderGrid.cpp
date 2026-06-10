@@ -128,32 +128,151 @@ void RenderGrid::layoutBlock(bool relayoutChildren)
 }
 
 #if ENABLE(MODERN_GRID)
-// 2a-0 PROBE: hard-coded 2x2 equal-track grid.
-// Splits the content box into a 2x2 grid of equal cells and places up to four
-// flow children (in DOM order) into cells [0,0],[0,1],[1,0],[1,1]. Each item is
-// sized to fill its cell via setOverrideSize (width) + a temporary fixed height
-// (mirroring the flexbox stretch path). Purpose: validate two-dimensional cell
-// positioning and size negotiation on the existing RenderBlock framework.
+// Resolves track sizes given available space and per-track content minimums.
+// fixed/percent tracks take their computed size; fr tracks share the leftover
+// space in proportion to their fraction; auto tracks take their content size.
+void RenderGrid::resolveTrackSizes(const Vector<GridTrackSize>& templates, int availableSpace,
+                                   const Vector<int>& contentSizes, Vector<int>& outSizes)
+{
+    size_t n = templates.size();
+    outSizes.clear();
+    outSizes.resize(n);
+
+    int usedSpace = 0;
+    float totalFr = 0.0f;
+
+    // Pass 1: resolve non-flexible tracks; accumulate fr weights.
+    for (size_t i = 0; i < n; i++) {
+        const GridTrackSize& t = templates[i];
+        int size = 0;
+        switch (t.kind) {
+            case GridTrackSize::FixedTrack:
+                size = t.length;
+                break;
+            case GridTrackSize::PercentTrack:
+                size = availableSpace > 0 ? (int)(t.length * availableSpace / 100.0) : 0;
+                break;
+            case GridTrackSize::AutoTrack:
+                size = (i < contentSizes.size()) ? contentSizes[i] : 0;
+                break;
+            case GridTrackSize::FrTrack:
+                totalFr += t.fr;
+                size = 0; // resolved in pass 2
+                break;
+        }
+        outSizes[i] = size;
+        if (t.kind != GridTrackSize::FrTrack)
+            usedSpace += size;
+    }
+
+    // Pass 2: distribute remaining space across fr tracks.
+    int freeSpace = availableSpace - usedSpace;
+    if (freeSpace < 0)
+        freeSpace = 0;
+    if (totalFr > 0.0f) {
+        for (size_t i = 0; i < n; i++) {
+            if (templates[i].kind == GridTrackSize::FrTrack)
+                outSizes[i] = (int)(freeSpace * (templates[i].fr / totalFr));
+        }
+    }
+}
+
+// 2a-4 track sizing: resolves explicit column/row tracks (fixed/percent/fr/auto)
+// and places flow items into cells in DOM order (auto-flow: row). Full item
+// placement (explicit grid-column/row, span) lands in 2a-5.
 void RenderGrid::layoutGrid(bool relayoutChildren)
 {
     const int contentLeft = borderLeft() + paddingLeft();
     const int contentTop = borderTop() + paddingTop();
     const int contentWidth = m_width - borderLeft() - paddingLeft() - borderRight() - paddingRight();
 
-    // Resolve a definite container height from style (m_height was reset to 0).
     int contentHeight = 0;
     if (style()->height().isFixed())
         contentHeight = style()->height().value();
     else if (style()->height().isPercent() && containingBlock())
         contentHeight = (int)(style()->height().percent() * containingBlock()->contentHeight() / 100.0);
 
-    const int cols = 2;
-    const int rows = 2;
-    const int cellWidth = contentWidth / cols;
-    const int cellHeight = contentHeight > 0 ? (contentHeight / rows) : 0;
+    const int colGap = style()->gridColumnGap();
+    const int rowGap = style()->gridRowGap();
+
+    const Vector<GridTrackSize>& colTemplate = style()->gridTemplateColumns();
+    const Vector<GridTrackSize>& rowTemplate = style()->gridTemplateRows();
+
+    // A grid with no explicit columns behaves like a single auto column.
+    int numCols = colTemplate.size() > 0 ? (int)colTemplate.size() : 1;
+
+    // Count flow items to derive the implicit row count.
+    int itemCount = 0;
+    for (RenderObject* child = firstChild(); child; child = child->nextSibling()) {
+        if (!child->isPositioned())
+            itemCount++;
+    }
+    int explicitRows = rowTemplate.size() > 0 ? (int)rowTemplate.size() : 0;
+    int neededRows = (itemCount + numCols - 1) / numCols;
+    int numRows = max(explicitRows, max(neededRows, 1));
 
     m_flexingChildren = true;
 
+    // --- Measure content sizes for auto tracks (natural item sizes) ---
+    Vector<int> colContent(numCols, 0);
+    Vector<int> rowContent(numRows, 0);
+    {
+        int index = 0;
+        for (RenderObject* child = firstChild(); child; child = child->nextSibling()) {
+            if (child->isPositioned())
+                continue;
+            child->setOverrideSize(-1);
+            child->setChildNeedsLayout(true, false);
+            child->calcWidth();
+            child->layoutIfNeeded();
+            int col = index % numCols;
+            int row = index / numCols;
+            int w = child->width() + child->marginLeft() + child->marginRight();
+            int h = child->height() + child->marginTop() + child->marginBottom();
+            if (w > colContent[col]) colContent[col] = w;
+            if (row < numRows && h > rowContent[row]) rowContent[row] = h;
+            index++;
+        }
+    }
+
+    // --- Resolve column and row track sizes ---
+    int colGapTotal = numCols > 1 ? (numCols - 1) * colGap : 0;
+    int rowGapTotal = numRows > 1 ? (numRows - 1) * rowGap : 0;
+
+    Vector<int> colSizes;
+    if (colTemplate.size() > 0) {
+        resolveTrackSizes(colTemplate, contentWidth - colGapTotal, colContent, colSizes);
+    } else {
+        colSizes.append(contentWidth);
+    }
+
+    Vector<int> rowSizes;
+    if (rowTemplate.size() > 0) {
+        int availRowSpace = (contentHeight > 0 ? contentHeight : 0) - rowGapTotal;
+        resolveTrackSizes(rowTemplate, availRowSpace, rowContent, rowSizes);
+        // Extra implicit rows (beyond template) take their content height.
+        for (int r = (int)rowTemplate.size(); r < numRows; r++)
+            rowSizes.append(r < (int)rowContent.size() ? rowContent[r] : 0);
+    } else {
+        for (int r = 0; r < numRows; r++)
+            rowSizes.append(r < (int)rowContent.size() ? rowContent[r] : 0);
+    }
+
+    // --- Compute track offsets (cumulative positions including gaps) ---
+    Vector<int> colPos(numCols, 0);
+    int x = contentLeft;
+    for (int c = 0; c < numCols; c++) {
+        colPos[c] = x;
+        x += (c < (int)colSizes.size() ? colSizes[c] : 0) + colGap;
+    }
+    Vector<int> rowPos(numRows, 0);
+    int y = contentTop;
+    for (int r = 0; r < numRows; r++) {
+        rowPos[r] = y;
+        y += (r < (int)rowSizes.size() ? rowSizes[r] : 0) + rowGap;
+    }
+
+    // --- Place items into cells (auto-flow: row) ---
     int index = 0;
     for (RenderObject* child = firstChild(); child; child = child->nextSibling()) {
         if (child->isPositioned()) {
@@ -165,25 +284,16 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
             continue;
         }
 
-        if (index >= cols * rows) {
-            // Probe only handles the first 2x2 cells.
-            child->setChildNeedsLayout(true, false);
-            child->layoutIfNeeded();
-            continue;
-        }
+        int col = index % numCols;
+        int row = index / numCols;
+        int cellW = col < (int)colSizes.size() ? colSizes[col] : 0;
+        int cellH = row < (int)rowSizes.size() ? rowSizes[row] : 0;
 
-        int col = index % cols;
-        int row = index / cols;
-
-        if (relayoutChildren)
-            child->setChildNeedsLayout(true, false);
-
-        // Size the item to its cell.
-        child->setOverrideSize(cellWidth);
+        child->setOverrideSize(cellW - child->marginLeft() - child->marginRight());
         bool restoreHeight = false;
         Length savedHeight = child->style()->height();
-        if (cellHeight > 0 && child->style()->height().isAuto()) {
-            int innerH = cellHeight - child->borderTop() - child->paddingTop()
+        if (cellH > 0 && child->style()->height().isAuto()) {
+            int innerH = cellH - child->borderTop() - child->paddingTop()
                 - child->borderBottom() - child->paddingBottom()
                 - child->marginTop() - child->marginBottom();
             if (innerH < 0)
@@ -196,19 +306,22 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
         if (restoreHeight)
             child->style()->setHeight(savedHeight);
 
-        int x = contentLeft + col * cellWidth + child->marginLeft();
-        int y = contentTop + row * cellHeight + child->marginTop();
-        child->setPos(x, y);
-
+        child->setPos(colPos[col] + child->marginLeft(), rowPos[row] + child->marginTop());
         index++;
     }
 
     m_flexingChildren = false;
 
-    if (style()->height().isAuto())
-        m_height = contentTop + (contentHeight > 0 ? contentHeight : 0) + borderBottom() + paddingBottom();
-    else
+    // --- Container height ---
+    if (style()->height().isAuto()) {
+        int totalRows = 0;
+        for (int r = 0; r < numRows; r++)
+            totalRows += (r < (int)rowSizes.size() ? rowSizes[r] : 0);
+        totalRows += rowGapTotal;
+        m_height = contentTop + totalRows + borderBottom() + paddingBottom();
+    } else {
         m_height = contentTop + contentHeight + borderBottom() + paddingBottom();
+    }
 
     m_overflowHeight = max(m_overflowHeight, m_height);
     m_overflowWidth = max(m_overflowWidth, m_width);

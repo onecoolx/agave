@@ -109,7 +109,7 @@ struct GridPosition {
 - [x] **2a-2 RenderStyle 承载**：StyleGridData（GridTrackSize 列表、GridPosition、gap）
       + 存取 + inherit/diff（与其他 style 数据隔离）
 - [x] **2a-3 样式应用**：CSSStyleSelector 应用 grid 属性；display:grid 分派到 RenderGrid
-- [ ] **2a-4 轨道尺寸算法**：列轨道尺寸（fixed → 占用；auto → 内容；fr → 分配剩余）
+- [x] **2a-4 轨道尺寸算法**：列轨道尺寸（fixed → 占用；auto → 内容；fr → 分配剩余）
       + 行轨道尺寸（同理）；先单维独立计算（列优先）
 - [ ] **2a-5 item 放置 + 定位**：显式 grid-column/row 定位 + span；
       auto 放置（grid-auto-flow: row，按行打包）；item 定位到单元格矩形 + gap
@@ -234,3 +234,15 @@ calcPrefWidths 协议可用，降低此风险）。
   - CSSStyleSelector applyProperty 读入 StyleGridData。
   - 修复：parseGridPosition 各成功分支补 valueList->next() 推进，修正 "/" 简写解析。
   - 测试：14 条 CSS 解析单元测试（grid_style_test.cpp）全过，608 全套通过，grid 探针无回归。
+
+- 2026-06-10：**2a-4 轨道尺寸算法完成。**
+  - `resolveTrackSizes()`：两遍算法。第一遍解析 fixed（直接）/percent（按可用空间）/
+    auto（取内容尺寸）轨道并累计 fr 权重；第二遍把剩余空间按 fr 比例分配给 fr 轨道。
+  - `layoutGrid()` 重写（替换探针硬编码 2x2）：从 style 读列/行模板，测量子项自然尺寸
+    供 auto 轨道使用，分别解析列与行轨道尺寸，计算含 gap 的 cumulative 偏移，
+    按 auto-flow:row 顺序把子项定位到单元格（setOverrideSize 宽 + 临时 setHeight 高）。
+  - 无显式列模板时退化为单 auto 列；隐式行取内容高度；容器 auto 高度由行总高决定。
+  - 删除过时的 grid_probe_test.html（2x2 硬编码行为已被真实算法取代）。
+  - 测试：单元测试 8 条（grid_layout_test.cpp）+ benchmark 19 条（grid_track_test.html）：
+    fixed/fr 等分/fr 比例/fixed+fr/gap/percent/repeat/2x2 异行高，全部通过。
+  - 全套 615 通过（唯一失败为预存 flaky 计时微基准，与 grid 无关）。

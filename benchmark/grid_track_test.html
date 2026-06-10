@@ -1,0 +1,65 @@
+<html>
+<head><style>
+/* fixed tracks */
+#g1 { display:grid; grid-template-columns:100px 200px; grid-template-rows:50px; width:400px; }
+#g1 div { }
+/* fr tracks */
+#g2 { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:60px; width:400px; }
+/* fr ratio 1:3 */
+#g3 { display:grid; grid-template-columns:1fr 3fr; grid-template-rows:40px; width:400px; }
+/* fixed + fr mix */
+#g4 { display:grid; grid-template-columns:100px 1fr; grid-template-rows:40px; width:400px; }
+/* gap */
+#g5 { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:50px; width:410px; column-gap:10px; }
+/* 2x2 with rows */
+#g6 { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:50px 80px; width:200px; }
+</style></head>
+<body>
+<div id="g1"><div id="a1">A</div><div id="b1">B</div></div>
+<div id="g2"><div id="a2">A</div><div id="b2">B</div></div>
+<div id="g3"><div id="a3">A</div><div id="b3">B</div></div>
+<div id="g4"><div id="a4">A</div><div id="b4">B</div></div>
+<div id="g5"><div id="a5">A</div><div id="b5">B</div></div>
+<div id="g6"><div id="a6">1</div><div id="b6">2</div><div id="c6">3</div><div id="d6">4</div></div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function E(id){return document.getElementById(id);}
+
+// g1 fixed: 100 / 200
+ck('g1-a-w', E('a1').offsetWidth, 100);
+ck('g1-b-w', E('b1').offsetWidth, 200);
+ck('g1-b-x', E('b1').offsetLeft - E('g1').offsetLeft, 100);
+ck('g1-a-h', E('a1').offsetHeight, 50);
+
+// g2 fr equal: 400/2 = 200 each
+ck('g2-a-w', E('a2').offsetWidth, 200);
+ck('g2-b-w', E('b2').offsetWidth, 200);
+
+// g3 fr 1:3 of 400 = 100 / 300
+ck('g3-a-w', E('a3').offsetWidth, 100);
+ck('g3-b-w', E('b3').offsetWidth, 300);
+
+// g4 fixed 100 + fr fills 300
+ck('g4-a-w', E('a4').offsetWidth, 100);
+ck('g4-b-w', E('b4').offsetWidth, 300);
+ck('g4-b-x', E('b4').offsetLeft - E('g4').offsetLeft, 100);
+
+// g5 gap: (410-10)/2=200 each, b at 200+10=210
+ck('g5-a-w', E('a5').offsetWidth, 200);
+ck('g5-b-w', E('b5').offsetWidth, 200);
+ck('g5-b-x', E('b5').offsetLeft - E('g5').offsetLeft, 210);
+
+// g6 2x2: cols 100/100, rows 50/80
+var g6=E('g6');
+ck('g6-a-w', E('a6').offsetWidth, 100);
+ck('g6-a-h', E('a6').offsetHeight, 50);
+ck('g6-d-x', E('d6').offsetLeft - g6.offsetLeft, 100);
+ck('g6-d-y', E('d6').offsetTop - g6.offsetTop, 50);
+ck('g6-d-h', E('d6').offsetHeight, 80);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>
