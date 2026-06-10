@@ -128,6 +128,78 @@ void RenderGrid::layoutBlock(bool relayoutChildren)
 }
 
 #if ENABLE(MODERN_GRID)
+// Computes the grid container's intrinsic (min/max-content) width as the sum
+// of column track widths plus column gaps. Fixed/percent tracks use their
+// declared size; auto/fr tracks use the widest item assigned to that column.
+// 2a subset: auto-flow:row column assignment, single-column-span items.
+void RenderGrid::calcPrefWidths()
+{
+    ASSERT(prefWidthsDirty());
+
+    if (style()->width().isFixed() && style()->width().value() > 0) {
+        m_minPrefWidth = m_maxPrefWidth = calcContentBoxWidth(style()->width().value());
+    } else {
+        const Vector<GridTrackSize>& colTemplate = style()->gridTemplateColumns();
+        int numCols = colTemplate.size() > 0 ? (int)colTemplate.size() : 1;
+        int colGap = style()->gridColumnGap();
+
+        // Per-column content min/max widths (auto-flow:row assignment).
+        Vector<int> colMin(numCols, 0);
+        Vector<int> colMax(numCols, 0);
+        int index = 0;
+        for (RenderObject* child = firstChild(); child; child = child->nextSibling()) {
+            if (child->isPositioned())
+                continue;
+            int col = index % numCols;
+            int childMin = child->minPrefWidth();
+            int childMax = child->maxPrefWidth();
+            int ml = child->style()->marginLeft().isFixed() ? child->style()->marginLeft().value() : 0;
+            int mr = child->style()->marginRight().isFixed() ? child->style()->marginRight().value() : 0;
+            childMin += ml + mr;
+            childMax += ml + mr;
+            if (childMin > colMin[col]) colMin[col] = childMin;
+            if (childMax > colMax[col]) colMax[col] = childMax;
+            index++;
+        }
+
+        int minTotal = 0;
+        int maxTotal = 0;
+        for (int c = 0; c < numCols; c++) {
+            if (c < (int)colTemplate.size()) {
+                const GridTrackSize& t = colTemplate[c];
+                if (t.kind == GridTrackSize::FixedTrack) {
+                    minTotal += t.length;
+                    maxTotal += t.length;
+                    continue;
+                }
+                // percent/fr/auto: fall back to content widths.
+            }
+            minTotal += colMin[c];
+            maxTotal += colMax[c];
+        }
+
+        int gapTotal = numCols > 1 ? (numCols - 1) * colGap : 0;
+        m_minPrefWidth = minTotal + gapTotal;
+        m_maxPrefWidth = maxTotal + gapTotal;
+        m_maxPrefWidth = max(m_minPrefWidth, m_maxPrefWidth);
+    }
+
+    if (style()->minWidth().isFixed() && style()->minWidth().value() > 0) {
+        m_maxPrefWidth = max(m_maxPrefWidth, calcContentBoxWidth(style()->minWidth().value()));
+        m_minPrefWidth = max(m_minPrefWidth, calcContentBoxWidth(style()->minWidth().value()));
+    }
+    if (style()->maxWidth().isFixed() && style()->maxWidth().value() != undefinedLength) {
+        m_maxPrefWidth = min(m_maxPrefWidth, calcContentBoxWidth(style()->maxWidth().value()));
+        m_minPrefWidth = min(m_minPrefWidth, calcContentBoxWidth(style()->maxWidth().value()));
+    }
+
+    int toAdd = borderLeft() + borderRight() + paddingLeft() + paddingRight();
+    m_minPrefWidth += toAdd;
+    m_maxPrefWidth += toAdd;
+
+    setPrefWidthsDirty(false);
+}
+
 // Resolves track sizes given available space and per-track content minimums.
 // fixed/percent tracks take their computed size; fr tracks share the leftover
 // space in proportion to their fraction; auto tracks take their content size.

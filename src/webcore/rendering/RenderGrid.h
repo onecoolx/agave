@@ -47,6 +47,7 @@ public:
     virtual void layoutBlock(bool relayoutChildren);
 
 #if ENABLE(MODERN_GRID)
+    virtual void calcPrefWidths();
     void layoutGrid(bool relayoutChildren);
 
 private:

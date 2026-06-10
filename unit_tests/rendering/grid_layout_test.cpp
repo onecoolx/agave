@@ -213,4 +213,46 @@ TEST_F(GridLayoutTest, RowSpan)
     EXPECT_NEAR(b->yPos() - g->yPos(), 0, 2);
 }
 
+TEST_F(GridLayoutTest, InlineGridShrinkToTracks)
+{
+    loadHtml("<span id='g' style='display:inline-grid; grid-template-columns:80px 120px; grid-template-rows:40px;'>"
+             "<div id='a'>A</div><div id='b'>B</div></span>");
+    RenderObject* g = renderer("g");
+    ASSERT_TRUE(g);
+    EXPECT_NEAR(g->width(), 200, 2); // 80 + 120
+}
+
+TEST_F(GridLayoutTest, InlineGridShrinkWithGap)
+{
+    loadHtml("<span id='g' style='display:inline-grid; grid-template-columns:50px 50px 50px; grid-template-rows:30px; column-gap:10px;'>"
+             "<div>A</div><div>B</div><div>C</div></span>");
+    RenderObject* g = renderer("g");
+    ASSERT_TRUE(g);
+    EXPECT_NEAR(g->width(), 170, 2); // 50*3 + 10*2
+}
+
+TEST_F(GridLayoutTest, NestedGrid)
+{
+    loadHtml("<div id='o' style='display:grid; grid-template-columns:200px 200px; grid-template-rows:100px; width:400px;'>"
+             "<div id='inner' style='display:grid; grid-template-columns:1fr 1fr; grid-template-rows:50px;'>"
+             "<div id='i1'>1</div><div id='i2'>2</div></div>"
+             "<div id='o2'>O2</div></div>");
+    RenderObject* inner = renderer("inner");
+    RenderObject* i1 = renderer("i1");
+    ASSERT_TRUE(inner && i1);
+    EXPECT_NEAR(inner->width(), 200, 2);
+    EXPECT_NEAR(i1->width(), 100, 2); // half of inner
+}
+
+TEST_F(GridLayoutTest, GridNestingFlex)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:1fr 1fr; grid-template-rows:50px; width:400px;'>"
+             "<div id='f' style='display:flex;'><div id='fa'>A</div><div id='fb'>B</div></div>"
+             "<div id='c'>C</div></div>");
+    RenderObject* f = renderer("f");
+    RenderObject* fa = renderer("fa");
+    ASSERT_TRUE(f && fa);
+    EXPECT_NEAR(f->width(), 200, 2); // grid column width
+}
+
 #endif // ENABLE(MODERN_GRID)

@@ -113,7 +113,7 @@ struct GridPosition {
       + 行轨道尺寸（同理）；先单维独立计算（列优先）
 - [x] **2a-5 item 放置 + 定位**：显式 grid-column/row 定位 + span；
       auto 放置（grid-auto-flow: row，按行打包）；item 定位到单元格矩形 + gap
-- [ ] **2a-6 固有尺寸 + 测试**：grid 容器 min/max-content 接入 calcPrefWidths；
+- [x] **2a-6 固有尺寸 + 测试**：grid 容器 min/max-content 接入 calcPrefWidths；
       单元测试 + benchmark 回归页（对照 Chrome 几何）
 
 ### 工期（人类熟练工单人全职估算）
@@ -256,3 +256,18 @@ calcPrefWidths 协议可用，降低此风险）。
   - resolveGridSpan：支持 line/line、line/span、span/line、纯 span、auto。
   - 测试：单元测试 5 条（显式列定位、span 列、grid-column 简写 span、auto-flow 绕过
     显式占位、span 行）+ benchmark 15 条断言。13 grid 布局单元测试全过，全套 620 通过。
+
+- 2026-06-10：**2a-6 固有尺寸完成。里程碑 2a 全部完成。**
+  - RenderGrid::calcPrefWidths：固定列用声明宽度；auto/fr/percent 列回退到该列内
+    子项的 min/max pref width；加列 gap、加 border/padding。
+  - inline-grid 据此正确收缩到列轨道总和（含 gap）。
+  - 测试：单元测试 4 条（inline-grid 收缩、带 gap 收缩、嵌套 grid、grid 嵌套 flex）
+    + benchmark 8 条断言。17 grid 布局单元测试全过，全套 624 通过。
+
+## 里程碑 2a 总结
+
+显式 CSS Grid 核心已实现：display:grid/inline-grid、grid-template-columns/rows
+（fixed/percent/fr/auto + repeat）、grid-column/row（line/span/简写）、gap、
+轨道尺寸算法、item 放置（显式定位 + auto-flow:row + span + 隐式行）、固有尺寸。
+覆盖常见卡片网格/等分布局用法。测试：grid 单元测试 31 条（CSS 14 + 布局 17）
++ benchmark 42 条断言（track 19 + placement 15 + intrinsic 8）。

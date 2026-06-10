@@ -1,0 +1,44 @@
+<html>
+<head><style>
+/* inline-grid 收缩到固定列总和 */
+#ig { display:inline-grid; grid-template-columns:80px 120px; grid-template-rows:40px; }
+/* inline-grid 带 gap */
+#ig2 { display:inline-grid; grid-template-columns:50px 50px 50px; grid-template-rows:30px; column-gap:10px; }
+/* 嵌套 grid */
+#outer { display:grid; grid-template-columns:200px 200px; grid-template-rows:100px; width:400px; }
+#inner { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:50px; }
+/* grid 嵌套 flex */
+#gf { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:50px; width:400px; }
+#gfflex { display:flex; }
+</style></head>
+<body>
+<div id="ig"><div id="iga">A</div><div id="igb">B</div></div>
+<div id="ig2"><div>A</div><div>B</div><div>C</div></div>
+<div id="outer"><div id="inner"><div id="i1">1</div><div id="i2">2</div></div><div id="o2">O2</div></div>
+<div id="gf"><div id="gfflex"><div id="gfa">A</div><div id="gfb">B</div></div><div id="gfc">C</div></div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function E(id){return document.getElementById(id);}
+
+// inline-grid 收缩到 80+120=200
+ck('ig-w', E('ig').offsetWidth, 200);
+// inline-grid 带 gap: 50*3 + 10*2 = 170
+ck('ig2-w', E('ig2').offsetWidth, 170);
+
+// 嵌套 grid: inner 在 outer 第1列 200px, inner 两列各 100px
+ck('inner-w', E('inner').offsetWidth, 200);
+ck('i1-w', E('i1').offsetWidth, 100);
+ck('i2-x', E('i2').offsetLeft - E('inner').offsetLeft, 100);
+// o2 在 outer 第2列
+ck('o2-x', E('o2').offsetLeft - E('outer').offsetLeft, 200);
+
+// grid 嵌套 flex: gfflex 在第1列 200px, 内部两 flex 子项各 100
+ck('gfflex-w', E('gfflex').offsetWidth, 200);
+ck('gfc-x', E('gfc').offsetLeft - E('gf').offsetLeft, 200);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>
