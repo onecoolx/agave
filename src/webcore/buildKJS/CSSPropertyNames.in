@@ -233,3 +233,5 @@ grid-row
 gap
 row-gap
 column-gap
+justify-items
+justify-self

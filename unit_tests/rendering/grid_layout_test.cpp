@@ -299,4 +299,67 @@ TEST_F(GridLayoutTest, MinMaxZeroFrEqualSplit)
     EXPECT_NEAR(b->width(), 150, 2);
 }
 
+TEST_F(GridLayoutTest, JustifyItemsEnd)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:100px; grid-template-rows:50px; width:100px; justify-items:end;'>"
+             "<div id='a' style='width:40px; height:20px;'>A</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* a = renderer("a");
+    ASSERT_TRUE(g && a);
+    EXPECT_NEAR(a->width(), 40, 2); // not stretched
+    EXPECT_NEAR(a->xPos() - g->xPos(), 60, 2); // right-aligned in 100px cell
+}
+
+TEST_F(GridLayoutTest, JustifyItemsCenter)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:100px; grid-template-rows:50px; width:100px; justify-items:center;'>"
+             "<div id='a' style='width:40px; height:20px;'>A</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* a = renderer("a");
+    ASSERT_TRUE(g && a);
+    EXPECT_NEAR(a->xPos() - g->xPos(), 30, 2); // (100-40)/2
+}
+
+TEST_F(GridLayoutTest, AlignItemsCenterGrid)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:100px; grid-template-rows:80px; width:100px; align-items:center;'>"
+             "<div id='a' style='width:40px; height:20px;'>A</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* a = renderer("a");
+    ASSERT_TRUE(g && a);
+    EXPECT_NEAR(a->yPos() - g->yPos(), 30, 2); // (80-20)/2
+}
+
+TEST_F(GridLayoutTest, JustifySelfOverridesItems)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:100px; grid-template-rows:50px; width:100px; justify-items:start;'>"
+             "<div id='a' style='width:40px; height:20px; justify-self:end;'>A</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* a = renderer("a");
+    ASSERT_TRUE(g && a);
+    EXPECT_NEAR(a->xPos() - g->xPos(), 60, 2); // self:end overrides items:start
+}
+
+TEST_F(GridLayoutTest, JustifyContentCenterGrid)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:50px 50px; grid-template-rows:40px; width:200px; justify-content:center;'>"
+             "<div id='a'>A</div><div id='b'>B</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* a = renderer("a");
+    ASSERT_TRUE(g && a);
+    EXPECT_NEAR(a->xPos() - g->xPos(), 50, 2); // (200-100)/2 offset
+}
+
+TEST_F(GridLayoutTest, JustifyContentSpaceBetweenGrid)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:50px 50px; grid-template-rows:40px; width:200px; justify-content:space-between;'>"
+             "<div id='a'>A</div><div id='b'>B</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* a = renderer("a");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(g && a && b);
+    EXPECT_NEAR(a->xPos() - g->xPos(), 0, 2);
+    EXPECT_NEAR(b->xPos() - g->xPos(), 150, 2);
+}
+
 #endif // ENABLE(MODERN_GRID)

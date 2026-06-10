@@ -1886,6 +1886,34 @@ static void fillGridTrackComponent(CSSPrimitiveValue* pv, RenderStyle* style, fl
         length = pv->computeLengthInt(style, zoomFactor);
     }
 }
+
+// Maps a box-alignment CSS value id to EGridAlign. Returns -1 for auto/unknown.
+static int gridAlignFromValue(int ident)
+{
+    switch (ident) {
+        case CSS_VAL_START:
+        case CSS_VAL_FLEX_START: return GridAlignStart;
+        case CSS_VAL_END:
+        case CSS_VAL_FLEX_END:   return GridAlignEnd;
+        case CSS_VAL_CENTER:     return GridAlignCenter;
+        case CSS_VAL_STRETCH:    return GridAlignStretch;
+        default:                 return -1; // auto / baseline / unknown
+    }
+}
+
+// Maps a content-distribution CSS value id to EGridContent.
+static EGridContent gridContentFromValue(int ident)
+{
+    switch (ident) {
+        case CSS_VAL_END:
+        case CSS_VAL_FLEX_END:      return GridContentEnd;
+        case CSS_VAL_CENTER:        return GridContentCenter;
+        case CSS_VAL_SPACE_BETWEEN: return GridContentSpaceBetween;
+        case CSS_VAL_SPACE_AROUND:  return GridContentSpaceAround;
+        case CSS_VAL_STRETCH:       return GridContentStretch;
+        default:                    return GridContentStart;
+    }
+}
 #endif
 
 void CSSStyleSelector::applyProperty(int id, CSSValue *value)
@@ -4062,8 +4090,11 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
             case CSS_VAL_CENTER: style->setJustifyContent(JustifyCenter); break;
             case CSS_VAL_SPACE_BETWEEN: style->setJustifyContent(JustifySpaceBetween); break;
             case CSS_VAL_SPACE_AROUND: style->setJustifyContent(JustifySpaceAround); break;
-            default: return;
+            default: break;
         }
+#if ENABLE(MODERN_GRID)
+        style->setGridJustifyContent(gridContentFromValue(primitiveValue->getIdent()));
+#endif
         return;
     case CSS_PROP_ALIGN_ITEMS:
         HANDLE_INHERIT_AND_INITIAL(alignItems, AlignItems)
@@ -4074,8 +4105,14 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
             case CSS_VAL_CENTER: style->setAlignItems(AlignCenter); break;
             case CSS_VAL_BASELINE: style->setAlignItems(AlignBaseline); break;
             case CSS_VAL_STRETCH: style->setAlignItems(AlignStretch); break;
-            default: return;
+            default: break;
         }
+#if ENABLE(MODERN_GRID)
+        {
+            int ga = gridAlignFromValue(primitiveValue->getIdent());
+            style->setGridAlignItems(ga >= 0 ? (EGridAlign)ga : GridAlignStretch);
+        }
+#endif
         return;
     case CSS_PROP_ALIGN_CONTENT:
         HANDLE_INHERIT_AND_INITIAL(alignContent, AlignContent)
@@ -4087,8 +4124,11 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
             case CSS_VAL_SPACE_BETWEEN: style->setAlignContent(ContentSpaceBetween); break;
             case CSS_VAL_SPACE_AROUND: style->setAlignContent(ContentSpaceAround); break;
             case CSS_VAL_STRETCH: style->setAlignContent(ContentStretch); break;
-            default: return;
+            default: break;
         }
+#if ENABLE(MODERN_GRID)
+        style->setGridAlignContent(gridContentFromValue(primitiveValue->getIdent()));
+#endif
         return;
     case CSS_PROP_ALIGN_SELF:
         HANDLE_INHERIT_AND_INITIAL(alignSelf, AlignSelf)
@@ -4100,9 +4140,24 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
             case CSS_VAL_CENTER: style->setAlignSelf(AlignSelfCenter); break;
             case CSS_VAL_BASELINE: style->setAlignSelf(AlignSelfBaseline); break;
             case CSS_VAL_STRETCH: style->setAlignSelf(AlignSelfStretch); break;
-            default: return;
+            default: break;
         }
+#if ENABLE(MODERN_GRID)
+        style->setGridAlignSelf(gridAlignFromValue(primitiveValue->getIdent())); // -1 = auto
+#endif
         return;
+#if ENABLE(MODERN_GRID)
+    case CSS_PROP_JUSTIFY_ITEMS: {
+        if (!primitiveValue) return;
+        int ga = gridAlignFromValue(primitiveValue->getIdent());
+        style->setGridJustifyItems(ga >= 0 ? (EGridAlign)ga : GridAlignStretch);
+        return;
+    }
+    case CSS_PROP_JUSTIFY_SELF:
+        if (!primitiveValue) return;
+        style->setGridJustifySelf(gridAlignFromValue(primitiveValue->getIdent())); // -1 = auto
+        return;
+#endif
     case CSS_PROP_ORDER:
         HANDLE_INHERIT_AND_INITIAL(flexOrder, FlexOrder)
         if (!primitiveValue || primitiveValue->primitiveType() != CSSPrimitiveValue::CSS_NUMBER)

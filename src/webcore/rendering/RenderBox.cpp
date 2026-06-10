@@ -1136,7 +1136,7 @@ void RenderBox::calcWidth()
     }
 
     if (containerWidth && containerWidth != (m_width + m_marginLeft + m_marginRight)
-            && !isFloating() && !isInline() && !cb->isFlexibleBox()) {
+            && !isFloating() && !isInline() && !cb->isFlexibleBox() && !cb->isRenderGrid()) {
         if (cb->style()->direction() == LTR)
             m_marginRight = containerWidth - m_width - m_marginLeft;
         else

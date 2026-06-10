@@ -1236,24 +1236,28 @@ bool CSSParser::parseValue(int propId, bool important)
         break;
     case CSS_PROP_JUSTIFY_CONTENT:      // flex-start | flex-end | center | space-between | space-around
         if (id == CSS_VAL_FLEX_START || id == CSS_VAL_FLEX_END ||
+            id == CSS_VAL_START || id == CSS_VAL_END ||
             id == CSS_VAL_CENTER || id == CSS_VAL_SPACE_BETWEEN ||
             id == CSS_VAL_SPACE_AROUND)
             valid_primitive = true;
         break;
-    case CSS_PROP_ALIGN_ITEMS:          // flex-start | flex-end | center | baseline | stretch
+    case CSS_PROP_ALIGN_ITEMS:          // flex-start | flex-end | start | end | center | baseline | stretch
         if (id == CSS_VAL_FLEX_START || id == CSS_VAL_FLEX_END ||
+            id == CSS_VAL_START || id == CSS_VAL_END ||
             id == CSS_VAL_CENTER || id == CSS_VAL_BASELINE ||
             id == CSS_VAL_STRETCH)
             valid_primitive = true;
         break;
-    case CSS_PROP_ALIGN_CONTENT:        // flex-start | flex-end | center | space-between | space-around | stretch
+    case CSS_PROP_ALIGN_CONTENT:        // flex-start | flex-end | start | end | center | space-between | space-around | stretch
         if (id == CSS_VAL_FLEX_START || id == CSS_VAL_FLEX_END ||
+            id == CSS_VAL_START || id == CSS_VAL_END ||
             id == CSS_VAL_CENTER || id == CSS_VAL_SPACE_BETWEEN ||
             id == CSS_VAL_SPACE_AROUND || id == CSS_VAL_STRETCH)
             valid_primitive = true;
         break;
-    case CSS_PROP_ALIGN_SELF:           // auto | flex-start | flex-end | center | baseline | stretch
+    case CSS_PROP_ALIGN_SELF:           // auto | flex-start | flex-end | start | end | center | baseline | stretch
         if (id == CSS_VAL_AUTO || id == CSS_VAL_FLEX_START || id == CSS_VAL_FLEX_END ||
+            id == CSS_VAL_START || id == CSS_VAL_END ||
             id == CSS_VAL_CENTER || id == CSS_VAL_BASELINE || id == CSS_VAL_STRETCH)
             valid_primitive = true;
         break;
@@ -1274,6 +1278,16 @@ bool CSSParser::parseValue(int propId, bool important)
     case CSS_PROP_ROW_GAP:
     case CSS_PROP_COLUMN_GAP:
         valid_primitive = validUnit(value, FLength | FNonNeg, strict);
+        break;
+    case CSS_PROP_JUSTIFY_ITEMS:        // start | end | center | stretch
+        if (id == CSS_VAL_START || id == CSS_VAL_END ||
+            id == CSS_VAL_CENTER || id == CSS_VAL_STRETCH)
+            valid_primitive = true;
+        break;
+    case CSS_PROP_JUSTIFY_SELF:         // auto | start | end | center | stretch
+        if (id == CSS_VAL_AUTO || id == CSS_VAL_START || id == CSS_VAL_END ||
+            id == CSS_VAL_CENTER || id == CSS_VAL_STRETCH)
+            valid_primitive = true;
         break;
     case CSS_PROP_GAP: {
         // gap: <row-gap> <column-gap>?

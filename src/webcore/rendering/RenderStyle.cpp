@@ -429,6 +429,12 @@ bool StyleModernFlexData::operator==(const StyleModernFlexData& o) const
 StyleGridData::StyleGridData()
     : columnGap(RenderStyle::initialGridGap())
     , rowGap(RenderStyle::initialGridGap())
+    , justifyItems(RenderStyle::initialGridJustifyItems())
+    , alignItems(RenderStyle::initialGridAlignItems())
+    , justifySelf(RenderStyle::initialGridJustifySelf())
+    , alignSelf(RenderStyle::initialGridAlignSelf())
+    , justifyContent(RenderStyle::initialGridContent())
+    , alignContent(RenderStyle::initialGridContent())
 {
 }
 
@@ -442,6 +448,12 @@ StyleGridData::StyleGridData(const StyleGridData& o)
     , rowEnd(o.rowEnd)
     , columnGap(o.columnGap)
     , rowGap(o.rowGap)
+    , justifyItems(o.justifyItems)
+    , alignItems(o.alignItems)
+    , justifySelf(o.justifySelf)
+    , alignSelf(o.alignSelf)
+    , justifyContent(o.justifyContent)
+    , alignContent(o.alignContent)
 {
 }
 
@@ -450,7 +462,10 @@ bool StyleGridData::operator==(const StyleGridData& o) const
     return templateColumns == o.templateColumns && templateRows == o.templateRows &&
            columnStart == o.columnStart && columnEnd == o.columnEnd &&
            rowStart == o.rowStart && rowEnd == o.rowEnd &&
-           columnGap == o.columnGap && rowGap == o.rowGap;
+           columnGap == o.columnGap && rowGap == o.rowGap &&
+           justifyItems == o.justifyItems && alignItems == o.alignItems &&
+           justifySelf == o.justifySelf && alignSelf == o.alignSelf &&
+           justifyContent == o.justifyContent && alignContent == o.alignContent;
 }
 
 StyleMultiColData::StyleMultiColData()

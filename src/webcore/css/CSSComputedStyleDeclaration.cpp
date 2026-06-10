@@ -1730,6 +1730,8 @@ PassRefPtr<CSSValue> CSSComputedStyleDeclaration::getPropertyCSSValue(int proper
         case CSS_PROP_GAP:
         case CSS_PROP_ROW_GAP:
         case CSS_PROP_COLUMN_GAP:
+        case CSS_PROP_JUSTIFY_ITEMS:
+        case CSS_PROP_JUSTIFY_SELF:
             // FIXME: The above are unimplemented.
             break;
 #if ENABLE(SVG)

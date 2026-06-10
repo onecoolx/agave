@@ -1,0 +1,62 @@
+<html>
+<head><style>
+/* justify-items: 单元格内行轴对齐 */
+#g1 { display:grid; grid-template-columns:100px; grid-template-rows:50px; width:100px; justify-items:start; }
+#g1 div { width:40px; height:20px; }
+#g2 { display:grid; grid-template-columns:100px; grid-template-rows:50px; width:100px; justify-items:end; }
+#g2 div { width:40px; height:20px; }
+#g3 { display:grid; grid-template-columns:100px; grid-template-rows:50px; width:100px; justify-items:center; }
+#g3 div { width:40px; height:20px; }
+/* align-items: 块轴对齐 */
+#g4 { display:grid; grid-template-columns:100px; grid-template-rows:80px; width:100px; align-items:center; }
+#g4 div { width:40px; height:20px; }
+#g5 { display:grid; grid-template-columns:100px; grid-template-rows:80px; width:100px; align-items:end; }
+#g5 div { width:40px; height:20px; }
+/* justify-self 覆盖 */
+#g6 { display:grid; grid-template-columns:100px; grid-template-rows:50px; width:100px; justify-items:start; }
+#g6 div { width:40px; height:20px; justify-self:end; }
+/* justify-content: 列轨道整体居中 */
+#g7 { display:grid; grid-template-columns:50px 50px; grid-template-rows:40px; width:200px; justify-content:center; }
+#g7 div { }
+/* justify-content: space-between */
+#g8 { display:grid; grid-template-columns:50px 50px; grid-template-rows:40px; width:200px; justify-content:space-between; }
+#g8 div { }
+</style></head>
+<body>
+<div id="g1"><div id="i1">A</div></div>
+<div id="g2"><div id="i2">A</div></div>
+<div id="g3"><div id="i3">A</div></div>
+<div id="g4"><div id="i4">A</div></div>
+<div id="g5"><div id="i5">A</div></div>
+<div id="g6"><div id="i6">A</div></div>
+<div id="g7"><div id="i7a">A</div><div id="i7b">B</div></div>
+<div id="g8"><div id="i8a">A</div><div id="i8b">B</div></div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function E(id){return document.getElementById(id);}
+
+// justify-items start: item at left (x=0)
+ck('ji-start', E('i1').offsetLeft - E('g1').offsetLeft, 0);
+ck('ji-start-w', E('i1').offsetWidth, 40); // not stretched
+// justify-items end: x = 100-40 = 60
+ck('ji-end', E('i2').offsetLeft - E('g2').offsetLeft, 60);
+// justify-items center: x = (100-40)/2 = 30
+ck('ji-center', E('i3').offsetLeft - E('g3').offsetLeft, 30);
+// align-items center: y = (80-20)/2 = 30
+ck('ai-center', E('i4').offsetTop - E('g4').offsetTop, 30);
+// align-items end: y = 80-20 = 60
+ck('ai-end', E('i5').offsetTop - E('g5').offsetTop, 60);
+// justify-self end overrides start: x=60
+ck('js-override', E('i6').offsetLeft - E('g6').offsetLeft, 60);
+// justify-content center: tracks total 100 in 200, offset 50 -> first item at 50
+ck('jc-center', E('i7a').offsetLeft - E('g7').offsetLeft, 50);
+// justify-content space-between: first at 0, second at 200-50=150
+ck('jc-sb-a', E('i8a').offsetLeft - E('g8').offsetLeft, 0);
+ck('jc-sb-b', E('i8b').offsetLeft - E('g8').offsetLeft, 150);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

@@ -229,4 +229,28 @@ TEST_F(GridStyleTest, MinContentMaxContentParsed)
     EXPECT_EQ(cols[1].kind, GridTrackSize::MaxContentTrack);
 }
 
+TEST_F(GridStyleTest, JustifyItemsParsed)
+{
+    loadHtml("<div id='g' style='display:grid; justify-items:center;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    EXPECT_EQ(s->gridJustifyItems(), GridAlignCenter);
+}
+
+TEST_F(GridStyleTest, JustifySelfParsed)
+{
+    loadHtml("<div style='display:grid;'><div id='i' style='justify-self:end;'>A</div></div>");
+    RenderStyle* s = styleById("i");
+    ASSERT_TRUE(s);
+    EXPECT_EQ(s->gridJustifySelf(), (int)GridAlignEnd);
+}
+
+TEST_F(GridStyleTest, AlignItemsGridParsed)
+{
+    loadHtml("<div id='g' style='display:grid; align-items:start;'><div>A</div></div>");
+    RenderStyle* s = styleById("g");
+    ASSERT_TRUE(s);
+    EXPECT_EQ(s->gridAlignItems(), GridAlignStart);
+}
+
 #endif // ENABLE(MODERN_GRID)

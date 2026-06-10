@@ -230,9 +230,11 @@ enum CSSPropertyID {
     CSS_PROP_GAP = 223,
     CSS_PROP_ROW_GAP = 224,
     CSS_PROP_COLUMN_GAP = 225,
+    CSS_PROP_JUSTIFY_ITEMS = 226,
+    CSS_PROP_JUSTIFY_SELF = 227,
 };
 
-const int numCSSProperties = 226;
+const int numCSSProperties = 228;
 const size_t maxCSSPropertyNameLength = 43;
 
 const char* getPropertyName(CSSPropertyID);

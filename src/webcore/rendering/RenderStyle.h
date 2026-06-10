@@ -747,6 +747,12 @@ struct GridPosition {
     int line;     // 1-based line number, or span count when isSpan
 };
 
+// Box-alignment for grid items within their cell area.
+enum EGridAlign { GridAlignStart, GridAlignEnd, GridAlignCenter, GridAlignStretch };
+// Distribution of grid tracks within the container.
+enum EGridContent { GridContentStart, GridContentEnd, GridContentCenter,
+                    GridContentSpaceBetween, GridContentSpaceAround, GridContentStretch };
+
 class StyleGridData : public Shared<StyleGridData> {
 public:
     StyleGridData();
@@ -763,6 +769,14 @@ public:
     GridPosition rowEnd;
     int columnGap;
     int rowGap;
+
+    // Alignment. *Self use -1 to mean "auto" (inherit the container *Items value).
+    unsigned justifyItems : 2;   // EGridAlign (row axis, container default)
+    unsigned alignItems : 2;     // EGridAlign (block axis, container default)
+    int justifySelf;             // EGridAlign, or -1 for auto
+    int alignSelf;               // EGridAlign, or -1 for auto
+    unsigned justifyContent : 3; // EGridContent (column tracks in container)
+    unsigned alignContent : 3;   // EGridContent (row tracks in container)
 };
 
 // This struct holds information about shadows for the text-shadow and box-shadow properties.
@@ -1597,6 +1611,12 @@ public:
     const GridPosition& gridRowEnd() const { return rareNonInheritedData->grid->rowEnd; }
     int gridColumnGap() const { return rareNonInheritedData->grid->columnGap; }
     int gridRowGap() const { return rareNonInheritedData->grid->rowGap; }
+    EGridAlign gridJustifyItems() const { return static_cast<EGridAlign>(rareNonInheritedData->grid->justifyItems); }
+    EGridAlign gridAlignItems() const { return static_cast<EGridAlign>(rareNonInheritedData->grid->alignItems); }
+    int gridJustifySelf() const { return rareNonInheritedData->grid->justifySelf; } // EGridAlign or -1
+    int gridAlignSelf() const { return rareNonInheritedData->grid->alignSelf; }     // EGridAlign or -1
+    EGridContent gridJustifyContent() const { return static_cast<EGridContent>(rareNonInheritedData->grid->justifyContent); }
+    EGridContent gridAlignContent() const { return static_cast<EGridContent>(rareNonInheritedData->grid->alignContent); }
 
     ShadowData* boxShadow() const { return rareNonInheritedData->m_boxShadow; }
     EBoxSizing boxSizing() const { return static_cast<EBoxSizing>(box->boxSizing); }
@@ -1866,6 +1886,12 @@ public:
     void setGridRowEnd(const GridPosition& p) { SET_VAR(rareNonInheritedData.access()->grid, rowEnd, p); }
     void setGridColumnGap(int g) { SET_VAR(rareNonInheritedData.access()->grid, columnGap, g); }
     void setGridRowGap(int g) { SET_VAR(rareNonInheritedData.access()->grid, rowGap, g); }
+    void setGridJustifyItems(EGridAlign a) { SET_VAR(rareNonInheritedData.access()->grid, justifyItems, a); }
+    void setGridAlignItems(EGridAlign a) { SET_VAR(rareNonInheritedData.access()->grid, alignItems, a); }
+    void setGridJustifySelf(int a) { SET_VAR(rareNonInheritedData.access()->grid, justifySelf, a); }
+    void setGridAlignSelf(int a) { SET_VAR(rareNonInheritedData.access()->grid, alignSelf, a); }
+    void setGridJustifyContent(EGridContent c) { SET_VAR(rareNonInheritedData.access()->grid, justifyContent, c); }
+    void setGridAlignContent(EGridContent c) { SET_VAR(rareNonInheritedData.access()->grid, alignContent, c); }
 
     void setBoxShadow(ShadowData* val, bool add=false);
     void setBoxSizing(EBoxSizing s) { SET_VAR(box, boxSizing, s); }
@@ -2034,6 +2060,12 @@ public:
     static EFlexAlignSelf initialAlignSelf() { return AlignSelfAuto; }
     static int initialFlexOrder() { return 0; }
     static int initialGridGap() { return 0; }
+    // Grid item alignment defaults to stretch; *Self defaults to auto (-1).
+    static EGridAlign initialGridJustifyItems() { return GridAlignStretch; }
+    static EGridAlign initialGridAlignItems() { return GridAlignStretch; }
+    static int initialGridJustifySelf() { return -1; }
+    static int initialGridAlignSelf() { return -1; }
+    static EGridContent initialGridContent() { return GridContentStart; }
     static GridPosition initialGridPosition() { return GridPosition(); }
 
     static int initialMarqueeLoopCount() { return -1; }

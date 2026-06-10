@@ -324,6 +324,36 @@ void RenderGrid::resolveGridSpan(const GridPosition& start, const GridPosition& 
         outSpan = end.line;
 }
 
+// Computes content-distribution offset (before first track) and extra gap
+// (between tracks) for justify-content / align-content.
+static void gridContentDistribution(EGridContent mode, int freeSpace, int trackCount,
+                                    int& outOffset, int& outExtraGap)
+{
+    outOffset = 0;
+    outExtraGap = 0;
+    if (freeSpace <= 0 || trackCount <= 0)
+        return;
+    switch (mode) {
+        case GridContentStart:
+        case GridContentStretch: // stretch handled at track sizing; no offset here
+            break;
+        case GridContentEnd:
+            outOffset = freeSpace;
+            break;
+        case GridContentCenter:
+            outOffset = freeSpace / 2;
+            break;
+        case GridContentSpaceBetween:
+            if (trackCount > 1)
+                outExtraGap = freeSpace / (trackCount - 1);
+            break;
+        case GridContentSpaceAround:
+            outExtraGap = freeSpace / trackCount;
+            outOffset = outExtraGap / 2;
+            break;
+    }
+}
+
 // Explicit CSS Grid layout (2a). Six phases: resolve explicit positions,
 // auto-flow placement (row), measure content, resolve track sizes, compute
 // track offsets, then size and position each item across its span.
@@ -354,6 +384,7 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
         RenderObject* child;
         int col, colSpan;
         int row, rowSpan;
+        int naturalW, naturalH; // outer size at natural (content) sizing
     };
     Vector<ItemPlacement> items;
 
@@ -369,6 +400,8 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
         }
         ItemPlacement p;
         p.child = child;
+        p.naturalW = 0;
+        p.naturalH = 0;
         resolveGridSpan(child->style()->gridColumnStart(), child->style()->gridColumnEnd(), p.col, p.colSpan);
         resolveGridSpan(child->style()->gridRowStart(), child->style()->gridRowEnd(), p.row, p.rowSpan);
         // Clamp column span to the number of columns.
@@ -478,6 +511,8 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
         child->layoutIfNeeded();
         int w = child->width() + child->marginLeft() + child->marginRight();
         int h = child->height() + child->marginTop() + child->marginBottom();
+        p.naturalW = w;
+        p.naturalH = h;
         if (p.colSpan == 1 && p.col >= 0 && p.col < numCols && w > colContent[p.col])
             colContent[p.col] = w;
         if (p.rowSpan == 1 && p.row >= 0 && p.row < numRows && h > rowContent[p.row])
@@ -506,25 +541,48 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
     }
 
     // --- Phase 5: track offsets ---
+    // --- Phase 5: track offsets, with content alignment distribution ---
+    // Compute leftover space along each axis for justify/align-content.
+    int colTracksTotal = 0;
+    for (int c = 0; c < numCols; c++)
+        colTracksTotal += (c < (int)colSizes.size() ? colSizes[c] : 0);
+    int rowTracksTotal = 0;
+    for (int r = 0; r < numRows; r++)
+        rowTracksTotal += (r < (int)rowSizes.size() ? rowSizes[r] : 0);
+
+    int colFree = contentWidth - colTracksTotal - colGapTotal;
+    if (colFree < 0) colFree = 0;
+    int rowFree = (contentHeight > 0 ? contentHeight : rowTracksTotal) - rowTracksTotal - rowGapTotal;
+    if (rowFree < 0) rowFree = 0;
+
+    // Distribution offset (before first track) and extra gap (between tracks).
+    int colOffset = 0, colExtraGap = 0;
+    gridContentDistribution(style()->gridJustifyContent(), colFree, numCols, colOffset, colExtraGap);
+    int rowOffset = 0, rowExtraGap = 0;
+    gridContentDistribution(style()->gridAlignContent(), rowFree, numRows, rowOffset, rowExtraGap);
+
     Vector<int> colPos(numCols, 0);
-    int x = contentLeft;
+    int x = contentLeft + colOffset;
     for (int c = 0; c < numCols; c++) {
         colPos[c] = x;
-        x += (c < (int)colSizes.size() ? colSizes[c] : 0) + colGap;
+        x += (c < (int)colSizes.size() ? colSizes[c] : 0) + colGap + colExtraGap;
     }
     Vector<int> rowPos(numRows, 0);
-    int yy = contentTop;
+    int yy = contentTop + rowOffset;
     for (int r = 0; r < numRows; r++) {
         rowPos[r] = yy;
-        yy += (r < (int)rowSizes.size() ? rowSizes[r] : 0) + rowGap;
+        yy += (r < (int)rowSizes.size() ? rowSizes[r] : 0) + rowGap + rowExtraGap;
     }
 
     // --- Phase 6: size and position each item across its span ---
+    const EGridAlign containerJustify = style()->gridJustifyItems();
+    const EGridAlign containerAlign = style()->gridAlignItems();
+
     for (size_t i = 0; i < items.size(); i++) {
         ItemPlacement& p = items[i];
         RenderObject* child = p.child;
 
-        // Span size = sum of spanned tracks + interior gaps.
+        // Span area = sum of spanned tracks + interior gaps.
         int cellW = 0;
         for (int c = p.col; c < p.col + p.colSpan && c < numCols; c++)
             cellW += (c < (int)colSizes.size() ? colSizes[c] : 0);
@@ -535,13 +593,27 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
             cellH += (r < (int)rowSizes.size() ? rowSizes[r] : 0);
         cellH += (p.rowSpan - 1) * rowGap;
 
-        child->setOverrideSize(cellW - child->marginLeft() - child->marginRight());
+        // Resolve effective item alignment (self overrides container; -1 = auto).
+        int js = child->style()->gridJustifySelf();
+        EGridAlign justify = (js >= 0) ? (EGridAlign)js : containerJustify;
+        int as = child->style()->gridAlignSelf();
+        EGridAlign align = (as >= 0) ? (EGridAlign)as : containerAlign;
+
+        int marginW = child->marginLeft() + child->marginRight();
+        int marginH = child->marginTop() + child->marginBottom();
+
+        // Row axis (justify): stretch fills the cell, else use natural width.
         bool restoreHeight = false;
         Length savedHeight = child->style()->height();
-        if (cellH > 0 && child->style()->height().isAuto()) {
+        if (justify == GridAlignStretch)
+            child->setOverrideSize(cellW - marginW);
+        else
+            child->setOverrideSize(-1);
+
+        // Block axis (align): stretch fills the cell height.
+        if (align == GridAlignStretch && cellH > 0 && child->style()->height().isAuto()) {
             int innerH = cellH - child->borderTop() - child->paddingTop()
-                - child->borderBottom() - child->paddingBottom()
-                - child->marginTop() - child->marginBottom();
+                - child->borderBottom() - child->paddingBottom() - marginH;
             if (innerH < 0)
                 innerH = 0;
             child->style()->setHeight(Length(innerH, Fixed));
@@ -552,8 +624,24 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
         if (restoreHeight)
             child->style()->setHeight(savedHeight);
 
-        int px = (p.col < (int)colPos.size() ? colPos[p.col] : contentLeft) + child->marginLeft();
-        int py = (p.row < (int)rowPos.size() ? rowPos[p.row] : contentTop) + child->marginTop();
+        int cellX = (p.col < (int)colPos.size() ? colPos[p.col] : contentLeft);
+        int cellY = (p.row < (int)rowPos.size() ? rowPos[p.row] : contentTop);
+
+        // Position within the cell area according to alignment. For non-stretch
+        // axes use the item's natural outer size measured in Phase 3.
+        int itemOuterW = (justify == GridAlignStretch) ? (child->width() + marginW) : p.naturalW;
+        int itemOuterH = (align == GridAlignStretch) ? (child->height() + marginH) : p.naturalH;
+        int px = cellX + child->marginLeft();
+        int py = cellY + child->marginTop();
+        if (justify == GridAlignEnd)
+            px = cellX + cellW - itemOuterW + child->marginLeft();
+        else if (justify == GridAlignCenter)
+            px = cellX + (cellW - itemOuterW) / 2 + child->marginLeft();
+        if (align == GridAlignEnd)
+            py = cellY + cellH - itemOuterH + child->marginTop();
+        else if (align == GridAlignCenter)
+            py = cellY + (cellH - itemOuterH) / 2 + child->marginTop();
+
         child->setPos(px, py);
     }
 

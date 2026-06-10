@@ -147,7 +147,7 @@ calcPrefWidths 协议可用，降低此风险）。
 - [ ] **2b-2 命名线 + 区域**：`grid-template-areas`、命名网格线、`grid-area`
 - [ ] **2b-3 隐式网格 + 自动流补全**：`grid-auto-rows/columns`、
       `grid-auto-flow: column/dense`
-- [ ] **2b-4 对齐**：`justify-items/self`、`align-items/self`、
+- [x] **2b-4 对齐**：`justify-items/self`、`align-items/self`、
       `justify-content`、`align-content`
 - [ ] **2b-5 边界完善 + 回归**：嵌套 grid、grid 与 flex 互嵌、百分比轨道、
       与 table/float 交互；扩充 benchmark 回归页
@@ -285,3 +285,16 @@ calcPrefWidths 协议可用，降低此风险）。
     content 解析 2 单元测试。630/631 通过。
   - 已知限制：嵌套 `repeat(n, minmax())`、fit-content、auto-fill/auto-fit 后置
     （受 CSS 语法嵌套函数限制 / 低频）。
+
+- 2026-06-10：**2b-4 对齐完成（提前于 2b-2/2b-3，高频优先）。**
+  - 新属性 justify-items/justify-self；align-items/self、justify-content/align-content
+    复用属性名但写入 grid 专用存储（EGridAlign/EGridContent，与 flex 字段隔离）。
+  - item 对齐：stretch 填充单元格；start/end/center 用 Phase 3 测得的 naturalW/H 在
+    单元格区内定位。justify-self/align-self 覆盖容器 *-items（-1=auto 回退）。
+  - content 对齐：justify-content（列）/align-content（行）按 start/end/center/
+    space-between/space-around 分布轨道（offset + 轨道间 extra gap）。
+  - 关键 bug 修复：block 子项在 grid 容器内会被 RenderBox::calcWidth 的边距自动填充
+    逻辑撑满（naturalW 虚高至容器宽），导致 end/center 定位失效。在该边距填充条件
+    加 `&& !cb->isRenderGrid()` 排除 grid 子项。
+  - 测试：9 单元测试（6 布局对齐 + 3 解析）+ 10 benchmark 断言。46 grid 单元测试全过，
+    640 全套通过。
