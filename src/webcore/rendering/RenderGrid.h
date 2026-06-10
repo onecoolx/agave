@@ -55,6 +55,11 @@ private:
     // contentSizes may be empty (treats auto/content as 0).
     void resolveTrackSizes(const Vector<GridTrackSize>& templates, int availableSpace,
                            const Vector<int>& contentSizes, Vector<int>& outSizes);
+
+    // Resolves a start/end GridPosition pair into a 0-based start index and a
+    // span count. explicitCount is the number of explicit tracks in that axis.
+    void resolveGridSpan(const GridPosition& start, const GridPosition& end,
+                         int& outStart, int& outSpan);
 #endif
 
 private:

@@ -1,0 +1,61 @@
+<html>
+<head><style>
+/* 显式列定位 */
+#g1 { display:grid; grid-template-columns:100px 100px 100px; grid-template-rows:50px; width:300px; }
+#g1 .x { grid-column-start:3; }
+/* span 跨列 */
+#g2 { display:grid; grid-template-columns:100px 100px 100px; grid-template-rows:50px; width:300px; }
+#g2 .span2 { grid-column-end:span 2; }
+/* grid-column 简写 1/3 跨两列 */
+#g3 { display:grid; grid-template-columns:100px 100px 100px; grid-template-rows:50px; width:300px; }
+#g3 .wide { grid-column:1 / 3; }
+/* auto-flow 自动放置绕过显式占位 */
+#g4 { display:grid; grid-template-columns:100px 100px; grid-template-rows:50px 50px; width:200px; }
+#g4 .fixed { grid-column:1; grid-row:2; }
+/* span 行 */
+#g5 { display:grid; grid-template-columns:100px 100px; grid-template-rows:50px 50px; width:200px; }
+#g5 .tall { grid-row:1 / 3; }
+</style></head>
+<body>
+<div id="g1"><div class="x" id="g1x">X</div></div>
+<div id="g2"><div class="span2" id="g2s">S</div><div id="g2b">B</div></div>
+<div id="g3"><div class="wide" id="g3w">W</div><div id="g3b">B</div></div>
+<div id="g4"><div class="fixed" id="g4f">F</div><div id="g4a">A</div><div id="g4b">B</div><div id="g4c">C</div></div>
+<div id="g5"><div class="tall" id="g5t">T</div><div id="g5b">B</div></div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function E(id){return document.getElementById(id);}
+
+// g1: item placed at column 3 -> x=200
+ck('g1-x-left', E('g1x').offsetLeft - E('g1').offsetLeft, 200);
+ck('g1-x-w', E('g1x').offsetWidth, 100);
+
+// g2: span2 covers cols 1-2 (width 200), b auto-placed at col 3
+ck('g2-s-w', E('g2s').offsetWidth, 200);
+ck('g2-s-left', E('g2s').offsetLeft - E('g2').offsetLeft, 0);
+ck('g2-b-left', E('g2b').offsetLeft - E('g2').offsetLeft, 200);
+
+// g3: grid-column 1/3 spans cols 1-2 (width 200)
+ck('g3-w-w', E('g3w').offsetWidth, 200);
+ck('g3-b-left', E('g3b').offsetLeft - E('g3').offsetLeft, 200);
+
+// g4: fixed at col1/row2; auto items A,B,C flow into row1col1,row1col2,row2col2
+var g4=E('g4');
+ck('g4-f-left', E('g4f').offsetLeft - g4.offsetLeft, 0);
+ck('g4-f-top', E('g4f').offsetTop - g4.offsetTop, 50);
+ck('g4-a-top', E('g4a').offsetTop - g4.offsetTop, 0);
+ck('g4-c-left', E('g4c').offsetLeft - g4.offsetLeft, 100);
+ck('g4-c-top', E('g4c').offsetTop - g4.offsetTop, 50);
+
+// g5: tall spans rows 1-2 (height 100), b auto at row1col2
+var g5=E('g5');
+ck('g5-t-h', E('g5t').offsetHeight, 100);
+ck('g5-b-left', E('g5b').offsetLeft - g5.offsetLeft, 100);
+ck('g5-b-top', E('g5b').offsetTop - g5.offsetTop, 0);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

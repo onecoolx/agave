@@ -180,6 +180,45 @@ void RenderGrid::resolveTrackSizes(const Vector<GridTrackSize>& templates, int a
 // 2a-4 track sizing: resolves explicit column/row tracks (fixed/percent/fr/auto)
 // and places flow items into cells in DOM order (auto-flow: row). Full item
 // placement (explicit grid-column/row, span) lands in 2a-5.
+// Resolves a start/end GridPosition pair into a 0-based start index and span.
+// outStart == -1 means the start is auto (to be auto-placed by the caller).
+// 2a subset: line numbers are 1-based; span N means span N tracks.
+void RenderGrid::resolveGridSpan(const GridPosition& start, const GridPosition& end,
+                                 int& outStart, int& outSpan)
+{
+    outStart = -1;
+    outSpan = 1;
+
+    int startLine = (!start.isAuto && !start.isSpan) ? start.line : 0; // 1-based or 0
+    int endLine = (!end.isAuto && !end.isSpan) ? end.line : 0;
+
+    if (startLine > 0 && endLine > 0) {
+        int a = min(startLine, endLine);
+        int b = max(startLine, endLine);
+        outStart = a - 1;
+        outSpan = max(1, b - a);
+        return;
+    }
+    if (startLine > 0) {
+        outStart = startLine - 1;
+        if (end.isSpan && end.line > 0)
+            outSpan = end.line;
+        return;
+    }
+    if (endLine > 0) {
+        // Only end line given: place so the item ends at endLine.
+        int span = (start.isSpan && start.line > 0) ? start.line : 1;
+        outStart = max(0, endLine - 1 - span);
+        outSpan = span;
+        return;
+    }
+    // No definite line: auto start. Span may still be set via either side.
+    if (start.isSpan && start.line > 0)
+        outSpan = start.line;
+    else if (end.isSpan && end.line > 0)
+        outSpan = end.line;
+}
+
 void RenderGrid::layoutGrid(bool relayoutChildren)
 {
     const int contentLeft = borderLeft() + paddingLeft();
@@ -198,82 +237,19 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
     const Vector<GridTrackSize>& colTemplate = style()->gridTemplateColumns();
     const Vector<GridTrackSize>& rowTemplate = style()->gridTemplateRows();
 
-    // A grid with no explicit columns behaves like a single auto column.
-    int numCols = colTemplate.size() > 0 ? (int)colTemplate.size() : 1;
-
-    // Count flow items to derive the implicit row count.
-    int itemCount = 0;
-    for (RenderObject* child = firstChild(); child; child = child->nextSibling()) {
-        if (!child->isPositioned())
-            itemCount++;
-    }
-    int explicitRows = rowTemplate.size() > 0 ? (int)rowTemplate.size() : 0;
-    int neededRows = (itemCount + numCols - 1) / numCols;
-    int numRows = max(explicitRows, max(neededRows, 1));
+    const int numCols = colTemplate.size() > 0 ? (int)colTemplate.size() : 1;
 
     m_flexingChildren = true;
 
-    // --- Measure content sizes for auto tracks (natural item sizes) ---
-    Vector<int> colContent(numCols, 0);
-    Vector<int> rowContent(numRows, 0);
-    {
-        int index = 0;
-        for (RenderObject* child = firstChild(); child; child = child->nextSibling()) {
-            if (child->isPositioned())
-                continue;
-            child->setOverrideSize(-1);
-            child->setChildNeedsLayout(true, false);
-            child->calcWidth();
-            child->layoutIfNeeded();
-            int col = index % numCols;
-            int row = index / numCols;
-            int w = child->width() + child->marginLeft() + child->marginRight();
-            int h = child->height() + child->marginTop() + child->marginBottom();
-            if (w > colContent[col]) colContent[col] = w;
-            if (row < numRows && h > rowContent[row]) rowContent[row] = h;
-            index++;
-        }
-    }
+    // --- Per-item placement record ---
+    struct ItemPlacement {
+        RenderObject* child;
+        int col, colSpan;
+        int row, rowSpan;
+    };
+    Vector<ItemPlacement> items;
 
-    // --- Resolve column and row track sizes ---
-    int colGapTotal = numCols > 1 ? (numCols - 1) * colGap : 0;
-    int rowGapTotal = numRows > 1 ? (numRows - 1) * rowGap : 0;
-
-    Vector<int> colSizes;
-    if (colTemplate.size() > 0) {
-        resolveTrackSizes(colTemplate, contentWidth - colGapTotal, colContent, colSizes);
-    } else {
-        colSizes.append(contentWidth);
-    }
-
-    Vector<int> rowSizes;
-    if (rowTemplate.size() > 0) {
-        int availRowSpace = (contentHeight > 0 ? contentHeight : 0) - rowGapTotal;
-        resolveTrackSizes(rowTemplate, availRowSpace, rowContent, rowSizes);
-        // Extra implicit rows (beyond template) take their content height.
-        for (int r = (int)rowTemplate.size(); r < numRows; r++)
-            rowSizes.append(r < (int)rowContent.size() ? rowContent[r] : 0);
-    } else {
-        for (int r = 0; r < numRows; r++)
-            rowSizes.append(r < (int)rowContent.size() ? rowContent[r] : 0);
-    }
-
-    // --- Compute track offsets (cumulative positions including gaps) ---
-    Vector<int> colPos(numCols, 0);
-    int x = contentLeft;
-    for (int c = 0; c < numCols; c++) {
-        colPos[c] = x;
-        x += (c < (int)colSizes.size() ? colSizes[c] : 0) + colGap;
-    }
-    Vector<int> rowPos(numRows, 0);
-    int y = contentTop;
-    for (int r = 0; r < numRows; r++) {
-        rowPos[r] = y;
-        y += (r < (int)rowSizes.size() ? rowSizes[r] : 0) + rowGap;
-    }
-
-    // --- Place items into cells (auto-flow: row) ---
-    int index = 0;
+    // --- Phase 1: resolve explicit positions; collect auto-placed items ---
     for (RenderObject* child = firstChild(); child; child = child->nextSibling()) {
         if (child->isPositioned()) {
             child->containingBlock()->insertPositionedObject(child);
@@ -283,11 +259,184 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
                 child->setStaticY(contentTop);
             continue;
         }
+        ItemPlacement p;
+        p.child = child;
+        resolveGridSpan(child->style()->gridColumnStart(), child->style()->gridColumnEnd(), p.col, p.colSpan);
+        resolveGridSpan(child->style()->gridRowStart(), child->style()->gridRowEnd(), p.row, p.rowSpan);
+        // Clamp column span to the number of columns.
+        if (p.colSpan > numCols) p.colSpan = numCols;
+        if (p.col >= 0 && p.col + p.colSpan > numCols)
+            p.col = max(0, numCols - p.colSpan);
+        items.append(p);
+    }
 
-        int col = index % numCols;
-        int row = index / numCols;
-        int cellW = col < (int)colSizes.size() ? colSizes[col] : 0;
-        int cellH = row < (int)rowSizes.size() ? rowSizes[row] : 0;
+    // --- Phase 2: auto-placement (auto-flow: row) ---
+    // Mark cells occupied by fully-explicit items first, then flow the rest.
+    int explicitRows = rowTemplate.size() > 0 ? (int)rowTemplate.size() : 0;
+    int maxRow = explicitRows;
+    for (size_t i = 0; i < items.size(); i++) {
+        if (items[i].row >= 0)
+            maxRow = max(maxRow, items[i].row + items[i].rowSpan);
+    }
+    // Occupancy grid grows as needed; start generously.
+    int gridRows = max(maxRow, 1);
+    Vector<bool> occupied(gridRows * numCols, false);
+
+    // Mark cells of items with a definite row+col.
+    for (size_t i = 0; i < items.size(); i++) {
+        ItemPlacement& p = items[i];
+        if (p.row >= 0 && p.col >= 0) {
+            for (int r = p.row; r < p.row + p.rowSpan; r++) {
+                while (r >= gridRows) {
+                    gridRows++;
+                    occupied.resize(gridRows * numCols);
+                    for (int c = 0; c < numCols; c++)
+                        occupied[(gridRows - 1) * numCols + c] = false;
+                }
+                for (int c = p.col; c < p.col + p.colSpan && c < numCols; c++)
+                    occupied[r * numCols + c] = true;
+            }
+        }
+    }
+
+    // Flow auto-placed items into the next free cell (row-major).
+    int cursorRow = 0, cursorCol = 0;
+    for (size_t i = 0; i < items.size(); i++) {
+        ItemPlacement& p = items[i];
+        if (p.row >= 0 && p.col >= 0)
+            continue; // already placed
+
+        int span = p.colSpan;
+
+        if (p.col >= 0) {
+            // Fixed column, auto row: scan this column downward for a free run.
+            int fixedCol = p.col;
+            if (fixedCol + span > numCols)
+                span = max(1, numCols - fixedCol);
+            int r = 0;
+            while (true) {
+                while (r >= gridRows) {
+                    gridRows++;
+                    occupied.resize(gridRows * numCols);
+                    for (int c = 0; c < numCols; c++)
+                        occupied[(gridRows - 1) * numCols + c] = false;
+                }
+                bool free = true;
+                for (int c = fixedCol; c < fixedCol + span; c++)
+                    if (occupied[r * numCols + c]) { free = false; break; }
+                if (free)
+                    break;
+                r++;
+            }
+            p.row = r;
+        } else {
+            // Fully auto: advance the row-major cursor to the next free run.
+            while (true) {
+                if (cursorCol + span > numCols) {
+                    cursorCol = 0;
+                    cursorRow++;
+                }
+                while (cursorRow >= gridRows) {
+                    gridRows++;
+                    occupied.resize(gridRows * numCols);
+                    for (int c = 0; c < numCols; c++)
+                        occupied[(gridRows - 1) * numCols + c] = false;
+                }
+                bool free = true;
+                for (int c = cursorCol; c < cursorCol + span; c++)
+                    if (occupied[cursorRow * numCols + c]) { free = false; break; }
+                if (free)
+                    break;
+                cursorCol++;
+            }
+            p.col = cursorCol;
+            p.row = cursorRow;
+        }
+
+        for (int r = p.row; r < p.row + p.rowSpan; r++) {
+            while (r >= gridRows) {
+                gridRows++;
+                occupied.resize(gridRows * numCols);
+                for (int c = 0; c < numCols; c++)
+                    occupied[(gridRows - 1) * numCols + c] = false;
+            }
+            for (int c = p.col; c < p.col + span && c < numCols; c++)
+                occupied[r * numCols + c] = true;
+        }
+        if (p.col == cursorCol)
+            cursorCol += span;
+    }
+
+    int numRows = max(gridRows, 1);
+
+    // --- Phase 3: measure content sizes (single-track items feed auto tracks) ---
+    Vector<int> colContent(numCols, 0);
+    Vector<int> rowContent(numRows, 0);
+    for (size_t i = 0; i < items.size(); i++) {
+        ItemPlacement& p = items[i];
+        RenderObject* child = p.child;
+        child->setOverrideSize(-1);
+        child->setChildNeedsLayout(true, false);
+        child->calcWidth();
+        child->layoutIfNeeded();
+        int w = child->width() + child->marginLeft() + child->marginRight();
+        int h = child->height() + child->marginTop() + child->marginBottom();
+        if (p.colSpan == 1 && p.col >= 0 && p.col < numCols && w > colContent[p.col])
+            colContent[p.col] = w;
+        if (p.rowSpan == 1 && p.row >= 0 && p.row < numRows && h > rowContent[p.row])
+            rowContent[p.row] = h;
+    }
+
+    // --- Phase 4: resolve track sizes ---
+    int colGapTotal = numCols > 1 ? (numCols - 1) * colGap : 0;
+    int rowGapTotal = numRows > 1 ? (numRows - 1) * rowGap : 0;
+
+    Vector<int> colSizes;
+    if (colTemplate.size() > 0)
+        resolveTrackSizes(colTemplate, contentWidth - colGapTotal, colContent, colSizes);
+    else
+        colSizes.append(contentWidth);
+
+    Vector<int> rowSizes;
+    if (rowTemplate.size() > 0) {
+        int availRowSpace = (contentHeight > 0 ? contentHeight : 0) - rowGapTotal;
+        resolveTrackSizes(rowTemplate, availRowSpace, rowContent, rowSizes);
+        for (int r = (int)rowTemplate.size(); r < numRows; r++)
+            rowSizes.append(r < (int)rowContent.size() ? rowContent[r] : 0);
+    } else {
+        for (int r = 0; r < numRows; r++)
+            rowSizes.append(r < (int)rowContent.size() ? rowContent[r] : 0);
+    }
+
+    // --- Phase 5: track offsets ---
+    Vector<int> colPos(numCols, 0);
+    int x = contentLeft;
+    for (int c = 0; c < numCols; c++) {
+        colPos[c] = x;
+        x += (c < (int)colSizes.size() ? colSizes[c] : 0) + colGap;
+    }
+    Vector<int> rowPos(numRows, 0);
+    int yy = contentTop;
+    for (int r = 0; r < numRows; r++) {
+        rowPos[r] = yy;
+        yy += (r < (int)rowSizes.size() ? rowSizes[r] : 0) + rowGap;
+    }
+
+    // --- Phase 6: size and position each item across its span ---
+    for (size_t i = 0; i < items.size(); i++) {
+        ItemPlacement& p = items[i];
+        RenderObject* child = p.child;
+
+        // Span size = sum of spanned tracks + interior gaps.
+        int cellW = 0;
+        for (int c = p.col; c < p.col + p.colSpan && c < numCols; c++)
+            cellW += (c < (int)colSizes.size() ? colSizes[c] : 0);
+        cellW += (p.colSpan - 1) * colGap;
+
+        int cellH = 0;
+        for (int r = p.row; r < p.row + p.rowSpan && r < numRows; r++)
+            cellH += (r < (int)rowSizes.size() ? rowSizes[r] : 0);
+        cellH += (p.rowSpan - 1) * rowGap;
 
         child->setOverrideSize(cellW - child->marginLeft() - child->marginRight());
         bool restoreHeight = false;
@@ -306,8 +455,9 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
         if (restoreHeight)
             child->style()->setHeight(savedHeight);
 
-        child->setPos(colPos[col] + child->marginLeft(), rowPos[row] + child->marginTop());
-        index++;
+        int px = (p.col < (int)colPos.size() ? colPos[p.col] : contentLeft) + child->marginLeft();
+        int py = (p.row < (int)rowPos.size() ? rowPos[p.row] : contentTop) + child->marginTop();
+        child->setPos(px, py);
     }
 
     m_flexingChildren = false;

@@ -149,4 +149,68 @@ TEST_F(GridLayoutTest, RepeatTracks)
     EXPECT_NEAR(d->xPos() - a->xPos(), 300, 2);
 }
 
+TEST_F(GridLayoutTest, ExplicitColumnPlacement)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:100px 100px 100px; grid-template-rows:50px; width:300px;'>"
+             "<div id='x' style='grid-column-start:3;'>X</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* x = renderer("x");
+    ASSERT_TRUE(g && x);
+    EXPECT_NEAR(x->xPos() - g->xPos(), 200, 2); // third column
+    EXPECT_NEAR(x->width(), 100, 2);
+}
+
+TEST_F(GridLayoutTest, ColumnSpan)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:100px 100px 100px; grid-template-rows:50px; width:300px;'>"
+             "<div id='s' style='grid-column-end:span 2;'>S</div><div id='b'>B</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* s = renderer("s");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(g && s && b);
+    EXPECT_NEAR(s->width(), 200, 2); // spans 2 columns
+    EXPECT_NEAR(b->xPos() - g->xPos(), 200, 2); // auto-placed after span
+}
+
+TEST_F(GridLayoutTest, GridColumnShorthandSpan)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:100px 100px 100px; grid-template-rows:50px; width:300px;'>"
+             "<div id='w' style='grid-column:1 / 3;'>W</div><div id='b'>B</div></div>");
+    RenderObject* w = renderer("w");
+    RenderObject* g = renderer("g");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(w && g && b);
+    EXPECT_NEAR(w->width(), 200, 2);
+    EXPECT_NEAR(b->xPos() - g->xPos(), 200, 2);
+}
+
+TEST_F(GridLayoutTest, AutoFlowAroundExplicit)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:100px 100px; grid-template-rows:50px 50px; width:200px;'>"
+             "<div id='f' style='grid-column:1; grid-row:2;'>F</div>"
+             "<div id='a'>A</div><div id='b'>B</div><div id='c'>C</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* f = renderer("f");
+    RenderObject* c = renderer("c");
+    ASSERT_TRUE(g && f && c);
+    EXPECT_NEAR(f->xPos() - g->xPos(), 0, 2);
+    EXPECT_NEAR(f->yPos() - g->yPos(), 50, 2);
+    // C is third auto item: row1col1(A), row1col2(B), row2col2(C)
+    EXPECT_NEAR(c->xPos() - g->xPos(), 100, 2);
+    EXPECT_NEAR(c->yPos() - g->yPos(), 50, 2);
+}
+
+TEST_F(GridLayoutTest, RowSpan)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:100px 100px; grid-template-rows:50px 50px; width:200px;'>"
+             "<div id='t' style='grid-row:1 / 3;'>T</div><div id='b'>B</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* t = renderer("t");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(g && t && b);
+    EXPECT_NEAR(t->height(), 100, 2); // spans 2 rows
+    EXPECT_NEAR(b->xPos() - g->xPos(), 100, 2); // auto-placed at col2
+    EXPECT_NEAR(b->yPos() - g->yPos(), 0, 2);
+}
+
 #endif // ENABLE(MODERN_GRID)

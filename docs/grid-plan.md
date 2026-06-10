@@ -111,7 +111,7 @@ struct GridPosition {
 - [x] **2a-3 样式应用**：CSSStyleSelector 应用 grid 属性；display:grid 分派到 RenderGrid
 - [x] **2a-4 轨道尺寸算法**：列轨道尺寸（fixed → 占用；auto → 内容；fr → 分配剩余）
       + 行轨道尺寸（同理）；先单维独立计算（列优先）
-- [ ] **2a-5 item 放置 + 定位**：显式 grid-column/row 定位 + span；
+- [x] **2a-5 item 放置 + 定位**：显式 grid-column/row 定位 + span；
       auto 放置（grid-auto-flow: row，按行打包）；item 定位到单元格矩形 + gap
 - [ ] **2a-6 固有尺寸 + 测试**：grid 容器 min/max-content 接入 calcPrefWidths；
       单元测试 + benchmark 回归页（对照 Chrome 几何）
@@ -246,3 +246,13 @@ calcPrefWidths 协议可用，降低此风险）。
   - 测试：单元测试 8 条（grid_layout_test.cpp）+ benchmark 19 条（grid_track_test.html）：
     fixed/fr 等分/fr 比例/fixed+fr/gap/percent/repeat/2x2 异行高，全部通过。
   - 全套 615 通过（唯一失败为预存 flaky 计时微基准，与 grid 无关）。
+
+- 2026-06-10：**2a-5 item 放置 + 定位完成。**
+  - layoutGrid 重写为 6 阶段：①解析显式位置（resolveGridSpan 从 GridPosition 解出
+    0基起始 + span）②auto-flow:row 放置（占用矩阵；固定列+auto行项在该列向下找空行；
+    全 auto 项行优先推进游标）③测量内容尺寸（仅单轨道项喂 auto 轨道）④解析列/行轨道
+    ⑤计算含 gap 偏移 ⑥按 span 尺寸（跨轨道总和 + 中间 gap）定位。
+  - 隐式行随放置动态扩展（occupied 矩阵按需 resize）。
+  - resolveGridSpan：支持 line/line、line/span、span/line、纯 span、auto。
+  - 测试：单元测试 5 条（显式列定位、span 列、grid-column 简写 span、auto-flow 绕过
+    显式占位、span 行）+ benchmark 15 条断言。13 grid 布局单元测试全过，全套 620 通过。
