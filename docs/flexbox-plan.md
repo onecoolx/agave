@@ -116,6 +116,14 @@ min/max-content 传播）可能不支持现代 flex 所需。若需先补基础�
   - 稳定后删除旧 `-webkit-box` 实现（layoutHorizontalBox/layoutVerticalBox 等）+ 移除宏
 - 删除前主干始终保留旧码作为可回退的稳定版本。
 
+### 清理决策（2026-06-10）
+
+- `ENABLE_MODERN_FLEXBOX` 已设为**默认开启**（CMakeLists.txt，OPT_MODERN_FLEXBOX ON）。
+  display:flex/inline-flex 走新实现，-webkit-box 走旧实现。
+- **旧 flex 实现（layoutHorizontalBox/layoutVerticalBox + 编译宏）暂不删除**，
+  并存保留，作为备查与新旧对比参考。
+- **清理工作延后**：与 KJS 代码清理合并，作为后续整体清理工作的一部分统一进行。
+
 ---
 
 ## 五、进度日志
@@ -253,3 +261,10 @@ min/max-content 传播）可能不支持现代 flex 所需。若需先补基础�
 （row/column + reverse）、flex-wrap、flex-flow、flex（grow/shrink/basis）、
 justify-content、align-items、align-content、align-self、order、auto margin、
 min/max 约束。能渲染绝大多数现代页面 flex 布局。
+
+- 2026-06-10：**清理策略决定**。新版 flexbox 默认开启并作为主路径；旧 -webkit-box
+  实现并存保留，仅作备查与对比，不单独删除。旧 flex 代码 + 编译宏的清理延后到与
+  KJS 代码清理合并，作为后续整体清理工作统一进行。
+  - 注：ASan 构建跑真实网页会因 curl 线程化 DNS 解析器与 glibc nss_dns 冲突而 SEGV
+    （与 flexbox 无关）。真实页面测试用不带 ASan 的构建（proj_no_asan）；ASan 构建
+    用于单元测试与 headless 内存检查。
