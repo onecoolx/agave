@@ -1,0 +1,59 @@
+/*
+ * This file is part of the render object implementation for Agave.
+ *
+ * Copyright (C) 2026 Zhang Ji Peng
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public License
+ * along with this library; see the file COPYING.LIB.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
+ *
+ */
+
+#ifndef RenderGrid_h
+#define RenderGrid_h
+
+#include "RenderBlock.h"
+
+namespace WebCore {
+
+// Modern CSS Grid layout, isolated behind ENABLE_MODERN_GRID.
+// 2a-0 probe: minimal display:grid skeleton with a hard-coded 2x2 equal
+// track grid, placing items in DOM order. Validates that the existing
+// RenderBlock framework can carry two-dimensional cell positioning and
+// item size negotiation (via setOverrideSize), before building the full
+// track-sizing/placement algorithm.
+class RenderGrid : public RenderBlock {
+public:
+    RenderGrid(Node*);
+    virtual ~RenderGrid();
+
+    virtual const char* renderName() const;
+
+    virtual bool isRenderGrid() const { return true; }
+    virtual bool avoidsFloats() const { return true; }
+    virtual bool isFlexingChildren() const { return m_flexingChildren; }
+
+    virtual void layoutBlock(bool relayoutChildren);
+
+#if ENABLE(MODERN_GRID)
+    void layoutGrid(bool relayoutChildren);
+#endif
+
+private:
+    bool m_flexingChildren : 1;
+};
+
+} // namespace WebCore
+
+#endif // RenderGrid_h

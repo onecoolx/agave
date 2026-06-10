@@ -819,6 +819,9 @@ public:
     virtual bool isFlexingChildren() const { return false; }
     virtual bool isStretchingChildren() const { return false; }
 
+    // Virtual function helper for CSS Grid Layout
+    virtual bool isRenderGrid() const { return false; }
+
     // Convenience, to avoid repeating the code to dig down to get this.
     UChar backslashAsCurrencySymbol() const;
 

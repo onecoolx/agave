@@ -100,8 +100,9 @@ struct GridPosition {
 
 ### Checklist
 
-- [ ] **2a-0 探针（前置）**：display:grid 最小骨架（RenderGrid 子类 + 创建分派），
+- [x] **2a-0 探针（前置）**：display:grid 最小骨架（RenderGrid 子类 + 创建分派），
       2x2 固定轨道 + item 按 DOM 顺序自动放置，验证 RenderBlock 框架能承载二维定位。
+      **结论：架构足够，setOverrideSize 二维尺寸协商可复用，无需补基础设施。**
 - [ ] **2a-1 CSS 属性接入**：`display:grid/inline-grid`、`grid-template-columns/rows`
       （fixed/percent/fr/auto + repeat 展开）、`grid-column/row`（start/end/span）、
       `gap`(row-gap/column-gap) → CSSPropertyNames + CSSValueKeywords + CSSParser + 值映射
@@ -203,3 +204,20 @@ calcPrefWidths 协议可用，降低此风险）。
 - 2026-06-10：计划与 checklist 建立。确认 Grid 为 greenfield（无旧实现）；
   关键挑战为二维轨道尺寸算法 + fr 单位数据建模；沿用 Flexbox 的编译宏隔离/
   里程碑切分/测试配套/提交纪律。待 review 后决定是否启动 2a-0 探针。
+
+- 2026-06-10：**2a-0 探针完成，结论：架构足够，无需补基础设施。**
+  - 编译宏 ENABLE_MODERN_GRID（CMakeLists + mconfig.h.in，默认 ON）。
+  - EDisplay 加 GRID/INLINE_GRID；CSSValueKeywords 加 grid/inline-grid（191/192）；
+    display 范围检查、isDisplayReplacedType/isOriginalDisplayInlineType、
+    CSSComputedStyleDeclaration display switch 均覆盖。
+  - 新建 RenderGrid : RenderBlock（RenderGrid.h/.cpp，宏隔离）；RenderObject::createObject
+    分派 GRID/INLINE_GRID → RenderGrid；RenderObject 加 isRenderGrid() 虚函数。
+  - 关键复用：RenderBox::calcWidth 扩展为 grid 父容器也认 override 宽度
+    （isRenderGrid + isFlexingChildren）——与 Flexbox 同一套尺寸协商机制。
+  - 探针 layoutGrid：硬编码 2x2 等分单元格，前 4 个流子项按 DOM 顺序放入
+    [0,0][0,1][1,0][1,1]，setOverrideSize(宽) + 临时 setHeight(高) 填充单元格。
+  - 验证（开宏，headless）：400x200 容器 → 2x2 单元格 200x100，四项位置
+    (0,0)(200,0)(0,100)(200,100) 与尺寸全部正确（10/10 断言通过）。
+  - 默认态：编译正常，flexbox 29 单元测试全过，无回归
+    （唯一失败的 MicroBenchmark 是预存的计时阈值 flaky，ASan 下 2050ms>2000ms，与 grid 无关）。
+  - **影响**：2a 最大风险（二维尺寸协商能否复用）已排除 → 可继续 2a 全量。

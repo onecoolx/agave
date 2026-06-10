@@ -1061,7 +1061,7 @@ enum EDisplay {
     TABLE, INLINE_TABLE, TABLE_ROW_GROUP,
     TABLE_HEADER_GROUP, TABLE_FOOTER_GROUP, TABLE_ROW,
     TABLE_COLUMN_GROUP, TABLE_COLUMN, TABLE_CELL,
-    TABLE_CAPTION, BOX, INLINE_BOX, FLEX, INLINE_FLEX, NONE
+    TABLE_CAPTION, BOX, INLINE_BOX, FLEX, INLINE_FLEX, GRID, INLINE_GRID, NONE
 };
 
 class RenderStyle {
@@ -1850,7 +1850,7 @@ public:
     Diff diff( const RenderStyle *other ) const;
 
     bool isDisplayReplacedType() {
-        return display() == INLINE_BLOCK || display() == INLINE_BOX || display() == INLINE_TABLE || display() == INLINE_FLEX;
+        return display() == INLINE_BLOCK || display() == INLINE_BOX || display() == INLINE_TABLE || display() == INLINE_FLEX || display() == INLINE_GRID;
     }
     bool isDisplayInlineType() {
         return display() == INLINE || isDisplayReplacedType();
@@ -1858,7 +1858,7 @@ public:
     bool isOriginalDisplayInlineType() {
         return originalDisplay() == INLINE || originalDisplay() == INLINE_BLOCK ||
                originalDisplay() == INLINE_BOX || originalDisplay() == INLINE_TABLE ||
-               originalDisplay() == INLINE_FLEX;
+               originalDisplay() == INLINE_FLEX || originalDisplay() == INLINE_GRID;
     }
     
     // To obtain at any time the pseudo state for a given link.

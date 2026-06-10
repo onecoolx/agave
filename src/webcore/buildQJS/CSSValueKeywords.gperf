@@ -198,6 +198,8 @@ table-caption, CSS_VAL_TABLE_CAPTION
 -webkit-inline-box, CSS_VAL__WEBKIT_INLINE_BOX
 flex, CSS_VAL_FLEX
 inline-flex, CSS_VAL_INLINE_FLEX
+grid, CSS_VAL_GRID
+inline-grid, CSS_VAL_INLINE_GRID
 auto, CSS_VAL_AUTO
 crosshair, CSS_VAL_CROSSHAIR
 default, CSS_VAL_DEFAULT

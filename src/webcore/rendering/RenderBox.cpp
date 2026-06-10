@@ -1068,6 +1068,12 @@ void RenderBox::calcWidth()
         return;
     }
 
+    // Grid sets an override width on its items during track sizing.
+    if (hasOverrideSize() && parent()->isRenderGrid() && parent()->isFlexingChildren()) {
+        m_width = overrideSize();
+        return;
+    }
+
     bool inVerticalBox = parent()->isFlexibleBox() && (parent()->style()->boxOrient() == VERTICAL);
     bool stretching = (parent()->style()->boxAlign() == BSTRETCH);
     bool treatAsReplaced = isReplaced() && !isInlineBlockOrInlineTable() && (!inVerticalBox || !stretching);

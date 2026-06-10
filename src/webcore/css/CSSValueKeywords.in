@@ -259,6 +259,8 @@ table-caption
 -webkit-inline-box
 flex
 inline-flex
+grid
+inline-grid
 #none
 #
 # CSS_PROP_CURSOR:

@@ -1010,6 +1010,10 @@ PassRefPtr<CSSValue> CSSComputedStyleDeclaration::getPropertyCSSValue(int proper
                     return new CSSPrimitiveValue(CSS_VAL_FLEX);
                 case INLINE_FLEX:
                     return new CSSPrimitiveValue(CSS_VAL_INLINE_FLEX);
+                case GRID:
+                    return new CSSPrimitiveValue(CSS_VAL_GRID);
+                case INLINE_GRID:
+                    return new CSSPrimitiveValue(CSS_VAL_INLINE_GRID);
                 case NONE:
                     return new CSSPrimitiveValue(CSS_VAL_NONE);
             }

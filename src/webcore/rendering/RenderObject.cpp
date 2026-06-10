@@ -49,6 +49,7 @@
 #include "RenderArena.h"
 #include "RenderCounter.h"
 #include "RenderFlexibleBox.h"
+#include "RenderGrid.h"
 #include "RenderImage.h"
 #include "RenderInline.h"
 #include "RenderListItem.h"
@@ -157,6 +158,10 @@ RenderObject* RenderObject::createObject(Node* node, RenderStyle* style)
         case FLEX:
         case INLINE_FLEX:
             o = new (arena) RenderFlexibleBox(node);
+            break;
+        case GRID:
+        case INLINE_GRID:
+            o = new (arena) RenderGrid(node);
             break;
     }
 
