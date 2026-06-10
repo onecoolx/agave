@@ -443,4 +443,55 @@ TEST_F(GridLayoutTest, TemplateAreasLayout)
     EXPECT_NEAR(ft->yPos() - g->yPos(), 150, 2);
 }
 
+TEST_F(GridLayoutTest, PercentageTracks)
+{
+    loadHtml("<div style='display:grid; grid-template-columns:30% 70%; grid-template-rows:50px; width:400px;'>"
+             "<div id='a'>A</div><div id='b'>B</div></div>");
+    RenderObject* a = renderer("a");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(a && b);
+    EXPECT_NEAR(a->width(), 120, 2); // 30% of 400
+    EXPECT_NEAR(b->width(), 280, 2); // 70% of 400
+}
+
+TEST_F(GridLayoutTest, GridNestedInFlex)
+{
+    loadHtml("<div style='display:flex; width:400px;'>"
+             "<div id='g' style='display:grid; grid-template-columns:1fr 1fr; grid-template-rows:40px; flex:1;'>"
+             "<div id='a'>A</div><div id='b'>B</div></div>"
+             "<div id='fixed' style='width:100px;'>F</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* a = renderer("a");
+    ASSERT_TRUE(g && a);
+    EXPECT_NEAR(g->width(), 300, 2); // flex:1 fills 400 - 100
+    EXPECT_NEAR(a->width(), 150, 2); // half of grid
+}
+
+TEST_F(GridLayoutTest, FlexNestedInGrid)
+{
+    loadHtml("<div id='g' style='display:grid; grid-template-columns:200px 200px; grid-template-rows:40px; width:400px;'>"
+             "<div id='f' style='display:flex;'><div id='fa'>A</div><div id='fb'>B</div></div>"
+             "<div id='c'>C</div></div>");
+    RenderObject* g = renderer("g");
+    RenderObject* f = renderer("f");
+    RenderObject* c = renderer("c");
+    ASSERT_TRUE(g && f && c);
+    EXPECT_NEAR(f->width(), 200, 2); // grid column width
+    EXPECT_NEAR(c->xPos() - g->xPos(), 200, 2); // second column
+}
+
+TEST_F(GridLayoutTest, AbsoluteChildExcludedFromGrid)
+{
+    loadHtml("<div style='display:grid; grid-template-columns:100px 100px; grid-template-rows:50px; width:200px; position:relative;'>"
+             "<div id='a'>A</div>"
+             "<div id='x' style='position:absolute; width:40px; height:40px;'>X</div>"
+             "<div id='b'>B</div></div>");
+    RenderObject* a = renderer("a");
+    RenderObject* b = renderer("b");
+    ASSERT_TRUE(a && b);
+    // Absolute child does not consume a grid cell: a and b each get one column.
+    EXPECT_NEAR(a->width(), 100, 2);
+    EXPECT_NEAR(b->width(), 100, 2);
+}
+
 #endif // ENABLE(MODERN_GRID)

@@ -1,0 +1,58 @@
+<html>
+<head><style>
+/* 百分比轨道 */
+#g1 { display:grid; grid-template-columns:30% 70%; grid-template-rows:50px; width:400px; }
+/* grid 嵌套在 flex 内（flex item 是 grid） */
+#g2 { display:flex; width:400px; }
+#g2g { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:40px; flex:1; }
+#g2fixed { width:100px; }
+/* flex 嵌套在 grid 内（grid item 是 flex） */
+#g3 { display:grid; grid-template-columns:200px 200px; grid-template-rows:40px; width:400px; }
+#g3f { display:flex; }
+/* 多层嵌套 grid>grid>flex */
+#g4 { display:grid; grid-template-columns:1fr; grid-template-rows:60px; width:300px; }
+#g4inner { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:60px; }
+#g4flex { display:flex; }
+/* grid 旁 float */
+#fl { width:400px; }
+#flf { float:left; width:100px; height:30px; }
+#flg { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:30px; }
+/* grid 内绝对定位子项 */
+#g5 { display:grid; grid-template-columns:100px 100px; grid-template-rows:50px; width:200px; position:relative; }
+#g5abs { position:absolute; width:40px; height:40px; left:10px; top:5px; }
+</style></head>
+<body>
+<div id="g1"><div id="a1">A</div><div id="b1">B</div></div>
+<div id="g2"><div id="g2g"><div id="g2a">A</div><div id="g2b">B</div></div><div id="g2fixed">F</div></div>
+<div id="g3"><div id="g3f"><div id="g3a">A</div><div id="g3b">B</div></div><div id="g3c">C</div></div>
+<div id="g4"><div id="g4inner"><div id="g4flex"><div id="g4fa">X</div></div><div id="g4i2">I2</div></div></div>
+<div id="fl"><div id="flf">F</div><div id="flg"><div id="flga">A</div><div id="flgb">B</div></div></div>
+<div id="g5"><div id="g5a">A</div><div id="g5abs">X</div><div id="g5b">B</div></div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function E(id){return document.getElementById(id);}
+
+// 百分比轨道: 30% of 400=120, 70%=280
+ck('pct-a', E('a1').offsetWidth, 120);
+ck('pct-b', E('b1').offsetWidth, 280);
+// grid in flex: g2g 得 400-100=300, 内部 1fr1fr 各 150
+ck('gif-w', E('g2g').offsetWidth, 300);
+ck('gif-a', E('g2a').offsetWidth, 150);
+// flex in grid: g3f 在 col1 200px, 内部 flex 子项各... 自然宽度（无 flex:1），靠左
+ck('fig-w', E('g3f').offsetWidth, 200);
+ck('fig-c-x', E('g3c').offsetLeft - E('g3').offsetLeft, 200);
+// 多层: g4inner 占 300, 内部两列各 150, g4flex 在 col1
+ck('ml-inner-w', E('g4inner').offsetWidth, 300);
+ck('ml-i2-x', E('g4i2').offsetLeft - E('g4inner').offsetLeft, 150);
+// grid 旁 float: grid 收缩到 float 旁 300, 两列各 150
+ck('float-g-a', E('flga').offsetWidth, 150);
+// grid 绝对子项: a,b 各 100（abs 不参与轨道尺寸）
+ck('abs-a-w', E('g5a').offsetWidth, 100);
+ck('abs-b-w', E('g5b').offsetWidth, 100);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

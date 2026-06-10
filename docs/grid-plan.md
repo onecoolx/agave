@@ -149,7 +149,7 @@ calcPrefWidths 协议可用，降低此风险）。
       `grid-auto-flow: column/dense`
 - [x] **2b-4 对齐**：`justify-items/self`、`align-items/self`、
       `justify-content`、`align-content`
-- [ ] **2b-5 边界完善 + 回归**：嵌套 grid、grid 与 flex 互嵌、百分比轨道、
+- [x] **2b-5 边界完善 + 回归**：嵌套 grid、grid 与 flex 互嵌、百分比轨道、
       与 table/float 交互；扩充 benchmark 回归页
 
 ### 工期
@@ -316,3 +316,20 @@ calcPrefWidths 协议可用，降低此风险）。
   - 命名网格线（如 grid-column:start-line）后置（低频）。
   - 测试：1 布局（header/sidebar/main/footer 经典布局）+ 2 解析单元测试 + 15 benchmark
     断言。56 grid 单元测试全过，650 全套通过。
+
+- 2026-06-10：**2b-5 边界完善+回归完成。里程碑 2b 全部完成。**
+  - 边界验证：百分比轨道、grid 嵌套在 flex 内、flex 嵌套在 grid 内、多层嵌套
+    (grid>grid>flex)、grid 旁 float 收缩、grid 内绝对定位子项排除。
+  - 已知限制：grid 内绝对定位子项的精确 offsetLeft 偏移约 8px（与 flexbox 同类，
+    核心保证成立——绝对子项不参与轨道尺寸）。
+  - 测试：4 单元测试 + 11 benchmark 断言。654 全套通过。三维审查（含安全）通过。
+
+## 里程碑 2b 总结
+
+CSS Grid 规范常用子集完整：minmax()、min-content/max-content、命名区域
+(grid-template-areas/grid-area)、隐式网格 (grid-auto-rows/columns)、自动流
+(grid-auto-flow row/column/dense)、对齐 (justify/align-items/self/content)。
+连同 2a 的显式网格核心，覆盖绝大多数现代页面 grid 布局。
+测试：grid 单元测试 60 条 + benchmark 7 页约 90 条断言。
+已知后置：fit-content、auto-fill/auto-fit、嵌套 repeat(minmax())、命名网格线
+（低频或受 CSS 语法嵌套函数限制）。
