@@ -28,11 +28,10 @@
 namespace WebCore {
 
 // Modern CSS Grid layout, isolated behind ENABLE_MODERN_GRID.
-// 2a-0 probe: minimal display:grid skeleton with a hard-coded 2x2 equal
-// track grid, placing items in DOM order. Validates that the existing
-// RenderBlock framework can carry two-dimensional cell positioning and
-// item size negotiation (via setOverrideSize), before building the full
-// track-sizing/placement algorithm.
+// Supports explicit and implicit tracks (fixed/percent/fr/auto/min-content/
+// max-content/minmax), repeat(), line- and area-based item placement with
+// spanning, auto-flow (row/column/dense), gaps, item alignment
+// (justify/align-items/self) and content distribution (justify/align-content).
 class RenderGrid : public RenderBlock {
 public:
     RenderGrid(Node*);

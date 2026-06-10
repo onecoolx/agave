@@ -372,7 +372,7 @@ static void gridContentDistribution(EGridContent mode, int freeSpace, int trackC
     }
 }
 
-// Explicit CSS Grid layout (2a). Six phases: resolve explicit positions,
+// CSS Grid layout. Six phases: resolve explicit positions,
 // auto-flow placement (row), measure content, resolve track sizes, compute
 // track offsets, then size and position each item across its span.
 void RenderGrid::layoutGrid(bool relayoutChildren)
@@ -475,9 +475,8 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
     if (maxRows < 1)
         maxRows = 1;
 
+    // The 2-arg Vector constructor fills every cell with false.
     Vector<bool> occupied(maxRows * numCols, false);
-    for (int k = 0; k < maxRows * numCols; k++)
-        occupied[k] = false;
 
     int usedRows = max(explicitRows, max(maxDefiniteRow, 1));
 
@@ -627,7 +626,6 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
         }
     }
 
-    // --- Phase 5: track offsets ---
     // --- Phase 5: track offsets, with content alignment distribution ---
     // Compute leftover space along each axis for justify/align-content.
     int colTracksTotal = 0;
