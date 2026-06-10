@@ -249,9 +249,6 @@ void RenderGrid::resolveTrackSizes(const Vector<GridTrackSize>& templates, int a
     }
 }
 
-// 2a-4 track sizing: resolves explicit column/row tracks (fixed/percent/fr/auto)
-// and places flow items into cells in DOM order (auto-flow: row). Full item
-// placement (explicit grid-column/row, span) lands in 2a-5.
 // Resolves a start/end GridPosition pair into a 0-based start index and span.
 // outStart == -1 means the start is auto (to be auto-placed by the caller).
 // 2a subset: line numbers are 1-based; span N means span N tracks.
@@ -291,6 +288,9 @@ void RenderGrid::resolveGridSpan(const GridPosition& start, const GridPosition& 
         outSpan = end.line;
 }
 
+// Explicit CSS Grid layout (2a). Six phases: resolve explicit positions,
+// auto-flow placement (row), measure content, resolve track sizes, compute
+// track offsets, then size and position each item across its span.
 void RenderGrid::layoutGrid(bool relayoutChildren)
 {
     const int contentLeft = borderLeft() + paddingLeft();
@@ -343,28 +343,33 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
     }
 
     // --- Phase 2: auto-placement (auto-flow: row) ---
-    // Mark cells occupied by fully-explicit items first, then flow the rest.
+    // Upper bound on rows: explicit rows, any row reached by definite placement,
+    // plus one row per auto item (worst case one item per row). Pre-allocate the
+    // occupancy grid once so resize never leaves bool cells uninitialized.
     int explicitRows = rowTemplate.size() > 0 ? (int)rowTemplate.size() : 0;
-    int maxRow = explicitRows;
+    int maxDefiniteRow = 0;
+    int autoCount = 0;
     for (size_t i = 0; i < items.size(); i++) {
         if (items[i].row >= 0)
-            maxRow = max(maxRow, items[i].row + items[i].rowSpan);
+            maxDefiniteRow = max(maxDefiniteRow, items[i].row + items[i].rowSpan);
+        else
+            autoCount++;
     }
-    // Occupancy grid grows as needed; start generously.
-    int gridRows = max(maxRow, 1);
-    Vector<bool> occupied(gridRows * numCols, false);
+    int maxRows = max(explicitRows, maxDefiniteRow) + autoCount + 1;
+    if (maxRows < 1)
+        maxRows = 1;
+
+    Vector<bool> occupied(maxRows * numCols, false);
+    for (int k = 0; k < maxRows * numCols; k++)
+        occupied[k] = false;
+
+    int usedRows = max(explicitRows, max(maxDefiniteRow, 1));
 
     // Mark cells of items with a definite row+col.
     for (size_t i = 0; i < items.size(); i++) {
         ItemPlacement& p = items[i];
         if (p.row >= 0 && p.col >= 0) {
-            for (int r = p.row; r < p.row + p.rowSpan; r++) {
-                while (r >= gridRows) {
-                    gridRows++;
-                    occupied.resize(gridRows * numCols);
-                    for (int c = 0; c < numCols; c++)
-                        occupied[(gridRows - 1) * numCols + c] = false;
-                }
+            for (int r = p.row; r < p.row + p.rowSpan && r < maxRows; r++) {
                 for (int c = p.col; c < p.col + p.colSpan && c < numCols; c++)
                     occupied[r * numCols + c] = true;
             }
@@ -386,13 +391,7 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
             if (fixedCol + span > numCols)
                 span = max(1, numCols - fixedCol);
             int r = 0;
-            while (true) {
-                while (r >= gridRows) {
-                    gridRows++;
-                    occupied.resize(gridRows * numCols);
-                    for (int c = 0; c < numCols; c++)
-                        occupied[(gridRows - 1) * numCols + c] = false;
-                }
+            while (r < maxRows - 1) {
                 bool free = true;
                 for (int c = fixedCol; c < fixedCol + span; c++)
                     if (occupied[r * numCols + c]) { free = false; break; }
@@ -403,16 +402,11 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
             p.row = r;
         } else {
             // Fully auto: advance the row-major cursor to the next free run.
-            while (true) {
+            while (cursorRow < maxRows - 1) {
                 if (cursorCol + span > numCols) {
                     cursorCol = 0;
                     cursorRow++;
-                }
-                while (cursorRow >= gridRows) {
-                    gridRows++;
-                    occupied.resize(gridRows * numCols);
-                    for (int c = 0; c < numCols; c++)
-                        occupied[(gridRows - 1) * numCols + c] = false;
+                    continue;
                 }
                 bool free = true;
                 for (int c = cursorCol; c < cursorCol + span; c++)
@@ -423,23 +417,18 @@ void RenderGrid::layoutGrid(bool relayoutChildren)
             }
             p.col = cursorCol;
             p.row = cursorRow;
+            cursorCol += span;
         }
 
-        for (int r = p.row; r < p.row + p.rowSpan; r++) {
-            while (r >= gridRows) {
-                gridRows++;
-                occupied.resize(gridRows * numCols);
-                for (int c = 0; c < numCols; c++)
-                    occupied[(gridRows - 1) * numCols + c] = false;
-            }
+        for (int r = p.row; r < p.row + p.rowSpan && r < maxRows; r++)
             for (int c = p.col; c < p.col + span && c < numCols; c++)
                 occupied[r * numCols + c] = true;
-        }
-        if (p.col == cursorCol)
-            cursorCol += span;
+
+        if (p.row + p.rowSpan > usedRows)
+            usedRows = p.row + p.rowSpan;
     }
 
-    int numRows = max(gridRows, 1);
+    int numRows = max(usedRows, 1);
 
     // --- Phase 3: measure content sizes (single-track items feed auto tracks) ---
     Vector<int> colContent(numCols, 0);
