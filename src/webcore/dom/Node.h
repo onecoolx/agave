@@ -311,6 +311,11 @@ public:
     /* Like traverseNextNode, but skips children and starts with the next sibling. */
     Node* traverseNextSibling(const Node* stayWithin = 0) const;
 
+    // Modern DOM query API (Selectors API). Match descendant elements against a
+    // CSS selector string, reusing the document's style selector engine.
+    Element* querySelector(const String& selectors, ExceptionCode&);
+    PassRefPtr<NodeList> querySelectorAll(const String& selectors, ExceptionCode&);
+
     /**
      * Does a reverse pre-order traversal to find the node that comes before the current one in document order
      *

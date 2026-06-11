@@ -39,6 +39,15 @@ module core {
             raises(DOMException);
         NodeList getElementsByTagName(in DOMString name);
 
+        // Selectors API (querySelector / querySelectorAll), scoped to descendants.
+        Element querySelector(in DOMString selectors)
+            raises(DOMException);
+        NodeList querySelectorAll(in DOMString selectors)
+            raises(DOMException);
+
+        // Element.classList (DOMTokenList over the class attribute).
+        readonly attribute DOMTokenList classList;
+
         // DOM Level 2 Core
 
         [OldStyleObjC] DOMString getAttributeNS(in [ConvertNullToNullString] DOMString namespaceURI,

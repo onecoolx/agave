@@ -27,6 +27,7 @@
 
 #include "CSSStyleSelector.h"
 #include "Document.h"
+#include "DOMTokenList.h"
 #include "Editor.h"
 #include "ExceptionCode.h"
 #include "FocusController.h"
@@ -793,6 +794,13 @@ void Element::childrenChanged()
         return;
     if (document()->usesSiblingRules())
         setChanged();
+}
+
+DOMTokenList* Element::classList()
+{
+    if (!m_classList)
+        m_classList = new DOMTokenList(this); // RefPtr ctor refs (Shared starts at 0)
+    return m_classList.get();
 }
 
 bool Element::childTypeAllowed(NodeType type)

@@ -24,66 +24,49 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _JSElement_H_
-#define _JSElement_H_
+#ifndef _JSDOMTokenList_H_
+#define _JSDOMTokenList_H_
 
-#include "QJSEventTargetNode.h"
+#include "qjs_binding.h"
 
 namespace WebCore {
 
-class Element;
+class DOMTokenList;
 
-class JSElement {
+class JSDOMTokenList {
 public:
     static void init(JSContext*);
-    static JSValue create(JSContext*, Element*);
+    static JSValue create(JSContext*, DOMTokenList*);
     static void finalizer(JSRuntime *rt, JSValue val);
 
     static JSValue getValueProperty(JSContext * ctx, JSValueConst this_val, int token);
-    static JSValue putValueProperty(JSContext *ctx, JSValueConst this_val, JSValue val, int token);
 
     static JSClassID js_class_id;
 
     static void mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func);
 
-    static JSValue getConstructor(JSContext *ctx);
-
     enum {
         // Attributes
-        TagNameAttrNum, ClassListAttrNum, StyleAttrNum, OffsetLeftAttrNum, 
-        OffsetTopAttrNum, OffsetWidthAttrNum, OffsetHeightAttrNum, OffsetParentAttrNum, 
-        ClientLeftAttrNum, ClientTopAttrNum, ClientWidthAttrNum, ClientHeightAttrNum, 
-        ScrollLeftAttrNum, ScrollTopAttrNum, ScrollWidthAttrNum, ScrollHeightAttrNum, 
-
-        // The Constructor Attribute
-        ConstructorAttrNum, 
+        LengthAttrNum, 
 
         // Functions
-        GetAttributeFuncNum, SetAttributeFuncNum, RemoveAttributeFuncNum, GetAttributeNodeFuncNum, 
-        SetAttributeNodeFuncNum, RemoveAttributeNodeFuncNum, GetElementsByTagNameFuncNum, QuerySelectorFuncNum, 
-        QuerySelectorAllFuncNum, GetAttributeNSFuncNum, SetAttributeNSFuncNum, RemoveAttributeNSFuncNum, 
-        GetElementsByTagNameNSFuncNum, GetAttributeNodeNSFuncNum, SetAttributeNodeNSFuncNum, HasAttributeFuncNum, 
-        HasAttributeNSFuncNum, FocusFuncNum, BlurFuncNum, ScrollIntoViewFuncNum, 
-        InsertAdjacentElementFuncNum, ContainsFuncNum, ScrollIntoViewIfNeededFuncNum, ScrollByLinesFuncNum, 
-        ScrollByPagesFuncNum
+        ItemFuncNum, ContainsFuncNum, AddFuncNum, RemoveFuncNum, 
+        ToggleFuncNum, ToStringFuncNum
     };
-
-    // Custom functions
-    static JSValue setAttribute(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Element *impl);
-    static JSValue setAttributeNode(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Element *impl);
-    static JSValue setAttributeNS(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Element *impl);
-    static JSValue setAttributeNodeNS(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Element *impl);
+private:
+    static JSValue indexGetter(JSContext *ctx, JSValueConst this_obj, uint32_t idx);
 };
 
-Element* toElement(JSValue);
+JSValue toJS(JSContext *ctx, DOMTokenList*);
+DOMTokenList* toDOMTokenList(JSValue);
 
-class JSElementPrototype {
+class JSDOMTokenListPrototype {
 public:
     static JSValue self(JSContext * ctx);
     static void initPrototype(JSContext * ctx, JSValue this_obj);
 };
 
-class JSElementPrototypeFunction {
+class JSDOMTokenListPrototypeFunction {
 public:
     static JSValue callAsFunction(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst *argv, int token);
 };

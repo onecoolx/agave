@@ -90,6 +90,13 @@ class StyledElement;
         Document* document() const { return m_document; }
 
         void initElementAndPseudoState(Element* e);
+        // Public entry for the Selectors API (querySelector/All): does the
+        // single compound selector match the given element?
+        bool matchesSelector(Element* e, CSSSelector* selector)
+        {
+            initElementAndPseudoState(e);
+            return checkSelector(selector);
+        }
         void initForStyleResolve(Element* e, RenderStyle* parentStyle);
         RenderStyle *styleForElement(Element*, RenderStyle* parentStyle=0, bool allowSharing=true, bool resolveForRootDefault=false);
         RenderStyle* pseudoStyleForElement(RenderStyle::PseudoId, Element*, RenderStyle* parentStyle=0);

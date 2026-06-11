@@ -59,6 +59,12 @@ module core {
                                                        in DOMString localName);
         Element            getElementById(in DOMString elementId);
 
+        // Selectors API (querySelector / querySelectorAll)
+        Element            querySelector(in DOMString selectors)
+            raises(DOMException);
+        NodeList           querySelectorAll(in DOMString selectors)
+            raises(DOMException);
+
         // DOM Level 3 Core
 
         readonly attribute [ConvertNullStringTo=Null] DOMString inputEncoding;

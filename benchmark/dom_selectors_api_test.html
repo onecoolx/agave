@@ -1,0 +1,49 @@
+<html>
+<head><style>
+.card { width:100px; }
+.card.active { width:200px; }
+</style></head>
+<body>
+<div id="root">
+  <ul>
+    <li class="item">1</li>
+    <li class="item special">2</li>
+    <li class="item">3</li>
+  </ul>
+  <div class="card" id="c1">A</div>
+  <div class="card" id="c2">B</div>
+</div>
+<script>
+var r=[];
+function ck(n,a,e){r.push(n+':'+(a===e?'PASS':'FAIL('+a+'!='+e+')'));}
+
+// querySelector by id / class / descendant
+ck('qs-id', document.querySelector('#c1').id, 'c1');
+ck('qs-class', document.querySelector('.special').className, 'item special');
+ck('qs-desc', document.querySelector('#root li').className, 'item');
+
+// querySelectorAll count
+ck('qsa-count', document.querySelectorAll('.item').length, 3);
+ck('qsa-special', document.querySelectorAll('.item.special').length, 1);
+
+// scoped querySelectorAll
+var root = document.getElementById('root');
+ck('scoped', root.querySelectorAll('li').length, 3);
+
+// classList add toggles a CSS rule (.card.active -> width 200)
+var c1 = document.getElementById('c1');
+ck('before', c1.offsetWidth, 100);
+c1.classList.add('active');
+ck('contains', c1.classList.contains('active'), true);
+ck('len', c1.classList.length, 2);
+// re-query reflects the class change in layout
+ck('after', c1.offsetWidth, 200);
+c1.classList.toggle('active'); // remove
+ck('toggle-off', c1.classList.contains('active'), false);
+ck('after-toggle', c1.offsetWidth, 100);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

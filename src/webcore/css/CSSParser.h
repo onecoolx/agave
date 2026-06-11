@@ -114,6 +114,9 @@ namespace WebCore {
 
         void parseSheet(CSSStyleSheet*, const String&);
         PassRefPtr<CSSRule> parseRule(CSSStyleSheet*, const String&);
+        // Parses a standalone selector string (for querySelector/All). Returns a
+        // newly-allocated CSSSelector chain (caller owns it), or 0 on failure.
+        CSSSelector* parseSelector(const String&, Document*);
         bool parseValue(CSSMutableStyleDeclaration*, int propId, const String&, bool important);
         static bool parseColor(RGBA32& color, const String&, bool strict = false);
         bool parseColor(CSSMutableStyleDeclaration*, const String&);

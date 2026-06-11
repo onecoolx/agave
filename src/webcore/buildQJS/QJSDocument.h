@@ -66,11 +66,12 @@ public:
         CreateElementFuncNum, CreateDocumentFragmentFuncNum, CreateTextNodeFuncNum, CreateCommentFuncNum, 
         CreateCDATASectionFuncNum, CreateProcessingInstructionFuncNum, CreateAttributeFuncNum, CreateEntityReferenceFuncNum, 
         GetElementsByTagNameFuncNum, ImportNodeFuncNum, CreateElementNSFuncNum, CreateAttributeNSFuncNum, 
-        GetElementsByTagNameNSFuncNum, GetElementByIdFuncNum, AdoptNodeFuncNum, LoadFuncNum, 
-        CreateEventFuncNum, CreateRangeFuncNum, CreateNodeIteratorFuncNum, CreateTreeWalkerFuncNum, 
-        GetOverrideStyleFuncNum, CreateExpressionFuncNum, CreateNSResolverFuncNum, EvaluateFuncNum, 
-        ExecCommandFuncNum, QueryCommandEnabledFuncNum, QueryCommandIndetermFuncNum, QueryCommandStateFuncNum, 
-        QueryCommandSupportedFuncNum, QueryCommandValueFuncNum, GetElementsByNameFuncNum, ElementFromPointFuncNum
+        GetElementsByTagNameNSFuncNum, GetElementByIdFuncNum, QuerySelectorFuncNum, QuerySelectorAllFuncNum, 
+        AdoptNodeFuncNum, LoadFuncNum, CreateEventFuncNum, CreateRangeFuncNum, 
+        CreateNodeIteratorFuncNum, CreateTreeWalkerFuncNum, GetOverrideStyleFuncNum, CreateExpressionFuncNum, 
+        CreateNSResolverFuncNum, EvaluateFuncNum, ExecCommandFuncNum, QueryCommandEnabledFuncNum, 
+        QueryCommandIndetermFuncNum, QueryCommandStateFuncNum, QueryCommandSupportedFuncNum, QueryCommandValueFuncNum, 
+        GetElementsByNameFuncNum, ElementFromPointFuncNum
     };
 
     // Custom attributes

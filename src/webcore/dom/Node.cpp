@@ -25,6 +25,9 @@
 #include "Node.h"
 
 #include "CString.h"
+#include "CSSParser.h"
+#include "CSSSelector.h"
+#include "CSSStyleSelector.h"
 #include "ChildNodeList.h"
 #include "DOMImplementation.h"
 #include "Document.h"
@@ -35,6 +38,7 @@
 #include "KURL.h"
 #include "Logging.h"
 #include "NamedAttrMap.h"
+#include "StaticNodeList.h"
 #include "RenderObject.h"
 #include "Text.h"
 #include "TextStream.h"
@@ -550,6 +554,73 @@ Node *Node::traverseNextSibling(const Node *stayWithin) const
     }
     return 0;
 }
+// Matches a descendant element against the parsed selector chain, using the
+// document's style selector engine. Helper shared by querySelector(All).
+static bool selectorMatchesElement(CSSStyleSelector* styleSelector, CSSSelector* selector, Element* element)
+{
+    for (CSSSelector* sel = selector; sel; sel = sel->next()) {
+        if (styleSelector->matchesSelector(element, sel))
+            return true;
+    }
+    return false;
+}
+
+Element* Node::querySelector(const String& selectors, ExceptionCode& ec)
+{
+    if (selectors.isEmpty()) {
+        ec = SYNTAX_ERR;
+        return 0;
+    }
+    Document* doc = document();
+    if (!doc || !doc->styleSelector())
+        return 0;
+
+    CSSParser parser(true);
+    CSSSelector* selector = parser.parseSelector(selectors, doc);
+    if (!selector) {
+        ec = SYNTAX_ERR;
+        return 0;
+    }
+
+    Element* result = 0;
+    for (Node* n = traverseNextNode(this); n; n = n->traverseNextNode(this)) {
+        if (n->isElementNode()
+            && selectorMatchesElement(doc->styleSelector(), selector, static_cast<Element*>(n))) {
+            result = static_cast<Element*>(n);
+            break;
+        }
+    }
+    delete selector;
+    return result;
+}
+
+PassRefPtr<NodeList> Node::querySelectorAll(const String& selectors, ExceptionCode& ec)
+{
+    if (selectors.isEmpty()) {
+        ec = SYNTAX_ERR;
+        return 0;
+    }
+    Document* doc = document();
+    if (!doc || !doc->styleSelector())
+        return 0;
+
+    CSSParser parser(true);
+    CSSSelector* selector = parser.parseSelector(selectors, doc);
+    if (!selector) {
+        ec = SYNTAX_ERR;
+        return 0;
+    }
+
+    Vector<RefPtr<Node> > matched;
+    for (Node* n = traverseNextNode(this); n; n = n->traverseNextNode(this)) {
+        if (n->isElementNode()
+            && selectorMatchesElement(doc->styleSelector(), selector, static_cast<Element*>(n)))
+            matched.append(n);
+    }
+    delete selector;
+    return StaticNodeList::adopt(this, matched);
+}
+
 
 Node *Node::traversePreviousNode(const Node *stayWithin) const
 {

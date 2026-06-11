@@ -231,6 +231,26 @@ PassRefPtr<CSSRule> CSSParser::parseRule(CSSStyleSheet *sheet, const String &str
     return rule.release();
 }
 
+CSSSelector* CSSParser::parseSelector(const String& string, Document* doc)
+{
+    if (string.isEmpty())
+        return 0;
+
+    // Reuse the rule parser: parse "<selector> { }" and detach the selector
+    // chain from the throwaway rule so it outlives the rule.
+    RefPtr<CSSStyleSheet> dummySheet = new CSSStyleSheet(doc);
+    String ruleText = string + " { }";
+    RefPtr<CSSRule> parsed = parseRule(dummySheet.get(), ruleText);
+    if (!parsed || !parsed->isStyleRule())
+        return 0;
+
+    CSSStyleRule* styleRule = static_cast<CSSStyleRule*>(parsed.get());
+    CSSSelector* selector = styleRule->selector();
+    // Detach so the rule's destructor does not delete the selector we return.
+    styleRule->setSelector(0);
+    return selector;
+}
+
 bool CSSParser::parseValue(CSSMutableStyleDeclaration *declaration, int _id, const String &string, bool _important)
 {
     styleElement = declaration->stylesheet();

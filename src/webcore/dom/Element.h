@@ -35,6 +35,7 @@ class AtomicStringList;
 class Attr;
 class Attribute;
 class CSSStyleDeclaration;
+class DOMTokenList;
 class ElementRareData;
 class IntSize;
 
@@ -201,8 +202,13 @@ private:
 protected:
     mutable RefPtr<NamedAttrMap> namedAttrMap;
 
+public:
+    // Selectors API / DOMTokenList. classList lazily wraps the class attribute.
+    DOMTokenList* classList();
+
 private:
     QualifiedName m_tagName;
+    RefPtr<DOMTokenList> m_classList;
 };
 
 } //namespace
