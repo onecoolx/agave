@@ -1,0 +1,42 @@
+<html>
+<head><style>
+* { box-sizing: border-box; margin:0; }
+#wrap { width: 500px; }
+/* 经典布局: 主区 = 100% - 侧栏宽 */
+#sidebar { width: 120px; height: 40px; float: left; }
+#main { width: calc(100% - 120px); height: 40px; }
+/* 居中: 左右各留 calc 边距 */
+#card { width: calc(100% - 80px); height: 30px; margin-left: calc(40px); }
+/* 乘除 */
+#half { width: calc(500px / 2); height: 20px; }
+#triple { width: calc(50px * 3); height: 20px; }
+/* 百分比加减 */
+#combo { width: calc(25% + 25px); height: 20px; }
+</style></head>
+<body>
+<div id="wrap">
+  <div id="sidebar">S</div>
+  <div id="main">M</div>
+  <div id="card">C</div>
+  <div id="half">H</div>
+  <div id="triple">T</div>
+  <div id="combo">X</div>
+</div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function W(id){return document.getElementById(id).offsetWidth;}
+
+ck('main', W('main'), 380);   // 500 - 120
+ck('card', W('card'), 420);   // 500 - 80
+ck('half', W('half'), 250);   // 500 / 2
+ck('triple', W('triple'), 150); // 50 * 3
+ck('combo', W('combo'), 150); // 25% of 500 (=125) + 25
+// 存活
+ck('survived', W('sidebar'), 120);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

@@ -1969,7 +1969,9 @@ static Length convertToLength(CSSPrimitiveValue *primitiveValue, RenderStyle *st
             *ok = false;
     } else {
         int type = primitiveValue->primitiveType();
-        if(type > CSSPrimitiveValue::CSS_PERCENTAGE && type < CSSPrimitiveValue::CSS_DEG)
+        if (type == CSSPrimitiveValue::CSS_CALC)
+            l = Length::makeCalculated(calcExpression((int)primitiveValue->getDoubleValue()));
+        else if(type > CSSPrimitiveValue::CSS_PERCENTAGE && type < CSSPrimitiveValue::CSS_DEG)
             l = Length(primitiveValue->computeLengthIntForLength(style, multiplier), Fixed);
         else if(type == CSSPrimitiveValue::CSS_PERCENTAGE)
             l = Length(primitiveValue->getDoubleValue(), Percent);
@@ -3192,7 +3194,9 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
 
         if (primitiveValue && !apply) {
             int type = primitiveValue->primitiveType();
-            if(type > CSSPrimitiveValue::CSS_PERCENTAGE && type < CSSPrimitiveValue::CSS_DEG)
+            if (type == CSSPrimitiveValue::CSS_CALC)
+                l = Length::makeCalculated(calcExpression((int)primitiveValue->getDoubleValue()));
+            else if(type > CSSPrimitiveValue::CSS_PERCENTAGE && type < CSSPrimitiveValue::CSS_DEG)
                 // Handle our quirky margin units if we have them.
                 l = Length(primitiveValue->computeLengthIntForLength(style, zoomFactor), Fixed, 
                            primitiveValue->isQuirkValue());

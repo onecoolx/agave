@@ -31,6 +31,7 @@
 #include "CSSImageValue.h"
 #include "CSSGradientValue.h"
 #include "CSSFilterValue.h"
+#include "Length.h"
 #include "CSSFontFaceRule.h"
 #include "CSSFontFaceSrcValue.h"
 #include "CSSImportRule.h"
@@ -537,6 +538,25 @@ bool CSSParser::parseValue(int propId, bool important)
 
     if (!value)
         return false;
+
+    // calc(): when a single calc() function is the whole value, parse it to a
+    // CSS_CALC primitive that convertToLength() resolves later. Applies to any
+    // length-accepting property without per-property plumbing.
+    if (value->unit == Value::QFunction && value->function) {
+        String fn = domString(value->function->name).lower();
+        if (fn == "calc(" || fn == "-webkit-calc(") {
+            CSSPrimitiveValue* calc = parseCalc(value);
+            if (!calc)
+                return false;
+            valueList->next();
+            if (valueList->current()) { // calc must be the sole value
+                delete calc;
+                return false;
+            }
+            addProperty(propId, calc, important);
+            return true;
+        }
+    }
 
     // Map standard unprefixed CSS3 visual properties onto their existing
     // -webkit- implementations. The parse, apply (CSSStyleSelector) and paint
@@ -2689,6 +2709,107 @@ CSSValue* CSSParser::parseFilter()
         return 0;
     }
     return result;
+}
+
+// Parses calc() into a CSS_CALC primitive value backed by a linear
+// (percent, pixels) CalcExpression. Supports + and - between terms and * /
+// by a unitless number; lengths are reduced to pixels (absolute units) and
+// percentages accumulate into the percent component. Nested calc() and
+// non-linear combinations (e.g. percent * percent) are rejected.
+CSSPrimitiveValue* CSSParser::parseCalc(Value* function)
+{
+    if (!function->function || !function->function->args)
+        return 0;
+    String name = domString(function->function->name).lower();
+    if (name != "calc(" && name != "-webkit-calc(")
+        return 0;
+
+    ValueList* args = function->function->args;
+
+    // Accumulated linear form and the pending multiplicative factor/divisor
+    // applied to the next term.
+    float percent = 0.0f;
+    float pixels = 0.0f;
+    int sign = 1; // +1 or -1 for the current additive term
+
+    // A term is <value> ( ('*'|'/') <number> )*. We fold * and / by unitless
+    // numbers into the current term; mixing two non-numbers multiplicatively
+    // is non-linear and rejected.
+    Value* a = args->current();
+    bool expectOperand = true;
+    while (a) {
+        if (a->unit == Value::Operator) {
+            char op = (char)a->iValue;
+            if (expectOperand)
+                return 0; // operator where an operand was expected
+            if (op == '+') sign = 1;
+            else if (op == '-') sign = -1;
+            else return 0; // '*'/'/' handled within a term below
+            expectOperand = true;
+            a = args->next();
+            continue;
+        }
+
+        if (!expectOperand)
+            return 0; // two operands without an operator
+
+        // Read one operand value.
+        float termPercent = 0.0f;
+        float termPixels = 0.0f;
+        bool termIsNumber = false;
+        float termNumber = 0.0f;
+
+        if (a->unit == CSSPrimitiveValue::CSS_PERCENTAGE) {
+            termPercent = (float)a->fValue;
+        } else if (a->unit == CSSPrimitiveValue::CSS_PX || a->unit == CSSPrimitiveValue::CSS_NUMBER) {
+            termPixels = (float)a->fValue;
+            termIsNumber = (a->unit == CSSPrimitiveValue::CSS_NUMBER);
+            termNumber = (float)a->fValue;
+        } else if (a->unit == CSSPrimitiveValue::CSS_PT) {
+            termPixels = (float)(a->fValue * 96.0 / 72.0);
+        } else if (a->unit == CSSPrimitiveValue::CSS_IN) {
+            termPixels = (float)(a->fValue * 96.0);
+        } else if (a->unit == CSSPrimitiveValue::CSS_CM) {
+            termPixels = (float)(a->fValue * 96.0 / 2.54);
+        } else if (a->unit == CSSPrimitiveValue::CSS_MM) {
+            termPixels = (float)(a->fValue * 96.0 / 25.4);
+        } else {
+            return 0; // unsupported unit (em/ex etc. need font context; rejected)
+        }
+
+        // Fold any following '*' / '/' by a unitless number into this term.
+        a = args->next();
+        while (a && a->unit == Value::Operator
+               && ((char)a->iValue == '*' || (char)a->iValue == '/')) {
+            char mop = (char)a->iValue;
+            Value* rhs = args->next();
+            if (!rhs || rhs->unit != CSSPrimitiveValue::CSS_NUMBER)
+                return 0; // must multiply/divide by a unitless number
+            float factor = (float)rhs->fValue;
+            if (mop == '/') {
+                if (factor == 0.0f)
+                    return 0;
+                termPercent /= factor; termPixels /= factor; termNumber /= factor;
+            } else {
+                termPercent *= factor; termPixels *= factor; termNumber *= factor;
+            }
+            a = args->next();
+        }
+
+        if (termIsNumber)
+            termPixels = termNumber; // a bare number contributes as pixels
+
+        percent += sign * termPercent;
+        pixels += sign * termPixels;
+        expectOperand = false;
+    }
+
+    if (expectOperand)
+        return 0; // trailing operator
+
+    CalcExpression expr(percent, pixels);
+    int index = storeCalcExpression(expr);
+    return new CSSPrimitiveValue((double)index, CSSPrimitiveValue::CSS_CALC);
 }
 
 // Parses linear-gradient()/radial-gradient() into a CSSGradientValue.

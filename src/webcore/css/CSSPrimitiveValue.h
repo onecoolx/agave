@@ -68,7 +68,8 @@ public:
         CSS_RGBCOLOR = 25,
         CSS_PAIR = 100, // We envision this being exposed as a means of getting computed style values for pairs (border-spacing/radius, background-position, etc.)
         CSS_DASHBOARD_REGION = 101, // FIXME: What on earth is this doing as a primitive value? It should not be!
-        CSS_FR = 102 // CSS Grid fractional unit (1fr, 2fr)
+        CSS_FR = 102, // CSS Grid fractional unit (1fr, 2fr)
+        CSS_CALC = 103 // calc() value; m_value.num holds the calc side-table index
     };
 
     // FIXME: int vs. unsigned overloading is too tricky for color vs. ident

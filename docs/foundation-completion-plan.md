@@ -87,3 +87,29 @@ finalizer deref 后对象被提前释放 → use-after-free。
 8 C++ 单元测试（selectors_api_test.cpp）+ 12 benchmark 断言
 （dom_selectors_api_test.html，含 classList 改类触发 CSS 规则的布局联动）。
 698 全套通过（唯一失败为预存 flaky 计时基准）。恶意/畸形选择器鲁棒（无崩溃）。
+
+## 4b 完成（2026-06-11）：CSS calc() 基础设施
+
+- 支持 calc() / -webkit-calc()：混合单位线性表达式，+ - 加减项、* / 乘除 unitless
+  数。length（px/pt/in/cm/mm）归一到像素，percentage 累加到百分比分量，展平为
+  线性形式 result = percent/100 * 参照尺寸 + pixels。
+- 数据模型：Length 加 Calculated 类型（枚举第 8 个，占满 3 位）+ CalcExpression
+  {percent, pixels}；因 Length 是 trivially-copyable 值类型（RenderStyle 99 处成员），
+  表达式存进程级 side-table（Length.cpp，去重，上限 kMaxCalcExpressions=4096，
+  index 0 为 no-op 哨兵），Length 存 index。calcValue/calcMinValue 求值。
+- 解析：grammar operator 规则加 + - *（重新生成 buildQJS/buildKJS，shift/reduce
+  37→47，默认 shift 正确，全套回归无解析回归，负值/通配选择器验证正常）。
+  CSSParser::parseCalc 展平表达式；parseValue 顶部通用 calc 钩子（calc 为唯一值时
+  转 CSS_CALC primitive）；CSS_CALC=103 单位类型，num 存 side-table index。
+- 应用：convertToLength 及 width/margin/padding length 块识别 CSS_CALC →
+  Length::makeCalculated。
+- 已知限制：calc 简化为线性（percent + px），不支持 em/rem（需字体上下文）、
+  嵌套 calc、非线性（percent*percent）、min()/max()/clamp()——均被安全拒绝。
+- 测试：8 单元测试（Length 求值 + 布局：percent±px/乘除/-webkit-calc/畸形拒绝）
+  + 6 benchmark 断言（主区=100%-侧栏等经典布局）。706 全套通过。恶意 calc
+  （空/除零/非线性/嵌套/1e30）无崩溃。三维审查通过。
+
+## 地基补全里程碑完成
+
+4a（querySelector/All/classList）+ 4b（calc()）完成。现代页面"不丢样式、脚本能跑"
+的两块地基已补齐。var()/自定义属性后置（按需再做）。可进入阶段 3（Web API）。

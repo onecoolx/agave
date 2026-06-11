@@ -1082,6 +1082,15 @@ operator:
   | ',' maybe_space {
         $$ = ',';
     }
+  | '+' maybe_space {
+        $$ = '+';
+    }
+  | '-' maybe_space {
+        $$ = '-';
+    }
+  | '*' maybe_space {
+        $$ = '*';
+    }
   | /* empty */ {
         $$ = 0;
   }

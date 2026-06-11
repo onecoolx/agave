@@ -155,6 +155,10 @@ namespace WebCore {
         CSSValue* parseGradient(Value* function);
         CSSValue* parseFilter();
 
+        // CSS calc(): flattens an expression to a linear (percent, pixels) form
+        // and returns a CSSPrimitiveValue of type CSS_CALC, or 0 on failure.
+        CSSPrimitiveValue* parseCalc(Value* function);
+
         // CSS Grid (ENABLE_MODERN_GRID)
         bool parseGridTrackList(int propId, bool important);
         bool parseGridPosition(int propId, bool important);

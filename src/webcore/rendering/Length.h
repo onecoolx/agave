@@ -30,7 +30,25 @@ namespace WebCore {
     const int undefinedLength = -1;
     const int percentScaleFactor = 128;
 
-    enum LengthType { Auto, Relative, Percent, Fixed, Static, Intrinsic, MinIntrinsic };
+    enum LengthType { Auto, Relative, Percent, Fixed, Static, Intrinsic, MinIntrinsic, Calculated };
+
+    // A simplified CSS calc() value, stored as a linear function of the
+    // resolved reference size: result = percent/100 * maxValue + pixels.
+    // calc() expressions are flattened to this (percent, pixels) form at parse
+    // time. Instances live in a process-wide side-table because Length is a
+    // trivially-copyable value type that cannot embed an expression.
+    struct CalcExpression {
+        CalcExpression() : percent(0), pixels(0) { }
+        CalcExpression(float pct, float px) : percent(pct), pixels(px) { }
+        bool operator==(const CalcExpression& o) const { return percent == o.percent && pixels == o.pixels; }
+        float percent; // percentage numerator (e.g. 100 for 100%)
+        float pixels;  // fixed pixel offset
+    };
+
+    // Registers a calc expression and returns its side-table index. Identical
+    // expressions are deduplicated so the table stays small.
+    int storeCalcExpression(const CalcExpression&);
+    const CalcExpression& calcExpression(int index);
 
     struct Length {
         Length()
@@ -57,6 +75,15 @@ namespace WebCore {
 
         bool operator==(const Length& o) const { return m_value == o.m_value; }
         bool operator!=(const Length& o) const { return m_value != o.m_value; }
+
+        // Builds a Calculated length backed by the calc side-table.
+        static Length makeCalculated(const CalcExpression& expr)
+        {
+            Length l;
+            l.m_value = (storeCalcExpression(expr) << 4) | Calculated;
+            return l;
+        }
+        const CalcExpression& calc() const { return calcExpression(rawValue()); }
 
         int value() const {
             ASSERT(type() != Percent);
@@ -110,6 +137,10 @@ namespace WebCore {
                     return value();
                 case Percent:
                     return maxValue * rawValue() / (100 * percentScaleFactor);
+                case Calculated: {
+                    const CalcExpression& e = calc();
+                    return (int)(e.percent / 100.0f * maxValue + e.pixels);
+                }
                 case Auto:
                     return maxValue;
                 default:
@@ -124,6 +155,10 @@ namespace WebCore {
                     return value();
                 case Percent:
                     return maxValue * rawValue() / (100 * percentScaleFactor);
+                case Calculated: {
+                    const CalcExpression& e = calc();
+                    return (int)(e.percent / 100.0f * maxValue + e.pixels);
+                }
                 case Auto:
                 default:
                     return 0;
@@ -140,6 +175,7 @@ namespace WebCore {
         bool isPercent() const { return type() == Percent; }
         bool isFixed() const { return type() == Fixed; }
         bool isStatic() const { return type() == Static; }
+        bool isCalculated() const { return type() == Calculated; }
         bool isIntrinsicOrAuto() const { return type() == Auto || type() == MinIntrinsic || type() == Intrinsic; }
 
     private:
