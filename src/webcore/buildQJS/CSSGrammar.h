@@ -1,21 +1,22 @@
-#ifndef CSSGrammar_h
-#define CSSGrammar_h
-/* A Bison parser, made by GNU Bison 2.5.  */
+#ifndef CSSGRAMMAR_H
+#define CSSGRAMMAR_H
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison interface for Yacc-like parsers in C
-   
-      Copyright (C) 1984, 1989-1990, 2000-2011 Free Software Foundation, Inc.
-   
+
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
+
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
@@ -28,78 +29,86 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-   
+
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
 
-/* Tokens.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-   /* Put the tokens into the symbol table, so that GDB and other debuggers
-      know about them.  */
-   enum yytokentype {
-     UNIMPORTANT_TOK = 258,
-     WHITESPACE = 259,
-     SGML_CD = 260,
-     INCLUDES = 261,
-     DASHMATCH = 262,
-     BEGINSWITH = 263,
-     ENDSWITH = 264,
-     CONTAINS = 265,
-     STRING = 266,
-     IDENT = 267,
-     HEX = 268,
-     IDSEL = 269,
-     IMPORT_SYM = 270,
-     PAGE_SYM = 271,
-     MEDIA_SYM = 272,
-     FONT_FACE_SYM = 273,
-     CHARSET_SYM = 274,
-     NAMESPACE_SYM = 275,
-     WEBKIT_RULE_SYM = 276,
-     WEBKIT_DECLS_SYM = 277,
-     WEBKIT_VALUE_SYM = 278,
-     WEBKIT_MEDIAQUERY_SYM = 279,
-     IMPORTANT_SYM = 280,
-     MEDIA_ONLY = 281,
-     MEDIA_NOT = 282,
-     MEDIA_AND = 283,
-     QEMS = 284,
-     EMS = 285,
-     EXS = 286,
-     PXS = 287,
-     CMS = 288,
-     MMS = 289,
-     INS = 290,
-     PTS = 291,
-     PCS = 292,
-     DEGS = 293,
-     RADS = 294,
-     GRADS = 295,
-     MSECS = 296,
-     SECS = 297,
-     HERZ = 298,
-     KHERZ = 299,
-     DIMEN = 300,
-     PERCENTAGE = 301,
-     FLOATTOKEN = 302,
-     INTEGER = 303,
-     URI = 304,
-     FUNCTION = 305,
-     NOTFUNCTION = 306,
-     UNICODERANGE = 307
-   };
+#ifndef YY_CSSYY_CSSGRAMMAR_TAB_H_INCLUDED
+# define YY_CSSYY_CSSGRAMMAR_TAB_H_INCLUDED
+/* Debug traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 0
+#endif
+#if YYDEBUG
+extern int cssyydebug;
 #endif
 
+/* Token type.  */
+#ifndef YYTOKENTYPE
+# define YYTOKENTYPE
+  enum yytokentype
+  {
+    UNIMPORTANT_TOK = 258,
+    WHITESPACE = 259,
+    SGML_CD = 260,
+    INCLUDES = 261,
+    DASHMATCH = 262,
+    BEGINSWITH = 263,
+    ENDSWITH = 264,
+    CONTAINS = 265,
+    STRING = 266,
+    IDENT = 267,
+    HEX = 268,
+    IDSEL = 269,
+    IMPORT_SYM = 270,
+    PAGE_SYM = 271,
+    MEDIA_SYM = 272,
+    FONT_FACE_SYM = 273,
+    CHARSET_SYM = 274,
+    NAMESPACE_SYM = 275,
+    WEBKIT_RULE_SYM = 276,
+    WEBKIT_DECLS_SYM = 277,
+    WEBKIT_VALUE_SYM = 278,
+    WEBKIT_MEDIAQUERY_SYM = 279,
+    IMPORTANT_SYM = 280,
+    MEDIA_ONLY = 281,
+    MEDIA_NOT = 282,
+    MEDIA_AND = 283,
+    QEMS = 284,
+    EMS = 285,
+    EXS = 286,
+    PXS = 287,
+    CMS = 288,
+    MMS = 289,
+    INS = 290,
+    PTS = 291,
+    PCS = 292,
+    DEGS = 293,
+    RADS = 294,
+    GRADS = 295,
+    MSECS = 296,
+    SECS = 297,
+    HERZ = 298,
+    KHERZ = 299,
+    DIMEN = 300,
+    PERCENTAGE = 301,
+    FLOATTOKEN = 302,
+    INTEGER = 303,
+    URI = 304,
+    FUNCTION = 305,
+    NOTFUNCTION = 306,
+    UNICODERANGE = 307
+  };
+#endif
 
-
+/* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE
+union YYSTYPE
 {
-
-/* Line 2068 of yacc.c  */
-#line 125 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
+#line 124 "CSSGrammar.y"
 
     CSSRule* rule;
     CSSSelector* selector;
@@ -123,17 +132,17 @@ typedef union YYSTYPE
     Vector<MediaQueryExp*>* mediaQueryExpList;
     MediaQuery::Restrictor mediaQueryRestrictor;
 
+#line 134 "CSSGrammar.tab.h"
 
-
-/* Line 2068 of yacc.c  */
-#line 128 "CSSGrammar.hpp"
-} YYSTYPE;
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
 
 
+int cssyyparse (void* parser);
 
+#endif /* !YY_CSSYY_CSSGRAMMAR_TAB_H_INCLUDED  */
 #endif

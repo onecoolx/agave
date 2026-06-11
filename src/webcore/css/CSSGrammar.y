@@ -31,6 +31,7 @@
 #include "CSSRuleList.h"
 #include "CSSSelector.h"
 #include "CSSStyleSheet.h"
+#include "CString.h"
 #include "Document.h"
 #include "HTMLNames.h"
 #include "MediaList.h"
@@ -58,23 +59,22 @@ namespace WebCore {
 
 int getPropertyID(const char* tagStr, int len)
 {
-    DeprecatedString prop;
+    // Buffer that keeps the rewritten "-webkit-" string alive for the duration
+    // of this call when a vendor-prefix alias is normalized below.
+    CString buffer;
 
     if (len && tagStr[0] == '-') {
-        prop = DeprecatedString(tagStr, len);
-        if (prop.startsWith("-apple-")) {
-            prop = "-webkit-" + prop.mid(7);
-            tagStr = prop.ascii();
-            len++;
-        } else if (prop.startsWith("-khtml-")) {
-            prop = "-webkit-" + prop.mid(7);
-            len++;
-            tagStr = prop.ascii();
+        String prop(tagStr, len);
+        if (prop.startsWith("-apple-") || prop.startsWith("-khtml-")) {
+            prop = "-webkit-" + prop.substring(7);
+            buffer = prop.latin1();
+            tagStr = buffer.data();
+            len = buffer.length();
         }
 
         // Honor the use of old-style opacity (for Safari 1.1).
         if (prop == "-webkit-opacity") {
-            const char * const opacity = "opacity";
+            const char* const opacity = "opacity";
             tagStr = opacity;
             len = strlen(opacity);
         }
@@ -91,17 +91,15 @@ int getPropertyID(const char* tagStr, int len)
 
 static inline int getValueID(const char* tagStr, int len)
 {
-    DeprecatedString prop;
+    // Buffer that keeps the rewritten "-webkit-" string alive (see above).
+    CString buffer;
     if (len && tagStr[0] == '-') {
-        prop = DeprecatedString(tagStr, len);
-        if (prop.startsWith("-apple-")) {
-            prop = "-webkit-" + prop.mid(7);
-            tagStr = prop.ascii();
-            len++;
-        } else if (prop.startsWith("-khtml-")) {
-            prop = "-webkit-" + prop.mid(7);
-            len++;
-            tagStr = prop.ascii();
+        String prop(tagStr, len);
+        if (prop.startsWith("-apple-") || prop.startsWith("-khtml-")) {
+            prop = "-webkit-" + prop.substring(7);
+            buffer = prop.latin1();
+            tagStr = buffer.data();
+            len = buffer.length();
         }
     }
 
@@ -116,11 +114,12 @@ static inline int getValueID(const char* tagStr, int len)
 #define YYLTYPE_IS_TRIVIAL 1
 #define YYMAXDEPTH 10000
 #define YYDEBUG 0
-#define YYPARSE_PARAM parser
 
 %}
 
-%pure_parser
+%pure-parser
+%parse-param { void* parser }
+%lex-param { void* parser }
 
 %union {
     CSSRule* rule;
@@ -148,8 +147,8 @@ static inline int getValueID(const char* tagStr, int len)
 
 %{
 
-static inline int cssyyerror(const char*) { return 1; }
-static int cssyylex(YYSTYPE* yylval) { return CSSParser::current()->lex(yylval); }
+static inline int cssyyerror(void*, const char*) { return 1; }
+static int cssyylex(YYSTYPE* yylval, void*) { return CSSParser::current()->lex(yylval); }
 
 %}
 
@@ -856,7 +855,12 @@ pseudo:
         if (type == CSSSelector::PseudoUnknown)
             $$ = 0;
         else if (type == CSSSelector::PseudoEmpty ||
-                 type == CSSSelector::PseudoFirstChild) {
+                 type == CSSSelector::PseudoFirstChild ||
+                 type == CSSSelector::PseudoFirstOfType ||
+                 type == CSSSelector::PseudoLastChild ||
+                 type == CSSSelector::PseudoLastOfType ||
+                 type == CSSSelector::PseudoOnlyChild ||
+                 type == CSSSelector::PseudoOnlyOfType) {
             CSSParser* p = static_cast<CSSParser*>(parser);
             Document* doc = p->document();
             if (doc)
@@ -886,6 +890,46 @@ pseudo:
         $$ = static_cast<CSSParser*>(parser)->createFloatingSelector();
         $$->m_match = CSSSelector::PseudoClass;
         $$->m_argument = atomicString($3);
+        $2.lower();
+        $$->m_value = atomicString($2);
+        if ($$->pseudoType() == CSSSelector::PseudoUnknown)
+            $$ = 0;
+    }
+    // used by :nth-child(<integer>), e.g. :nth-child(2)
+    | ':' FUNCTION maybe_space INTEGER maybe_space ')' {
+        $$ = static_cast<CSSParser*>(parser)->createFloatingSelector();
+        $$->m_match = CSSSelector::PseudoClass;
+        $$->m_argument = String::number((int)$4);
+        $2.lower();
+        $$->m_value = atomicString($2);
+        if ($$->pseudoType() == CSSSelector::PseudoUnknown)
+            $$ = 0;
+    }
+    // used by :nth-child(An) where "An" tokenizes as a DIMEN, e.g. "2n"
+    | ':' FUNCTION maybe_space DIMEN maybe_space ')' {
+        $$ = static_cast<CSSParser*>(parser)->createFloatingSelector();
+        $$->m_match = CSSSelector::PseudoClass;
+        $$->m_argument = atomicString($4);
+        $2.lower();
+        $$->m_value = atomicString($2);
+        if ($$->pseudoType() == CSSSelector::PseudoUnknown)
+            $$ = 0;
+    }
+    // used by :nth-child(An+B) / :nth-child(An-B): "An" is a DIMEN, the sign is
+    // a separate operator token, and B is an INTEGER.
+    | ':' FUNCTION maybe_space DIMEN maybe_space '+' maybe_space INTEGER maybe_space ')' {
+        $$ = static_cast<CSSParser*>(parser)->createFloatingSelector();
+        $$->m_match = CSSSelector::PseudoClass;
+        $$->m_argument = domString($4) + "+" + String::number((int)$8);
+        $2.lower();
+        $$->m_value = atomicString($2);
+        if ($$->pseudoType() == CSSSelector::PseudoUnknown)
+            $$ = 0;
+    }
+    | ':' FUNCTION maybe_space DIMEN maybe_space '-' maybe_space INTEGER maybe_space ')' {
+        $$ = static_cast<CSSParser*>(parser)->createFloatingSelector();
+        $$->m_match = CSSSelector::PseudoClass;
+        $$->m_argument = domString($4) + "-" + String::number((int)$8);
         $2.lower();
         $$->m_value = atomicString($2);
         if ($$->pseudoType() == CSSSelector::PseudoUnknown)
@@ -995,10 +1039,9 @@ declaration:
 property:
     IDENT maybe_space {
         $1.lower();
-        DeprecatedString str = deprecatedString($1);
-        const char* s = str.ascii();
-        int l = str.length();
-        $$ = getPropertyID(s, l);
+        String str = domString($1);
+        CString bytes = str.latin1();
+        $$ = getPropertyID(bytes.data(), bytes.length());
     }
   ;
 
@@ -1049,14 +1092,15 @@ term:
   | unary_operator unary_term { $$ = $2; $$.fValue *= $1; }
   | STRING maybe_space { $$.id = 0; $$.string = $1; $$.unit = CSSPrimitiveValue::CSS_STRING; }
   | IDENT maybe_space {
-      DeprecatedString str = deprecatedString($1);
-      $$.id = getValueID(str.lower().latin1(), str.length());
+      String str = domString($1);
+      CString bytes = str.lower().latin1();
+      $$.id = getValueID(bytes.data(), bytes.length());
       $$.unit = CSSPrimitiveValue::CSS_IDENT;
       $$.string = $1;
   }
   /* We might need to actually parse the number from a dimension, but we can't just put something that uses $$.string into unary_term. */
-  | DIMEN maybe_space { $$.id = 0; $$.string = $1; $$.unit = CSSPrimitiveValue::CSS_DIMENSION }
-  | unary_operator DIMEN maybe_space { $$.id = 0; $$.string = $2; $$.unit = CSSPrimitiveValue::CSS_DIMENSION }
+  | DIMEN maybe_space { $$.id = 0; $$.string = $1; $$.unit = CSSPrimitiveValue::CSS_DIMENSION; }
+  | unary_operator DIMEN maybe_space { $$.id = 0; $$.string = $2; $$.unit = CSSPrimitiveValue::CSS_DIMENSION; }
   | URI maybe_space { $$.id = 0; $$.string = $1; $$.unit = CSSPrimitiveValue::CSS_URI; }
   | UNICODERANGE maybe_space { $$.id = 0; $$.iValue = 0; $$.unit = CSSPrimitiveValue::CSS_UNKNOWN;/* ### */ }
   | hexcolor { $$.id = 0; $$.string = $1; $$.unit = CSSPrimitiveValue::CSS_RGBCOLOR; }

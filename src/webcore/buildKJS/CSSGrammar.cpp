@@ -1,19 +1,20 @@
-/* A Bison parser, made by GNU Bison 2.5.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison implementation for Yacc-like parsers in C
-   
-      Copyright (C) 1984, 1989-1990, 2000-2011 Free Software Foundation, Inc.
-   
+
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
+
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
@@ -26,7 +27,7 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-   
+
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
@@ -40,11 +41,14 @@
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 /* Identify Bison output.  */
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "2.5"
+#define YYBISON_VERSION "3.5.1"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -58,23 +62,16 @@
 /* Pull parsers.  */
 #define YYPULL 1
 
-/* Using locations.  */
-#define YYLSP_NEEDED 0
 
 /* Substitute the variable and function names.  */
 #define yyparse         cssyyparse
 #define yylex           cssyylex
 #define yyerror         cssyyerror
-#define yylval          cssyylval
-#define yychar          cssyychar
 #define yydebug         cssyydebug
 #define yynerrs         cssyynerrs
 
-
-/* Copy the first part of user declarations.  */
-
-/* Line 268 of yacc.c  */
-#line 1 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
+/* First part of user prologue.  */
+#line 1 "CSSGrammar.y"
 
 
 /*
@@ -136,31 +133,22 @@ namespace WebCore {
 
 int getPropertyID(const char* tagStr, int len)
 {
-    String prop;
+    // Buffer that keeps the rewritten "-webkit-" string alive for the duration
+    // of this call when a vendor-prefix alias is normalized below.
+    CString buffer;
 
     if (len && tagStr[0] == '-') {
-        prop = String(tagStr, len);
-        if (prop.startsWith("-apple-")) {
+        String prop(tagStr, len);
+        if (prop.startsWith("-apple-") || prop.startsWith("-khtml-")) {
             prop = "-webkit-" + prop.substring(7);
-            CString propLatin1 = prop.latin1();
-            tagStr = propLatin1.data();
-            len++;
-            const struct props* propsPtr = findProp(tagStr, (size_t)len);
-            if (!propsPtr) return 0;
-            return propsPtr->id;
-        } else if (prop.startsWith("-khtml-")) {
-            prop = "-webkit-" + prop.substring(7);
-            len++;
-            CString propLatin1 = prop.latin1();
-            tagStr = propLatin1.data();
-            const struct props* propsPtr = findProp(tagStr, (size_t)len);
-            if (!propsPtr) return 0;
-            return propsPtr->id;
+            buffer = prop.latin1();
+            tagStr = buffer.data();
+            len = buffer.length();
         }
 
         // Honor the use of old-style opacity (for Safari 1.1).
         if (prop == "-webkit-opacity") {
-            const char * const opacity = "opacity";
+            const char* const opacity = "opacity";
             tagStr = opacity;
             len = strlen(opacity);
         }
@@ -177,25 +165,15 @@ int getPropertyID(const char* tagStr, int len)
 
 static inline int getValueID(const char* tagStr, int len)
 {
-    String prop;
+    // Buffer that keeps the rewritten "-webkit-" string alive (see above).
+    CString buffer;
     if (len && tagStr[0] == '-') {
-        prop = String(tagStr, len);
-        if (prop.startsWith("-apple-")) {
+        String prop(tagStr, len);
+        if (prop.startsWith("-apple-") || prop.startsWith("-khtml-")) {
             prop = "-webkit-" + prop.substring(7);
-            CString propLatin1 = prop.latin1();
-            tagStr = propLatin1.data();
-            len++;
-            const struct css_value* val = findValue(tagStr, (size_t)len);
-            if (!val) return 0;
-            return val->id;
-        } else if (prop.startsWith("-khtml-")) {
-            prop = "-webkit-" + prop.substring(7);
-            len++;
-            CString propLatin1 = prop.latin1();
-            tagStr = propLatin1.data();
-            const struct css_value* val = findValue(tagStr, (size_t)len);
-            if (!val) return 0;
-            return val->id;
+            buffer = prop.latin1();
+            tagStr = buffer.data();
+            len = buffer.length();
         }
     }
 
@@ -210,17 +188,30 @@ static inline int getValueID(const char* tagStr, int len)
 #define YYLTYPE_IS_TRIVIAL 1
 #define YYMAXDEPTH 10000
 #define YYDEBUG 0
-#define YYPARSE_PARAM parser
 
 
+#line 194 "CSSGrammar.tab.c"
 
-/* Line 268 of yacc.c  */
-#line 202 "CSSGrammar.cpp"
-
-/* Enabling traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
+# ifndef YY_CAST
+#  ifdef __cplusplus
+#   define YY_CAST(Type, Val) static_cast<Type> (Val)
+#   define YY_REINTERPRET_CAST(Type, Val) reinterpret_cast<Type> (Val)
+#  else
+#   define YY_CAST(Type, Val) ((Type) (Val))
+#   define YY_REINTERPRET_CAST(Type, Val) ((Type) (Val))
+#  endif
+# endif
+# ifndef YY_NULLPTR
+#  if defined __cplusplus
+#   if 201103L <= __cplusplus
+#    define YY_NULLPTR nullptr
+#   else
+#    define YY_NULLPTR 0
+#   endif
+#  else
+#   define YY_NULLPTR ((void*)0)
+#  endif
+# endif
 
 /* Enabling verbose error messages.  */
 #ifdef YYERROR_VERBOSE
@@ -230,79 +221,81 @@ static inline int getValueID(const char* tagStr, int len)
 # define YYERROR_VERBOSE 0
 #endif
 
-/* Enabling the token table.  */
-#ifndef YYTOKEN_TABLE
-# define YYTOKEN_TABLE 0
+/* Use api.header.include to #include this header
+   instead of duplicating it here.  */
+#ifndef YY_CSSYY_CSSGRAMMAR_TAB_H_INCLUDED
+# define YY_CSSYY_CSSGRAMMAR_TAB_H_INCLUDED
+/* Debug traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 0
+#endif
+#if YYDEBUG
+extern int cssyydebug;
 #endif
 
-
-/* Tokens.  */
+/* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-   /* Put the tokens into the symbol table, so that GDB and other debuggers
-      know about them.  */
-   enum yytokentype {
-     UNIMPORTANT_TOK = 258,
-     WHITESPACE = 259,
-     SGML_CD = 260,
-     INCLUDES = 261,
-     DASHMATCH = 262,
-     BEGINSWITH = 263,
-     ENDSWITH = 264,
-     CONTAINS = 265,
-     STRING = 266,
-     IDENT = 267,
-     HEX = 268,
-     IDSEL = 269,
-     IMPORT_SYM = 270,
-     PAGE_SYM = 271,
-     MEDIA_SYM = 272,
-     FONT_FACE_SYM = 273,
-     CHARSET_SYM = 274,
-     NAMESPACE_SYM = 275,
-     WEBKIT_RULE_SYM = 276,
-     WEBKIT_DECLS_SYM = 277,
-     WEBKIT_VALUE_SYM = 278,
-     WEBKIT_MEDIAQUERY_SYM = 279,
-     IMPORTANT_SYM = 280,
-     MEDIA_ONLY = 281,
-     MEDIA_NOT = 282,
-     MEDIA_AND = 283,
-     QEMS = 284,
-     EMS = 285,
-     EXS = 286,
-     PXS = 287,
-     CMS = 288,
-     MMS = 289,
-     INS = 290,
-     PTS = 291,
-     PCS = 292,
-     DEGS = 293,
-     RADS = 294,
-     GRADS = 295,
-     MSECS = 296,
-     SECS = 297,
-     HERZ = 298,
-     KHERZ = 299,
-     DIMEN = 300,
-     PERCENTAGE = 301,
-     FLOATTOKEN = 302,
-     INTEGER = 303,
-     URI = 304,
-     FUNCTION = 305,
-     NOTFUNCTION = 306,
-     UNICODERANGE = 307
-   };
+  enum yytokentype
+  {
+    UNIMPORTANT_TOK = 258,
+    WHITESPACE = 259,
+    SGML_CD = 260,
+    INCLUDES = 261,
+    DASHMATCH = 262,
+    BEGINSWITH = 263,
+    ENDSWITH = 264,
+    CONTAINS = 265,
+    STRING = 266,
+    IDENT = 267,
+    HEX = 268,
+    IDSEL = 269,
+    IMPORT_SYM = 270,
+    PAGE_SYM = 271,
+    MEDIA_SYM = 272,
+    FONT_FACE_SYM = 273,
+    CHARSET_SYM = 274,
+    NAMESPACE_SYM = 275,
+    WEBKIT_RULE_SYM = 276,
+    WEBKIT_DECLS_SYM = 277,
+    WEBKIT_VALUE_SYM = 278,
+    WEBKIT_MEDIAQUERY_SYM = 279,
+    IMPORTANT_SYM = 280,
+    MEDIA_ONLY = 281,
+    MEDIA_NOT = 282,
+    MEDIA_AND = 283,
+    QEMS = 284,
+    EMS = 285,
+    EXS = 286,
+    PXS = 287,
+    CMS = 288,
+    MMS = 289,
+    INS = 290,
+    PTS = 291,
+    PCS = 292,
+    DEGS = 293,
+    RADS = 294,
+    GRADS = 295,
+    MSECS = 296,
+    SECS = 297,
+    HERZ = 298,
+    KHERZ = 299,
+    DIMEN = 300,
+    PERCENTAGE = 301,
+    FLOATTOKEN = 302,
+    INTEGER = 303,
+    URI = 304,
+    FUNCTION = 305,
+    NOTFUNCTION = 306,
+    UNICODERANGE = 307
+  };
 #endif
 
-
-
+/* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE
+union YYSTYPE
 {
-
-/* Line 293 of yacc.c  */
-#line 125 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
+#line 124 "CSSGrammar.y"
 
     CSSRule* rule;
     CSSSelector* selector;
@@ -326,60 +319,104 @@ typedef union YYSTYPE
     Vector<MediaQueryExp*>* mediaQueryExpList;
     MediaQuery::Restrictor mediaQueryRestrictor;
 
+#line 323 "CSSGrammar.tab.c"
 
-
-/* Line 293 of yacc.c  */
-#line 316 "CSSGrammar.cpp"
-} YYSTYPE;
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
 
-/* Copy the second part of user declarations.  */
 
-/* Line 343 of yacc.c  */
-#line 149 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
+int cssyyparse (void* parser);
 
+#endif /* !YY_CSSYY_CSSGRAMMAR_TAB_H_INCLUDED  */
 
-static inline int cssyyerror(const char*) { return 1; }
-static int cssyylex(YYSTYPE* yylval) { return CSSParser::current()->lex(yylval); }
-
+/* Second part of user prologue.  */
+#line 148 "CSSGrammar.y"
 
 
-/* Line 343 of yacc.c  */
-#line 336 "CSSGrammar.cpp"
+static inline int cssyyerror(void*, const char*) { return 1; }
+static int cssyylex(YYSTYPE* yylval, void*) { return CSSParser::current()->lex(yylval); }
+
+
+#line 345 "CSSGrammar.tab.c"
+
 
 #ifdef short
 # undef short
 #endif
 
-#ifdef YYTYPE_UINT8
-typedef YYTYPE_UINT8 yytype_uint8;
-#else
-typedef unsigned char yytype_uint8;
+/* On compilers that do not define __PTRDIFF_MAX__ etc., make sure
+   <limits.h> and (if available) <stdint.h> are included
+   so that the code can choose integer types of a good width.  */
+
+#ifndef __PTRDIFF_MAX__
+# include <limits.h> /* INFRINGES ON USER NAME SPACE */
+# if defined __STDC_VERSION__ && 199901 <= __STDC_VERSION__
+#  include <stdint.h> /* INFRINGES ON USER NAME SPACE */
+#  define YY_STDINT_H
+# endif
 #endif
 
-#ifdef YYTYPE_INT8
-typedef YYTYPE_INT8 yytype_int8;
-#elif (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
+/* Narrow types that promote to a signed type and that can represent a
+   signed or unsigned integer of at least N bits.  In tables they can
+   save space and decrease cache pressure.  Promoting to a signed type
+   helps avoid bugs in integer arithmetic.  */
+
+#ifdef __INT_LEAST8_MAX__
+typedef __INT_LEAST8_TYPE__ yytype_int8;
+#elif defined YY_STDINT_H
+typedef int_least8_t yytype_int8;
+#else
 typedef signed char yytype_int8;
-#else
-typedef short int yytype_int8;
 #endif
 
-#ifdef YYTYPE_UINT16
-typedef YYTYPE_UINT16 yytype_uint16;
+#ifdef __INT_LEAST16_MAX__
+typedef __INT_LEAST16_TYPE__ yytype_int16;
+#elif defined YY_STDINT_H
+typedef int_least16_t yytype_int16;
 #else
-typedef unsigned short int yytype_uint16;
+typedef short yytype_int16;
 #endif
 
-#ifdef YYTYPE_INT16
-typedef YYTYPE_INT16 yytype_int16;
+#if defined __UINT_LEAST8_MAX__ && __UINT_LEAST8_MAX__ <= __INT_MAX__
+typedef __UINT_LEAST8_TYPE__ yytype_uint8;
+#elif (!defined __UINT_LEAST8_MAX__ && defined YY_STDINT_H \
+       && UINT_LEAST8_MAX <= INT_MAX)
+typedef uint_least8_t yytype_uint8;
+#elif !defined __UINT_LEAST8_MAX__ && UCHAR_MAX <= INT_MAX
+typedef unsigned char yytype_uint8;
 #else
-typedef short int yytype_int16;
+typedef short yytype_uint8;
+#endif
+
+#if defined __UINT_LEAST16_MAX__ && __UINT_LEAST16_MAX__ <= __INT_MAX__
+typedef __UINT_LEAST16_TYPE__ yytype_uint16;
+#elif (!defined __UINT_LEAST16_MAX__ && defined YY_STDINT_H \
+       && UINT_LEAST16_MAX <= INT_MAX)
+typedef uint_least16_t yytype_uint16;
+#elif !defined __UINT_LEAST16_MAX__ && USHRT_MAX <= INT_MAX
+typedef unsigned short yytype_uint16;
+#else
+typedef int yytype_uint16;
+#endif
+
+#ifndef YYPTRDIFF_T
+# if defined __PTRDIFF_TYPE__ && defined __PTRDIFF_MAX__
+#  define YYPTRDIFF_T __PTRDIFF_TYPE__
+#  define YYPTRDIFF_MAXIMUM __PTRDIFF_MAX__
+# elif defined PTRDIFF_MAX
+#  ifndef ptrdiff_t
+#   include <stddef.h> /* INFRINGES ON USER NAME SPACE */
+#  endif
+#  define YYPTRDIFF_T ptrdiff_t
+#  define YYPTRDIFF_MAXIMUM PTRDIFF_MAX
+# else
+#  define YYPTRDIFF_T long
+#  define YYPTRDIFF_MAXIMUM LONG_MAX
+# endif
 #endif
 
 #ifndef YYSIZE_T
@@ -387,53 +424,96 @@ typedef short int yytype_int16;
 #  define YYSIZE_T __SIZE_TYPE__
 # elif defined size_t
 #  define YYSIZE_T size_t
-# elif ! defined YYSIZE_T && (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
+# elif defined __STDC_VERSION__ && 199901 <= __STDC_VERSION__
 #  include <stddef.h> /* INFRINGES ON USER NAME SPACE */
 #  define YYSIZE_T size_t
 # else
-#  define YYSIZE_T unsigned int
+#  define YYSIZE_T unsigned
 # endif
 #endif
 
-#define YYSIZE_MAXIMUM ((YYSIZE_T) -1)
+#define YYSIZE_MAXIMUM                                  \
+  YY_CAST (YYPTRDIFF_T,                                 \
+           (YYPTRDIFF_MAXIMUM < YY_CAST (YYSIZE_T, -1)  \
+            ? YYPTRDIFF_MAXIMUM                         \
+            : YY_CAST (YYSIZE_T, -1)))
+
+#define YYSIZEOF(X) YY_CAST (YYPTRDIFF_T, sizeof (X))
+
+/* Stored state numbers (used for stacks). */
+typedef yytype_int16 yy_state_t;
+
+/* State numbers in computations.  */
+typedef int yy_state_fast_t;
 
 #ifndef YY_
 # if defined YYENABLE_NLS && YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* INFRINGES ON USER NAME SPACE */
-#   define YY_(msgid) dgettext ("bison-runtime", msgid)
+#   define YY_(Msgid) dgettext ("bison-runtime", Msgid)
 #  endif
 # endif
 # ifndef YY_
-#  define YY_(msgid) msgid
+#  define YY_(Msgid) Msgid
+# endif
+#endif
+
+#ifndef YY_ATTRIBUTE_PURE
+# if defined __GNUC__ && 2 < __GNUC__ + (96 <= __GNUC_MINOR__)
+#  define YY_ATTRIBUTE_PURE __attribute__ ((__pure__))
+# else
+#  define YY_ATTRIBUTE_PURE
+# endif
+#endif
+
+#ifndef YY_ATTRIBUTE_UNUSED
+# if defined __GNUC__ && 2 < __GNUC__ + (7 <= __GNUC_MINOR__)
+#  define YY_ATTRIBUTE_UNUSED __attribute__ ((__unused__))
+# else
+#  define YY_ATTRIBUTE_UNUSED
 # endif
 #endif
 
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
-# define YYUSE(e) ((void) (e))
+# define YYUSE(E) ((void) (E))
 #else
-# define YYUSE(e) /* empty */
+# define YYUSE(E) /* empty */
 #endif
 
-/* Identity function, used to suppress warnings about constant conditions.  */
-#ifndef lint
-# define YYID(n) (n)
+#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
+/* Suppress an incorrect diagnostic about yylval being uninitialized.  */
+# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                            \
+    _Pragma ("GCC diagnostic push")                                     \
+    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")              \
+    _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
+# define YY_IGNORE_MAYBE_UNINITIALIZED_END      \
+    _Pragma ("GCC diagnostic pop")
 #else
-#if (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
-static int
-YYID (int yyi)
-#else
-static int
-YYID (yyi)
-    int yyi;
+# define YY_INITIAL_VALUE(Value) Value
 #endif
-{
-  return yyi;
-}
+#ifndef YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+# define YY_IGNORE_MAYBE_UNINITIALIZED_END
 #endif
+#ifndef YY_INITIAL_VALUE
+# define YY_INITIAL_VALUE(Value) /* Nothing. */
+#endif
+
+#if defined __cplusplus && defined __GNUC__ && ! defined __ICC && 6 <= __GNUC__
+# define YY_IGNORE_USELESS_CAST_BEGIN                          \
+    _Pragma ("GCC diagnostic push")                            \
+    _Pragma ("GCC diagnostic ignored \"-Wuseless-cast\"")
+# define YY_IGNORE_USELESS_CAST_END            \
+    _Pragma ("GCC diagnostic pop")
+#endif
+#ifndef YY_IGNORE_USELESS_CAST_BEGIN
+# define YY_IGNORE_USELESS_CAST_BEGIN
+# define YY_IGNORE_USELESS_CAST_END
+#endif
+
+
+#define YY_ASSERT(E) ((void) (0 && (E)))
 
 #if ! defined yyoverflow || YYERROR_VERBOSE
 
@@ -452,9 +532,9 @@ YYID (yyi)
 #    define alloca _alloca
 #   else
 #    define YYSTACK_ALLOC alloca
-#    if ! defined _ALLOCA_H && ! defined EXIT_SUCCESS && (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
+#    if ! defined _ALLOCA_H && ! defined EXIT_SUCCESS
 #     include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
+      /* Use EXIT_SUCCESS as a witness for stdlib.h.  */
 #     ifndef EXIT_SUCCESS
 #      define EXIT_SUCCESS 0
 #     endif
@@ -464,8 +544,8 @@ YYID (yyi)
 # endif
 
 # ifdef YYSTACK_ALLOC
-   /* Pacify GCC's `empty if-body' warning.  */
-#  define YYSTACK_FREE(Ptr) do { /* empty */; } while (YYID (0))
+   /* Pacify GCC's 'empty if-body' warning.  */
+#  define YYSTACK_FREE(Ptr) do { /* empty */; } while (0)
 #  ifndef YYSTACK_ALLOC_MAXIMUM
     /* The OS might guarantee only one guard page at the bottom of the stack,
        and a page size can be as small as 4096 bytes.  So we cannot safely
@@ -481,7 +561,7 @@ YYID (yyi)
 #  endif
 #  if (defined __cplusplus && ! defined EXIT_SUCCESS \
        && ! ((defined YYMALLOC || defined malloc) \
-	     && (defined YYFREE || defined free)))
+             && (defined YYFREE || defined free)))
 #   include <stdlib.h> /* INFRINGES ON USER NAME SPACE */
 #   ifndef EXIT_SUCCESS
 #    define EXIT_SUCCESS 0
@@ -489,15 +569,13 @@ YYID (yyi)
 #  endif
 #  ifndef YYMALLOC
 #   define YYMALLOC malloc
-#   if ! defined malloc && ! defined EXIT_SUCCESS && (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
+#   if ! defined malloc && ! defined EXIT_SUCCESS
 void *malloc (YYSIZE_T); /* INFRINGES ON USER NAME SPACE */
 #   endif
 #  endif
 #  ifndef YYFREE
 #   define YYFREE free
-#   if ! defined free && ! defined EXIT_SUCCESS && (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
+#   if ! defined free && ! defined EXIT_SUCCESS
 void free (void *); /* INFRINGES ON USER NAME SPACE */
 #   endif
 #  endif
@@ -507,22 +585,22 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
-	 || (defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
+         || (defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
 
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
 {
-  yytype_int16 yyss_alloc;
+  yy_state_t yyss_alloc;
   YYSTYPE yyvs_alloc;
 };
 
 /* The size of the maximum gap between one aligned stack and the next.  */
-# define YYSTACK_GAP_MAXIMUM (sizeof (union yyalloc) - 1)
+# define YYSTACK_GAP_MAXIMUM (YYSIZEOF (union yyalloc) - 1)
 
 /* The size of an array large to enough to hold all stacks, each with
    N elements.  */
 # define YYSTACK_BYTES(N) \
-     ((N) * (sizeof (yytype_int16) + sizeof (YYSTYPE)) \
+     ((N) * (YYSIZEOF (yy_state_t) + YYSIZEOF (YYSTYPE)) \
       + YYSTACK_GAP_MAXIMUM)
 
 # define YYCOPY_NEEDED 1
@@ -532,35 +610,35 @@ union yyalloc
    elements in the stack, and YYPTR gives the new location of the
    stack.  Advance YYPTR to a properly aligned location for the next
    stack.  */
-# define YYSTACK_RELOCATE(Stack_alloc, Stack)				\
-    do									\
-      {									\
-	YYSIZE_T yynewbytes;						\
-	YYCOPY (&yyptr->Stack_alloc, Stack, yysize);			\
-	Stack = &yyptr->Stack_alloc;					\
-	yynewbytes = yystacksize * sizeof (*Stack) + YYSTACK_GAP_MAXIMUM; \
-	yyptr += yynewbytes / sizeof (*yyptr);				\
-      }									\
-    while (YYID (0))
+# define YYSTACK_RELOCATE(Stack_alloc, Stack)                           \
+    do                                                                  \
+      {                                                                 \
+        YYPTRDIFF_T yynewbytes;                                         \
+        YYCOPY (&yyptr->Stack_alloc, Stack, yysize);                    \
+        Stack = &yyptr->Stack_alloc;                                    \
+        yynewbytes = yystacksize * YYSIZEOF (*Stack) + YYSTACK_GAP_MAXIMUM; \
+        yyptr += yynewbytes / YYSIZEOF (*yyptr);                        \
+      }                                                                 \
+    while (0)
 
 #endif
 
 #if defined YYCOPY_NEEDED && YYCOPY_NEEDED
-/* Copy COUNT objects from FROM to TO.  The source and destination do
+/* Copy COUNT objects from SRC to DST.  The source and destination do
    not overlap.  */
 # ifndef YYCOPY
 #  if defined __GNUC__ && 1 < __GNUC__
-#   define YYCOPY(To, From, Count) \
-      __builtin_memcpy (To, From, (Count) * sizeof (*(From)))
+#   define YYCOPY(Dst, Src, Count) \
+      __builtin_memcpy (Dst, Src, YY_CAST (YYSIZE_T, (Count)) * sizeof (*(Src)))
 #  else
-#   define YYCOPY(To, From, Count)		\
-      do					\
-	{					\
-	  YYSIZE_T yyi;				\
-	  for (yyi = 0; yyi < (Count); yyi++)	\
-	    (To)[yyi] = (From)[yyi];		\
-	}					\
-      while (YYID (0))
+#   define YYCOPY(Dst, Src, Count)              \
+      do                                        \
+        {                                       \
+          YYPTRDIFF_T yyi;                      \
+          for (yyi = 0; yyi < (Count); yyi++)   \
+            (Dst)[yyi] = (Src)[yyi];            \
+        }                                       \
+      while (0)
 #  endif
 # endif
 #endif /* !YYCOPY_NEEDED */
@@ -568,26 +646,29 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  19
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   922
+#define YYLAST   947
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  74
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  65
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  192
-/* YYNRULES -- Number of states.  */
-#define YYNSTATES  369
+#define YYNRULES  196
+/* YYNSTATES -- Number of states.  */
+#define YYNSTATES  386
 
-/* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   307
 
-#define YYTRANSLATE(YYX)						\
-  ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
 
-/* YYTRANSLATE[YYLEX] -- Bison symbol number corresponding to YYLEX.  */
-static const yytype_uint8 yytranslate[] =
+/* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
+   as returned by yylex, with out-of-bounds checking.  */
+#define YYTRANSLATE(YYX)                                                \
+  (0 <= (YYX) && (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
+
+/* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
+   as returned by yylex.  */
+static const yytype_int8 yytranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -623,128 +704,33 @@ static const yytype_uint8 yytranslate[] =
 };
 
 #if YYDEBUG
-/* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
-   YYRHS.  */
-static const yytype_uint16 yyprhs[] =
+  /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
+static const yytype_int16 yyrline[] =
 {
-       0,     0,     3,     9,    12,    15,    18,    21,    23,    25,
-      32,    38,    44,    50,    51,    54,    55,    58,    61,    62,
-      64,    70,    74,    78,    79,    83,    84,    88,    89,    93,
-      95,    97,    99,   101,   103,   105,   107,   114,   118,   122,
-     129,   133,   137,   138,   141,   143,   145,   148,   149,   154,
-     164,   166,   169,   170,   172,   173,   175,   177,   182,   183,
-     185,   187,   192,   195,   203,   210,   211,   215,   218,   222,
-     226,   234,   238,   242,   245,   248,   251,   252,   254,   256,
-     262,   264,   269,   272,   274,   278,   281,   283,   286,   289,
-     292,   296,   299,   303,   308,   312,   314,   316,   318,   321,
-     324,   326,   328,   330,   332,   334,   337,   340,   345,   354,
-     360,   370,   372,   374,   376,   378,   380,   382,   384,   386,
-     389,   393,   398,   404,   406,   409,   411,   415,   417,   420,
-     424,   429,   433,   439,   444,   449,   456,   462,   465,   472,
-     475,   479,   482,   485,   486,   488,   492,   495,   498,   501,
-     502,   504,   507,   510,   513,   516,   520,   523,   526,   528,
-     531,   533,   536,   539,   542,   545,   548,   551,   554,   557,
-     560,   563,   566,   569,   572,   575,   578,   581,   584,   587,
-     590,   593,   599,   603,   606,   609,   613,   617,   619,   622,
-     628,   632,   634
-};
-
-/* YYRHS -- A `-1'-separated list of the rules' RHS.  */
-static const yytype_int16 yyrhs[] =
-{
-      75,     0,    -1,    83,    82,    85,    86,    87,    -1,    77,
-      81,    -1,    78,    81,    -1,    79,    81,    -1,    80,    81,
-      -1,   109,    -1,    89,    -1,    26,    58,    81,    76,    81,
-      59,    -1,    27,    58,    81,   123,    59,    -1,    28,    58,
-      81,   128,    59,    -1,    29,     4,    81,    99,    59,    -1,
-      -1,    81,     4,    -1,    -1,    82,     5,    -1,    82,     4,
-      -1,    -1,    84,    -1,    24,    81,    11,    81,    60,    -1,
-      24,     1,   137,    -1,    24,     1,    60,    -1,    -1,    85,
-      89,    82,    -1,    -1,    86,    90,    82,    -1,    -1,    87,
-      88,    82,    -1,   109,    -1,   102,    -1,   105,    -1,   106,
-      -1,   136,    -1,   134,    -1,   135,    -1,    20,    81,    92,
-      81,   100,    60,    -1,    20,     1,   137,    -1,    20,     1,
-      60,    -1,    25,    81,    91,    92,    81,    60,    -1,    25,
-       1,   137,    -1,    25,     1,    60,    -1,    -1,    12,     4,
-      -1,    11,    -1,    54,    -1,    12,    81,    -1,    -1,    15,
-      81,   128,    81,    -1,    33,    81,    61,    81,    93,    81,
-      94,    62,    81,    -1,    95,    -1,    96,    95,    -1,    -1,
-      96,    -1,    -1,    31,    -1,    32,    -1,    98,    81,   104,
-      97,    -1,    -1,   101,    -1,    99,    -1,   101,    63,    81,
-      99,    -1,   101,     1,    -1,    22,    81,   101,    58,    81,
-     103,    59,    -1,    22,    81,    58,    81,   103,    59,    -1,
-      -1,   103,   109,    81,    -1,    12,    81,    -1,    21,     1,
-     137,    -1,    21,     1,    60,    -1,    23,    81,    58,    81,
-     123,    59,    81,    -1,    23,     1,   137,    -1,    23,     1,
-      60,    -1,    64,    81,    -1,    65,    81,    -1,    66,    81,
-      -1,    -1,    67,    -1,    64,    -1,   110,    58,    81,   123,
-      59,    -1,   111,    -1,   110,    63,    81,   111,    -1,   110,
-       1,    -1,   113,    -1,   111,   107,   113,    -1,   111,     1,
-      -1,    19,    -1,    18,    19,    -1,    12,    19,    -1,   114,
-      81,    -1,   114,   115,    81,    -1,   115,    81,    -1,   112,
-     114,    81,    -1,   112,   114,   115,    81,    -1,   112,   115,
-      81,    -1,    12,    -1,    18,    -1,   116,    -1,   115,   116,
-      -1,   115,     1,    -1,    14,    -1,    13,    -1,   117,    -1,
-     119,    -1,   122,    -1,    16,    12,    -1,    12,    81,    -1,
-      17,    81,   118,    68,    -1,    17,    81,   118,   120,    81,
-     121,    81,    68,    -1,    17,    81,   112,   118,    68,    -1,
-      17,    81,   112,   118,   120,    81,   121,    81,    68,    -1,
-      69,    -1,     6,    -1,     7,    -1,     8,    -1,     9,    -1,
-      10,    -1,    12,    -1,    11,    -1,    15,    12,    -1,    15,
-      15,    12,    -1,    15,    55,    12,    62,    -1,    15,    56,
-      81,   113,    62,    -1,   125,    -1,   124,   125,    -1,   124,
-      -1,     1,   138,     1,    -1,     1,    -1,   124,     1,    -1,
-     125,    60,    81,    -1,   125,   138,    60,    81,    -1,     1,
-      60,    81,    -1,     1,   138,     1,    60,    81,    -1,   124,
-     125,    60,    81,    -1,   124,     1,    60,    81,    -1,   124,
-       1,   138,     1,    60,    81,    -1,   126,    15,    81,   128,
-     127,    -1,   126,     1,    -1,   126,    15,    81,     1,   128,
-     127,    -1,    30,    81,    -1,   126,    15,    81,    -1,    12,
-      81,    -1,    30,    81,    -1,    -1,   130,    -1,   128,   129,
-     130,    -1,   128,     1,    -1,    70,    81,    -1,    63,    81,
-      -1,    -1,   131,    -1,   108,   131,    -1,    11,    81,    -1,
-      12,    81,    -1,    50,    81,    -1,   108,    50,    81,    -1,
-      54,    81,    -1,    57,    81,    -1,   133,    -1,    71,    81,
-      -1,   132,    -1,    72,    81,    -1,    53,    81,    -1,    52,
-      81,    -1,    51,    81,    -1,    37,    81,    -1,    38,    81,
-      -1,    39,    81,    -1,    40,    81,    -1,    41,    81,    -1,
-      42,    81,    -1,    43,    81,    -1,    44,    81,    -1,    45,
-      81,    -1,    46,    81,    -1,    47,    81,    -1,    48,    81,
-      -1,    49,    81,    -1,    35,    81,    -1,    34,    81,    -1,
-      36,    81,    -1,    55,    81,   128,    62,    81,    -1,    55,
-      81,     1,    -1,    13,    81,    -1,    14,    81,    -1,    73,
-       1,   137,    -1,    73,     1,    60,    -1,    89,    -1,     1,
-     137,    -1,    58,     1,   138,     1,    59,    -1,    58,     1,
-      59,    -1,   137,    -1,   138,     1,   137,    -1
-};
-
-/* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
-static const yytype_uint16 yyrline[] =
-{
-       0,   291,   291,   292,   293,   294,   295,   299,   300,   304,
-     310,   316,   330,   337,   338,   341,   343,   344,   347,   349,
-     354,   360,   362,   366,   368,   375,   377,   380,   382,   390,
-     391,   392,   393,   394,   395,   396,   400,   403,   406,   412,
-     417,   418,   422,   423,   427,   428,   432,   438,   441,   447,
-     454,   459,   466,   469,   473,   476,   479,   485,   493,   496,
-     500,   505,   510,   516,   519,   525,   526,   537,   554,   557,
-     563,   567,   570,   576,   577,   578,   579,   583,   584,   588,
-     594,   597,   605,   611,   614,   634,   640,   641,   642,   646,
-     651,   658,   664,   675,   688,   702,   710,   718,   721,   734,
-     740,   749,   762,   763,   764,   768,   780,   791,   796,   802,
-     811,   824,   827,   830,   833,   836,   839,   845,   846,   850,
-     870,   885,   895,   910,   913,   918,   921,   924,   927,   933,
-     936,   939,   942,   945,   950,   953,   959,   973,   977,   984,
-     989,   996,  1006,  1007,  1011,  1016,  1030,  1036,  1039,  1042,
-    1048,  1049,  1050,  1051,  1058,  1059,  1060,  1061,  1062,  1063,
-    1065,  1068,  1072,  1073,  1074,  1075,  1076,  1077,  1078,  1079,
-    1080,  1081,  1082,  1083,  1084,  1085,  1086,  1087,  1088,  1089,
-    1090,  1095,  1104,  1120,  1121,  1128,  1131,  1137,  1143,  1160,
-    1161,  1165,  1166
+       0,   290,   290,   291,   292,   293,   294,   298,   299,   303,
+     309,   315,   329,   336,   337,   340,   342,   343,   346,   348,
+     353,   359,   361,   365,   367,   374,   376,   379,   381,   389,
+     390,   391,   392,   393,   394,   395,   399,   402,   405,   411,
+     416,   417,   421,   422,   426,   427,   431,   437,   440,   446,
+     453,   458,   465,   468,   472,   475,   478,   484,   492,   495,
+     499,   504,   509,   515,   518,   524,   525,   536,   553,   556,
+     562,   566,   569,   575,   576,   577,   578,   582,   583,   587,
+     593,   596,   604,   610,   613,   633,   639,   640,   641,   645,
+     650,   657,   663,   674,   687,   701,   709,   717,   720,   733,
+     739,   748,   761,   762,   763,   767,   779,   790,   795,   801,
+     810,   823,   826,   829,   832,   835,   838,   844,   845,   849,
+     874,   889,   899,   909,   920,   929,   939,   954,   957,   962,
+     965,   968,   971,   977,   980,   983,   986,   989,   994,   997,
+    1003,  1017,  1021,  1028,  1033,  1040,  1049,  1050,  1054,  1059,
+    1073,  1079,  1082,  1085,  1091,  1092,  1093,  1094,  1102,  1103,
+    1104,  1105,  1106,  1107,  1109,  1112,  1116,  1117,  1118,  1119,
+    1120,  1121,  1122,  1123,  1124,  1125,  1126,  1127,  1128,  1129,
+    1130,  1131,  1132,  1133,  1134,  1139,  1148,  1164,  1165,  1172,
+    1175,  1181,  1187,  1204,  1205,  1209,  1210
 };
 #endif
 
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
+#if YYDEBUG || YYERROR_VERBOSE || 0
 /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
@@ -774,14 +760,14 @@ static const char *const yytname[] =
   "ident_or_string", "pseudo", "declaration_list", "decl_list",
   "declaration", "property", "prio", "expr", "operator", "term",
   "unary_term", "function", "hexcolor", "invalid_at", "invalid_import",
-  "invalid_rule", "invalid_block", "invalid_block_list", 0
+  "invalid_rule", "invalid_block", "invalid_block_list", YY_NULLPTR
 };
 #endif
 
 # ifdef YYPRINT
-/* YYTOKNUM[YYLEX-NUM] -- Internal token number corresponding to
-   token YYLEX-NUM.  */
-static const yytype_uint16 yytoknum[] =
+/* YYTOKNUM[NUM] -- (External) token number corresponding to the
+   (internal) symbol number NUM (which must be that of a token).  */
+static const yytype_int16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,    58,    46,    91,    42,   124,
@@ -794,59 +780,64 @@ static const yytype_uint16 yytoknum[] =
 };
 # endif
 
-/* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
-static const yytype_uint8 yyr1[] =
+#define YYPACT_NINF (-208)
+
+#define yypact_value_is_default(Yyn) \
+  ((Yyn) == YYPACT_NINF)
+
+#define YYTABLE_NINF (-154)
+
+#define yytable_value_is_error(Yyn) \
+  0
+
+  /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
+     STATE-NUM.  */
+static const yytype_int16 yypact[] =
 {
-       0,    74,    75,    75,    75,    75,    75,    76,    76,    77,
-      78,    79,    80,    81,    81,    82,    82,    82,    83,    83,
-      84,    84,    84,    85,    85,    86,    86,    87,    87,    88,
-      88,    88,    88,    88,    88,    88,    89,    89,    89,    90,
-      90,    90,    91,    91,    92,    92,    93,    94,    94,    95,
-      96,    96,    97,    97,    98,    98,    98,    99,   100,   100,
-     101,   101,   101,   102,   102,   103,   103,   104,   105,   105,
-     106,   106,   106,   107,   107,   107,   107,   108,   108,   109,
-     110,   110,   110,   111,   111,   111,   112,   112,   112,   113,
-     113,   113,   113,   113,   113,   114,   114,   115,   115,   115,
-     116,   116,   116,   116,   116,   117,   118,   119,   119,   119,
-     119,   120,   120,   120,   120,   120,   120,   121,   121,   122,
-     122,   122,   122,   123,   123,   123,   123,   123,   123,   124,
-     124,   124,   124,   124,   124,   124,   125,   125,   125,   125,
-     125,   126,   127,   127,   128,   128,   128,   129,   129,   129,
-     130,   130,   130,   130,   130,   130,   130,   130,   130,   130,
-     130,   130,   131,   131,   131,   131,   131,   131,   131,   131,
-     131,   131,   131,   131,   131,   131,   131,   131,   131,   131,
-     131,   132,   132,   133,   133,   134,   134,   135,   136,   137,
-     137,   138,   138
+     271,    31,    -9,    53,    76,    20,    27,  -208,  -208,  -208,
+    -208,  -208,  -208,   -20,    18,  -208,  -208,  -208,  -208,  -208,
+     144,   144,   144,   144,    40,    59,  -208,  -208,  -208,  -208,
+     487,    29,   738,   219,  -208,  -208,   131,   264,   124,   202,
+    -208,  -208,   217,   152,  -208,   218,  -208,   143,  -208,  -208,
+    -208,    56,   799,   338,  -208,   274,   197,  -208,  -208,  -208,
+    -208,    79,  -208,  -208,   102,    36,   145,    11,  -208,  -208,
+    -208,  -208,  -208,  -208,  -208,  -208,  -208,  -208,  -208,  -208,
+    -208,  -208,  -208,  -208,  -208,  -208,  -208,  -208,  -208,  -208,
+    -208,  -208,  -208,  -208,  -208,  -208,  -208,  -208,  -208,   894,
+     548,  -208,  -208,  -208,  -208,  -208,  -208,  -208,   180,   228,
+    -208,  -208,  -208,   255,  -208,  -208,  -208,   262,   281,  -208,
+    -208,   267,  -208,   194,   179,   120,  -208,  -208,  -208,  -208,
+    -208,  -208,  -208,   496,  -208,  -208,   274,   197,   144,   197,
+    -208,   144,  -208,  -208,   300,   144,   144,  -208,   220,   248,
+    -208,    63,  -208,  -208,   144,   144,   144,   144,   144,   144,
+     144,   144,   144,   144,   144,   144,   144,   144,   144,   144,
+     144,   144,   144,   144,   144,   144,   144,   144,   144,   676,
+     144,   144,   144,  -208,  -208,  -208,  -208,  -208,  -208,   855,
+     214,  -208,   195,   155,  -208,    40,   273,  -208,   266,   181,
+     553,   202,   218,   307,   237,  -208,  -208,  -208,  -208,  -208,
+    -208,    29,   553,   144,   144,   144,  -208,   144,   197,   144,
+     144,   144,   223,  -208,   323,  -208,   144,   275,  -208,   422,
+    -208,   612,   144,   144,   144,  -208,  -208,   301,   244,   236,
+     275,   335,  -208,   142,   336,  -208,  -208,  -208,  -208,  -208,
+    -208,  -208,  -208,  -208,    40,  -208,  -208,  -208,  -208,  -208,
+     277,   144,  -208,   258,  -208,  -208,  -208,  -208,  -208,  -208,
+    -208,  -208,   128,   282,   818,   144,  -208,   144,   249,   144,
+     144,   855,   358,  -208,   144,  -208,  -208,   301,  -208,  -208,
+    -208,   339,     2,  -208,   253,   161,   256,   137,   257,    40,
+      46,    47,  -208,  -208,  -208,   146,  -208,   280,    52,  -208,
+     144,  -208,   358,  -208,  -208,   144,    61,  -208,  -208,  -208,
+    -208,  -208,  -208,    62,  -208,  -208,  -208,  -208,  -208,  -208,
+    -208,  -208,  -208,   146,  -208,  -208,  -208,  -208,  -208,  -208,
+     144,  -208,   144,  -208,   129,   144,  -208,    29,   149,   177,
+    -208,    32,   219,   265,  -208,   425,   144,   285,  -208,  -208,
+      35,  -208,  -208,  -208,  -208,  -208,  -208,   433,  -208,    54,
+     101,  -208,   144,    19,   144,  -208,   144,  -208,  -208,  -208,
+     284,   738,  -208,   484,   144,   144
 };
 
-/* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
-static const yytype_uint8 yyr2[] =
-{
-       0,     2,     5,     2,     2,     2,     2,     1,     1,     6,
-       5,     5,     5,     0,     2,     0,     2,     2,     0,     1,
-       5,     3,     3,     0,     3,     0,     3,     0,     3,     1,
-       1,     1,     1,     1,     1,     1,     6,     3,     3,     6,
-       3,     3,     0,     2,     1,     1,     2,     0,     4,     9,
-       1,     2,     0,     1,     0,     1,     1,     4,     0,     1,
-       1,     4,     2,     7,     6,     0,     3,     2,     3,     3,
-       7,     3,     3,     2,     2,     2,     0,     1,     1,     5,
-       1,     4,     2,     1,     3,     2,     1,     2,     2,     2,
-       3,     2,     3,     4,     3,     1,     1,     1,     2,     2,
-       1,     1,     1,     1,     1,     2,     2,     4,     8,     5,
-       9,     1,     1,     1,     1,     1,     1,     1,     1,     2,
-       3,     4,     5,     1,     2,     1,     3,     1,     2,     3,
-       4,     3,     5,     4,     4,     6,     5,     2,     6,     2,
-       3,     2,     2,     0,     1,     3,     2,     2,     2,     0,
-       1,     2,     2,     2,     2,     3,     2,     2,     1,     2,
-       1,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     5,     3,     2,     2,     3,     3,     1,     2,     5,
-       3,     1,     3
-};
-
-/* YYDEFACT[STATE-NAME] -- Default reduction number in state STATE-NUM.
-   Performed when YYTABLE doesn't specify something else to do.  Zero
-   means the default is an error.  */
+  /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
+     Performed when YYTABLE does not specify something else to do.  Zero
+     means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
       18,     0,     0,     0,     0,     0,     0,    13,    13,    13,
@@ -855,313 +846,268 @@ static const yytype_uint8 yydefact[] =
        0,     0,     0,    54,    17,    16,    25,     0,     0,    95,
      101,   100,     0,     0,    13,    96,    86,     0,    13,     8,
        7,     0,     0,     0,    83,    13,     0,    97,   102,   103,
-     104,   127,    13,    13,     0,     0,   123,     0,    13,    13,
+     104,   131,    13,    13,     0,     0,   127,     0,    13,    13,
       13,    13,    13,    13,    13,    13,    13,    13,    13,    13,
       13,    13,    13,    13,    13,    13,    13,    13,    13,    13,
       13,    13,    13,    13,    13,    78,    77,    13,    13,     0,
-       0,   144,   150,   160,   158,    55,    56,    13,     0,    27,
-      15,   190,   191,     0,    20,    88,   119,     0,     0,    13,
+       0,   148,   154,   164,   162,    55,    56,    13,     0,    27,
+      15,   194,   195,     0,    20,    88,   119,     0,    13,    13,
      105,     0,    87,     0,     0,     0,    82,    13,    13,    85,
       13,    13,    13,     0,    95,    96,    13,     0,    89,     0,
-      99,    91,    98,    13,     0,   141,   139,    10,   128,   124,
-      13,     0,   137,    13,   152,   153,   183,   184,   179,   178,
-     180,   165,   166,   167,   168,   169,   170,   171,   172,   173,
-     174,   175,   176,   177,   154,   164,   163,   162,   156,     0,
-     157,   159,   161,    13,   151,   146,    11,    13,    13,     0,
+      99,    91,    98,    13,     0,   145,   143,    10,   132,   128,
+      13,     0,   141,    13,   156,   157,   187,   188,   183,   182,
+     184,   169,   170,   171,   172,   173,   174,   175,   176,   177,
+     178,   179,   180,   181,   158,   168,   167,   166,   160,     0,
+     161,   163,   165,    13,   155,   150,    11,    13,    13,     0,
        0,    12,     0,     0,    15,    24,     0,   120,     0,     0,
-      13,     0,     0,     0,    38,    37,    44,    45,    13,     9,
-       0,     0,    73,    74,    75,    84,    92,     0,    94,    90,
-     131,   126,    13,     0,    13,   129,     0,    13,     0,   182,
-       0,   155,   148,   147,   145,    13,    52,     0,    42,     0,
-       0,    13,     0,     0,    15,   187,    30,    31,    32,    29,
-      34,    35,    33,    26,   189,   192,   121,     0,   106,    13,
-       0,   112,   113,   114,   115,   116,   107,   111,    13,    54,
-       0,     0,    93,    13,   134,     0,   133,   130,     0,     0,
-      13,    67,    13,    50,    53,    57,    41,    40,     0,     0,
-     188,     0,    54,     0,     0,     0,    28,   122,   109,    13,
-       0,    60,     0,     0,    79,   132,    13,     0,    13,   136,
-     181,     0,    51,    43,    13,    69,    68,    13,     0,    72,
-      71,    13,   186,   185,     0,   118,   117,    13,    36,    62,
-      13,   135,   138,   142,    13,     0,    65,    13,     0,    13,
-       0,    54,     0,    39,     0,    65,     0,     0,   108,    61,
-      13,    13,    64,    13,     0,    13,   110,    46,    47,    66,
-      63,    70,    13,     0,     0,    13,     0,    49,    48
+       0,    13,     0,     0,     0,    38,    37,    44,    45,    13,
+       9,     0,     0,    73,    74,    75,    84,    92,     0,    94,
+      90,   135,   130,    13,     0,    13,   133,     0,    13,     0,
+     186,     0,   159,   152,   151,   149,    13,    52,     0,    42,
+       0,     0,    13,     0,     0,    15,   191,    30,    31,    32,
+      29,    34,    35,    33,    26,   193,   196,   121,    13,    13,
+       0,   106,    13,     0,   112,   113,   114,   115,   116,   107,
+     111,    13,    54,     0,     0,    93,    13,   138,     0,   137,
+     134,     0,     0,    13,    67,    13,    50,    53,    57,    41,
+      40,     0,     0,   192,     0,    54,     0,     0,     0,    28,
+       0,     0,   126,   109,    13,     0,    60,     0,     0,    79,
+     136,    13,     0,    13,   140,   185,     0,    51,    43,    13,
+      69,    68,    13,     0,    72,    71,    13,   190,   189,   123,
+      13,    13,   122,     0,   118,   117,    13,    36,    62,    13,
+     139,   142,   146,    13,     0,    65,    13,     0,     0,     0,
+      13,     0,    54,     0,    39,     0,    65,     0,    13,    13,
+       0,   108,    61,    13,    13,    64,    13,     0,    13,     0,
+       0,   110,    46,    47,    66,    63,    70,   124,   125,    13,
+       0,     0,    13,     0,    49,    48
 };
 
-/* YYDEFGOTO[NTERM-NUM].  */
-static const yytype_int16 yydefgoto[] =
-{
-      -1,     6,    48,     7,     8,     9,    10,   258,    24,    11,
-      12,    36,   109,   193,   244,    49,   194,   289,   208,   351,
-     363,   283,   284,   285,   107,   301,   302,   303,   246,   344,
-     236,   247,   248,   133,    99,   353,    51,    52,    53,    54,
-      55,    56,    57,    58,   203,    59,   268,   327,    60,    64,
-      65,    66,    67,   309,   100,   189,   101,   102,   103,   104,
-     250,   251,   252,   112,   113
-};
-
-/* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
-   STATE-NUM.  */
-#define YYPACT_NINF -207
-static const yytype_int16 yypact[] =
-{
-     268,   232,   -39,   -35,   -20,   118,    53,  -207,  -207,  -207,
-    -207,  -207,  -207,    81,    38,  -207,  -207,  -207,  -207,  -207,
-     121,   121,   121,   121,   180,   127,  -207,  -207,  -207,  -207,
-     462,    29,   713,   119,  -207,  -207,   125,   256,    44,   139,
-    -207,  -207,   183,   168,  -207,   174,  -207,   142,  -207,  -207,
-    -207,    50,   774,   270,  -207,   261,   196,  -207,  -207,  -207,
-    -207,    99,  -207,  -207,   147,   104,   123,    20,  -207,  -207,
-    -207,  -207,  -207,  -207,  -207,  -207,  -207,  -207,  -207,  -207,
-    -207,  -207,  -207,  -207,  -207,  -207,  -207,  -207,  -207,  -207,
-    -207,  -207,  -207,  -207,  -207,  -207,  -207,  -207,  -207,   869,
-     523,  -207,  -207,  -207,  -207,  -207,  -207,  -207,   169,   228,
-    -207,  -207,  -207,   255,  -207,  -207,  -207,   253,   258,  -207,
-    -207,   213,  -207,   160,   188,    52,  -207,  -207,  -207,  -207,
-    -207,  -207,  -207,   471,  -207,  -207,   261,   196,   121,   196,
-    -207,   121,  -207,  -207,   279,   121,   121,  -207,   186,   230,
-    -207,    43,  -207,  -207,   121,   121,   121,   121,   121,   121,
-     121,   121,   121,   121,   121,   121,   121,   121,   121,   121,
-     121,   121,   121,   121,   121,   121,   121,   121,   121,   651,
-     121,   121,   121,  -207,  -207,  -207,  -207,  -207,  -207,   830,
-      22,  -207,   136,   154,  -207,   180,   259,  -207,   238,   528,
-     139,   174,   291,   195,  -207,  -207,  -207,  -207,  -207,  -207,
-      29,   528,   121,   121,   121,  -207,   121,   196,   121,   121,
-     121,   187,  -207,   305,  -207,   121,   250,  -207,   397,  -207,
-     587,   121,   121,   121,  -207,  -207,   286,   197,    33,   250,
-     311,  -207,    59,   320,  -207,  -207,  -207,  -207,  -207,  -207,
-    -207,  -207,  -207,   180,  -207,  -207,  -207,   260,   121,  -207,
-     242,  -207,  -207,  -207,  -207,  -207,  -207,  -207,  -207,   129,
-     264,   793,   121,  -207,   121,   208,   121,   121,   830,   333,
-    -207,   121,  -207,  -207,   286,  -207,  -207,  -207,   321,    11,
-    -207,   211,     8,   241,   120,   244,   180,  -207,  -207,  -207,
-     218,  -207,   267,    49,  -207,   121,  -207,   333,  -207,  -207,
-     121,    54,  -207,  -207,  -207,  -207,  -207,  -207,    56,  -207,
-    -207,  -207,  -207,  -207,   218,  -207,  -207,  -207,  -207,  -207,
-    -207,   121,  -207,   121,  -207,    60,   121,  -207,    29,  -207,
-      27,   119,   152,  -207,   400,   121,   265,    32,  -207,  -207,
-    -207,  -207,  -207,  -207,   408,  -207,  -207,   121,     9,   121,
-    -207,   121,  -207,   266,   713,  -207,   459,   121,   121
-};
-
-/* YYPGOTO[NTERM-NUM].  */
+  /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-    -207,  -207,  -207,  -207,  -207,  -207,  -207,    -1,  -100,  -207,
-    -207,  -207,  -207,  -207,  -207,   -31,  -207,  -207,    41,  -207,
-    -207,    47,  -207,  -207,  -207,   -32,  -207,    40,  -207,   -10,
-    -207,  -207,  -207,  -207,  -207,   -28,  -207,   126,   219,  -101,
-     288,   -26,   -38,  -207,   137,  -207,    82,    19,  -207,  -206,
-    -207,   283,  -207,    46,  -176,  -207,   162,   257,  -207,  -207,
-    -207,  -207,  -207,    -2,   -41
+    -208,  -208,  -208,  -208,  -208,  -208,  -208,    -1,  -100,  -208,
+    -208,  -208,  -208,  -208,  -208,   -31,  -208,  -208,    55,  -208,
+    -208,    73,  -208,  -208,  -208,   -32,  -208,    66,  -208,    -8,
+    -208,  -208,  -208,  -208,  -208,   -27,  -208,   154,   243,  -102,
+     315,   -34,   -38,  -208,   170,  -208,   111,    42,  -208,  -207,
+    -208,   311,  -208,    65,  -177,  -208,   190,   286,  -208,  -208,
+    -208,  -208,  -208,    -2,   -41
 };
 
-/* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
-   positive, shift that token.  If negative, reduce the rule which
-   number is the opposite.  If YYTABLE_NINF, syntax error.  */
-#define YYTABLE_NINF -150
+  /* YYDEFGOTO[NTERM-NUM].  */
+static const yytype_int16 yydefgoto[] =
+{
+      -1,     6,    48,     7,     8,     9,    10,   261,    24,    11,
+      12,    36,   109,   193,   245,    49,   194,   292,   209,   364,
+     380,   286,   287,   288,   107,   306,   307,   308,   247,   355,
+     237,   248,   249,   133,    99,   366,    51,    52,    53,    54,
+      55,    56,    57,    58,   204,    59,   271,   336,    60,    64,
+      65,    66,    67,   314,   100,   189,   101,   102,   103,   104,
+     251,   252,   253,   112,   113
+};
+
+  /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
+     positive, shift that token.  If negative, reduce the rule whose
+     number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
-      14,   108,    50,   230,   270,   110,    20,    21,    22,    23,
-     195,    27,    28,    28,    30,    31,    32,    33,   142,    15,
-     144,   152,   206,    16,   362,   151,    28,   137,    38,   139,
-      61,    28,   215,    28,   235,   153,    28,    28,    17,   105,
-     106,    62,    28,   121,   226,   288,   124,   125,    28,    29,
-     329,   126,   279,    19,   138,   141,    28,   329,    28,    63,
-     293,   145,   146,   -13,    28,   207,   317,   154,   155,   156,
+      14,   108,   231,    50,   273,   110,    20,    21,    22,    23,
+     195,    27,   152,   207,    30,    31,    32,    33,   142,   137,
+     144,   139,    28,    28,    18,   151,   153,    19,    38,    29,
+      61,   216,    13,    28,   379,   -13,    28,   148,    25,    28,
+      26,    62,   -13,   121,    34,    35,   124,   125,    62,    15,
+      28,    28,   282,   338,   138,   141,   208,   126,    28,    63,
+      37,   145,   146,   338,   227,    28,    63,   154,   155,   156,
      157,   158,   159,   160,   161,   162,   163,   164,   165,   166,
      167,   168,   169,   170,   171,   172,   173,   174,   175,   176,
-     177,   178,   179,   180,   253,   348,   181,   182,   257,   142,
-     356,   142,   307,   227,   114,   148,   190,   223,   127,   -59,
-     217,   209,   330,   128,   337,   334,    62,   -13,   199,   330,
-     343,   205,    18,    28,    28,    28,   210,   211,    37,   212,
-     213,   214,   346,    28,    63,   216,   218,   237,   219,    25,
-     -13,    26,   220,   123,   296,    47,   -13,   -13,   -13,   225,
-     105,   106,   228,   -13,    -2,   239,    28,    25,   115,   143,
-     105,   106,   245,  -125,   350,   249,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,   240,   241,   242,   321,   142,
-     120,    25,   231,   150,    34,    35,   232,   233,   366,   -58,
-     -13,   238,    28,   122,   255,   116,   -13,   140,   117,   206,
-     -13,   261,   262,   263,   264,   265,   147,   269,   -13,    40,
-      41,    42,    43,    44,   -13,   -13,   272,    28,    25,   255,
-     204,   274,    28,   276,   255,   200,   277,   243,   191,   325,
-     326,   201,    46,    13,   281,   287,   -13,   290,   118,   119,
-     292,   294,   207,   -13,    25,    25,   222,   273,   261,   262,
-     263,   264,   265,   192,   -13,    25,   196,   286,   -13,   -13,
-     -13,   -13,   -13,   266,   267,   197,    25,   300,   306,    25,
-     198,   315,   305,   255,    40,    41,    42,    43,    44,   310,
-     221,   311,   134,    40,    41,    42,    43,    44,   135,   316,
-     224,   320,     1,   323,     2,     3,     4,     5,   324,    25,
-     256,   319,    25,   259,   322,   331,   275,   333,    25,   349,
-     298,   267,   291,   335,    25,   111,   336,    25,   254,   282,
-     338,   295,   297,   304,   355,   313,   340,   328,   365,   341,
-     314,   312,   318,   342,   185,   354,   345,   271,   347,   260,
-     202,   136,   299,   339,  -149,  -149,  -149,  -149,   149,   357,
-     358,   234,   359,   332,   361,     0,   184,     0,     0,     0,
-       0,   364,     0,   308,   367,   368,     0,  -149,  -149,  -149,
-    -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,
-    -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,     0,
-    -149,  -143,  -143,  -143,     0,     0,   187,  -149,   278,     0,
-    -149,    28,     0,   188,  -149,  -149,     0,     0,    68,    69,
-      70,    71,    39,    40,    41,    42,    43,    44,    45,    46,
-      39,    40,    41,    42,    43,    44,    45,    46,     0,     0,
-       0,    72,    73,    74,    75,    76,    77,    78,    79,    80,
-      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
-      91,    92,    93,     0,    94,  -140,  -140,  -140,     0,   352,
-     185,    95,     0,   -13,    96,     0,    28,   360,    97,    98,
-    -149,  -149,  -149,  -149,    39,    40,    41,    42,    43,    44,
-      45,    46,    47,    39,    40,    41,    42,    43,    44,    45,
-      46,     0,     0,  -149,  -149,  -149,  -149,  -149,  -149,  -149,
-    -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,
-    -149,  -149,  -149,  -149,  -149,     0,  -149,     0,     0,     0,
-       0,   -13,   187,  -149,   185,     0,  -149,     0,     0,   188,
-    -149,  -149,    28,     0,  -149,  -149,  -149,  -149,     0,     0,
-      39,    40,    41,    42,    43,    44,    45,    46,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,  -149,  -149,  -149,
-    -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,
-    -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,     0,
-    -149,     0,   186,     0,     0,     0,   187,  -149,   185,     0,
-    -149,     0,     0,   188,  -149,  -149,     0,     0,  -149,  -149,
-    -149,  -149,     0,     0,     0,     0,     0,     0,     0,     0,
+     177,   178,   179,   180,   254,  -129,   181,   182,   260,   142,
+     361,   142,   218,   371,   312,    28,   190,   224,   329,   332,
+     330,    16,   -59,   331,   127,   339,   377,   199,   200,   128,
+     346,   206,   343,   228,    28,   339,   211,   212,    28,   213,
+     214,   215,    28,    28,    17,   217,   219,    25,   220,   143,
+     357,    28,   221,   296,   123,   299,   -13,   -13,    28,   226,
+      28,    47,   229,    28,   -13,    -2,   240,   334,   335,   105,
+     106,   147,   246,   378,   120,    28,   250,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,   241,   242,   243,   210,
+     142,    28,   232,    28,   114,    28,   233,   234,   -58,   354,
+     207,   239,   105,   106,   256,   326,   238,   -13,   140,   -13,
+     -13,   -13,   358,    25,   383,   150,   -13,   -13,   272,   -13,
+      40,    41,    42,    43,    44,   -13,   -13,   275,    28,   322,
+     256,   115,   277,    28,   279,   256,   236,   280,   244,   116,
+     359,   258,   117,   208,   259,   284,   290,   122,   293,   191,
+      28,   295,   297,   264,   265,   266,   267,   268,   291,   -13,
+     105,   106,    25,   192,   205,   -13,   196,   300,   301,   -13,
+     -13,   -13,   -13,   -13,   264,   265,   266,   267,   268,    28,
+     305,    28,   118,   119,   197,   310,   256,   363,    25,   201,
+     223,    25,   315,   276,   316,   202,    46,    40,    41,    42,
+      43,    44,   321,   198,   325,     1,   328,     2,     3,     4,
+       5,   222,    25,   333,   289,   269,   270,    25,   225,   311,
+     340,    25,   342,   320,    25,    25,   324,   327,   344,   262,
+     362,   345,    25,   111,   278,   347,   303,   270,   257,   348,
+     349,    25,   255,    25,   285,   351,   294,   298,   352,   302,
+     337,   309,   353,   318,   368,   356,   382,   319,   367,   360,
+     134,    40,    41,    42,    43,    44,   135,   369,   370,   185,
+     317,   323,   372,   373,   203,   374,   274,   376,   136,  -153,
+    -153,  -153,  -153,   263,   304,   350,   149,   341,   381,   235,
+       0,   384,   385,     0,     0,   184,     0,     0,   313,     0,
+       0,     0,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,
+    -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,
+    -153,  -153,  -153,  -153,     0,  -153,  -147,  -147,  -147,     0,
+       0,   187,  -153,   281,     0,  -153,    28,     0,   188,  -153,
+    -153,     0,     0,    68,    69,    70,    71,    39,    40,    41,
+      42,    43,    44,    45,    46,    39,    40,    41,    42,    43,
+      44,    45,    46,     0,     0,     0,    72,    73,    74,    75,
+      76,    77,    78,    79,    80,    81,    82,    83,    84,    85,
+      86,    87,    88,    89,    90,    91,    92,    93,     0,    94,
+    -144,  -144,  -144,     0,   365,   185,    95,     0,   -13,    96,
+       0,    28,   375,    97,    98,  -153,  -153,  -153,  -153,    39,
+      40,    41,    42,    43,    44,    45,    46,    47,    39,    40,
+      41,    42,    43,    44,    45,    46,     0,     0,  -153,  -153,
+    -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,
+    -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,
+       0,  -153,     0,     0,     0,     0,   -13,   187,  -153,   185,
+       0,  -153,     0,     0,   188,  -153,  -153,    28,     0,  -153,
+    -153,  -153,  -153,     0,     0,    39,    40,    41,    42,    43,
+      44,    45,    46,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,
+    -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,
+    -153,  -153,  -153,  -153,     0,  -153,     0,   186,     0,     0,
+       0,   187,  -153,   185,     0,  -153,     0,     0,   188,  -153,
+    -153,     0,     0,  -153,  -153,  -153,  -153,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,  -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,
-    -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,  -149,
-    -149,  -149,  -149,     0,  -149,     0,     0,     0,     0,   280,
-     187,  -149,   229,     0,  -149,    28,     0,   188,  -149,  -149,
-       0,     0,    68,    69,    70,    71,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,  -153,  -153,  -153,  -153,
+    -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,
+    -153,  -153,  -153,  -153,  -153,  -153,  -153,  -153,     0,  -153,
+       0,     0,     0,     0,   283,   187,  -153,   230,     0,  -153,
+      28,     0,   188,  -153,  -153,     0,     0,    68,    69,    70,
+      71,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    91,    92,    93,     0,    94,     0,
-       0,     0,     0,     0,     0,    95,     0,    28,    96,     0,
-       0,     0,    97,    98,    68,    69,    70,    71,     0,     0,
+      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
+      82,    83,    84,    85,    86,    87,    88,    89,    90,    91,
+      92,    93,     0,    94,     0,     0,     0,     0,     0,     0,
+      95,     0,    28,    96,     0,     0,     0,    97,    98,    68,
+      69,    70,    71,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,    72,    73,    74,
-      75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
-      85,    86,    87,    88,    89,    90,    91,    92,    93,     0,
-      94,     0,     0,     0,     0,   129,     0,    95,     0,     0,
-      96,     0,     0,     0,    97,    98,   -76,   -76,   -76,   -76,
-     -76,   -76,   -76,   -76,   129,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,   -76,   -76,   -76,   -76,   -76,
-     -76,   -76,   -76,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    72,    73,    74,    75,    76,    77,    78,    79,
+      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
+      90,    91,    92,    93,     0,    94,     0,     0,     0,     0,
+     129,     0,    95,     0,     0,    96,     0,     0,     0,    97,
+      98,   -76,   -76,   -76,   -76,   -76,   -76,   -76,   -76,   129,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   -80,     0,     0,     0,     0,   -80,   130,   131,
-     132,    68,    69,    70,    71,     0,     0,     0,     0,     0,
-       0,   -81,     0,     0,     0,     0,   -81,   130,   131,   132,
-       0,     0,     0,     0,    72,    73,    74,    75,    76,    77,
-      78,    79,    80,    81,    82,    83,    84,    85,    86,    87,
-      88,    89,    90,    91,    92,    93,     0,    94,     0,     0,
-       0,     0,     0,     0,    95,     0,     0,    96,     0,     0,
-       0,    97,    98,    72,    73,    74,    75,    76,    77,    78,
-      79,    80,    81,    82,    83,    84,    85,    86,    87,   183,
-      89,    90,    91
+     -76,   -76,   -76,   -76,   -76,   -76,   -76,   -76,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,   -80,     0,     0,
+       0,     0,   -80,   130,   131,   132,    68,    69,    70,    71,
+       0,     0,     0,     0,     0,     0,   -81,     0,     0,     0,
+       0,   -81,   130,   131,   132,     0,     0,     0,     0,    72,
+      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
+      83,    84,    85,    86,    87,    88,    89,    90,    91,    92,
+      93,     0,    94,     0,     0,     0,     0,     0,     0,    95,
+       0,     0,    96,     0,     0,     0,    97,    98,    72,    73,
+      74,    75,    76,    77,    78,    79,    80,    81,    82,    83,
+      84,    85,    86,    87,   183,    89,    90,    91
 };
-
-#define yypact_value_is_default(yystate) \
-  ((yystate) == (-207))
-
-#define yytable_value_is_error(yytable_value) \
-  YYID (0)
 
 static const yytype_int16 yycheck[] =
 {
-       1,    33,    30,   179,   210,    36,     7,     8,     9,    10,
-     110,    13,     4,     4,    15,    16,    17,    18,    56,    58,
-      61,     1,    11,    58,    15,    66,     4,    53,    29,    55,
-       1,     4,   133,     4,    12,    15,     4,     4,    58,    31,
-      32,    12,     4,    44,     1,    12,    47,    48,     4,    11,
-       1,     1,   228,     0,    55,    56,     4,     1,     4,    30,
-       1,    62,    63,     4,     4,    54,    58,    68,    69,    70,
+       1,    33,   179,    30,   211,    36,     7,     8,     9,    10,
+     110,    13,     1,    11,    15,    16,    17,    18,    56,    53,
+      61,    55,     4,     4,     4,    66,    15,     0,    29,    11,
+       1,   133,     1,     4,    15,     4,     4,     1,    58,     4,
+      60,    12,    11,    44,     4,     5,    47,    48,    12,    58,
+       4,     4,   229,     1,    55,    56,    54,     1,     4,    30,
+       1,    62,    63,     1,     1,     4,    30,    68,    69,    70,
       71,    72,    73,    74,    75,    76,    77,    78,    79,    80,
       81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
-      91,    92,    93,    94,   194,    68,    97,    98,   199,   137,
-      68,   139,   278,    60,    60,     1,   107,   148,    58,    60,
-     136,    59,    63,    63,    58,    61,    12,    58,   119,    63,
-      60,   123,     4,     4,     4,     4,   127,   128,     1,   130,
-     131,   132,   338,     4,    30,   136,   137,     1,   139,    58,
-       4,    60,   143,     1,   244,    20,     4,    11,    12,   150,
-      31,    32,   153,    11,     0,     1,     4,    58,    19,    60,
-      31,    32,   193,    59,    12,   193,    12,    13,    14,    15,
-      16,    17,    18,    19,    20,    21,    22,    23,    58,   217,
-      12,    58,   183,    60,     4,     5,   187,   188,   364,    60,
-      54,   192,     4,    19,   196,    12,    54,     1,    15,    11,
-       4,     6,     7,     8,     9,    10,    59,   208,    12,    13,
-      14,    15,    16,    17,    18,    19,   217,     4,    58,   221,
-      60,   222,     4,   224,   226,    12,   227,    73,    59,    11,
-      12,    18,    19,     1,   235,   237,     4,   239,    55,    56,
-     241,   242,    54,    11,    58,    58,    60,    60,     6,     7,
-       8,     9,    10,    25,    58,    58,     1,    60,    62,    63,
-      64,    65,    66,    68,    69,    12,    58,   268,    60,    58,
-      12,    60,   273,   275,    13,    14,    15,    16,    17,   280,
-       1,   282,    12,    13,    14,    15,    16,    17,    18,   291,
-      60,   293,    24,   295,    26,    27,    28,    29,   299,    58,
-      62,    60,    58,    12,    60,   306,     1,   308,    58,   341,
-      68,    69,     1,   314,    58,    59,   317,    58,    59,    33,
-     321,     1,    62,    59,    59,     4,   327,    60,    62,   330,
-     289,   284,   292,   334,     1,   345,   337,   211,   339,   202,
-     121,    53,   260,   324,    11,    12,    13,    14,    65,   350,
-     351,   189,   353,   307,   355,    -1,    99,    -1,    -1,    -1,
-      -1,   362,    -1,    30,   365,   366,    -1,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    55,    -1,
-      57,    58,    59,    60,    -1,    -1,    63,    64,     1,    -1,
-      67,     4,    -1,    70,    71,    72,    -1,    -1,    11,    12,
-      13,    14,    12,    13,    14,    15,    16,    17,    18,    19,
-      12,    13,    14,    15,    16,    17,    18,    19,    -1,    -1,
-      -1,    34,    35,    36,    37,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,    55,    -1,    57,    58,    59,    60,    -1,    59,
-       1,    64,    -1,     4,    67,    -1,     4,    59,    71,    72,
-      11,    12,    13,    14,    12,    13,    14,    15,    16,    17,
-      18,    19,    20,    12,    13,    14,    15,    16,    17,    18,
-      19,    -1,    -1,    34,    35,    36,    37,    38,    39,    40,
-      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
-      51,    52,    53,    54,    55,    -1,    57,    -1,    -1,    -1,
-      -1,    62,    63,    64,     1,    -1,    67,    -1,    -1,    70,
-      71,    72,     4,    -1,    11,    12,    13,    14,    -1,    -1,
-      12,    13,    14,    15,    16,    17,    18,    19,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    55,    -1,
-      57,    -1,    59,    -1,    -1,    -1,    63,    64,     1,    -1,
-      67,    -1,    -1,    70,    71,    72,    -1,    -1,    11,    12,
-      13,    14,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    34,    35,    36,    37,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,    55,    -1,    57,    -1,    -1,    -1,    -1,    62,
-      63,    64,     1,    -1,    67,     4,    -1,    70,    71,    72,
-      -1,    -1,    11,    12,    13,    14,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    34,    35,    36,    37,    38,
-      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    55,    -1,    57,    -1,
-      -1,    -1,    -1,    -1,    -1,    64,    -1,     4,    67,    -1,
-      -1,    -1,    71,    72,    11,    12,    13,    14,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45,    46,
-      47,    48,    49,    50,    51,    52,    53,    54,    55,    -1,
-      57,    -1,    -1,    -1,    -1,     1,    -1,    64,    -1,    -1,
-      67,    -1,    -1,    -1,    71,    72,    12,    13,    14,    15,
-      16,    17,    18,    19,     1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    12,    13,    14,    15,    16,
+      91,    92,    93,    94,   194,    59,    97,    98,   200,   137,
+      68,   139,   136,    68,   281,     4,   107,   148,    62,    62,
+      64,    58,    60,    67,    58,    63,    62,   118,   119,    63,
+      58,   123,    61,    60,     4,    63,   127,   128,     4,   130,
+     131,   132,     4,     4,    58,   136,   137,    58,   139,    60,
+     347,     4,   143,     1,     1,   245,     4,     4,     4,   150,
+       4,    20,   153,     4,    11,     0,     1,    11,    12,    31,
+      32,    59,   193,    62,    12,     4,   193,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    59,
+     218,     4,   183,     4,    60,     4,   187,   188,    60,    60,
+      11,   192,    31,    32,   196,    58,     1,    54,     1,     4,
+      58,     4,    53,    58,   381,    60,    11,    12,   209,    12,
+      13,    14,    15,    16,    17,    18,    19,   218,     4,    58,
+     222,    19,   223,     4,   225,   227,    12,   228,    73,    12,
+      53,    50,    15,    54,    53,   236,   238,    19,   240,    59,
+       4,   242,   243,     6,     7,     8,     9,    10,    12,    54,
+      31,    32,    58,    25,    60,    58,     1,   258,   259,    62,
+      63,    64,    65,    66,     6,     7,     8,     9,    10,     4,
+     271,     4,    55,    56,    12,   276,   278,    12,    58,    12,
+      60,    58,   283,    60,   285,    18,    19,    13,    14,    15,
+      16,    17,   294,    12,   296,    24,   298,    26,    27,    28,
+      29,     1,    58,   304,    60,    68,    69,    58,    60,    60,
+     311,    58,   313,    60,    58,    58,    60,    60,   319,    12,
+     352,   322,    58,    59,     1,   326,    68,    69,    62,   330,
+     331,    58,    59,    58,    33,   336,     1,     1,   339,    62,
+      60,    59,   343,     4,    59,   346,    62,   292,   356,   350,
+      12,    13,    14,    15,    16,    17,    18,   358,   359,     1,
+     287,   295,   363,   364,   121,   366,   212,   368,    53,    11,
+      12,    13,    14,   203,   263,   333,    65,   312,   379,   189,
+      -1,   382,   383,    -1,    -1,    99,    -1,    -1,    30,    -1,
+      -1,    -1,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    -1,    57,    58,    59,    60,    -1,
+      -1,    63,    64,     1,    -1,    67,     4,    -1,    70,    71,
+      72,    -1,    -1,    11,    12,    13,    14,    12,    13,    14,
+      15,    16,    17,    18,    19,    12,    13,    14,    15,    16,
+      17,    18,    19,    -1,    -1,    -1,    34,    35,    36,    37,
+      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
+      48,    49,    50,    51,    52,    53,    54,    55,    -1,    57,
+      58,    59,    60,    -1,    59,     1,    64,    -1,     4,    67,
+      -1,     4,    59,    71,    72,    11,    12,    13,    14,    12,
+      13,    14,    15,    16,    17,    18,    19,    20,    12,    13,
+      14,    15,    16,    17,    18,    19,    -1,    -1,    34,    35,
+      36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
+      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
+      -1,    57,    -1,    -1,    -1,    -1,    62,    63,    64,     1,
+      -1,    67,    -1,    -1,    70,    71,    72,     4,    -1,    11,
+      12,    13,    14,    -1,    -1,    12,    13,    14,    15,    16,
       17,    18,    19,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    -1,    57,    -1,    59,    -1,    -1,
+      -1,    63,    64,     1,    -1,    67,    -1,    -1,    70,    71,
+      72,    -1,    -1,    11,    12,    13,    14,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    58,    -1,    -1,    -1,    -1,    63,    64,    65,
-      66,    11,    12,    13,    14,    -1,    -1,    -1,    -1,    -1,
-      -1,    58,    -1,    -1,    -1,    -1,    63,    64,    65,    66,
-      -1,    -1,    -1,    -1,    34,    35,    36,    37,    38,    39,
-      40,    41,    42,    43,    44,    45,    46,    47,    48,    49,
-      50,    51,    52,    53,    54,    55,    -1,    57,    -1,    -1,
-      -1,    -1,    -1,    -1,    64,    -1,    -1,    67,    -1,    -1,
-      -1,    71,    72,    34,    35,    36,    37,    38,    39,    40,
-      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
-      51,    52,    53
+      -1,    -1,    -1,    -1,    -1,    -1,    34,    35,    36,    37,
+      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
+      48,    49,    50,    51,    52,    53,    54,    55,    -1,    57,
+      -1,    -1,    -1,    -1,    62,    63,    64,     1,    -1,    67,
+       4,    -1,    70,    71,    72,    -1,    -1,    11,    12,    13,
+      14,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
+      44,    45,    46,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    -1,    57,    -1,    -1,    -1,    -1,    -1,    -1,
+      64,    -1,     4,    67,    -1,    -1,    -1,    71,    72,    11,
+      12,    13,    14,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    -1,    57,    -1,    -1,    -1,    -1,
+       1,    -1,    64,    -1,    -1,    67,    -1,    -1,    -1,    71,
+      72,    12,    13,    14,    15,    16,    17,    18,    19,     1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      12,    13,    14,    15,    16,    17,    18,    19,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    58,    -1,    -1,
+      -1,    -1,    63,    64,    65,    66,    11,    12,    13,    14,
+      -1,    -1,    -1,    -1,    -1,    -1,    58,    -1,    -1,    -1,
+      -1,    63,    64,    65,    66,    -1,    -1,    -1,    -1,    34,
+      35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55,    -1,    57,    -1,    -1,    -1,    -1,    -1,    -1,    64,
+      -1,    -1,    67,    -1,    -1,    -1,    71,    72,    34,    35,
+      36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
+      46,    47,    48,    49,    50,    51,    52,    53
 };
 
-/* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
-   symbol of state STATE-NUM.  */
+  /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
+     symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
        0,    24,    26,    27,    28,    29,    75,    77,    78,    79,
@@ -1184,113 +1130,112 @@ static const yytype_uint8 yystos[] =
       81,    81,    81,    81,    81,    81,    81,    81,    81,    81,
       81,    81,    81,    50,   131,     1,    59,    63,    70,   129,
       81,    59,    25,    87,    90,    82,     1,    12,    12,    81,
-      12,    18,   112,   118,    60,   137,    11,    54,    92,    59,
-      81,    81,    81,    81,    81,   113,    81,   115,    81,    81,
-      81,     1,    60,   138,    60,    81,     1,    60,    81,     1,
-     128,    81,    81,    81,   130,    12,   104,     1,    81,     1,
-      21,    22,    23,    73,    88,    89,   102,   105,   106,   109,
-     134,   135,   136,    82,    59,   137,    62,   113,    81,    12,
-     118,     6,     7,     8,     9,    10,    68,    69,   120,    81,
-     123,   111,    81,    60,    81,     1,    81,    81,     1,   128,
-      62,    81,    33,    95,    96,    97,    60,   137,    12,    91,
-     137,     1,    81,     1,    81,     1,    82,    62,    68,   120,
-      81,    99,   100,   101,    59,    81,    60,   128,    30,   127,
-      81,    81,    95,     4,    92,    60,   137,    58,   101,    60,
-     137,    58,    60,   137,    81,    11,    12,   121,    60,     1,
-      63,    81,   127,    81,    61,    81,    81,    58,    81,   121,
-      81,    81,    81,    60,   103,    81,   123,    81,    68,    99,
-      12,    93,    59,   109,   103,    59,    68,    81,    81,    81,
-      59,    81,    15,    94,    81,    62,   128,    81,    81
+      81,    12,    18,   112,   118,    60,   137,    11,    54,    92,
+      59,    81,    81,    81,    81,    81,   113,    81,   115,    81,
+      81,    81,     1,    60,   138,    60,    81,     1,    60,    81,
+       1,   128,    81,    81,    81,   130,    12,   104,     1,    81,
+       1,    21,    22,    23,    73,    88,    89,   102,   105,   106,
+     109,   134,   135,   136,    82,    59,   137,    62,    50,    53,
+     113,    81,    12,   118,     6,     7,     8,     9,    10,    68,
+      69,   120,    81,   123,   111,    81,    60,    81,     1,    81,
+      81,     1,   128,    62,    81,    33,    95,    96,    97,    60,
+     137,    12,    91,   137,     1,    81,     1,    81,     1,    82,
+      81,    81,    62,    68,   120,    81,    99,   100,   101,    59,
+      81,    60,   128,    30,   127,    81,    81,    95,     4,    92,
+      60,   137,    58,   101,    60,   137,    58,    60,   137,    62,
+      64,    67,    62,    81,    11,    12,   121,    60,     1,    63,
+      81,   127,    81,    61,    81,    81,    58,    81,    81,    81,
+     121,    81,    81,    81,    60,   103,    81,   123,    53,    53,
+      81,    68,    99,    12,    93,    59,   109,   103,    59,    81,
+      81,    68,    81,    81,    81,    59,    81,    62,    62,    15,
+      94,    81,    62,   128,    81,    81
 };
 
-#define yyerrok		(yyerrstatus = 0)
-#define yyclearin	(yychar = YYEMPTY)
-#define YYEMPTY		(-2)
-#define YYEOF		0
+  /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
+static const yytype_uint8 yyr1[] =
+{
+       0,    74,    75,    75,    75,    75,    75,    76,    76,    77,
+      78,    79,    80,    81,    81,    82,    82,    82,    83,    83,
+      84,    84,    84,    85,    85,    86,    86,    87,    87,    88,
+      88,    88,    88,    88,    88,    88,    89,    89,    89,    90,
+      90,    90,    91,    91,    92,    92,    93,    94,    94,    95,
+      96,    96,    97,    97,    98,    98,    98,    99,   100,   100,
+     101,   101,   101,   102,   102,   103,   103,   104,   105,   105,
+     106,   106,   106,   107,   107,   107,   107,   108,   108,   109,
+     110,   110,   110,   111,   111,   111,   112,   112,   112,   113,
+     113,   113,   113,   113,   113,   114,   114,   115,   115,   115,
+     116,   116,   116,   116,   116,   117,   118,   119,   119,   119,
+     119,   120,   120,   120,   120,   120,   120,   121,   121,   122,
+     122,   122,   122,   122,   122,   122,   122,   123,   123,   123,
+     123,   123,   123,   124,   124,   124,   124,   124,   124,   124,
+     125,   125,   125,   125,   125,   126,   127,   127,   128,   128,
+     128,   129,   129,   129,   130,   130,   130,   130,   130,   130,
+     130,   130,   130,   130,   130,   130,   131,   131,   131,   131,
+     131,   131,   131,   131,   131,   131,   131,   131,   131,   131,
+     131,   131,   131,   131,   131,   132,   132,   133,   133,   134,
+     134,   135,   136,   137,   137,   138,   138
+};
 
-#define YYACCEPT	goto yyacceptlab
-#define YYABORT		goto yyabortlab
-#define YYERROR		goto yyerrorlab
+  /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
+static const yytype_int8 yyr2[] =
+{
+       0,     2,     5,     2,     2,     2,     2,     1,     1,     6,
+       5,     5,     5,     0,     2,     0,     2,     2,     0,     1,
+       5,     3,     3,     0,     3,     0,     3,     0,     3,     1,
+       1,     1,     1,     1,     1,     1,     6,     3,     3,     6,
+       3,     3,     0,     2,     1,     1,     2,     0,     4,     9,
+       1,     2,     0,     1,     0,     1,     1,     4,     0,     1,
+       1,     4,     2,     7,     6,     0,     3,     2,     3,     3,
+       7,     3,     3,     2,     2,     2,     0,     1,     1,     5,
+       1,     4,     2,     1,     3,     2,     1,     2,     2,     2,
+       3,     2,     3,     4,     3,     1,     1,     1,     2,     2,
+       1,     1,     1,     1,     1,     2,     2,     4,     8,     5,
+       9,     1,     1,     1,     1,     1,     1,     1,     1,     2,
+       3,     4,     6,     6,    10,    10,     5,     1,     2,     1,
+       3,     1,     2,     3,     4,     3,     5,     4,     4,     6,
+       5,     2,     6,     2,     3,     2,     2,     0,     1,     3,
+       2,     2,     2,     0,     1,     2,     2,     2,     2,     3,
+       2,     2,     1,     2,     1,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     5,     3,     2,     2,     3,
+       3,     1,     2,     5,     3,     1,     3
+};
 
 
-/* Like YYERROR except do call yyerror.  This remains here temporarily
-   to ease the transition to the new meaning of YYERROR, for GCC.
-   Once GCC version 2 has supplanted version 1, this can go.  However,
-   YYFAIL appears to be in use.  Nevertheless, it is formally deprecated
-   in Bison 2.4.2's NEWS entry, where a plan to phase it out is
-   discussed.  */
+#define yyerrok         (yyerrstatus = 0)
+#define yyclearin       (yychar = YYEMPTY)
+#define YYEMPTY         (-2)
+#define YYEOF           0
 
-#define YYFAIL		goto yyerrlab
-#if defined YYFAIL
-  /* This is here to suppress warnings from the GCC cpp's
-     -Wunused-macros.  Normally we don't worry about that warning, but
-     some users do, and we want to make it easy for users to remove
-     YYFAIL uses, which will produce warnings from Bison 2.5.  */
-#endif
+#define YYACCEPT        goto yyacceptlab
+#define YYABORT         goto yyabortlab
+#define YYERROR         goto yyerrorlab
+
 
 #define YYRECOVERING()  (!!yyerrstatus)
 
-#define YYBACKUP(Token, Value)					\
-do								\
-  if (yychar == YYEMPTY && yylen == 1)				\
-    {								\
-      yychar = (Token);						\
-      yylval = (Value);						\
-      YYPOPSTACK (1);						\
-      goto yybackup;						\
-    }								\
-  else								\
-    {								\
-      yyerror (YY_("syntax error: cannot back up")); \
-      YYERROR;							\
-    }								\
-while (YYID (0))
+#define YYBACKUP(Token, Value)                                    \
+  do                                                              \
+    if (yychar == YYEMPTY)                                        \
+      {                                                           \
+        yychar = (Token);                                         \
+        yylval = (Value);                                         \
+        YYPOPSTACK (yylen);                                       \
+        yystate = *yyssp;                                         \
+        goto yybackup;                                            \
+      }                                                           \
+    else                                                          \
+      {                                                           \
+        yyerror (parser, YY_("syntax error: cannot back up")); \
+        YYERROR;                                                  \
+      }                                                           \
+  while (0)
+
+/* Error token number */
+#define YYTERROR        1
+#define YYERRCODE       256
 
 
-#define YYTERROR	1
-#define YYERRCODE	256
-
-
-/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
-   If N is 0, then set CURRENT to the empty location which ends
-   the previous symbol: RHS[0] (always defined).  */
-
-#define YYRHSLOC(Rhs, K) ((Rhs)[K])
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)				\
-    do									\
-      if (YYID (N))                                                    \
-	{								\
-	  (Current).first_line   = YYRHSLOC (Rhs, 1).first_line;	\
-	  (Current).first_column = YYRHSLOC (Rhs, 1).first_column;	\
-	  (Current).last_line    = YYRHSLOC (Rhs, N).last_line;		\
-	  (Current).last_column  = YYRHSLOC (Rhs, N).last_column;	\
-	}								\
-      else								\
-	{								\
-	  (Current).first_line   = (Current).last_line   =		\
-	    YYRHSLOC (Rhs, 0).last_line;				\
-	  (Current).first_column = (Current).last_column =		\
-	    YYRHSLOC (Rhs, 0).last_column;				\
-	}								\
-    while (YYID (0))
-#endif
-
-
-/* This macro is provided for backward compatibility. */
-
-#ifndef YY_LOCATION_PRINT
-# define YY_LOCATION_PRINT(File, Loc) ((void) 0)
-#endif
-
-
-/* YYLEX -- calling `yylex' with the right arguments.  */
-
-#ifdef YYLEX_PARAM
-# define YYLEX yylex (&yylval, YYLEX_PARAM)
-#else
-# define YYLEX yylex (&yylval)
-#endif
 
 /* Enable debugging if requested.  */
 #if YYDEBUG
@@ -1300,80 +1245,64 @@ while (YYID (0))
 #  define YYFPRINTF fprintf
 # endif
 
-# define YYDPRINTF(Args)			\
-do {						\
-  if (yydebug)					\
-    YYFPRINTF Args;				\
-} while (YYID (0))
+# define YYDPRINTF(Args)                        \
+do {                                            \
+  if (yydebug)                                  \
+    YYFPRINTF Args;                             \
+} while (0)
 
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)			  \
-do {									  \
-  if (yydebug)								  \
-    {									  \
-      YYFPRINTF (stderr, "%s ", Title);					  \
-      yy_symbol_print (stderr,						  \
-		  Type, Value); \
-      YYFPRINTF (stderr, "\n");						  \
-    }									  \
-} while (YYID (0))
-
-
-/*--------------------------------.
-| Print this symbol on YYOUTPUT.  |
-`--------------------------------*/
-
-/*ARGSUSED*/
-#if (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
-static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
-#else
-static void
-yy_symbol_value_print (yyoutput, yytype, yyvaluep)
-    FILE *yyoutput;
-    int yytype;
-    YYSTYPE const * const yyvaluep;
+/* This macro is provided for backward compatibility. */
+#ifndef YY_LOCATION_PRINT
+# define YY_LOCATION_PRINT(File, Loc) ((void) 0)
 #endif
+
+
+# define YY_SYMBOL_PRINT(Title, Type, Value, Location)                    \
+do {                                                                      \
+  if (yydebug)                                                            \
+    {                                                                     \
+      YYFPRINTF (stderr, "%s ", Title);                                   \
+      yy_symbol_print (stderr,                                            \
+                  Type, Value, parser); \
+      YYFPRINTF (stderr, "\n");                                           \
+    }                                                                     \
+} while (0)
+
+
+/*-----------------------------------.
+| Print this symbol's value on YYO.  |
+`-----------------------------------*/
+
+static void
+yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, void* parser)
 {
+  FILE *yyoutput = yyo;
+  YYUSE (yyoutput);
+  YYUSE (parser);
   if (!yyvaluep)
     return;
 # ifdef YYPRINT
   if (yytype < YYNTOKENS)
-    YYPRINT (yyoutput, yytoknum[yytype], *yyvaluep);
-# else
-  YYUSE (yyoutput);
+    YYPRINT (yyo, yytoknum[yytype], *yyvaluep);
 # endif
-  switch (yytype)
-    {
-      default:
-	break;
-    }
+  YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+  YYUSE (yytype);
+  YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
 
-/*--------------------------------.
-| Print this symbol on YYOUTPUT.  |
-`--------------------------------*/
+/*---------------------------.
+| Print this symbol on YYO.  |
+`---------------------------*/
 
-#if (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)
-#else
-static void
-yy_symbol_print (yyoutput, yytype, yyvaluep)
-    FILE *yyoutput;
-    int yytype;
-    YYSTYPE const * const yyvaluep;
-#endif
+yy_symbol_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, void* parser)
 {
-  if (yytype < YYNTOKENS)
-    YYFPRINTF (yyoutput, "token %s (", yytname[yytype]);
-  else
-    YYFPRINTF (yyoutput, "nterm %s (", yytname[yytype]);
+  YYFPRINTF (yyo, "%s %s (",
+             yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
 
-  yy_symbol_value_print (yyoutput, yytype, yyvaluep);
-  YYFPRINTF (yyoutput, ")");
+  yy_symbol_value_print (yyo, yytype, yyvaluep, parser);
+  YYFPRINTF (yyo, ")");
 }
 
 /*------------------------------------------------------------------.
@@ -1381,16 +1310,8 @@ yy_symbol_print (yyoutput, yytype, yyvaluep)
 | TOP (included).                                                   |
 `------------------------------------------------------------------*/
 
-#if (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
 static void
-yy_stack_print (yytype_int16 *yybottom, yytype_int16 *yytop)
-#else
-static void
-yy_stack_print (yybottom, yytop)
-    yytype_int16 *yybottom;
-    yytype_int16 *yytop;
-#endif
+yy_stack_print (yy_state_t *yybottom, yy_state_t *yytop)
 {
   YYFPRINTF (stderr, "Stack now");
   for (; yybottom <= yytop; yybottom++)
@@ -1401,49 +1322,42 @@ yy_stack_print (yybottom, yytop)
   YYFPRINTF (stderr, "\n");
 }
 
-# define YY_STACK_PRINT(Bottom, Top)				\
-do {								\
-  if (yydebug)							\
-    yy_stack_print ((Bottom), (Top));				\
-} while (YYID (0))
+# define YY_STACK_PRINT(Bottom, Top)                            \
+do {                                                            \
+  if (yydebug)                                                  \
+    yy_stack_print ((Bottom), (Top));                           \
+} while (0)
 
 
 /*------------------------------------------------.
 | Report that the YYRULE is going to be reduced.  |
 `------------------------------------------------*/
 
-#if (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
 static void
-yy_reduce_print (YYSTYPE *yyvsp, int yyrule)
-#else
-static void
-yy_reduce_print (yyvsp, yyrule)
-    YYSTYPE *yyvsp;
-    int yyrule;
-#endif
+yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule, void* parser)
 {
+  int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
   int yyi;
-  unsigned long int yylno = yyrline[yyrule];
-  YYFPRINTF (stderr, "Reducing stack by rule %d (line %lu):\n",
-	     yyrule - 1, yylno);
+  YYFPRINTF (stderr, "Reducing stack by rule %d (line %d):\n",
+             yyrule - 1, yylno);
   /* The symbols being reduced.  */
   for (yyi = 0; yyi < yynrhs; yyi++)
     {
       YYFPRINTF (stderr, "   $%d = ", yyi + 1);
-      yy_symbol_print (stderr, yyrhs[yyprhs[yyrule] + yyi],
-		       &(yyvsp[(yyi + 1) - (yynrhs)])
-		       		       );
+      yy_symbol_print (stderr,
+                       yystos[+yyssp[yyi + 1 - yynrhs]],
+                       &yyvsp[(yyi + 1) - (yynrhs)]
+                                              , parser);
       YYFPRINTF (stderr, "\n");
     }
 }
 
-# define YY_REDUCE_PRINT(Rule)		\
-do {					\
-  if (yydebug)				\
-    yy_reduce_print (yyvsp, Rule); \
-} while (YYID (0))
+# define YY_REDUCE_PRINT(Rule)          \
+do {                                    \
+  if (yydebug)                          \
+    yy_reduce_print (yyssp, yyvsp, Rule, parser); \
+} while (0)
 
 /* Nonzero means print parse trace.  It is left uninitialized so that
    multiple parsers can coexist.  */
@@ -1457,7 +1371,7 @@ int yydebug;
 
 
 /* YYINITDEPTH -- initial size of the parser's stacks.  */
-#ifndef	YYINITDEPTH
+#ifndef YYINITDEPTH
 # define YYINITDEPTH 200
 #endif
 
@@ -1477,20 +1391,13 @@ int yydebug;
 
 # ifndef yystrlen
 #  if defined __GLIBC__ && defined _STRING_H
-#   define yystrlen strlen
+#   define yystrlen(S) (YY_CAST (YYPTRDIFF_T, strlen (S)))
 #  else
 /* Return the length of YYSTR.  */
-#if (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
-static YYSIZE_T
+static YYPTRDIFF_T
 yystrlen (const char *yystr)
-#else
-static YYSIZE_T
-yystrlen (yystr)
-    const char *yystr;
-#endif
 {
-  YYSIZE_T yylen;
+  YYPTRDIFF_T yylen;
   for (yylen = 0; yystr[yylen]; yylen++)
     continue;
   return yylen;
@@ -1504,16 +1411,8 @@ yystrlen (yystr)
 #  else
 /* Copy YYSRC to YYDEST, returning the address of the terminating '\0' in
    YYDEST.  */
-#if (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
 static char *
 yystpcpy (char *yydest, const char *yysrc)
-#else
-static char *
-yystpcpy (yydest, yysrc)
-    char *yydest;
-    const char *yysrc;
-#endif
 {
   char *yyd = yydest;
   const char *yys = yysrc;
@@ -1534,43 +1433,46 @@ yystpcpy (yydest, yysrc)
    backslash-backslash).  YYSTR is taken from yytname.  If YYRES is
    null, do not copy; instead, return the length of what the result
    would have been.  */
-static YYSIZE_T
+static YYPTRDIFF_T
 yytnamerr (char *yyres, const char *yystr)
 {
   if (*yystr == '"')
     {
-      YYSIZE_T yyn = 0;
+      YYPTRDIFF_T yyn = 0;
       char const *yyp = yystr;
 
       for (;;)
-	switch (*++yyp)
-	  {
-	  case '\'':
-	  case ',':
-	    goto do_not_strip_quotes;
+        switch (*++yyp)
+          {
+          case '\'':
+          case ',':
+            goto do_not_strip_quotes;
 
-	  case '\\':
-	    if (*++yyp != '\\')
-	      goto do_not_strip_quotes;
-	    /* Fall through.  */
-	  default:
-	    if (yyres)
-	      yyres[yyn] = *yyp;
-	    yyn++;
-	    break;
+          case '\\':
+            if (*++yyp != '\\')
+              goto do_not_strip_quotes;
+            else
+              goto append;
 
-	  case '"':
-	    if (yyres)
-	      yyres[yyn] = '\0';
-	    return yyn;
-	  }
+          append:
+          default:
+            if (yyres)
+              yyres[yyn] = *yyp;
+            yyn++;
+            break;
+
+          case '"':
+            if (yyres)
+              yyres[yyn] = '\0';
+            return yyn;
+          }
     do_not_strip_quotes: ;
     }
 
-  if (! yyres)
+  if (yyres)
+    return yystpcpy (yyres, yystr) - yyres;
+  else
     return yystrlen (yystr);
-
-  return yystpcpy (yyres, yystr) - yyres;
 }
 # endif
 
@@ -1583,26 +1485,21 @@ yytnamerr (char *yyres, const char *yystr)
    *YYMSG_ALLOC to the required number of bytes.  Return 2 if the
    required number of bytes is too large to store.  */
 static int
-yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
-                yytype_int16 *yyssp, int yytoken)
+yysyntax_error (YYPTRDIFF_T *yymsg_alloc, char **yymsg,
+                yy_state_t *yyssp, int yytoken)
 {
-  YYSIZE_T yysize0 = yytnamerr (0, yytname[yytoken]);
-  YYSIZE_T yysize = yysize0;
-  YYSIZE_T yysize1;
   enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
   /* Internationalized format string. */
-  const char *yyformat = 0;
-  /* Arguments of yyformat. */
+  const char *yyformat = YY_NULLPTR;
+  /* Arguments of yyformat: reported tokens (one for the "unexpected",
+     one per "expected"). */
   char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
-  /* Number of reported tokens (one for the "unexpected", one per
-     "expected"). */
+  /* Actual size of YYARG. */
   int yycount = 0;
+  /* Cumulated lengths of YYARG.  */
+  YYPTRDIFF_T yysize = 0;
 
   /* There are many possibilities here to consider:
-     - Assume YYFAIL is not used.  It's too flawed to consider.  See
-       <http://lists.gnu.org/archive/html/bison-patches/2009-12/msg00024.html>
-       for details.  YYERROR is fine as it does not invoke this
-       function.
      - If this state is a consistent state with a default action, then
        the only way this function was invoked is if the default action
        is an error action.  In that case, don't check for expected
@@ -1627,7 +1524,9 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
   */
   if (yytoken != YYEMPTY)
     {
-      int yyn = yypact[*yyssp];
+      int yyn = yypact[+*yyssp];
+      YYPTRDIFF_T yysize0 = yytnamerr (YY_NULLPTR, yytname[yytoken]);
+      yysize = yysize0;
       yyarg[yycount++] = yytname[yytoken];
       if (!yypact_value_is_default (yyn))
         {
@@ -1651,11 +1550,14 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
                     break;
                   }
                 yyarg[yycount++] = yytname[yyx];
-                yysize1 = yysize + yytnamerr (0, yytname[yyx]);
-                if (! (yysize <= yysize1
-                       && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
-                  return 2;
-                yysize = yysize1;
+                {
+                  YYPTRDIFF_T yysize1
+                    = yysize + yytnamerr (YY_NULLPTR, yytname[yyx]);
+                  if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
+                    yysize = yysize1;
+                  else
+                    return 2;
+                }
               }
         }
     }
@@ -1666,6 +1568,7 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
       case N:                               \
         yyformat = S;                       \
       break
+    default: /* Avoid compiler warnings. */
       YYCASE_(0, YY_("syntax error"));
       YYCASE_(1, YY_("syntax error, unexpected %s"));
       YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
@@ -1675,10 +1578,15 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 # undef YYCASE_
     }
 
-  yysize1 = yysize + yystrlen (yyformat);
-  if (! (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM))
-    return 2;
-  yysize = yysize1;
+  {
+    /* Don't count the "%s"s in the final size, but reserve room for
+       the terminator.  */
+    YYPTRDIFF_T yysize1 = yysize + (yystrlen (yyformat) - 2 * yycount) + 1;
+    if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
+      yysize = yysize1;
+    else
+      return 2;
+  }
 
   if (*yymsg_alloc < yysize)
     {
@@ -1703,8 +1611,8 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
         }
       else
         {
-          yyp++;
-          yyformat++;
+          ++yyp;
+          ++yyformat;
         }
   }
   return 0;
@@ -1715,112 +1623,70 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 | Release the memory associated to this symbol.  |
 `-----------------------------------------------*/
 
-/*ARGSUSED*/
-#if (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)
-#else
-static void
-yydestruct (yymsg, yytype, yyvaluep)
-    const char *yymsg;
-    int yytype;
-    YYSTYPE *yyvaluep;
-#endif
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, void* parser)
 {
   YYUSE (yyvaluep);
-
+  YYUSE (parser);
   if (!yymsg)
     yymsg = "Deleting";
   YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
 
-  switch (yytype)
-    {
-
-      default:
-	break;
-    }
+  YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+  YYUSE (yytype);
+  YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
 
-/* Prevent warnings from -Wmissing-prototypes.  */
-#ifdef YYPARSE_PARAM
-#if defined __STDC__ || defined __cplusplus
-int yyparse (void *YYPARSE_PARAM);
-#else
-int yyparse ();
-#endif
-#else /* ! YYPARSE_PARAM */
-#if defined __STDC__ || defined __cplusplus
-int yyparse (void);
-#else
-int yyparse ();
-#endif
-#endif /* ! YYPARSE_PARAM */
 
 
 /*----------.
 | yyparse.  |
 `----------*/
 
-#ifdef YYPARSE_PARAM
-#if (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
 int
-yyparse (void *YYPARSE_PARAM)
-#else
-int
-yyparse (YYPARSE_PARAM)
-    void *YYPARSE_PARAM;
-#endif
-#else /* ! YYPARSE_PARAM */
-#if (defined __STDC__ || defined __C99__FUNC__ \
-     || defined __cplusplus || defined _MSC_VER)
-int
-yyparse (void)
-#else
-int
-yyparse ()
-
-#endif
-#endif
+yyparse (void* parser)
 {
 /* The lookahead symbol.  */
 int yychar;
 
+
 /* The semantic value of the lookahead symbol.  */
-YYSTYPE yylval;
+/* Default value used for initialization, for pacifying older GCCs
+   or non-GCC compilers.  */
+YY_INITIAL_VALUE (static YYSTYPE yyval_default;)
+YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
 
     /* Number of syntax errors so far.  */
     int yynerrs;
 
-    int yystate;
+    yy_state_fast_t yystate;
     /* Number of tokens to shift before error messages enabled.  */
     int yyerrstatus;
 
     /* The stacks and their tools:
-       `yyss': related to states.
-       `yyvs': related to semantic values.
+       'yyss': related to states.
+       'yyvs': related to semantic values.
 
-       Refer to the stacks thru separate pointers, to allow yyoverflow
+       Refer to the stacks through separate pointers, to allow yyoverflow
        to reallocate them elsewhere.  */
 
     /* The state stack.  */
-    yytype_int16 yyssa[YYINITDEPTH];
-    yytype_int16 *yyss;
-    yytype_int16 *yyssp;
+    yy_state_t yyssa[YYINITDEPTH];
+    yy_state_t *yyss;
+    yy_state_t *yyssp;
 
     /* The semantic value stack.  */
     YYSTYPE yyvsa[YYINITDEPTH];
     YYSTYPE *yyvs;
     YYSTYPE *yyvsp;
 
-    YYSIZE_T yystacksize;
+    YYPTRDIFF_T yystacksize;
 
   int yyn;
   int yyresult;
   /* Lookahead token as an internal (translated) token number.  */
-  int yytoken;
+  int yytoken = 0;
   /* The variables used to return semantic value and location from the
      action routines.  */
   YYSTYPE yyval;
@@ -1829,7 +1695,7 @@ YYSTYPE yylval;
   /* Buffer for error messages, and its allocated size.  */
   char yymsgbuf[128];
   char *yymsg = yymsgbuf;
-  YYSIZE_T yymsg_alloc = sizeof yymsgbuf;
+  YYPTRDIFF_T yymsg_alloc = sizeof yymsgbuf;
 #endif
 
 #define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N))
@@ -1838,9 +1704,8 @@ YYSTYPE yylval;
      Keep to zero when no symbol should be popped.  */
   int yylen = 0;
 
-  yytoken = 0;
-  yyss = yyssa;
-  yyvs = yyvsa;
+  yyssp = yyss = yyssa;
+  yyvsp = yyvs = yyvsa;
   yystacksize = YYINITDEPTH;
 
   YYDPRINTF ((stderr, "Starting parse\n"));
@@ -1849,100 +1714,101 @@ YYSTYPE yylval;
   yyerrstatus = 0;
   yynerrs = 0;
   yychar = YYEMPTY; /* Cause a token to be read.  */
-
-  /* Initialize stack pointers.
-     Waste one element of value and location stack
-     so that they stay on the same level as the state stack.
-     The wasted elements are never initialized.  */
-  yyssp = yyss;
-  yyvsp = yyvs;
-
   goto yysetstate;
 
+
 /*------------------------------------------------------------.
-| yynewstate -- Push a new state, which is found in yystate.  |
+| yynewstate -- push a new state, which is found in yystate.  |
 `------------------------------------------------------------*/
- yynewstate:
+yynewstate:
   /* In all cases, when you get here, the value and location stacks
      have just been pushed.  So pushing a state here evens the stacks.  */
   yyssp++;
 
- yysetstate:
-  *yyssp = yystate;
+
+/*--------------------------------------------------------------------.
+| yysetstate -- set current state (the top of the stack) to yystate.  |
+`--------------------------------------------------------------------*/
+yysetstate:
+  YYDPRINTF ((stderr, "Entering state %d\n", yystate));
+  YY_ASSERT (0 <= yystate && yystate < YYNSTATES);
+  YY_IGNORE_USELESS_CAST_BEGIN
+  *yyssp = YY_CAST (yy_state_t, yystate);
+  YY_IGNORE_USELESS_CAST_END
 
   if (yyss + yystacksize - 1 <= yyssp)
+#if !defined yyoverflow && !defined YYSTACK_RELOCATE
+    goto yyexhaustedlab;
+#else
     {
       /* Get the current used size of the three stacks, in elements.  */
-      YYSIZE_T yysize = yyssp - yyss + 1;
+      YYPTRDIFF_T yysize = yyssp - yyss + 1;
 
-#ifdef yyoverflow
+# if defined yyoverflow
       {
-	/* Give user a chance to reallocate the stack.  Use copies of
-	   these so that the &'s don't force the real ones into
-	   memory.  */
-	YYSTYPE *yyvs1 = yyvs;
-	yytype_int16 *yyss1 = yyss;
+        /* Give user a chance to reallocate the stack.  Use copies of
+           these so that the &'s don't force the real ones into
+           memory.  */
+        yy_state_t *yyss1 = yyss;
+        YYSTYPE *yyvs1 = yyvs;
 
-	/* Each stack pointer address is followed by the size of the
-	   data in use in that stack, in bytes.  This used to be a
-	   conditional around just the two extra args, but that might
-	   be undefined if yyoverflow is a macro.  */
-	yyoverflow (YY_("memory exhausted"),
-		    &yyss1, yysize * sizeof (*yyssp),
-		    &yyvs1, yysize * sizeof (*yyvsp),
-		    &yystacksize);
-
-	yyss = yyss1;
-	yyvs = yyvs1;
+        /* Each stack pointer address is followed by the size of the
+           data in use in that stack, in bytes.  This used to be a
+           conditional around just the two extra args, but that might
+           be undefined if yyoverflow is a macro.  */
+        yyoverflow (YY_("memory exhausted"),
+                    &yyss1, yysize * YYSIZEOF (*yyssp),
+                    &yyvs1, yysize * YYSIZEOF (*yyvsp),
+                    &yystacksize);
+        yyss = yyss1;
+        yyvs = yyvs1;
       }
-#else /* no yyoverflow */
-# ifndef YYSTACK_RELOCATE
-      goto yyexhaustedlab;
-# else
+# else /* defined YYSTACK_RELOCATE */
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
-	goto yyexhaustedlab;
+        goto yyexhaustedlab;
       yystacksize *= 2;
       if (YYMAXDEPTH < yystacksize)
-	yystacksize = YYMAXDEPTH;
+        yystacksize = YYMAXDEPTH;
 
       {
-	yytype_int16 *yyss1 = yyss;
-	union yyalloc *yyptr =
-	  (union yyalloc *) YYSTACK_ALLOC (YYSTACK_BYTES (yystacksize));
-	if (! yyptr)
-	  goto yyexhaustedlab;
-	YYSTACK_RELOCATE (yyss_alloc, yyss);
-	YYSTACK_RELOCATE (yyvs_alloc, yyvs);
-#  undef YYSTACK_RELOCATE
-	if (yyss1 != yyssa)
-	  YYSTACK_FREE (yyss1);
+        yy_state_t *yyss1 = yyss;
+        union yyalloc *yyptr =
+          YY_CAST (union yyalloc *,
+                   YYSTACK_ALLOC (YY_CAST (YYSIZE_T, YYSTACK_BYTES (yystacksize))));
+        if (! yyptr)
+          goto yyexhaustedlab;
+        YYSTACK_RELOCATE (yyss_alloc, yyss);
+        YYSTACK_RELOCATE (yyvs_alloc, yyvs);
+# undef YYSTACK_RELOCATE
+        if (yyss1 != yyssa)
+          YYSTACK_FREE (yyss1);
       }
 # endif
-#endif /* no yyoverflow */
 
       yyssp = yyss + yysize - 1;
       yyvsp = yyvs + yysize - 1;
 
-      YYDPRINTF ((stderr, "Stack size increased to %lu\n",
-		  (unsigned long int) yystacksize));
+      YY_IGNORE_USELESS_CAST_BEGIN
+      YYDPRINTF ((stderr, "Stack size increased to %ld\n",
+                  YY_CAST (long, yystacksize)));
+      YY_IGNORE_USELESS_CAST_END
 
       if (yyss + yystacksize - 1 <= yyssp)
-	YYABORT;
+        YYABORT;
     }
-
-  YYDPRINTF ((stderr, "Entering state %d\n", yystate));
+#endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
 
   if (yystate == YYFINAL)
     YYACCEPT;
 
   goto yybackup;
 
+
 /*-----------.
 | yybackup.  |
 `-----------*/
 yybackup:
-
   /* Do appropriate processing given the current state.  Read a
      lookahead token if we need one and don't already have one.  */
 
@@ -1957,7 +1823,7 @@ yybackup:
   if (yychar == YYEMPTY)
     {
       YYDPRINTF ((stderr, "Reading a token: "));
-      yychar = YYLEX;
+      yychar = yylex (&yylval, parser);
     }
 
   if (yychar <= YYEOF)
@@ -1992,13 +1858,13 @@ yybackup:
 
   /* Shift the lookahead token.  */
   YY_SYMBOL_PRINT ("Shifting", yytoken, &yylval, &yylloc);
+  yystate = yyn;
+  YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
+  *++yyvsp = yylval;
+  YY_IGNORE_MAYBE_UNINITIALIZED_END
 
   /* Discard the shifted token.  */
   yychar = YYEMPTY;
-
-  yystate = yyn;
-  *++yyvsp = yylval;
-
   goto yynewstate;
 
 
@@ -2013,14 +1879,14 @@ yydefault:
 
 
 /*-----------------------------.
-| yyreduce -- Do a reduction.  |
+| yyreduce -- do a reduction.  |
 `-----------------------------*/
 yyreduce:
   /* yyn is the number of a rule to reduce with.  */
   yylen = yyr2[yyn];
 
   /* If YYLEN is nonzero, implement the default value of the action:
-     `$$ = $1'.
+     '$$ = $1'.
 
      Otherwise, the following line sets YYVAL to garbage.
      This behavior is undocumented and Bison
@@ -2033,32 +1899,28 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 9:
-
-/* Line 1806 of yacc.c  */
-#line 304 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        static_cast<CSSParser*>(parser)->rule = (yyvsp[(4) - (6)].rule);
+  case 9:
+#line 303 "CSSGrammar.y"
+                                                                      {
+        static_cast<CSSParser*>(parser)->rule = (yyvsp[-2].rule);
     }
+#line 1908 "CSSGrammar.tab.c"
     break;
 
   case 10:
-
-/* Line 1806 of yacc.c  */
-#line 310 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 309 "CSSGrammar.y"
+                                                          {
         /* can be empty */
     }
+#line 1916 "CSSGrammar.tab.c"
     break;
 
   case 11:
-
-/* Line 1806 of yacc.c  */
-#line 316 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 315 "CSSGrammar.y"
+                                              {
         CSSParser* p = static_cast<CSSParser*>(parser);
-        if ((yyvsp[(4) - (5)].valueList)) {
-            p->valueList = p->sinkFloatingValueList((yyvsp[(4) - (5)].valueList));
+        if ((yyvsp[-1].valueList)) {
+            p->valueList = p->sinkFloatingValueList((yyvsp[-1].valueList));
             int oldParsedProperties = p->numParsedProperties;
             if (!p->parseValue(p->id, p->important))
                 p->rollbackLastProperties(p->numParsedProperties - oldParsedProperties);
@@ -2066,594 +1928,534 @@ yyreduce:
             p->valueList = 0;
         }
     }
+#line 1932 "CSSGrammar.tab.c"
     break;
 
   case 12:
-
-/* Line 1806 of yacc.c  */
-#line 330 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 329 "CSSGrammar.y"
+                                                                  {
          CSSParser* p = static_cast<CSSParser*>(parser);
-         p->mediaQuery = p->sinkFloatingMediaQuery((yyvsp[(4) - (5)].mediaQuery));
+         p->mediaQuery = p->sinkFloatingMediaQuery((yyvsp[-1].mediaQuery));
      }
+#line 1941 "CSSGrammar.tab.c"
     break;
 
   case 19:
-
-/* Line 1806 of yacc.c  */
-#line 349 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 348 "CSSGrammar.y"
+            {
   }
+#line 1948 "CSSGrammar.tab.c"
     break;
 
   case 20:
-
-/* Line 1806 of yacc.c  */
-#line 354 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 353 "CSSGrammar.y"
+                                                 {
      CSSParser* p = static_cast<CSSParser*>(parser);
-     (yyval.rule) = static_cast<CSSParser*>(parser)->createCharsetRule((yyvsp[(3) - (5)].string));
+     (yyval.rule) = static_cast<CSSParser*>(parser)->createCharsetRule((yyvsp[-2].string));
      if ((yyval.rule) && p->styleElement && p->styleElement->isCSSStyleSheet())
          p->styleElement->append((yyval.rule));
   }
+#line 1959 "CSSGrammar.tab.c"
     break;
 
   case 21:
-
-/* Line 1806 of yacc.c  */
-#line 360 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 359 "CSSGrammar.y"
+                                    {
   }
+#line 1966 "CSSGrammar.tab.c"
     break;
 
   case 22:
-
-/* Line 1806 of yacc.c  */
-#line 362 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 361 "CSSGrammar.y"
+                          {
   }
+#line 1973 "CSSGrammar.tab.c"
     break;
 
   case 24:
-
-/* Line 1806 of yacc.c  */
-#line 368 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 367 "CSSGrammar.y"
+                                 {
      CSSParser* p = static_cast<CSSParser*>(parser);
-     if ((yyvsp[(2) - (3)].rule) && p->styleElement && p->styleElement->isCSSStyleSheet())
-         p->styleElement->append((yyvsp[(2) - (3)].rule));
+     if ((yyvsp[-1].rule) && p->styleElement && p->styleElement->isCSSStyleSheet())
+         p->styleElement->append((yyvsp[-1].rule));
  }
+#line 1983 "CSSGrammar.tab.c"
     break;
 
   case 28:
-
-/* Line 1806 of yacc.c  */
-#line 382 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 381 "CSSGrammar.y"
+                             {
      CSSParser* p = static_cast<CSSParser*>(parser);
-     if ((yyvsp[(2) - (3)].rule) && p->styleElement && p->styleElement->isCSSStyleSheet())
-         p->styleElement->append((yyvsp[(2) - (3)].rule));
+     if ((yyvsp[-1].rule) && p->styleElement && p->styleElement->isCSSStyleSheet())
+         p->styleElement->append((yyvsp[-1].rule));
  }
+#line 1993 "CSSGrammar.tab.c"
     break;
 
   case 36:
-
-/* Line 1806 of yacc.c  */
-#line 400 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.rule) = static_cast<CSSParser*>(parser)->createImportRule((yyvsp[(3) - (6)].string), (yyvsp[(5) - (6)].mediaList));
+#line 399 "CSSGrammar.y"
+                                                                          {
+        (yyval.rule) = static_cast<CSSParser*>(parser)->createImportRule((yyvsp[-3].string), (yyvsp[-1].mediaList));
     }
+#line 2001 "CSSGrammar.tab.c"
     break;
 
   case 37:
-
-/* Line 1806 of yacc.c  */
-#line 403 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 402 "CSSGrammar.y"
+                                   {
         (yyval.rule) = 0;
     }
+#line 2009 "CSSGrammar.tab.c"
     break;
 
   case 38:
-
-/* Line 1806 of yacc.c  */
-#line 406 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 405 "CSSGrammar.y"
+                         {
         (yyval.rule) = 0;
     }
+#line 2017 "CSSGrammar.tab.c"
     break;
 
   case 39:
-
-/* Line 1806 of yacc.c  */
-#line 412 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 411 "CSSGrammar.y"
+                                                                        {
     CSSParser* p = static_cast<CSSParser*>(parser);
     if (p->styleElement && p->styleElement->isCSSStyleSheet())
-        static_cast<CSSStyleSheet*>(p->styleElement)->addNamespace(p, atomicString((yyvsp[(3) - (6)].string)), atomicString((yyvsp[(4) - (6)].string)));
+        static_cast<CSSStyleSheet*>(p->styleElement)->addNamespace(p, atomicString((yyvsp[-3].string)), atomicString((yyvsp[-2].string)));
 }
+#line 2027 "CSSGrammar.tab.c"
     break;
 
   case 42:
-
-/* Line 1806 of yacc.c  */
-#line 422 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.string).characters = 0; }
+#line 421 "CSSGrammar.y"
+            { (yyval.string).characters = 0; }
+#line 2033 "CSSGrammar.tab.c"
     break;
 
   case 43:
-
-/* Line 1806 of yacc.c  */
-#line 423 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.string) = (yyvsp[(1) - (2)].string); }
+#line 422 "CSSGrammar.y"
+                   { (yyval.string) = (yyvsp[-1].string); }
+#line 2039 "CSSGrammar.tab.c"
     break;
 
   case 46:
-
-/* Line 1806 of yacc.c  */
-#line 432 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.string) = (yyvsp[(1) - (2)].string);
+#line 431 "CSSGrammar.y"
+                      {
+        (yyval.string) = (yyvsp[-1].string);
     }
+#line 2047 "CSSGrammar.tab.c"
     break;
 
   case 47:
-
-/* Line 1806 of yacc.c  */
-#line 438 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 437 "CSSGrammar.y"
+              {
         (yyval.valueList) = 0;
     }
+#line 2055 "CSSGrammar.tab.c"
     break;
 
   case 48:
-
-/* Line 1806 of yacc.c  */
-#line 441 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.valueList) = (yyvsp[(3) - (4)].valueList);
+#line 440 "CSSGrammar.y"
+                                       {
+        (yyval.valueList) = (yyvsp[-1].valueList);
     }
+#line 2063 "CSSGrammar.tab.c"
     break;
 
   case 49:
-
-/* Line 1806 of yacc.c  */
-#line 447 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyvsp[(5) - (9)].string).lower();
-        (yyval.mediaQueryExp) = static_cast<CSSParser*>(parser)->createFloatingMediaQueryExp(atomicString((yyvsp[(5) - (9)].string)), (yyvsp[(7) - (9)].valueList));
+#line 446 "CSSGrammar.y"
+                                                                                                      {
+        (yyvsp[-4].string).lower();
+        (yyval.mediaQueryExp) = static_cast<CSSParser*>(parser)->createFloatingMediaQueryExp(atomicString((yyvsp[-4].string)), (yyvsp[-2].valueList));
     }
+#line 2072 "CSSGrammar.tab.c"
     break;
 
   case 50:
-
-/* Line 1806 of yacc.c  */
-#line 454 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 453 "CSSGrammar.y"
+                    {
       CSSParser* p = static_cast<CSSParser*>(parser);
       (yyval.mediaQueryExpList) = p->createFloatingMediaQueryExpList();
-      (yyval.mediaQueryExpList)->append(p->sinkFloatingMediaQueryExp((yyvsp[(1) - (1)].mediaQueryExp)));
+      (yyval.mediaQueryExpList)->append(p->sinkFloatingMediaQueryExp((yyvsp[0].mediaQueryExp)));
     }
+#line 2082 "CSSGrammar.tab.c"
     break;
 
   case 51:
-
-/* Line 1806 of yacc.c  */
-#line 459 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-      (yyval.mediaQueryExpList) = (yyvsp[(1) - (2)].mediaQueryExpList);
-      (yyval.mediaQueryExpList)->append(static_cast<CSSParser*>(parser)->sinkFloatingMediaQueryExp((yyvsp[(2) - (2)].mediaQueryExp)));
+#line 458 "CSSGrammar.y"
+                                           {
+      (yyval.mediaQueryExpList) = (yyvsp[-1].mediaQueryExpList);
+      (yyval.mediaQueryExpList)->append(static_cast<CSSParser*>(parser)->sinkFloatingMediaQueryExp((yyvsp[0].mediaQueryExp)));
     }
+#line 2091 "CSSGrammar.tab.c"
     break;
 
   case 52:
-
-/* Line 1806 of yacc.c  */
-#line 466 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 465 "CSSGrammar.y"
+              {
         (yyval.mediaQueryExpList) = static_cast<CSSParser*>(parser)->createFloatingMediaQueryExpList();
     }
+#line 2099 "CSSGrammar.tab.c"
     break;
 
   case 54:
-
-/* Line 1806 of yacc.c  */
-#line 473 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 472 "CSSGrammar.y"
+              {
         (yyval.mediaQueryRestrictor) = MediaQuery::None;
     }
+#line 2107 "CSSGrammar.tab.c"
     break;
 
   case 55:
-
-/* Line 1806 of yacc.c  */
-#line 476 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 475 "CSSGrammar.y"
+                 {
         (yyval.mediaQueryRestrictor) = MediaQuery::Only;
     }
+#line 2115 "CSSGrammar.tab.c"
     break;
 
   case 56:
-
-/* Line 1806 of yacc.c  */
-#line 479 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 478 "CSSGrammar.y"
+                {
         (yyval.mediaQueryRestrictor) = MediaQuery::Not;
     }
+#line 2123 "CSSGrammar.tab.c"
     break;
 
   case 57:
-
-/* Line 1806 of yacc.c  */
-#line 485 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 484 "CSSGrammar.y"
+                                                                         {
         CSSParser* p = static_cast<CSSParser*>(parser);
-        (yyvsp[(3) - (4)].string).lower();
-        (yyval.mediaQuery) = p->createFloatingMediaQuery((yyvsp[(1) - (4)].mediaQueryRestrictor), domString((yyvsp[(3) - (4)].string)), p->sinkFloatingMediaQueryExpList((yyvsp[(4) - (4)].mediaQueryExpList)));
+        (yyvsp[-1].string).lower();
+        (yyval.mediaQuery) = p->createFloatingMediaQuery((yyvsp[-3].mediaQueryRestrictor), domString((yyvsp[-1].string)), p->sinkFloatingMediaQueryExpList((yyvsp[0].mediaQueryExpList)));
     }
+#line 2133 "CSSGrammar.tab.c"
     break;
 
   case 58:
-
-/* Line 1806 of yacc.c  */
-#line 493 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 492 "CSSGrammar.y"
+                 {
         (yyval.mediaList) = static_cast<CSSParser*>(parser)->createMediaList();
      }
+#line 2141 "CSSGrammar.tab.c"
     break;
 
   case 60:
-
-/* Line 1806 of yacc.c  */
-#line 500 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 499 "CSSGrammar.y"
+                {
         CSSParser* p = static_cast<CSSParser*>(parser);
         (yyval.mediaList) = p->createMediaList();
-        (yyval.mediaList)->appendMediaQuery(p->sinkFloatingMediaQuery((yyvsp[(1) - (1)].mediaQuery)));
+        (yyval.mediaList)->appendMediaQuery(p->sinkFloatingMediaQuery((yyvsp[0].mediaQuery)));
     }
+#line 2151 "CSSGrammar.tab.c"
     break;
 
   case 61:
-
-/* Line 1806 of yacc.c  */
-#line 505 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.mediaList) = (yyvsp[(1) - (4)].mediaList);
+#line 504 "CSSGrammar.y"
+                                             {
+        (yyval.mediaList) = (yyvsp[-3].mediaList);
         if ((yyval.mediaList))
-            (yyval.mediaList)->appendMediaQuery(static_cast<CSSParser*>(parser)->sinkFloatingMediaQuery((yyvsp[(4) - (4)].mediaQuery)));
+            (yyval.mediaList)->appendMediaQuery(static_cast<CSSParser*>(parser)->sinkFloatingMediaQuery((yyvsp[0].mediaQuery)));
     }
+#line 2161 "CSSGrammar.tab.c"
     break;
 
   case 62:
-
-/* Line 1806 of yacc.c  */
-#line 510 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 509 "CSSGrammar.y"
+                       {
         (yyval.mediaList) = 0;
     }
+#line 2169 "CSSGrammar.tab.c"
     break;
 
   case 63:
-
-/* Line 1806 of yacc.c  */
-#line 516 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.rule) = static_cast<CSSParser*>(parser)->createMediaRule((yyvsp[(3) - (7)].mediaList), (yyvsp[(6) - (7)].ruleList));
+#line 515 "CSSGrammar.y"
+                                                                      {
+        (yyval.rule) = static_cast<CSSParser*>(parser)->createMediaRule((yyvsp[-4].mediaList), (yyvsp[-1].ruleList));
     }
+#line 2177 "CSSGrammar.tab.c"
     break;
 
   case 64:
-
-/* Line 1806 of yacc.c  */
-#line 519 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.rule) = static_cast<CSSParser*>(parser)->createMediaRule(0, (yyvsp[(5) - (6)].ruleList));
+#line 518 "CSSGrammar.y"
+                                                             {
+        (yyval.rule) = static_cast<CSSParser*>(parser)->createMediaRule(0, (yyvsp[-1].ruleList));
     }
+#line 2185 "CSSGrammar.tab.c"
     break;
 
   case 65:
-
-/* Line 1806 of yacc.c  */
-#line 525 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.ruleList) = 0; }
+#line 524 "CSSGrammar.y"
+                { (yyval.ruleList) = 0; }
+#line 2191 "CSSGrammar.tab.c"
     break;
 
   case 66:
-
-/* Line 1806 of yacc.c  */
-#line 526 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.ruleList) = (yyvsp[(1) - (3)].ruleList);
-        if ((yyvsp[(2) - (3)].rule)) {
+#line 525 "CSSGrammar.y"
+                                       {
+        (yyval.ruleList) = (yyvsp[-2].ruleList);
+        if ((yyvsp[-1].rule)) {
             if (!(yyval.ruleList))
                 (yyval.ruleList) = static_cast<CSSParser*>(parser)->createRuleList();
-            (yyval.ruleList)->append((yyvsp[(2) - (3)].rule));
+            (yyval.ruleList)->append((yyvsp[-1].rule));
         }
     }
+#line 2204 "CSSGrammar.tab.c"
     break;
 
   case 67:
-
-/* Line 1806 of yacc.c  */
-#line 537 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-      (yyval.string) = (yyvsp[(1) - (2)].string);
+#line 536 "CSSGrammar.y"
+                    {
+      (yyval.string) = (yyvsp[-1].string);
   }
+#line 2212 "CSSGrammar.tab.c"
     break;
 
   case 68:
-
-/* Line 1806 of yacc.c  */
-#line 554 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 553 "CSSGrammar.y"
+                                 {
       (yyval.rule) = 0;
     }
+#line 2220 "CSSGrammar.tab.c"
     break;
 
   case 69:
-
-/* Line 1806 of yacc.c  */
-#line 557 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 556 "CSSGrammar.y"
+                       {
       (yyval.rule) = 0;
     }
+#line 2228 "CSSGrammar.tab.c"
     break;
 
   case 70:
-
-/* Line 1806 of yacc.c  */
-#line 564 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 563 "CSSGrammar.y"
+                                                      {
         (yyval.rule) = static_cast<CSSParser*>(parser)->createFontFaceRule();
     }
+#line 2236 "CSSGrammar.tab.c"
     break;
 
   case 71:
-
-/* Line 1806 of yacc.c  */
-#line 567 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 566 "CSSGrammar.y"
+                                        {
       (yyval.rule) = 0;
     }
+#line 2244 "CSSGrammar.tab.c"
     break;
 
   case 72:
-
-/* Line 1806 of yacc.c  */
-#line 570 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 569 "CSSGrammar.y"
+                              {
       (yyval.rule) = 0;
     }
+#line 2252 "CSSGrammar.tab.c"
     break;
 
   case 73:
-
-/* Line 1806 of yacc.c  */
-#line 576 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.relation) = CSSSelector::DirectAdjacent; }
+#line 575 "CSSGrammar.y"
+                    { (yyval.relation) = CSSSelector::DirectAdjacent; }
+#line 2258 "CSSGrammar.tab.c"
     break;
 
   case 74:
-
-/* Line 1806 of yacc.c  */
-#line 577 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.relation) = CSSSelector::IndirectAdjacent; }
+#line 576 "CSSGrammar.y"
+                    { (yyval.relation) = CSSSelector::IndirectAdjacent; }
+#line 2264 "CSSGrammar.tab.c"
     break;
 
   case 75:
-
-/* Line 1806 of yacc.c  */
-#line 578 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.relation) = CSSSelector::Child; }
+#line 577 "CSSGrammar.y"
+                    { (yyval.relation) = CSSSelector::Child; }
+#line 2270 "CSSGrammar.tab.c"
     break;
 
   case 76:
-
-/* Line 1806 of yacc.c  */
-#line 579 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.relation) = CSSSelector::Descendant; }
+#line 578 "CSSGrammar.y"
+                { (yyval.relation) = CSSSelector::Descendant; }
+#line 2276 "CSSGrammar.tab.c"
     break;
 
   case 77:
-
-/* Line 1806 of yacc.c  */
-#line 583 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.i) = -1; }
+#line 582 "CSSGrammar.y"
+        { (yyval.i) = -1; }
+#line 2282 "CSSGrammar.tab.c"
     break;
 
   case 78:
-
-/* Line 1806 of yacc.c  */
-#line 584 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.i) = 1; }
+#line 583 "CSSGrammar.y"
+        { (yyval.i) = 1; }
+#line 2288 "CSSGrammar.tab.c"
     break;
 
   case 79:
-
-/* Line 1806 of yacc.c  */
-#line 588 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.rule) = static_cast<CSSParser*>(parser)->createStyleRule((yyvsp[(1) - (5)].selector));
+#line 587 "CSSGrammar.y"
+                                                       {
+        (yyval.rule) = static_cast<CSSParser*>(parser)->createStyleRule((yyvsp[-4].selector));
     }
+#line 2296 "CSSGrammar.tab.c"
     break;
 
   case 80:
-
-/* Line 1806 of yacc.c  */
-#line 594 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.selector) = (yyvsp[(1) - (1)].selector);
+#line 593 "CSSGrammar.y"
+                                   {
+        (yyval.selector) = (yyvsp[0].selector);
     }
+#line 2304 "CSSGrammar.tab.c"
     break;
 
   case 81:
-
-/* Line 1806 of yacc.c  */
-#line 597 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        if ((yyvsp[(1) - (4)].selector) && (yyvsp[(4) - (4)].selector)) {
+#line 596 "CSSGrammar.y"
+                                                                   {
+        if ((yyvsp[-3].selector) && (yyvsp[0].selector)) {
             CSSParser* p = static_cast<CSSParser*>(parser);
-            (yyval.selector) = (yyvsp[(1) - (4)].selector);
-            (yyval.selector)->append(p->sinkFloatingSelector((yyvsp[(4) - (4)].selector)));
+            (yyval.selector) = (yyvsp[-3].selector);
+            (yyval.selector)->append(p->sinkFloatingSelector((yyvsp[0].selector)));
         } else
             (yyval.selector) = 0;
     }
+#line 2317 "CSSGrammar.tab.c"
     break;
 
   case 82:
-
-/* Line 1806 of yacc.c  */
-#line 605 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 604 "CSSGrammar.y"
+                        {
         (yyval.selector) = 0;
     }
+#line 2325 "CSSGrammar.tab.c"
     break;
 
   case 83:
-
-/* Line 1806 of yacc.c  */
-#line 611 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.selector) = (yyvsp[(1) - (1)].selector);
+#line 610 "CSSGrammar.y"
+                    {
+        (yyval.selector) = (yyvsp[0].selector);
     }
+#line 2333 "CSSGrammar.tab.c"
     break;
 
   case 84:
-
-/* Line 1806 of yacc.c  */
-#line 614 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.selector) = (yyvsp[(3) - (3)].selector);
-        if (!(yyvsp[(1) - (3)].selector))
+#line 613 "CSSGrammar.y"
+                                          {
+        (yyval.selector) = (yyvsp[0].selector);
+        if (!(yyvsp[-2].selector))
             (yyval.selector) = 0;
         else if ((yyval.selector)) {
             CSSParser* p = static_cast<CSSParser*>(parser);
             CSSSelector* end = (yyval.selector);
             while (end->m_tagHistory)
                 end = end->m_tagHistory;
-            end->m_relation = (yyvsp[(2) - (3)].relation);
-            end->m_tagHistory = p->sinkFloatingSelector((yyvsp[(1) - (3)].selector));
-            if ((yyvsp[(2) - (3)].relation) == CSSSelector::Descendant || (yyvsp[(2) - (3)].relation) == CSSSelector::Child) {
+            end->m_relation = (yyvsp[-1].relation);
+            end->m_tagHistory = p->sinkFloatingSelector((yyvsp[-2].selector));
+            if ((yyvsp[-1].relation) == CSSSelector::Descendant || (yyvsp[-1].relation) == CSSSelector::Child) {
                 if (Document* doc = p->document())
                     doc->setUsesDescendantRules(true);
-            } else if ((yyvsp[(2) - (3)].relation) == CSSSelector::DirectAdjacent || (yyvsp[(2) - (3)].relation) == CSSSelector::IndirectAdjacent) {
+            } else if ((yyvsp[-1].relation) == CSSSelector::DirectAdjacent || (yyvsp[-1].relation) == CSSSelector::IndirectAdjacent) {
                 if (Document* doc = p->document())
                     doc->setUsesSiblingRules(true);
             }
         }
     }
+#line 2358 "CSSGrammar.tab.c"
     break;
 
   case 85:
-
-/* Line 1806 of yacc.c  */
-#line 634 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 633 "CSSGrammar.y"
+                     {
         (yyval.selector) = 0;
     }
+#line 2366 "CSSGrammar.tab.c"
     break;
 
   case 86:
-
-/* Line 1806 of yacc.c  */
-#line 640 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.string).characters = 0; (yyval.string).length = 0; }
+#line 639 "CSSGrammar.y"
+                    { (yyval.string).characters = 0; (yyval.string).length = 0; }
+#line 2372 "CSSGrammar.tab.c"
     break;
 
   case 87:
-
-/* Line 1806 of yacc.c  */
-#line 641 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { static UChar star = '*'; (yyval.string).characters = &star; (yyval.string).length = 1; }
+#line 640 "CSSGrammar.y"
+              { static UChar star = '*'; (yyval.string).characters = &star; (yyval.string).length = 1; }
+#line 2378 "CSSGrammar.tab.c"
     break;
 
   case 88:
-
-/* Line 1806 of yacc.c  */
-#line 642 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.string) = (yyvsp[(1) - (2)].string); }
+#line 641 "CSSGrammar.y"
+                { (yyval.string) = (yyvsp[-1].string); }
+#line 2384 "CSSGrammar.tab.c"
     break;
 
   case 89:
-
-/* Line 1806 of yacc.c  */
-#line 646 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 645 "CSSGrammar.y"
+                             {
         CSSParser* p = static_cast<CSSParser*>(parser);
         (yyval.selector) = p->createFloatingSelector();
-        (yyval.selector)->m_tag = QualifiedName(nullAtom, atomicString((yyvsp[(1) - (2)].string)), p->defaultNamespace);
+        (yyval.selector)->m_tag = QualifiedName(nullAtom, atomicString((yyvsp[-1].string)), p->defaultNamespace);
     }
+#line 2394 "CSSGrammar.tab.c"
     break;
 
   case 90:
-
-/* Line 1806 of yacc.c  */
-#line 651 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.selector) = (yyvsp[(2) - (3)].selector);
+#line 650 "CSSGrammar.y"
+                                              {
+        (yyval.selector) = (yyvsp[-1].selector);
         if ((yyval.selector)) {
             CSSParser* p = static_cast<CSSParser*>(parser);
-            (yyval.selector)->m_tag = QualifiedName(nullAtom, atomicString((yyvsp[(1) - (3)].string)), p->defaultNamespace);
+            (yyval.selector)->m_tag = QualifiedName(nullAtom, atomicString((yyvsp[-2].string)), p->defaultNamespace);
         }
     }
+#line 2406 "CSSGrammar.tab.c"
     break;
 
   case 91:
-
-/* Line 1806 of yacc.c  */
-#line 658 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.selector) = (yyvsp[(1) - (2)].selector);
+#line 657 "CSSGrammar.y"
+                                 {
+        (yyval.selector) = (yyvsp[-1].selector);
         CSSParser* p = static_cast<CSSParser*>(parser);
         if ((yyval.selector) && p->defaultNamespace != starAtom)
             (yyval.selector)->m_tag = QualifiedName(nullAtom, starAtom, p->defaultNamespace);
     }
+#line 2417 "CSSGrammar.tab.c"
     break;
 
   case 92:
-
-/* Line 1806 of yacc.c  */
-#line 664 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        AtomicString namespacePrefix = atomicString((yyvsp[(1) - (3)].string));
+#line 663 "CSSGrammar.y"
+                                                  {
+        AtomicString namespacePrefix = atomicString((yyvsp[-2].string));
         CSSParser* p = static_cast<CSSParser*>(parser);
         (yyval.selector) = p->createFloatingSelector();
         if (p->styleElement && p->styleElement->isCSSStyleSheet())
             (yyval.selector)->m_tag = QualifiedName(namespacePrefix,
-                                    atomicString((yyvsp[(2) - (3)].string)),
+                                    atomicString((yyvsp[-1].string)),
                                     static_cast<CSSStyleSheet*>(p->styleElement)->determineNamespace(namespacePrefix));
         else // FIXME: Shouldn't this case be an error?
-            (yyval.selector)->m_tag = QualifiedName(nullAtom, atomicString((yyvsp[(2) - (3)].string)), p->defaultNamespace);
+            (yyval.selector)->m_tag = QualifiedName(nullAtom, atomicString((yyvsp[-1].string)), p->defaultNamespace);
     }
+#line 2433 "CSSGrammar.tab.c"
     break;
 
   case 93:
-
-/* Line 1806 of yacc.c  */
-#line 675 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.selector) = (yyvsp[(3) - (4)].selector);
+#line 674 "CSSGrammar.y"
+                                                                 {
+        (yyval.selector) = (yyvsp[-1].selector);
         if ((yyval.selector)) {
-            AtomicString namespacePrefix = atomicString((yyvsp[(1) - (4)].string));
+            AtomicString namespacePrefix = atomicString((yyvsp[-3].string));
             CSSParser* p = static_cast<CSSParser*>(parser);
             if (p->styleElement && p->styleElement->isCSSStyleSheet())
                 (yyval.selector)->m_tag = QualifiedName(namespacePrefix,
-                                          atomicString((yyvsp[(2) - (4)].string)),
+                                          atomicString((yyvsp[-2].string)),
                                           static_cast<CSSStyleSheet*>(p->styleElement)->determineNamespace(namespacePrefix));
             else // FIXME: Shouldn't this case be an error?
-                (yyval.selector)->m_tag = QualifiedName(nullAtom, atomicString((yyvsp[(2) - (4)].string)), p->defaultNamespace);
+                (yyval.selector)->m_tag = QualifiedName(nullAtom, atomicString((yyvsp[-2].string)), p->defaultNamespace);
         }
     }
+#line 2451 "CSSGrammar.tab.c"
     break;
 
   case 94:
-
-/* Line 1806 of yacc.c  */
-#line 688 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.selector) = (yyvsp[(2) - (3)].selector);
+#line 687 "CSSGrammar.y"
+                                                    {
+        (yyval.selector) = (yyvsp[-1].selector);
         if ((yyval.selector)) {
-            AtomicString namespacePrefix = atomicString((yyvsp[(1) - (3)].string));
+            AtomicString namespacePrefix = atomicString((yyvsp[-2].string));
             CSSParser* p = static_cast<CSSParser*>(parser);
             if (p->styleElement && p->styleElement->isCSSStyleSheet())
                 (yyval.selector)->m_tag = QualifiedName(namespacePrefix,
@@ -2661,255 +2463,240 @@ yyreduce:
                                           static_cast<CSSStyleSheet*>(p->styleElement)->determineNamespace(namespacePrefix));
         }
     }
+#line 2467 "CSSGrammar.tab.c"
     break;
 
   case 95:
-
-/* Line 1806 of yacc.c  */
-#line 702 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        ParseString& str = (yyvsp[(1) - (1)].string);
+#line 701 "CSSGrammar.y"
+          {
+        ParseString& str = (yyvsp[0].string);
         CSSParser* p = static_cast<CSSParser*>(parser);
         Document* doc = p->document();
         if (doc && doc->isHTMLDocument())
             str.lower();
         (yyval.string) = str;
     }
+#line 2480 "CSSGrammar.tab.c"
     break;
 
   case 96:
-
-/* Line 1806 of yacc.c  */
-#line 710 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 709 "CSSGrammar.y"
+          {
         static UChar star = '*';
         (yyval.string).characters = &star;
         (yyval.string).length = 1;
     }
+#line 2490 "CSSGrammar.tab.c"
     break;
 
   case 97:
-
-/* Line 1806 of yacc.c  */
-#line 718 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.selector) = (yyvsp[(1) - (1)].selector);
+#line 717 "CSSGrammar.y"
+              {
+        (yyval.selector) = (yyvsp[0].selector);
     }
+#line 2498 "CSSGrammar.tab.c"
     break;
 
   case 98:
-
-/* Line 1806 of yacc.c  */
-#line 721 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        if (!(yyvsp[(2) - (2)].selector))
+#line 720 "CSSGrammar.y"
+                               {
+        if (!(yyvsp[0].selector))
             (yyval.selector) = 0;
-        else if ((yyvsp[(1) - (2)].selector)) {
-            (yyval.selector) = (yyvsp[(1) - (2)].selector);
+        else if ((yyvsp[-1].selector)) {
+            (yyval.selector) = (yyvsp[-1].selector);
             CSSParser* p = static_cast<CSSParser*>(parser);
-            CSSSelector* end = (yyvsp[(1) - (2)].selector);
+            CSSSelector* end = (yyvsp[-1].selector);
             while (end->m_tagHistory)
                 end = end->m_tagHistory;
             end->m_relation = CSSSelector::SubSelector;
-            end->m_tagHistory = p->sinkFloatingSelector((yyvsp[(2) - (2)].selector));
+            end->m_tagHistory = p->sinkFloatingSelector((yyvsp[0].selector));
         }
     }
+#line 2516 "CSSGrammar.tab.c"
     break;
 
   case 99:
-
-/* Line 1806 of yacc.c  */
-#line 734 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 733 "CSSGrammar.y"
+                           {
         (yyval.selector) = 0;
     }
+#line 2524 "CSSGrammar.tab.c"
     break;
 
   case 100:
-
-/* Line 1806 of yacc.c  */
-#line 740 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 739 "CSSGrammar.y"
+          {
         CSSParser* p = static_cast<CSSParser*>(parser);
         (yyval.selector) = p->createFloatingSelector();
         (yyval.selector)->m_match = CSSSelector::Id;
         if (!p->strict)
-            (yyvsp[(1) - (1)].string).lower();
+            (yyvsp[0].string).lower();
         (yyval.selector)->m_attr = idAttr;
-        (yyval.selector)->m_value = atomicString((yyvsp[(1) - (1)].string));
+        (yyval.selector)->m_value = atomicString((yyvsp[0].string));
     }
+#line 2538 "CSSGrammar.tab.c"
     break;
 
   case 101:
-
-/* Line 1806 of yacc.c  */
-#line 749 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        if ((yyvsp[(1) - (1)].string).characters[0] >= '0' && (yyvsp[(1) - (1)].string).characters[0] <= '9') {
+#line 748 "CSSGrammar.y"
+        {
+        if ((yyvsp[0].string).characters[0] >= '0' && (yyvsp[0].string).characters[0] <= '9') {
             (yyval.selector) = 0;
         } else {
             CSSParser* p = static_cast<CSSParser*>(parser);
             (yyval.selector) = p->createFloatingSelector();
             (yyval.selector)->m_match = CSSSelector::Id;
             if (!p->strict)
-                (yyvsp[(1) - (1)].string).lower();
+                (yyvsp[0].string).lower();
             (yyval.selector)->m_attr = idAttr;
-            (yyval.selector)->m_value = atomicString((yyvsp[(1) - (1)].string));
+            (yyval.selector)->m_value = atomicString((yyvsp[0].string));
         }
     }
+#line 2556 "CSSGrammar.tab.c"
     break;
 
   case 105:
-
-/* Line 1806 of yacc.c  */
-#line 768 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 767 "CSSGrammar.y"
+              {
         CSSParser* p = static_cast<CSSParser*>(parser);
         (yyval.selector) = p->createFloatingSelector();
         (yyval.selector)->m_match = CSSSelector::Class;
         if (!p->strict)
-            (yyvsp[(2) - (2)].string).lower();
+            (yyvsp[0].string).lower();
         (yyval.selector)->m_attr = classAttr;
-        (yyval.selector)->m_value = atomicString((yyvsp[(2) - (2)].string));
+        (yyval.selector)->m_value = atomicString((yyvsp[0].string));
     }
+#line 2570 "CSSGrammar.tab.c"
     break;
 
   case 106:
-
-/* Line 1806 of yacc.c  */
-#line 780 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        ParseString& str = (yyvsp[(1) - (2)].string);
+#line 779 "CSSGrammar.y"
+                      {
+        ParseString& str = (yyvsp[-1].string);
         CSSParser* p = static_cast<CSSParser*>(parser);
         Document* doc = p->document();
         if (doc && doc->isHTMLDocument())
             str.lower();
         (yyval.string) = str;
     }
+#line 2583 "CSSGrammar.tab.c"
     break;
 
   case 107:
-
-/* Line 1806 of yacc.c  */
-#line 791 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 790 "CSSGrammar.y"
+                                  {
         (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
-        (yyval.selector)->m_attr = QualifiedName(nullAtom, atomicString((yyvsp[(3) - (4)].string)), nullAtom);
+        (yyval.selector)->m_attr = QualifiedName(nullAtom, atomicString((yyvsp[-1].string)), nullAtom);
         (yyval.selector)->m_match = CSSSelector::Set;
     }
+#line 2593 "CSSGrammar.tab.c"
     break;
 
   case 108:
-
-/* Line 1806 of yacc.c  */
-#line 796 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 795 "CSSGrammar.y"
+                                                                                  {
         (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
-        (yyval.selector)->m_attr = QualifiedName(nullAtom, atomicString((yyvsp[(3) - (8)].string)), nullAtom);
-        (yyval.selector)->m_match = (CSSSelector::Match)(yyvsp[(4) - (8)].i);
-        (yyval.selector)->m_value = atomicString((yyvsp[(6) - (8)].string));
+        (yyval.selector)->m_attr = QualifiedName(nullAtom, atomicString((yyvsp[-5].string)), nullAtom);
+        (yyval.selector)->m_match = (CSSSelector::Match)(yyvsp[-4].i);
+        (yyval.selector)->m_value = atomicString((yyvsp[-2].string));
     }
+#line 2604 "CSSGrammar.tab.c"
     break;
 
   case 109:
-
-/* Line 1806 of yacc.c  */
-#line 802 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        AtomicString namespacePrefix = atomicString((yyvsp[(3) - (5)].string));
+#line 801 "CSSGrammar.y"
+                                                       {
+        AtomicString namespacePrefix = atomicString((yyvsp[-2].string));
         CSSParser* p = static_cast<CSSParser*>(parser);
         (yyval.selector) = p->createFloatingSelector();
         (yyval.selector)->m_attr = QualifiedName(namespacePrefix,
-                                   atomicString((yyvsp[(4) - (5)].string)),
+                                   atomicString((yyvsp[-1].string)),
                                    static_cast<CSSStyleSheet*>(p->styleElement)->determineNamespace(namespacePrefix));
         (yyval.selector)->m_match = CSSSelector::Set;
     }
+#line 2618 "CSSGrammar.tab.c"
     break;
 
   case 110:
-
-/* Line 1806 of yacc.c  */
-#line 811 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        AtomicString namespacePrefix = atomicString((yyvsp[(3) - (9)].string));
+#line 810 "CSSGrammar.y"
+                                                                                                     {
+        AtomicString namespacePrefix = atomicString((yyvsp[-6].string));
         CSSParser* p = static_cast<CSSParser*>(parser);
         (yyval.selector) = p->createFloatingSelector();
         (yyval.selector)->m_attr = QualifiedName(namespacePrefix,
-                                   atomicString((yyvsp[(4) - (9)].string)),
+                                   atomicString((yyvsp[-5].string)),
                                    static_cast<CSSStyleSheet*>(p->styleElement)->determineNamespace(namespacePrefix));
-        (yyval.selector)->m_match = (CSSSelector::Match)(yyvsp[(5) - (9)].i);
-        (yyval.selector)->m_value = atomicString((yyvsp[(7) - (9)].string));
+        (yyval.selector)->m_match = (CSSSelector::Match)(yyvsp[-4].i);
+        (yyval.selector)->m_value = atomicString((yyvsp[-2].string));
     }
+#line 2633 "CSSGrammar.tab.c"
     break;
 
   case 111:
-
-/* Line 1806 of yacc.c  */
-#line 824 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 823 "CSSGrammar.y"
+        {
         (yyval.i) = CSSSelector::Exact;
     }
+#line 2641 "CSSGrammar.tab.c"
     break;
 
   case 112:
-
-/* Line 1806 of yacc.c  */
-#line 827 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 826 "CSSGrammar.y"
+               {
         (yyval.i) = CSSSelector::List;
     }
+#line 2649 "CSSGrammar.tab.c"
     break;
 
   case 113:
-
-/* Line 1806 of yacc.c  */
-#line 830 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 829 "CSSGrammar.y"
+                {
         (yyval.i) = CSSSelector::Hyphen;
     }
+#line 2657 "CSSGrammar.tab.c"
     break;
 
   case 114:
-
-/* Line 1806 of yacc.c  */
-#line 833 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 832 "CSSGrammar.y"
+                 {
         (yyval.i) = CSSSelector::Begin;
     }
+#line 2665 "CSSGrammar.tab.c"
     break;
 
   case 115:
-
-/* Line 1806 of yacc.c  */
-#line 836 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 835 "CSSGrammar.y"
+               {
         (yyval.i) = CSSSelector::End;
     }
+#line 2673 "CSSGrammar.tab.c"
     break;
 
   case 116:
-
-/* Line 1806 of yacc.c  */
-#line 839 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 838 "CSSGrammar.y"
+               {
         (yyval.i) = CSSSelector::Contain;
     }
+#line 2681 "CSSGrammar.tab.c"
     break;
 
   case 119:
-
-/* Line 1806 of yacc.c  */
-#line 850 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 849 "CSSGrammar.y"
+              {
         (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
         (yyval.selector)->m_match = CSSSelector::PseudoClass;
-        (yyvsp[(2) - (2)].string).lower();
-        (yyval.selector)->m_value = atomicString((yyvsp[(2) - (2)].string));
+        (yyvsp[0].string).lower();
+        (yyval.selector)->m_value = atomicString((yyvsp[0].string));
         CSSSelector::PseudoType type = (yyval.selector)->pseudoType();
         if (type == CSSSelector::PseudoUnknown)
             (yyval.selector) = 0;
         else if (type == CSSSelector::PseudoEmpty ||
-                 type == CSSSelector::PseudoFirstChild) {
+                 type == CSSSelector::PseudoFirstChild ||
+                 type == CSSSelector::PseudoFirstOfType ||
+                 type == CSSSelector::PseudoLastChild ||
+                 type == CSSSelector::PseudoLastOfType ||
+                 type == CSSSelector::PseudoOnlyChild ||
+                 type == CSSSelector::PseudoOnlyOfType) {
             CSSParser* p = static_cast<CSSParser*>(parser);
             Document* doc = p->document();
             if (doc)
@@ -2920,17 +2707,16 @@ yyreduce:
                 doc->setUsesFirstLineRules(true);
         }
     }
+#line 2711 "CSSGrammar.tab.c"
     break;
 
   case 120:
-
-/* Line 1806 of yacc.c  */
-#line 870 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 874 "CSSGrammar.y"
+                    {
         (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
         (yyval.selector)->m_match = CSSSelector::PseudoElement;
-        (yyvsp[(3) - (3)].string).lower();
-        (yyval.selector)->m_value = atomicString((yyvsp[(3) - (3)].string));
+        (yyvsp[0].string).lower();
+        (yyval.selector)->m_value = atomicString((yyvsp[0].string));
         CSSSelector::PseudoType type = (yyval.selector)->pseudoType();
         if (type == CSSSelector::PseudoUnknown)
             (yyval.selector) = 0;
@@ -2940,626 +2726,612 @@ yyreduce:
                 doc->setUsesFirstLineRules(true);
         }
     }
+#line 2730 "CSSGrammar.tab.c"
     break;
 
   case 121:
-
-/* Line 1806 of yacc.c  */
-#line 885 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 889 "CSSGrammar.y"
+                             {
         (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
         (yyval.selector)->m_match = CSSSelector::PseudoClass;
-        (yyval.selector)->m_argument = atomicString((yyvsp[(3) - (4)].string));
-        (yyvsp[(2) - (4)].string).lower();
-        (yyval.selector)->m_value = atomicString((yyvsp[(2) - (4)].string));
+        (yyval.selector)->m_argument = atomicString((yyvsp[-1].string));
+        (yyvsp[-2].string).lower();
+        (yyval.selector)->m_value = atomicString((yyvsp[-2].string));
         if ((yyval.selector)->pseudoType() == CSSSelector::PseudoUnknown)
             (yyval.selector) = 0;
     }
+#line 2744 "CSSGrammar.tab.c"
     break;
 
   case 122:
+#line 899 "CSSGrammar.y"
+                                                       {
+        (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
+        (yyval.selector)->m_match = CSSSelector::PseudoClass;
+        (yyval.selector)->m_argument = String::number((int)(yyvsp[-2].val));
+        (yyvsp[-4].string).lower();
+        (yyval.selector)->m_value = atomicString((yyvsp[-4].string));
+        if ((yyval.selector)->pseudoType() == CSSSelector::PseudoUnknown)
+            (yyval.selector) = 0;
+    }
+#line 2758 "CSSGrammar.tab.c"
+    break;
 
-/* Line 1806 of yacc.c  */
-#line 895 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        if (!(yyvsp[(4) - (5)].selector))
+  case 123:
+#line 909 "CSSGrammar.y"
+                                                     {
+        (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
+        (yyval.selector)->m_match = CSSSelector::PseudoClass;
+        (yyval.selector)->m_argument = atomicString((yyvsp[-2].string));
+        (yyvsp[-4].string).lower();
+        (yyval.selector)->m_value = atomicString((yyvsp[-4].string));
+        if ((yyval.selector)->pseudoType() == CSSSelector::PseudoUnknown)
+            (yyval.selector) = 0;
+    }
+#line 2772 "CSSGrammar.tab.c"
+    break;
+
+  case 124:
+#line 920 "CSSGrammar.y"
+                                                                                         {
+        (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
+        (yyval.selector)->m_match = CSSSelector::PseudoClass;
+        (yyval.selector)->m_argument = domString((yyvsp[-6].string)) + "+" + String::number((int)(yyvsp[-2].val));
+        (yyvsp[-8].string).lower();
+        (yyval.selector)->m_value = atomicString((yyvsp[-8].string));
+        if ((yyval.selector)->pseudoType() == CSSSelector::PseudoUnknown)
+            (yyval.selector) = 0;
+    }
+#line 2786 "CSSGrammar.tab.c"
+    break;
+
+  case 125:
+#line 929 "CSSGrammar.y"
+                                                                                         {
+        (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
+        (yyval.selector)->m_match = CSSSelector::PseudoClass;
+        (yyval.selector)->m_argument = domString((yyvsp[-6].string)) + "-" + String::number((int)(yyvsp[-2].val));
+        (yyvsp[-8].string).lower();
+        (yyval.selector)->m_value = atomicString((yyvsp[-8].string));
+        if ((yyval.selector)->pseudoType() == CSSSelector::PseudoUnknown)
+            (yyval.selector) = 0;
+    }
+#line 2800 "CSSGrammar.tab.c"
+    break;
+
+  case 126:
+#line 939 "CSSGrammar.y"
+                                                      {
+        if (!(yyvsp[-1].selector))
             (yyval.selector) = 0;
         else {
             CSSParser* p = static_cast<CSSParser*>(parser);
             (yyval.selector) = p->createFloatingSelector();
             (yyval.selector)->m_match = CSSSelector::PseudoClass;
-            (yyval.selector)->m_simpleSelector = p->sinkFloatingSelector((yyvsp[(4) - (5)].selector));
-            (yyvsp[(2) - (5)].string).lower();
-            (yyval.selector)->m_value = atomicString((yyvsp[(2) - (5)].string));
+            (yyval.selector)->m_simpleSelector = p->sinkFloatingSelector((yyvsp[-1].selector));
+            (yyvsp[-3].string).lower();
+            (yyval.selector)->m_value = atomicString((yyvsp[-3].string));
         }
     }
-    break;
-
-  case 123:
-
-/* Line 1806 of yacc.c  */
-#line 910 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.ok) = (yyvsp[(1) - (1)].ok);
-    }
-    break;
-
-  case 124:
-
-/* Line 1806 of yacc.c  */
-#line 913 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.ok) = (yyvsp[(1) - (2)].ok);
-        if ( (yyvsp[(2) - (2)].ok) )
-            (yyval.ok) = (yyvsp[(2) - (2)].ok);
-    }
-    break;
-
-  case 125:
-
-/* Line 1806 of yacc.c  */
-#line 918 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.ok) = (yyvsp[(1) - (1)].ok);
-    }
-    break;
-
-  case 126:
-
-/* Line 1806 of yacc.c  */
-#line 921 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.ok) = false;
-    }
+#line 2817 "CSSGrammar.tab.c"
     break;
 
   case 127:
-
-/* Line 1806 of yacc.c  */
-#line 924 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.ok) = false;
+#line 954 "CSSGrammar.y"
+                {
+        (yyval.ok) = (yyvsp[0].ok);
     }
+#line 2825 "CSSGrammar.tab.c"
     break;
 
   case 128:
-
-/* Line 1806 of yacc.c  */
-#line 927 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.ok) = (yyvsp[(1) - (2)].ok);
+#line 957 "CSSGrammar.y"
+                            {
+        (yyval.ok) = (yyvsp[-1].ok);
+        if ( (yyvsp[0].ok) )
+            (yyval.ok) = (yyvsp[0].ok);
     }
+#line 2835 "CSSGrammar.tab.c"
     break;
 
   case 129:
-
-/* Line 1806 of yacc.c  */
-#line 933 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.ok) = (yyvsp[(1) - (3)].ok);
+#line 962 "CSSGrammar.y"
+                {
+        (yyval.ok) = (yyvsp[0].ok);
     }
+#line 2843 "CSSGrammar.tab.c"
     break;
 
   case 130:
-
-/* Line 1806 of yacc.c  */
-#line 936 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 965 "CSSGrammar.y"
+                                     {
         (yyval.ok) = false;
     }
+#line 2851 "CSSGrammar.tab.c"
     break;
 
   case 131:
-
-/* Line 1806 of yacc.c  */
-#line 939 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+#line 968 "CSSGrammar.y"
+            {
         (yyval.ok) = false;
     }
+#line 2859 "CSSGrammar.tab.c"
     break;
 
   case 132:
-
-/* Line 1806 of yacc.c  */
-#line 942 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.ok) = false;
+#line 971 "CSSGrammar.y"
+                      {
+        (yyval.ok) = (yyvsp[-1].ok);
     }
+#line 2867 "CSSGrammar.tab.c"
     break;
 
   case 133:
-
-/* Line 1806 of yacc.c  */
-#line 945 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.ok) = (yyvsp[(1) - (4)].ok);
-        if ((yyvsp[(2) - (4)].ok))
-            (yyval.ok) = (yyvsp[(2) - (4)].ok);
+#line 977 "CSSGrammar.y"
+                                {
+        (yyval.ok) = (yyvsp[-2].ok);
     }
+#line 2875 "CSSGrammar.tab.c"
     break;
 
   case 134:
-
-/* Line 1806 of yacc.c  */
-#line 950 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.ok) = (yyvsp[(1) - (4)].ok);
+#line 980 "CSSGrammar.y"
+                                                     {
+        (yyval.ok) = false;
     }
+#line 2883 "CSSGrammar.tab.c"
     break;
 
   case 135:
-
-/* Line 1806 of yacc.c  */
-#line 953 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.ok) = (yyvsp[(1) - (6)].ok);
+#line 983 "CSSGrammar.y"
+                            {
+        (yyval.ok) = false;
     }
+#line 2891 "CSSGrammar.tab.c"
     break;
 
   case 136:
+#line 986 "CSSGrammar.y"
+                                                     {
+        (yyval.ok) = false;
+    }
+#line 2899 "CSSGrammar.tab.c"
+    break;
 
-/* Line 1806 of yacc.c  */
-#line 959 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+  case 137:
+#line 989 "CSSGrammar.y"
+                                            {
+        (yyval.ok) = (yyvsp[-3].ok);
+        if ((yyvsp[-2].ok))
+            (yyval.ok) = (yyvsp[-2].ok);
+    }
+#line 2909 "CSSGrammar.tab.c"
+    break;
+
+  case 138:
+#line 994 "CSSGrammar.y"
+                                      {
+        (yyval.ok) = (yyvsp[-3].ok);
+    }
+#line 2917 "CSSGrammar.tab.c"
+    break;
+
+  case 139:
+#line 997 "CSSGrammar.y"
+                                                               {
+        (yyval.ok) = (yyvsp[-5].ok);
+    }
+#line 2925 "CSSGrammar.tab.c"
+    break;
+
+  case 140:
+#line 1003 "CSSGrammar.y"
+                                       {
         (yyval.ok) = false;
         CSSParser* p = static_cast<CSSParser*>(parser);
-        if ((yyvsp[(1) - (5)].prop_id) && (yyvsp[(4) - (5)].valueList)) {
-            p->valueList = p->sinkFloatingValueList((yyvsp[(4) - (5)].valueList));
+        if ((yyvsp[-4].prop_id) && (yyvsp[-1].valueList)) {
+            p->valueList = p->sinkFloatingValueList((yyvsp[-1].valueList));
             int oldParsedProperties = p->numParsedProperties;
-            (yyval.ok) = p->parseValue((yyvsp[(1) - (5)].prop_id), (yyvsp[(5) - (5)].b));
+            (yyval.ok) = p->parseValue((yyvsp[-4].prop_id), (yyvsp[0].b));
             if (!(yyval.ok))
                 p->rollbackLastProperties(p->numParsedProperties - oldParsedProperties);
             delete p->valueList;
             p->valueList = 0;
         }
     }
+#line 2943 "CSSGrammar.tab.c"
     break;
 
-  case 137:
-
-/* Line 1806 of yacc.c  */
-#line 973 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+  case 141:
+#line 1017 "CSSGrammar.y"
+                   {
         (yyval.ok) = false;
     }
+#line 2951 "CSSGrammar.tab.c"
     break;
 
-  case 138:
-
-/* Line 1806 of yacc.c  */
-#line 977 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+  case 142:
+#line 1021 "CSSGrammar.y"
+                                             {
         /* The default movable type template has letter-spacing: .none;  Handle this by looking for
         error tokens at the start of an expr, recover the expr and then treat as an error, cleaning
         up and deleting the shifted expr.  */
         (yyval.ok) = false;
     }
-    break;
-
-  case 139:
-
-/* Line 1806 of yacc.c  */
-#line 984 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        /* Handle this case: div { text-align: center; !important } Just reduce away the stray !important. */
-        (yyval.ok) = false;
-    }
-    break;
-
-  case 140:
-
-/* Line 1806 of yacc.c  */
-#line 989 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        /* div { font-family: } Just reduce away this property with no value. */
-        (yyval.ok) = false;
-    }
-    break;
-
-  case 141:
-
-/* Line 1806 of yacc.c  */
-#line 996 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyvsp[(1) - (2)].string).lower();
-        String str(((yyvsp[(1) - (2)].string)).characters, ((yyvsp[(1) - (2)].string)).length);
-        CString strLatin1 = str.latin1();
-        const char* s = strLatin1.data();
-        int l = str.length();
-        (yyval.prop_id) = getPropertyID(s, l);
-    }
-    break;
-
-  case 142:
-
-/* Line 1806 of yacc.c  */
-#line 1006 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.b) = true; }
+#line 2962 "CSSGrammar.tab.c"
     break;
 
   case 143:
-
-/* Line 1806 of yacc.c  */
-#line 1007 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.b) = false; }
+#line 1028 "CSSGrammar.y"
+                              {
+        /* Handle this case: div { text-align: center; !important } Just reduce away the stray !important. */
+        (yyval.ok) = false;
+    }
+#line 2971 "CSSGrammar.tab.c"
     break;
 
   case 144:
-
-/* Line 1806 of yacc.c  */
-#line 1011 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        CSSParser* p = static_cast<CSSParser*>(parser);
-        (yyval.valueList) = p->createFloatingValueList();
-        (yyval.valueList)->addValue(p->sinkFloatingValue((yyvsp[(1) - (1)].value)));
+#line 1033 "CSSGrammar.y"
+                             {
+        /* div { font-family: } Just reduce away this property with no value. */
+        (yyval.ok) = false;
     }
+#line 2980 "CSSGrammar.tab.c"
     break;
 
   case 145:
-
-/* Line 1806 of yacc.c  */
-#line 1016 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        CSSParser* p = static_cast<CSSParser*>(parser);
-        (yyval.valueList) = (yyvsp[(1) - (3)].valueList);
-        if ((yyval.valueList)) {
-            if ((yyvsp[(2) - (3)].tok)) {
-                Value v;
-                v.id = 0;
-                v.unit = Value::Operator;
-                v.iValue = (yyvsp[(2) - (3)].tok);
-                (yyval.valueList)->addValue(v);
-            }
-            (yyval.valueList)->addValue(p->sinkFloatingValue((yyvsp[(3) - (3)].value)));
-        }
+#line 1040 "CSSGrammar.y"
+                      {
+        (yyvsp[-1].string).lower();
+        String str = domString((yyvsp[-1].string));
+        CString bytes = str.latin1();
+        (yyval.prop_id) = getPropertyID(bytes.data(), bytes.length());
     }
+#line 2991 "CSSGrammar.tab.c"
     break;
 
   case 146:
-
-/* Line 1806 of yacc.c  */
-#line 1030 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.valueList) = 0;
-    }
+#line 1049 "CSSGrammar.y"
+                              { (yyval.b) = true; }
+#line 2997 "CSSGrammar.tab.c"
     break;
 
   case 147:
-
-/* Line 1806 of yacc.c  */
-#line 1036 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.tok) = '/';
-    }
+#line 1050 "CSSGrammar.y"
+                  { (yyval.b) = false; }
+#line 3003 "CSSGrammar.tab.c"
     break;
 
   case 148:
-
-/* Line 1806 of yacc.c  */
-#line 1039 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.tok) = ',';
+#line 1054 "CSSGrammar.y"
+         {
+        CSSParser* p = static_cast<CSSParser*>(parser);
+        (yyval.valueList) = p->createFloatingValueList();
+        (yyval.valueList)->addValue(p->sinkFloatingValue((yyvsp[0].value)));
     }
+#line 3013 "CSSGrammar.tab.c"
     break;
 
   case 149:
-
-/* Line 1806 of yacc.c  */
-#line 1042 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.tok) = 0;
-  }
+#line 1059 "CSSGrammar.y"
+                         {
+        CSSParser* p = static_cast<CSSParser*>(parser);
+        (yyval.valueList) = (yyvsp[-2].valueList);
+        if ((yyval.valueList)) {
+            if ((yyvsp[-1].tok)) {
+                Value v;
+                v.id = 0;
+                v.unit = Value::Operator;
+                v.iValue = (yyvsp[-1].tok);
+                (yyval.valueList)->addValue(v);
+            }
+            (yyval.valueList)->addValue(p->sinkFloatingValue((yyvsp[0].value)));
+        }
+    }
+#line 3032 "CSSGrammar.tab.c"
     break;
 
   case 150:
-
-/* Line 1806 of yacc.c  */
-#line 1048 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value) = (yyvsp[(1) - (1)].value); }
+#line 1073 "CSSGrammar.y"
+                 {
+        (yyval.valueList) = 0;
+    }
+#line 3040 "CSSGrammar.tab.c"
     break;
 
   case 151:
-
-/* Line 1806 of yacc.c  */
-#line 1049 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value) = (yyvsp[(2) - (2)].value); (yyval.value).fValue *= (yyvsp[(1) - (2)].i); }
+#line 1079 "CSSGrammar.y"
+                    {
+        (yyval.tok) = '/';
+    }
+#line 3048 "CSSGrammar.tab.c"
     break;
 
   case 152:
-
-/* Line 1806 of yacc.c  */
-#line 1050 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).string = (yyvsp[(1) - (2)].string); (yyval.value).unit = CSSPrimitiveValue::CSS_STRING; }
+#line 1082 "CSSGrammar.y"
+                    {
+        (yyval.tok) = ',';
+    }
+#line 3056 "CSSGrammar.tab.c"
     break;
 
   case 153:
-
-/* Line 1806 of yacc.c  */
-#line 1051 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-      String str(((yyvsp[(1) - (2)].string)).characters, ((yyvsp[(1) - (2)].string)).length);
-      CString strLatin1 = str.lower().latin1();
-      (yyval.value).id = getValueID(strLatin1.data(), str.length());
-      (yyval.value).unit = CSSPrimitiveValue::CSS_IDENT;
-      (yyval.value).string = (yyvsp[(1) - (2)].string);
+#line 1085 "CSSGrammar.y"
+                {
+        (yyval.tok) = 0;
   }
+#line 3064 "CSSGrammar.tab.c"
     break;
 
   case 154:
-
-/* Line 1806 of yacc.c  */
-#line 1058 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).string = (yyvsp[(1) - (2)].string); (yyval.value).unit = CSSPrimitiveValue::CSS_DIMENSION ;}
+#line 1091 "CSSGrammar.y"
+             { (yyval.value) = (yyvsp[0].value); }
+#line 3070 "CSSGrammar.tab.c"
     break;
 
   case 155:
-
-/* Line 1806 of yacc.c  */
-#line 1059 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).string = (yyvsp[(2) - (3)].string); (yyval.value).unit = CSSPrimitiveValue::CSS_DIMENSION ;}
+#line 1092 "CSSGrammar.y"
+                              { (yyval.value) = (yyvsp[0].value); (yyval.value).fValue *= (yyvsp[-1].i); }
+#line 3076 "CSSGrammar.tab.c"
     break;
 
   case 156:
-
-/* Line 1806 of yacc.c  */
-#line 1060 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).string = (yyvsp[(1) - (2)].string); (yyval.value).unit = CSSPrimitiveValue::CSS_URI; }
+#line 1093 "CSSGrammar.y"
+                       { (yyval.value).id = 0; (yyval.value).string = (yyvsp[-1].string); (yyval.value).unit = CSSPrimitiveValue::CSS_STRING; }
+#line 3082 "CSSGrammar.tab.c"
     break;
 
   case 157:
-
-/* Line 1806 of yacc.c  */
-#line 1061 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).iValue = 0; (yyval.value).unit = CSSPrimitiveValue::CSS_UNKNOWN;/* ### */ }
+#line 1094 "CSSGrammar.y"
+                      {
+      String str = domString((yyvsp[-1].string));
+      CString bytes = str.lower().latin1();
+      (yyval.value).id = getValueID(bytes.data(), bytes.length());
+      (yyval.value).unit = CSSPrimitiveValue::CSS_IDENT;
+      (yyval.value).string = (yyvsp[-1].string);
+  }
+#line 3094 "CSSGrammar.tab.c"
     break;
 
   case 158:
-
-/* Line 1806 of yacc.c  */
-#line 1062 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).string = (yyvsp[(1) - (1)].string); (yyval.value).unit = CSSPrimitiveValue::CSS_RGBCOLOR; }
+#line 1102 "CSSGrammar.y"
+                      { (yyval.value).id = 0; (yyval.value).string = (yyvsp[-1].string); (yyval.value).unit = CSSPrimitiveValue::CSS_DIMENSION; }
+#line 3100 "CSSGrammar.tab.c"
     break;
 
   case 159:
-
-/* Line 1806 of yacc.c  */
-#line 1063 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).string = ParseString(); (yyval.value).unit = CSSPrimitiveValue::CSS_RGBCOLOR; }
+#line 1103 "CSSGrammar.y"
+                                     { (yyval.value).id = 0; (yyval.value).string = (yyvsp[-1].string); (yyval.value).unit = CSSPrimitiveValue::CSS_DIMENSION; }
+#line 3106 "CSSGrammar.tab.c"
     break;
 
   case 160:
-
-/* Line 1806 of yacc.c  */
-#line 1065 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-      (yyval.value) = (yyvsp[(1) - (1)].value);
-  }
+#line 1104 "CSSGrammar.y"
+                    { (yyval.value).id = 0; (yyval.value).string = (yyvsp[-1].string); (yyval.value).unit = CSSPrimitiveValue::CSS_URI; }
+#line 3112 "CSSGrammar.tab.c"
     break;
 
   case 161:
-
-/* Line 1806 of yacc.c  */
-#line 1068 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {}
+#line 1105 "CSSGrammar.y"
+                             { (yyval.value).id = 0; (yyval.value).iValue = 0; (yyval.value).unit = CSSPrimitiveValue::CSS_UNKNOWN;/* ### */ }
+#line 3118 "CSSGrammar.tab.c"
     break;
 
   case 162:
-
-/* Line 1806 of yacc.c  */
-#line 1072 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).isInt = true; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_NUMBER; }
+#line 1106 "CSSGrammar.y"
+             { (yyval.value).id = 0; (yyval.value).string = (yyvsp[0].string); (yyval.value).unit = CSSPrimitiveValue::CSS_RGBCOLOR; }
+#line 3124 "CSSGrammar.tab.c"
     break;
 
   case 163:
-
-/* Line 1806 of yacc.c  */
-#line 1073 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).isInt = false; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_NUMBER; }
+#line 1107 "CSSGrammar.y"
+                    { (yyval.value).id = 0; (yyval.value).string = ParseString(); (yyval.value).unit = CSSPrimitiveValue::CSS_RGBCOLOR; }
+#line 3130 "CSSGrammar.tab.c"
     break;
 
   case 164:
-
-/* Line 1806 of yacc.c  */
-#line 1074 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_PERCENTAGE; }
+#line 1109 "CSSGrammar.y"
+             {
+      (yyval.value) = (yyvsp[0].value);
+  }
+#line 3138 "CSSGrammar.tab.c"
     break;
 
   case 165:
-
-/* Line 1806 of yacc.c  */
-#line 1075 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_PX; }
+#line 1112 "CSSGrammar.y"
+                    {}
+#line 3144 "CSSGrammar.tab.c"
     break;
 
   case 166:
-
-/* Line 1806 of yacc.c  */
-#line 1076 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_CM; }
+#line 1116 "CSSGrammar.y"
+                      { (yyval.value).id = 0; (yyval.value).isInt = true; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_NUMBER; }
+#line 3150 "CSSGrammar.tab.c"
     break;
 
   case 167:
-
-/* Line 1806 of yacc.c  */
-#line 1077 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_MM; }
+#line 1117 "CSSGrammar.y"
+                           { (yyval.value).id = 0; (yyval.value).isInt = false; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_NUMBER; }
+#line 3156 "CSSGrammar.tab.c"
     break;
 
   case 168:
-
-/* Line 1806 of yacc.c  */
-#line 1078 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_IN; }
+#line 1118 "CSSGrammar.y"
+                           { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_PERCENTAGE; }
+#line 3162 "CSSGrammar.tab.c"
     break;
 
   case 169:
-
-/* Line 1806 of yacc.c  */
-#line 1079 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_PT; }
+#line 1119 "CSSGrammar.y"
+                    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_PX; }
+#line 3168 "CSSGrammar.tab.c"
     break;
 
   case 170:
-
-/* Line 1806 of yacc.c  */
-#line 1080 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_PC; }
+#line 1120 "CSSGrammar.y"
+                    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_CM; }
+#line 3174 "CSSGrammar.tab.c"
     break;
 
   case 171:
-
-/* Line 1806 of yacc.c  */
-#line 1081 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_DEG; }
+#line 1121 "CSSGrammar.y"
+                    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_MM; }
+#line 3180 "CSSGrammar.tab.c"
     break;
 
   case 172:
-
-/* Line 1806 of yacc.c  */
-#line 1082 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_RAD; }
+#line 1122 "CSSGrammar.y"
+                    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_IN; }
+#line 3186 "CSSGrammar.tab.c"
     break;
 
   case 173:
-
-/* Line 1806 of yacc.c  */
-#line 1083 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_GRAD; }
+#line 1123 "CSSGrammar.y"
+                    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_PT; }
+#line 3192 "CSSGrammar.tab.c"
     break;
 
   case 174:
-
-/* Line 1806 of yacc.c  */
-#line 1084 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_MS; }
+#line 1124 "CSSGrammar.y"
+                    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_PC; }
+#line 3198 "CSSGrammar.tab.c"
     break;
 
   case 175:
-
-/* Line 1806 of yacc.c  */
-#line 1085 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_S; }
+#line 1125 "CSSGrammar.y"
+                     { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_DEG; }
+#line 3204 "CSSGrammar.tab.c"
     break;
 
   case 176:
-
-/* Line 1806 of yacc.c  */
-#line 1086 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_HZ; }
+#line 1126 "CSSGrammar.y"
+                     { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_RAD; }
+#line 3210 "CSSGrammar.tab.c"
     break;
 
   case 177:
-
-/* Line 1806 of yacc.c  */
-#line 1087 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_KHZ; }
+#line 1127 "CSSGrammar.y"
+                      { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_GRAD; }
+#line 3216 "CSSGrammar.tab.c"
     break;
 
   case 178:
-
-/* Line 1806 of yacc.c  */
-#line 1088 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_EMS; }
+#line 1128 "CSSGrammar.y"
+                      { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_MS; }
+#line 3222 "CSSGrammar.tab.c"
     break;
 
   case 179:
-
-/* Line 1806 of yacc.c  */
-#line 1089 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = Value::Q_EMS; }
+#line 1129 "CSSGrammar.y"
+                     { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_S; }
+#line 3228 "CSSGrammar.tab.c"
     break;
 
   case 180:
-
-/* Line 1806 of yacc.c  */
-#line 1090 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[(1) - (2)].val); (yyval.value).unit = CSSPrimitiveValue::CSS_EXS; }
+#line 1130 "CSSGrammar.y"
+                     { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_HZ; }
+#line 3234 "CSSGrammar.tab.c"
     break;
 
   case 181:
+#line 1131 "CSSGrammar.y"
+                      { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_KHZ; }
+#line 3240 "CSSGrammar.tab.c"
+    break;
 
-/* Line 1806 of yacc.c  */
-#line 1095 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+  case 182:
+#line 1132 "CSSGrammar.y"
+                    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_EMS; }
+#line 3246 "CSSGrammar.tab.c"
+    break;
+
+  case 183:
+#line 1133 "CSSGrammar.y"
+                     { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = Value::Q_EMS; }
+#line 3252 "CSSGrammar.tab.c"
+    break;
+
+  case 184:
+#line 1134 "CSSGrammar.y"
+                    { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_EXS; }
+#line 3258 "CSSGrammar.tab.c"
+    break;
+
+  case 185:
+#line 1139 "CSSGrammar.y"
+                                              {
         CSSParser* p = static_cast<CSSParser*>(parser);
         Function* f = p->createFloatingFunction();
-        f->name = (yyvsp[(1) - (5)].string);
-        f->args = p->sinkFloatingValueList((yyvsp[(3) - (5)].valueList));
+        f->name = (yyvsp[-4].string);
+        f->args = p->sinkFloatingValueList((yyvsp[-2].valueList));
         (yyval.value).id = 0;
         (yyval.value).unit = Value::QFunction;
         (yyval.value).function = f;
     }
+#line 3272 "CSSGrammar.tab.c"
     break;
 
-  case 182:
-
-/* Line 1806 of yacc.c  */
-#line 1104 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+  case 186:
+#line 1148 "CSSGrammar.y"
+                               {
         CSSParser* p = static_cast<CSSParser*>(parser);
         Function* f = p->createFloatingFunction();
-        f->name = (yyvsp[(1) - (3)].string);
+        f->name = (yyvsp[-2].string);
         f->args = 0;
         (yyval.value).id = 0;
         (yyval.value).unit = Value::QFunction;
         (yyval.value).function = f;
   }
-    break;
-
-  case 183:
-
-/* Line 1806 of yacc.c  */
-#line 1120 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.string) = (yyvsp[(1) - (2)].string); }
-    break;
-
-  case 184:
-
-/* Line 1806 of yacc.c  */
-#line 1121 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    { (yyval.string) = (yyvsp[(1) - (2)].string); }
-    break;
-
-  case 185:
-
-/* Line 1806 of yacc.c  */
-#line 1128 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.rule) = 0;
-    }
-    break;
-
-  case 186:
-
-/* Line 1806 of yacc.c  */
-#line 1131 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.rule) = 0;
-    }
+#line 3286 "CSSGrammar.tab.c"
     break;
 
   case 187:
-
-/* Line 1806 of yacc.c  */
-#line 1137 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
-        (yyval.rule) = 0;
-    }
+#line 1164 "CSSGrammar.y"
+                  { (yyval.string) = (yyvsp[-1].string); }
+#line 3292 "CSSGrammar.tab.c"
     break;
 
   case 188:
+#line 1165 "CSSGrammar.y"
+                      { (yyval.string) = (yyvsp[-1].string); }
+#line 3298 "CSSGrammar.tab.c"
+    break;
 
-/* Line 1806 of yacc.c  */
-#line 1143 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-    {
+  case 189:
+#line 1172 "CSSGrammar.y"
+                            {
         (yyval.rule) = 0;
     }
+#line 3306 "CSSGrammar.tab.c"
+    break;
+
+  case 190:
+#line 1175 "CSSGrammar.y"
+                  {
+        (yyval.rule) = 0;
+    }
+#line 3314 "CSSGrammar.tab.c"
+    break;
+
+  case 191:
+#line 1181 "CSSGrammar.y"
+           {
+        (yyval.rule) = 0;
+    }
+#line 3322 "CSSGrammar.tab.c"
+    break;
+
+  case 192:
+#line 1187 "CSSGrammar.y"
+                        {
+        (yyval.rule) = 0;
+    }
+#line 3330 "CSSGrammar.tab.c"
     break;
 
 
+#line 3334 "CSSGrammar.tab.c"
 
-/* Line 1806 of yacc.c  */
-#line 3544 "CSSGrammar.cpp"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3581,24 +3353,23 @@ yyreduce:
 
   *++yyvsp = yyval;
 
-  /* Now `shift' the result of the reduction.  Determine what state
+  /* Now 'shift' the result of the reduction.  Determine what state
      that goes to, based on the state we popped back to and the rule
      number reduced by.  */
-
-  yyn = yyr1[yyn];
-
-  yystate = yypgoto[yyn - YYNTOKENS] + *yyssp;
-  if (0 <= yystate && yystate <= YYLAST && yycheck[yystate] == *yyssp)
-    yystate = yytable[yystate];
-  else
-    yystate = yydefgoto[yyn - YYNTOKENS];
+  {
+    const int yylhs = yyr1[yyn] - YYNTOKENS;
+    const int yyi = yypgoto[yylhs] + *yyssp;
+    yystate = (0 <= yyi && yyi <= YYLAST && yycheck[yyi] == *yyssp
+               ? yytable[yyi]
+               : yydefgoto[yylhs]);
+  }
 
   goto yynewstate;
 
 
-/*------------------------------------.
-| yyerrlab -- here on detecting error |
-`------------------------------------*/
+/*--------------------------------------.
+| yyerrlab -- here on detecting error.  |
+`--------------------------------------*/
 yyerrlab:
   /* Make sure we have latest lookahead translation.  See comments at
      user semantic actions for why this is necessary.  */
@@ -3609,7 +3380,7 @@ yyerrlab:
     {
       ++yynerrs;
 #if ! YYERROR_VERBOSE
-      yyerror (YY_("syntax error"));
+      yyerror (parser, YY_("syntax error"));
 #else
 # define YYSYNTAX_ERROR yysyntax_error (&yymsg_alloc, &yymsg, \
                                         yyssp, yytoken)
@@ -3623,7 +3394,7 @@ yyerrlab:
           {
             if (yymsg != yymsgbuf)
               YYSTACK_FREE (yymsg);
-            yymsg = (char *) YYSTACK_ALLOC (yymsg_alloc);
+            yymsg = YY_CAST (char *, YYSTACK_ALLOC (YY_CAST (YYSIZE_T, yymsg_alloc)));
             if (!yymsg)
               {
                 yymsg = yymsgbuf;
@@ -3636,7 +3407,7 @@ yyerrlab:
                 yymsgp = yymsg;
               }
           }
-        yyerror (yymsgp);
+        yyerror (parser, yymsgp);
         if (yysyntax_error_status == 2)
           goto yyexhaustedlab;
       }
@@ -3649,20 +3420,20 @@ yyerrlab:
   if (yyerrstatus == 3)
     {
       /* If just tried and failed to reuse lookahead token after an
-	 error, discard it.  */
+         error, discard it.  */
 
       if (yychar <= YYEOF)
-	{
-	  /* Return failure if at end of input.  */
-	  if (yychar == YYEOF)
-	    YYABORT;
-	}
+        {
+          /* Return failure if at end of input.  */
+          if (yychar == YYEOF)
+            YYABORT;
+        }
       else
-	{
-	  yydestruct ("Error: discarding",
-		      yytoken, &yylval);
-	  yychar = YYEMPTY;
-	}
+        {
+          yydestruct ("Error: discarding",
+                      yytoken, &yylval, parser);
+          yychar = YYEMPTY;
+        }
     }
 
   /* Else will try to reuse lookahead token after shifting the error
@@ -3674,14 +3445,12 @@ yyerrlab:
 | yyerrorlab -- error raised explicitly by YYERROR.  |
 `---------------------------------------------------*/
 yyerrorlab:
+  /* Pacify compilers when the user code never invokes YYERROR and the
+     label yyerrorlab therefore never appears in user code.  */
+  if (0)
+    YYERROR;
 
-  /* Pacify compilers like GCC when the user code never invokes
-     YYERROR and the label yyerrorlab therefore never appears in user
-     code.  */
-  if (/*CONSTCOND*/ 0)
-     goto yyerrorlab;
-
-  /* Do not reclaim the symbols of the rule which action triggered
+  /* Do not reclaim the symbols of the rule whose action triggered
      this YYERROR.  */
   YYPOPSTACK (yylen);
   yylen = 0;
@@ -3694,35 +3463,37 @@ yyerrorlab:
 | yyerrlab1 -- common code for both syntax error and YYERROR.  |
 `-------------------------------------------------------------*/
 yyerrlab1:
-  yyerrstatus = 3;	/* Each real token shifted decrements this.  */
+  yyerrstatus = 3;      /* Each real token shifted decrements this.  */
 
   for (;;)
     {
       yyn = yypact[yystate];
       if (!yypact_value_is_default (yyn))
-	{
-	  yyn += YYTERROR;
-	  if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR)
-	    {
-	      yyn = yytable[yyn];
-	      if (0 < yyn)
-		break;
-	    }
-	}
+        {
+          yyn += YYTERROR;
+          if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR)
+            {
+              yyn = yytable[yyn];
+              if (0 < yyn)
+                break;
+            }
+        }
 
       /* Pop the current state because it cannot handle the error token.  */
       if (yyssp == yyss)
-	YYABORT;
+        YYABORT;
 
 
       yydestruct ("Error: popping",
-		  yystos[yystate], yyvsp);
+                  yystos[yystate], yyvsp, parser);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
     }
 
+  YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
   *++yyvsp = yylval;
+  YY_IGNORE_MAYBE_UNINITIALIZED_END
 
 
   /* Shift the error token.  */
@@ -3739,6 +3510,7 @@ yyacceptlab:
   yyresult = 0;
   goto yyreturn;
 
+
 /*-----------------------------------.
 | yyabortlab -- YYABORT comes here.  |
 `-----------------------------------*/
@@ -3746,16 +3518,21 @@ yyabortlab:
   yyresult = 1;
   goto yyreturn;
 
-#if !defined(yyoverflow) || YYERROR_VERBOSE
+
+#if !defined yyoverflow || YYERROR_VERBOSE
 /*-------------------------------------------------.
 | yyexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
 yyexhaustedlab:
-  yyerror (YY_("memory exhausted"));
+  yyerror (parser, YY_("memory exhausted"));
   yyresult = 2;
   /* Fall through.  */
 #endif
 
+
+/*-----------------------------------------------------.
+| yyreturn -- parsing is finished, return the result.  |
+`-----------------------------------------------------*/
 yyreturn:
   if (yychar != YYEMPTY)
     {
@@ -3763,16 +3540,16 @@ yyreturn:
          user semantic actions for why this is necessary.  */
       yytoken = YYTRANSLATE (yychar);
       yydestruct ("Cleanup: discarding lookahead",
-                  yytoken, &yylval);
+                  yytoken, &yylval, parser);
     }
-  /* Do not reclaim the symbols of the rule which action triggered
+  /* Do not reclaim the symbols of the rule whose action triggered
      this YYABORT or YYACCEPT.  */
   YYPOPSTACK (yylen);
   YY_STACK_PRINT (yyss, yyssp);
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-		  yystos[*yyssp], yyvsp);
+                  yystos[+*yyssp], yyvsp, parser);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
@@ -3783,13 +3560,7 @@ yyreturn:
   if (yymsg != yymsgbuf)
     YYSTACK_FREE (yymsg);
 #endif
-  /* Make sure YYID is used.  */
-  return YYID (yyresult);
+  return yyresult;
 }
-
-
-
-/* Line 2067 of yacc.c  */
-#line 1169 "/home/zhangjipeng/macross-browser/source/webcore/css/CSSGrammar.y"
-
+#line 1213 "CSSGrammar.y"
 

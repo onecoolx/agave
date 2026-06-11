@@ -181,3 +181,25 @@
     percent Length 误用 value() 触发断言崩溃、parseTransform 的 a->fValue 笔误。
   - 测试：8 解析+几何单元测试 + 6 benchmark 断言（含点击命中变换后位置、原位置不
     命中）。676 全套通过（唯一失败为预存 flaky 计时基准，重跑通过）。三维审查通过。
+
+- 2026-06-11：**里程碑 3d 完成（现代结构性选择器）。**
+  - 新增伪类：:last-child、:last-of-type、:only-child、:only-of-type，以及
+    :nth-child()、:nth-of-type()、:nth-last-child()、:nth-last-of-type()，
+    完整支持 An+B 微语法（odd/even/整数/2n+1/3n/-n+3 等）。
+  - PseudoType 枚举 + CSSSelector::extractPseudoType 识别；CSSStyleSelector 匹配逻辑
+    （遍历兄弟计数 + matchNth 解析 An+B）。matchNth 用现代 WebCore String API。
+  - 前向看伪类的关键修复：渐进解析时后续兄弟尚未挂载，导致 :last-child 等错误匹配
+    所有元素。解决：(1) Element::childrenChanged() 在 usesSiblingRules 时 setChanged，
+    使解析完成后的 recalcStyle 重新评估子元素；(2) CSSStyleSelector::addRulesFromSheet
+    检测前向伪类并设 doc->setUsesSiblingRules(true)。
+  - **grammar 现代化（彻底去 DeprecatedString）**：CSSGrammar.y 的 bison 指令从旧式
+    %pure_parser + YYPARSE_PARAM 改为 %pure-parser + %parse-param/%lex-param；
+    cssyylex/cssyyerror 更新签名；prologue 的 getPropertyID/getValueID 及 property/
+    term 规则从 DeprecatedString 改写为 WebCore::String + CString。用系统 bison 3.5.1
+    在 buildQJS/buildKJS 干净重新生成（37 shift/reduce 为既有 baseline）。
+  - grammar 加 nth 产生式：识别 INTEGER、DIMEN(如 "2n")、DIMEN±INTEGER(如 "2n+1")
+    等 token 组合，把 An+B 原始串写入 m_argument。
+  - 附带收益：重新生成消除了 CSSGrammar.cpp 中 SEC-001 的开发者绝对路径泄露
+    （#line 现为相对路径 "CSSGrammar.y"）。
+  - 测试：7 选择器匹配单元测试 + 8 benchmark 断言（斑马纹表格）。683 全套通过
+    （唯一失败为预存 flaky 计时基准）。matchNth 对畸形/超大输入鲁棒。三维审查通过。

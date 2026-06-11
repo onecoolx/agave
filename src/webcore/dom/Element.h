@@ -140,6 +140,7 @@ public:
     virtual RenderStyle* styleForRenderer(RenderObject* parent);
     virtual RenderObject* createRenderer(RenderArena*, RenderStyle*);
     virtual void recalcStyle(StyleChange = NoChange);
+    virtual void childrenChanged();
 
     virtual RenderStyle* computedStyle();
 

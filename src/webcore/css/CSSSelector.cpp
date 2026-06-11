@@ -84,6 +84,14 @@ void CSSSelector::extractPseudoType() const
     static AtomicString firstLetter("first-letter");
     static AtomicString firstLine("first-line");
     static AtomicString firstOfType("first-of-type");
+    static AtomicString lastChild("last-child");
+    static AtomicString lastOfType("last-of-type");
+    static AtomicString onlyChild("only-child");
+    static AtomicString onlyOfType("only-of-type");
+    static AtomicString nthChild("nth-child(");
+    static AtomicString nthOfType("nth-of-type(");
+    static AtomicString nthLastChild("nth-last-child(");
+    static AtomicString nthLastOfType("nth-last-of-type(");
     static AtomicString focus("focus");
     static AtomicString hover("hover");
     static AtomicString indeterminate("indeterminate");
@@ -143,6 +151,22 @@ void CSSSelector::extractPseudoType() const
         compat = true;
     } else if (m_value == firstOfType)
         m_pseudoType = PseudoFirstOfType;
+    else if (m_value == lastChild)
+        m_pseudoType = PseudoLastChild;
+    else if (m_value == lastOfType)
+        m_pseudoType = PseudoLastOfType;
+    else if (m_value == onlyChild)
+        m_pseudoType = PseudoOnlyChild;
+    else if (m_value == onlyOfType)
+        m_pseudoType = PseudoOnlyOfType;
+    else if (m_value == nthChild)
+        m_pseudoType = PseudoNthChild;
+    else if (m_value == nthOfType)
+        m_pseudoType = PseudoNthOfType;
+    else if (m_value == nthLastChild)
+        m_pseudoType = PseudoNthLastChild;
+    else if (m_value == nthLastOfType)
+        m_pseudoType = PseudoNthLastOfType;
     else if (m_value == focus)
         m_pseudoType = PseudoFocus;
     else if (m_value == hover)

@@ -87,6 +87,8 @@ class StyledElement;
 
         static void loadDefaultStyle();
 
+        Document* document() const { return m_document; }
+
         void initElementAndPseudoState(Element* e);
         void initForStyleResolve(Element* e, RenderStyle* parentStyle);
         RenderStyle *styleForElement(Element*, RenderStyle* parentStyle=0, bool allowSharing=true, bool resolveForRootDefault=false);

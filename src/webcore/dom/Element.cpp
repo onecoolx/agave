@@ -780,6 +780,21 @@ void Element::recalcStyle(StyleChange change)
     setHasChangedChild(false);
 }
 
+void Element::childrenChanged()
+{
+    ContainerNode::childrenChanged();
+    // Structural pseudo-classes (:last-child, :only-child, :nth-child, ...) make
+    // a child's style depend on its siblings. Because children are styled as
+    // they are attached during parsing, a forward-looking match can be stale
+    // once later siblings arrive. When the document uses such sibling rules,
+    // mark this element changed so its children are re-evaluated on the next
+    // style recalc (which runs after parsing completes).
+    if (changed())
+        return;
+    if (document()->usesSiblingRules())
+        setChanged();
+}
+
 bool Element::childTypeAllowed(NodeType type)
 {
     switch (type) {

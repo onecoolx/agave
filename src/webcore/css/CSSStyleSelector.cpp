@@ -1361,6 +1361,61 @@ CSSStyleSelector::SelectorMatch CSSStyleSelector::checkSelector(CSSSelector* sel
     return SelectorFailsCompletely;
 }
 
+// Parses an "An+B" microsyntax argument (also "odd"/"even") and tests whether
+// the 1-based position matches. Returns false on a malformed argument.
+// Supported forms: odd | even | <int> | An+B | An | n+B with optional signs,
+// e.g. "2n+1", "-n+3", "3", "even".
+static bool matchNth(int position, const String& argumentStr)
+{
+    String arg = argumentStr.stripWhiteSpace().lower();
+    if (arg == "odd")
+        return (position % 2) == 1;
+    if (arg == "even")
+        return (position % 2) == 0;
+
+    int a = 0;
+    int b = 0;
+    int nPos = arg.find('n');
+    if (nPos < 0) {
+        // Pure integer "B".
+        bool ok = false;
+        b = arg.toInt(&ok);
+        if (!ok)
+            return false;
+        return position == b;
+    }
+
+    // Coefficient before 'n' (the "A" part).
+    String aStr = arg.left(nPos);
+    if (aStr.isEmpty() || aStr == "+")
+        a = 1;
+    else if (aStr == "-")
+        a = -1;
+    else {
+        bool ok = false;
+        a = aStr.toInt(&ok);
+        if (!ok)
+            return false;
+    }
+
+    // Offset after 'n' (the "B" part, optional, includes its sign).
+    String bStr = arg.substring(nPos + 1);
+    if (bStr.isEmpty())
+        b = 0;
+    else {
+        bool ok = false;
+        b = bStr.toInt(&ok);
+        if (!ok)
+            return false;
+    }
+
+    // Match if there is a non-negative integer k with position = a*k + b.
+    if (a == 0)
+        return position == b;
+    int diff = position - b;
+    return (diff % a == 0) && (diff / a >= 0);
+}
+
 bool CSSStyleSelector::checkOneSelector(CSSSelector* sel, Element* e, bool isAncestor, bool isSubSelector)
 {
     if(!e)
@@ -1481,6 +1536,107 @@ bool CSSStyleSelector::checkOneSelector(CSSSelector* sel, Element* e, bool isAnc
                         n = n->previousSibling();
                     }
                     if (!n)
+                        return true;
+                }
+                break;
+            }
+            case CSSSelector::PseudoLastChild: {
+                // last-child matches the last child that is an element.
+                if (e->parentNode() && e->parentNode()->isElementNode()) {
+                    Node* n = e->nextSibling();
+                    while (n && !n->isElementNode())
+                        n = n->nextSibling();
+                    if (!n)
+                        return true;
+                }
+                break;
+            }
+            case CSSSelector::PseudoLastOfType: {
+                // last-of-type matches the last element of its type.
+                if (e->parentNode() && e->parentNode()->isElementNode()) {
+                    const QualifiedName& type = e->tagQName();
+                    Node* n = e->nextSibling();
+                    while (n) {
+                        if (n->isElementNode() && static_cast<Element*>(n)->hasTagName(type))
+                            break;
+                        n = n->nextSibling();
+                    }
+                    if (!n)
+                        return true;
+                }
+                break;
+            }
+            case CSSSelector::PseudoOnlyChild: {
+                // only-child: no element siblings either side.
+                if (e->parentNode() && e->parentNode()->isElementNode()) {
+                    Node* prev = e->previousSibling();
+                    while (prev && !prev->isElementNode())
+                        prev = prev->previousSibling();
+                    Node* next = e->nextSibling();
+                    while (next && !next->isElementNode())
+                        next = next->nextSibling();
+                    if (!prev && !next)
+                        return true;
+                }
+                break;
+            }
+            case CSSSelector::PseudoOnlyOfType: {
+                // only-of-type: no element siblings of the same type either side.
+                if (e->parentNode() && e->parentNode()->isElementNode()) {
+                    const QualifiedName& type = e->tagQName();
+                    Node* prev = e->previousSibling();
+                    while (prev && !(prev->isElementNode() && static_cast<Element*>(prev)->hasTagName(type)))
+                        prev = prev->previousSibling();
+                    Node* next = e->nextSibling();
+                    while (next && !(next->isElementNode() && static_cast<Element*>(next)->hasTagName(type)))
+                        next = next->nextSibling();
+                    if (!prev && !next)
+                        return true;
+                }
+                break;
+            }
+            case CSSSelector::PseudoNthChild: {
+                if (e->parentNode() && e->parentNode()->isElementNode()) {
+                    int count = 1;
+                    for (Node* n = e->previousSibling(); n; n = n->previousSibling())
+                        if (n->isElementNode())
+                            count++;
+                    if (matchNth(count, sel->m_argument))
+                        return true;
+                }
+                break;
+            }
+            case CSSSelector::PseudoNthOfType: {
+                if (e->parentNode() && e->parentNode()->isElementNode()) {
+                    const QualifiedName& type = e->tagQName();
+                    int count = 1;
+                    for (Node* n = e->previousSibling(); n; n = n->previousSibling())
+                        if (n->isElementNode() && static_cast<Element*>(n)->hasTagName(type))
+                            count++;
+                    if (matchNth(count, sel->m_argument))
+                        return true;
+                }
+                break;
+            }
+            case CSSSelector::PseudoNthLastChild: {
+                if (e->parentNode() && e->parentNode()->isElementNode()) {
+                    int count = 1;
+                    for (Node* n = e->nextSibling(); n; n = n->nextSibling())
+                        if (n->isElementNode())
+                            count++;
+                    if (matchNth(count, sel->m_argument))
+                        return true;
+                }
+                break;
+            }
+            case CSSSelector::PseudoNthLastOfType: {
+                if (e->parentNode() && e->parentNode()->isElementNode()) {
+                    const QualifiedName& type = e->tagQName();
+                    int count = 1;
+                    for (Node* n = e->nextSibling(); n; n = n->nextSibling())
+                        if (n->isElementNode() && static_cast<Element*>(n)->hasTagName(type))
+                            count++;
+                    if (matchNth(count, sel->m_argument))
                         return true;
                 }
                 break;
@@ -1711,6 +1867,34 @@ void CSSRuleSet::addRule(CSSStyleRule* rule, CSSSelector* sel)
     else
         m_universalRules->append(m_ruleCount++, rule, sel);
 }
+// Returns true if any simple selector in the chain is a structural pseudo-class
+// whose match can depend on an element's later siblings, requiring the document
+// to restyle children when siblings are added.
+static bool selectorNeedsSiblingRules(CSSSelector* sel)
+{
+    for (CSSSelector* s = sel; s; s = s->m_tagHistory) {
+        if (s->m_match == CSSSelector::PseudoClass) {
+            switch (s->pseudoType()) {
+                case CSSSelector::PseudoEmpty:
+                case CSSSelector::PseudoFirstChild:
+                case CSSSelector::PseudoFirstOfType:
+                case CSSSelector::PseudoLastChild:
+                case CSSSelector::PseudoLastOfType:
+                case CSSSelector::PseudoOnlyChild:
+                case CSSSelector::PseudoOnlyOfType:
+                case CSSSelector::PseudoNthChild:
+                case CSSSelector::PseudoNthOfType:
+                case CSSSelector::PseudoNthLastChild:
+                case CSSSelector::PseudoNthLastOfType:
+                    return true;
+                default:
+                    break;
+            }
+        }
+    }
+    return false;
+}
+
 
 void CSSRuleSet::addRulesFromSheet(CSSStyleSheet* sheet,  MediaQueryEvaluator* medium, CSSStyleSelector* styleSelector)
 {
@@ -1724,12 +1908,21 @@ void CSSRuleSet::addRulesFromSheet(CSSStyleSheet* sheet,  MediaQueryEvaluator* m
 
     int len = sheet->length();
 
+    // Detect structural pseudo-classes whose match depends on an element's
+    // later siblings. When present, the document must restyle children as
+    // siblings are added (see Element::childrenChanged). The plain-IDENT
+    // pseudos are flagged here because the grammar only flags a subset.
+    Document* doc = styleSelector ? styleSelector->document() : 0;
+
     for (int i = 0; i < len; i++) {
         StyleBase* item = sheet->item(i);
         if (item->isStyleRule()) {
             CSSStyleRule* rule = static_cast<CSSStyleRule*>(item);
-            for (CSSSelector* s = rule->selector(); s; s = s->next())
+            for (CSSSelector* s = rule->selector(); s; s = s->next()) {
+                if (doc && selectorNeedsSiblingRules(s))
+                    doc->setUsesSiblingRules(true);
                 addRule(rule, s);
+            }
         }
         else if(item->isImportRule()) {
             CSSImportRule* import = static_cast<CSSImportRule*>(item);

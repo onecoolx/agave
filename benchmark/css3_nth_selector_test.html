@@ -1,0 +1,43 @@
+<html>
+<head><style>
+* { box-sizing:border-box; margin:0; }
+ul { width:300px; }
+li { height:20px; width:100px; }
+/* 斑马纹：奇偶行不同宽度（用宽度代替背景色以便几何验证） */
+li:nth-child(odd) { width:150px; }
+li:nth-child(even) { width:250px; }
+/* 首尾特殊 */
+li:first-child { height:30px; }
+li:last-child { height:40px; }
+/* 第 3 个特殊 */
+li:nth-child(3) { width:200px; }
+/* 列表项 only-child 测试 */
+.solo li:only-child { width:280px; }
+</style></head>
+<body>
+<ul id="list">
+<li id="r1">1</li><li id="r2">2</li><li id="r3">3</li><li id="r4">4</li><li id="r5">5</li>
+</ul>
+<ul class="solo"><li id="solo">S</li></ul>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function E(id){return document.getElementById(id);}
+
+// 斑马纹: 奇数行(1,5)宽150 但第3行被nth-child(3)覆盖为200; 偶数行(2,4)宽250
+ck('r1-w', E('r1').offsetWidth, 150); // odd
+ck('r2-w', E('r2').offsetWidth, 250); // even
+ck('r3-w', E('r3').offsetWidth, 200); // odd, 但 nth-child(3) 覆盖
+ck('r4-w', E('r4').offsetWidth, 250); // even
+ck('r5-w', E('r5').offsetWidth, 150); // odd
+// 首尾高度
+ck('r1-h', E('r1').offsetHeight, 30); // first-child
+ck('r5-h', E('r5').offsetHeight, 40); // last-child
+// only-child
+ck('solo-w', E('solo').offsetWidth, 280);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>
