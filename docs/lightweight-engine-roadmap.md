@@ -135,11 +135,15 @@ RenderObject 子类 / CSS 属性 / 独立模块（可补），还是需要改渲
 
 **阶段 1 完成标志**：主流现代静态页面布局正确（不溢出、不错位）。
 
-### 阶段 2：CSS3 视觉 + 选择器补全（P1）
+### 阶段 2：CSS3 视觉 + 选择器补全（P1）—— ✅ 已完成（2026-06-11）
 
 - 线性/径向渐变、多重背景、filter、完整 transform
 - 现代选择器补全
 - **完成标志**：页面视觉接近设计稿，不丢样式。
+- 完成记录：见 docs/css3-visual-plan.md。3a 圆角/阴影、3b 渐变、3c transform
+  （含命中测试）、3d 结构性选择器（nth-child An+B）、3e-1 filter（blur/drop-shadow/
+  opacity）均完成；3e-2 filter 颜色矩阵交 picasso 增强（docs/picasso-color-filter-
+  request.md）。多重背景后置。
 
 ### 阶段 3：基础 Web API（P2）
 

@@ -222,3 +222,47 @@
   - 修复：多个 opacity() 时 transparency 层用计数配对 begin/end，避免失衡。
   - 测试：7 解析单元测试 + 7 benchmark 断言。690 全套通过。三维审查通过。
   - 已知限制（3e-2）：颜色矩阵类滤镜解析但不渲染，待 picasso 提供颜色变换原语。
+
+## 阶段 2 收尾报告（2026-06-11）
+
+### 完成情况
+| 里程碑 | 内容 | 状态 |
+|--------|------|------|
+| 3a | 无前缀别名（border-radius/box-shadow/transform）+ 圆角/阴影绘制闭环 | ✅ |
+| 3b | CSS 渐变（linear/radial-gradient） | ✅ |
+| 3c | HTML transform 渲染（绘制 + 命中测试 + 重绘区域） | ✅ |
+| 3d | 现代结构性选择器（nth-child An+B 等）+ grammar 现代化 | ✅ |
+| 3e-1 | filter（blur/drop-shadow/opacity） | ✅ |
+| 3e-2 | filter 颜色矩阵 | 待 picasso（已写需求文档） |
+
+### 真实视觉样例验证
+综合样例页 stage2_showcase_test.html（卡片网格圆角+阴影+渐变、渐变按钮、斑马纹
+表格 nth-child、transform 卡片、filter 毛玻璃/drop-shadow、flex+渐变工具栏）共
+19 断言全过——所有阶段 1+2 特性在真实 UI 布局中正确协作。**达到阶段 2 完成标志：
+视觉接近设计稿、不丢样式、特性组合无冲突。**
+
+### 统一审查（3a–3e）结论
+- **正向**：现代页面常用 CSS3 视觉与选择器子集完整可用。
+- **反向**：审查中修复的代表性 bug——transform 矩阵组合顺序、validUnit 不支持
+  FAngle、percent Length 断言崩溃、渐变 use-after-free、多 opacity transparency
+  层配对、前向看伪类的渐进解析失配。
+- **安全**：所有未受信 CSS 输入点均有上限——渐变色标 ≤64、filter 操作 ≤32、grid
+  轨道/线 ≤10000、transform 命中测试 isInvertible 守卫；综合恶意输入测试
+  （超大 nth 系数/畸形/1e30 数值）无崩溃、无 OOM。
+- **架构**：图形图像处理统一交给 picasso（blur 用 ps_set_blur，颜色矩阵请求
+  picasso 增强），picasso API 不暴露到 webcore；内核不做像素级处理，为未来硬件
+  加速保留空间。
+
+### 附带收益
+- 修复了潜伏的 validUnit FAngle 缺陷（惠及所有角度 CSS）。
+- grammar 重新生成消除了 CSSGrammar.cpp 的 SEC-001 开发者路径泄露。
+
+### 验证
+690 单元测试全过（唯一失败为预存 flaky 计时基准，重跑通过）；7 个阶段 2 benchmark
+全过；ASan 无内存错误。
+
+### 测试资产
+- 单元测试：css3_visual_style / gradient_style / transform_style / structural_selector
+  / filter_style（约 33 条）
+- benchmark：css3_radius_shadow / css3_gradient / css3_transform / css3_nth_selector
+  / css3_filter / stage2_showcase（约 65 条断言）

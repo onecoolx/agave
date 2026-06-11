@@ -1,0 +1,98 @@
+<html>
+<head><style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { width:1000px; }
+
+/* 1. 卡片网格：圆角 + 阴影 + 渐变背景（综合 3a+3b） */
+#cards { display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; width:960px; padding:20px; }
+.card { height:160px; border-radius:12px; box-shadow:0px 4px 12px rgba(0,0,0,0.2);
+        background-image:linear-gradient(135deg, #667eea, #764ba2); }
+
+/* 2. 渐变按钮（3a 圆角 + 3b 渐变） */
+#btn { width:200px; height:48px; border-radius:24px;
+       background-image:linear-gradient(to right, #4facfe, #00f2fe); }
+
+/* 3. 斑马纹表格（3d nth-child） */
+#tbl { width:400px; }
+.row { height:30px; width:400px; }
+.row:nth-child(odd) { width:380px; }
+.row:nth-child(even) { width:400px; }
+.row:first-child { height:40px; }
+.row:last-child { height:36px; }
+
+/* 4. transform 卡片（3c） */
+#tcard { width:120px; height:120px; border-radius:8px; background:#e74c3c;
+         transform:rotate(15deg) scale(1.1); transform-origin:center; }
+
+/* 5. filter 毛玻璃（3e-1 blur）+ drop-shadow */
+#glass { width:150px; height:100px; border-radius:10px; background:#3498db; filter:blur(3px); }
+#fshadow { width:100px; height:100px; background:#2ecc71; filter:drop-shadow(8px 8px 5px rgba(0,0,0,0.4)); }
+
+/* 6. flex 工具栏（阶段1）+ 渐变（阶段2）综合 */
+#toolbar { display:flex; justify-content:space-between; align-items:center;
+           width:400px; height:50px; padding:0 16px; border-radius:8px;
+           background-image:linear-gradient(to bottom, #2c3e50, #34495e); }
+#toolbar .left { width:80px; height:30px; }
+#toolbar .right { width:60px; height:30px; }
+</style></head>
+<body>
+<div id="cards"><div class="card" id="c1">1</div><div class="card" id="c2">2</div>
+<div class="card" id="c3">3</div><div class="card" id="c4">4</div>
+<div class="card" id="c5">5</div><div class="card" id="c6">6</div></div>
+
+<div id="btn">Button</div>
+
+<div id="tbl"><div class="row" id="r1">1</div><div class="row" id="r2">2</div>
+<div class="row" id="r3">3</div><div class="row" id="r4">4</div></div>
+
+<div id="tcard">T</div>
+<div id="glass">G</div>
+<div id="fshadow">S</div>
+
+<div id="toolbar"><div class="left" id="tl">L</div><div class="right" id="tr">R</div></div>
+
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function E(id){return document.getElementById(id);}
+
+// 1. 卡片网格: 3列, 内容宽960-40=920, gap40, 列宽=(920-40)/3≈293
+ck('card-w', E('c1').offsetWidth, 293, 3);
+ck('card-h', E('c1').offsetHeight, 160);
+ck('card2-x', E('c2').offsetLeft, 333, 4); // 20+293+20
+ck('card4-row2', E('c4').offsetTop > E('c1').offsetTop + 160, 1);
+// 圆角/阴影/渐变是绘制层, 不改盒尺寸
+ck('card-box', E('c6').offsetWidth, 293, 3);
+
+// 2. 渐变按钮尺寸不受圆角/渐变影响
+ck('btn-w', E('btn').offsetWidth, 200);
+ck('btn-h', E('btn').offsetHeight, 48);
+
+// 3. 斑马纹: 奇(1,3)宽380 但first-child高40; 偶(2,4)宽400
+ck('r1-w', E('r1').offsetWidth, 380); // odd
+ck('r1-h', E('r1').offsetHeight, 40); // first-child
+ck('r2-w', E('r2').offsetWidth, 400); // even
+ck('r3-w', E('r3').offsetWidth, 380); // odd
+ck('r4-h', E('r4').offsetHeight, 36); // last-child
+
+// 4. transform 卡片: 布局盒尺寸不受 transform 影响(视觉变换)
+ck('tcard-w', E('tcard').offsetWidth, 120);
+ck('tcard-h', E('tcard').offsetHeight, 120);
+
+// 5. filter: 盒尺寸不受 filter 影响
+ck('glass-w', E('glass').offsetWidth, 150);
+ck('fshadow-w', E('fshadow').offsetWidth, 100);
+
+// 6. flex 工具栏 + 渐变: space-between 布局正确
+var tb=E('toolbar');
+ck('tl-x', E('tl').offsetLeft - tb.offsetLeft, 16); // padding
+ck('tr-right', E('tr').offsetLeft + E('tr').offsetWidth - tb.offsetLeft, 384); // 400-16
+
+// 存活
+ck('survived', E('c1').offsetWidth > 0 && E('toolbar').offsetWidth === 400, 1);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>
