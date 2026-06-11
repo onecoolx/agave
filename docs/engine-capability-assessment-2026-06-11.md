@@ -86,3 +86,70 @@ Chrome/Safari（2024 引擎）相比，在 CSS 广度、DOM API、动态能力�
 ## 六、备注
 
 本报告为某一时点的快照，随后续里程碑推进，相关结论应同步更新。
+
+---
+
+# 进度更新（2026-06-11，地基补全里程碑后）
+
+自首次评估后，完成了"CSS/DOM 地基补全"里程碑（4a + 4b）。以下据代码实测更新。
+
+## 已补齐的高 ROI 缺口
+
+| 缺口 | 首评状态 | 现状 |
+|------|----------|------|
+| **calc()** | 完全缺失 | ✅ 已支持（混合单位线性式 percent±px、乘除常数；不支持 em/嵌套/min-max，安全拒绝）|
+| **querySelector / querySelectorAll** | 缺失 | ✅ 已支持（Document + Element，复用选择器引擎）|
+| **classList（DOMTokenList）** | 缺失 | ✅ 已支持（add/remove/toggle/contains，与 className 同步）|
+| 结构性选择器 nth-child 等 | 缺失（阶段 2 前） | ✅ 已支持（An+B 全形式）|
+| CSS3 视觉（圆角/阴影/渐变/transform/filter） | 缺失 | ✅ 已支持（阶段 2）|
+
+## 工具链能力打通（战略意义）
+
+- **QJS 绑定可干净重新生成**：证明 IDL → 绑定流程健康（正确 defines 下与 committed
+  0 差异）。后续 DOM/Web API 扩展不必手写脆弱的 custom binding。
+- **grammar 可现代化重新生成**（bison 3.5），并已去除 DeprecatedString 依赖。
+- 这两点让阶段 3 的 Web API 扩展（多为 IDL + C++ 实现）成本大幅下降。
+
+## 仍存在的差距（更新后）
+
+### CSS
+- **var() / 自定义属性**：仍缺（已规划，按需后置）。
+- **transition / animation**：仍完全缺失——现代 UI 动态效果的最大空白。
+- writing-mode、aspect-ratio、object-fit、clip-path、backdrop-filter、
+  mix-blend-mode、:is()/:where()/:has()：仍缺。
+- filter 颜色矩阵（grayscale 等）：已交 picasso 增强（3e-2）。
+
+### DOM API
+- 仍缺：dataset、getBoundingClientRect、MutationObserver。
+- 已有：addEventListener、getComputedStyle、querySelector/All、classList。
+
+### Web API（阶段 3 目标）
+- **已有且实质实现**：XMLHttpRequest（xml/XMLHttpRequest.cpp，798 行）——AJAX 基线
+  在；setTimeout 有；JSON 由 QuickJS 内置（ES2020）。
+- **仍缺**：localStorage / sessionStorage、Fetch、WebSocket、HTML5 新表单控件、
+  <video>/<audio>。
+
+## 差距分类（更新）
+
+| 维度 | 状态 | 差距 |
+|------|------|------|
+| 核心布局 | 接近追平常用子集 | 小 |
+| CSS 选择器（含 nth-child/querySelector） | 接近追平常用集 | 小 |
+| CSS 视觉静态效果 | 常用够用 | 中 |
+| CSS 基础设施 calc() | ✅ 已补 | 小（var 待补）|
+| **CSS 动态 transition/animation** | **缺失** | **大（当前最大空白）** |
+| 现代 DOM 查询 API | ✅ 已补主力 | 小（dataset/getBoundingClientRect 待补）|
+| JS 语言（QuickJS ES2020+） | 现代 | 小 |
+| 存储/网络（localStorage/Fetch/WS） | 部分（XHR 有） | 中 |
+| 多媒体 / 新 HTML5 元素 | 部分缺失 | 中-大 |
+
+## 更新后的判断
+
+地基补全后，Agave 在**静态页面渲染 + 基础脚本交互**上已显著接近"现代可信内容
+浏览器"的可用线。剩余最高优先的两个方向：
+
+1. **transition / animation**：现代 UI 视觉动态的最大空白（CSS 侧）。
+2. **localStorage + Fetch**：交互式 Web App 的存储与现代网络基线（Web API 侧，
+   即阶段 3 主体；XHR 已提供过渡能力）。
+
+dataset / getBoundingClientRect 等零散 DOM API 可随阶段 3 顺带补齐。
