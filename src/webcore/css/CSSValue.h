@@ -48,6 +48,7 @@ public:
     virtual bool isFontValue() { return false; }
     virtual bool isGradientValue() const { return false; }
     virtual bool isTransformValue() const { return false; }
+    virtual bool isFilterValue() const { return false; }
     virtual bool isImplicitInitialValue() const { return false; }
 };
 

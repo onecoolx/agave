@@ -57,6 +57,7 @@ cursor
 direction
 display
 empty-cells
+filter
 float
 font
 font-family
@@ -188,6 +189,7 @@ zoom
 -webkit-columns
 -webkit-dashboard-region
 -webkit-font-size-delta
+-webkit-filter
 -webkit-highlight
 -webkit-line-break
 -webkit-line-clamp

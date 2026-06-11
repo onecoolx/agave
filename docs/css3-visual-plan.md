@@ -203,3 +203,22 @@
     （#line 现为相对路径 "CSSGrammar.y"）。
   - 测试：7 选择器匹配单元测试 + 8 benchmark 断言（斑马纹表格）。683 全套通过
     （唯一失败为预存 flaky 计时基准）。matchNth 对畸形/超大输入鲁棒。三维审查通过。
+
+- 2026-06-11：**里程碑 3e-1 完成（CSS filter：blur/drop-shadow/opacity）。**
+  - 架构决策：图形图像处理交给 picasso（未来可硬件加速），内核不做像素级处理。
+    空间/合成类滤镜用 picasso 现成原语；颜色矩阵类滤镜（grayscale/sepia/invert/
+    saturate/brightness/contrast/hue-rotate）作为 3e-2 留给 picasso 增强，已写需求
+    文档 docs/picasso-color-filter-request.md（请求 ps_set_color_matrix 等）。
+  - GraphicsContext 封装 setBlur/clearBlur（包 ps_set_blur），picasso 不暴露到 webcore。
+  - 数据模型：RenderStyle 加 FilterOperation（BlurOp/DropShadowOp/OpacityOp/
+    ColorMatrixOp），存于 StyleTransformData::m_filterOps；hasFilter/filterOperations
+    存取器。CSSFilterValue 承载解析结果。
+  - 解析：filter + -webkit-filter（别名重映射）；parseFilter 解析 blur(px)/
+    opacity(N|N%)/drop-shadow(x y blur? color?)，颜色矩阵类解析为 ColorMatrixOp（不
+    渲染）。操作数上限 kMaxFilterOps=32。
+  - 绘制：RenderLayer::paintLayer 对带 filter 的层 save + 应用 blur(setBlur)/
+    opacity(beginTransparencyLayer)/drop-shadow(setShadow)，末尾配对 end/restore。
+    ColorMatrixOp 跳过。
+  - 修复：多个 opacity() 时 transparency 层用计数配对 begin/end，避免失衡。
+  - 测试：7 解析单元测试 + 7 benchmark 断言。690 全套通过。三维审查通过。
+  - 已知限制（3e-2）：颜色矩阵类滤镜解析但不渲染，待 picasso 提供颜色变换原语。

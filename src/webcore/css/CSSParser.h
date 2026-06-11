@@ -150,6 +150,7 @@ namespace WebCore {
 
         // CSS3 gradients (ENABLE_MODERN_CSS3)
         CSSValue* parseGradient(Value* function);
+        CSSValue* parseFilter();
 
         // CSS Grid (ENABLE_MODERN_GRID)
         bool parseGridTrackList(int propId, bool important);

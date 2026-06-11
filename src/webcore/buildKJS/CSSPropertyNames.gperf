@@ -56,6 +56,7 @@ cursor, CSS_PROP_CURSOR
 direction, CSS_PROP_DIRECTION
 display, CSS_PROP_DISPLAY
 empty-cells, CSS_PROP_EMPTY_CELLS
+filter, CSS_PROP_FILTER
 float, CSS_PROP_FLOAT
 font, CSS_PROP_FONT
 font-family, CSS_PROP_FONT_FAMILY
@@ -187,6 +188,7 @@ zoom, CSS_PROP_ZOOM
 -webkit-columns, CSS_PROP__WEBKIT_COLUMNS
 -webkit-dashboard-region, CSS_PROP__WEBKIT_DASHBOARD_REGION
 -webkit-font-size-delta, CSS_PROP__WEBKIT_FONT_SIZE_DELTA
+-webkit-filter, CSS_PROP__WEBKIT_FILTER
 -webkit-highlight, CSS_PROP__WEBKIT_HIGHLIGHT
 -webkit-line-break, CSS_PROP__WEBKIT_LINE_BREAK
 -webkit-line-clamp, CSS_PROP__WEBKIT_LINE_CLAMP

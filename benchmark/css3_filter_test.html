@@ -1,0 +1,35 @@
+<html>
+<head><style>
+* { box-sizing:border-box; margin:0; }
+#blur { width:100px; height:100px; background:red; filter:blur(4px); }
+#op { width:100px; height:100px; background:green; filter:opacity(0.5); }
+#shadow { width:100px; height:100px; background:blue; filter:drop-shadow(6px 6px 4px black); }
+#multi { width:100px; height:100px; background:orange; filter:blur(2px) opacity(0.7); }
+#gray { width:100px; height:100px; background:purple; filter:grayscale(1); }
+</style></head>
+<body>
+<div id="blur">1</div>
+<div id="op">2</div>
+<div id="shadow">3</div>
+<div id="multi">4</div>
+<div id="gray">5</div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function E(id){return document.getElementById(id);}
+
+// filter 是视觉效果，不改变布局盒尺寸
+ck('blur-w', E('blur').offsetWidth, 100);
+ck('blur-h', E('blur').offsetHeight, 100);
+ck('op-w', E('op').offsetWidth, 100);
+ck('shadow-w', E('shadow').offsetWidth, 100);
+ck('multi-w', E('multi').offsetWidth, 100);
+ck('gray-w', E('gray').offsetWidth, 100);
+// 存活：所有 filter 类型渲染完成无崩溃
+ck('survived', E('blur').offsetHeight + E('gray').offsetHeight, 200);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

@@ -1465,6 +1465,38 @@ RenderLayer::paintLayer(RenderLayer* rootLayer, GraphicsContext* p,
             appliedTransform = true;
         }
     }
+
+    // Apply CSS filters around the layer paint. blur()/drop-shadow() set
+    // context state via picasso primitives; opacity() uses a transparency
+    // layer. Color-matrix filters are parsed but skipped until picasso provides
+    // a color-transform primitive (docs/picasso-color-filter-request.md).
+    bool appliedFilter = false;
+    int filterTransparencyLayers = 0;
+    if (renderer()->style()->hasFilter()) {
+        const Vector<FilterOperation>& filters = renderer()->style()->filterOperations();
+        for (size_t i = 0; i < filters.size(); i++) {
+            const FilterOperation& f = filters[i];
+            if (f.type == FilterOperation::ColorMatrixOp)
+                continue; // not yet rendered (awaiting picasso color-transform)
+            if (!appliedFilter) { p->save(); appliedFilter = true; }
+            switch (f.type) {
+                case FilterOperation::BlurOp:
+                    // CSS blur radius (px) maps to picasso's 0..1 level
+                    // (level * 40px == radius), matching apply_blur().
+                    p->setBlur(f.stdDeviation / 40.0f);
+                    break;
+                case FilterOperation::OpacityOp:
+                    p->beginTransparencyLayer(f.amount < 0.0f ? 0.0f : (f.amount > 1.0f ? 1.0f : f.amount));
+                    filterTransparencyLayers++;
+                    break;
+                case FilterOperation::DropShadowOp:
+                    p->setShadow(IntSize(f.shadowX, f.shadowY), f.shadowBlur, Color(f.shadowColor));
+                    break;
+                case FilterOperation::ColorMatrixOp:
+                    break;
+            }
+        }
+    }
 #endif
         
     bool selectionOnly = paintRestriction == PaintRestrictionSelectionOnly || paintRestriction == PaintRestrictionSelectionOnlyBlackText;
@@ -1561,6 +1593,11 @@ RenderLayer::paintLayer(RenderLayer* rootLayer, GraphicsContext* p,
     }
 
 #if ENABLE(MODERN_CSS3)
+    if (appliedFilter) {
+        while (filterTransparencyLayers-- > 0)
+            p->endTransparencyLayer();
+        p->restore();
+    }
     if (appliedTransform)
         p->restore();
 #endif

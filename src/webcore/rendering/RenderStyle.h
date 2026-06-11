@@ -697,6 +697,31 @@ struct TransformOperation {
     float angleX, angleY;    // rotate uses angleX; skew uses angleX (x) and angleY (y)
     float ma, mb, mc, md, me, mf; // matrix() components
 };
+
+// A single CSS filter function. 3e-1 implements the spatial/compositing filters
+// that map onto existing picasso primitives: blur(), drop-shadow(), opacity().
+// Color-matrix filters (grayscale/sepia/invert/saturate/brightness/contrast/
+// hue-rotate) are parsed into ColorMatrixOp but not yet rendered; they await a
+// picasso color-transform primitive (see docs/picasso-color-filter-request.md).
+struct FilterOperation {
+    enum Type { BlurOp, DropShadowOp, OpacityOp, ColorMatrixOp };
+    FilterOperation()
+        : type(BlurOp), amount(0), stdDeviation(0)
+        , shadowX(0), shadowY(0), shadowBlur(0), shadowColor(0) { }
+
+    bool operator==(const FilterOperation& o) const {
+        return type == o.type && amount == o.amount && stdDeviation == o.stdDeviation
+            && shadowX == o.shadowX && shadowY == o.shadowY
+            && shadowBlur == o.shadowBlur && shadowColor == o.shadowColor;
+    }
+    bool operator!=(const FilterOperation& o) const { return !(*this == o); }
+
+    Type type;
+    float amount;        // opacity()/color-matrix amount (0..1 or factor)
+    float stdDeviation;  // blur() radius in px
+    int shadowX, shadowY, shadowBlur; // drop-shadow() offsets + blur (px)
+    RGBA32 shadowColor;  // drop-shadow() color
+};
 #endif // ENABLE(MODERN_CSS3)
 
 class StyleTransformData : public Shared<StyleTransformData> {
@@ -713,6 +738,7 @@ public:
     Length m_y;
 #if ENABLE(MODERN_CSS3)
     Vector<TransformOperation> m_operations;
+    Vector<FilterOperation> m_filterOps;
 #endif
 };
 
@@ -1761,6 +1787,8 @@ public:
 #if ENABLE(MODERN_CSS3)
     const Vector<TransformOperation>& transformOperations() const { return rareNonInheritedData->m_transform->m_operations; }
     bool hasTransform() const { return !rareNonInheritedData->m_transform->m_operations.isEmpty(); }
+    const Vector<FilterOperation>& filterOperations() const { return rareNonInheritedData->m_transform->m_filterOps; }
+    bool hasFilter() const { return !rareNonInheritedData->m_transform->m_filterOps.isEmpty(); }
     // Builds the affine transform for this element's box (width x height),
     // resolving transform-origin and percentage translations. The matrix maps
     // local coordinates to transformed coordinates, pre/post-translated so the
@@ -2051,6 +2079,8 @@ public:
 #if ENABLE(MODERN_CSS3)
     void setTransformOperations(const Vector<TransformOperation>& ops) { SET_VAR(rareNonInheritedData.access()->m_transform, m_operations, ops); }
     void clearTransformOperations() { if (!rareNonInheritedData->m_transform->m_operations.isEmpty()) rareNonInheritedData.access()->m_transform.access()->m_operations.clear(); }
+    void setFilterOperations(const Vector<FilterOperation>& ops) { SET_VAR(rareNonInheritedData.access()->m_transform, m_filterOps, ops); }
+    void clearFilterOperations() { if (!rareNonInheritedData->m_transform->m_filterOps.isEmpty()) rareNonInheritedData.access()->m_transform.access()->m_filterOps.clear(); }
 #endif
     // End CSS3 Setters
    

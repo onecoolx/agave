@@ -763,6 +763,24 @@ void GraphicsContext::clearShadow()
     ps_reset_shadow(m_data->context);
 }
 
+void GraphicsContext::setBlur(float level)
+{
+    if (paintingDisabled())
+        return;
+    if (level < 0.0f)
+        level = 0.0f;
+    else if (level > 1.0f)
+        level = 1.0f;
+    ps_set_blur(m_data->context, level);
+}
+
+void GraphicsContext::clearBlur()
+{
+    if (paintingDisabled())
+        return;
+    ps_set_blur(m_data->context, 0.0f);
+}
+
 const AffineTransform & GraphicsContext::getMatrix(void) const
 {
     return m_data->matrix;

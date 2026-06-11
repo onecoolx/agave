@@ -33,6 +33,7 @@
 #include "CSSImageValue.h"
 #include "CSSGradientValue.h"
 #include "CSSTransformValue.h"
+#include "CSSFilterValue.h"
 #include "CSSImportRule.h"
 #include "CSSMediaRule.h"
 #include "CSSProperty.h"
@@ -4990,6 +4991,20 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
                 break;
         }
         style->setTextStrokeWidth(width);
+        return;
+    }
+    case CSS_PROP__WEBKIT_FILTER: {
+        if (isInherit) {
+            style->setFilterOperations(parentStyle->filterOperations());
+            return;
+        }
+        if (isInitial || (primitiveValue && primitiveValue->getIdent() == CSS_VAL_NONE)) {
+            style->clearFilterOperations();
+            return;
+        }
+        if (!value->isFilterValue())
+            return;
+        style->setFilterOperations(static_cast<CSSFilterValue*>(value)->operations());
         return;
     }
     case CSS_PROP__WEBKIT_TRANSFORM: {

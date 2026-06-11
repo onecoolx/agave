@@ -537,13 +537,14 @@ StyleTransformData::StyleTransformData(const StyleTransformData& o)
     , m_y(o.m_y)
 #if ENABLE(MODERN_CSS3)
     , m_operations(o.m_operations)
+    , m_filterOps(o.m_filterOps)
 #endif
 {}
 
 bool StyleTransformData::operator==(const StyleTransformData& o) const
 {
 #if ENABLE(MODERN_CSS3)
-    if (m_operations != o.m_operations)
+    if (m_operations != o.m_operations || m_filterOps != o.m_filterOps)
         return false;
 #endif
     return m_x == o.m_x && m_y == o.m_y;

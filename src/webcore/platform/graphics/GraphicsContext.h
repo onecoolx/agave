@@ -162,6 +162,11 @@ namespace WebCore {
         void setShadow(const IntSize&, int blur, const Color&);
         void clearShadow();
 
+        // Sets a context-level blur applied to subsequent drawing (CSS filter:
+        // blur). The level is normalized 0..1; clearBlur() removes it.
+        void setBlur(float level);
+        void clearBlur();
+
         void initFocusRing(int width, int offset);
         void addFocusRingRect(const IntRect&);
         void drawFocusRing(const Color&);

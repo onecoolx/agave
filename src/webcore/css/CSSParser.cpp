@@ -30,6 +30,7 @@
 #include "CSSHelper.h"
 #include "CSSImageValue.h"
 #include "CSSGradientValue.h"
+#include "CSSFilterValue.h"
 #include "CSSFontFaceRule.h"
 #include "CSSFontFaceSrcValue.h"
 #include "CSSImportRule.h"
@@ -530,6 +531,7 @@ bool CSSParser::parseValue(int propId, bool important)
         case CSS_PROP_BOX_SHADOW:                   propId = CSS_PROP__WEBKIT_BOX_SHADOW; break;
         case CSS_PROP_TRANSFORM:                    propId = CSS_PROP__WEBKIT_TRANSFORM; break;
         case CSS_PROP_TRANSFORM_ORIGIN:             propId = CSS_PROP__WEBKIT_TRANSFORM_ORIGIN; break;
+        case CSS_PROP_FILTER:                       propId = CSS_PROP__WEBKIT_FILTER; break;
         default: break;
     }
 
@@ -1459,6 +1461,18 @@ bool CSSParser::parseValue(int propId, bool important)
             valid_primitive = true;
         else {
             PassRefPtr<CSSValue> val = parseTransform();
+            if (val) {
+                addProperty(propId, val, important);
+                return true;
+            }
+            return false;
+        }
+        break;
+    case CSS_PROP__WEBKIT_FILTER:
+        if (id == CSS_VAL_NONE)
+            valid_primitive = true;
+        else {
+            CSSValue* val = parseFilter();
             if (val) {
                 addProperty(propId, val, important);
                 return true;
@@ -2565,6 +2579,96 @@ static float sideToAngle(int side1, int side2)
     if (lo == CSS_VAL_TOP && hi == CSS_VAL_LEFT)      return 315.0f;
     // CSS value ordering may differ; fall back to a reasonable default.
     return 180.0f;
+}
+
+// Parses the CSS `filter` property: a space-separated list of filter functions.
+// 3e-1 renders blur()/drop-shadow()/opacity() via picasso primitives; the
+// color-matrix filters (grayscale/sepia/invert/saturate/brightness/contrast/
+// hue-rotate) are parsed into ColorMatrixOp but not yet rendered (await a
+// picasso color-transform primitive). Returns 0 on a malformed value.
+CSSValue* CSSParser::parseFilter()
+{
+    const int kMaxFilterOps = 32;
+    CSSFilterValue* result = new CSSFilterValue;
+
+    for (Value* value = valueList->current(); value; value = valueList->next()) {
+        if (value->unit != Value::QFunction || !value->function) {
+            delete result;
+            return 0;
+        }
+        if ((int)result->operations().size() >= kMaxFilterOps) {
+            delete result;
+            return 0;
+        }
+
+        String fname = domString(value->function->name).lower();
+        ValueList* args = value->function->args;
+        FilterOperation op;
+
+        if (fname == "blur(") {
+            op.type = FilterOperation::BlurOp;
+            // Optional single length argument (default 0).
+            if (args && args->current()) {
+                Value* a = args->current();
+                if (!validUnit(a, FLength, true)) { delete result; return 0; }
+                op.stdDeviation = (float)a->fValue;
+            }
+        } else if (fname == "opacity(") {
+            op.type = FilterOperation::OpacityOp;
+            op.amount = 1.0f;
+            if (args && args->current()) {
+                Value* a = args->current();
+                if (a->unit == CSSPrimitiveValue::CSS_PERCENTAGE)
+                    op.amount = (float)(a->fValue / 100.0);
+                else if (validUnit(a, FNumber, true))
+                    op.amount = (float)a->fValue;
+                else { delete result; return 0; }
+            }
+        } else if (fname == "drop-shadow(") {
+            op.type = FilterOperation::DropShadowOp;
+            op.shadowColor = Color::black; // default
+            // <offset-x> <offset-y> [<blur>]? [<color>]?
+            int lengths = 0;
+            for (Value* a = args ? args->current() : 0; a; a = args->next()) {
+                if (validUnit(a, FLength, true)) {
+                    int v = (int)a->fValue;
+                    if (lengths == 0) op.shadowX = v;
+                    else if (lengths == 1) op.shadowY = v;
+                    else if (lengths == 2) op.shadowBlur = v;
+                    else { delete result; return 0; }
+                    lengths++;
+                } else {
+                    RGBA32 c;
+                    if (!parseColorFromValue(a, c)) { delete result; return 0; }
+                    op.shadowColor = c;
+                }
+            }
+            if (lengths < 2) { delete result; return 0; } // need x and y
+        } else if (fname == "grayscale(" || fname == "sepia(" || fname == "invert("
+                || fname == "saturate(" || fname == "brightness(" || fname == "contrast("
+                || fname == "hue-rotate(") {
+            // Parsed but not yet rendered (see picasso color-filter request).
+            op.type = FilterOperation::ColorMatrixOp;
+            if (args && args->current()) {
+                Value* a = args->current();
+                if (a->unit == CSSPrimitiveValue::CSS_PERCENTAGE)
+                    op.amount = (float)(a->fValue / 100.0);
+                else
+                    op.amount = (float)a->fValue;
+            }
+        } else {
+            delete result;
+            return 0;
+        }
+
+        result->operations().append(op);
+    }
+
+    if (result->operations().isEmpty()) {
+        delete result;
+        return 0;
+    }
+    return result;
 }
 
 // Parses linear-gradient()/radial-gradient() into a CSSGradientValue.
