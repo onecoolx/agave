@@ -27,6 +27,8 @@
  */
 
 #include "config.h"
+
+#if ENABLE(WEB_STORAGE)
 #include "SqliteStorageArea.h"
 
 #include "CString.h"
@@ -183,3 +185,5 @@ void SqliteStorageArea::clear()
 }
 
 } // namespace WebCore
+
+#endif // ENABLE(WEB_STORAGE)

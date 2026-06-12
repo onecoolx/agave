@@ -253,6 +253,7 @@ static JSValue js_get_document(JSContext *ctx, JSValueConst this_val, int argc, 
     return wrapper;
 }
 
+#if ENABLE(WEB_STORAGE)
 static JSValue js_get_localStorage(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
 {
     QJS::ScriptInterpreter* interp = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx);
@@ -268,6 +269,7 @@ static JSValue js_get_sessionStorage(JSContext *ctx, JSValueConst this_val, int 
         return JS_UNDEFINED;
     return toJS(ctx, interp->frame()->domWindow()->sessionStorage());
 }
+#endif // ENABLE(WEB_STORAGE)
 
 void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global)
 {
@@ -281,6 +283,7 @@ void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global)
     JS_FreeAtom(ctx, atom);
 
     // Web Storage getters (window.localStorage / window.sessionStorage).
+#if ENABLE(WEB_STORAGE)
     JSAtom lsAtom = JS_NewAtom(ctx, "localStorage");
     JSValue lsGetter = JS_NewCFunction(ctx, (JSCFunction*)js_get_localStorage, "get localStorage", 0);
     JS_DefinePropertyGetSet(ctx, global, lsAtom, lsGetter, JS_UNDEFINED, JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
@@ -290,5 +293,6 @@ void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global)
     JSValue ssGetter = JS_NewCFunction(ctx, (JSCFunction*)js_get_sessionStorage, "get sessionStorage", 0);
     JS_DefinePropertyGetSet(ctx, global, ssAtom, ssGetter, JS_UNDEFINED, JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
     JS_FreeAtom(ctx, ssAtom);
+#endif // ENABLE(WEB_STORAGE)
 }
 } // namespace WebCore

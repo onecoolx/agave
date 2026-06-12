@@ -59,8 +59,10 @@ namespace WebCore {
         History* history() const;
 
         // Web Storage
+#if ENABLE(WEB_STORAGE)
         Storage* localStorage() const;
         Storage* sessionStorage() const;
+#endif
         BarInfo* locationbar() const;
         BarInfo* menubar() const;
         BarInfo* personalbar() const;

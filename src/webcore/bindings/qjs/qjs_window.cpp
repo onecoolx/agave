@@ -2110,6 +2110,7 @@ static JSValue js_window_func(JSContext* ctx, JSValueConst this_val, int argc, J
 
 // Web Storage getters exposed on the window prototype. They resolve the
 // backing DOMWindow and return the cached Storage JS wrapper.
+#if ENABLE(WEB_STORAGE)
 static JSValue js_window_localStorage(JSContext* ctx, JSValueConst this_val)
 {
     Window* window = (Window*)JS_GetOpaque2(ctx, this_val, Window::js_class_id);
@@ -2125,6 +2126,7 @@ static JSValue js_window_sessionStorage(JSContext* ctx, JSValueConst this_val)
         return JS_UNDEFINED;
     return toJS(ctx, window->impl()->sessionStorage());
 }
+#endif // ENABLE(WEB_STORAGE)
 
 void WindowPrototype::initPrototype(JSContext* ctx, JSValue this_obj)
 {
@@ -2155,6 +2157,7 @@ void WindowPrototype::initPrototype(JSContext* ctx, JSValue this_obj)
     }
 
     // Web Storage: window.localStorage / window.sessionStorage (read-only).
+#if ENABLE(WEB_STORAGE)
     struct { const char* name; JSValue (*getter)(JSContext*, JSValueConst); } storageGetters[] = {
         {"localStorage", js_window_localStorage},
         {"sessionStorage", js_window_sessionStorage},
@@ -2165,6 +2168,7 @@ void WindowPrototype::initPrototype(JSContext* ctx, JSValue this_obj)
         JS_DefinePropertyGetSet(ctx, this_obj, atom, getter, JS_UNDEFINED, JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
         JS_FreeAtom(ctx, atom);
     }
+#endif // ENABLE(WEB_STORAGE)
 }
 
 JSClassID Navigator::js_class_id = 0;

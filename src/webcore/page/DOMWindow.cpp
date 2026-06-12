@@ -111,6 +111,7 @@ Screen* DOMWindow::screen() const
     return m_screen.get();
 }
 
+#if ENABLE(WEB_STORAGE)
 Storage* DOMWindow::localStorage() const
 {
     if (!m_localStorage && m_frame && m_frame->document()) {
@@ -132,6 +133,7 @@ Storage* DOMWindow::sessionStorage() const
         m_sessionStorage = Storage::create(MemoryStorageArea::create());
     return m_sessionStorage.get();
 }
+#endif // ENABLE(WEB_STORAGE)
 
 History* DOMWindow::history() const
 {

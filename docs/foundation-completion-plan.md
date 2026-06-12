@@ -113,3 +113,15 @@ finalizer deref 后对象被提前释放 → use-after-free。
 
 4a（querySelector/All/classList）+ 4b（calc()）完成。现代页面"不丢样式、脚本能跑"
 的两块地基已补齐。var()/自定义属性后置（按需再做）。可进入阶段 3（Web API）。
+
+## Web Storage 可裁剪（ENABLE_WEB_STORAGE）
+
+localStorage/sessionStorage 由编译宏 `ENABLE_WEB_STORAGE`（默认 ON）控制，可在资源
+受限、无需 Web Storage 的业务场景下关闭以减小 codesize：
+
+- CMake 选项 `OPT_WEB_STORAGE`（CMakeLists.txt），在 3rdparty 引入前定义，使
+  **SQLite 依赖在关闭时完全不编译**（省约 3.3 MB 静态库 + storage 模块代码）。
+- 宏 `ENABLE_WEB_STORAGE`（build/mconfig.h.in）守卫：storage 模块源码、QJSStorage
+  绑定、DOMWindow 的 localStorage/sessionStorage getter、qjs_script 的全局属性注册。
+- 关闭后主库正常编译，JS 中 localStorage/sessionStorage 为 undefined（优雅降级）。
+- 关闭命令：`cmake -DOPT_WEB_STORAGE=OFF ...`。

@@ -27,6 +27,8 @@
  */
 
 #include "config.h"
+
+#if ENABLE(WEB_STORAGE)
 #include "StorageArea.h"
 
 namespace WebCore {
@@ -79,3 +81,5 @@ void MemoryStorageArea::clear()
 }
 
 } // namespace WebCore
+
+#endif // ENABLE(WEB_STORAGE)

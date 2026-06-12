@@ -27,6 +27,8 @@
  */
 
 #include "config.h"
+
+#if ENABLE(WEB_STORAGE)
 #include "Storage.h"
 
 #include "ExceptionCode.h"
@@ -42,3 +44,5 @@ void Storage::setItem(const String& key, const String& value, ExceptionCode& ec)
 }
 
 } // namespace WebCore
+
+#endif // ENABLE(WEB_STORAGE)

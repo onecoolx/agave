@@ -32,6 +32,12 @@ option(OPT_EXT_LIBS_SHARED "Build external libraries to shared." ON)
 
 include (${CMAKE_CURRENT_LIST_DIR}/build/configs.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/build/defines.cmake)
+
+# Web Storage (localStorage/sessionStorage). Defined before the 3rdparty include
+# so the SQLite dependency (only needed for persistent localStorage) can be
+# skipped when this feature is trimmed on resource-constrained targets.
+OPTION_MACRO_DEFINE(OPT_WEB_STORAGE ENABLE_WEB_STORAGE "Build with Web Storage (localStorage/sessionStorage)." ON)
+
 include (${CMAKE_CURRENT_LIST_DIR}/3rdparty/3rdparty.cmake)
 
 OPTION_MACRO_DEFINE(OPT_PNG_SUPPORT PNG_SUPPORT "Build support PNG image format." ON)

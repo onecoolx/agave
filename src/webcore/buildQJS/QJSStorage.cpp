@@ -26,6 +26,8 @@
 
 #include "config.h"
 
+#if ENABLE(WEB_STORAGE)
+
 #include <string.h>
 
 #include "QJSStorage.h"
@@ -258,3 +260,5 @@ Storage* toStorage(JSValue val)
 }
 
 }
+
+#endif // ENABLE(WEB_STORAGE)
