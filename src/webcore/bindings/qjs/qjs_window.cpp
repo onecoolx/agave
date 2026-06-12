@@ -1555,7 +1555,7 @@ void ScheduledAction::execute(Window* window)
             if (JS_IsException(ret)) {
                 JSValue exception = JS_GetException(ctx);
                 const char* msg = JS_ToCString(ctx, exception);
-                String message = msg ? String(msg) : String("Unknown error");
+                String message = msg ? String::fromUTF8(msg) : String("Unknown error");
                 JS_FreeCString(ctx, msg);
                 JS_FreeValue(ctx, exception);
                 if (Page* page = frame->page())

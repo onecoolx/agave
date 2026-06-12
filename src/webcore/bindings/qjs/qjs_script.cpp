@@ -115,7 +115,7 @@ JSValue ScriptController::evaluate(const String& filename, int baseLine, const S
         const char * msg = JS_ToCString(ctx, exc);
         fprintf(stderr, "[QJS-ERR] %s\n", msg ? msg : "unknown");
 
-        String errorMessage = msg ? String(msg) : String("unknown error");
+        String errorMessage = msg ? String::fromUTF8(msg) : String("unknown error");
         JS_FreeCString(ctx, msg);
 
         JSValue line = JS_GetPropertyStr(ctx, exc, "lineNumber");

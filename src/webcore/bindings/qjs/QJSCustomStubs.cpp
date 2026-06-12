@@ -218,7 +218,7 @@ String JSCustomXPathNSResolver::lookupNamespaceURI(const String& prefix)
     if (!JS_IsUndefined(ret) && !JS_IsNull(ret) && !JS_IsException(ret)) {
         const char* str = JS_ToCString(ctx, ret);
         if (str) {
-            result = String(str);
+            result = String::fromUTF8(str);
             JS_FreeCString(ctx, str);
         }
     }
