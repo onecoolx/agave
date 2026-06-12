@@ -33,16 +33,18 @@
 
 #if ENABLE(WEB_SOCKETS)
 
+#include "ExceptionCode.h"
 #include "PlatformString.h"
 #include "Shared.h"
 #include "Timer.h"
 #include <wtf/Vector.h>
 
-typedef void CURL;
+// libcurl's opaque easy-handle type. Forward-declared (rather than redefining
+// CURL) so this header stays compatible with curl.h regardless of whether
+// CURL_STRICTER is defined.
+struct Curl_easy;
 
 namespace WebCore {
-
-typedef int ExceptionCode;
 
 // Receives WebSocket lifecycle events. The binding layer implements this to
 // dispatch onopen/onmessage/onclose/onerror to JavaScript.
@@ -88,8 +90,9 @@ private:
     WebSocketClient* m_client; // not owned (the binding owns this WebSocket)
     State m_state;
     String m_url;
-    CURL* m_handle;
+    Curl_easy* m_handle;
     Vector<char> m_messageBuffer; // accumulates payload across chunked/fragmented reads
+    bool m_messageIsBinary; // whether the message currently being accumulated is binary
     Timer<WebSocket> m_connectTimer;
     Timer<WebSocket> m_pollTimer;
 };

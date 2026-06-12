@@ -47,6 +47,7 @@ WebSocket::WebSocket(WebSocketClient* client)
     : m_client(client)
     , m_state(CONNECTING)
     , m_handle(0)
+    , m_messageIsBinary(false)
     , m_connectTimer(this, &WebSocket::connectTimerFired)
     , m_pollTimer(this, &WebSocket::pollTimerFired)
 {
@@ -82,7 +83,14 @@ void WebSocket::doConnect()
     if (m_state != CONNECTING)
         return;
 
-    CURL* handle = curl_easy_init();
+    // LIMITATION: the handshake below (curl_easy_perform in CONNECT_ONLY mode)
+    // is synchronous and blocks the single-threaded engine until the connection
+    // is established or CURLOPT_TIMEOUT elapses. connect() defers this to a
+    // timer so the WebSocket constructor returns immediately, but a slow or
+    // unresponsive server can still stall the UI for up to the timeout. A fully
+    // non-blocking handshake would require driving curl_multi (or a worker
+    // thread) and is left as future work.
+    Curl_easy* handle = static_cast<Curl_easy*>(curl_easy_init());
     if (!handle) {
         fail();
         return;
@@ -95,6 +103,10 @@ void WebSocket::doConnect()
     // HTTP upgrade handshake, then curl_ws_send/recv drive frames.
     curl_easy_setopt(handle, CURLOPT_CONNECT_ONLY, 2L);
     curl_easy_setopt(handle, CURLOPT_TIMEOUT, 30L);
+    // For wss:// rely on libcurl's secure TLS defaults (peer and host
+    // verification enabled). We deliberately do NOT disable verification here
+    // (unlike the legacy HTTP resource loader), so invalid/self-signed server
+    // certificates cause the handshake to fail.
 
     CURLcode res = curl_easy_perform(handle);
     if (res != CURLE_OK) {
@@ -131,6 +143,8 @@ void WebSocket::close()
     m_state = CLOSING;
     m_connectTimer.stop();
     m_pollTimer.stop();
+    m_messageBuffer.clear();
+    m_messageIsBinary = false;
 
     if (m_handle) {
         size_t sent = 0;
@@ -147,6 +161,8 @@ void WebSocket::fail()
 {
     m_connectTimer.stop();
     m_pollTimer.stop();
+    m_messageBuffer.clear();
+    m_messageIsBinary = false;
     if (m_handle) {
         curl_easy_cleanup((CURL*)m_handle);
         m_handle = 0;
@@ -191,10 +207,12 @@ void WebSocket::pollTimerFired(Timer<WebSocket>*)
         }
 
         // A single message may span multiple recv() calls (large payloads are
-        // chunked, and CURLWS_CONT marks continuation frames). Accumulate until
-        // the whole payload is present, bounding total size against a hostile
-        // peer, then dispatch one message.
+        // chunked, and CURLWS_CONT marks continuation frames). Record the type
+        // from the first chunk, then accumulate until the whole payload is
+        // present, bounding total size against a hostile peer.
         if (got > 0) {
+            if (m_messageBuffer.isEmpty() && meta)
+                m_messageIsBinary = (meta->flags & CURLWS_BINARY) != 0;
             if (m_messageBuffer.size() + got > kMaxWebSocketMessage) {
                 fail();
                 return;
@@ -204,10 +222,15 @@ void WebSocket::pollTimerFired(Timer<WebSocket>*)
 
         bool complete = !meta || meta->bytesleft == 0;
         if (complete && !m_messageBuffer.isEmpty()) {
-            String message = String::fromUTF8(m_messageBuffer.data(), m_messageBuffer.size());
-            m_messageBuffer.clear();
-            if (m_client)
+            // Binary messages would require an ArrayBuffer/Blob to be delivered
+            // faithfully; the engine does not yet plumb those through, so drop
+            // them rather than corrupt the bytes by forcing a UTF-8 decode.
+            if (!m_messageIsBinary && m_client) {
+                String message = String::fromUTF8(m_messageBuffer.data(), m_messageBuffer.size());
                 m_client->didReceiveMessage(message);
+            }
+            m_messageBuffer.clear();
+            m_messageIsBinary = false;
         }
         if (got == 0)
             return;
