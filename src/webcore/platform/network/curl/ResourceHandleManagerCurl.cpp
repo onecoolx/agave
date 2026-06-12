@@ -57,6 +57,10 @@
 #include "WebCallback.h"
 #include "Debug.h"
 
+#if !PLATFORM(WIN32) && !PLATFORM(WINCE)
+#include <unistd.h>
+#endif
+
 namespace WebCore {
 
 const int selectTimeoutMS = 5;
@@ -440,6 +444,65 @@ void ResourceHandleManager::startSyncJob(ResourceHandle* job)
     job->deref();
 }
 
+#if ENABLE(SSL)
+// Configure TLS peer/host verification for an HTTPS/WSS handle.
+//
+// SEC-003: historically this code unconditionally disabled verification, which
+// exposed every secure request to man-in-the-middle attacks. We now verify
+// whenever a certificate authority source is available:
+//   1. an explicit CA path/bundle injected by the host (setCaPath), or
+//   2. libcurl's compiled-in default CA bundle / path (system trust store).
+// Only when no CA source can be found do we fall back to the legacy insecure
+// behaviour, preserving operation on embedded targets that lack a trust store.
+static void configureTLSVerification(CURL* handle)
+{
+    bool haveCA = false;
+
+    const CString& injected = caPath();
+    if (!injected.isNull() && injected.data() && injected.data()[0]) {
+#if ENABLE(SSLFILE)
+        curl_easy_setopt(handle, CURLOPT_CAPATH, injected.data());
+#else
+        curl_easy_setopt(handle, CURLOPT_CAINFO, injected.data());
+#endif
+        haveCA = true;
+    }
+
+#if !PLATFORM(WIN32) && !PLATFORM(WINCE)
+    // Fall back to a system CA bundle (a single PEM file, which the mbedTLS
+    // backend loads reliably) when present. These are the common locations
+    // across Linux distributions; the libcurl public headers do not expose the
+    // compiled-in CURL_CA_BUNDLE macro, so we probe known paths directly.
+    if (!haveCA) {
+        static const char* const kCABundlePaths[] = {
+            "/etc/ssl/certs/ca-certificates.crt",   // Debian/Ubuntu/Alpine
+            "/etc/pki/tls/certs/ca-bundle.crt",     // Fedora/RHEL
+            "/etc/ssl/ca-bundle.pem",               // openSUSE
+            "/etc/ssl/cert.pem",                    // macOS/BSD
+        };
+        for (size_t i = 0; i < sizeof(kCABundlePaths) / sizeof(kCABundlePaths[0]); ++i) {
+            if (access(kCABundlePaths[i], R_OK) == 0) {
+                curl_easy_setopt(handle, CURLOPT_CAINFO, kCABundlePaths[i]);
+                haveCA = true;
+                break;
+            }
+        }
+    }
+#endif
+
+    if (haveCA) {
+        curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 1L);
+        curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 2L);
+    } else {
+        // No trust store available: retain the legacy behaviour rather than
+        // breaking connectivity on devices without certificates. Tracked as
+        // SEC-003 (a certificate-error UI is the proper long-term fix).
+        curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0L);
+        curl_easy_setopt(handle, CURLOPT_SSL_VERIFYHOST, 0L);
+    }
+}
+#endif // ENABLE(SSL)
+
 void ResourceHandleManager::initJob(ResourceHandle* job)
 {
     ASSERT(job);
@@ -459,12 +522,7 @@ void ResourceHandleManager::initJob(ResourceHandle* job)
 #endif
 
 #if ENABLE(SSL)
-#if ENABLE(SSLFILE)
-    if (!caPath().isNull())
-        curl_easy_setopt(d->m_handle, CURLOPT_CAPATH, caPath().data());
-#endif
-    curl_easy_setopt(d->m_handle, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_easy_setopt(d->m_handle, CURLOPT_SSL_VERIFYHOST, 0);
+    configureTLSVerification(d->m_handle);
 #endif
     
     KURL url = job->request().url();

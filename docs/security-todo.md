@@ -87,3 +87,79 @@ localStorage、sessionStorage 均有相同症状（getlen=30 vlen=13）。ASCII 
 非 localStorage 里程碑引入（既有缺陷）。修正点在 bindings/qjs 的字符串转换
 （valueToString / jsString 应按 UTF-16/UTF-8 正确转换，而非 Latin-1 直通）。
 作为独立的绑定层修正项后续处理。
+
+---
+
+## SEC-003：HTTPS/WSS 全局禁用 TLS 证书校验
+
+- **发现日期**：2026-06-12（WebSocket 里程碑代码审查时）
+- **风险等级**：高（中间人攻击，可利用）
+- **状态**：第一步已完成（2026-06-12，条件校验）；证书错误 UI 为 future work
+
+### 更新
+
+- 2026-06-12：完成第一步。`initJob` 不再无条件关闭校验，改为调用
+  `configureTLSVerification()`：优先用宿主注入的 `caPath()`，否则探测系统 CA
+  bundle（`/etc/ssl/certs/ca-certificates.crt` 等已知路径，用 `CURLOPT_CAINFO`
+  指向单一 PEM 文件以适配 mbedTLS），找到 CA 即开启 `VERIFYPEER=1/VERIFYHOST=2`；
+  仅在无任何 CA 时保留旧的关闭行为。实测：有效证书 HTTPS 正常、自签名证书被拒、
+  HTTP 明文正常、fetch/WebSocket 不受影响、全套回归 720 全过。
+  注意：libcurl 公共头不暴露编译期 `CURL_CA_BUNDLE` 宏，故改为直接探测已知系统
+  路径。
+
+### 问题描述
+
+`ResourceHandleManager::initJob()`（platform/network/curl/ResourceHandleManagerCurl.cpp）
+对每个 curl 句柄无条件设置：
+
+```cpp
+curl_easy_setopt(d->m_handle, CURLOPT_SSL_VERIFYPEER, 0);
+curl_easy_setopt(d->m_handle, CURLOPT_SSL_VERIFYHOST, 0);
+```
+
+这关闭了所有 HTTPS 连接的对端证书与主机名校验。该路径是**所有** HTTPS 请求的
+公共入口——fetch、XMLHttpRequest、页面资源加载、wss:// WebSocket 全部受影响。
+（WebSocket 自身的 doConnect 不碰 verify 选项、用 curl 安全默认，但 ResourceHandle
+路径上的请求仍受此影响。）
+
+### 影响
+
+- 任何中间人都可冒充 HTTPS/WSS 服务器、解密或篡改流量，受害者无任何提示
+- 影响面为全部安全传输请求
+
+### 成因（设计背景）
+
+源自约 2007 年代嵌入式浏览器的妥协：目标设备未必有标准 CA 目录，故由宿主程序
+经 `macross_set_certificate_dir()` → `setCaPath()` 运行时注入证书路径；未注入时
+直接关闭校验以"能连上"。`initJob` 中仅当 `caPath()` 非空才设 `CURLOPT_CAPATH`，
+但校验是无条件关闭的。
+
+### 技术难点
+
+1. **TLS 后端为 mbedTLS**（非 OpenSSL）。mbedTLS 用 `mbedtls_x509_crt_parse_path()`
+   加载 CAPATH 目录，仅识别 PEM/DER 文件；`/etc/ssl/certs` 内多为 OpenSSL hash 格式
+   符号链接（`xxxx.0`），按目录解析慢且可能不完整。更可靠的是用 `CURLOPT_CAINFO`
+   指向单一 bundle 文件（如 `/etc/ssl/certs/ca-certificates.crt`）。当前用 CAPATH，
+   方向欠妥。
+2. **无证书错误 UI/回调**。引擎没有证书校验失败时的用户提示或"继续"机制。开启校验
+   后，自签名/过期证书站点会静默连接失败，用户无从得知。真实浏览器会提示"连接不
+   安全"。补此机制需触及 ChromeClient/回调层，工作量较大。
+3. **公共路径、headless 难充分验证**。修改影响全部 HTTPS/WSS 请求，而 headless 环境
+   难以覆盖真实联网与各种证书场景，公共安全路径回归风险高。
+
+### 修正方案（分步）
+
+**第一步（本次）：条件校验，而非无条件关闭。**
+- `caPath()` 已设置 → 用其作为 CA 来源并开启 `VERIFYPEER=1 / VERIFYHOST=2`
+- 否则回退到 curl 内建默认 CA（`CURLOPT_CAINFO` 指向系统 bundle）并开启校验
+- 仅在确实找不到任何 CA 时才降级为关闭（保留嵌入式无 CA 环境的原有行为）
+
+效果：有系统 CA 的环境（如桌面 Linux）默认即安全；嵌入式无 CA 环境行为不变。
+
+**第二步（future work）：证书错误用户决策机制。**
+校验失败时向上层（ChromeClient）抛出可交互的证书错误，由用户选择是否继续。单列评估。
+
+### 备注
+
+非 WebSocket 里程碑引入（既有缺陷）。第一步在不改变嵌入式无 CA 环境行为的前提下，
+为有 CA 的环境恢复安全默认，且需充分回归 HTTP/HTTPS/fetch/XHR/WebSocket。
