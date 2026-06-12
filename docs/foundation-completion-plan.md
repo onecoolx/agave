@@ -125,3 +125,20 @@ localStorage/sessionStorage 由编译宏 `ENABLE_WEB_STORAGE`（默认 ON）控�
   绑定、DOMWindow 的 localStorage/sessionStorage getter、qjs_script 的全局属性注册。
 - 关闭后主库正常编译，JS 中 localStorage/sessionStorage 为 undefined（优雅降级）。
 - 关闭命令：`cmake -DOPT_WEB_STORAGE=OFF ...`。
+
+## 阶段 3 - Fetch（2026-06-12）
+
+- `fetch(input[, init])` 返回 Promise<Response>，基于已有 XMLHttpRequest 实现。
+  Response 提供 ok/status/statusText 与 text()/json()（均返回 Promise）。
+  支持 init 的 method/headers/body。
+- 前置修复：QuickJS 微任务此前未被驱动（Promise.then 不触发）。新增
+  `ScriptInterpreter::drainMicrotasks()`，在脚本求值后用 `JS_ExecutePendingJob`
+  泵送（上限 10 万防 hang）。这是 Promise/fetch 能工作的基础。
+- 实现取向：内部用同步 XHR 加载（在 send() 内完成），随后立即 settle Promise；
+  对调用者仍是异步 Promise 语义。这绕开了 headless/嵌入式下异步子资源加载事件循环
+  未被泵送的问题，且避免了自定义 EventListener 的生命周期复杂度。
+- 可裁剪：编译宏 `ENABLE_FETCH`（CMake 选项 `OPT_FETCH`，默认 ON）。qjs_fetch
+  整体 `#if ENABLE(FETCH)`，关闭后主库正常编译、JS 中 fetch 为 undefined。
+- 已知限制：内部同步加载（简化模型，不支持流式/取消/Headers 对象的完整接口）；
+  file:// 缺失文件按本引擎 loader 语义 resolve（非 reject）；真实 HTTP 状态码正常。
+- 测试：9 benchmark 断言（Promise/ok/status/text/json 含嵌套对象数组）。714 全套通过。

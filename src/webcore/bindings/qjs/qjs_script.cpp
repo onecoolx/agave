@@ -28,6 +28,7 @@
 #include "Document.h"
 #include "DOMWindow.h"
 #include "QJSStorage.h"
+#include "qjs_fetch.h"
 #include "Frame.h"
 #include "FrameLoader.h"
 #include "GCController.h"
@@ -294,5 +295,9 @@ void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global)
     JS_DefinePropertyGetSet(ctx, global, ssAtom, ssGetter, JS_UNDEFINED, JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
     JS_FreeAtom(ctx, ssAtom);
 #endif // ENABLE(WEB_STORAGE)
+
+#if ENABLE(FETCH)
+    registerFetch(ctx, global);
+#endif
 }
 } // namespace WebCore

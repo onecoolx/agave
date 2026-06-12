@@ -1,0 +1,38 @@
+<html>
+<body>
+<script>
+var r = [];
+function ck(n, a, e) { r.push(n + ':' + (a === e ? 'PASS' : 'FAIL(' + a + '!=' + e + ')')); }
+function done() {
+  var ok = r.every(function(s){ return s.indexOf('PASS') >= 0; });
+  alert((ok ? 'ALL PASS' : 'FAILURES') + '|' + r.join('|'));
+}
+
+// fetch returns a Promise
+ck('is-promise', (fetch('fetch_data.json') instanceof Promise), true);
+
+// fetch + text()
+fetch('fetch_data.json').then(function(resp) {
+  ck('ok', resp.ok, true);
+  ck('status', resp.status, 200);
+  return resp.text();
+}).then(function(text) {
+  ck('text-has-name', text.indexOf('agave') >= 0, true);
+  // fetch + json()
+  return fetch('fetch_data.json');
+}).then(function(resp) {
+  return resp.json();
+}).then(function(json) {
+  ck('json-name', json.name, 'agave');
+  ck('json-version', json.version, 3);
+  ck('json-count', json.count, 42);
+  ck('json-array', json.features.length, 2);
+  ck('json-array0', json.features[0], 'fetch');
+  done();
+}).catch(function(e) {
+  r.push('EXCEPTION:' + e);
+  done();
+});
+</script>
+</body>
+</html>
