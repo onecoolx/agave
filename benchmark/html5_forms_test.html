@@ -1,0 +1,65 @@
+<html>
+<body>
+<input id="email" type="email" value="bad">
+<input id="emailok" type="email" value="a@b.com">
+<input id="num" type="number" value="5" min="10" max="20">
+<input id="numok" type="number" value="15" min="10" max="20">
+<input id="pat" type="text" pattern="[0-9]+" value="abc">
+<input id="req" type="text" required value="">
+<input id="reqok" type="text" required value="x">
+<input id="date" type="date" value="">
+<input id="color" type="color" value="">
+<form id="badform"><input type="email" required value="nope"></form>
+<form id="goodform"><input type="email" required value="a@b.com"></form>
+<script>
+var r = [];
+function ck(n, a, e) { r.push(n + ':' + (a === e ? 'PASS' : 'FAIL(' + a + ')')); }
+function E(id){ return document.getElementById(id); }
+function done() {
+  var ok = r.every(function(s){ return s.indexOf('PASS') >= 0; });
+  alert((ok ? 'ALL PASS' : 'FAILURES') + '|' + r.join('|'));
+}
+
+// Type recognition
+ck('email-type', E('email').type, 'email');
+ck('num-type', E('num').type, 'number');
+ck('date-type', E('date').type, 'date');
+ck('color-type', E('color').type, 'color');
+
+// typeMismatch
+ck('email-mismatch', E('email').typeMismatch, true);
+ck('emailok', E('emailok').typeMismatch, false);
+
+// range
+ck('num-underflow', E('num').rangeUnderflow, true);
+ck('numok', E('numok').rangeUnderflow, false);
+
+// pattern
+ck('pat-mismatch', E('pat').patternMismatch, true);
+
+// required
+ck('req-missing', E('req').valueMissing, true);
+ck('reqok', E('reqok').valueMissing, false);
+
+// checkValidity + validationMessage
+ck('email-invalid', E('email').checkValidity(), false);
+ck('email-msg', E('email').validationMessage.length > 0, true);
+
+// custom validity
+E('reqok').setCustomValidity('boom');
+ck('custom-error', E('reqok').customError, true);
+E('reqok').setCustomValidity('');
+ck('custom-cleared', E('reqok').customError, false);
+
+// form-level validity
+ck('badform', E('badform').checkValidity(), false);
+ck('goodform', E('goodform').checkValidity(), true);
+
+// pseudo-class matching via querySelectorAll
+ck('invalid-count', document.querySelectorAll('input:invalid').length, 5);
+ck('required-count', document.querySelectorAll('input:required').length, 4);
+
+done();
+</script>
+</body>
+</html>

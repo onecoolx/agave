@@ -333,6 +333,28 @@ void HTMLFormElement::parseEnctype(const String& type)
     }
 }
 
+// Validates all submittable controls. Returns true if all are valid. Each
+// invalid control receives an "invalid" event. Honors the form's novalidate.
+// Always compiled (the generated binding references it); ENABLE_HTML5_FORMS
+// gates whether prepareSubmit actually blocks submission.
+bool HTMLFormElement::checkValidity()
+{
+    if (!getAttribute(novalidateAttr).isNull())
+        return true;
+
+    bool allValid = true;
+    for (unsigned i = 0; i < formElements.size(); ++i) {
+        if (!formElements[i]->hasLocalName(inputTag))
+            continue;
+        HTMLInputElement* input = static_cast<HTMLInputElement*>(formElements[i]);
+        if (input->willValidate() && !input->valid()) {
+            input->dispatchHTMLEvent(invalidEvent, false, true);
+            allValid = false;
+        }
+    }
+    return allValid;
+}
+
 bool HTMLFormElement::prepareSubmit(Event* event)
 {
     Frame* frame = document()->frame();
@@ -341,6 +363,17 @@ bool HTMLFormElement::prepareSubmit(Event* event)
 
     m_insubmit = true;
     m_doingsubmit = false;
+
+#if ENABLE(HTML5_FORMS)
+    // HTML5: invalid controls block submission. Each invalid control fires an
+    // "invalid" event (which a page may cancel to suppress default handling),
+    // and if any control is invalid the form is not submitted. novalidate on
+    // the form opts out.
+    if (!checkValidity()) {
+        m_insubmit = false;
+        return false;
+    }
+#endif
 
     if (dispatchHTMLEvent(submitEvent, true, true) && !m_doingsubmit)
         m_doingsubmit = true;

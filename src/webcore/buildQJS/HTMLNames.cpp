@@ -348,6 +348,7 @@ DEFINE_GLOBAL(QualifiedName, nameAttr, nullAtom, "name", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, nohrefAttr, nullAtom, "nohref", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, noresizeAttr, nullAtom, "noresize", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, noshadeAttr, nullAtom, "noshade", xhtmlNamespaceURI);
+DEFINE_GLOBAL(QualifiedName, novalidateAttr, nullAtom, "novalidate", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, nowrapAttr, nullAtom, "nowrap", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, objectAttr, nullAtom, "object", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, onabortAttr, nullAtom, "onabort", xhtmlNamespaceURI);
@@ -398,11 +399,13 @@ DEFINE_GLOBAL(QualifiedName, plainAttr, nullAtom, "plain", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, pluginpageAttr, nullAtom, "pluginpage", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, pluginspageAttr, nullAtom, "pluginspage", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, pluginurlAttr, nullAtom, "pluginurl", xhtmlNamespaceURI);
+DEFINE_GLOBAL(QualifiedName, patternAttr, nullAtom, "pattern", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, precisionAttr, nullAtom, "precision", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, profileAttr, nullAtom, "profile", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, promptAttr, nullAtom, "prompt", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, readonlyAttr, nullAtom, "readonly", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, relAttr, nullAtom, "rel", xhtmlNamespaceURI);
+DEFINE_GLOBAL(QualifiedName, requiredAttr, nullAtom, "required", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, resultsAttr, nullAtom, "results", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, revAttr, nullAtom, "rev", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, rowsAttr, nullAtom, "rows", xhtmlNamespaceURI);
@@ -420,6 +423,7 @@ DEFINE_GLOBAL(QualifiedName, spanAttr, nullAtom, "span", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, srcAttr, nullAtom, "src", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, standbyAttr, nullAtom, "standby", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, startAttr, nullAtom, "start", xhtmlNamespaceURI);
+DEFINE_GLOBAL(QualifiedName, stepAttr, nullAtom, "step", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, styleAttr, nullAtom, "style", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, summaryAttr, nullAtom, "summary", xhtmlNamespaceURI);
 DEFINE_GLOBAL(QualifiedName, tabindexAttr, nullAtom, "tabindex", xhtmlNamespaceURI);
@@ -532,6 +536,7 @@ WebCore::QualifiedName** getHTMLAttrs(size_t* size)
         (WebCore::QualifiedName*)&nohrefAttr,
         (WebCore::QualifiedName*)&noresizeAttr,
         (WebCore::QualifiedName*)&noshadeAttr,
+        (WebCore::QualifiedName*)&novalidateAttr,
         (WebCore::QualifiedName*)&nowrapAttr,
         (WebCore::QualifiedName*)&objectAttr,
         (WebCore::QualifiedName*)&onabortAttr,
@@ -582,11 +587,13 @@ WebCore::QualifiedName** getHTMLAttrs(size_t* size)
         (WebCore::QualifiedName*)&pluginpageAttr,
         (WebCore::QualifiedName*)&pluginspageAttr,
         (WebCore::QualifiedName*)&pluginurlAttr,
+        (WebCore::QualifiedName*)&patternAttr,
         (WebCore::QualifiedName*)&precisionAttr,
         (WebCore::QualifiedName*)&profileAttr,
         (WebCore::QualifiedName*)&promptAttr,
         (WebCore::QualifiedName*)&readonlyAttr,
         (WebCore::QualifiedName*)&relAttr,
+        (WebCore::QualifiedName*)&requiredAttr,
         (WebCore::QualifiedName*)&resultsAttr,
         (WebCore::QualifiedName*)&revAttr,
         (WebCore::QualifiedName*)&rowsAttr,
@@ -604,6 +611,7 @@ WebCore::QualifiedName** getHTMLAttrs(size_t* size)
         (WebCore::QualifiedName*)&srcAttr,
         (WebCore::QualifiedName*)&standbyAttr,
         (WebCore::QualifiedName*)&startAttr,
+        (WebCore::QualifiedName*)&stepAttr,
         (WebCore::QualifiedName*)&styleAttr,
         (WebCore::QualifiedName*)&summaryAttr,
         (WebCore::QualifiedName*)&tabindexAttr,
@@ -626,7 +634,7 @@ WebCore::QualifiedName** getHTMLAttrs(size_t* size)
         (WebCore::QualifiedName*)&widthAttr,
         (WebCore::QualifiedName*)&wrapAttr,
     };
-    *size = 179;
+    *size = 183;
     return HTMLAttr;
 }
 
@@ -942,6 +950,7 @@ void init()
     const char *nohrefAttrString = "nohref";
     const char *noresizeAttrString = "noresize";
     const char *noshadeAttrString = "noshade";
+    const char *novalidateAttrString = "novalidate";
     const char *nowrapAttrString = "nowrap";
     const char *objectAttrString = "object";
     const char *onabortAttrString = "onabort";
@@ -992,11 +1001,13 @@ void init()
     const char *pluginpageAttrString = "pluginpage";
     const char *pluginspageAttrString = "pluginspage";
     const char *pluginurlAttrString = "pluginurl";
+    const char *patternAttrString = "pattern";
     const char *precisionAttrString = "precision";
     const char *profileAttrString = "profile";
     const char *promptAttrString = "prompt";
     const char *readonlyAttrString = "readonly";
     const char *relAttrString = "rel";
+    const char *requiredAttrString = "required";
     const char *resultsAttrString = "results";
     const char *revAttrString = "rev";
     const char *rowsAttrString = "rows";
@@ -1014,6 +1025,7 @@ void init()
     const char *srcAttrString = "src";
     const char *standbyAttrString = "standby";
     const char *startAttrString = "start";
+    const char *stepAttrString = "step";
     const char *styleAttrString = "style";
     const char *summaryAttrString = "summary";
     const char *tabindexAttrString = "tabindex";
@@ -1124,6 +1136,7 @@ void init()
     new ((void*)&nohrefAttr) QualifiedName(nullAtom, nohrefAttrString, nullAtom);
     new ((void*)&noresizeAttr) QualifiedName(nullAtom, noresizeAttrString, nullAtom);
     new ((void*)&noshadeAttr) QualifiedName(nullAtom, noshadeAttrString, nullAtom);
+    new ((void*)&novalidateAttr) QualifiedName(nullAtom, novalidateAttrString, nullAtom);
     new ((void*)&nowrapAttr) QualifiedName(nullAtom, nowrapAttrString, nullAtom);
     new ((void*)&objectAttr) QualifiedName(nullAtom, objectAttrString, nullAtom);
     new ((void*)&onabortAttr) QualifiedName(nullAtom, onabortAttrString, nullAtom);
@@ -1174,11 +1187,13 @@ void init()
     new ((void*)&pluginpageAttr) QualifiedName(nullAtom, pluginpageAttrString, nullAtom);
     new ((void*)&pluginspageAttr) QualifiedName(nullAtom, pluginspageAttrString, nullAtom);
     new ((void*)&pluginurlAttr) QualifiedName(nullAtom, pluginurlAttrString, nullAtom);
+    new ((void*)&patternAttr) QualifiedName(nullAtom, patternAttrString, nullAtom);
     new ((void*)&precisionAttr) QualifiedName(nullAtom, precisionAttrString, nullAtom);
     new ((void*)&profileAttr) QualifiedName(nullAtom, profileAttrString, nullAtom);
     new ((void*)&promptAttr) QualifiedName(nullAtom, promptAttrString, nullAtom);
     new ((void*)&readonlyAttr) QualifiedName(nullAtom, readonlyAttrString, nullAtom);
     new ((void*)&relAttr) QualifiedName(nullAtom, relAttrString, nullAtom);
+    new ((void*)&requiredAttr) QualifiedName(nullAtom, requiredAttrString, nullAtom);
     new ((void*)&resultsAttr) QualifiedName(nullAtom, resultsAttrString, nullAtom);
     new ((void*)&revAttr) QualifiedName(nullAtom, revAttrString, nullAtom);
     new ((void*)&rowsAttr) QualifiedName(nullAtom, rowsAttrString, nullAtom);
@@ -1196,6 +1211,7 @@ void init()
     new ((void*)&srcAttr) QualifiedName(nullAtom, srcAttrString, nullAtom);
     new ((void*)&standbyAttr) QualifiedName(nullAtom, standbyAttrString, nullAtom);
     new ((void*)&startAttr) QualifiedName(nullAtom, startAttrString, nullAtom);
+    new ((void*)&stepAttr) QualifiedName(nullAtom, stepAttrString, nullAtom);
     new ((void*)&styleAttr) QualifiedName(nullAtom, styleAttrString, nullAtom);
     new ((void*)&summaryAttr) QualifiedName(nullAtom, summaryAttrString, nullAtom);
     new ((void*)&tabindexAttr) QualifiedName(nullAtom, tabindexAttrString, nullAtom);

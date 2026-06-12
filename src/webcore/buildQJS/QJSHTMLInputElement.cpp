@@ -43,7 +43,7 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static JSCFunctionListEntry JSHTMLInputElementAttributesFunctions[20];
+static JSCFunctionListEntry JSHTMLInputElementAttributesFunctions[32];
 static bool JSHTMLInputElementAttributesFunctions_initialized = false;
 
 static void init_JSHTMLInputElementAttributesFunctions()
@@ -159,18 +159,90 @@ static void init_JSHTMLInputElementAttributesFunctions()
     JSHTMLInputElementAttributesFunctions[17].magic = JSHTMLInputElement::ValueAttrNum;
     JSHTMLInputElementAttributesFunctions[17].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
     JSHTMLInputElementAttributesFunctions[17].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
-    JSHTMLInputElementAttributesFunctions[18].name = "indeterminate";
+    JSHTMLInputElementAttributesFunctions[18].name = "required";
     JSHTMLInputElementAttributesFunctions[18].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLInputElementAttributesFunctions[18].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLInputElementAttributesFunctions[18].magic = JSHTMLInputElement::IndeterminateAttrNum;
+    JSHTMLInputElementAttributesFunctions[18].magic = JSHTMLInputElement::RequiredAttrNum;
     JSHTMLInputElementAttributesFunctions[18].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
-    JSHTMLInputElementAttributesFunctions[18].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
-    JSHTMLInputElementAttributesFunctions[19].name = "constructor";
+    JSHTMLInputElementAttributesFunctions[18].u.getset.set.setter_magic = NULL;
+    JSHTMLInputElementAttributesFunctions[19].name = "valueMissing";
     JSHTMLInputElementAttributesFunctions[19].prop_flags = JS_PROP_CONFIGURABLE;
     JSHTMLInputElementAttributesFunctions[19].def_type = JS_DEF_CGETSET_MAGIC;
-    JSHTMLInputElementAttributesFunctions[19].magic = JSHTMLInputElement::ConstructorAttrNum;
+    JSHTMLInputElementAttributesFunctions[19].magic = JSHTMLInputElement::ValueMissingAttrNum;
     JSHTMLInputElementAttributesFunctions[19].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
     JSHTMLInputElementAttributesFunctions[19].u.getset.set.setter_magic = NULL;
+    JSHTMLInputElementAttributesFunctions[20].name = "typeMismatch";
+    JSHTMLInputElementAttributesFunctions[20].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[20].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[20].magic = JSHTMLInputElement::TypeMismatchAttrNum;
+    JSHTMLInputElementAttributesFunctions[20].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[20].u.getset.set.setter_magic = NULL;
+    JSHTMLInputElementAttributesFunctions[21].name = "patternMismatch";
+    JSHTMLInputElementAttributesFunctions[21].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[21].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[21].magic = JSHTMLInputElement::PatternMismatchAttrNum;
+    JSHTMLInputElementAttributesFunctions[21].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[21].u.getset.set.setter_magic = NULL;
+    JSHTMLInputElementAttributesFunctions[22].name = "rangeUnderflow";
+    JSHTMLInputElementAttributesFunctions[22].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[22].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[22].magic = JSHTMLInputElement::RangeUnderflowAttrNum;
+    JSHTMLInputElementAttributesFunctions[22].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[22].u.getset.set.setter_magic = NULL;
+    JSHTMLInputElementAttributesFunctions[23].name = "rangeOverflow";
+    JSHTMLInputElementAttributesFunctions[23].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[23].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[23].magic = JSHTMLInputElement::RangeOverflowAttrNum;
+    JSHTMLInputElementAttributesFunctions[23].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[23].u.getset.set.setter_magic = NULL;
+    JSHTMLInputElementAttributesFunctions[24].name = "stepMismatch";
+    JSHTMLInputElementAttributesFunctions[24].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[24].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[24].magic = JSHTMLInputElement::StepMismatchAttrNum;
+    JSHTMLInputElementAttributesFunctions[24].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[24].u.getset.set.setter_magic = NULL;
+    JSHTMLInputElementAttributesFunctions[25].name = "tooLong";
+    JSHTMLInputElementAttributesFunctions[25].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[25].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[25].magic = JSHTMLInputElement::TooLongAttrNum;
+    JSHTMLInputElementAttributesFunctions[25].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[25].u.getset.set.setter_magic = NULL;
+    JSHTMLInputElementAttributesFunctions[26].name = "customError";
+    JSHTMLInputElementAttributesFunctions[26].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[26].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[26].magic = JSHTMLInputElement::CustomErrorAttrNum;
+    JSHTMLInputElementAttributesFunctions[26].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[26].u.getset.set.setter_magic = NULL;
+    JSHTMLInputElementAttributesFunctions[27].name = "willValidate";
+    JSHTMLInputElementAttributesFunctions[27].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[27].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[27].magic = JSHTMLInputElement::WillValidateAttrNum;
+    JSHTMLInputElementAttributesFunctions[27].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[27].u.getset.set.setter_magic = NULL;
+    JSHTMLInputElementAttributesFunctions[28].name = "valid";
+    JSHTMLInputElementAttributesFunctions[28].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[28].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[28].magic = JSHTMLInputElement::ValidAttrNum;
+    JSHTMLInputElementAttributesFunctions[28].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[28].u.getset.set.setter_magic = NULL;
+    JSHTMLInputElementAttributesFunctions[29].name = "validationMessage";
+    JSHTMLInputElementAttributesFunctions[29].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[29].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[29].magic = JSHTMLInputElement::ValidationMessageAttrNum;
+    JSHTMLInputElementAttributesFunctions[29].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[29].u.getset.set.setter_magic = NULL;
+    JSHTMLInputElementAttributesFunctions[30].name = "indeterminate";
+    JSHTMLInputElementAttributesFunctions[30].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[30].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[30].magic = JSHTMLInputElement::IndeterminateAttrNum;
+    JSHTMLInputElementAttributesFunctions[30].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[30].u.getset.set.setter_magic = JSHTMLInputElement::putValueProperty;
+    JSHTMLInputElementAttributesFunctions[31].name = "constructor";
+    JSHTMLInputElementAttributesFunctions[31].prop_flags = JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementAttributesFunctions[31].def_type = JS_DEF_CGETSET_MAGIC;
+    JSHTMLInputElementAttributesFunctions[31].magic = JSHTMLInputElement::ConstructorAttrNum;
+    JSHTMLInputElementAttributesFunctions[31].u.getset.get.getter_magic = JSHTMLInputElement::getValueProperty;
+    JSHTMLInputElementAttributesFunctions[31].u.getset.set.setter_magic = NULL;
 }
 
 class JSHTMLInputElementConstructor {
@@ -199,7 +271,7 @@ void JSHTMLInputElementConstructor::initConstructor(JSContext * ctx, JSValue thi
 
 /* Prototype functions table */
 
-static JSCFunctionListEntry JSHTMLInputElementPrototypeFunctions[4];
+static JSCFunctionListEntry JSHTMLInputElementPrototypeFunctions[6];
 static bool JSHTMLInputElementPrototypeFunctions_initialized = false;
 
 static void init_JSHTMLInputElementPrototypeFunctions()
@@ -235,6 +307,20 @@ static void init_JSHTMLInputElementPrototypeFunctions()
     JSHTMLInputElementPrototypeFunctions[3].u.func.length = 0;
     JSHTMLInputElementPrototypeFunctions[3].u.func.cproto = JS_CFUNC_generic_magic;
     JSHTMLInputElementPrototypeFunctions[3].u.func.cfunc.generic_magic = JSHTMLInputElementPrototypeFunction::callAsFunction;
+    JSHTMLInputElementPrototypeFunctions[4].name = "checkValidity";
+    JSHTMLInputElementPrototypeFunctions[4].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementPrototypeFunctions[4].def_type = JS_DEF_CFUNC;
+    JSHTMLInputElementPrototypeFunctions[4].magic = JSHTMLInputElement::CheckValidityFuncNum;
+    JSHTMLInputElementPrototypeFunctions[4].u.func.length = 0;
+    JSHTMLInputElementPrototypeFunctions[4].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLInputElementPrototypeFunctions[4].u.func.cfunc.generic_magic = JSHTMLInputElementPrototypeFunction::callAsFunction;
+    JSHTMLInputElementPrototypeFunctions[5].name = "setCustomValidity";
+    JSHTMLInputElementPrototypeFunctions[5].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLInputElementPrototypeFunctions[5].def_type = JS_DEF_CFUNC;
+    JSHTMLInputElementPrototypeFunctions[5].magic = JSHTMLInputElement::SetCustomValidityFuncNum;
+    JSHTMLInputElementPrototypeFunctions[5].u.func.length = 1;
+    JSHTMLInputElementPrototypeFunctions[5].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLInputElementPrototypeFunctions[5].u.func.cfunc.generic_magic = JSHTMLInputElementPrototypeFunction::callAsFunction;
 }
 
 JSValue JSHTMLInputElementPrototype::self(JSContext * ctx)
@@ -372,6 +458,54 @@ JSValue JSHTMLInputElement::getValueProperty(JSContext *ctx, JSValueConst this_v
             HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewString(ctx, ((const String&)imp->value()).utf8().data());
         }
+        case RequiredAttrNum: {
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return JS_NewBool(ctx, imp->required() ? 1 : 0);
+        }
+        case ValueMissingAttrNum: {
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return JS_NewBool(ctx, imp->valueMissing() ? 1 : 0);
+        }
+        case TypeMismatchAttrNum: {
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return JS_NewBool(ctx, imp->typeMismatch() ? 1 : 0);
+        }
+        case PatternMismatchAttrNum: {
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return JS_NewBool(ctx, imp->patternMismatch() ? 1 : 0);
+        }
+        case RangeUnderflowAttrNum: {
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return JS_NewBool(ctx, imp->rangeUnderflow() ? 1 : 0);
+        }
+        case RangeOverflowAttrNum: {
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return JS_NewBool(ctx, imp->rangeOverflow() ? 1 : 0);
+        }
+        case StepMismatchAttrNum: {
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return JS_NewBool(ctx, imp->stepMismatch() ? 1 : 0);
+        }
+        case TooLongAttrNum: {
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return JS_NewBool(ctx, imp->tooLong() ? 1 : 0);
+        }
+        case CustomErrorAttrNum: {
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return JS_NewBool(ctx, imp->customError() ? 1 : 0);
+        }
+        case WillValidateAttrNum: {
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return JS_NewBool(ctx, imp->willValidate() ? 1 : 0);
+        }
+        case ValidAttrNum: {
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return JS_NewBool(ctx, imp->valid() ? 1 : 0);
+        }
+        case ValidationMessageAttrNum: {
+            HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return JS_NewString(ctx, ((const String&)imp->validationMessage()).utf8().data());
+        }
         case IndeterminateAttrNum: {
             HTMLInputElement* imp = (HTMLInputElement*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewBool(ctx, imp->indeterminate() ? 1 : 0);
@@ -505,6 +639,16 @@ JSValue JSHTMLInputElementPrototypeFunction::callAsFunction(JSContext* ctx, JSVa
         }
         case JSHTMLInputElement::ClickFuncNum: {
             imp->click();
+            return JS_UNDEFINED;
+        }
+        case JSHTMLInputElement::CheckValidityFuncNum: {
+
+            JSValue result = JS_NewBool(ctx, imp->checkValidity() ? 1 : 0);
+            return result;
+        }
+        case JSHTMLInputElement::SetCustomValidityFuncNum: {
+            String message = valueToString(ctx, argv[0]);
+            imp->setCustomValidity(message);
             return JS_UNDEFINED;
         }
     }

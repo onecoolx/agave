@@ -33,5 +33,8 @@ module html {
         
         void               submit();
         void               reset();
+#if defined(LANGUAGE_JAVASCRIPT)
+        boolean            checkValidity();
+#endif
     };
 }

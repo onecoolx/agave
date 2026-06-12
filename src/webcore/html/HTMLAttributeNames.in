@@ -84,6 +84,7 @@ name
 nohref
 noresize
 noshade
+novalidate
 nowrap
 object
 onabort
@@ -134,11 +135,13 @@ plain
 pluginpage
 pluginspage
 pluginurl
+pattern
 precision
 profile
 prompt
 readonly
 rel
+required
 results
 rev
 rows
@@ -156,6 +159,7 @@ span
 src
 standby
 start
+step
 style
 summary
 tabindex

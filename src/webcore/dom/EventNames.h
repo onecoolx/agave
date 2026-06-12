@@ -50,6 +50,7 @@ namespace WebCore { namespace EventNames {
     macro(error) \
     macro(focus) \
     macro(input) \
+    macro(invalid) \
     macro(keydown) \
     macro(keypress) \
     macro(keyup) \

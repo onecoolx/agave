@@ -49,6 +49,8 @@ extern int (*cb_url_is_visited)(const char*);
 extern int (*cb_allow_main_request)(const char*);
 extern void (*cb_error)(int, const char*);
 extern int (*cb_choose_file)(char*, unsigned int, int);
+extern int (*cb_choose_date)(char*, unsigned int, const char*);
+extern int (*cb_choose_color)(char*, unsigned int, const char*);
 extern char* (*cb_user_agent_custom)(const char*);
 extern int (*cb_save_submit_form)(const char*, const char*, const char*, const char*, const char*, int);
 

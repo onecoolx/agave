@@ -1731,6 +1731,28 @@ bool CSSStyleSelector::checkOneSelector(CSSSelector* sel, Element* e, bool isAnc
                 if (e && e->isIndeterminate())
                     return true;
                 break;
+#if ENABLE(HTML5_FORMS)
+            case CSSSelector::PseudoRequired:
+                if (e && e->hasTagName(inputTag))
+                    return static_cast<HTMLInputElement*>(e)->required();
+                break;
+            case CSSSelector::PseudoOptional:
+                if (e && e->hasTagName(inputTag))
+                    return !static_cast<HTMLInputElement*>(e)->required();
+                break;
+            case CSSSelector::PseudoValid:
+                if (e && e->hasTagName(inputTag)) {
+                    HTMLInputElement* input = static_cast<HTMLInputElement*>(e);
+                    return input->willValidate() && input->valid();
+                }
+                break;
+            case CSSSelector::PseudoInvalid:
+                if (e && e->hasTagName(inputTag)) {
+                    HTMLInputElement* input = static_cast<HTMLInputElement*>(e);
+                    return input->willValidate() && !input->valid();
+                }
+                break;
+#endif
             case CSSSelector::PseudoRoot:
                 if (e == e->document()->documentElement())
                     return true;

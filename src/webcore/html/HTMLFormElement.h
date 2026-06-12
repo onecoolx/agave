@@ -76,6 +76,7 @@ public:
     bool prepareSubmit(Event*);
     void submit();
     void submit(Event*, bool activateSubmitButton = false);
+    bool checkValidity();
     void reset();
 
     void setMalformed(bool malformed) { m_malformed = malformed; }

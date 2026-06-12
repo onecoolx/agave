@@ -58,7 +58,7 @@ public:
         ConstructorAttrNum, 
 
         // Functions
-        SubmitFuncNum, ResetFuncNum
+        SubmitFuncNum, ResetFuncNum, CheckValidityFuncNum
     };
 private:
     static JSValue indexGetter(JSContext *ctx, JSValueConst this_obj, uint32_t idx);

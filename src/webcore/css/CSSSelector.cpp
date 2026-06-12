@@ -107,6 +107,10 @@ void CSSSelector::extractPseudoType() const
     static AtomicString sliderThumb("-webkit-slider-thumb");
     static AtomicString target("target");
     static AtomicString visited("visited");
+    static AtomicString validStr("valid");
+    static AtomicString invalidStr("invalid");
+    static AtomicString requiredStr("required");
+    static AtomicString optionalStr("optional");
 
     bool element = false; // pseudo-element
     bool compat = false; // single colon compatbility mode
@@ -173,6 +177,14 @@ void CSSSelector::extractPseudoType() const
         m_pseudoType = PseudoHover;
     else if (m_value == indeterminate)
         m_pseudoType = PseudoIndeterminate;
+    else if (m_value == validStr)
+        m_pseudoType = PseudoValid;
+    else if (m_value == invalidStr)
+        m_pseudoType = PseudoInvalid;
+    else if (m_value == requiredStr)
+        m_pseudoType = PseudoRequired;
+    else if (m_value == optionalStr)
+        m_pseudoType = PseudoOptional;
     else if (m_value == link)
         m_pseudoType = PseudoLink;
     else if (m_value == lang)

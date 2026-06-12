@@ -1312,6 +1312,38 @@ typedef struct _mc_callback_t {
     MC_BOOL (*cb_choose_file)(char* utf8_file_name, unsigned int buffer_size, MC_BOOL is_save);
 
     /**
+     * \fn MC_BOOL (*cb_choose_date)(char* value, unsigned int buffer_size, const char* initial_value)
+     * \brief The callback function.
+     *          Which is used to present a date picker for <input type="date">.
+     *          The engine delegates the picker UI to the host application; if
+     *          this callback is not set the control falls back to text entry.
+     *
+     * \param value          The buffer receiving the chosen date as UTF-8 in
+     *                       "YYYY-MM-DD" format.
+     * \param buffer_size    The maximum length of the value buffer.
+     * \param initial_value  The control's current value (may be empty), as a hint.
+     *
+     * \return TRUE if the user chose a date and confirmed, otherwise FALSE.
+     */
+    MC_BOOL (*cb_choose_date)(char* value, unsigned int buffer_size, const char* initial_value);
+
+    /**
+     * \fn MC_BOOL (*cb_choose_color)(char* value, unsigned int buffer_size, const char* initial_value)
+     * \brief The callback function.
+     *          Which is used to present a color picker for <input type="color">.
+     *          The engine delegates the picker UI to the host application; if
+     *          this callback is not set the control falls back to text entry.
+     *
+     * \param value          The buffer receiving the chosen color as UTF-8 in
+     *                       "#rrggbb" format.
+     * \param buffer_size    The maximum length of the value buffer.
+     * \param initial_value  The control's current value (may be empty), as a hint.
+     *
+     * \return TRUE if the user chose a color and confirmed, otherwise FALSE.
+     */
+    MC_BOOL (*cb_choose_color)(char* value, unsigned int buffer_size, const char* initial_value);
+
+    /**
      * \fn MC_BOOL (*cb_write_file_data)(int id, const char* utf8_url, const void* data,
      *                                   unsigned long data_len, unsigned long total_len)
      * \brief The callback function.

@@ -55,13 +55,17 @@ public:
         AccessKeyAttrNum, AlignAttrNum, AltAttrNum, CheckedAttrNum, 
         DisabledAttrNum, MaxLengthAttrNum, NameAttrNum, ReadOnlyAttrNum, 
         SizeAttrNum, SrcAttrNum, TabIndexAttrNum, TypeAttrNum, 
-        UseMapAttrNum, ValueAttrNum, IndeterminateAttrNum, 
+        UseMapAttrNum, ValueAttrNum, RequiredAttrNum, ValueMissingAttrNum, 
+        TypeMismatchAttrNum, PatternMismatchAttrNum, RangeUnderflowAttrNum, RangeOverflowAttrNum, 
+        StepMismatchAttrNum, TooLongAttrNum, CustomErrorAttrNum, WillValidateAttrNum, 
+        ValidAttrNum, ValidationMessageAttrNum, IndeterminateAttrNum, 
 
         // The Constructor Attribute
         ConstructorAttrNum, 
 
         // Functions
-        BlurFuncNum, FocusFuncNum, SelectFuncNum, ClickFuncNum
+        BlurFuncNum, FocusFuncNum, SelectFuncNum, ClickFuncNum, 
+        CheckValidityFuncNum, SetCustomValidityFuncNum
     };
 };
 

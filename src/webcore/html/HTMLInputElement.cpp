@@ -50,6 +50,8 @@
 #include "RenderTextControl.h"
 #include "RenderTheme.h"
 #include "RenderSlider.h"
+#include "RegularExpression.h"
+#include "FormControlPicker.h"
 #include "SelectionController.h"
 #include "TextBreakIterator.h"
 #include "TextEvent.h"
@@ -419,7 +421,6 @@ const AtomicString& HTMLInputElement::type() const
             static const AtomicString text("text");
             return text;
         }
-#if ENABLE(HTML5_FORMS)
         case EMAIL: {
             static const AtomicString email("email");
             return email;
@@ -444,7 +445,6 @@ const AtomicString& HTMLInputElement::type() const
             static const AtomicString color("color");
             return color;
         }
-#endif
     }
     return emptyAtom;
 }
@@ -462,14 +462,12 @@ bool HTMLInputElement::saveState(String& result) const
         case SEARCH:
         case SUBMIT:
         case TEXT:
-#if ENABLE(HTML5_FORMS)
         case EMAIL:
         case URL:
         case TELEPHONE:
         case NUMBER:
         case DATE:
         case COLOR:
-#endif
             result = value();
             return true;
         case CHECKBOX:
@@ -497,14 +495,12 @@ void HTMLInputElement::restoreState(const String& state)
         case SEARCH:
         case SUBMIT:
         case TEXT:
-#if ENABLE(HTML5_FORMS)
         case EMAIL:
         case URL:
         case TELEPHONE:
         case NUMBER:
         case DATE:
         case COLOR:
-#endif
             setValue(state);
             break;
         case CHECKBOX:
@@ -608,14 +604,12 @@ void HTMLInputElement::accessKeyAction(bool sendToAnyElement)
         case PASSWORD:
         case SEARCH:
         case TEXT:
-#if ENABLE(HTML5_FORMS)
         case EMAIL:
         case URL:
         case TELEPHONE:
         case NUMBER:
         case DATE:
         case COLOR:
-#endif
             // should never restore previous selection here
             focus(false);
             break;
@@ -751,14 +745,12 @@ bool HTMLInputElement::rendererIsNeeded(RenderStyle *style)
         case SEARCH:
         case SUBMIT:
         case TEXT:
-#if ENABLE(HTML5_FORMS)
         case EMAIL:
         case URL:
         case TELEPHONE:
         case NUMBER:
         case DATE:
         case COLOR:
-#endif
             return HTMLFormControlElementWithState::rendererIsNeeded(style);
         case HIDDEN:
             return false;
@@ -789,14 +781,12 @@ RenderObject *HTMLInputElement::createRenderer(RenderArena *arena, RenderStyle *
         case PASSWORD:
         case SEARCH:
         case TEXT:
-#if ENABLE(HTML5_FORMS)
         case EMAIL:
         case URL:
         case TELEPHONE:
         case NUMBER:
         case DATE:
         case COLOR:
-#endif
             return new (arena) RenderTextControl(this, false);             
     }
     ASSERT(false);
@@ -881,14 +871,12 @@ bool HTMLInputElement::appendFormData(FormDataList& encoding, bool multipart)
         case RANGE:
         case SEARCH:
         case TEXT:
-#if ENABLE(HTML5_FORMS)
         case EMAIL:
         case URL:
         case TELEPHONE:
         case NUMBER:
         case DATE:
         case COLOR:
-#endif
             // always successful
             encoding.appendData(name(), value());
             return true;
@@ -1032,14 +1020,12 @@ String HTMLInputElement::valueWithDefault() const
             case RANGE:
             case SEARCH:
             case TEXT:
-#if ENABLE(HTML5_FORMS)
             case EMAIL:
             case URL:
             case TELEPHONE:
             case NUMBER:
             case DATE:
             case COLOR:
-#endif
                 break;
             case RESET:
                 v = resetButtonDefaultLabel();
@@ -1116,14 +1102,12 @@ bool HTMLInputElement::storesValueSeparateFromAttribute() const
         case RANGE:
         case SEARCH:
         case TEXT:
-#if ENABLE(HTML5_FORMS)
         case EMAIL:
         case URL:
         case TELEPHONE:
         case NUMBER:
         case DATE:
         case COLOR:
-#endif
             return true;
     }
     return false;
@@ -1272,6 +1256,10 @@ void HTMLInputElement::defaultEventHandler(Event* evt)
             }
         } else if (inputType() == FILE && renderer())
             static_cast<RenderFileUploadControl*>(renderer())->click();
+#if ENABLE(HTML5_FORMS)
+        else if (inputType() == DATE || inputType() == COLOR)
+            openHostPicker();
+#endif
     }
 
     // Use key press event here since sending simulated mouse events
@@ -1305,14 +1293,12 @@ void HTMLInputElement::defaultEventHandler(Event* evt)
                 case RANGE:
                 case SEARCH:
                 case TEXT:
-#if ENABLE(HTML5_FORMS)
                 case EMAIL:
                 case URL:
                 case TELEPHONE:
                 case NUMBER:
                 case DATE:
                 case COLOR:
-#endif
                     break;
             }
         }
@@ -1327,14 +1313,12 @@ void HTMLInputElement::defaultEventHandler(Event* evt)
                 case RANGE:
                 case SEARCH:
                 case TEXT:
-#if ENABLE(HTML5_FORMS)
                 case EMAIL:
                 case URL:
                 case TELEPHONE:
                 case NUMBER:
                 case DATE:
                 case COLOR:
-#endif
                     // Simulate mouse click on the default form button for enter for these types of elements.
                     clickDefaultFormButton = true;
                     break;
@@ -1624,5 +1608,266 @@ void HTMLInputElement::didMoveToNewOwnerDocument()
         
     HTMLFormControlElementWithState::didMoveToNewOwnerDocument();
 }
-    
+
+// HTML5 constraint validation. These are always compiled (the generated
+// bindings reference them); ENABLE_HTML5_FORMS gates type-string recognition
+// and the date/color picker behavior in setInputType/defaultEventHandler.
+
+// Email validation: a single address of the form local@domain. Intentionally
+// pragmatic rather than a full RFC 5322 grammar.
+static bool isValidEmail(const String& value)
+{
+    static const RegularExpression re("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$", true);
+    int matchLength = 0;
+    return re.match(value, 0, &matchLength) == 0 && matchLength == (int)value.length();
+}
+
+// URL validation: requires an absolute URL with a scheme (e.g. http://...).
+static bool isValidUrl(const String& value)
+{
+    static const RegularExpression re("^[a-zA-Z][a-zA-Z0-9+.-]*:", true);
+    return re.match(value, 0, 0) == 0;
+}
+
+// Number: any value parseable as a floating point number.
+static bool isValidNumber(const String& value, double& out)
+{
+    bool ok = false;
+    out = value.toDouble(&ok);
+    return ok;
+}
+
+// Date: strict YYYY-MM-DD with a calendar-valid day.
+static bool isValidDate(const String& value)
+{
+    static const RegularExpression re("^[0-9]{4}-[0-9]{2}-[0-9]{2}$", true);
+    int matchLength = 0;
+    if (re.match(value, 0, &matchLength) != 0 || matchLength != (int)value.length())
+        return false;
+    int year = value.substring(0, 4).toInt();
+    int month = value.substring(5, 2).toInt();
+    int day = value.substring(8, 2).toInt();
+    if (month < 1 || month > 12 || day < 1)
+        return false;
+    static const int daysInMonth[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    int maxDay = daysInMonth[month - 1];
+    bool leap = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+    if (month == 2 && leap)
+        maxDay = 29;
+    return day <= maxDay;
+}
+
+// Color: exactly #rrggbb (the HTML color control's serialization).
+static bool isValidColor(const String& value)
+{
+    static const RegularExpression re("^#[0-9a-fA-F]{6}$", true);
+    int matchLength = 0;
+    return re.match(value, 0, &matchLength) == 0 && matchLength == (int)value.length();
+}
+
+bool HTMLInputElement::required() const
+{
+    return !getAttribute(requiredAttr).isNull();
+}
+
+bool HTMLInputElement::willValidate() const
+{
+    // Only certain control types participate in validation; disabled and
+    // readonly controls are barred from constraint validation.
+    if (disabled() || readOnly())
+        return false;
+    switch (inputType()) {
+        case TEXT:
+        case SEARCH:
+        case PASSWORD:
+        case EMAIL:
+        case URL:
+        case TELEPHONE:
+        case NUMBER:
+        case DATE:
+        case COLOR:
+        case CHECKBOX:
+        case RADIO:
+        case FILE:
+            return true;
+        default:
+            return false;
+    }
+}
+
+bool HTMLInputElement::valueMissing() const
+{
+    if (!required())
+        return false;
+    if (inputType() == CHECKBOX || inputType() == RADIO)
+        return !checked();
+    return value().isEmpty();
+}
+
+bool HTMLInputElement::typeMismatch() const
+{
+    String v = value();
+    if (v.isEmpty())
+        return false; // empty is handled by valueMissing, not typeMismatch
+    switch (inputType()) {
+        case EMAIL:
+            return !isValidEmail(v);
+        case URL:
+            return !isValidUrl(v);
+        case NUMBER: {
+            double d;
+            return !isValidNumber(v, d);
+        }
+        case DATE:
+            return !isValidDate(v);
+        case COLOR:
+            return !isValidColor(v);
+        case TELEPHONE: // per spec, tel has no value-format constraint
+        default:
+            return false;
+    }
+}
+
+bool HTMLInputElement::patternMismatch() const
+{
+    String pattern = getAttribute(patternAttr);
+    String v = value();
+    if (pattern.isEmpty() || v.isEmpty())
+        return false;
+    // pattern matches the entire value (anchored).
+    RegularExpression re(pattern, true);
+    int matchLength = 0;
+    int pos = re.match(v, 0, &matchLength);
+    return !(pos == 0 && matchLength == (int)v.length());
+}
+
+bool HTMLInputElement::rangeUnderflow() const
+{
+    if (inputType() != NUMBER)
+        return false;
+    String minStr = getAttribute(minAttr);
+    double val, minVal;
+    if (minStr.isEmpty() || !isValidNumber(value(), val))
+        return false;
+    bool ok = false;
+    minVal = minStr.toDouble(&ok);
+    return ok && val < minVal;
+}
+
+bool HTMLInputElement::rangeOverflow() const
+{
+    if (inputType() != NUMBER)
+        return false;
+    String maxStr = getAttribute(maxAttr);
+    double val, maxVal;
+    if (maxStr.isEmpty() || !isValidNumber(value(), val))
+        return false;
+    bool ok = false;
+    maxVal = maxStr.toDouble(&ok);
+    return ok && val > maxVal;
+}
+
+bool HTMLInputElement::stepMismatch() const
+{
+    if (inputType() != NUMBER)
+        return false;
+    String stepStr = getAttribute(stepAttr);
+    double val, step;
+    if (stepStr.isEmpty() || !isValidNumber(value(), val))
+        return false;
+    bool ok = false;
+    step = stepStr.toDouble(&ok);
+    if (!ok || step <= 0)
+        return false;
+    // Offset from min (or 0) must be an integral multiple of step.
+    double base = 0;
+    String minStr = getAttribute(minAttr);
+    if (!minStr.isEmpty()) {
+        bool minOk = false;
+        double m = minStr.toDouble(&minOk);
+        if (minOk)
+            base = m;
+    }
+    double offset = val - base;
+    double remainder = fmod(offset, step);
+    // Allow a small tolerance for floating point.
+    double tolerance = step * 1e-9;
+    return !(remainder <= tolerance || (step - remainder) <= tolerance);
+}
+
+bool HTMLInputElement::tooLong() const
+{
+    if (!isTextField())
+        return false;
+    if (getAttribute(maxlengthAttr).isNull())
+        return false;
+    int max = maxLength();
+    if (max < 0)
+        return false;
+    return (int)value().length() > max;
+}
+
+bool HTMLInputElement::valid() const
+{
+    if (!willValidate())
+        return true;
+    return !valueMissing() && !typeMismatch() && !patternMismatch()
+        && !rangeUnderflow() && !rangeOverflow() && !stepMismatch()
+        && !tooLong() && !customError();
+}
+
+bool HTMLInputElement::checkValidity()
+{
+    if (willValidate() && !valid()) {
+        dispatchHTMLEvent(invalidEvent, false, true);
+        return false;
+    }
+    return true;
+}
+
+String HTMLInputElement::validationMessage() const
+{
+    if (!willValidate() || valid())
+        return String();
+    if (customError())
+        return m_customValidity;
+    if (valueMissing())
+        return String("Please fill out this field.");
+    if (typeMismatch())
+        return String("Please enter a value of the correct type.");
+    if (patternMismatch())
+        return String("Please match the requested format.");
+    if (rangeUnderflow())
+        return String("Value is too small.");
+    if (rangeOverflow())
+        return String("Value is too large.");
+    if (stepMismatch())
+        return String("Please enter a valid value.");
+    if (tooLong())
+        return String("Value is too long.");
+    return String();
+}
+
+void HTMLInputElement::openHostPicker()
+{
+    if (disabled() || readOnly())
+        return;
+
+    String chosen;
+    bool picked = false;
+    if (inputType() == DATE)
+        picked = chooseDateValue(value(), chosen);
+    else if (inputType() == COLOR)
+        picked = chooseColorValue(value(), chosen);
+
+    // If no host picker is registered, picked is false and the control simply
+    // remains editable as a text field (graceful degradation).
+    if (picked) {
+        setValue(chosen);
+        // Notify scripts of the user-driven change.
+        dispatchHTMLEvent(inputEvent, true, false);
+        dispatchHTMLEvent(changeEvent, true, false);
+    }
+}
+
 } // namespace

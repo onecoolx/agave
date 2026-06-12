@@ -47,17 +47,17 @@ public:
         BUTTON,
         SEARCH,
         RANGE,
-#if ENABLE(HTML5_FORMS)
         // HTML5 input types. These render as text fields (date/color are
         // activated via host-provided pickers) and carry type-specific
-        // constraint validation.
+        // constraint validation. The enum values exist unconditionally so the
+        // generated bindings link regardless of ENABLE_HTML5_FORMS; the macro
+        // gates whether these type strings are recognized at runtime.
         EMAIL,
         URL,
         TELEPHONE,
         NUMBER,
         DATE,
         COLOR
-#endif
     };
 
     HTMLInputElement(Document*, HTMLFormElement* = 0);
@@ -92,17 +92,35 @@ public:
 	virtual bool isTextField() const
 	{
 		return m_type == TEXT || m_type == PASSWORD || m_type == SEARCH || m_type == ISINDEX
-#if ENABLE(HTML5_FORMS)
 			// HTML5 text-like types render and behave as text fields. date/color
 			// also fall back to text entry; their host picker only augments input.
 			|| m_type == EMAIL || m_type == URL || m_type == TELEPHONE
-			|| m_type == NUMBER || m_type == DATE || m_type == COLOR
-#endif
-			;
+			|| m_type == NUMBER || m_type == DATE || m_type == COLOR;
 	}
 	virtual bool isPassWordField() const { return m_type == PASSWORD; }
 #endif
     bool isSearchField() const { return m_type == SEARCH; }
+
+    // HTML5 constraint validation. Each predicate reports one failure category;
+    // valid() is true when none apply. checkValidity() additionally fires an
+    // "invalid" event when the control is invalid. The API is always compiled
+    // (so generated bindings link); ENABLE_HTML5_FORMS gates type recognition.
+    bool required() const;
+    bool valueMissing() const;
+    bool typeMismatch() const;
+    bool patternMismatch() const;
+    bool rangeUnderflow() const;
+    bool rangeOverflow() const;
+    bool stepMismatch() const;
+    bool tooLong() const;
+    bool customError() const { return !m_customValidity.isEmpty(); }
+    bool valid() const;
+    bool willValidate() const;
+    bool checkValidity();
+    void setCustomValidity(const String& message) { m_customValidity = message; }
+    String validationMessage() const;
+    // Activates the host-provided date/color picker (no-op for other types).
+    void openHostPicker();
 
     bool checked() const { return m_checked; }
     void setChecked(bool, bool sendChangeEvent = false);
@@ -223,6 +241,7 @@ private:
 
     String m_value;
     String m_originalValue;
+    String m_customValidity; // set via setCustomValidity(); non-empty => customError
     int xPos;
     int m_maxLen;
     short m_size;

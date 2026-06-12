@@ -139,7 +139,7 @@ void JSHTMLFormElementConstructor::initConstructor(JSContext * ctx, JSValue this
 
 /* Prototype functions table */
 
-static JSCFunctionListEntry JSHTMLFormElementPrototypeFunctions[2];
+static JSCFunctionListEntry JSHTMLFormElementPrototypeFunctions[3];
 static bool JSHTMLFormElementPrototypeFunctions_initialized = false;
 
 static void init_JSHTMLFormElementPrototypeFunctions()
@@ -161,6 +161,13 @@ static void init_JSHTMLFormElementPrototypeFunctions()
     JSHTMLFormElementPrototypeFunctions[1].u.func.length = 0;
     JSHTMLFormElementPrototypeFunctions[1].u.func.cproto = JS_CFUNC_generic_magic;
     JSHTMLFormElementPrototypeFunctions[1].u.func.cfunc.generic_magic = JSHTMLFormElementPrototypeFunction::callAsFunction;
+    JSHTMLFormElementPrototypeFunctions[2].name = "checkValidity";
+    JSHTMLFormElementPrototypeFunctions[2].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSHTMLFormElementPrototypeFunctions[2].def_type = JS_DEF_CFUNC;
+    JSHTMLFormElementPrototypeFunctions[2].magic = JSHTMLFormElement::CheckValidityFuncNum;
+    JSHTMLFormElementPrototypeFunctions[2].u.func.length = 0;
+    JSHTMLFormElementPrototypeFunctions[2].u.func.cproto = JS_CFUNC_generic_magic;
+    JSHTMLFormElementPrototypeFunctions[2].u.func.cfunc.generic_magic = JSHTMLFormElementPrototypeFunction::callAsFunction;
 }
 
 JSValue JSHTMLFormElementPrototype::self(JSContext * ctx)
@@ -329,6 +336,11 @@ JSValue JSHTMLFormElementPrototypeFunction::callAsFunction(JSContext* ctx, JSVal
         case JSHTMLFormElement::ResetFuncNum: {
             imp->reset();
             return JS_UNDEFINED;
+        }
+        case JSHTMLFormElement::CheckValidityFuncNum: {
+
+            JSValue result = JS_NewBool(ctx, imp->checkValidity() ? 1 : 0);
+            return result;
         }
     }
     return JS_NULL;

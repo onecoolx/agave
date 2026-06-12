@@ -155,7 +155,11 @@ namespace WebCore {
             PseudoSearchCancelButton,
             PseudoSearchDecoration,
             PseudoSearchResultsDecoration,
-            PseudoSearchResultsButton
+            PseudoSearchResultsButton,
+            PseudoValid,
+            PseudoInvalid,
+            PseudoRequired,
+            PseudoOptional
         };
 
         PseudoType pseudoType() const

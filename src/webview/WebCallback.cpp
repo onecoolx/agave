@@ -46,6 +46,8 @@ int (*cb_url_is_visited)(const char*);
 int (*cb_allow_main_request)(const char*);
 void (*cb_error)(int, const char*);
 int (*cb_choose_file)(char*, unsigned int, int);
+int (*cb_choose_date)(char*, unsigned int, const char*);
+int (*cb_choose_color)(char*, unsigned int, const char*);
 char* (*cb_user_agent_custom)(const char*);
 
 int (*cb_save_submit_form)(const char*, const char*, const char*, const char*, const char*, int);
@@ -86,6 +88,8 @@ void _init_callback(void)
 	cb_allow_main_request	 = 0;
 	cb_error				 = 0;
 	cb_choose_file			 = 0;
+	cb_choose_date			 = 0;
+	cb_choose_color			 = 0;
 	cb_user_agent_custom	 = 0;
 	cb_save_submit_form		 = 0;
 	cb_write_file_data		 = 0;
@@ -124,6 +128,8 @@ void _set_callback(const _mc_callback_t* cb)
 	cb_allow_main_request	 = cb->cb_allow_main_request;
 	cb_error				 = cb->cb_error;
 	cb_choose_file			 = cb->cb_choose_file;
+	cb_choose_date			 = cb->cb_choose_date;
+	cb_choose_color			 = cb->cb_choose_color;
 	cb_user_agent_custom	 = cb->cb_user_agent_custom;
 	cb_save_submit_form		 = cb->cb_save_submit_form;
 	cb_write_file_data		 = cb->cb_write_file_data;

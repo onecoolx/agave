@@ -48,6 +48,24 @@ module html {
         void               focus();
         void               select();
         void               click();
+
+#if defined(LANGUAGE_JAVASCRIPT)
+        // HTML5 constraint validation API.
+        readonly attribute boolean         required;
+        readonly attribute boolean         valueMissing;
+        readonly attribute boolean         typeMismatch;
+        readonly attribute boolean         patternMismatch;
+        readonly attribute boolean         rangeUnderflow;
+        readonly attribute boolean         rangeOverflow;
+        readonly attribute boolean         stepMismatch;
+        readonly attribute boolean         tooLong;
+        readonly attribute boolean         customError;
+        readonly attribute boolean         willValidate;
+        readonly attribute boolean         valid;
+        readonly attribute DOMString       validationMessage;
+        boolean            checkValidity();
+        void               setCustomValidity(in DOMString message);
+#endif
         
         // WinIE extension:
                  attribute boolean         indeterminate;
