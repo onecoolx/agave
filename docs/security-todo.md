@@ -62,7 +62,14 @@
 
 - **发现日期**：2026-06-12（localStorage 里程碑审查时）
 - **风险等级**：低（功能正确性，非可利用漏洞）
-- **状态**：待修正
+- **状态**：已修正（2026-06-12）
+
+### 修正
+
+根因：bindings/qjs 的 valueToString 系列用 `String(const char*)` 构造，把 QuickJS
+返回的 UTF-8 字节按 Latin-1 逐字节展开。改用 `String::fromUTF8()` 正确解码。
+（jsString 反向用 utf8()+JS_NewString 本就正确。）已加 SqliteStorageAreaTest.
+UnicodeRoundTrip 回归测试。
 
 ### 问题描述
 

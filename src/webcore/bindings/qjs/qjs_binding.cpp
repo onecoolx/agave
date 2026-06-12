@@ -423,8 +423,9 @@ String valueToStringWithNullCheck(JSContext* ctx, JSValue val)
     if (JS_IsNull(val))
         return String();
     const char * str = JS_ToCString(ctx, val);
-    String strObj(str);
-    JS_FreeCString(ctx, str);
+    String strObj = str ? String::fromUTF8(str) : String();
+    if (str)
+        JS_FreeCString(ctx, str);
     return strObj;
 }
 
@@ -434,16 +435,20 @@ String valueToStringWithUndefinedOrNullCheck(JSContext* ctx, JSValue val)
         return String();
 
     const char * str = JS_ToCString(ctx, val);
-    String strObj(str);
-    JS_FreeCString(ctx, str);
+    String strObj = str ? String::fromUTF8(str) : String();
+    if (str)
+        JS_FreeCString(ctx, str);
     return strObj;
 }
 
 String valueToString(JSContext* ctx, JSValue val)
 {
+    // QuickJS returns UTF-8; decode as UTF-8 rather than letting String's
+    // const char* constructor reinterpret the bytes as Latin-1 (SEC-002).
     const char * str = JS_ToCString(ctx, val);
-    String strObj(str);
-    JS_FreeCString(ctx, str);
+    String strObj = str ? String::fromUTF8(str) : String();
+    if (str)
+        JS_FreeCString(ctx, str);
     return strObj;
 }
 

@@ -151,3 +151,27 @@ TEST(SqliteStorageAreaTest, OriginIsolation)
     }
     remove(dbPath);
 }
+
+// SEC-002 regression: non-ASCII (multi-byte UTF-8) values must round-trip
+// through the SQLite backend unchanged. Earlier the QJS string conversion (and
+// any UTF-8/Latin-1 confusion) corrupted such values.
+TEST(SqliteStorageAreaTest, UnicodeRoundTrip)
+{
+    const char* dbPath = "/tmp/agave_storage_unicode_test.db";
+    remove(dbPath);
+    // "ni hao" in CJK + an emoji-like multi-byte sequence, as UTF-16.
+    const UChar chars[] = { 0x4F60, 0x597D, 0x4E16, 0x754C, 0x00E9, 0x00F1 };
+    String value(chars, 6);
+    {
+        RefPtr<SqliteStorageArea> a = SqliteStorageArea::create("u.com", dbPath);
+        EXPECT_TRUE(a->setItem("k", value));
+        EXPECT_EQ(a->getItem("k"), value);
+    }
+    // Persisted and reloaded identically.
+    {
+        RefPtr<SqliteStorageArea> a = SqliteStorageArea::create("u.com", dbPath);
+        EXPECT_EQ(a->getItem("k"), value);
+        EXPECT_EQ(a->getItem("k").length(), 6u);
+    }
+    remove(dbPath);
+}
