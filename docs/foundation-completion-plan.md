@@ -70,7 +70,7 @@ LANGUAGE_JAVASCRIPT)` 包裹）。用正确参数重新生成与 committed **0 �
 ```
 perl -I bindings/scripts bindings/scripts/generate-bindings.pl \
   --generator QJS \
-  --defines "LANGUAGE_JAVASCRIPT=1 ENABLE_XPATH=1 ENABLE_SVG=1" \
+  --defines "LANGUAGE_JAVASCRIPT=1 ENABLE_XPATH=1" \
   --include dom --include html --include css --include page \
   --outputdir buildQJS  dom/<Interface>.idl
 ```

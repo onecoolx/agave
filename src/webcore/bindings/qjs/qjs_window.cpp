@@ -67,6 +67,8 @@
 #include "qjs_css.h"
 #include "qjs_events.h"
 #include "qjs_navigator.h"
+#include "QJSStorage.h"
+#include "Storage.h"
 #include "qjs_script.h"
 #include <wtf/MathExtras.h>
 
@@ -2106,6 +2108,24 @@ static JSValue js_window_func(JSContext* ctx, JSValueConst this_val, int argc, J
     return WindowFunc::callAsFunction(ctx, this_val, argc, argv, magic);
 }
 
+// Web Storage getters exposed on the window prototype. They resolve the
+// backing DOMWindow and return the cached Storage JS wrapper.
+static JSValue js_window_localStorage(JSContext* ctx, JSValueConst this_val)
+{
+    Window* window = (Window*)JS_GetOpaque2(ctx, this_val, Window::js_class_id);
+    if (!window || !window->impl())
+        return JS_UNDEFINED;
+    return toJS(ctx, window->impl()->localStorage());
+}
+
+static JSValue js_window_sessionStorage(JSContext* ctx, JSValueConst this_val)
+{
+    Window* window = (Window*)JS_GetOpaque2(ctx, this_val, Window::js_class_id);
+    if (!window || !window->impl())
+        return JS_UNDEFINED;
+    return toJS(ctx, window->impl()->sessionStorage());
+}
+
 void WindowPrototype::initPrototype(JSContext* ctx, JSValue this_obj)
 {
     struct { const char* name; int nargs; int magic; } funcs[] = {
@@ -2132,6 +2152,18 @@ void WindowPrototype::initPrototype(JSContext* ctx, JSValue this_obj)
     for (int i = 0; funcs[i].name; i++) {
         JSValue fn = JS_NewCFunction2(ctx, (JSCFunction*)js_window_func, funcs[i].name, funcs[i].nargs, JS_CFUNC_generic_magic, funcs[i].magic);
         JS_SetPropertyStr(ctx, this_obj, funcs[i].name, fn);
+    }
+
+    // Web Storage: window.localStorage / window.sessionStorage (read-only).
+    struct { const char* name; JSValue (*getter)(JSContext*, JSValueConst); } storageGetters[] = {
+        {"localStorage", js_window_localStorage},
+        {"sessionStorage", js_window_sessionStorage},
+    };
+    for (int i = 0; i < 2; i++) {
+        JSAtom atom = JS_NewAtom(ctx, storageGetters[i].name);
+        JSValue getter = JS_NewCFunction2(ctx, (JSCFunction*)storageGetters[i].getter, storageGetters[i].name, 0, JS_CFUNC_getter, 0);
+        JS_DefinePropertyGetSet(ctx, this_obj, atom, getter, JS_UNDEFINED, JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
+        JS_FreeAtom(ctx, atom);
     }
 }
 

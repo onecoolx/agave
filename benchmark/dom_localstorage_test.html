@@ -1,0 +1,41 @@
+<html>
+<body>
+<script>
+var r=[];
+function ck(n,a,e){r.push(n+':'+(a===e?'PASS':'FAIL('+a+'!='+e+')'));}
+
+// localStorage basic
+localStorage.clear();
+localStorage.setItem('a','1');
+localStorage.setItem('b','2');
+localStorage.setItem('c','3');
+ck('ls-len', localStorage.length, 3);
+ck('ls-get', localStorage.getItem('b'), '2');
+ck('ls-key', localStorage.key(0), 'a');
+ck('ls-missing', localStorage.getItem('zzz'), null);
+
+// overwrite keeps length
+localStorage.setItem('a','11');
+ck('ls-overwrite', localStorage.getItem('a'), '11');
+ck('ls-len2', localStorage.length, 3);
+
+// remove
+localStorage.removeItem('b');
+ck('ls-afterRm', localStorage.length, 2);
+ck('ls-rmGone', localStorage.getItem('b'), null);
+
+// sessionStorage independent of localStorage
+sessionStorage.clear();
+sessionStorage.setItem('s1','x');
+ck('ss-len', sessionStorage.length, 1);
+ck('ss-isolated', localStorage.getItem('s1'), null);
+
+// clear
+localStorage.clear();
+ck('ls-clear', localStorage.length, 0);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

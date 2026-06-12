@@ -43,6 +43,10 @@
 #include "PlatformScreen.h"
 #include "PlatformString.h"
 #include "Screen.h"
+#include "Storage.h"
+#include "StorageArea.h"
+#include "SqliteStorageArea.h"
+#include "KURL.h"
 
 namespace WebCore {
 
@@ -105,6 +109,28 @@ Screen* DOMWindow::screen() const
     if (!m_screen)
         m_screen = new Screen(m_frame);
     return m_screen.get();
+}
+
+Storage* DOMWindow::localStorage() const
+{
+    if (!m_localStorage && m_frame && m_frame->document()) {
+        // Key the persistent store by the document's host (origin proxy).
+        KURL url(m_frame->document()->URL());
+        String origin = url.host();
+        if (origin.isEmpty())
+            origin = "file";
+        // The DB lives in the current working directory for now; a real product
+        // would use a per-profile data directory.
+        m_localStorage = Storage::create(SqliteStorageArea::create(origin, "localstorage.db"));
+    }
+    return m_localStorage.get();
+}
+
+Storage* DOMWindow::sessionStorage() const
+{
+    if (!m_sessionStorage)
+        m_sessionStorage = Storage::create(MemoryStorageArea::create());
+    return m_sessionStorage.get();
 }
 
 History* DOMWindow::history() const

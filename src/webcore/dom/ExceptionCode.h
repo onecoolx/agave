@@ -48,7 +48,10 @@ namespace WebCore {
 
         // Introduced in DOM Level 3:
         VALIDATION_ERR = 16,
-        TYPE_MISMATCH_ERR = 17
+        TYPE_MISMATCH_ERR = 17,
+
+        // Web Storage:
+        QUOTA_EXCEEDED_ERR = 22
     };
 
 }

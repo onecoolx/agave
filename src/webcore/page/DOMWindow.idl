@@ -29,6 +29,8 @@ module window {
         // DOM Level 0
         readonly attribute Screen screen;
         readonly attribute [DoNotCheckDomainSecurity] History history;
+        readonly attribute Storage localStorage;
+        readonly attribute Storage sessionStorage;
         readonly attribute BarInfo locationbar;
         readonly attribute BarInfo menubar;
         readonly attribute BarInfo personalbar;

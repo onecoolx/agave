@@ -34,6 +34,7 @@ include_directories(
     ${PROJ_ROOT}/src/webcore/loader
     ${PROJ_ROOT}/src/webcore/page
     ${PROJ_ROOT}/src/webcore/rendering
+    ${PROJ_ROOT}/src/webcore/storage
     ${PROJ_ROOT}/src/webcore/platform
     ${PROJ_ROOT}/src/webcore/platform/graphics
     ${PROJ_ROOT}/src/webcore/platform/picasso

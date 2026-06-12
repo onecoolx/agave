@@ -13,6 +13,7 @@ file(GLOB_RECURSE SOURCES ${PROJ_ROOT}/src/webcore/css/*.cpp
                           ${PROJ_ROOT}/src/webcore/page/*.cpp
                           ${PROJ_ROOT}/src/webcore/platform/*.cpp
                           ${PROJ_ROOT}/src/webcore/rendering/*.cpp
+                          ${PROJ_ROOT}/src/webcore/storage/*.cpp
                           ${PROJ_ROOT}/src/webcore/xml/*.cpp
                           ${PROJ_ROOT}/src/webview/*.cpp
 )
@@ -87,6 +88,7 @@ set(HEADERS ${PROJ_ROOT}/include
             ${PROJ_ROOT}/src/webcore/loader
             ${PROJ_ROOT}/src/webcore/page
             ${PROJ_ROOT}/src/webcore/rendering
+            ${PROJ_ROOT}/src/webcore/storage
             ${PROJ_ROOT}/src/webcore/platform
             ${PROJ_ROOT}/src/webcore/platform/graphics
             ${PROJ_ROOT}/src/webcore/platform/picasso

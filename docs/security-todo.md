@@ -55,3 +55,28 @@
 ### 备注
 
 超出阶段 1（现代 CSS 布局）范围，作为独立安全清理项，建议在阶段间隙处理。
+
+---
+
+## SEC-002：QJS 绑定层非 ASCII 字符串往返损坏
+
+- **发现日期**：2026-06-12（localStorage 里程碑审查时）
+- **风险等级**：低（功能正确性，非可利用漏洞）
+- **状态**：待修正
+
+### 问题描述
+
+JS 字符串 ↔ WebCore::String 经 QJS 绑定（valueToString / jsString 等）往返时，
+非 ASCII（多字节 UTF-8）字符被错误展开：例如 13 个 UTF-16 码元的字符串往返后变成
+30。表现为 UTF-8 字节被当作 Latin-1 码元（双重/错误编码）。
+
+### 影响范围
+
+**全局绑定层问题，非某一 API 特有。** 实测 setAttribute/getAttribute、
+localStorage、sessionStorage 均有相同症状（getlen=30 vlen=13）。ASCII 内容不受影响。
+
+### 备注
+
+非 localStorage 里程碑引入（既有缺陷）。修正点在 bindings/qjs 的字符串转换
+（valueToString / jsString 应按 UTF-16/UTF-8 正确转换，而非 Latin-1 直通）。
+作为独立的绑定层修正项后续处理。

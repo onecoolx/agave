@@ -42,6 +42,7 @@ namespace WebCore {
     class Frame;
     class History;
     class Screen;
+    class Storage;
     
     class DOMWindow : public Shared<DOMWindow> {
     public:
@@ -56,6 +57,10 @@ namespace WebCore {
         // DOM Level 0
         Screen* screen() const;
         History* history() const;
+
+        // Web Storage
+        Storage* localStorage() const;
+        Storage* sessionStorage() const;
         BarInfo* locationbar() const;
         BarInfo* menubar() const;
         BarInfo* personalbar() const;
@@ -133,6 +138,8 @@ namespace WebCore {
         mutable RefPtr<Screen> m_screen;
         mutable RefPtr<DOMSelection> m_selection;
         mutable RefPtr<History> m_history;
+        mutable RefPtr<Storage> m_localStorage;
+        mutable RefPtr<Storage> m_sessionStorage;
         mutable RefPtr<BarInfo> m_locationbar;
         mutable RefPtr<BarInfo> m_menubar;
         mutable RefPtr<BarInfo> m_personalbar;

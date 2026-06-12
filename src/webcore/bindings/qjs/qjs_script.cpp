@@ -27,6 +27,7 @@
 #include "Chrome.h"
 #include "Document.h"
 #include "DOMWindow.h"
+#include "QJSStorage.h"
 #include "Frame.h"
 #include "FrameLoader.h"
 #include "GCController.h"
@@ -252,6 +253,22 @@ static JSValue js_get_document(JSContext *ctx, JSValueConst this_val, int argc, 
     return wrapper;
 }
 
+static JSValue js_get_localStorage(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
+    QJS::ScriptInterpreter* interp = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx);
+    if (!interp || !interp->frame() || !interp->frame()->domWindow())
+        return JS_UNDEFINED;
+    return toJS(ctx, interp->frame()->domWindow()->localStorage());
+}
+
+static JSValue js_get_sessionStorage(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
+    QJS::ScriptInterpreter* interp = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx);
+    if (!interp || !interp->frame() || !interp->frame()->domWindow())
+        return JS_UNDEFINED;
+    return toJS(ctx, interp->frame()->domWindow()->sessionStorage());
+}
+
 void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global)
 {
     JS_SetPropertyStr(ctx, global, "window", JS_DupValue(ctx, global));
@@ -262,5 +279,16 @@ void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global)
     JSValue getter = JS_NewCFunction(ctx, (JSCFunction*)js_get_document, "get document", 0);
     JS_DefinePropertyGetSet(ctx, global, atom, getter, JS_UNDEFINED, JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
     JS_FreeAtom(ctx, atom);
+
+    // Web Storage getters (window.localStorage / window.sessionStorage).
+    JSAtom lsAtom = JS_NewAtom(ctx, "localStorage");
+    JSValue lsGetter = JS_NewCFunction(ctx, (JSCFunction*)js_get_localStorage, "get localStorage", 0);
+    JS_DefinePropertyGetSet(ctx, global, lsAtom, lsGetter, JS_UNDEFINED, JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
+    JS_FreeAtom(ctx, lsAtom);
+
+    JSAtom ssAtom = JS_NewAtom(ctx, "sessionStorage");
+    JSValue ssGetter = JS_NewCFunction(ctx, (JSCFunction*)js_get_sessionStorage, "get sessionStorage", 0);
+    JS_DefinePropertyGetSet(ctx, global, ssAtom, ssGetter, JS_UNDEFINED, JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
+    JS_FreeAtom(ctx, ssAtom);
 }
 } // namespace WebCore
