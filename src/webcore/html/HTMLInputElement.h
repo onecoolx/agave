@@ -46,7 +46,18 @@ public:
         IMAGE,
         BUTTON,
         SEARCH,
-        RANGE
+        RANGE,
+#if ENABLE(HTML5_FORMS)
+        // HTML5 input types. These render as text fields (date/color are
+        // activated via host-provided pickers) and carry type-specific
+        // constraint validation.
+        EMAIL,
+        URL,
+        TELEPHONE,
+        NUMBER,
+        DATE,
+        COLOR
+#endif
     };
 
     HTMLInputElement(Document*, HTMLFormElement* = 0);
@@ -78,7 +89,17 @@ public:
     virtual bool isRadioButton() const { return m_type == RADIO; }
 #if 1    
 	virtual bool isCheckBox() const { return m_type == CHECKBOX; }
-	virtual bool isTextField() const { return m_type == TEXT || m_type == PASSWORD || m_type == SEARCH || m_type == ISINDEX; }
+	virtual bool isTextField() const
+	{
+		return m_type == TEXT || m_type == PASSWORD || m_type == SEARCH || m_type == ISINDEX
+#if ENABLE(HTML5_FORMS)
+			// HTML5 text-like types render and behave as text fields. date/color
+			// also fall back to text entry; their host picker only augments input.
+			|| m_type == EMAIL || m_type == URL || m_type == TELEPHONE
+			|| m_type == NUMBER || m_type == DATE || m_type == COLOR
+#endif
+			;
+	}
 	virtual bool isPassWordField() const { return m_type == PASSWORD; }
 #endif
     bool isSearchField() const { return m_type == SEARCH; }
@@ -211,7 +232,7 @@ private:
 
     HTMLImageLoader* m_imageLoader;
 
-    unsigned m_type : 4; // InputType 
+    unsigned m_type : 5; // InputType (needs 5 bits for HTML5 types up to COLOR=18)
     bool m_checked : 1;
     bool m_defaultChecked : 1;
     bool m_useDefaultChecked : 1;

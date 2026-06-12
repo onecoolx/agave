@@ -39,6 +39,7 @@ include (${CMAKE_CURRENT_LIST_DIR}/build/defines.cmake)
 OPTION_MACRO_DEFINE(OPT_WEB_STORAGE ENABLE_WEB_STORAGE "Build with Web Storage (localStorage/sessionStorage)." ON)
 OPTION_MACRO_DEFINE(OPT_FETCH ENABLE_FETCH "Build with Fetch API (fetch())." ON)
 OPTION_MACRO_DEFINE(OPT_WEB_SOCKETS ENABLE_WEB_SOCKETS "Build with WebSocket API." ON)
+OPTION_MACRO_DEFINE(OPT_HTML5_FORMS ENABLE_HTML5_FORMS "Build with HTML5 form controls and constraint validation." ON)
 
 include (${CMAKE_CURRENT_LIST_DIR}/3rdparty/3rdparty.cmake)
 

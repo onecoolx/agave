@@ -287,6 +287,20 @@ void HTMLInputElement::setInputType(const String& t)
         newType = SEARCH;
     else if (equalIgnoringCase(t, "range"))
         newType = RANGE;
+#if ENABLE(HTML5_FORMS)
+    else if (equalIgnoringCase(t, "email"))
+        newType = EMAIL;
+    else if (equalIgnoringCase(t, "url"))
+        newType = URL;
+    else if (equalIgnoringCase(t, "tel"))
+        newType = TELEPHONE;
+    else if (equalIgnoringCase(t, "number"))
+        newType = NUMBER;
+    else if (equalIgnoringCase(t, "date"))
+        newType = DATE;
+    else if (equalIgnoringCase(t, "color"))
+        newType = COLOR;
+#endif
     else
         newType = TEXT;
 
@@ -405,6 +419,32 @@ const AtomicString& HTMLInputElement::type() const
             static const AtomicString text("text");
             return text;
         }
+#if ENABLE(HTML5_FORMS)
+        case EMAIL: {
+            static const AtomicString email("email");
+            return email;
+        }
+        case URL: {
+            static const AtomicString url("url");
+            return url;
+        }
+        case TELEPHONE: {
+            static const AtomicString tel("tel");
+            return tel;
+        }
+        case NUMBER: {
+            static const AtomicString number("number");
+            return number;
+        }
+        case DATE: {
+            static const AtomicString date("date");
+            return date;
+        }
+        case COLOR: {
+            static const AtomicString color("color");
+            return color;
+        }
+#endif
     }
     return emptyAtom;
 }
@@ -422,6 +462,14 @@ bool HTMLInputElement::saveState(String& result) const
         case SEARCH:
         case SUBMIT:
         case TEXT:
+#if ENABLE(HTML5_FORMS)
+        case EMAIL:
+        case URL:
+        case TELEPHONE:
+        case NUMBER:
+        case DATE:
+        case COLOR:
+#endif
             result = value();
             return true;
         case CHECKBOX:
@@ -449,6 +497,14 @@ void HTMLInputElement::restoreState(const String& state)
         case SEARCH:
         case SUBMIT:
         case TEXT:
+#if ENABLE(HTML5_FORMS)
+        case EMAIL:
+        case URL:
+        case TELEPHONE:
+        case NUMBER:
+        case DATE:
+        case COLOR:
+#endif
             setValue(state);
             break;
         case CHECKBOX:
@@ -552,6 +608,14 @@ void HTMLInputElement::accessKeyAction(bool sendToAnyElement)
         case PASSWORD:
         case SEARCH:
         case TEXT:
+#if ENABLE(HTML5_FORMS)
+        case EMAIL:
+        case URL:
+        case TELEPHONE:
+        case NUMBER:
+        case DATE:
+        case COLOR:
+#endif
             // should never restore previous selection here
             focus(false);
             break;
@@ -687,6 +751,14 @@ bool HTMLInputElement::rendererIsNeeded(RenderStyle *style)
         case SEARCH:
         case SUBMIT:
         case TEXT:
+#if ENABLE(HTML5_FORMS)
+        case EMAIL:
+        case URL:
+        case TELEPHONE:
+        case NUMBER:
+        case DATE:
+        case COLOR:
+#endif
             return HTMLFormControlElementWithState::rendererIsNeeded(style);
         case HIDDEN:
             return false;
@@ -717,6 +789,14 @@ RenderObject *HTMLInputElement::createRenderer(RenderArena *arena, RenderStyle *
         case PASSWORD:
         case SEARCH:
         case TEXT:
+#if ENABLE(HTML5_FORMS)
+        case EMAIL:
+        case URL:
+        case TELEPHONE:
+        case NUMBER:
+        case DATE:
+        case COLOR:
+#endif
             return new (arena) RenderTextControl(this, false);             
     }
     ASSERT(false);
@@ -801,6 +881,14 @@ bool HTMLInputElement::appendFormData(FormDataList& encoding, bool multipart)
         case RANGE:
         case SEARCH:
         case TEXT:
+#if ENABLE(HTML5_FORMS)
+        case EMAIL:
+        case URL:
+        case TELEPHONE:
+        case NUMBER:
+        case DATE:
+        case COLOR:
+#endif
             // always successful
             encoding.appendData(name(), value());
             return true;
@@ -944,6 +1032,14 @@ String HTMLInputElement::valueWithDefault() const
             case RANGE:
             case SEARCH:
             case TEXT:
+#if ENABLE(HTML5_FORMS)
+            case EMAIL:
+            case URL:
+            case TELEPHONE:
+            case NUMBER:
+            case DATE:
+            case COLOR:
+#endif
                 break;
             case RESET:
                 v = resetButtonDefaultLabel();
@@ -1020,6 +1116,14 @@ bool HTMLInputElement::storesValueSeparateFromAttribute() const
         case RANGE:
         case SEARCH:
         case TEXT:
+#if ENABLE(HTML5_FORMS)
+        case EMAIL:
+        case URL:
+        case TELEPHONE:
+        case NUMBER:
+        case DATE:
+        case COLOR:
+#endif
             return true;
     }
     return false;
@@ -1201,6 +1305,14 @@ void HTMLInputElement::defaultEventHandler(Event* evt)
                 case RANGE:
                 case SEARCH:
                 case TEXT:
+#if ENABLE(HTML5_FORMS)
+                case EMAIL:
+                case URL:
+                case TELEPHONE:
+                case NUMBER:
+                case DATE:
+                case COLOR:
+#endif
                     break;
             }
         }
@@ -1215,6 +1327,14 @@ void HTMLInputElement::defaultEventHandler(Event* evt)
                 case RANGE:
                 case SEARCH:
                 case TEXT:
+#if ENABLE(HTML5_FORMS)
+                case EMAIL:
+                case URL:
+                case TELEPHONE:
+                case NUMBER:
+                case DATE:
+                case COLOR:
+#endif
                     // Simulate mouse click on the default form button for enter for these types of elements.
                     clickDefaultFormButton = true;
                     break;
