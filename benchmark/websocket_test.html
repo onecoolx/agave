@@ -1,0 +1,45 @@
+<html>
+<body>
+<script>
+var r = [];
+function ck(n, a, e) { r.push(n + ':' + (a === e ? 'PASS' : 'FAIL(' + a + '!=' + e + ')')); }
+function done() {
+  var ok = r.every(function(s){ return s.indexOf('PASS') >= 0; });
+  alert((ok ? 'ALL PASS' : 'FAILURES') + '|' + r.join('|'));
+}
+
+// Constructor exists and is callable.
+ck('ctor-type', typeof WebSocket, 'function');
+
+// Constructing yields an object with the WebSocket API surface.
+var ws = new WebSocket('ws://localhost:9/never');
+ck('is-object', typeof ws, 'object');
+ck('send-type', typeof ws.send, 'function');
+ck('close-type', typeof ws.close, 'function');
+
+// readyState starts at CONNECTING (0) before the deferred handshake runs.
+ck('initial-readyState', ws.readyState, 0);
+
+// url is reflected back.
+ck('url', ws.url, 'ws://localhost:9/never');
+
+// Ready-state constants are exposed on the instance.
+ck('CONNECTING', ws.CONNECTING, 0);
+ck('OPEN', ws.OPEN, 1);
+ck('CLOSING', ws.CLOSING, 2);
+ck('CLOSED', ws.CLOSED, 3);
+
+// Event-handler properties are assignable.
+ws.onopen = function(){};
+ws.onmessage = function(){};
+ws.onclose = function(){};
+ws.onerror = function(){};
+ck('onopen-assignable', typeof ws.onopen, 'function');
+
+// close() is safe to call before the connection opens.
+ws.close();
+
+done();
+</script>
+</body>
+</html>

@@ -29,6 +29,7 @@
 #include "DOMWindow.h"
 #include "QJSStorage.h"
 #include "qjs_fetch.h"
+#include "qjs_websocket.h"
 #include "Frame.h"
 #include "FrameLoader.h"
 #include "GCController.h"
@@ -298,6 +299,10 @@ void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global)
 
 #if ENABLE(FETCH)
     registerFetch(ctx, global);
+#endif
+
+#if ENABLE(WEB_SOCKETS)
+    registerWebSocket(ctx, global);
 #endif
 }
 } // namespace WebCore

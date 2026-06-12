@@ -38,6 +38,7 @@ include (${CMAKE_CURRENT_LIST_DIR}/build/defines.cmake)
 # skipped when this feature is trimmed on resource-constrained targets.
 OPTION_MACRO_DEFINE(OPT_WEB_STORAGE ENABLE_WEB_STORAGE "Build with Web Storage (localStorage/sessionStorage)." ON)
 OPTION_MACRO_DEFINE(OPT_FETCH ENABLE_FETCH "Build with Fetch API (fetch())." ON)
+OPTION_MACRO_DEFINE(OPT_WEB_SOCKETS ENABLE_WEB_SOCKETS "Build with WebSocket API." ON)
 
 include (${CMAKE_CURRENT_LIST_DIR}/3rdparty/3rdparty.cmake)
 

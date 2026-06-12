@@ -1,0 +1,24 @@
+<!--
+  WebSocket echo integration test (requires a live server).
+
+  This exercises the full round-trip (handshake, send, receive, close) which
+  needs the engine's timer event loop to be pumped, so it cannot run as a pure
+  static-file benchmark. To run it manually:
+
+    1. Start the echo server:  python3 benchmark/websocket_echo_server.py
+    2. Load this page in headless mode:
+         ./headless_test benchmark/websocket_echo_test.html 3000
+    3. Expect the title/result to contain: OPEN|MSG:echo:hello|CLOSE
+-->
+<html>
+<body>
+<script>
+var log = [];
+var ws = new WebSocket('ws://localhost:8765/');
+ws.onopen = function() { log.push('OPEN'); ws.send('hello'); };
+ws.onmessage = function(e) { log.push('MSG:' + e.data); document.title = log.join('|'); ws.close(); };
+ws.onclose = function() { log.push('CLOSE'); document.title = log.join('|'); };
+ws.onerror = function() { log.push('ERR'); document.title = log.join('|'); };
+</script>
+</body>
+</html>
