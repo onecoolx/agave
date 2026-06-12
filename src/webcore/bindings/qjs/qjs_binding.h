@@ -83,6 +83,8 @@ namespace QJS {
 
         JSValue evaluate(const WebCore::String& sourceURL, int startingLineNumber, const UChar* code, int codeLength, JSValue thisV);
         JSValue evaluate(const WebCore::String& sourceURL, int startingLineNumber, const WebCore::String& code, JSValue thisV);
+        // Runs queued QuickJS microtasks (Promise reactions, etc.).
+        void drainMicrotasks();
         /**
          * "Smart" window.open policy
          */

@@ -632,9 +632,29 @@ JSValue ScriptInterpreter::evaluate(const WebCore::String& sourceURL, int starti
                              sourceURL.utf8().data(), JS_EVAL_TYPE_GLOBAL);
     if (JS_IsException(result)) {
         JS_FreeValue(m_context, JS_GetException(m_context));
+        drainMicrotasks();
         return JS_UNDEFINED;
     }
+    // Run queued microtasks (e.g. Promise reactions) so .then() callbacks fire.
+    drainMicrotasks();
     return result;
+}
+
+void ScriptInterpreter::drainMicrotasks()
+{
+    if (!m_context)
+        return;
+    JSRuntime* rt = JS_GetRuntime(m_context);
+    JSContext* cctx = 0;
+    // Bound the loop so a runaway microtask chain can't hang the engine.
+    int guard = 100000;
+    int ret;
+    while (guard-- > 0 && (ret = JS_ExecutePendingJob(rt, &cctx)) != 0) {
+        if (ret < 0) {
+            JSValue ex = JS_GetException(cctx ? cctx : m_context);
+            JS_FreeValue(cctx ? cctx : m_context, ex);
+        }
+    }
 }
 
 }
