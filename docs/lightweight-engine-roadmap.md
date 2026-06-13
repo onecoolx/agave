@@ -284,3 +284,20 @@ flex-direction + grow/shrink/basis + justify-content + align-items，~4-5k 行�
 2. **C：writing-mode**（其后，国际化纵排）。
 3. **B：transition + animation**（最后，视预算而定；推进前先做 ~150k 可行性调研，
    确认软渲染/无合成器架构能否承载帧驱动动画）。
+
+### 进度更新（2026-06-13，路线 A 完成后复盘）
+
+- **A：aspect-ratio + object-fit —— ✅ 已完成**（commit 0bf82520）。三维审查通过，
+  780 全套测试通过。
+- **C：writing-mode —— 暂缓**（移入「后续开发项目」）。调研发现本引擎的 CSS 盒布局
+  完全没有逻辑坐标抽象（早于 WebKit 的 writing-mode 重构），全功能纵排等于重演逻辑
+  坐标大重构，触及最复杂脆弱的 RenderBlock/RenderBox/bidi/InlineTextBox 代码，且无
+  有用的「部分实现」中间态。writing-mode 属于小众功能，高价值场景集中于 CJK 竖排
+  （日语出版/中文古籍）。当前目标内容无 CJK 竖排需求，性价比过低，暂缓。
+- **下一步：B：transition + animation 可行性调研**（~150k）。评估软渲染/无合成器
+  架构能否承载帧驱动动画，再决定是否全力实现。
+
+### 后续开发项目（当前无实际需求，按需再评估）
+
+- **writing-mode**（CJK 竖排）—— 需逻辑坐标抽象大重构，无 CJK 竖排内容前不做。
+- **`<video>` / `<audio>`（媒体元素）** —— 低端设备媒体解码管线不实用、不符轻量定位。
