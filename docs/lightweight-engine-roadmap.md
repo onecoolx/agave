@@ -319,3 +319,19 @@ flex-direction + grow/shrink/basis + justify-content + align-items，~4-5k 行�
 - 动画插值范围：数值（opacity/宽高/margin/padding）、颜色、transform。离散属性不插值。
 - 无合成层，动画在主渲染路径同步执行；低端设备复杂动画可能掉帧（已用脏矩形最小重绘 +
   无动画停表节流缓解）。
+
+### 动画增量收尾（2026-06-13/14）
+
+在 B1/B2 基础上补齐动画系统：
+- **更多可插值属性**（commit 5cfa4894）：left/right/top/bottom、min/max-width/height、
+  border-*-width、background-color。连同已有的 opacity/宽高/margin/padding/color/
+  transform，共 24 个可插值属性。
+- **animation-fill-mode + 离散属性**（commit 7cd976e2）：forwards/backwards/both 终态
+  与延迟期保持；visibility/z-index 离散端点切换。
+- **animation-play-state JS 动态控制**（commit c4c6ffd6）：暂停冻结进度、恢复无缝继续；
+  支持 element.style.animationPlayState 的 JS 暂停/恢复。
+
+收尾审视：clean build、802 单元测试通过、7 个动画/选择器/布局 benchmark 全 ALL PASS
+（含综合页面），ASan 无 UAF/leak，无调试残留/敏感信息，生成文件与源同步。
+
+动画这条线告一段落。剩余候选：picasso 颜色矩阵 filter（待 picasso 增强）。
