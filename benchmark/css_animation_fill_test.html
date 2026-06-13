@@ -1,0 +1,38 @@
+<html>
+<head><style>
+@keyframes grow { from { width: 100px; } to { width: 300px; } }
+@keyframes shift { from { width: 200px; } to { width: 400px; } }
+@keyframes zi { from { z-index: 0; } to { z-index: 50; } }
+#fwd  { width:100px; height:30px; background:#ccc; animation: grow 0.3s linear forwards; }
+#none { width:100px; height:30px; background:#ddd; animation: grow 0.3s linear; }
+#bwd  { width:100px; height:30px; background:#eee; animation: shift 0.3s linear 10s backwards; }
+#both { width:100px; height:30px; background:#ccc; animation: shift 0.3s linear 10s both; }
+#zix  { position:absolute; width:40px; height:40px; z-index:0; animation: zi 0.4s linear forwards; }
+</style></head>
+<body>
+<div id="fwd">fwd</div>
+<div id="none">none</div>
+<div id="bwd">bwd</div>
+<div id="both">both</div>
+<div id="zix">z</div>
+<script>
+var results = [];
+function eq(name, actual, expected) {
+  results.push(name + (actual == expected ? ':PASS' : ':FAIL([' + actual + ']!=[' + expected + '])'));
+}
+function W(id){return document.getElementById(id).offsetWidth;}
+
+// At ~600ms: the 0.3s animations (fwd/none) have ended; the 10s-delayed ones
+// (bwd/both) are still in their start delay.
+setTimeout(function() {
+  eq('forwards-retains', W('fwd'), 300);   // holds final keyframe
+  eq('none-reverts', W('none'), 100);      // back to base
+  eq('backwards-delay', W('bwd'), 200);    // backwards in delay -> first frame (200)
+  eq('both-delay', W('both'), 200);        // both in delay -> first frame (200)
+  eq('zindex-late', parseInt(window.getComputedStyle(document.getElementById('zix')).zIndex), 50);
+  var ok = results.every(function(s){return s.indexOf('PASS')>=0;});
+  alert((ok ? 'ALL PASS' : 'FAILURES') + '|' + results.join('|'));
+}, 600);
+</script>
+</body>
+</html>

@@ -335,4 +335,65 @@ TEST_F(AnimationParseTest, BackgroundColorKeyframeInterpolates)
     EXPECT_LT(c.green(), 82);
 }
 
+TEST_F(AnimationParseTest, FillModeForwardsRetainsFinalFrame)
+{
+    loadHtml("<style>@keyframes grow { from { width:100px; } to { width:300px; } }</style>"
+             "<div id='a' style='width:100px;height:40px;"
+             " animation: grow 0.2s linear forwards;'>x</div>");
+    RenderStyle* s = styleById("a");
+    ASSERT_TRUE(s != 0);
+
+    // Run well past the 0.2s animation; forwards retains the last keyframe.
+    for (int i = 0; i < 60; ++i) {
+        Test_EventDispatchOnce();
+        usleep(9000); // ~540ms >> 200ms
+    }
+
+    RenderStyle* end = styleById("a");
+    ASSERT_TRUE(end != 0);
+    ASSERT_TRUE(end->width().isFixed());
+    EXPECT_EQ(end->width().value(), 300);
+}
+
+TEST_F(AnimationParseTest, FillModeNoneRevertsToBase)
+{
+    loadHtml("<style>@keyframes grow { from { width:100px; } to { width:300px; } }</style>"
+             "<div id='a' style='width:100px;height:40px;"
+             " animation: grow 0.2s linear;'>x</div>");
+    RenderStyle* s = styleById("a");
+    ASSERT_TRUE(s != 0);
+
+    for (int i = 0; i < 60; ++i) {
+        Test_EventDispatchOnce();
+        usleep(9000);
+    }
+
+    RenderStyle* end = styleById("a");
+    ASSERT_TRUE(end != 0);
+    ASSERT_TRUE(end->width().isFixed());
+    // Without fill-mode, the element reverts to its declared base width.
+    EXPECT_EQ(end->width().value(), 100);
+}
+
+TEST_F(AnimationParseTest, ZIndexDiscreteSwitch)
+{
+    loadHtml("<style>@keyframes zi { from { z-index:0; } to { z-index:100; } }</style>"
+             "<div id='a' style='position:absolute; width:40px;height:40px; z-index:0;"
+             " animation: zi 0.4s linear forwards;'>x</div>");
+    RenderStyle* s = styleById("a");
+    ASSERT_TRUE(s != 0);
+
+    // Sample early (~100ms, < 50%): still the from value.
+    for (int i = 0; i < 11; ++i) { Test_EventDispatchOnce(); usleep(9000); }
+    RenderStyle* early = styleById("a");
+    ASSERT_TRUE(early != 0);
+    EXPECT_EQ(early->zIndex(), 0);
+
+    // Run past the end; forwards retains the to value.
+    for (int i = 0; i < 45; ++i) { Test_EventDispatchOnce(); usleep(9000); }
+    RenderStyle* late = styleById("a");
+    ASSERT_TRUE(late != 0);
+    EXPECT_EQ(late->zIndex(), 100);
+}
+
 #endif // ENABLE(CSS_TRANSITIONS)

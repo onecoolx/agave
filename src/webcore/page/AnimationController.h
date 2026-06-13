@@ -73,11 +73,13 @@ class RunningKeyframeAnimation {
 public:
     RunningKeyframeAnimation()
         : m_startTime(0)
+        , m_filled(false)
     {
     }
 
     String m_name;
     double m_startTime;
+    bool m_filled;                       // finished and retained via fill-mode
     KeyframeAnimation m_params;          // duration/delay/iteration/direction/...
     Vector<float> m_offsets;             // keyframe offsets in [0,1], ascending
     Vector<RenderStyle*> m_styles;       // resolved & ref'd style per offset

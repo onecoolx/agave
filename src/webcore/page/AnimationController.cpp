@@ -155,6 +155,9 @@ static bool propertyDiffers(int property, RenderStyle* a, RenderStyle* b)
         case CSS_PROP_BORDER_TOP_WIDTH: return a->borderTopWidth() != b->borderTopWidth();
         case CSS_PROP_BORDER_BOTTOM_WIDTH: return a->borderBottomWidth() != b->borderBottomWidth();
         case CSS_PROP__WEBKIT_TRANSFORM: return a->transformOperations() != b->transformOperations();
+        case CSS_PROP_VISIBILITY: return a->visibility() != b->visibility();
+        case CSS_PROP_Z_INDEX:
+            return a->zIndex() != b->zIndex() || a->hasAutoZIndex() != b->hasAutoZIndex();
         default: return false;
     }
 }
@@ -243,6 +246,22 @@ static void applyBlendedProperty(int property, RenderStyle* dst,
         case CSS_PROP__WEBKIT_TRANSFORM:
             dst->setTransformOperations(blendTransforms(from->transformOperations(), to->transformOperations(), p));
             break;
+        case CSS_PROP_VISIBILITY:
+            // Discrete: but visibility is special-cased in CSS so that a visible
+            // endpoint applies throughout (you can animate in/out of visible).
+            if (from->visibility() == VISIBLE || to->visibility() == VISIBLE)
+                dst->setVisibility(p < 1.0 ? from->visibility() : to->visibility());
+            else
+                dst->setVisibility(p < 0.5 ? from->visibility() : to->visibility());
+            break;
+        case CSS_PROP_Z_INDEX:
+            // Discrete: switch at the midpoint of the (eased) interval.
+            if (p < 0.5) {
+                if (from->hasAutoZIndex()) dst->setHasAutoZIndex(); else dst->setZIndex(from->zIndex());
+            } else {
+                if (to->hasAutoZIndex()) dst->setHasAutoZIndex(); else dst->setZIndex(to->zIndex());
+            }
+            break;
         default:
             break;
     }
@@ -259,7 +278,8 @@ static const int kAnimatableProps[] = {
     CSS_PROP_MIN_WIDTH, CSS_PROP_MAX_WIDTH, CSS_PROP_MIN_HEIGHT, CSS_PROP_MAX_HEIGHT,
     CSS_PROP_BORDER_LEFT_WIDTH, CSS_PROP_BORDER_RIGHT_WIDTH,
     CSS_PROP_BORDER_TOP_WIDTH, CSS_PROP_BORDER_BOTTOM_WIDTH,
-    CSS_PROP__WEBKIT_TRANSFORM
+    CSS_PROP__WEBKIT_TRANSFORM,
+    CSS_PROP_VISIBILITY, CSS_PROP_Z_INDEX
 };
 static const int kNumAnimatableProps = sizeof(kAnimatableProps) / sizeof(kAnimatableProps[0]);
 
@@ -469,14 +489,19 @@ RenderStyle* AnimationController::blendedStyle(RenderObject* renderer, RenderSty
 
 // Computes the iteration-local progress in [0,1] for a keyframe animation at
 // time now, honoring delay, iteration count and direction. Sets finished=true
-// once the animation has completed all iterations.
-static double keyframeProgress(const RunningKeyframeAnimation& anim, double now, bool& finished)
+// once the animation has completed all iterations, and inDelay=true while the
+// animation is still in its start delay (before the first iteration begins).
+static double keyframeProgress(const RunningKeyframeAnimation& anim, double now,
+                               bool& finished, bool& inDelay)
 {
     finished = false;
+    inDelay = false;
     const KeyframeAnimation& p = anim.m_params;
     double elapsed = now - anim.m_startTime - p.delay();
-    if (elapsed <= 0)
-        return 0.0; // delay phase: hold first keyframe
+    if (elapsed <= 0) {
+        inDelay = true;
+        return 0.0; // delay phase: hold first keyframe (if fill-mode allows)
+    }
 
     if (p.duration() <= 0) {
         finished = true;
@@ -525,14 +550,26 @@ RenderStyle* AnimationController::animatedKeyframeStyle(RenderObject* renderer, 
         RunningKeyframeAnimation& anim = anims->at(a);
         if (anim.m_offsets.size() < 2)
             continue;
-        if (anim.m_params.playState() == AnimPlayPaused) {
-            anyActive = true; // paused animations remain "active" (held)
-        }
 
         bool finished = false;
-        double prog = keyframeProgress(anim, now, finished);
-        if (!finished && anim.m_params.playState() != AnimPlayPaused)
-            anyActive = true;
+        bool inDelay = false;
+        double prog = keyframeProgress(anim, now, finished, inDelay);
+
+        EAnimationFillMode fill = anim.m_params.fillMode();
+
+        // fill-mode gates whether the animation paints outside its active span:
+        //  - during the start delay, only backwards/both apply the first frame;
+        //  - after it finishes, only forwards/both retain the last frame.
+        if (inDelay && fill != AnimFillBackwards && fill != AnimFillBoth)
+            continue; // no fill before start: leave base style untouched
+        if (finished && fill != AnimFillForwards && fill != AnimFillBoth)
+            continue; // no fill after end: element reverts to base
+
+        bool paused = (anim.m_params.playState() == AnimPlayPaused);
+        if (paused)
+            anyActive = true; // paused animations remain "active" (held)
+        else if (!finished)
+            anyActive = true; // still running (including the delay phase)
 
         // Apply timing function to the progress within the iteration.
         prog = anim.m_params.timingFunction().evaluate(prog);
@@ -542,7 +579,17 @@ RenderStyle* AnimationController::animatedKeyframeStyle(RenderObject* renderer, 
         for (size_t i = 0; i < anim.m_offsets.size(); ++i) {
             if (anim.m_offsets[i] >= prog) { hi = i; break; }
         }
-        size_t lo = (hi == 0) ? 0 : hi - 1;
+        // Pick a distinct [lo, hi] segment so the interpolation endpoints are
+        // two different keyframes. At the very start (hi == 0) use the first
+        // segment with localP clamped to 0 (yielding the first keyframe value);
+        // otherwise lo is the keyframe just before hi.
+        size_t lo;
+        if (hi == 0) {
+            lo = 0;
+            hi = (anim.m_offsets.size() > 1) ? 1 : 0;
+        } else {
+            lo = hi - 1;
+        }
 
         RenderStyle* fromStyle = anim.m_styles[lo];
         RenderStyle* toStyle = anim.m_styles[hi];
@@ -709,17 +756,41 @@ void AnimationController::animationTimerFired(Timer<AnimationController>*)
             }
         }
 
-        // Drop finished keyframe animations (infinite ones never finish).
+        // Drop finished keyframe animations, unless fill-mode forwards/both asks
+        // to retain the final frame (those stay in the map but no longer drive
+        // the timer, since their value is now fixed).
         Vector<RunningKeyframeAnimation>* anims = m_keyframeAnimations.get(renderer);
         if (anims) {
             for (size_t i = 0; i < anims->size();) {
                 bool finished = false;
-                keyframeProgress(anims->at(i), now, finished);
-                if (finished) {
+                bool inDelay = false;
+                keyframeProgress(anims->at(i), now, finished, inDelay);
+                EAnimationFillMode fill = anims->at(i).m_params.fillMode();
+                bool retainAfterEnd = (fill == AnimFillForwards || fill == AnimFillBoth);
+                if (finished && !retainAfterEnd) {
                     clearKeyframeStyles(anims->at(i));
                     anims->remove(i);
-                } else
+                    // The renderer currently holds the last animated frame. Mark
+                    // the element changed and recompute its base style so it
+                    // reverts (fill-mode none/backwards). We apply directly since
+                    // the animation timer runs outside the normal restyle cycle.
+                    if (renderer->node() && renderer->node()->isElementNode()) {
+                        Element* el = static_cast<Element*>(renderer->node());
+                        el->setChanged();
+                        if (m_document->styleSelector()) {
+                            RenderStyle* base = m_document->styleSelector()->styleForElement(el);
+                            if (base) {
+                                renderer->setAnimatedStyle(base);
+                                base->deref(m_document->renderArena());
+                            }
+                        }
+                    }
+                } else {
+                    // Finished + retained animations are marked filled so they
+                    // hold their final frame without keeping the timer alive.
+                    anims->at(i).m_filled = finished && retainAfterEnd;
                     ++i;
+                }
             }
             if (anims->isEmpty()) {
                 delete anims;
@@ -728,7 +799,21 @@ void AnimationController::animationTimerFired(Timer<AnimationController>*)
         }
     }
 
-    if (m_transitions.isEmpty() && m_keyframeAnimations.isEmpty())
+    // Stop the timer when nothing is still animating. Filled (finished+retained)
+    // keyframe animations stay in the map to hold their final frame, but they no
+    // longer require ticks, so they don't count as "live" here.
+    bool anyLiveKeyframes = false;
+    {
+        HashMap<RenderObject*, Vector<RunningKeyframeAnimation>*>::iterator kend = m_keyframeAnimations.end();
+        for (HashMap<RenderObject*, Vector<RunningKeyframeAnimation>*>::iterator it = m_keyframeAnimations.begin();
+             it != kend && !anyLiveKeyframes; ++it) {
+            Vector<RunningKeyframeAnimation>* a = it->second;
+            for (size_t i = 0; i < a->size(); ++i) {
+                if (!a->at(i).m_filled) { anyLiveKeyframes = true; break; }
+            }
+        }
+    }
+    if (m_transitions.isEmpty() && !anyLiveKeyframes)
         m_timer.stop();
 }
 
