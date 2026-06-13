@@ -145,10 +145,17 @@ RenderObject 子类 / CSS 属性 / 独立模块（可补），还是需要改渲
   opacity）均完成；3e-2 filter 颜色矩阵交 picasso 增强（docs/picasso-color-filter-
   request.md）。多重背景后置。
 
-### 阶段 3：基础 Web API（P2）
+### 阶段 3：基础 Web API（P2）—— ✅ 已完成（2026-06-13）
 
 - localStorage、Fetch、WebSocket、HTML5 表单控件
 - **完成标志**：轻交互 Web App（取数据、存状态）能跑。
+- 完成记录（见 docs/engine-capability-assessment-2026-06-11.md 进度更新）：
+  localStorage/sessionStorage（sqlite3 持久化）、Fetch、WebSocket（libcurl）、
+  XMLHttpRequest、HTML5 表单（input 类型 + 约束验证）均完成；并附带补齐现代 DOM
+  API（querySelector/classList/dataset/getComputedStyle/getBoundingClientRect/
+  MutationObserver/matches/closest/addEventListener）与 CSS calc()、自定义属性+var()。
+- 后续候选：transition/animation（需评估帧调度）、IntersectionObserver、
+  requestAnimationFrame、<video>/<audio>。
 
 ### 安全加固（贯穿全程，见第三节）
 

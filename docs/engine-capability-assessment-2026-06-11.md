@@ -153,3 +153,77 @@ Chrome/Safari（2024 引擎）相比，在 CSS 广度、DOM API、动态能力�
    即阶段 3 主体；XHR 已提供过渡能力）。
 
 dataset / getBoundingClientRect 等零散 DOM API 可随阶段 3 顺带补齐。
+
+---
+
+# 进度更新（2026-06-13，Web API + 自定义属性里程碑后）
+
+继地基补全（4a/4b）之后，又完成了阶段 3（基础 Web API）、一批现代 DOM API、以及
+CSS 自定义属性 + var() 完整里程碑。以下据代码实测更新。
+
+## 自上次更新后新补齐
+
+| 能力 | 状态 | 说明 |
+|------|------|------|
+| **CSS 自定义属性 + var()** | ✅ | :root 令牌继承、var(--x, fallback)、嵌套 var、var-in-calc、循环防护；CSSOM get/setProperty('--x') |
+| **localStorage / sessionStorage** | ✅ | 基于 sqlite3 持久化（storage/，~320 行） |
+| **Fetch API** | ✅ | fetch() + Response text/json（bindings/qjs/qjs_fetch） |
+| **WebSocket** | ✅ | over libcurl（websockets/，含二进制帧） |
+| **XMLHttpRequest** | ✅ | 798 行实质实现（AJAX 基线） |
+| **MutationObserver** | ✅ | childList/attributes/characterData/subtree |
+| **getComputedStyle / getBoundingClientRect** | ✅ | |
+| **dataset / classList** | ✅ | |
+| **addEventListener / removeEventListener / dispatchEvent**（Element） | ✅ | |
+| **matches / closest** | ✅ | |
+| **HTML5 表单** | ✅ | input 类型识别 + 约束验证 + date/color picker 钩子 |
+| **TLS 证书校验** | ✅ | 有 CA store 时校验 |
+
+## 工具链成果（战略意义）
+
+三个代码生成器全部修复为可干净重新生成，并消除了对应文件的 SEC-001 路径泄露：
+- **tokenizer**（flex + maketokenizer，修复 flex 2.6.x 兼容）
+- **grammar**（bison 3.5，去 DeprecatedString）
+- **QJS 绑定**（generate-bindings.pl，正确 defines）
+
+这让后续 DOM/CSS/Web API 扩展成本大幅下降。
+
+## 仍存在的差距（更新后）
+
+### CSS —— 当前最大空白是「动态」
+- **transition / animation：仍完全缺失**（属性名都未注册）。这是现存最大的单一 CSS
+  空白，也是现代 UI「感觉现代」的关键。**但**：与软件渲染架构的关系需评估——
+  动画需要帧调度/重绘循环，属于 roadmap 中需谨慎评估的类别。
+- writing-mode（国际化纵排）、aspect-ratio、object-fit、clip-path、backdrop-filter、
+  mix-blend-mode、:is()/:where()/:has()：仍缺。
+- filter 颜色矩阵：已交 picasso 增强（3e-2，待 picasso 实现）。
+
+### DOM / Web API —— 接近现代基线
+- 现代查询/操作/存储/网络/观察 API 基本齐全。
+- 仍可补：IntersectionObserver、ResizeObserver、History API、requestAnimationFrame
+  （后者与动画/帧调度相关）。
+
+### 多媒体 / HTML5 元素
+- 仍缺：<video> / <audio>（media 元素）、<canvas> 已有、<template>/<dialog> 缺。
+
+## 差距分类（更新）
+
+| 维度 | 状态 | 差距 |
+|------|------|------|
+| 核心布局 / 选择器 / CSS 视觉静态 | 接近追平常用子集 | 小 |
+| CSS 基础设施（calc / var） | ✅ 已补 | 小 |
+| **CSS 动态（transition / animation）** | **缺失** | **大（最大单一空白）** |
+| 现代 DOM API | ✅ 主力齐全 | 小 |
+| 存储 / 网络（localStorage/Fetch/WS/XHR） | ✅ 已补 | 小 |
+| JS 语言（QuickJS ES2020+） | 现代 | 小 |
+| 多媒体 / 新 HTML5 元素 | 部分缺失 | 中 |
+| 帧调度 / requestAnimationFrame | 缺失 | 中（与动画相关） |
+
+## 更新后的判断
+
+Agave 在**静态页面渲染 + 现代脚本交互 + 数据存取**上已达到「现代可信内容浏览器」
+的实用线：现代页面能正确布局、视觉接近、脚本能查询/操作 DOM、能取数据、能存状态。
+
+**当前最高优先的方向是 transition / animation**——它是现存最大的单一能力空白，
+直接决定页面「是否感觉现代」。但需先评估其与软件渲染架构的契合度（帧调度、
+重绘循环、是否需要 requestAnimationFrame 基础设施），可能需要像评估 filter 那样
+先做可行性调研再定方案。
