@@ -303,7 +303,7 @@ JSValue JSHTMLTableSectionElementPrototypeFunction::callAsFunction(JSContext* ct
 HTMLTableSectionElement* toHTMLTableSectionElement(JSValue val)
 {
     if (JS_IsObject(val)) {
-        HTMLTableSectionElement* impl = (HTMLTableSectionElement*)JS_GetOpaque(val, JSHTMLTableSectionElement::js_class_id);
+        HTMLTableSectionElement* impl = (HTMLTableSectionElement*)JS_GetOpaque(val, JSNode::js_class_id);
         return impl;
     } else {
         return 0;

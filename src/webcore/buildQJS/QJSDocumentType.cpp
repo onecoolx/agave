@@ -220,7 +220,7 @@ JSValue JSDocumentType::getConstructor(JSContext *ctx)
 DocumentType* toDocumentType(JSValue val)
 {
     if (JS_IsObject(val)) {
-        DocumentType* impl = (DocumentType*)JS_GetOpaque(val, JSDocumentType::js_class_id);
+        DocumentType* impl = (DocumentType*)JS_GetOpaque(val, JSNode::js_class_id);
         return impl;
     } else {
         return 0;

@@ -344,7 +344,7 @@ JSValue JSHTMLElement::getConstructor(JSContext *ctx)
 HTMLElement* toHTMLElement(JSValue val)
 {
     if (JS_IsObject(val)) {
-        HTMLElement* impl = (HTMLElement*)JS_GetOpaque(val, JSHTMLElement::js_class_id);
+        HTMLElement* impl = (HTMLElement*)JS_GetOpaque(val, JSNode::js_class_id);
         return impl;
     } else {
         return 0;

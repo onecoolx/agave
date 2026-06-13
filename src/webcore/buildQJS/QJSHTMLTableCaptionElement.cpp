@@ -179,7 +179,7 @@ JSValue JSHTMLTableCaptionElement::getConstructor(JSContext *ctx)
 HTMLTableCaptionElement* toHTMLTableCaptionElement(JSValue val)
 {
     if (JS_IsObject(val)) {
-        HTMLTableCaptionElement* impl = (HTMLTableCaptionElement*)JS_GetOpaque(val, JSHTMLTableCaptionElement::js_class_id);
+        HTMLTableCaptionElement* impl = (HTMLTableCaptionElement*)JS_GetOpaque(val, JSNode::js_class_id);
         return impl;
     } else {
         return 0;

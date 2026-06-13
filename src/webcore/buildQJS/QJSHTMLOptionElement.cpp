@@ -253,7 +253,7 @@ JSValue JSHTMLOptionElement::getConstructor(JSContext *ctx)
 HTMLOptionElement* toHTMLOptionElement(JSValue val)
 {
     if (JS_IsObject(val)) {
-        HTMLOptionElement* impl = (HTMLOptionElement*)JS_GetOpaque(val, JSHTMLOptionElement::js_class_id);
+        HTMLOptionElement* impl = (HTMLOptionElement*)JS_GetOpaque(val, JSNode::js_class_id);
         return impl;
     } else {
         return 0;
