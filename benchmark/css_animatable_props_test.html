@@ -1,0 +1,43 @@
+<html>
+<head><style>
+#pos { position:absolute; left:0px; top:0px; width:40px; height:40px; background:#ccc;
+       transition: left 1s linear, top 1s linear; }
+#bord { width:40px; height:40px; border:0px solid #000;
+        transition: border-top-width 1s linear, border-left-width 1s linear; }
+@keyframes recolor { from { background-color: rgb(0,0,0); } to { background-color: rgb(200,100,40); } }
+#bg { width:40px; height:40px; background-color: rgb(0,0,0); animation: recolor 1s linear; }
+@keyframes sizing { from { min-width: 50px; } to { min-width: 250px; } }
+#mw { display:inline-block; width:10px; height:40px; background:#eee; min-width:50px; animation: sizing 1s linear; }
+</style></head>
+<body>
+<div id="pos">pos</div>
+<div id="bord">bord</div>
+<div id="bg">bg</div>
+<div id="mw">mw</div>
+<script>
+var results = [];
+function near(name, actual, expected, tol) {
+  var ok = Math.abs(actual - expected) <= tol;
+  results.push(name + (ok ? ':PASS' : ':FAIL([' + actual + ']!=[' + expected + '+-' + tol + '])'));
+}
+
+var pos = document.getElementById('pos');
+var bord = document.getElementById('bord');
+// Trigger transitions.
+pos.style.left = '200px'; pos.style.top = '100px';
+bord.style.borderTopWidth = '40px'; bord.style.borderLeftWidth = '20px';
+
+setTimeout(function() {
+  near('left-mid', pos.offsetLeft, 100, 35);
+  near('top-mid', pos.offsetTop, 50, 25);
+  // border increases the element's outer box; offsetWidth = content(40)+borders.
+  near('border-mid', bord.offsetHeight, 40 + 20, 18);  // +~20 top border at half of 40
+  var bg = window.getComputedStyle(document.getElementById('bg')).backgroundColor;
+  results.push('bgcolor:' + (bg.indexOf('rgb(') === 0 && bg !== 'rgb(0, 0, 0)' && bg !== 'rgb(200, 100, 40)' ? 'PASS' : 'FAIL([' + bg + '])'));
+  near('minwidth-mid', document.getElementById('mw').offsetWidth, 150, 45);
+  var ok = results.every(function(s){return s.indexOf('PASS')>=0;});
+  alert((ok ? 'ALL PASS' : 'FAILURES') + '|' + results.join('|'));
+}, 500);
+</script>
+</body>
+</html>

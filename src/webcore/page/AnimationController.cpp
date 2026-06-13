@@ -141,6 +141,19 @@ static bool propertyDiffers(int property, RenderStyle* a, RenderStyle* b)
         case CSS_PROP_PADDING_LEFT: return a->paddingLeft() != b->paddingLeft();
         case CSS_PROP_PADDING_RIGHT: return a->paddingRight() != b->paddingRight();
         case CSS_PROP_COLOR: return !(a->color() == b->color());
+        case CSS_PROP_BACKGROUND_COLOR: return !(a->backgroundColor() == b->backgroundColor());
+        case CSS_PROP_LEFT: return a->left() != b->left();
+        case CSS_PROP_RIGHT: return a->right() != b->right();
+        case CSS_PROP_TOP: return a->top() != b->top();
+        case CSS_PROP_BOTTOM: return a->bottom() != b->bottom();
+        case CSS_PROP_MIN_WIDTH: return a->minWidth() != b->minWidth();
+        case CSS_PROP_MAX_WIDTH: return a->maxWidth() != b->maxWidth();
+        case CSS_PROP_MIN_HEIGHT: return a->minHeight() != b->minHeight();
+        case CSS_PROP_MAX_HEIGHT: return a->maxHeight() != b->maxHeight();
+        case CSS_PROP_BORDER_LEFT_WIDTH: return a->borderLeftWidth() != b->borderLeftWidth();
+        case CSS_PROP_BORDER_RIGHT_WIDTH: return a->borderRightWidth() != b->borderRightWidth();
+        case CSS_PROP_BORDER_TOP_WIDTH: return a->borderTopWidth() != b->borderTopWidth();
+        case CSS_PROP_BORDER_BOTTOM_WIDTH: return a->borderBottomWidth() != b->borderBottomWidth();
         case CSS_PROP__WEBKIT_TRANSFORM: return a->transformOperations() != b->transformOperations();
         default: return false;
     }
@@ -188,6 +201,45 @@ static void applyBlendedProperty(int property, RenderStyle* dst,
         case CSS_PROP_COLOR:
             dst->setColor(blendColor(from->color(), to->color(), p));
             break;
+        case CSS_PROP_BACKGROUND_COLOR:
+            dst->setBackgroundColor(blendColor(from->backgroundColor(), to->backgroundColor(), p));
+            break;
+        case CSS_PROP_LEFT:
+            dst->setLeft(blendLength(from->left(), to->left(), p));
+            break;
+        case CSS_PROP_RIGHT:
+            dst->setRight(blendLength(from->right(), to->right(), p));
+            break;
+        case CSS_PROP_TOP:
+            dst->setTop(blendLength(from->top(), to->top(), p));
+            break;
+        case CSS_PROP_BOTTOM:
+            dst->setBottom(blendLength(from->bottom(), to->bottom(), p));
+            break;
+        case CSS_PROP_MIN_WIDTH:
+            dst->setMinWidth(blendLength(from->minWidth(), to->minWidth(), p));
+            break;
+        case CSS_PROP_MAX_WIDTH:
+            dst->setMaxWidth(blendLength(from->maxWidth(), to->maxWidth(), p));
+            break;
+        case CSS_PROP_MIN_HEIGHT:
+            dst->setMinHeight(blendLength(from->minHeight(), to->minHeight(), p));
+            break;
+        case CSS_PROP_MAX_HEIGHT:
+            dst->setMaxHeight(blendLength(from->maxHeight(), to->maxHeight(), p));
+            break;
+        case CSS_PROP_BORDER_LEFT_WIDTH:
+            dst->setBorderLeftWidth((unsigned short)max(0, blendInt(from->borderLeftWidth(), to->borderLeftWidth(), p)));
+            break;
+        case CSS_PROP_BORDER_RIGHT_WIDTH:
+            dst->setBorderRightWidth((unsigned short)max(0, blendInt(from->borderRightWidth(), to->borderRightWidth(), p)));
+            break;
+        case CSS_PROP_BORDER_TOP_WIDTH:
+            dst->setBorderTopWidth((unsigned short)max(0, blendInt(from->borderTopWidth(), to->borderTopWidth(), p)));
+            break;
+        case CSS_PROP_BORDER_BOTTOM_WIDTH:
+            dst->setBorderBottomWidth((unsigned short)max(0, blendInt(from->borderBottomWidth(), to->borderBottomWidth(), p)));
+            break;
         case CSS_PROP__WEBKIT_TRANSFORM:
             dst->setTransformOperations(blendTransforms(from->transformOperations(), to->transformOperations(), p));
             break;
@@ -202,7 +254,12 @@ static const int kAnimatableProps[] = {
     CSS_PROP_OPACITY, CSS_PROP_WIDTH, CSS_PROP_HEIGHT,
     CSS_PROP_MARGIN_TOP, CSS_PROP_MARGIN_BOTTOM, CSS_PROP_MARGIN_LEFT, CSS_PROP_MARGIN_RIGHT,
     CSS_PROP_PADDING_TOP, CSS_PROP_PADDING_BOTTOM, CSS_PROP_PADDING_LEFT, CSS_PROP_PADDING_RIGHT,
-    CSS_PROP_COLOR, CSS_PROP__WEBKIT_TRANSFORM
+    CSS_PROP_COLOR, CSS_PROP_BACKGROUND_COLOR,
+    CSS_PROP_LEFT, CSS_PROP_RIGHT, CSS_PROP_TOP, CSS_PROP_BOTTOM,
+    CSS_PROP_MIN_WIDTH, CSS_PROP_MAX_WIDTH, CSS_PROP_MIN_HEIGHT, CSS_PROP_MAX_HEIGHT,
+    CSS_PROP_BORDER_LEFT_WIDTH, CSS_PROP_BORDER_RIGHT_WIDTH,
+    CSS_PROP_BORDER_TOP_WIDTH, CSS_PROP_BORDER_BOTTOM_WIDTH,
+    CSS_PROP__WEBKIT_TRANSFORM
 };
 static const int kNumAnimatableProps = sizeof(kAnimatableProps) / sizeof(kAnimatableProps[0]);
 
@@ -301,9 +358,14 @@ static bool findTransitionForProperty(const TransitionList& list, int property, 
         const Transition& t = list[i];
         if (t.isAll()) {
             if (!found) { out = t; found = true; }
-        } else if (t.property() == property) {
-            out = t;
-            return true; // explicit match takes precedence
+        } else {
+            // Normalize the unprefixed "transform" alias to the internal
+            // -webkit-transform id used throughout the style system.
+            int declProp = (t.property() == CSS_PROP_TRANSFORM) ? CSS_PROP__WEBKIT_TRANSFORM : t.property();
+            if (declProp == property) {
+                out = t;
+                return true; // explicit match takes precedence
+            }
         }
     }
     return found;

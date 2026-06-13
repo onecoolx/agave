@@ -30,6 +30,7 @@
 #include "RenderObject.h"
 #include "RenderStyle.h"
 #include "Animation.h"
+#include "Color.h"
 
 #if ENABLE(CSS_TRANSITIONS)
 
@@ -279,6 +280,59 @@ TEST_F(AnimationParseTest, TransformKeyframeInterpolates)
     // Midpoint of 0 -> 200 is ~100; allow generous tolerance for timing jitter.
     EXPECT_GT(ops[0].x, 40.0f);
     EXPECT_LT(ops[0].x, 170.0f);
+}
+
+TEST_F(AnimationParseTest, OffsetAndBorderKeyframeInterpolate)
+{
+    loadHtml("<style>@keyframes mv {"
+             " from { left: 0px; border-top-width: 0px; }"
+             " to { left: 200px; border-top-width: 40px; } }</style>"
+             "<div id='a' style='position:absolute; left:0px; border:0px solid black;"
+             " width:50px;height:50px; animation: mv 1s linear;'>x</div>");
+
+    RenderStyle* s = styleById("a");
+    ASSERT_TRUE(s != 0);
+
+    for (int i = 0; i < 60; ++i) {
+        Test_EventDispatchOnce();
+        usleep(9000); // ~540ms
+    }
+
+    RenderStyle* mid = styleById("a");
+    ASSERT_TRUE(mid != 0);
+    // left ~100 (0->200 linear, half).
+    ASSERT_TRUE(mid->left().isFixed());
+    EXPECT_GT(mid->left().value(), 40);
+    EXPECT_LT(mid->left().value(), 170);
+    // border-top-width ~20 (0->40 linear, half).
+    EXPECT_GT((int)mid->borderTopWidth(), 8);
+    EXPECT_LT((int)mid->borderTopWidth(), 34);
+}
+
+TEST_F(AnimationParseTest, BackgroundColorKeyframeInterpolates)
+{
+    loadHtml("<style>@keyframes bg {"
+             " from { background-color: rgb(0,0,0); }"
+             " to { background-color: rgb(200,100,50); } }</style>"
+             "<div id='a' style='width:50px;height:50px; background-color:rgb(0,0,0);"
+             " animation: bg 1s linear;'>x</div>");
+
+    RenderStyle* s = styleById("a");
+    ASSERT_TRUE(s != 0);
+
+    for (int i = 0; i < 60; ++i) {
+        Test_EventDispatchOnce();
+        usleep(9000);
+    }
+
+    RenderStyle* mid = styleById("a");
+    ASSERT_TRUE(mid != 0);
+    Color c = mid->backgroundColor();
+    // Midpoint ~ rgb(100, 50, 25); generous tolerance for timing jitter.
+    EXPECT_GT(c.red(), 40);
+    EXPECT_LT(c.red(), 160);
+    EXPECT_GT(c.green(), 18);
+    EXPECT_LT(c.green(), 82);
 }
 
 #endif // ENABLE(CSS_TRANSITIONS)
