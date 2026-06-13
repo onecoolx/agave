@@ -836,11 +836,11 @@ JSValue JSElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst 
 Element* toElement(JSValue val)
 {
     if (JS_IsObject(val)) {
-        Node* node = (Node*)JS_GetOpaque(val, JSNode::js_class_id);
-        if (node && node->isElementNode())
-            return (Element*)node;
+        Element* impl = (Element*)JS_GetOpaque(val, JSNode::js_class_id);
+        return impl;
+    } else {
+        return 0;
     }
-    return 0;
 }
 
 }

@@ -33,6 +33,10 @@ namespace WebCore {
 
 class Node;
 
+class Element;
+class Attr;
+class EventTargetNode;
+
 class JSNode {
 public:
     static void init(JSContext*);

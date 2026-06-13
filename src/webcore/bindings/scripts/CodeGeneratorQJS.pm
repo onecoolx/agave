@@ -252,6 +252,14 @@ sub AddClassForwardIfNeeded
 
     # SVGAnimatedLength/Number/etc.. are typedefs to SVGAnimtatedTemplate, so don't use class forwards for them!
     push(@headerContent, "class $implClassName;\n\n") unless $codeGenerator->IsSVGAnimatedType($implClassName);
+
+    # Node's header declares inline toJS overloads for these subclasses, so
+    # forward-declare them here to keep the generated header self-contained.
+    if ($implClassName eq "Node") {
+        push(@headerContent, "class Element;\n");
+        push(@headerContent, "class Attr;\n");
+        push(@headerContent, "class EventTargetNode;\n\n");
+    }
 }
 
 sub IsSVGTypeNeedingContextParameter
@@ -527,7 +535,15 @@ sub GenerateHeader
         } elsif (IsSVGTypeNeedingContextParameter($implClassName)) {
             push(@headerContent, "JSValue toJS(JSContext *ctx, $passType, SVGElement* context);\n");
         } elsif ($interfaceName eq "Node") {
-            push(@headerContent, "JSValue toJS(JSContext *ctx, PassRefPtr<Node>);\n");
+            # toJS for nodes is defined as toJS(Node*) in QJSNodeCustom.cpp.
+            # Emit that declaration plus inline convenience overloads for the
+            # PassRefPtr and common node subclasses, so callers passing those
+            # types link without ambiguity.
+            push(@headerContent, "JSValue toJS(JSContext *ctx, Node* ptr);\n");
+            push(@headerContent, "inline JSValue toJS(JSContext *ctx, PassRefPtr<Node> p) { return toJS(ctx, p.get()); }\n");
+            push(@headerContent, "inline JSValue toJS(JSContext *ctx, Element* p) { return toJS(ctx, static_cast<Node*>(p)); }\n");
+            push(@headerContent, "inline JSValue toJS(JSContext *ctx, Attr* p) { return toJS(ctx, static_cast<Node*>(p)); }\n");
+            push(@headerContent, "inline JSValue toJS(JSContext *ctx, EventTargetNode* p) { return toJS(ctx, static_cast<Node*>(p)); }\n");
         } else {
             push(@headerContent, "JSValue toJS(JSContext *ctx, $passType);\n");
         }
@@ -1255,7 +1271,12 @@ sub GenerateImplementation
         push(@implContent, "{\n");
 
         push(@implContent, "    if (JS_IsObject(val)) {\n");
-        push(@implContent, "        ${implClassName}* impl = (${implClassName}*)JS_GetOpaque(val, ${className}::js_class_id);\n");
+        # All DOM node wrappers share JSNode::js_class_id; the per-subclass
+        # ${className}::js_class_id is only an alias that stays 0 until a plain
+        # wrapper of that exact class is created, so it cannot be used for the
+        # opaque lookup. Use the shared node class id for node subclasses.
+        my $opaqueClassId = $object->IsNodeSubclass($dataNode) ? "JSNode::js_class_id" : "${className}::js_class_id";
+        push(@implContent, "        ${implClassName}* impl = (${implClassName}*)JS_GetOpaque(val, ${opaqueClassId});\n");
         push(@implContent, "        return " .($podType ? "($podType) *" : "") ."impl;\n");
         push(@implContent, "    } else {\n");
         push(@implContent, "        return ");
