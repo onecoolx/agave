@@ -132,3 +132,39 @@ TEST_F(StructuralSelectorTest, FirstChildStillWorks)
     EXPECT_EQ(widthById("a"), 90);
     EXPECT_EQ(widthById("b"), 10);
 }
+
+TEST_F(StructuralSelectorTest, IsMatchesAnyInList)
+{
+    loadHtml("<style>*{width:10px;} :is(h1, .title){width:100px;}</style>"
+             "<h1 id='a'>A</h1><div class='title' id='b'>B</div><p id='c'>C</p>");
+    EXPECT_EQ(widthById("a"), 100); // matches h1
+    EXPECT_EQ(widthById("b"), 100); // matches .title
+    EXPECT_EQ(widthById("c"), 10); // matches neither
+}
+
+TEST_F(StructuralSelectorTest, WhereMatchesAnyInList)
+{
+    // span is inline by default (width would not apply), so force inline-block.
+    loadHtml("<style>span{display:inline-block;} *{width:10px;} :where(p, span){width:70px;}</style>"
+             "<p id='a'>A</p><span id='b'>B</span><div id='c'>C</div>");
+    EXPECT_EQ(widthById("a"), 70);
+    EXPECT_EQ(widthById("b"), 70);
+    EXPECT_EQ(widthById("c"), 10);
+}
+
+TEST_F(StructuralSelectorTest, IsWithDescendantCombinator)
+{
+    loadHtml("<style>*{width:10px;} .box :is(h1, p){width:120px;}</style>"
+             "<div class='box'><h1 id='a'>A</h1><p id='b'>B</p></div><p id='c'>C</p>");
+    EXPECT_EQ(widthById("a"), 120); // h1 inside .box
+    EXPECT_EQ(widthById("b"), 120); // p inside .box
+    EXPECT_EQ(widthById("c"), 10); // p outside .box
+}
+
+TEST_F(StructuralSelectorTest, HasMatchesByDescendant)
+{
+    loadHtml("<style>div{width:10px;} div:has(.flag){width:200px;}</style>"
+             "<div id='a'><span class='flag'>F</span></div><div id='b'><span>N</span></div>");
+    EXPECT_EQ(widthById("a"), 200); // has a .flag descendant
+    EXPECT_EQ(widthById("b"), 10); // no .flag descendant
+}

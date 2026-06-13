@@ -92,6 +92,9 @@ void CSSSelector::extractPseudoType() const
     static AtomicString nthOfType("nth-of-type(");
     static AtomicString nthLastChild("nth-last-child(");
     static AtomicString nthLastOfType("nth-last-of-type(");
+    static AtomicString isStr("is(");
+    static AtomicString whereStr("where(");
+    static AtomicString hasStr("has(");
     static AtomicString focus("focus");
     static AtomicString hover("hover");
     static AtomicString indeterminate("indeterminate");
@@ -191,6 +194,12 @@ void CSSSelector::extractPseudoType() const
         m_pseudoType = PseudoLang;
     else if (m_value == notStr)
         m_pseudoType = PseudoNot;
+    else if (m_value == isStr)
+        m_pseudoType = PseudoIs;
+    else if (m_value == whereStr)
+        m_pseudoType = PseudoWhere;
+    else if (m_value == hasStr)
+        m_pseudoType = PseudoHas;
     else if (m_value == root)
         m_pseudoType = PseudoRoot;
     else if (m_value == searchCancelButton) {

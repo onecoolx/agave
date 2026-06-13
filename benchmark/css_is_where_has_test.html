@@ -1,0 +1,48 @@
+<html>
+<head><style>
+* { box-sizing: border-box; margin: 0; }
+.row { width: 100px; height: 20px; }
+/* :is() groups selectors */
+:is(.lead, .hero) .row { width: 200px; }
+/* :where() (zero specificity in spec; here matches like :is) */
+:where(section) .row { width: 150px; }
+/* :has() relational: a card containing a .badge is wider */
+.card { width: 100px; height: 30px; }
+.card:has(.badge) { width: 300px; }
+/* nested :is inside :has */
+.panel:has(:is(.error, .warn)) { width: 250px; height: 30px; }
+.panel { width: 100px; height: 30px; }
+</style></head>
+<body>
+<div class="lead"><div class="row" id="r1">1</div></div>
+<div class="hero"><div class="row" id="r2">2</div></div>
+<div class="plain"><div class="row" id="r3">3</div></div>
+<div class="card" id="c1"><span class="badge">B</span>card1</div>
+<div class="card" id="c2">card2</div>
+<div class="panel" id="p1"><span class="error">E</span>panel1</div>
+<div class="panel" id="p2"><span class="ok">O</span>panel2</div>
+<script>
+var r=[];
+function ck(n,a,e){r.push(n+':'+(a===e?'PASS':'FAIL(['+a+']!=['+e+'])'));}
+function W(id){return document.getElementById(id).offsetWidth;}
+
+// :is(.lead, .hero) .row matches r1, r2 but not r3
+ck('is-lead', W('r1'), 200);
+ck('is-hero', W('r2'), 200);
+ck('is-plain', W('r3'), 100);
+// :has(.badge) matches c1 not c2
+ck('has-badge', W('c1'), 300);
+ck('has-nobadge', W('c2'), 100);
+// :has(:is(.error, .warn)) matches p1 not p2
+ck('has-is', W('p1'), 250);
+ck('has-is-no', W('p2'), 100);
+
+// querySelectorAll with :is/:has
+ck('qsa-is', document.querySelectorAll(':is(.lead, .hero)').length, 2);
+ck('qsa-has', document.querySelectorAll('.card:has(.badge)').length, 1);
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

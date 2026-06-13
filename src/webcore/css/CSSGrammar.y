@@ -218,6 +218,9 @@ static int cssyylex(YYSTYPE* yylval, void*) { return CSSParser::current()->lex(y
 %token <string> URI
 %token <string> FUNCTION
 %token <string> NOTFUNCTION
+%token <string> ISFUNCTION
+%token <string> WHEREFUNCTION
+%token <string> HASFUNCTION
 
 %token <string> UNICODERANGE
 
@@ -947,6 +950,46 @@ pseudo:
             $$->m_simpleSelector = p->sinkFloatingSelector($4);
             $2.lower();
             $$->m_value = atomicString($2);
+        }
+    }
+    // used by :is() / :where() / :has(): a forgiving selector list argument.
+    // The list head is stored in m_simpleSelector and its alternatives are
+    // chained via m_nextSelector (as in a comma-separated selector list).
+    // Dedicated tokens (ISFUNCTION/WHEREFUNCTION/HASFUNCTION) avoid ambiguity
+    // with the generic FUNCTION rules (:lang/:nth-*).
+    | ':' ISFUNCTION maybe_space selector_list ')' {
+        CSSParser* p = static_cast<CSSParser*>(parser);
+        if (!$4)
+            $$ = 0;
+        else {
+            $$ = p->createFloatingSelector();
+            $$->m_match = CSSSelector::PseudoClass;
+            $$->m_simpleSelector = p->sinkFloatingSelector($4);
+            $$->m_value = AtomicString("is(");
+        }
+    }
+    | ':' WHEREFUNCTION maybe_space selector_list ')' {
+        CSSParser* p = static_cast<CSSParser*>(parser);
+        if (!$4)
+            $$ = 0;
+        else {
+            $$ = p->createFloatingSelector();
+            $$->m_match = CSSSelector::PseudoClass;
+            $$->m_simpleSelector = p->sinkFloatingSelector($4);
+            $$->m_value = AtomicString("where(");
+        }
+    }
+    | ':' HASFUNCTION maybe_space selector_list ')' {
+        CSSParser* p = static_cast<CSSParser*>(parser);
+        if (!$4)
+            $$ = 0;
+        else {
+            $$ = p->createFloatingSelector();
+            $$->m_match = CSSSelector::PseudoClass;
+            $$->m_simpleSelector = p->sinkFloatingSelector($4);
+            $$->m_value = AtomicString("has(");
+            if (Document* doc = p->document())
+                doc->setUsesSiblingRules(true); // :has re-eval on subtree changes
         }
     }
   ;

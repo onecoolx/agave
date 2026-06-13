@@ -100,7 +100,10 @@ extern int cssyydebug;
     URI = 304,
     FUNCTION = 305,
     NOTFUNCTION = 306,
-    UNICODERANGE = 307
+    ISFUNCTION = 307,
+    WHEREFUNCTION = 308,
+    HASFUNCTION = 309,
+    UNICODERANGE = 310
   };
 #endif
 
@@ -132,7 +135,7 @@ union YYSTYPE
     Vector<MediaQueryExp*>* mediaQueryExpList;
     MediaQuery::Restrictor mediaQueryRestrictor;
 
-#line 134 "CSSGrammar.tab.h"
+#line 137 "CSSGrammar.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

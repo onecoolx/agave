@@ -1782,6 +1782,30 @@ bool CSSStyleSelector::checkOneSelector(CSSSelector* sel, Element* e, bool isAnc
                 }
                 break;
             }
+            case CSSSelector::PseudoIs:
+            case CSSSelector::PseudoWhere: {
+                // Matches if the element matches any selector in the argument
+                // list. (:where has zero specificity, but this engine's cascade
+                // does not track that distinction.)
+                for (CSSSelector* arg = sel->m_simpleSelector; arg; arg = arg->next()) {
+                    if (checkSelector(arg, e, isAncestor, true) == SelectorMatches)
+                        return true;
+                }
+                break;
+            }
+            case CSSSelector::PseudoHas: {
+                // Relational: matches if any descendant of e matches the
+                // argument selector list (the common :has(...) case). Scoped to
+                // e's subtree.
+                for (CSSSelector* arg = sel->m_simpleSelector; arg; arg = arg->next()) {
+                    for (Node* n = e->traverseNextNode(e); n; n = n->traverseNextNode(e)) {
+                        if (n->isElementNode()
+                            && checkSelector(arg, static_cast<Element*>(n), true, true) == SelectorMatches)
+                            return true;
+                    }
+                }
+                break;
+            }
             case CSSSelector::PseudoUnknown:
             case CSSSelector::PseudoNotParsed:
             default:
