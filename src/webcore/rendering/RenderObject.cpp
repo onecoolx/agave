@@ -31,6 +31,7 @@
 #include "CachedImage.h"
 #include "Chrome.h"
 #include "Document.h"
+#include "AnimationController.h"
 #include "Element.h"
 #include "EventHandler.h"
 #include "EventNames.h"
@@ -202,6 +203,9 @@ RenderObject::RenderObject(Node* node)
     , m_hasOverflowClip(false)
     , m_hasOverrideSize(false)
     , m_hasCounterNodeMap(false)
+#if ENABLE(CSS_TRANSITIONS)
+    , m_settingAnimatedStyle(false)
+#endif
 {
 #ifndef NDEBUG
     ++RenderObjectCounter::count;
@@ -2155,6 +2159,23 @@ void RenderObject::setStyle(RenderStyle* style)
     if (m_style == style)
         return;
 
+#if ENABLE(CSS_TRANSITIONS)
+    // Transition hook: when a non-animated style is applied and the element has
+    // newly-triggered (or running) transitions, replace the incoming style with
+    // a blended style for the current instant. The re-entry guard prevents the
+    // controller's own updates from restarting transitions.
+    if (!m_settingAnimatedStyle && m_style && style && document()) {
+        RenderStyle* blended = document()->animationController()->updateTransitions(this, m_style, style);
+        if (blended) {
+            m_settingAnimatedStyle = true;
+            setStyle(blended); // re-enter once to apply the blended style normally
+            m_settingAnimatedStyle = false;
+            blended->deref(renderArena());
+            return;
+        }
+    }
+#endif
+
     bool affectsParentBlock = false;
     RenderStyle::Diff d = RenderStyle::Equal;
     if (m_style) {
@@ -2323,6 +2344,16 @@ void RenderObject::setStyleInternal(RenderStyle* style)
         m_style->ref();
 }
 
+#if ENABLE(CSS_TRANSITIONS)
+void RenderObject::setAnimatedStyle(RenderStyle* style)
+{
+    // Route through setStyle so layout/repaint hints fire correctly, but guard
+    // against the transition hook re-triggering on this controller-driven change.
+    m_settingAnimatedStyle = true;
+    setStyle(style);
+    m_settingAnimatedStyle = false;
+}
+#endif
 void RenderObject::updateBackgroundImages(RenderStyle* oldStyle)
 {
     // FIXME: This will be slow when a large number of images is used.  Fix by using a dict.
@@ -2521,6 +2552,13 @@ void RenderObject::destroy()
 
     if (m_hasCounterNodeMap)
         RenderCounter::destroyCounterNodes(this);
+
+#if ENABLE(CSS_TRANSITIONS)
+    // Drop any running transitions so the controller never dereferences this
+    // soon-to-be-freed renderer.
+    if (document() && document()->existingAnimationController())
+        document()->existingAnimationController()->clearRenderer(this);
+#endif
 
     // By default no ref-counting. RenderWidget::destroy() doesn't call
     // this function because it needs to do ref-counting. If anything

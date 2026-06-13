@@ -588,3 +588,11 @@ fill
 contain
 cover
 scale-down
+# CSS transition timing-function and property keywords
+ease
+ease-in
+ease-out
+ease-in-out
+linear
+cubic-bezier
+all

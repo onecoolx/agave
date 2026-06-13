@@ -141,6 +141,11 @@ text-underline-width, CSS_PROP_TEXT_UNDERLINE_WIDTH
 top, CSS_PROP_TOP
 transform, CSS_PROP_TRANSFORM
 transform-origin, CSS_PROP_TRANSFORM_ORIGIN
+transition, CSS_PROP_TRANSITION
+transition-delay, CSS_PROP_TRANSITION_DELAY
+transition-duration, CSS_PROP_TRANSITION_DURATION
+transition-property, CSS_PROP_TRANSITION_PROPERTY
+transition-timing-function, CSS_PROP_TRANSITION_TIMING_FUNCTION
 unicode-bidi, CSS_PROP_UNICODE_BIDI
 vertical-align, CSS_PROP_VERTICAL_ALIGN
 visibility, CSS_PROP_VISIBILITY

@@ -52,7 +52,7 @@ public:
     virtual bool isPendingSubstitutionValue() const { return false; }
     virtual bool isImplicitInitialValue() const { return false; }
     virtual bool isCustomPropertyValue() const { return false; }
-};
+    virtual bool isTransitionsValue() const { return false; }};
 
 } // namespace WebCore
 

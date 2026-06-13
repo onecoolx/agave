@@ -383,4 +383,11 @@ fill, CSS_VAL_FILL
 contain, CSS_VAL_CONTAIN
 cover, CSS_VAL_COVER
 scale-down, CSS_VAL_SCALE_DOWN
+ease, CSS_VAL_EASE
+ease-in, CSS_VAL_EASE_IN
+ease-out, CSS_VAL_EASE_OUT
+ease-in-out, CSS_VAL_EASE_IN_OUT
+linear, CSS_VAL_LINEAR
+cubic-bezier, CSS_VAL_CUBIC_BEZIER
+all, CSS_VAL_ALL
 %%

@@ -33,6 +33,7 @@
 #include "CSSValueKeywords.h"
 #include "Comment.h"
 #include "CookieJar.h"
+#include "AnimationController.h"
 #include "DOMImplementation.h"
 #include "DocLoader.h"
 #include "DocumentFragment.h"
@@ -305,6 +306,9 @@ Document::Document(DOMImplementation* impl, Frame* frame, bool isXHTML)
 
     m_frame = frame;
     m_renderArena = 0;
+#if ENABLE(CSS_TRANSITIONS)
+    m_animationController = 0;
+#endif
 
     // FIXME: DocLoader probably no longer needs the frame argument
     m_docLoader = new DocLoader(frame, this);
@@ -430,6 +434,12 @@ Document::~Document()
     delete m_styleSelector;
     delete m_docLoader;
     
+#if ENABLE(CSS_TRANSITIONS)
+    // Destroy before the arena: the controller holds arena-allocated styles.
+    delete m_animationController;
+    m_animationController = 0;
+#endif
+
     if (m_renderArena) {
         delete m_renderArena;
         m_renderArena = 0;
@@ -464,6 +474,15 @@ void Document::resetLinkColor()
 {
     m_linkColor = Color(0, 0, 238);
 }
+
+#if ENABLE(CSS_TRANSITIONS)
+AnimationController* Document::animationController()
+{
+    if (!m_animationController)
+        m_animationController = new AnimationController(this);
+    return m_animationController;
+}
+#endif
 
 void Document::resetVisitedLinkColor()
 {

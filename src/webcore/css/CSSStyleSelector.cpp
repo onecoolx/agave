@@ -45,6 +45,7 @@
 #include "CSSValueKeywords.h"
 #include "CSSValueList.h"
 #include "CSSCustomPropertyValue.h"
+#include "CSSTransitionsValue.h"
 #include "StyleCustomPropertyData.h"
 #include "CSSPendingSubstitutionValue.h"
 #include "CSSMutableStyleDeclaration.h"
@@ -4435,6 +4436,24 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
             default: break;
         }
         return;
+#if ENABLE(CSS_TRANSITIONS)
+    case CSS_PROP_TRANSITION:
+    case CSS_PROP_TRANSITION_PROPERTY:
+    case CSS_PROP_TRANSITION_DURATION:
+    case CSS_PROP_TRANSITION_DELAY:
+    case CSS_PROP_TRANSITION_TIMING_FUNCTION:
+        if (isInherit) {
+            style->setTransitions(parentStyle->transitions());
+            return;
+        }
+        if (isInitial) {
+            style->clearTransitions();
+            return;
+        }
+        if (value->isTransitionsValue())
+            style->setTransitions(static_cast<CSSTransitionsValue*>(value)->transitions());
+        return;
+#endif
     case CSS_PROP_BOX_SIZING:
     case CSS_PROP__WEBKIT_BOX_SIZING:
         HANDLE_INHERIT_AND_INITIAL(boxSizing, BoxSizing)

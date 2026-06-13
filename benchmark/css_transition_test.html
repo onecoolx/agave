@@ -1,0 +1,58 @@
+<html>
+<head><style>
+#op { width:100px; height:100px; opacity:1; transition: opacity 1s linear; }
+#wd { width:100px; height:50px; background:#ccc; transition: width 1s linear; }
+#co { width:100px; height:50px; color:rgb(0,0,0); transition: color 1s linear; }
+#ei { width:100px; height:50px; opacity:1; transition: opacity 1s ease-in; }
+</style></head>
+<body>
+<div id="op">opacity</div>
+<div id="wd">width</div>
+<div id="co">color</div>
+<div id="ei">ease-in</div>
+<script>
+var results = [];
+function near(name, actual, expected, tol) {
+  var ok = Math.abs(actual - expected) <= tol;
+  results.push(name + (ok ? ':PASS' : ':FAIL([' + actual.toFixed(3) + ']!=[' + expected + '+-' + tol + '])'));
+}
+
+var op = document.getElementById('op');
+var wd = document.getElementById('wd');
+var co = document.getElementById('co');
+var ei = document.getElementById('ei');
+
+// Trigger all transitions.
+op.style.opacity = '0';      // 1 -> 0 linear
+wd.style.width = '300px';    // 100 -> 300 linear
+co.style.color = 'rgb(200,0,0)'; // 0 -> 200 red linear
+ei.style.opacity = '0';      // ease-in: slow start
+
+// Sample at ~500ms (mid-transition).
+setTimeout(function() {
+  var opMid = parseFloat(window.getComputedStyle(op).opacity);
+  near('opacity-mid', opMid, 0.5, 0.15);
+
+  var wdMid = wd.offsetWidth;
+  near('width-mid', wdMid, 200, 40);
+
+  // ease-in at 0.5 progresses less than linear, so opacity (1->0) stays higher.
+  var eiMid = parseFloat(window.getComputedStyle(ei).opacity);
+  near('easein-slow-start', eiMid, 0.8, 0.2); // above linear's 0.5
+
+  // Sample again near the end (~1100ms total) for final values.
+  setTimeout(function() {
+    var opEnd = parseFloat(window.getComputedStyle(op).opacity);
+    near('opacity-end', opEnd, 0.0, 0.05);
+    var wdEnd = wd.offsetWidth;
+    near('width-end', wdEnd, 300, 5);
+    var eiEnd = parseFloat(window.getComputedStyle(ei).opacity);
+    near('easein-end', eiEnd, 0.0, 0.05);
+
+    var ok = results.every(function(s) { return s.indexOf('PASS') >= 0; });
+    alert((ok ? 'ALL PASS' : 'FAILURES') + '|' + results.join('|'));
+  }, 700);
+}, 500);
+</script>
+</body>
+</html>

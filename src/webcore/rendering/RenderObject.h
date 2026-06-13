@@ -518,6 +518,13 @@ public:
     // Set the style of the object and update the state of the object accordingly.
     virtual void setStyle(RenderStyle*);
 
+#if ENABLE(CSS_TRANSITIONS)
+    // Applies a style produced by the animation controller. Goes through the
+    // normal style-change machinery (layout/repaint) but is flagged so the
+    // controller's setStyle hook does not recursively restart transitions.
+    void setAnimatedStyle(RenderStyle*);
+#endif
+
     // Updates only the local style ptr of the object.  Does not update the state of the object,
     // and so only should be called when the style is known not to have changed (or from setStyle).
     void setStyleInternal(RenderStyle*);
@@ -903,6 +910,9 @@ private:
     
 public:
     bool m_hasCounterNodeMap         : 1;
+#if ENABLE(CSS_TRANSITIONS)
+    bool m_settingAnimatedStyle      : 1; // re-entry guard for the animation controller
+#endif
 };
 
 inline int adjustForAbsoluteZoom(int value, RenderObject* renderer)

@@ -42,6 +42,7 @@
 #include "CSSMutableStyleDeclaration.h"
 #include "CSSPrimitiveValue.h"
 #include "CSSCustomPropertyValue.h"
+#include "CSSTransitionsValue.h"
 #include "CSSProperty.h"
 #include "CSSPropertyNames.h"
 #include "CSSQuirkPrimitiveValue.h"
@@ -75,6 +76,10 @@ using namespace std;
 using namespace WTF;
 
 namespace WebCore {
+
+// Defined in the generated CSSPropertyNames lookup; maps a property name to its
+// CSS_PROP_* id (0 if unknown).
+int getPropertyID(const char* str, int len);
 
 ValueList::~ValueList()
 {
@@ -1388,6 +1393,14 @@ bool CSSParser::parseValue(int propId, bool important)
     case CSS_PROP_ASPECT_RATIO:         // auto | <number> [ / <number> ]
         return parseAspectRatio(important);
 
+#if ENABLE(CSS_TRANSITIONS)
+    case CSS_PROP_TRANSITION:
+    case CSS_PROP_TRANSITION_PROPERTY:
+    case CSS_PROP_TRANSITION_DURATION:
+    case CSS_PROP_TRANSITION_DELAY:
+    case CSS_PROP_TRANSITION_TIMING_FUNCTION:
+        return parseTransition(propId, important);
+#endif
     case CSS_PROP_FLEX_DIRECTION:        // row | row-reverse | column | column-reverse
         if (id == CSS_VAL_ROW || id == CSS_VAL_ROW_REVERSE ||
             id == CSS_VAL_COLUMN || id == CSS_VAL_COLUMN_REVERSE)
@@ -2784,6 +2797,164 @@ bool CSSParser::parseAspectRatio(bool important)
                 new CSSPrimitiveValue(width / height, CSSPrimitiveValue::CSS_NUMBER), important);
     return true;
 }
+
+#if ENABLE(CSS_TRANSITIONS)
+// Parses one timing-function token (a keyword or cubic-bezier(...)). On success
+// fills tf and returns true. Does not advance past the token.
+static bool parseOneTimingFunction(Value* v, TimingFunction& tf)
+{
+    if (!v)
+        return false;
+    if (v->unit == Value::QFunction && v->function) {
+        String name = domString(v->function->name).lower();
+        if (name != "cubic-bezier(")
+            return false;
+        ValueList* args = v->function->args;
+        // The tokenizer may or may not retain the commas between arguments, so
+        // accept either form and simply collect the four numeric components.
+        // Use explicit indexing rather than current()/next(), since the arg
+        // list's internal cursor may have been advanced by earlier traversal.
+        if (!args || (args->size() != 4 && args->size() != 7))
+            return false;
+        double c[4];
+        int ci = 0;
+        for (unsigned k = 0; k < args->size(); ++k) {
+            Value* a = args->valueAt(k);
+            if (!a)
+                return false;
+            if (a->unit == Value::Operator && a->iValue == ',')
+                continue;
+            if (a->unit != CSSPrimitiveValue::CSS_NUMBER || ci >= 4)
+                return false;
+            c[ci++] = a->fValue;
+        }
+        if (ci != 4)
+            return false;
+        // x control points must be within [0,1] per spec.
+        if (c[0] < 0 || c[0] > 1 || c[2] < 0 || c[2] > 1)
+            return false;
+        tf = TimingFunction(c[0], c[1], c[2], c[3]);
+        return true;
+    }
+    switch (v->id) {
+        case CSS_VAL_LINEAR: tf = TimingFunction::linear(); return true;
+        case CSS_VAL_EASE: tf = TimingFunction::ease(); return true;
+        case CSS_VAL_EASE_IN: tf = TimingFunction::easeIn(); return true;
+        case CSS_VAL_EASE_OUT: tf = TimingFunction::easeOut(); return true;
+        case CSS_VAL_EASE_IN_OUT: tf = TimingFunction::easeInOut(); return true;
+        default: return false;
+    }
+}
+
+// Reads a time value (s or ms) from v into seconds. Returns false if v is not a
+// valid time.
+static bool parseTimeSeconds(Value* v, double& seconds)
+{
+    if (!v)
+        return false;
+    if (v->unit == CSSPrimitiveValue::CSS_S) {
+        seconds = v->fValue;
+        return true;
+    }
+    if (v->unit == CSSPrimitiveValue::CSS_MS) {
+        seconds = v->fValue / 1000.0;
+        return true;
+    }
+    return false;
+}
+
+bool CSSParser::parseTransition(int propId, bool important)
+{
+    const int kMaxTransitions = 64; // guard against pathological input
+    TransitionList list;
+
+    // The transition shorthand and longhands are comma-separated lists. We walk
+    // the value list, splitting on commas into per-entry sub-sequences.
+    Value* value = valueList->current();
+    if (!value)
+        return false;
+
+    Transition current;
+    bool sawDuration = false; // first time value is duration, second is delay
+    bool entryHasContent = false;
+
+    while (value) {
+        if (value->unit == Value::Operator && value->iValue == ',') {
+            // End of one entry.
+            if (!entryHasContent)
+                return false;
+            if ((int)list.size() >= kMaxTransitions)
+                return false;
+            list.append(current);
+            current = Transition();
+            sawDuration = false;
+            entryHasContent = false;
+            value = valueList->next();
+            continue;
+        }
+
+        entryHasContent = true;
+
+        // For the `transition` shorthand any of property/duration/timing/delay
+        // may appear; longhands restrict what is accepted. We accept the union
+        // and let the caller route by propId.
+        double seconds = 0;
+        TimingFunction tf;
+        if (propId == CSS_PROP_TRANSITION_DURATION
+            || propId == CSS_PROP_TRANSITION_DELAY
+            || ((propId == CSS_PROP_TRANSITION) && parseTimeSeconds(value, seconds))) {
+            if (!parseTimeSeconds(value, seconds))
+                return false;
+            if (propId == CSS_PROP_TRANSITION_DELAY) {
+                current.setDelay(seconds);
+            } else if (propId == CSS_PROP_TRANSITION_DURATION) {
+                current.setDuration(seconds);
+            } else {
+                // shorthand: first time = duration, second = delay
+                if (!sawDuration) { current.setDuration(seconds); sawDuration = true; }
+                else current.setDelay(seconds);
+            }
+        } else if (propId == CSS_PROP_TRANSITION_TIMING_FUNCTION
+                   || ((propId == CSS_PROP_TRANSITION) && parseOneTimingFunction(value, tf))) {
+            if (!parseOneTimingFunction(value, tf))
+                return false;
+            current.setTimingFunction(tf);
+        } else if (propId == CSS_PROP_TRANSITION_PROPERTY || propId == CSS_PROP_TRANSITION) {
+            // A property name keyword, "all", or "none".
+            if (value->id == CSS_VAL_ALL) {
+                current.setAll();
+            } else if (value->id == CSS_VAL_NONE) {
+                current.setProperty(0); // none: explicit no-op entry
+            } else if (value->unit == CSSPrimitiveValue::CSS_IDENT || value->unit == CSSPrimitiveValue::CSS_STRING) {
+                String name = domString(value->string);
+                CString utf8 = name.utf8();
+                int id = getPropertyID(utf8.data(), utf8.length());
+                if (id <= 0)
+                    return false;
+                current.setProperty(id);
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+
+        value = valueList->next();
+    }
+
+    // Append the final entry.
+    if (entryHasContent) {
+        if ((int)list.size() >= kMaxTransitions)
+            return false;
+        list.append(current);
+    }
+    if (list.isEmpty())
+        return false;
+
+    addProperty(propId, new CSSTransitionsValue(list), important);
+    return true;
+}
+#endif // ENABLE(CSS_TRANSITIONS)
 
 CSSValue* CSSParser::parseFilter()
 {

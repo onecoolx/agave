@@ -382,5 +382,12 @@ WebCore::String getValueName(unsigned short id);
 #define CSS_VAL_CONTAIN 373
 #define CSS_VAL_COVER 374
 #define CSS_VAL_SCALE_DOWN 375
-#define CSS_VAL_TOTAL 376
+#define CSS_VAL_EASE 376
+#define CSS_VAL_EASE_IN 377
+#define CSS_VAL_EASE_OUT 378
+#define CSS_VAL_EASE_IN_OUT 379
+#define CSS_VAL_LINEAR 380
+#define CSS_VAL_CUBIC_BEZIER 381
+#define CSS_VAL_ALL 382
+#define CSS_VAL_TOTAL 383
 #endif

@@ -142,6 +142,11 @@ text-underline-width
 top
 transform
 transform-origin
+transition
+transition-delay
+transition-duration
+transition-property
+transition-timing-function
 unicode-bidi
 vertical-align
 visibility

@@ -162,6 +162,13 @@ namespace WebCore {
         // (0 means auto/none). Returns true on success.
         bool parseAspectRatio(bool important);
 
+#if ENABLE(CSS_TRANSITIONS)
+        // CSS transition shorthand and longhands. Parses the comma-separated
+        // transition list (or a single longhand) and adds the corresponding
+        // CSS_PROP_TRANSITION* properties. Returns true on success.
+        bool parseTransition(int propId, bool important);
+#endif
+
         // CSS calc(): flattens an expression to a linear (percent, pixels) form
         // and returns a CSSPrimitiveValue of type CSS_CALC, or 0 on failure.
         CSSPrimitiveValue* parseCalc(Value* function);

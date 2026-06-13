@@ -633,6 +633,9 @@ StyleRareNonInheritedData::StyleRareNonInheritedData(const StyleRareNonInherited
     , marquee(o.marquee)
     , m_multiCol(o.m_multiCol)
     , m_transform(o.m_transform)
+#if ENABLE(CSS_TRANSITIONS)
+    , m_transitions(o.m_transitions)
+#endif
     , m_content(0)
     , m_counterDirectives(0)
     , userDrag(o.userDrag)
@@ -694,6 +697,9 @@ bool StyleRareNonInheritedData::operator==(const StyleRareNonInheritedData& o) c
         && m_appearance == o.m_appearance
         && m_borderFit == o.m_borderFit
         && shadowDataEquivalent(o)
+#if ENABLE(CSS_TRANSITIONS)
+        && m_transitions == o.m_transitions
+#endif
 #if ENABLE(XBL)
         && bindingsEquivalent(o)
 #endif

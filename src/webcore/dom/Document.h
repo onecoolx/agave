@@ -52,6 +52,7 @@ namespace WebCore {
     class DocLoader;
     class DocumentFragment;
     class DocumentType;
+    class AnimationController;
     class EditingText;
     class Element;
     class EntityReference;
@@ -344,6 +345,11 @@ public:
     virtual void detach();
 
     RenderArena* renderArena() { return m_renderArena; }
+#if ENABLE(CSS_TRANSITIONS)
+    AnimationController* animationController();
+    // Non-creating accessor: returns 0 if no controller has been instantiated.
+    AnimationController* existingAnimationController() const { return m_animationController; }
+#endif
 
     
     // to get visually ordered hebrew and arabic pages right
@@ -771,6 +777,9 @@ private:
     RefPtr<Element> m_titleElement;
     
     RenderArena* m_renderArena;
+#if ENABLE(CSS_TRANSITIONS)
+    AnimationController* m_animationController;
+#endif
 
     typedef std::pair<Vector<DocumentMarker>, Vector<IntRect> > MarkerMapVectorPair;
     typedef HashMap<RefPtr<Node>, MarkerMapVectorPair*> MarkerMap;

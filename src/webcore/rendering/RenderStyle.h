@@ -55,6 +55,10 @@
 #include "SVGRenderStyle.h"
 #endif
 
+#if ENABLE(CSS_TRANSITIONS)
+#include "Animation.h"
+#endif
+
 template<typename T, typename U> inline bool compareEqual(const T& t, const U& u) { return t == static_cast<T>(u); }
 
 #define SET_VAR(group, variable, value) \
@@ -1105,6 +1109,10 @@ public:
     DataRef<StyleMultiColData> m_multiCol; //  CSS3 multicol properties
     DataRef<StyleTransformData> m_transform; // Transform properties (rotate, scale, skew, etc.)
 
+#if ENABLE(CSS_TRANSITIONS)
+    TransitionList m_transitions; // CSS transition declarations (empty = none).
+#endif
+
     ContentData* m_content;
     CounterDirectiveMap* m_counterDirectives;
 
@@ -1720,6 +1728,12 @@ public:
     float textStrokeWidth() const { return rareInheritedData->textStrokeWidth; }
     Color textFillColor() const { return rareInheritedData->textFillColor; }
     float opacity() const { return rareNonInheritedData->opacity; }
+#if ENABLE(CSS_TRANSITIONS)
+    const TransitionList& transitions() const { return rareNonInheritedData->m_transitions; }
+    bool hasTransitions() const { return !rareNonInheritedData->m_transitions.isEmpty(); }
+    void setTransitions(const TransitionList& list) { SET_VAR(rareNonInheritedData, m_transitions, list); }
+    void clearTransitions() { if (!rareNonInheritedData->m_transitions.isEmpty()) rareNonInheritedData.access()->m_transitions.clear(); }
+#endif
     float aspectRatio() const { return rareNonInheritedData->m_aspectRatio; }
     bool hasAspectRatio() const { return rareNonInheritedData->m_aspectRatio > 0; }
     EObjectFit objectFit() const { return static_cast<EObjectFit>(rareNonInheritedData->m_objectFit); }
