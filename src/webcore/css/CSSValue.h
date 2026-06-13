@@ -50,6 +50,7 @@ public:
     virtual bool isTransformValue() const { return false; }
     virtual bool isFilterValue() const { return false; }
     virtual bool isImplicitInitialValue() const { return false; }
+    virtual bool isCustomPropertyValue() const { return false; }
 };
 
 } // namespace WebCore

@@ -128,6 +128,8 @@ namespace WebCore {
         Document* document() const;
 
         void addProperty(int propId, PassRefPtr<CSSValue>, bool important);
+        // Stores a custom property ("--name: value") declaration (Stage A).
+        bool addCustomProperty(const String& name, bool important);
         void rollbackLastProperties(int num);
         bool hasProperties() const { return numParsedProperties > 0; }
 

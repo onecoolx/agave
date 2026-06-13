@@ -1014,6 +1014,24 @@ declaration:
         }
     }
     |
+    '-' IDENT ':' maybe_space expr prio {
+        /* Custom property: "--name: value". The leading "--" tokenizes as
+           '-' followed by an IDENT beginning with '-' (e.g. "-name"). Store the
+           declaration so it is not dropped (Stage A). */
+        $$ = false;
+        CSSParser* p = static_cast<CSSParser*>(parser);
+        if ($5) {
+            String ident = domString($2);
+            if (ident.length() > 1 && ident[0] == '-') {
+                String customName = String("-") + ident; /* reconstruct "--name" */
+                p->valueList = p->sinkFloatingValueList($5);
+                $$ = p->addCustomProperty(customName, $6);
+                delete p->valueList;
+                p->valueList = 0;
+            }
+        }
+    }
+    |
     property error {
         $$ = false;
     }

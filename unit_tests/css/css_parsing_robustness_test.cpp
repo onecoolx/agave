@@ -35,6 +35,8 @@
 #include "Element.h"
 #include "CSSComputedStyleDeclaration.h"
 #include "CSSPropertyNames.h"
+#include "CSSCustomPropertyValue.h"
+#include "CSSStyleDeclaration.h"
 #include <wtf/unicode/Unicode.h>
 
 using namespace WebCore;
@@ -184,4 +186,24 @@ TEST_F(CSSParsingRobustnessTest, EmptyRuleAndWhitespace)
 {
     loadHtml("<style>#a{}  #b{color:red;}   </style><div id='a'>x</div><div id='b'>y</div>");
     EXPECT_EQ(computed("b", "color"), "rgb(255, 0, 0)");
+}
+
+// Stage A: custom property declarations ("--name: value") are parsed and stored
+// (no longer dropped). Verified via the inline style declaration retaining a
+// CSSCustomPropertyValue with the correct name and value.
+TEST_F(CSSParsingRobustnessTest, CustomPropertyParsedAndStored)
+{
+    loadHtml("<div id='a' style='--brand:blue; color:red'>x</div>");
+    Element* e = byId("a");
+    ASSERT_TRUE(e);
+    CSSStyleDeclaration* style = e->style();
+    ASSERT_TRUE(style);
+    RefPtr<CSSValue> v = style->getPropertyCSSValue(CSS_PROP_CUSTOM_PROPERTY);
+    ASSERT_TRUE(v);
+    ASSERT_TRUE(v->isCustomPropertyValue());
+    CSSCustomPropertyValue* custom = static_cast<CSSCustomPropertyValue*>(v.get());
+    EXPECT_EQ(custom->name(), "--brand");
+    EXPECT_EQ(custom->value(), "blue");
+    // The regular declaration alongside it is unaffected.
+    EXPECT_EQ(computed("a", "color"), "rgb(255, 0, 0)");
 }

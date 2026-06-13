@@ -40,6 +40,7 @@
 #include "CSSMediaRule.h"
 #include "CSSMutableStyleDeclaration.h"
 #include "CSSPrimitiveValue.h"
+#include "CSSCustomPropertyValue.h"
 #include "CSSProperty.h"
 #include "CSSPropertyNames.h"
 #include "CSSQuirkPrimitiveValue.h"
@@ -382,6 +383,55 @@ void CSSParser::addProperty(int propId, PassRefPtr<CSSValue> value, bool importa
                                                        maxParsedProperties*sizeof(CSSProperty *));
     }
     parsedProperties[numParsedProperties++] = prop;
+}
+
+// Serializes the current parsed value list to text for a custom property value.
+// Stage A keeps a best-effort textual form (idents, numbers+units, hex colors,
+// functions, operators) so the value round-trips; precise token preservation is
+// refined in later stages when var() substitution needs it.
+static String serializeValueList(ValueList* valueList)
+{
+    String result;
+    if (!valueList)
+        return result;
+    bool first = true;
+    for (Value* v = valueList->current(); v; v = valueList->next()) {
+        String piece;
+        if (v->unit == Value::Operator) {
+            UChar c = (UChar)v->iValue;
+            piece = String(&c, 1);
+        } else if (v->unit == Value::QFunction && v->function) {
+            piece = domString(v->function->name); // includes "("
+            // Function args are flattened by the parser; emit name + ")" as a
+            // textual placeholder. Faithful function bodies come in Stage C.
+            piece += ")";
+        } else if (v->unit == CSSPrimitiveValue::CSS_STRING
+                   || v->unit == CSSPrimitiveValue::CSS_IDENT) {
+            piece = domString(v->string);
+        } else if (v->unit == CSSPrimitiveValue::CSS_NUMBER) {
+            piece = String::number(v->fValue);
+        } else if (v->unit == CSSPrimitiveValue::CSS_PX) {
+            piece = String::number(v->fValue) + "px";
+        } else if (v->string.characters && v->string.length) {
+            piece = domString(v->string);
+        } else {
+            piece = String::number(v->fValue);
+        }
+        if (!first && v->unit != Value::Operator)
+            result += " ";
+        result += piece;
+        first = false;
+    }
+    return result;
+}
+
+bool CSSParser::addCustomProperty(const String& name, bool important)
+{
+    if (name.isEmpty())
+        return false;
+    String value = serializeValueList(valueList);
+    addProperty(CSS_PROP_CUSTOM_PROPERTY, new CSSCustomPropertyValue(name, value), important);
+    return true;
 }
 
 void CSSParser::rollbackLastProperties(int num)
