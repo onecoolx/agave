@@ -276,3 +276,11 @@ flex-direction + grow/shrink/basis + justify-content + align-items，~4-5k 行�
 - aspect-ratio + object-fit ~250–450k
 - IntersectionObserver ~400–700k
 - transition+animation ~1.5–2.5M（先 ~150k 可行性调研）
+
+### 执行顺序决策（2026-06-13）
+
+现代选择器完成后，确定推进顺序：
+1. **A：aspect-ratio + object-fit**（下一步，低风险高频）。
+2. **C：writing-mode**（其后，国际化纵排）。
+3. **B：transition + animation**（最后，视预算而定；推进前先做 ~150k 可行性调研，
+   确认软渲染/无合成器架构能否承载帧驱动动画）。
