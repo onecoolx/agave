@@ -96,3 +96,22 @@ var() 属于 roadmap 类别 A(可在现有架构上补 —— 它是解析/存�
 3. 阶段 A(tokenizer)是关键试金石,建议先只做 A 再评估。
 
 > 本文档为评估与计划,**尚未动手实现**。等决策后按选定阶段推进。
+
+---
+
+## 进度
+
+- **阶段 A 完成**（commit ea147cb3）：tokenizer 支持 `--` token，CSSParser 接受
+  `--name: value` 并存入 CSSCustomPropertyValue（id = CSS_PROP_CUSTOM_PROPERTY）。
+- **阶段 B 完成**（2026-06-13）：RenderStyle 挂 StyleCustomPropertyData
+  （HashMap<String,String>，copy-on-write，inheritFrom 时共享父 map → 默认继承）。
+  CSSStyleSelector::applyProperty 对 CSS_PROP_CUSTOM_PROPERTY 写入 style 的 custom
+  map。
+  - 修复 bug：所有自定义属性共享 CSS_PROP_CUSTOM_PROPERTY 这一个 id，
+    CSSMutableStyleDeclaration::addParsedProperties 原会按 id removeProperty 去重，
+    导致同一声明里 `--a; --b` 的 `--a` 被 `--b` 覆盖。改为自定义属性不按 id 去重
+    （按名在级联时 last-wins）。
+  - 测试：4 单元测试（自身存储 / 默认继承 / 未知属性 / 子覆盖父）。758 全套通过。
+  - 退出标准达成：computed style（C++ 层）能读到自定义属性值，继承正确。
+- **阶段 C（var() 替换）**：待做。
+- **阶段 D（JS setProperty/getPropertyValue）**：待做。

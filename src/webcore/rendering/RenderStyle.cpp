@@ -21,6 +21,7 @@
 
 #include "config.h"
 #include "RenderStyle.h"
+#include "StyleCustomPropertyData.h"
 
 #include "AffineTransform.h"
 #include "CSSStyleSelector.h"
@@ -957,10 +958,37 @@ void RenderStyle::inheritFrom(const RenderStyle* inheritParent)
     rareInheritedData = inheritParent->rareInheritedData;
     inherited = inheritParent->inherited;
     inherited_flags = inheritParent->inherited_flags;
+    // Custom properties inherit by default: share the parent's map (COW).
+    m_customProperties = inheritParent->m_customProperties;
 #if ENABLE(SVG)
     if (m_svgStyle != inheritParent->m_svgStyle)
         m_svgStyle.access()->inheritFrom(inheritParent->m_svgStyle.get());
 #endif
+}
+
+void RenderStyle::setCustomProperty(const String& name, const String& value)
+{
+    // Copy-on-write: if the map is shared with the parent (or null), clone it
+    // before mutating so we don't corrupt inherited values.
+    if (!m_customProperties)
+        m_customProperties = StyleCustomPropertyData::create();
+    else if (m_customProperties->refCount() > 1)
+        m_customProperties = m_customProperties->copy();
+    m_customProperties->setProperty(name, value);
+}
+
+String RenderStyle::customProperty(const String& name, bool& found) const
+{
+    if (!m_customProperties) {
+        found = false;
+        return String();
+    }
+    return m_customProperties->getProperty(name, found);
+}
+
+bool RenderStyle::hasCustomProperties() const
+{
+    return m_customProperties && !m_customProperties->isEmpty();
 }
 
 RenderStyle::~RenderStyle()

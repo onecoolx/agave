@@ -27,6 +27,7 @@
 #include "CSSParser.h"
 #include "CSSProperty.h"
 #include "CSSPropertyNames.h"
+#include "CSSCustomPropertyValue.h"
 #include "CSSStyleSheet.h"
 #include "CSSValueList.h"
 #include "Document.h"
@@ -567,7 +568,12 @@ void CSSMutableStyleDeclaration::addParsedProperties(const CSSProperty * const *
     for (int i = 0; i < numProperties; ++i) {
         // Only add properties that have no !important counterpart present
         if (!getPropertyPriority(properties[i]->id()) || properties[i]->isImportant()) {
-            removeProperty(properties[i]->id(), false);
+            // Custom properties (--name) all share CSS_PROP_CUSTOM_PROPERTY as
+            // their id but are distinguished by name, so they must not dedup by
+            // id (otherwise a later --b would drop an earlier --a). The custom
+            // property map applies last-wins per name at cascade time.
+            if (properties[i]->id() != CSS_PROP_CUSTOM_PROPERTY)
+                removeProperty(properties[i]->id(), false);
             m_values.append(*properties[i]);
         }
     }

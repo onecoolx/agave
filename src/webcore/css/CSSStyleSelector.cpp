@@ -44,6 +44,8 @@
 #include "CSSStyleSheet.h"
 #include "CSSValueKeywords.h"
 #include "CSSValueList.h"
+#include "CSSCustomPropertyValue.h"
+#include "StyleCustomPropertyData.h"
 #include "CachedImage.h"
 #include "Counter.h"
 #include "DashboardRegion.h"
@@ -2158,6 +2160,16 @@ static EGridContent gridContentFromValue(int ident)
 
 void CSSStyleSelector::applyProperty(int id, CSSValue *value)
 {
+    // Custom property (--name): record its value into the style's custom-property
+    // map (inherited by default). Not a real RenderStyle field.
+    if (id == CSS_PROP_CUSTOM_PROPERTY) {
+        if (value->isCustomPropertyValue()) {
+            CSSCustomPropertyValue* custom = static_cast<CSSCustomPropertyValue*>(value);
+            style->setCustomProperty(custom->name(), custom->value());
+        }
+        return;
+    }
+
     CSSPrimitiveValue *primitiveValue = 0;
     if(value->isPrimitiveValue()) primitiveValue = static_cast<CSSPrimitiveValue*>(value);
 

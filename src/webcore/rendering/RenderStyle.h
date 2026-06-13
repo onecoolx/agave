@@ -73,6 +73,7 @@ class CachedResource;
 class CursorList;
 class Pair;
 class RenderArena;
+class StyleCustomPropertyData;
 class ShadowValue;
 class StringImpl;
 
@@ -1404,7 +1405,11 @@ protected:
 // inherited attributes
     DataRef<StyleRareInheritedData> rareInheritedData;
     DataRef<StyleInheritedData> inherited;
-    
+
+    // Custom properties (--name). Inherited by default; shared (copy-on-write)
+    // so the common no-custom-property case costs only a null RefPtr.
+    RefPtr<StyleCustomPropertyData> m_customProperties;
+
 // list of associated pseudo styles
     RenderStyle* pseudoStyle;
     
@@ -1468,6 +1473,11 @@ public:
     ~RenderStyle();
 
     void inheritFrom(const RenderStyle* inheritParent);
+
+    // Custom property (--name) accessors. Defined in RenderStyle.cpp.
+    void setCustomProperty(const String& name, const String& value);
+    String customProperty(const String& name, bool& found) const;
+    bool hasCustomProperties() const;
 
     PseudoId styleType() { return  static_cast<PseudoId>(noninherited_flags._styleType); }
     void setStyleType(PseudoId styleType) { noninherited_flags._styleType = styleType; }
