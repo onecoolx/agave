@@ -81,6 +81,49 @@ static Color blendColor(const Color& from, const Color& to, double p)
                  blendInt(from.alpha(), to.alpha(), p));
 }
 
+// Interpolates two transform operation lists component-wise when they are
+// "compatible" (same length and matching op types in order) -- the common case
+// for animating translate/scale/rotate/skew. Returns the blended list. When the
+// lists are incompatible we cannot do a meaningful component blend, so we jump
+// to the target at the midpoint (a discrete fallback).
+static bool transformListsCompatible(const Vector<TransformOperation>& a,
+                                     const Vector<TransformOperation>& b)
+{
+    if (a.size() != b.size())
+        return false;
+    for (size_t i = 0; i < a.size(); ++i) {
+        if (a[i].type != b[i].type)
+            return false;
+    }
+    return true;
+}
+
+static Vector<TransformOperation> blendTransforms(const Vector<TransformOperation>& from,
+                                                  const Vector<TransformOperation>& to, double p)
+{
+    if (!transformListsCompatible(from, to))
+        return (p < 0.5) ? from : to; // discrete fallback for incompatible lists
+
+    Vector<TransformOperation> result;
+    for (size_t i = 0; i < from.size(); ++i) {
+        const TransformOperation& f = from[i];
+        const TransformOperation& t = to[i];
+        TransformOperation op = t; // copy type and flags from target
+        op.x = (float)blendDouble(f.x, t.x, p);
+        op.y = (float)blendDouble(f.y, t.y, p);
+        op.angleX = (float)blendDouble(f.angleX, t.angleX, p);
+        op.angleY = (float)blendDouble(f.angleY, t.angleY, p);
+        op.ma = (float)blendDouble(f.ma, t.ma, p);
+        op.mb = (float)blendDouble(f.mb, t.mb, p);
+        op.mc = (float)blendDouble(f.mc, t.mc, p);
+        op.md = (float)blendDouble(f.md, t.md, p);
+        op.me = (float)blendDouble(f.me, t.me, p);
+        op.mf = (float)blendDouble(f.mf, t.mf, p);
+        result.append(op);
+    }
+    return result;
+}
+
 // Returns true if the named property differs between the two styles in a way we
 // know how to interpolate.
 static bool propertyDiffers(int property, RenderStyle* a, RenderStyle* b)
@@ -98,6 +141,7 @@ static bool propertyDiffers(int property, RenderStyle* a, RenderStyle* b)
         case CSS_PROP_PADDING_LEFT: return a->paddingLeft() != b->paddingLeft();
         case CSS_PROP_PADDING_RIGHT: return a->paddingRight() != b->paddingRight();
         case CSS_PROP_COLOR: return !(a->color() == b->color());
+        case CSS_PROP__WEBKIT_TRANSFORM: return a->transformOperations() != b->transformOperations();
         default: return false;
     }
 }
@@ -144,6 +188,9 @@ static void applyBlendedProperty(int property, RenderStyle* dst,
         case CSS_PROP_COLOR:
             dst->setColor(blendColor(from->color(), to->color(), p));
             break;
+        case CSS_PROP__WEBKIT_TRANSFORM:
+            dst->setTransformOperations(blendTransforms(from->transformOperations(), to->transformOperations(), p));
+            break;
         default:
             break;
     }
@@ -155,7 +202,7 @@ static const int kAnimatableProps[] = {
     CSS_PROP_OPACITY, CSS_PROP_WIDTH, CSS_PROP_HEIGHT,
     CSS_PROP_MARGIN_TOP, CSS_PROP_MARGIN_BOTTOM, CSS_PROP_MARGIN_LEFT, CSS_PROP_MARGIN_RIGHT,
     CSS_PROP_PADDING_TOP, CSS_PROP_PADDING_BOTTOM, CSS_PROP_PADDING_LEFT, CSS_PROP_PADDING_RIGHT,
-    CSS_PROP_COLOR
+    CSS_PROP_COLOR, CSS_PROP__WEBKIT_TRANSFORM
 };
 static const int kNumAnimatableProps = sizeof(kAnimatableProps) / sizeof(kAnimatableProps[0]);
 

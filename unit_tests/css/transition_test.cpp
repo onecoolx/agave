@@ -252,4 +252,33 @@ TEST_F(AnimationParseTest, MultipleAnimations)
     EXPECT_EQ(list[1].name(), String("b"));
 }
 
+// --- Transform interpolation (runs the controller over real time) -----------
+
+TEST_F(AnimationParseTest, TransformKeyframeInterpolates)
+{
+    loadHtml("<style>@keyframes mv { from { -webkit-transform: translate(0px, 0px); }"
+             " to { -webkit-transform: translate(200px, 0px); } }</style>"
+             "<div id='a' style='width:50px;height:50px; animation: mv 1s linear;'>x</div>");
+
+    RenderStyle* s = styleById("a");
+    ASSERT_TRUE(s != 0);
+
+    // Pump events for ~500ms of wall-clock time so the timer advances the
+    // animation roughly to its midpoint.
+    for (int i = 0; i < 60; ++i) {
+        Test_EventDispatchOnce();
+        usleep(9000); // ~9ms; 60 iterations ~= 540ms
+    }
+
+    RenderStyle* mid = styleById("a");
+    ASSERT_TRUE(mid != 0);
+    ASSERT_TRUE(mid->hasTransform());
+    const Vector<TransformOperation>& ops = mid->transformOperations();
+    ASSERT_EQ(ops.size(), (size_t)1);
+    EXPECT_EQ(ops[0].type, TransformOperation::TranslateOp);
+    // Midpoint of 0 -> 200 is ~100; allow generous tolerance for timing jitter.
+    EXPECT_GT(ops[0].x, 40.0f);
+    EXPECT_LT(ops[0].x, 170.0f);
+}
+
 #endif // ENABLE(CSS_TRANSITIONS)
