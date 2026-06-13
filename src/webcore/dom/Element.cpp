@@ -32,6 +32,7 @@
 #include "DOMTokenList.h"
 #include "ClientRect.h"
 #include "HTMLCollection.h"
+#include "MutationObserverRegistry.h"
 #include "Editor.h"
 #include "ExceptionCode.h"
 #include "FocusController.h"
@@ -611,7 +612,12 @@ void Element::setAttribute(const String& name, const String& value, ExceptionCod
 
     if (localName == idAttr.localName())
         updateId(old ? old->value() : nullAtom, value);
-    
+
+#if ENABLE(MUTATION_OBSERVERS)
+    String mutationOldValue = old ? String(old->value()) : String();
+    bool notifyMutation = MutationObserverRegistry::hasObservers();
+#endif
+
     if (old && value.isNull())
         namedAttrMap->removeAttribute(old->name());
     else if (!old && !value.isNull())
@@ -620,6 +626,11 @@ void Element::setAttribute(const String& name, const String& value, ExceptionCod
         old->setValue(value);
         attributeChanged(old);
     }
+
+#if ENABLE(MUTATION_OBSERVERS)
+    if (notifyMutation)
+        MutationObserverRegistry::notifyAttributeChanged(this, localName, mutationOldValue);
+#endif
 }
 
 void Element::setAttribute(const QualifiedName& name, StringImpl* value, ExceptionCode& ec)

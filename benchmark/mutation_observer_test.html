@@ -1,0 +1,57 @@
+<html>
+<body>
+<div id="target"></div>
+<div id="attr" data-x="old"></div>
+<div id="root"><div id="child"></div></div>
+<script>
+var r = [];
+function ck(n, a, e) { r.push(n + ':' + (a === e ? 'PASS' : 'FAIL(' + a + ')')); }
+function E(id) { return document.getElementById(id); }
+function done() {
+  var ok = r.every(function(s){ return s.indexOf('PASS') >= 0; });
+  alert((ok ? 'ALL PASS' : 'FAILURES') + '|' + r.join('|'));
+}
+
+ck('ctor-type', typeof MutationObserver, 'function');
+
+var childLog = [];
+var o1 = new MutationObserver(function(recs) {
+  for (var i = 0; i < recs.length; i++)
+    childLog.push(recs[i].type + ':' + recs[i].addedNodes.length);
+});
+o1.observe(E('target'), { childList: true });
+E('target').appendChild(document.createElement('span'));
+
+var attrLog = [];
+var o2 = new MutationObserver(function(recs) {
+  for (var i = 0; i < recs.length; i++)
+    attrLog.push(recs[i].attributeName + '=' + recs[i].oldValue);
+});
+o2.observe(E('attr'), { attributes: true, attributeOldValue: true });
+E('attr').setAttribute('data-x', 'new');
+
+var subtreeLog = [];
+var o3 = new MutationObserver(function(recs) { subtreeLog.push(recs.length); });
+o3.observe(E('root'), { childList: true, subtree: true });
+E('child').appendChild(document.createElement('b'));
+
+// takeRecords (synchronous) — use a separate element to avoid disturbing o1.
+var o4 = new MutationObserver(function(){});
+o4.observe(E('attr'), { childList: true });
+E('attr').appendChild(document.createElement('i'));
+var taken = o4.takeRecords();
+ck('takeRecords-len', taken.length, 1);
+o4.disconnect();
+
+// Async delivery happens on the microtask checkpoint; verify via setTimeout.
+setTimeout(function() {
+  ck('childList-delivered', childLog.length, 1);
+  ck('childList-added', childLog[0], 'childList:1');
+  ck('attr-delivered', attrLog.length, 1);
+  ck('attr-oldvalue', attrLog[0], 'data-x=old');
+  ck('subtree-delivered', subtreeLog.length, 1);
+  done();
+}, 200);
+</script>
+</body>
+</html>

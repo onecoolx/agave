@@ -23,6 +23,7 @@
 
 #include "config.h"
 #include "Node.h"
+#include "MutationObserverRegistry.h"
 
 #include "CString.h"
 #include "CSSParser.h"
@@ -210,6 +211,10 @@ Node::~Node()
     if (renderer())
         detach();
     delete m_nodeLists;
+#if ENABLE(MUTATION_OBSERVERS)
+    if (MutationObserverRegistry::hasObservers())
+        MutationObserverRegistry::nodeDestroyed(this);
+#endif
     if (m_previous)
         m_previous->setNextSibling(0);
     if (m_next)

@@ -21,6 +21,7 @@
 
 #include "config.h"
 #include "CharacterData.h"
+#include "MutationObserverRegistry.h"
 
 #include "Document.h"
 #include "EventNames.h"
@@ -230,6 +231,10 @@ void CharacterData::dispatchModifiedEvent(StringImpl *prevValue)
 {
     if (parentNode())
         parentNode()->childrenChanged();
+#if ENABLE(MUTATION_OBSERVERS)
+    if (MutationObserverRegistry::hasObservers())
+        MutationObserverRegistry::notifyCharacterDataChanged(this, String(prevValue));
+#endif
     if (document()->hasListenerType(Document::DOMCHARACTERDATAMODIFIED_LISTENER)) {
         StringImpl *newValue = str->copy();
         newValue->ref();

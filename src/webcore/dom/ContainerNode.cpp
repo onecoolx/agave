@@ -33,6 +33,7 @@
 #include "FrameView.h"
 #include "InlineTextBox.h"
 #include "MutationEvent.h"
+#include "MutationObserverRegistry.h"
 #include "RenderTheme.h"
 #include "RootInlineBox.h"
 #include "SystemTime.h"
@@ -892,6 +893,12 @@ static void dispatchChildInsertionEvents(Node* child, ExceptionCode& ec)
     RefPtr<Node> c = child;
     DocPtr<Document> doc = child->document();
 
+#if ENABLE(MUTATION_OBSERVERS)
+    if (MutationObserverRegistry::hasObservers() && c->parentNode())
+        MutationObserverRegistry::notifyChildListChanged(c->parentNode(), c.get(), 0,
+            c->previousSibling(), c->nextSibling());
+#endif
+
     if (c->parentNode() && c->parentNode()->inDocument())
         c->insertedIntoDocument();
     else
@@ -925,6 +932,13 @@ static void dispatchChildRemovalEvents(Node* child, ExceptionCode& ec)
 {
     RefPtr<Node> c = child;
     DocPtr<Document> doc = child->document();
+
+#if ENABLE(MUTATION_OBSERVERS)
+    // Capture siblings before the node is unlinked (this runs before removal).
+    if (MutationObserverRegistry::hasObservers() && c->parentNode())
+        MutationObserverRegistry::notifyChildListChanged(c->parentNode(), 0, c.get(),
+            c->previousSibling(), c->nextSibling());
+#endif
 
     // update auxiliary doc info (e.g. iterators) to note that node is being removed
     doc->notifyBeforeNodeRemoval(child); // ### use events instead
