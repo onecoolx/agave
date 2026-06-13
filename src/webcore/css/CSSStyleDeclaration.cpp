@@ -63,6 +63,12 @@ bool CSSStyleDeclaration::isStyleDeclaration()
     return true;
 }
 
+// A CSS custom property name starts with two dashes ("--foo").
+static inline bool isCustomPropertyName(const String& name)
+{
+    return name.length() > 2 && name[0] == '-' && name[1] == '-';
+}
+
 PassRefPtr<CSSValue> CSSStyleDeclaration::getPropertyCSSValue(const String& propertyName)
 {
     int propID = propertyID(propertyName);
@@ -73,7 +79,7 @@ PassRefPtr<CSSValue> CSSStyleDeclaration::getPropertyCSSValue(const String& prop
 
 String CSSStyleDeclaration::getPropertyValue(const String &propertyName)
 {
-    if (propertyName.length() > 2 && propertyName[0] == '-' && propertyName[1] == '-')
+    if (isCustomPropertyName(propertyName))
         return customPropertyValue(propertyName);
     int propID = propertyID(propertyName);
     if (!propID)
@@ -119,7 +125,7 @@ void CSSStyleDeclaration::setProperty(const String& propertyName, const String& 
 
 void CSSStyleDeclaration::setProperty(const String& propertyName, const String& value, const String& priority, ExceptionCode& ec)
 {
-    if (propertyName.length() > 2 && propertyName[0] == '-' && propertyName[1] == '-') {
+    if (isCustomPropertyName(propertyName)) {
         setCustomPropertyValue(propertyName, value);
         return;
     }
@@ -133,7 +139,7 @@ void CSSStyleDeclaration::setProperty(const String& propertyName, const String& 
 
 String CSSStyleDeclaration::removeProperty(const String& propertyName, ExceptionCode& ec)
 {
-    if (propertyName.length() > 2 && propertyName[0] == '-' && propertyName[1] == '-') {
+    if (isCustomPropertyName(propertyName)) {
         String old = customPropertyValue(propertyName);
         removeCustomProperty(propertyName);
         return old;
