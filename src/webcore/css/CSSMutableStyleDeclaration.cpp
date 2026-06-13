@@ -532,6 +532,39 @@ bool CSSMutableStyleDeclaration::setProperty(int propertyID, const String& value
     return success;
 }
 
+String CSSMutableStyleDeclaration::customPropertyValue(const String& name) const
+{
+    for (Deque<CSSProperty>::const_iterator it = m_values.begin(); it != m_values.end(); ++it) {
+        if (it->id() == CSS_PROP_CUSTOM_PROPERTY && it->value() && it->value()->isCustomPropertyValue()) {
+            CSSCustomPropertyValue* custom = static_cast<CSSCustomPropertyValue*>(it->value());
+            if (custom->name() == name)
+                return custom->value();
+        }
+    }
+    return String();
+}
+
+void CSSMutableStyleDeclaration::setCustomPropertyValue(const String& name, const String& value)
+{
+    removeCustomProperty(name);
+    if (!value.isEmpty())
+        m_values.append(CSSProperty(CSS_PROP_CUSTOM_PROPERTY, new CSSCustomPropertyValue(name, value), false));
+    setChanged(InlineStyleChange);
+}
+
+void CSSMutableStyleDeclaration::removeCustomProperty(const String& name)
+{
+    for (Deque<CSSProperty>::iterator it = m_values.begin(); it != m_values.end(); ++it) {
+        if (it->id() == CSS_PROP_CUSTOM_PROPERTY && it->value() && it->value()->isCustomPropertyValue()) {
+            CSSCustomPropertyValue* custom = static_cast<CSSCustomPropertyValue*>(it->value());
+            if (custom->name() == name) {
+                m_values.remove(it);
+                return;
+            }
+        }
+    }
+}
+
 bool CSSMutableStyleDeclaration::setProperty(int propertyID, int value, bool important, bool notifyChanged)
 {
     removeProperty(propertyID);

@@ -50,6 +50,8 @@ public:
     virtual int getPropertyShorthand(int propertyID) const { return -1; }
     virtual bool isPropertyImplicit(int propertyID) const { return true; }
 
+    virtual String customPropertyValue(const String& name) const;
+
     virtual PassRefPtr<CSSMutableStyleDeclaration> copy() const;
     virtual PassRefPtr<CSSMutableStyleDeclaration> makeMutable();
 

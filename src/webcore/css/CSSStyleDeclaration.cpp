@@ -73,6 +73,8 @@ PassRefPtr<CSSValue> CSSStyleDeclaration::getPropertyCSSValue(const String& prop
 
 String CSSStyleDeclaration::getPropertyValue(const String &propertyName)
 {
+    if (propertyName.length() > 2 && propertyName[0] == '-' && propertyName[1] == '-')
+        return customPropertyValue(propertyName);
     int propID = propertyID(propertyName);
     if (!propID)
         return String();
@@ -117,6 +119,10 @@ void CSSStyleDeclaration::setProperty(const String& propertyName, const String& 
 
 void CSSStyleDeclaration::setProperty(const String& propertyName, const String& value, const String& priority, ExceptionCode& ec)
 {
+    if (propertyName.length() > 2 && propertyName[0] == '-' && propertyName[1] == '-') {
+        setCustomPropertyValue(propertyName, value);
+        return;
+    }
     int propID = propertyID(propertyName);
     if (!propID)
         // FIXME: set exception?
@@ -127,6 +133,11 @@ void CSSStyleDeclaration::setProperty(const String& propertyName, const String& 
 
 String CSSStyleDeclaration::removeProperty(const String& propertyName, ExceptionCode& ec)
 {
+    if (propertyName.length() > 2 && propertyName[0] == '-' && propertyName[1] == '-') {
+        String old = customPropertyValue(propertyName);
+        removeCustomProperty(propertyName);
+        return old;
+    }
     int propID = propertyID(propertyName);
     if (!propID)
         return String();
@@ -169,6 +180,22 @@ PassRefPtr<CSSMutableStyleDeclaration> CSSStyleDeclaration::copyPropertiesInSet(
             list.append(CSSProperty(set[i], value.release(), false));
     }
     return new CSSMutableStyleDeclaration(0, list);
+}
+
+// Default custom-property hooks: declarations that do not support them treat
+// custom properties as absent / ignored. Mutable and computed declarations
+// override these.
+String CSSStyleDeclaration::customPropertyValue(const String&) const
+{
+    return String();
+}
+
+void CSSStyleDeclaration::setCustomPropertyValue(const String&, const String&)
+{
+}
+
+void CSSStyleDeclaration::removeCustomProperty(const String&)
+{
 }
 
 } // namespace WebCore

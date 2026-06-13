@@ -1763,6 +1763,20 @@ bool CSSComputedStyleDeclaration::getPropertyPriority(int /*propertyID*/) const
     return false;
 }
 
+String CSSComputedStyleDeclaration::customPropertyValue(const String& name) const
+{
+    Node* node = m_node.get();
+    if (!node)
+        return String();
+    node->document()->updateLayoutIgnorePendingStylesheets();
+    RenderStyle* style = node->computedStyle();
+    if (!style)
+        return String();
+    bool found = false;
+    String value = style->customProperty(name, found);
+    return found ? value : String();
+}
+
 String CSSComputedStyleDeclaration::removeProperty(int /*propertyID*/, ExceptionCode& ec)
 {
     ec = NO_MODIFICATION_ALLOWED_ERR;

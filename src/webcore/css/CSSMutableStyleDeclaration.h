@@ -62,6 +62,10 @@ public:
     virtual void setProperty(int propertyId, const String& value, bool important, ExceptionCode&);
     virtual String removeProperty(int propertyID, ExceptionCode&);
 
+    virtual String customPropertyValue(const String& name) const;
+    virtual void setCustomPropertyValue(const String& name, const String& value);
+    virtual void removeCustomProperty(const String& name);
+
     virtual PassRefPtr<CSSMutableStyleDeclaration> copy() const;
     virtual PassRefPtr<CSSMutableStyleDeclaration> makeMutable();
 

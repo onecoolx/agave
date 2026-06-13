@@ -137,3 +137,27 @@ var() 属于 roadmap 类别 A(可在现有架构上补 —— 它是解析/存�
     解析时序问题）。在 body 及任何其他元素上定义均正常继承。canonical 的
     `:root { --token }` 模式受此限制影响，待后续修复文档根继承时序。
 - **阶段 D（JS setProperty/getPropertyValue）**：待做。
+
+- **:root 继承修复**（2026-06-13）：根因是 RenderStyle::operator== 不比较
+  m_customProperties，导致文档根元素（html）仅自定义属性不同的新样式被 diff 判定
+  为"未变"而保留旧样式（无自定义属性），子元素遂继承不到。修复：operator== 增加
+  customPropertiesEqual()（按值比较 StyleCustomPropertyData，处理 null/empty/共享）。
+  现 canonical 的 `:root { --token }` 正确向后代继承并被 var() 解析。
+- **阶段 D 完成**（2026-06-13）：CSSOM 字符串 API 支持自定义属性。
+  - CSSStyleDeclaration 的 getPropertyValue/setProperty/removeProperty(String) 识别
+    `--` 前缀并路由到虚钩子 customPropertyValue/setCustomPropertyValue/
+    removeCustomProperty。
+  - CSSMutableStyleDeclaration（内联 style）在其属性列表中按名读写/删除
+    CSS_PROP_CUSTOM_PROPERTY 项。
+  - CSSComputedStyleDeclaration 从元素的 computed RenderStyle 的 custom map 读取
+    （getComputedStyle(el).getPropertyValue('--x') 可读继承到的 :root 令牌）。
+  - **附带修复预存绑定 bug**：QJSCSSStyleDeclaration 的 name-getter
+    （get_own_property）此前拦截所有属性名（含 getPropertyValue/setProperty 等方法
+    名），使这些 CSSOM 方法在 JS 中"not a function"。现排除方法名，让原型方法可达。
+  - 测试：2 CSSOM 单元测试 + 5 benchmark 断言（JS 读/写/删内联自定义属性、
+    computed 读 :root 令牌、常规 CSSOM 方法）。765 全套通过。
+
+## 里程碑完成
+
+CSS 自定义属性 + var() 四阶段（A 解析 / B 存储继承 / C var 替换 / D JS API）全部完成，
+含 :root 继承修复。canonical 设计令牌模式（:root{--token} + var() + JS 读写）端到端可用。

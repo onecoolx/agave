@@ -66,6 +66,12 @@ public:
     virtual void setProperty(int propertyId, const String& value, bool important, ExceptionCode&) = 0;
     virtual String removeProperty(int propertyID, ExceptionCode&) = 0;
 
+    // Custom property (--name) hooks for the Selectors/CSSOM string API.
+    // Default to no-op; mutable and computed declarations override.
+    virtual String customPropertyValue(const String& name) const;
+    virtual void setCustomPropertyValue(const String& name, const String& value);
+    virtual void removeCustomProperty(const String& name);
+
     virtual PassRefPtr<CSSMutableStyleDeclaration> copy() const = 0;
     virtual PassRefPtr<CSSMutableStyleDeclaration> makeMutable() = 0;
  

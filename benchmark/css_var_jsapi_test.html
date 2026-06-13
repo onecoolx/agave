@@ -1,0 +1,32 @@
+<html>
+<head><style>
+:root { --theme: 200px; }
+#box { width: var(--theme); height: 30px; }
+</style></head>
+<body>
+<div id="box">B</div>
+<div id="a" style="--local: 50px; width: 100px; height: 20px;">A</div>
+<script>
+var r=[];
+function ck(n,a,e){r.push(n+':'+(a===e?'PASS':'FAIL(['+a+']!=['+e+'])'));}
+
+var a = document.getElementById('a');
+// read inline custom property
+ck('read-inline', a.style.getPropertyValue('--local'), '50px');
+// set inline custom property
+a.style.setProperty('--local', '88px');
+ck('set-inline', a.style.getPropertyValue('--local'), '88px');
+// remove
+a.style.removeProperty('--local');
+var afterRemove = a.style.getPropertyValue('--local');
+r.push('removed:' + ((!afterRemove || afterRemove === '') ? 'PASS' : 'FAIL([' + afterRemove + '])'));
+// computed style reads inherited :root token
+ck('computed-root', getComputedStyle(document.getElementById('box')).getPropertyValue('--theme'), '200px');
+// regular CSSOM methods still work (pre-existing binding fix)
+ck('regular-method', a.style.getPropertyValue('width'), '100px');
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>

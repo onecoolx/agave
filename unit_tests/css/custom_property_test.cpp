@@ -29,6 +29,10 @@
 #include "test.h"
 #include "RenderObject.h"
 #include "RenderStyle.h"
+#include "Element.h"
+#include "CSSStyleDeclaration.h"
+#include "CSSComputedStyleDeclaration.h"
+#include "ExceptionCode.h"
 
 using namespace WebCore;
 
@@ -133,6 +137,17 @@ TEST_F(VarSubstitutionTest, FallbackWhenMissing)
     EXPECT_EQ(a->renderer()->width(), 180);
 }
 
+TEST_F(VarSubstitutionTest, RootTokenInheritsAndResolves)
+{
+    // The canonical design-token pattern: :root { --token } used by a descendant.
+    loadHtml("<html><head><style>:root { --rw: 240px; }</style></head>"
+             "<body><div style='width:400px;'>"
+             "<div id='a' style='width: var(--rw); height:20px;'>A</div></div></body></html>");
+    Element* a = view->mainframe()->document()->getElementById(String("a"));
+    ASSERT_TRUE(a && a->renderer());
+    EXPECT_EQ(a->renderer()->width(), 240);
+}
+
 TEST_F(VarSubstitutionTest, MissingNoFallbackIsUnset)
 {
     // No value and no fallback => the property is left unset; width falls back
@@ -142,5 +157,36 @@ TEST_F(VarSubstitutionTest, MissingNoFallbackIsUnset)
     Element* a = view->mainframe()->document()->getElementById(String("a"));
     ASSERT_TRUE(a && a->renderer());
     EXPECT_GE(a->renderer()->width(), 0);
+}
+
+// Stage D: CSSOM string API for custom properties on inline style and computed.
+class CustomPropertyCSSOMTest : public CustomPropertyStyleTest {};
+
+TEST_F(CustomPropertyCSSOMTest, InlineGetSetRemove)
+{
+    loadHtml("<div id='a' style='--local: 50px; width:100px;'>A</div>");
+    Element* a = view->mainframe()->document()->getElementById(String("a"));
+    ASSERT_TRUE(a);
+    CSSStyleDeclaration* style = a->style();
+    ASSERT_TRUE(style);
+    EXPECT_EQ(style->getPropertyValue(String("--local")), String("50px"));
+
+    ExceptionCode ec = 0;
+    style->setProperty(String("--local"), String("88px"), String(), ec);
+    EXPECT_EQ(style->getPropertyValue(String("--local")), String("88px"));
+
+    style->removeProperty(String("--local"), ec);
+    EXPECT_TRUE(style->getPropertyValue(String("--local")).isEmpty());
+}
+
+TEST_F(CustomPropertyCSSOMTest, ComputedReadsInheritedRootToken)
+{
+    loadHtml("<html><head><style>:root{--theme: 240px;}</style></head>"
+             "<body><div id='a'>A</div></body></html>");
+    Element* a = view->mainframe()->document()->getElementById(String("a"));
+    ASSERT_TRUE(a);
+    RefPtr<CSSComputedStyleDeclaration> computed = new CSSComputedStyleDeclaration(a);
+    CSSStyleDeclaration* decl = computed.get();
+    EXPECT_EQ(decl->getPropertyValue(String("--theme")), String("240px"));
 }
 

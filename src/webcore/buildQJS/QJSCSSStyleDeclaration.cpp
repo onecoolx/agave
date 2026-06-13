@@ -216,7 +216,16 @@ static int js_cssstyledecl_get_own_property(JSContext *ctx, JSPropertyDescriptor
     if (!impl) return 0;
     const char* str = JS_AtomToCString(ctx, prop);
     if (!str) return 0;
-    if ((str[0] >= '0' && str[0] <= '9') || !strcmp(str, "length") || !strcmp(str, "cssText") || !strcmp(str, "constructor")) {
+    // Do not shadow the prototype's own members (methods and plain attributes):
+    // only CSS property names should be resolved by the name getter. Otherwise
+    // style.getPropertyValue etc. would resolve to a CSS value, not the method.
+    if ((str[0] >= '0' && str[0] <= '9')
+        || !strcmp(str, "length") || !strcmp(str, "cssText") || !strcmp(str, "constructor")
+        || !strcmp(str, "getPropertyValue") || !strcmp(str, "setProperty")
+        || !strcmp(str, "removeProperty") || !strcmp(str, "getPropertyPriority")
+        || !strcmp(str, "getPropertyCSSValue") || !strcmp(str, "item")
+        || !strcmp(str, "getPropertyShorthand") || !strcmp(str, "isPropertyImplicit")
+        || !strcmp(str, "parentRule")) {
         JS_FreeCString(ctx, str); return 0;
     }
     if (desc) {
