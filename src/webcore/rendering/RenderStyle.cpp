@@ -1006,11 +1006,28 @@ bool RenderStyle::operator==(const RenderStyle& o) const
             surround == o.surround &&
             rareNonInheritedData == o.rareNonInheritedData &&
             rareInheritedData == o.rareInheritedData &&
-            inherited == o.inherited
+            inherited == o.inherited &&
+            customPropertiesEqual(o)
 #if ENABLE(SVG)
             && m_svgStyle == o.m_svgStyle
 #endif
             ;
+}
+
+// Custom properties participate in equality so that a style differing only in
+// its custom properties (e.g. ":root { --token: ... }") is not treated as
+// unchanged and dropped during style diffing.
+bool RenderStyle::customPropertiesEqual(const RenderStyle& o) const
+{
+    if (m_customProperties == o.m_customProperties)
+        return true; // same shared map (or both null)
+    bool aEmpty = !m_customProperties || m_customProperties->isEmpty();
+    bool bEmpty = !o.m_customProperties || o.m_customProperties->isEmpty();
+    if (aEmpty && bEmpty)
+        return true;
+    if (aEmpty != bEmpty)
+        return false;
+    return *m_customProperties == *o.m_customProperties;
 }
 
 bool RenderStyle::isStyleAvailable() const

@@ -1478,6 +1478,7 @@ public:
     void setCustomProperty(const String& name, const String& value);
     String customProperty(const String& name, bool& found) const;
     bool hasCustomProperties() const;
+    bool customPropertiesEqual(const RenderStyle& o) const;
 
     PseudoId styleType() { return  static_cast<PseudoId>(noninherited_flags._styleType); }
     void setStyleType(PseudoId styleType) { noninherited_flags._styleType = styleType; }
