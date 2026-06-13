@@ -301,3 +301,21 @@ flex-direction + grow/shrink/basis + justify-content + align-items，~4-5k 行�
 
 - **writing-mode**（CJK 竖排）—— 需逻辑坐标抽象大重构，无 CJK 竖排内容前不做。
 - **`<video>` / `<audio>`（媒体元素）** —— 低端设备媒体解码管线不实用、不符轻量定位。
+
+### 进度更新（2026-06-13，B2 + transform 插值完成）
+
+- **B1：transition —— ✅ 已完成**（commit 2cfde407）。
+- **B2：animation + @keyframes —— ✅ 已完成**（commit 9bf265db）。@keyframes 解析、
+  animation 属性集（name/duration/delay/timing-function/iteration-count/direction/
+  fill-mode/play-state + 简写）、AnimationController 关键帧时间轴插值（iteration/
+  direction 语义）。796 测试通过。
+- **transform 插值 —— ✅ 已完成**（commit 9c4ce5a6）。transition 与 animation 均可
+  动画 transform：兼容的操作序列（同长度同类型）逐分量插值，不兼容则中点离散跳变。
+
+已知限制：
+- `translateX()` / `translateY()` 单轴函数存在预存解析边界（在普通 CSS 中也受影响，
+  与动画无关），动画请用等价的 `translate(x, y)`。`scale()`/`rotate()`/`translate()`
+  正常。
+- 动画插值范围：数值（opacity/宽高/margin/padding）、颜色、transform。离散属性不插值。
+- 无合成层，动画在主渲染路径同步执行；低端设备复杂动画可能掉帧（已用脏矩形最小重绘 +
+  无动画停表节流缓解）。
