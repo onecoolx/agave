@@ -15,6 +15,7 @@ string2         \'([\t !#$%&(-~]|\\{nl}|\"|{nonascii}|{escape})*\'
 hexcolor        {h}{3}|{h}{6}
 
 ident           -?{nmstart}{nmchar}*
+customprop      "--"{nmchar}*
 name            {nmchar}+
 num             [0-9]+|[0-9]*"."[0-9]+
 intnum          [0-9]+
@@ -43,6 +44,7 @@ range           \?{1,6}|{h}(\?{0,5}|{h}(\?{0,4}|{h}(\?{0,3}|{h}(\?{0,2}|{h}(\??|
 
 {string}                {yyTok = STRING; return yyTok;}
 
+{customprop}            {yyTok = IDENT; return yyTok;}
 {ident}                 {yyTok = IDENT; return yyTok;}
 
 "#"{hexcolor}           {yyTok = HEX; return yyTok;}

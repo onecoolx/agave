@@ -32,6 +32,7 @@
 #include "CSSSelector.h"
 #include "CSSStyleSheet.h"
 #include "CString.h"
+#include "CSSCustomPropertyValue.h"
 #include "Document.h"
 #include "HTMLNames.h"
 #include "MediaList.h"
@@ -1015,21 +1016,12 @@ declaration:
     }
     |
     '-' IDENT ':' maybe_space expr prio {
-        /* Custom property: "--name: value". The leading "--" tokenizes as
-           '-' followed by an IDENT beginning with '-' (e.g. "-name"). Store the
-           declaration so it is not dropped (Stage A). */
+        /* Custom property "--name: value": "--name" now tokenizes as a single
+           IDENT (tokenizer customprop rule) and is handled by the regular
+           "property ':' expr" path, which routes it to CSS_PROP_CUSTOM_PROPERTY.
+           This legacy rule is retained only to gracefully consume any stray
+           single-'-' sequence without aborting the stylesheet. */
         $$ = false;
-        CSSParser* p = static_cast<CSSParser*>(parser);
-        if ($5) {
-            String ident = domString($2);
-            if (ident.length() > 1 && ident[0] == '-') {
-                String customName = String("-") + ident; /* reconstruct "--name" */
-                p->valueList = p->sinkFloatingValueList($5);
-                $$ = p->addCustomProperty(customName, $6);
-                delete p->valueList;
-                p->valueList = 0;
-            }
-        }
     }
     |
     property error {
@@ -1058,8 +1050,18 @@ property:
     IDENT maybe_space {
         $1.lower();
         String str = domString($1);
-        CString bytes = str.latin1();
-        $$ = getPropertyID(bytes.data(), bytes.length());
+        CSSParser* p = static_cast<CSSParser*>(parser);
+        // A custom property name "--foo" arrives as a single IDENT (tokenizer
+        // customprop rule). Route it to the custom-property id and remember the
+        // name for parseValue.
+        if (str.length() > 2 && str[0] == '-' && str[1] == '-') {
+            p->m_currentCustomPropertyName = str;
+            $$ = CSS_PROP_CUSTOM_PROPERTY;
+        } else {
+            p->m_currentCustomPropertyName = String();
+            CString bytes = str.latin1();
+            $$ = getPropertyID(bytes.data(), bytes.length());
+        }
     }
   ;
 

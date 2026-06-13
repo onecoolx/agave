@@ -241,6 +241,10 @@ namespace WebCore {
         int m_currentShorthand;
         bool m_implicitShorthand;
 
+        // Name of the custom property (--foo) currently being parsed, set by the
+        // grammar's property rule and consumed in parseValue.
+        String m_currentCustomPropertyName;
+
         AtomicString defaultNamespace;
 
         static CSSParser* currentParser;

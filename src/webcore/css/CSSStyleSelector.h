@@ -90,6 +90,10 @@ class StyledElement;
         Document* document() const { return m_document; }
 
         void initElementAndPseudoState(Element* e);
+        // Substitutes var(--name[, fallback]) references in a value text using
+        // the element's resolved custom properties. Returns false on an
+        // unresolved reference (no value, no fallback) or a reference cycle.
+        bool resolveVariableReferences(const String& input, RenderStyle* style, String& output);
         // Public entry for the Selectors API (querySelector/All): does the
         // single compound selector match the given element?
         bool matchesSelector(Element* e, CSSSelector* selector)

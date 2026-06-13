@@ -46,6 +46,9 @@
 #include "CSSValueList.h"
 #include "CSSCustomPropertyValue.h"
 #include "StyleCustomPropertyData.h"
+#include "CSSPendingSubstitutionValue.h"
+#include "CSSMutableStyleDeclaration.h"
+#include "CSSParser.h"
 #include "CachedImage.h"
 #include "Counter.h"
 #include "DashboardRegion.h"
@@ -2158,6 +2161,83 @@ static EGridContent gridContentFromValue(int ident)
 }
 #endif
 
+// Recursively substitutes var() references in a value text. `depth` bounds
+// recursion to defend against reference cycles and pathological nesting.
+static bool substituteVars(const String& input, RenderStyle* style, int depth, String& out)
+{
+    if (depth > 16)
+        return false; // cycle or excessive nesting
+
+    String result;
+    unsigned len = input.length();
+    unsigned i = 0;
+    while (i < len) {
+        // Look for "var(" (case-insensitive) at position i.
+        if (i + 4 <= len
+            && (input[i] == 'v' || input[i] == 'V')
+            && (input[i+1] == 'a' || input[i+1] == 'A')
+            && (input[i+2] == 'r' || input[i+2] == 'R')
+            && input[i+3] == '(') {
+            // Find the matching close paren (track nesting).
+            unsigned j = i + 4;
+            int nest = 1;
+            unsigned argStart = j;
+            while (j < len && nest > 0) {
+                if (input[j] == '(')
+                    nest++;
+                else if (input[j] == ')')
+                    nest--;
+                if (nest == 0)
+                    break;
+                j++;
+            }
+            if (nest != 0)
+                return false; // unbalanced
+            String args = input.substring(argStart, j - argStart);
+
+            // Split into "--name" and optional fallback (after the first comma).
+            String name;
+            String fallback;
+            int comma = args.find(',');
+            if (comma < 0)
+                name = args.stripWhiteSpace();
+            else {
+                name = args.substring(0, comma).stripWhiteSpace();
+                fallback = args.substring(comma + 1).stripWhiteSpace();
+            }
+
+            bool found = false;
+            String value = style->customProperty(name, found);
+            String replacement;
+            if (found)
+                replacement = value;
+            else if (!fallback.isEmpty())
+                replacement = fallback;
+            else
+                return false; // no value and no fallback => invalid
+
+            // The replacement may itself contain var() references.
+            String expanded;
+            if (!substituteVars(replacement, style, depth + 1, expanded))
+                return false;
+            result += expanded;
+
+            i = j + 1; // skip past ')'
+        } else {
+            result.append(input[i]);
+            i++;
+        }
+    }
+    out = result;
+    return true;
+}
+
+bool CSSStyleSelector::resolveVariableReferences(const String& input, RenderStyle* style, String& output)
+{
+    return substituteVars(input, style, 0, output);
+}
+
+
 void CSSStyleSelector::applyProperty(int id, CSSValue *value)
 {
     // Custom property (--name): record its value into the style's custom-property
@@ -2167,6 +2247,26 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
             CSSCustomPropertyValue* custom = static_cast<CSSCustomPropertyValue*>(value);
             style->setCustomProperty(custom->name(), custom->value());
         }
+        return;
+    }
+
+    // Pending var() substitution: resolve var(--name[, fallback]) references
+    // against the (already-cascaded) custom property map, then re-parse the
+    // substituted text as the target property and apply it.
+    if (value->isPendingSubstitutionValue()) {
+        CSSPendingSubstitutionValue* pending = static_cast<CSSPendingSubstitutionValue*>(value);
+        String resolved;
+        if (resolveVariableReferences(pending->text(), style, resolved)) {
+            RefPtr<CSSMutableStyleDeclaration> tmp = new CSSMutableStyleDeclaration;
+            CSSParser parser(strictParsing);
+            if (parser.parseValue(tmp.get(), id, resolved, false)) {
+                CSSValue* substituted = tmp->getPropertyCSSValue(id).get();
+                if (substituted)
+                    applyProperty(id, substituted); // re-enter with a concrete value
+            }
+        }
+        // If substitution fails (missing var, cycle), the property is left
+        // unset (initial), per the CSS variables spec.
         return;
     }
 

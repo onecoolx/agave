@@ -49,6 +49,7 @@ public:
     virtual bool isGradientValue() const { return false; }
     virtual bool isTransformValue() const { return false; }
     virtual bool isFilterValue() const { return false; }
+    virtual bool isPendingSubstitutionValue() const { return false; }
     virtual bool isImplicitInitialValue() const { return false; }
     virtual bool isCustomPropertyValue() const { return false; }
 };

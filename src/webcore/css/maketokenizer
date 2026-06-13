@@ -104,7 +104,9 @@ while (<>) {
 }
 
 while (<>) {
-    last if /while \( 1 \)/;
+    # flex's main scan loop. Older flex emitted "while ( 1 )"; flex 2.6.x emits
+    # "while ( /*CONSTCOND*/1 )". Match either form (and a bare for(;;)).
+    last if /while \(\s*(\/\*CONSTCOND\*\/)?\s*1\s*\)/ || /for \(\s*;\s*;\s*\)/;
 }
 
 print;
@@ -122,6 +124,10 @@ while (<>) {
 
 print;
 while (<>) {
+    # flex 2.6.x wraps the action switch in an extra scope and emits a closing
+    # "} /* end of user's declarations */" that the trimmed YY_DECL here does
+    # not open. Skip it to keep braces balanced.
+    next if /end of user's declarations/;
     print;
     last if /end of yylex/;
 }

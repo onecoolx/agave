@@ -102,3 +102,45 @@ TEST_F(CustomPropertyStyleTest, ChildOverridesInherited)
     EXPECT_EQ(c->customProperty("--c", found), String("blue"));
     EXPECT_TRUE(found);
 }
+
+// Stage C: var() substitution in regular properties.
+class VarSubstitutionTest : public CustomPropertyStyleTest {};
+
+TEST_F(VarSubstitutionTest, SameElementVar)
+{
+    loadHtml("<div style='width:400px;'>"
+             "<div id='a' style='--w: 250px; width: var(--w); height:20px;'>A</div></div>");
+    Element* a = view->mainframe()->document()->getElementById(String("a"));
+    ASSERT_TRUE(a && a->renderer());
+    EXPECT_EQ(a->renderer()->width(), 250);
+}
+
+TEST_F(VarSubstitutionTest, InheritedVarFromParent)
+{
+    loadHtml("<div style='width:400px; --pw: 220px;'>"
+             "<div id='a' style='width: var(--pw); height:20px;'>A</div></div>");
+    Element* a = view->mainframe()->document()->getElementById(String("a"));
+    ASSERT_TRUE(a && a->renderer());
+    EXPECT_EQ(a->renderer()->width(), 220);
+}
+
+TEST_F(VarSubstitutionTest, FallbackWhenMissing)
+{
+    loadHtml("<div style='width:400px;'>"
+             "<div id='a' style='width: var(--missing, 180px); height:20px;'>A</div></div>");
+    Element* a = view->mainframe()->document()->getElementById(String("a"));
+    ASSERT_TRUE(a && a->renderer());
+    EXPECT_EQ(a->renderer()->width(), 180);
+}
+
+TEST_F(VarSubstitutionTest, MissingNoFallbackIsUnset)
+{
+    // No value and no fallback => the property is left unset; width falls back
+    // to auto (fills the 400px parent). Must not crash.
+    loadHtml("<div style='width:400px;'>"
+             "<div id='a' style='width: var(--nope); height:20px;'>A</div></div>");
+    Element* a = view->mainframe()->document()->getElementById(String("a"));
+    ASSERT_TRUE(a && a->renderer());
+    EXPECT_GE(a->renderer()->width(), 0);
+}
+

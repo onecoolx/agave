@@ -108,7 +108,7 @@ extern int cssyydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 124 "CSSGrammar.y"
+#line 125 "CSSGrammar.y"
 
     CSSRule* rule;
     CSSSelector* selector;

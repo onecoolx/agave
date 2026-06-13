@@ -115,3 +115,25 @@ var() 属于 roadmap 类别 A(可在现有架构上补 —— 它是解析/存�
   - 退出标准达成：computed style（C++ 层）能读到自定义属性值，继承正确。
 - **阶段 C（var() 替换）**：待做。
 - **阶段 D（JS setProperty/getPropertyValue）**：待做。
+
+- **阶段 C 完成**（2026-06-13）：var() 替换在普通属性中生效。
+  - **tokenizer 正式化**：tokenizer.flex 加 `customprop "--"{nmchar}*` 规则，使
+    `--name` 成为单个 IDENT（之前 stage A 靠 `-`+IDENT 的取巧无法支撑 var() 内的
+    `--name`）。修复 maketokenizer 对 flex 2.6.x 的兼容（主循环锚点
+    `while ( /*CONSTCOND*/1 )`、跳过多余的 "end of user's declarations" 闭括号），
+    使 tokenizer 可干净重新生成。**附带消除 tokenizer.cpp 的 SEC-001 路径泄露。**
+  - grammar：property 规则识别 `--name` 单 IDENT → CSS_PROP_CUSTOM_PROPERTY 并记录
+    名字；移除 stage A 的 `'-' IDENT` 取巧规则。
+  - 解析：parseValue 顶部处理自定义属性声明（存原始值文本）；含 var() 的普通属性
+    值检测后存为 CSSPendingSubstitutionValue（延迟到应用期）。serializeValueList
+    增强为递归序列化函数体（var(--n, fallback) 可round-trip）。
+  - 应用：CSSStyleSelector::applyProperty 对 pending 值调 resolveVariableReferences
+    （字符串级替换 var(--name[, fallback])，深度上限 16 防循环/递归），再以目标
+    属性重新解析并应用。
+  - 验证：8 单元测试 + 5 benchmark（含 calc(100% - var(--x)) 和嵌套 var(--ref)）。
+    循环引用 `--a:var(--b);--b:var(--a)` 与自引用安全失效无崩溃。762 全套通过。
+  - **已知限制**：在 `:root` / `html` 元素上定义的自定义属性不向后代继承
+    （html→body 继承链在文档根元素处断裂，与 var() 本身无关，属文档根元素样式
+    解析时序问题）。在 body 及任何其他元素上定义均正常继承。canonical 的
+    `:root { --token }` 模式受此限制影响，待后续修复文档根继承时序。
+- **阶段 D（JS setProperty/getPropertyValue）**：待做。

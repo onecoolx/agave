@@ -31,6 +31,7 @@
 #include "CSSImageValue.h"
 #include "CSSGradientValue.h"
 #include "CSSFilterValue.h"
+#include "CSSPendingSubstitutionValue.h"
 #include "Length.h"
 #include "CSSFontFaceRule.h"
 #include "CSSFontFaceSrcValue.h"
@@ -386,38 +387,74 @@ void CSSParser::addProperty(int propId, PassRefPtr<CSSValue> value, bool importa
 }
 
 // Serializes the current parsed value list to text for a custom property value.
-// Stage A keeps a best-effort textual form (idents, numbers+units, hex colors,
-// functions, operators) so the value round-trips; precise token preservation is
-// refined in later stages when var() substitution needs it.
+// Serializes the current parsed value list to text for a custom property value
+// or a var()-bearing declaration. Function bodies (e.g. var(--name, fallback))
+// are serialized recursively so the value round-trips for later substitution.
+static String serializeValueList(ValueList* valueList);
+
+// True if the value list contains a var() function reference (searched
+// recursively through nested function arguments).
+static bool valueListContainsVar(ValueList* valueList)
+{
+    if (!valueList)
+        return false;
+    for (unsigned i = 0; i < valueList->size(); i++) {
+        Value* v = valueList->valueAt(i);
+        if (!v)
+            break;
+        if (v->unit == Value::QFunction && v->function) {
+            String fn = domString(v->function->name).lower();
+            if (fn == "var(")
+                return true;
+            if (valueListContainsVar(v->function->args))
+                return true;
+        }
+    }
+    return false;
+}
+
+static String serializeOneValue(Value* v)
+{
+    if (v->unit == Value::Operator) {
+        UChar c = (UChar)v->iValue;
+        return String(&c, 1);
+    }
+    if (v->unit == Value::QFunction && v->function) {
+        String s = domString(v->function->name); // includes "("
+        s += serializeValueList(v->function->args);
+        s += ")";
+        return s;
+    }
+    if (v->unit == CSSPrimitiveValue::CSS_STRING || v->unit == CSSPrimitiveValue::CSS_IDENT)
+        return domString(v->string);
+    if (v->unit == CSSPrimitiveValue::CSS_NUMBER)
+        return String::number(v->fValue);
+    if (v->unit == CSSPrimitiveValue::CSS_PERCENTAGE)
+        return String::number(v->fValue) + "%";
+    if (v->unit == CSSPrimitiveValue::CSS_PX)
+        return String::number(v->fValue) + "px";
+    if (v->unit == CSSPrimitiveValue::CSS_EMS)
+        return String::number(v->fValue) + "em";
+    if (v->unit == CSSPrimitiveValue::CSS_DIMENSION && v->string.characters && v->string.length)
+        return domString(v->string);
+    if (v->string.characters && v->string.length)
+        return domString(v->string);
+    return String::number(v->fValue);
+}
+
 static String serializeValueList(ValueList* valueList)
 {
     String result;
     if (!valueList)
         return result;
     bool first = true;
-    for (Value* v = valueList->current(); v; v = valueList->next()) {
-        String piece;
-        if (v->unit == Value::Operator) {
-            UChar c = (UChar)v->iValue;
-            piece = String(&c, 1);
-        } else if (v->unit == Value::QFunction && v->function) {
-            piece = domString(v->function->name); // includes "("
-            // Function args are flattened by the parser; emit name + ")" as a
-            // textual placeholder. Faithful function bodies come in Stage C.
-            piece += ")";
-        } else if (v->unit == CSSPrimitiveValue::CSS_STRING
-                   || v->unit == CSSPrimitiveValue::CSS_IDENT) {
-            piece = domString(v->string);
-        } else if (v->unit == CSSPrimitiveValue::CSS_NUMBER) {
-            piece = String::number(v->fValue);
-        } else if (v->unit == CSSPrimitiveValue::CSS_PX) {
-            piece = String::number(v->fValue) + "px";
-        } else if (v->string.characters && v->string.length) {
-            piece = domString(v->string);
-        } else {
-            piece = String::number(v->fValue);
-        }
-        if (!first && v->unit != Value::Operator)
+    // Iterate without disturbing the list's current cursor where possible.
+    for (unsigned i = 0; i < valueList->size(); i++) {
+        Value* v = valueList->valueAt(i);
+        if (!v)
+            break;
+        String piece = serializeOneValue(v);
+        if (!first && v->unit != Value::Operator && piece.length() && piece[0] != ',')
             result += " ";
         result += piece;
         first = false;
@@ -584,10 +621,30 @@ bool CSSParser::parseValue(int propId, bool important)
     if (!valueList)
         return false;
 
+    // Custom property declaration ("--foo: value"): store the raw value text
+    // (captured by serializeValueList) so it survives for var() substitution.
+    // The name was recorded by the grammar's property rule.
+    if (propId == CSS_PROP_CUSTOM_PROPERTY) {
+        if (m_currentCustomPropertyName.isEmpty())
+            return false;
+        return addCustomProperty(m_currentCustomPropertyName, important);
+    }
+
     Value *value = valueList->current();
 
     if (!value)
         return false;
+
+    // var(): if the value references a custom property, it cannot be resolved
+    // now (the referenced --name is only known after the cascade). Capture the
+    // value text and store it as a pending substitution; the style selector
+    // substitutes var() at apply time and re-parses. Custom property
+    // declarations themselves (CSS_PROP_CUSTOM_PROPERTY) keep their raw text.
+    if (propId != CSS_PROP_CUSTOM_PROPERTY && valueListContainsVar(valueList)) {
+        String text = serializeValueList(valueList);
+        addProperty(propId, new CSSPendingSubstitutionValue(propId, text), important);
+        return true;
+    }
 
     // calc(): when a single calc() function is the whole value, parse it to a
     // CSS_CALC primitive that convertToLength() resolves later. Applies to any

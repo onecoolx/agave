@@ -106,6 +106,7 @@
 #include "CSSSelector.h"
 #include "CSSStyleSheet.h"
 #include "CString.h"
+#include "CSSCustomPropertyValue.h"
 #include "Document.h"
 #include "HTMLNames.h"
 #include "MediaList.h"
@@ -190,7 +191,7 @@ static inline int getValueID(const char* tagStr, int len)
 #define YYDEBUG 0
 
 
-#line 194 "CSSGrammar.tab.c"
+#line 195 "CSSGrammar.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -295,7 +296,7 @@ extern int cssyydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 124 "CSSGrammar.y"
+#line 125 "CSSGrammar.y"
 
     CSSRule* rule;
     CSSSelector* selector;
@@ -319,7 +320,7 @@ union YYSTYPE
     Vector<MediaQueryExp*>* mediaQueryExpList;
     MediaQuery::Restrictor mediaQueryRestrictor;
 
-#line 323 "CSSGrammar.tab.c"
+#line 324 "CSSGrammar.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -334,14 +335,14 @@ int cssyyparse (void* parser);
 #endif /* !YY_CSSYY_CSSGRAMMAR_TAB_H_INCLUDED  */
 
 /* Second part of user prologue.  */
-#line 148 "CSSGrammar.y"
+#line 149 "CSSGrammar.y"
 
 
 static inline int cssyyerror(void*, const char*) { return 1; }
 static int cssyylex(YYSTYPE* yylval, void*) { return CSSParser::current()->lex(yylval); }
 
 
-#line 345 "CSSGrammar.tab.c"
+#line 346 "CSSGrammar.tab.c"
 
 
 #ifdef short
@@ -707,27 +708,27 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   290,   290,   291,   292,   293,   294,   298,   299,   303,
-     309,   315,   329,   336,   337,   340,   342,   343,   346,   348,
-     353,   359,   361,   365,   367,   374,   376,   379,   381,   389,
-     390,   391,   392,   393,   394,   395,   399,   402,   405,   411,
-     416,   417,   421,   422,   426,   427,   431,   437,   440,   446,
-     453,   458,   465,   468,   472,   475,   478,   484,   492,   495,
-     499,   504,   509,   515,   518,   524,   525,   536,   553,   556,
-     562,   566,   569,   575,   576,   577,   578,   582,   583,   587,
-     593,   596,   604,   610,   613,   633,   639,   640,   641,   645,
-     650,   657,   663,   674,   687,   701,   709,   717,   720,   733,
-     739,   748,   761,   762,   763,   767,   779,   790,   795,   801,
-     810,   823,   826,   829,   832,   835,   838,   844,   845,   849,
-     874,   889,   899,   909,   920,   929,   939,   954,   957,   962,
-     965,   968,   971,   977,   980,   983,   986,   989,   994,   997,
-    1003,  1017,  1035,  1039,  1046,  1051,  1058,  1067,  1068,  1072,
-    1077,  1091,  1097,  1100,  1103,  1106,  1109,  1112,  1118,  1119,
-    1120,  1121,  1129,  1130,  1131,  1132,  1133,  1134,  1136,  1139,
-    1143,  1144,  1145,  1146,  1147,  1148,  1149,  1150,  1151,  1152,
-    1153,  1154,  1155,  1156,  1157,  1158,  1159,  1160,  1161,  1166,
-    1175,  1191,  1192,  1199,  1202,  1208,  1214,  1231,  1232,  1236,
-    1237
+       0,   291,   291,   292,   293,   294,   295,   299,   300,   304,
+     310,   316,   330,   337,   338,   341,   343,   344,   347,   349,
+     354,   360,   362,   366,   368,   375,   377,   380,   382,   390,
+     391,   392,   393,   394,   395,   396,   400,   403,   406,   412,
+     417,   418,   422,   423,   427,   428,   432,   438,   441,   447,
+     454,   459,   466,   469,   473,   476,   479,   485,   493,   496,
+     500,   505,   510,   516,   519,   525,   526,   537,   554,   557,
+     563,   567,   570,   576,   577,   578,   579,   583,   584,   588,
+     594,   597,   605,   611,   614,   634,   640,   641,   642,   646,
+     651,   658,   664,   675,   688,   702,   710,   718,   721,   734,
+     740,   749,   762,   763,   764,   768,   780,   791,   796,   802,
+     811,   824,   827,   830,   833,   836,   839,   845,   846,   850,
+     875,   890,   900,   910,   921,   930,   940,   955,   958,   963,
+     966,   969,   972,   978,   981,   984,   987,   990,   995,   998,
+    1004,  1018,  1027,  1031,  1038,  1043,  1050,  1069,  1070,  1074,
+    1079,  1093,  1099,  1102,  1105,  1108,  1111,  1114,  1120,  1121,
+    1122,  1123,  1131,  1132,  1133,  1134,  1135,  1136,  1138,  1141,
+    1145,  1146,  1147,  1148,  1149,  1150,  1151,  1152,  1153,  1154,
+    1155,  1156,  1157,  1158,  1159,  1160,  1161,  1162,  1163,  1168,
+    1177,  1193,  1194,  1201,  1204,  1210,  1216,  1233,  1234,  1238,
+    1239
 };
 #endif
 
@@ -1908,23 +1909,23 @@ yyreduce:
   switch (yyn)
     {
   case 9:
-#line 303 "CSSGrammar.y"
+#line 304 "CSSGrammar.y"
                                                                       {
         static_cast<CSSParser*>(parser)->rule = (yyvsp[-2].rule);
     }
-#line 1916 "CSSGrammar.tab.c"
+#line 1917 "CSSGrammar.tab.c"
     break;
 
   case 10:
-#line 309 "CSSGrammar.y"
+#line 310 "CSSGrammar.y"
                                                           {
         /* can be empty */
     }
-#line 1924 "CSSGrammar.tab.c"
+#line 1925 "CSSGrammar.tab.c"
     break;
 
   case 11:
-#line 315 "CSSGrammar.y"
+#line 316 "CSSGrammar.y"
                                               {
         CSSParser* p = static_cast<CSSParser*>(parser);
         if ((yyvsp[-1].valueList)) {
@@ -1936,270 +1937,270 @@ yyreduce:
             p->valueList = 0;
         }
     }
-#line 1940 "CSSGrammar.tab.c"
+#line 1941 "CSSGrammar.tab.c"
     break;
 
   case 12:
-#line 329 "CSSGrammar.y"
+#line 330 "CSSGrammar.y"
                                                                   {
          CSSParser* p = static_cast<CSSParser*>(parser);
          p->mediaQuery = p->sinkFloatingMediaQuery((yyvsp[-1].mediaQuery));
      }
-#line 1949 "CSSGrammar.tab.c"
+#line 1950 "CSSGrammar.tab.c"
     break;
 
   case 19:
-#line 348 "CSSGrammar.y"
+#line 349 "CSSGrammar.y"
             {
   }
-#line 1956 "CSSGrammar.tab.c"
+#line 1957 "CSSGrammar.tab.c"
     break;
 
   case 20:
-#line 353 "CSSGrammar.y"
+#line 354 "CSSGrammar.y"
                                                  {
      CSSParser* p = static_cast<CSSParser*>(parser);
      (yyval.rule) = static_cast<CSSParser*>(parser)->createCharsetRule((yyvsp[-2].string));
      if ((yyval.rule) && p->styleElement && p->styleElement->isCSSStyleSheet())
          p->styleElement->append((yyval.rule));
   }
-#line 1967 "CSSGrammar.tab.c"
+#line 1968 "CSSGrammar.tab.c"
     break;
 
   case 21:
-#line 359 "CSSGrammar.y"
+#line 360 "CSSGrammar.y"
                                     {
   }
-#line 1974 "CSSGrammar.tab.c"
+#line 1975 "CSSGrammar.tab.c"
     break;
 
   case 22:
-#line 361 "CSSGrammar.y"
+#line 362 "CSSGrammar.y"
                           {
   }
-#line 1981 "CSSGrammar.tab.c"
+#line 1982 "CSSGrammar.tab.c"
     break;
 
   case 24:
-#line 367 "CSSGrammar.y"
+#line 368 "CSSGrammar.y"
                                  {
      CSSParser* p = static_cast<CSSParser*>(parser);
      if ((yyvsp[-1].rule) && p->styleElement && p->styleElement->isCSSStyleSheet())
          p->styleElement->append((yyvsp[-1].rule));
  }
-#line 1991 "CSSGrammar.tab.c"
+#line 1992 "CSSGrammar.tab.c"
     break;
 
   case 28:
-#line 381 "CSSGrammar.y"
+#line 382 "CSSGrammar.y"
                              {
      CSSParser* p = static_cast<CSSParser*>(parser);
      if ((yyvsp[-1].rule) && p->styleElement && p->styleElement->isCSSStyleSheet())
          p->styleElement->append((yyvsp[-1].rule));
  }
-#line 2001 "CSSGrammar.tab.c"
+#line 2002 "CSSGrammar.tab.c"
     break;
 
   case 36:
-#line 399 "CSSGrammar.y"
+#line 400 "CSSGrammar.y"
                                                                           {
         (yyval.rule) = static_cast<CSSParser*>(parser)->createImportRule((yyvsp[-3].string), (yyvsp[-1].mediaList));
     }
-#line 2009 "CSSGrammar.tab.c"
+#line 2010 "CSSGrammar.tab.c"
     break;
 
   case 37:
-#line 402 "CSSGrammar.y"
+#line 403 "CSSGrammar.y"
                                    {
         (yyval.rule) = 0;
     }
-#line 2017 "CSSGrammar.tab.c"
+#line 2018 "CSSGrammar.tab.c"
     break;
 
   case 38:
-#line 405 "CSSGrammar.y"
+#line 406 "CSSGrammar.y"
                          {
         (yyval.rule) = 0;
     }
-#line 2025 "CSSGrammar.tab.c"
+#line 2026 "CSSGrammar.tab.c"
     break;
 
   case 39:
-#line 411 "CSSGrammar.y"
+#line 412 "CSSGrammar.y"
                                                                         {
     CSSParser* p = static_cast<CSSParser*>(parser);
     if (p->styleElement && p->styleElement->isCSSStyleSheet())
         static_cast<CSSStyleSheet*>(p->styleElement)->addNamespace(p, atomicString((yyvsp[-3].string)), atomicString((yyvsp[-2].string)));
 }
-#line 2035 "CSSGrammar.tab.c"
+#line 2036 "CSSGrammar.tab.c"
     break;
 
   case 42:
-#line 421 "CSSGrammar.y"
+#line 422 "CSSGrammar.y"
             { (yyval.string).characters = 0; }
-#line 2041 "CSSGrammar.tab.c"
+#line 2042 "CSSGrammar.tab.c"
     break;
 
   case 43:
-#line 422 "CSSGrammar.y"
+#line 423 "CSSGrammar.y"
                    { (yyval.string) = (yyvsp[-1].string); }
-#line 2047 "CSSGrammar.tab.c"
+#line 2048 "CSSGrammar.tab.c"
     break;
 
   case 46:
-#line 431 "CSSGrammar.y"
+#line 432 "CSSGrammar.y"
                       {
         (yyval.string) = (yyvsp[-1].string);
     }
-#line 2055 "CSSGrammar.tab.c"
+#line 2056 "CSSGrammar.tab.c"
     break;
 
   case 47:
-#line 437 "CSSGrammar.y"
+#line 438 "CSSGrammar.y"
               {
         (yyval.valueList) = 0;
     }
-#line 2063 "CSSGrammar.tab.c"
+#line 2064 "CSSGrammar.tab.c"
     break;
 
   case 48:
-#line 440 "CSSGrammar.y"
+#line 441 "CSSGrammar.y"
                                        {
         (yyval.valueList) = (yyvsp[-1].valueList);
     }
-#line 2071 "CSSGrammar.tab.c"
+#line 2072 "CSSGrammar.tab.c"
     break;
 
   case 49:
-#line 446 "CSSGrammar.y"
+#line 447 "CSSGrammar.y"
                                                                                                       {
         (yyvsp[-4].string).lower();
         (yyval.mediaQueryExp) = static_cast<CSSParser*>(parser)->createFloatingMediaQueryExp(atomicString((yyvsp[-4].string)), (yyvsp[-2].valueList));
     }
-#line 2080 "CSSGrammar.tab.c"
+#line 2081 "CSSGrammar.tab.c"
     break;
 
   case 50:
-#line 453 "CSSGrammar.y"
+#line 454 "CSSGrammar.y"
                     {
       CSSParser* p = static_cast<CSSParser*>(parser);
       (yyval.mediaQueryExpList) = p->createFloatingMediaQueryExpList();
       (yyval.mediaQueryExpList)->append(p->sinkFloatingMediaQueryExp((yyvsp[0].mediaQueryExp)));
     }
-#line 2090 "CSSGrammar.tab.c"
+#line 2091 "CSSGrammar.tab.c"
     break;
 
   case 51:
-#line 458 "CSSGrammar.y"
+#line 459 "CSSGrammar.y"
                                            {
       (yyval.mediaQueryExpList) = (yyvsp[-1].mediaQueryExpList);
       (yyval.mediaQueryExpList)->append(static_cast<CSSParser*>(parser)->sinkFloatingMediaQueryExp((yyvsp[0].mediaQueryExp)));
     }
-#line 2099 "CSSGrammar.tab.c"
+#line 2100 "CSSGrammar.tab.c"
     break;
 
   case 52:
-#line 465 "CSSGrammar.y"
+#line 466 "CSSGrammar.y"
               {
         (yyval.mediaQueryExpList) = static_cast<CSSParser*>(parser)->createFloatingMediaQueryExpList();
     }
-#line 2107 "CSSGrammar.tab.c"
+#line 2108 "CSSGrammar.tab.c"
     break;
 
   case 54:
-#line 472 "CSSGrammar.y"
+#line 473 "CSSGrammar.y"
               {
         (yyval.mediaQueryRestrictor) = MediaQuery::None;
     }
-#line 2115 "CSSGrammar.tab.c"
+#line 2116 "CSSGrammar.tab.c"
     break;
 
   case 55:
-#line 475 "CSSGrammar.y"
+#line 476 "CSSGrammar.y"
                  {
         (yyval.mediaQueryRestrictor) = MediaQuery::Only;
     }
-#line 2123 "CSSGrammar.tab.c"
+#line 2124 "CSSGrammar.tab.c"
     break;
 
   case 56:
-#line 478 "CSSGrammar.y"
+#line 479 "CSSGrammar.y"
                 {
         (yyval.mediaQueryRestrictor) = MediaQuery::Not;
     }
-#line 2131 "CSSGrammar.tab.c"
+#line 2132 "CSSGrammar.tab.c"
     break;
 
   case 57:
-#line 484 "CSSGrammar.y"
+#line 485 "CSSGrammar.y"
                                                                          {
         CSSParser* p = static_cast<CSSParser*>(parser);
         (yyvsp[-1].string).lower();
         (yyval.mediaQuery) = p->createFloatingMediaQuery((yyvsp[-3].mediaQueryRestrictor), domString((yyvsp[-1].string)), p->sinkFloatingMediaQueryExpList((yyvsp[0].mediaQueryExpList)));
     }
-#line 2141 "CSSGrammar.tab.c"
+#line 2142 "CSSGrammar.tab.c"
     break;
 
   case 58:
-#line 492 "CSSGrammar.y"
+#line 493 "CSSGrammar.y"
                  {
         (yyval.mediaList) = static_cast<CSSParser*>(parser)->createMediaList();
      }
-#line 2149 "CSSGrammar.tab.c"
+#line 2150 "CSSGrammar.tab.c"
     break;
 
   case 60:
-#line 499 "CSSGrammar.y"
+#line 500 "CSSGrammar.y"
                 {
         CSSParser* p = static_cast<CSSParser*>(parser);
         (yyval.mediaList) = p->createMediaList();
         (yyval.mediaList)->appendMediaQuery(p->sinkFloatingMediaQuery((yyvsp[0].mediaQuery)));
     }
-#line 2159 "CSSGrammar.tab.c"
+#line 2160 "CSSGrammar.tab.c"
     break;
 
   case 61:
-#line 504 "CSSGrammar.y"
+#line 505 "CSSGrammar.y"
                                              {
         (yyval.mediaList) = (yyvsp[-3].mediaList);
         if ((yyval.mediaList))
             (yyval.mediaList)->appendMediaQuery(static_cast<CSSParser*>(parser)->sinkFloatingMediaQuery((yyvsp[0].mediaQuery)));
     }
-#line 2169 "CSSGrammar.tab.c"
+#line 2170 "CSSGrammar.tab.c"
     break;
 
   case 62:
-#line 509 "CSSGrammar.y"
+#line 510 "CSSGrammar.y"
                        {
         (yyval.mediaList) = 0;
     }
-#line 2177 "CSSGrammar.tab.c"
+#line 2178 "CSSGrammar.tab.c"
     break;
 
   case 63:
-#line 515 "CSSGrammar.y"
+#line 516 "CSSGrammar.y"
                                                                       {
         (yyval.rule) = static_cast<CSSParser*>(parser)->createMediaRule((yyvsp[-4].mediaList), (yyvsp[-1].ruleList));
     }
-#line 2185 "CSSGrammar.tab.c"
+#line 2186 "CSSGrammar.tab.c"
     break;
 
   case 64:
-#line 518 "CSSGrammar.y"
+#line 519 "CSSGrammar.y"
                                                              {
         (yyval.rule) = static_cast<CSSParser*>(parser)->createMediaRule(0, (yyvsp[-1].ruleList));
     }
-#line 2193 "CSSGrammar.tab.c"
+#line 2194 "CSSGrammar.tab.c"
     break;
 
   case 65:
-#line 524 "CSSGrammar.y"
+#line 525 "CSSGrammar.y"
                 { (yyval.ruleList) = 0; }
-#line 2199 "CSSGrammar.tab.c"
+#line 2200 "CSSGrammar.tab.c"
     break;
 
   case 66:
-#line 525 "CSSGrammar.y"
+#line 526 "CSSGrammar.y"
                                        {
         (yyval.ruleList) = (yyvsp[-2].ruleList);
         if ((yyvsp[-1].rule)) {
@@ -2208,111 +2209,111 @@ yyreduce:
             (yyval.ruleList)->append((yyvsp[-1].rule));
         }
     }
-#line 2212 "CSSGrammar.tab.c"
+#line 2213 "CSSGrammar.tab.c"
     break;
 
   case 67:
-#line 536 "CSSGrammar.y"
+#line 537 "CSSGrammar.y"
                     {
       (yyval.string) = (yyvsp[-1].string);
   }
-#line 2220 "CSSGrammar.tab.c"
+#line 2221 "CSSGrammar.tab.c"
     break;
 
   case 68:
-#line 553 "CSSGrammar.y"
+#line 554 "CSSGrammar.y"
                                  {
       (yyval.rule) = 0;
     }
-#line 2228 "CSSGrammar.tab.c"
+#line 2229 "CSSGrammar.tab.c"
     break;
 
   case 69:
-#line 556 "CSSGrammar.y"
+#line 557 "CSSGrammar.y"
                        {
       (yyval.rule) = 0;
     }
-#line 2236 "CSSGrammar.tab.c"
+#line 2237 "CSSGrammar.tab.c"
     break;
 
   case 70:
-#line 563 "CSSGrammar.y"
+#line 564 "CSSGrammar.y"
                                                       {
         (yyval.rule) = static_cast<CSSParser*>(parser)->createFontFaceRule();
     }
-#line 2244 "CSSGrammar.tab.c"
+#line 2245 "CSSGrammar.tab.c"
     break;
 
   case 71:
-#line 566 "CSSGrammar.y"
+#line 567 "CSSGrammar.y"
                                         {
       (yyval.rule) = 0;
     }
-#line 2252 "CSSGrammar.tab.c"
+#line 2253 "CSSGrammar.tab.c"
     break;
 
   case 72:
-#line 569 "CSSGrammar.y"
+#line 570 "CSSGrammar.y"
                               {
       (yyval.rule) = 0;
     }
-#line 2260 "CSSGrammar.tab.c"
+#line 2261 "CSSGrammar.tab.c"
     break;
 
   case 73:
-#line 575 "CSSGrammar.y"
+#line 576 "CSSGrammar.y"
                     { (yyval.relation) = CSSSelector::DirectAdjacent; }
-#line 2266 "CSSGrammar.tab.c"
+#line 2267 "CSSGrammar.tab.c"
     break;
 
   case 74:
-#line 576 "CSSGrammar.y"
+#line 577 "CSSGrammar.y"
                     { (yyval.relation) = CSSSelector::IndirectAdjacent; }
-#line 2272 "CSSGrammar.tab.c"
+#line 2273 "CSSGrammar.tab.c"
     break;
 
   case 75:
-#line 577 "CSSGrammar.y"
+#line 578 "CSSGrammar.y"
                     { (yyval.relation) = CSSSelector::Child; }
-#line 2278 "CSSGrammar.tab.c"
+#line 2279 "CSSGrammar.tab.c"
     break;
 
   case 76:
-#line 578 "CSSGrammar.y"
+#line 579 "CSSGrammar.y"
                 { (yyval.relation) = CSSSelector::Descendant; }
-#line 2284 "CSSGrammar.tab.c"
+#line 2285 "CSSGrammar.tab.c"
     break;
 
   case 77:
-#line 582 "CSSGrammar.y"
+#line 583 "CSSGrammar.y"
         { (yyval.i) = -1; }
-#line 2290 "CSSGrammar.tab.c"
+#line 2291 "CSSGrammar.tab.c"
     break;
 
   case 78:
-#line 583 "CSSGrammar.y"
+#line 584 "CSSGrammar.y"
         { (yyval.i) = 1; }
-#line 2296 "CSSGrammar.tab.c"
+#line 2297 "CSSGrammar.tab.c"
     break;
 
   case 79:
-#line 587 "CSSGrammar.y"
+#line 588 "CSSGrammar.y"
                                                        {
         (yyval.rule) = static_cast<CSSParser*>(parser)->createStyleRule((yyvsp[-4].selector));
     }
-#line 2304 "CSSGrammar.tab.c"
+#line 2305 "CSSGrammar.tab.c"
     break;
 
   case 80:
-#line 593 "CSSGrammar.y"
+#line 594 "CSSGrammar.y"
                                    {
         (yyval.selector) = (yyvsp[0].selector);
     }
-#line 2312 "CSSGrammar.tab.c"
+#line 2313 "CSSGrammar.tab.c"
     break;
 
   case 81:
-#line 596 "CSSGrammar.y"
+#line 597 "CSSGrammar.y"
                                                                    {
         if ((yyvsp[-3].selector) && (yyvsp[0].selector)) {
             CSSParser* p = static_cast<CSSParser*>(parser);
@@ -2321,27 +2322,27 @@ yyreduce:
         } else
             (yyval.selector) = 0;
     }
-#line 2325 "CSSGrammar.tab.c"
+#line 2326 "CSSGrammar.tab.c"
     break;
 
   case 82:
-#line 604 "CSSGrammar.y"
+#line 605 "CSSGrammar.y"
                         {
         (yyval.selector) = 0;
     }
-#line 2333 "CSSGrammar.tab.c"
+#line 2334 "CSSGrammar.tab.c"
     break;
 
   case 83:
-#line 610 "CSSGrammar.y"
+#line 611 "CSSGrammar.y"
                     {
         (yyval.selector) = (yyvsp[0].selector);
     }
-#line 2341 "CSSGrammar.tab.c"
+#line 2342 "CSSGrammar.tab.c"
     break;
 
   case 84:
-#line 613 "CSSGrammar.y"
+#line 614 "CSSGrammar.y"
                                           {
         (yyval.selector) = (yyvsp[0].selector);
         if (!(yyvsp[-2].selector))
@@ -2362,47 +2363,47 @@ yyreduce:
             }
         }
     }
-#line 2366 "CSSGrammar.tab.c"
+#line 2367 "CSSGrammar.tab.c"
     break;
 
   case 85:
-#line 633 "CSSGrammar.y"
+#line 634 "CSSGrammar.y"
                      {
         (yyval.selector) = 0;
     }
-#line 2374 "CSSGrammar.tab.c"
+#line 2375 "CSSGrammar.tab.c"
     break;
 
   case 86:
-#line 639 "CSSGrammar.y"
+#line 640 "CSSGrammar.y"
                     { (yyval.string).characters = 0; (yyval.string).length = 0; }
-#line 2380 "CSSGrammar.tab.c"
+#line 2381 "CSSGrammar.tab.c"
     break;
 
   case 87:
-#line 640 "CSSGrammar.y"
+#line 641 "CSSGrammar.y"
               { static UChar star = '*'; (yyval.string).characters = &star; (yyval.string).length = 1; }
-#line 2386 "CSSGrammar.tab.c"
+#line 2387 "CSSGrammar.tab.c"
     break;
 
   case 88:
-#line 641 "CSSGrammar.y"
+#line 642 "CSSGrammar.y"
                 { (yyval.string) = (yyvsp[-1].string); }
-#line 2392 "CSSGrammar.tab.c"
+#line 2393 "CSSGrammar.tab.c"
     break;
 
   case 89:
-#line 645 "CSSGrammar.y"
+#line 646 "CSSGrammar.y"
                              {
         CSSParser* p = static_cast<CSSParser*>(parser);
         (yyval.selector) = p->createFloatingSelector();
         (yyval.selector)->m_tag = QualifiedName(nullAtom, atomicString((yyvsp[-1].string)), p->defaultNamespace);
     }
-#line 2402 "CSSGrammar.tab.c"
+#line 2403 "CSSGrammar.tab.c"
     break;
 
   case 90:
-#line 650 "CSSGrammar.y"
+#line 651 "CSSGrammar.y"
                                               {
         (yyval.selector) = (yyvsp[-1].selector);
         if ((yyval.selector)) {
@@ -2410,22 +2411,22 @@ yyreduce:
             (yyval.selector)->m_tag = QualifiedName(nullAtom, atomicString((yyvsp[-2].string)), p->defaultNamespace);
         }
     }
-#line 2414 "CSSGrammar.tab.c"
+#line 2415 "CSSGrammar.tab.c"
     break;
 
   case 91:
-#line 657 "CSSGrammar.y"
+#line 658 "CSSGrammar.y"
                                  {
         (yyval.selector) = (yyvsp[-1].selector);
         CSSParser* p = static_cast<CSSParser*>(parser);
         if ((yyval.selector) && p->defaultNamespace != starAtom)
             (yyval.selector)->m_tag = QualifiedName(nullAtom, starAtom, p->defaultNamespace);
     }
-#line 2425 "CSSGrammar.tab.c"
+#line 2426 "CSSGrammar.tab.c"
     break;
 
   case 92:
-#line 663 "CSSGrammar.y"
+#line 664 "CSSGrammar.y"
                                                   {
         AtomicString namespacePrefix = atomicString((yyvsp[-2].string));
         CSSParser* p = static_cast<CSSParser*>(parser);
@@ -2437,11 +2438,11 @@ yyreduce:
         else // FIXME: Shouldn't this case be an error?
             (yyval.selector)->m_tag = QualifiedName(nullAtom, atomicString((yyvsp[-1].string)), p->defaultNamespace);
     }
-#line 2441 "CSSGrammar.tab.c"
+#line 2442 "CSSGrammar.tab.c"
     break;
 
   case 93:
-#line 674 "CSSGrammar.y"
+#line 675 "CSSGrammar.y"
                                                                  {
         (yyval.selector) = (yyvsp[-1].selector);
         if ((yyval.selector)) {
@@ -2455,11 +2456,11 @@ yyreduce:
                 (yyval.selector)->m_tag = QualifiedName(nullAtom, atomicString((yyvsp[-2].string)), p->defaultNamespace);
         }
     }
-#line 2459 "CSSGrammar.tab.c"
+#line 2460 "CSSGrammar.tab.c"
     break;
 
   case 94:
-#line 687 "CSSGrammar.y"
+#line 688 "CSSGrammar.y"
                                                     {
         (yyval.selector) = (yyvsp[-1].selector);
         if ((yyval.selector)) {
@@ -2471,11 +2472,11 @@ yyreduce:
                                           static_cast<CSSStyleSheet*>(p->styleElement)->determineNamespace(namespacePrefix));
         }
     }
-#line 2475 "CSSGrammar.tab.c"
+#line 2476 "CSSGrammar.tab.c"
     break;
 
   case 95:
-#line 701 "CSSGrammar.y"
+#line 702 "CSSGrammar.y"
           {
         ParseString& str = (yyvsp[0].string);
         CSSParser* p = static_cast<CSSParser*>(parser);
@@ -2484,29 +2485,29 @@ yyreduce:
             str.lower();
         (yyval.string) = str;
     }
-#line 2488 "CSSGrammar.tab.c"
+#line 2489 "CSSGrammar.tab.c"
     break;
 
   case 96:
-#line 709 "CSSGrammar.y"
+#line 710 "CSSGrammar.y"
           {
         static UChar star = '*';
         (yyval.string).characters = &star;
         (yyval.string).length = 1;
     }
-#line 2498 "CSSGrammar.tab.c"
+#line 2499 "CSSGrammar.tab.c"
     break;
 
   case 97:
-#line 717 "CSSGrammar.y"
+#line 718 "CSSGrammar.y"
               {
         (yyval.selector) = (yyvsp[0].selector);
     }
-#line 2506 "CSSGrammar.tab.c"
+#line 2507 "CSSGrammar.tab.c"
     break;
 
   case 98:
-#line 720 "CSSGrammar.y"
+#line 721 "CSSGrammar.y"
                                {
         if (!(yyvsp[0].selector))
             (yyval.selector) = 0;
@@ -2520,19 +2521,19 @@ yyreduce:
             end->m_tagHistory = p->sinkFloatingSelector((yyvsp[0].selector));
         }
     }
-#line 2524 "CSSGrammar.tab.c"
+#line 2525 "CSSGrammar.tab.c"
     break;
 
   case 99:
-#line 733 "CSSGrammar.y"
+#line 734 "CSSGrammar.y"
                            {
         (yyval.selector) = 0;
     }
-#line 2532 "CSSGrammar.tab.c"
+#line 2533 "CSSGrammar.tab.c"
     break;
 
   case 100:
-#line 739 "CSSGrammar.y"
+#line 740 "CSSGrammar.y"
           {
         CSSParser* p = static_cast<CSSParser*>(parser);
         (yyval.selector) = p->createFloatingSelector();
@@ -2542,11 +2543,11 @@ yyreduce:
         (yyval.selector)->m_attr = idAttr;
         (yyval.selector)->m_value = atomicString((yyvsp[0].string));
     }
-#line 2546 "CSSGrammar.tab.c"
+#line 2547 "CSSGrammar.tab.c"
     break;
 
   case 101:
-#line 748 "CSSGrammar.y"
+#line 749 "CSSGrammar.y"
         {
         if ((yyvsp[0].string).characters[0] >= '0' && (yyvsp[0].string).characters[0] <= '9') {
             (yyval.selector) = 0;
@@ -2560,11 +2561,11 @@ yyreduce:
             (yyval.selector)->m_value = atomicString((yyvsp[0].string));
         }
     }
-#line 2564 "CSSGrammar.tab.c"
+#line 2565 "CSSGrammar.tab.c"
     break;
 
   case 105:
-#line 767 "CSSGrammar.y"
+#line 768 "CSSGrammar.y"
               {
         CSSParser* p = static_cast<CSSParser*>(parser);
         (yyval.selector) = p->createFloatingSelector();
@@ -2574,11 +2575,11 @@ yyreduce:
         (yyval.selector)->m_attr = classAttr;
         (yyval.selector)->m_value = atomicString((yyvsp[0].string));
     }
-#line 2578 "CSSGrammar.tab.c"
+#line 2579 "CSSGrammar.tab.c"
     break;
 
   case 106:
-#line 779 "CSSGrammar.y"
+#line 780 "CSSGrammar.y"
                       {
         ParseString& str = (yyvsp[-1].string);
         CSSParser* p = static_cast<CSSParser*>(parser);
@@ -2587,32 +2588,32 @@ yyreduce:
             str.lower();
         (yyval.string) = str;
     }
-#line 2591 "CSSGrammar.tab.c"
+#line 2592 "CSSGrammar.tab.c"
     break;
 
   case 107:
-#line 790 "CSSGrammar.y"
+#line 791 "CSSGrammar.y"
                                   {
         (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
         (yyval.selector)->m_attr = QualifiedName(nullAtom, atomicString((yyvsp[-1].string)), nullAtom);
         (yyval.selector)->m_match = CSSSelector::Set;
     }
-#line 2601 "CSSGrammar.tab.c"
+#line 2602 "CSSGrammar.tab.c"
     break;
 
   case 108:
-#line 795 "CSSGrammar.y"
+#line 796 "CSSGrammar.y"
                                                                                   {
         (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
         (yyval.selector)->m_attr = QualifiedName(nullAtom, atomicString((yyvsp[-5].string)), nullAtom);
         (yyval.selector)->m_match = (CSSSelector::Match)(yyvsp[-4].i);
         (yyval.selector)->m_value = atomicString((yyvsp[-2].string));
     }
-#line 2612 "CSSGrammar.tab.c"
+#line 2613 "CSSGrammar.tab.c"
     break;
 
   case 109:
-#line 801 "CSSGrammar.y"
+#line 802 "CSSGrammar.y"
                                                        {
         AtomicString namespacePrefix = atomicString((yyvsp[-2].string));
         CSSParser* p = static_cast<CSSParser*>(parser);
@@ -2622,11 +2623,11 @@ yyreduce:
                                    static_cast<CSSStyleSheet*>(p->styleElement)->determineNamespace(namespacePrefix));
         (yyval.selector)->m_match = CSSSelector::Set;
     }
-#line 2626 "CSSGrammar.tab.c"
+#line 2627 "CSSGrammar.tab.c"
     break;
 
   case 110:
-#line 810 "CSSGrammar.y"
+#line 811 "CSSGrammar.y"
                                                                                                      {
         AtomicString namespacePrefix = atomicString((yyvsp[-6].string));
         CSSParser* p = static_cast<CSSParser*>(parser);
@@ -2637,59 +2638,59 @@ yyreduce:
         (yyval.selector)->m_match = (CSSSelector::Match)(yyvsp[-4].i);
         (yyval.selector)->m_value = atomicString((yyvsp[-2].string));
     }
-#line 2641 "CSSGrammar.tab.c"
+#line 2642 "CSSGrammar.tab.c"
     break;
 
   case 111:
-#line 823 "CSSGrammar.y"
+#line 824 "CSSGrammar.y"
         {
         (yyval.i) = CSSSelector::Exact;
     }
-#line 2649 "CSSGrammar.tab.c"
+#line 2650 "CSSGrammar.tab.c"
     break;
 
   case 112:
-#line 826 "CSSGrammar.y"
+#line 827 "CSSGrammar.y"
                {
         (yyval.i) = CSSSelector::List;
     }
-#line 2657 "CSSGrammar.tab.c"
+#line 2658 "CSSGrammar.tab.c"
     break;
 
   case 113:
-#line 829 "CSSGrammar.y"
+#line 830 "CSSGrammar.y"
                 {
         (yyval.i) = CSSSelector::Hyphen;
     }
-#line 2665 "CSSGrammar.tab.c"
+#line 2666 "CSSGrammar.tab.c"
     break;
 
   case 114:
-#line 832 "CSSGrammar.y"
+#line 833 "CSSGrammar.y"
                  {
         (yyval.i) = CSSSelector::Begin;
     }
-#line 2673 "CSSGrammar.tab.c"
+#line 2674 "CSSGrammar.tab.c"
     break;
 
   case 115:
-#line 835 "CSSGrammar.y"
+#line 836 "CSSGrammar.y"
                {
         (yyval.i) = CSSSelector::End;
     }
-#line 2681 "CSSGrammar.tab.c"
+#line 2682 "CSSGrammar.tab.c"
     break;
 
   case 116:
-#line 838 "CSSGrammar.y"
+#line 839 "CSSGrammar.y"
                {
         (yyval.i) = CSSSelector::Contain;
     }
-#line 2689 "CSSGrammar.tab.c"
+#line 2690 "CSSGrammar.tab.c"
     break;
 
   case 119:
-#line 849 "CSSGrammar.y"
+#line 850 "CSSGrammar.y"
               {
         (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
         (yyval.selector)->m_match = CSSSelector::PseudoClass;
@@ -2715,11 +2716,11 @@ yyreduce:
                 doc->setUsesFirstLineRules(true);
         }
     }
-#line 2719 "CSSGrammar.tab.c"
+#line 2720 "CSSGrammar.tab.c"
     break;
 
   case 120:
-#line 874 "CSSGrammar.y"
+#line 875 "CSSGrammar.y"
                     {
         (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
         (yyval.selector)->m_match = CSSSelector::PseudoElement;
@@ -2734,11 +2735,11 @@ yyreduce:
                 doc->setUsesFirstLineRules(true);
         }
     }
-#line 2738 "CSSGrammar.tab.c"
+#line 2739 "CSSGrammar.tab.c"
     break;
 
   case 121:
-#line 889 "CSSGrammar.y"
+#line 890 "CSSGrammar.y"
                              {
         (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
         (yyval.selector)->m_match = CSSSelector::PseudoClass;
@@ -2748,11 +2749,11 @@ yyreduce:
         if ((yyval.selector)->pseudoType() == CSSSelector::PseudoUnknown)
             (yyval.selector) = 0;
     }
-#line 2752 "CSSGrammar.tab.c"
+#line 2753 "CSSGrammar.tab.c"
     break;
 
   case 122:
-#line 899 "CSSGrammar.y"
+#line 900 "CSSGrammar.y"
                                                        {
         (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
         (yyval.selector)->m_match = CSSSelector::PseudoClass;
@@ -2762,11 +2763,11 @@ yyreduce:
         if ((yyval.selector)->pseudoType() == CSSSelector::PseudoUnknown)
             (yyval.selector) = 0;
     }
-#line 2766 "CSSGrammar.tab.c"
+#line 2767 "CSSGrammar.tab.c"
     break;
 
   case 123:
-#line 909 "CSSGrammar.y"
+#line 910 "CSSGrammar.y"
                                                      {
         (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
         (yyval.selector)->m_match = CSSSelector::PseudoClass;
@@ -2776,11 +2777,11 @@ yyreduce:
         if ((yyval.selector)->pseudoType() == CSSSelector::PseudoUnknown)
             (yyval.selector) = 0;
     }
-#line 2780 "CSSGrammar.tab.c"
+#line 2781 "CSSGrammar.tab.c"
     break;
 
   case 124:
-#line 920 "CSSGrammar.y"
+#line 921 "CSSGrammar.y"
                                                                                          {
         (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
         (yyval.selector)->m_match = CSSSelector::PseudoClass;
@@ -2790,11 +2791,11 @@ yyreduce:
         if ((yyval.selector)->pseudoType() == CSSSelector::PseudoUnknown)
             (yyval.selector) = 0;
     }
-#line 2794 "CSSGrammar.tab.c"
+#line 2795 "CSSGrammar.tab.c"
     break;
 
   case 125:
-#line 929 "CSSGrammar.y"
+#line 930 "CSSGrammar.y"
                                                                                          {
         (yyval.selector) = static_cast<CSSParser*>(parser)->createFloatingSelector();
         (yyval.selector)->m_match = CSSSelector::PseudoClass;
@@ -2804,11 +2805,11 @@ yyreduce:
         if ((yyval.selector)->pseudoType() == CSSSelector::PseudoUnknown)
             (yyval.selector) = 0;
     }
-#line 2808 "CSSGrammar.tab.c"
+#line 2809 "CSSGrammar.tab.c"
     break;
 
   case 126:
-#line 939 "CSSGrammar.y"
+#line 940 "CSSGrammar.y"
                                                       {
         if (!(yyvsp[-1].selector))
             (yyval.selector) = 0;
@@ -2821,119 +2822,119 @@ yyreduce:
             (yyval.selector)->m_value = atomicString((yyvsp[-3].string));
         }
     }
-#line 2825 "CSSGrammar.tab.c"
+#line 2826 "CSSGrammar.tab.c"
     break;
 
   case 127:
-#line 954 "CSSGrammar.y"
+#line 955 "CSSGrammar.y"
                 {
         (yyval.ok) = (yyvsp[0].ok);
     }
-#line 2833 "CSSGrammar.tab.c"
+#line 2834 "CSSGrammar.tab.c"
     break;
 
   case 128:
-#line 957 "CSSGrammar.y"
+#line 958 "CSSGrammar.y"
                             {
         (yyval.ok) = (yyvsp[-1].ok);
         if ( (yyvsp[0].ok) )
             (yyval.ok) = (yyvsp[0].ok);
     }
-#line 2843 "CSSGrammar.tab.c"
+#line 2844 "CSSGrammar.tab.c"
     break;
 
   case 129:
-#line 962 "CSSGrammar.y"
+#line 963 "CSSGrammar.y"
                 {
         (yyval.ok) = (yyvsp[0].ok);
     }
-#line 2851 "CSSGrammar.tab.c"
+#line 2852 "CSSGrammar.tab.c"
     break;
 
   case 130:
-#line 965 "CSSGrammar.y"
+#line 966 "CSSGrammar.y"
                                      {
         (yyval.ok) = false;
     }
-#line 2859 "CSSGrammar.tab.c"
+#line 2860 "CSSGrammar.tab.c"
     break;
 
   case 131:
-#line 968 "CSSGrammar.y"
+#line 969 "CSSGrammar.y"
             {
         (yyval.ok) = false;
     }
-#line 2867 "CSSGrammar.tab.c"
+#line 2868 "CSSGrammar.tab.c"
     break;
 
   case 132:
-#line 971 "CSSGrammar.y"
+#line 972 "CSSGrammar.y"
                       {
         (yyval.ok) = (yyvsp[-1].ok);
     }
-#line 2875 "CSSGrammar.tab.c"
+#line 2876 "CSSGrammar.tab.c"
     break;
 
   case 133:
-#line 977 "CSSGrammar.y"
+#line 978 "CSSGrammar.y"
                                 {
         (yyval.ok) = (yyvsp[-2].ok);
     }
-#line 2883 "CSSGrammar.tab.c"
+#line 2884 "CSSGrammar.tab.c"
     break;
 
   case 134:
-#line 980 "CSSGrammar.y"
+#line 981 "CSSGrammar.y"
                                                      {
         (yyval.ok) = false;
     }
-#line 2891 "CSSGrammar.tab.c"
+#line 2892 "CSSGrammar.tab.c"
     break;
 
   case 135:
-#line 983 "CSSGrammar.y"
+#line 984 "CSSGrammar.y"
                             {
         (yyval.ok) = false;
     }
-#line 2899 "CSSGrammar.tab.c"
+#line 2900 "CSSGrammar.tab.c"
     break;
 
   case 136:
-#line 986 "CSSGrammar.y"
+#line 987 "CSSGrammar.y"
                                                      {
         (yyval.ok) = false;
     }
-#line 2907 "CSSGrammar.tab.c"
+#line 2908 "CSSGrammar.tab.c"
     break;
 
   case 137:
-#line 989 "CSSGrammar.y"
+#line 990 "CSSGrammar.y"
                                             {
         (yyval.ok) = (yyvsp[-3].ok);
         if ((yyvsp[-2].ok))
             (yyval.ok) = (yyvsp[-2].ok);
     }
-#line 2917 "CSSGrammar.tab.c"
+#line 2918 "CSSGrammar.tab.c"
     break;
 
   case 138:
-#line 994 "CSSGrammar.y"
+#line 995 "CSSGrammar.y"
                                       {
         (yyval.ok) = (yyvsp[-3].ok);
     }
-#line 2925 "CSSGrammar.tab.c"
+#line 2926 "CSSGrammar.tab.c"
     break;
 
   case 139:
-#line 997 "CSSGrammar.y"
+#line 998 "CSSGrammar.y"
                                                                {
         (yyval.ok) = (yyvsp[-5].ok);
     }
-#line 2933 "CSSGrammar.tab.c"
+#line 2934 "CSSGrammar.tab.c"
     break;
 
   case 140:
-#line 1003 "CSSGrammar.y"
+#line 1004 "CSSGrammar.y"
                                        {
         (yyval.ok) = false;
         CSSParser* p = static_cast<CSSParser*>(parser);
@@ -2947,103 +2948,104 @@ yyreduce:
             p->valueList = 0;
         }
     }
-#line 2951 "CSSGrammar.tab.c"
+#line 2952 "CSSGrammar.tab.c"
     break;
 
   case 141:
-#line 1017 "CSSGrammar.y"
+#line 1018 "CSSGrammar.y"
                                         {
-        /* Custom property: "--name: value". The leading "--" tokenizes as
-           '-' followed by an IDENT beginning with '-' (e.g. "-name"). Store the
-           declaration so it is not dropped (Stage A). */
+        /* Custom property "--name: value": "--name" now tokenizes as a single
+           IDENT (tokenizer customprop rule) and is handled by the regular
+           "property ':' expr" path, which routes it to CSS_PROP_CUSTOM_PROPERTY.
+           This legacy rule is retained only to gracefully consume any stray
+           single-'-' sequence without aborting the stylesheet. */
         (yyval.ok) = false;
-        CSSParser* p = static_cast<CSSParser*>(parser);
-        if ((yyvsp[-1].valueList)) {
-            String ident = domString((yyvsp[-4].string));
-            if (ident.length() > 1 && ident[0] == '-') {
-                String customName = String("-") + ident; /* reconstruct "--name" */
-                p->valueList = p->sinkFloatingValueList((yyvsp[-1].valueList));
-                (yyval.ok) = p->addCustomProperty(customName, (yyvsp[0].b));
-                delete p->valueList;
-                p->valueList = 0;
-            }
-        }
+    }
+#line 2965 "CSSGrammar.tab.c"
+    break;
+
+  case 142:
+#line 1027 "CSSGrammar.y"
+                   {
+        (yyval.ok) = false;
     }
 #line 2973 "CSSGrammar.tab.c"
     break;
 
-  case 142:
-#line 1035 "CSSGrammar.y"
-                   {
-        (yyval.ok) = false;
-    }
-#line 2981 "CSSGrammar.tab.c"
-    break;
-
   case 143:
-#line 1039 "CSSGrammar.y"
+#line 1031 "CSSGrammar.y"
                                              {
         /* The default movable type template has letter-spacing: .none;  Handle this by looking for
         error tokens at the start of an expr, recover the expr and then treat as an error, cleaning
         up and deleting the shifted expr.  */
         (yyval.ok) = false;
     }
-#line 2992 "CSSGrammar.tab.c"
+#line 2984 "CSSGrammar.tab.c"
     break;
 
   case 144:
-#line 1046 "CSSGrammar.y"
+#line 1038 "CSSGrammar.y"
                               {
         /* Handle this case: div { text-align: center; !important } Just reduce away the stray !important. */
         (yyval.ok) = false;
     }
-#line 3001 "CSSGrammar.tab.c"
+#line 2993 "CSSGrammar.tab.c"
     break;
 
   case 145:
-#line 1051 "CSSGrammar.y"
+#line 1043 "CSSGrammar.y"
                              {
         /* div { font-family: } Just reduce away this property with no value. */
         (yyval.ok) = false;
     }
-#line 3010 "CSSGrammar.tab.c"
+#line 3002 "CSSGrammar.tab.c"
     break;
 
   case 146:
-#line 1058 "CSSGrammar.y"
+#line 1050 "CSSGrammar.y"
                       {
         (yyvsp[-1].string).lower();
         String str = domString((yyvsp[-1].string));
-        CString bytes = str.latin1();
-        (yyval.prop_id) = getPropertyID(bytes.data(), bytes.length());
+        CSSParser* p = static_cast<CSSParser*>(parser);
+        // A custom property name "--foo" arrives as a single IDENT (tokenizer
+        // customprop rule). Route it to the custom-property id and remember the
+        // name for parseValue.
+        if (str.length() > 2 && str[0] == '-' && str[1] == '-') {
+            p->m_currentCustomPropertyName = str;
+            (yyval.prop_id) = CSS_PROP_CUSTOM_PROPERTY;
+        } else {
+            p->m_currentCustomPropertyName = String();
+            CString bytes = str.latin1();
+            (yyval.prop_id) = getPropertyID(bytes.data(), bytes.length());
+        }
     }
-#line 3021 "CSSGrammar.tab.c"
+#line 3023 "CSSGrammar.tab.c"
     break;
 
   case 147:
-#line 1067 "CSSGrammar.y"
+#line 1069 "CSSGrammar.y"
                               { (yyval.b) = true; }
-#line 3027 "CSSGrammar.tab.c"
+#line 3029 "CSSGrammar.tab.c"
     break;
 
   case 148:
-#line 1068 "CSSGrammar.y"
+#line 1070 "CSSGrammar.y"
                   { (yyval.b) = false; }
-#line 3033 "CSSGrammar.tab.c"
+#line 3035 "CSSGrammar.tab.c"
     break;
 
   case 149:
-#line 1072 "CSSGrammar.y"
+#line 1074 "CSSGrammar.y"
          {
         CSSParser* p = static_cast<CSSParser*>(parser);
         (yyval.valueList) = p->createFloatingValueList();
         (yyval.valueList)->addValue(p->sinkFloatingValue((yyvsp[0].value)));
     }
-#line 3043 "CSSGrammar.tab.c"
+#line 3045 "CSSGrammar.tab.c"
     break;
 
   case 150:
-#line 1077 "CSSGrammar.y"
+#line 1079 "CSSGrammar.y"
                          {
         CSSParser* p = static_cast<CSSParser*>(parser);
         (yyval.valueList) = (yyvsp[-2].valueList);
@@ -3058,85 +3060,85 @@ yyreduce:
             (yyval.valueList)->addValue(p->sinkFloatingValue((yyvsp[0].value)));
         }
     }
-#line 3062 "CSSGrammar.tab.c"
+#line 3064 "CSSGrammar.tab.c"
     break;
 
   case 151:
-#line 1091 "CSSGrammar.y"
+#line 1093 "CSSGrammar.y"
                  {
         (yyval.valueList) = 0;
     }
-#line 3070 "CSSGrammar.tab.c"
+#line 3072 "CSSGrammar.tab.c"
     break;
 
   case 152:
-#line 1097 "CSSGrammar.y"
+#line 1099 "CSSGrammar.y"
                     {
         (yyval.tok) = '/';
     }
-#line 3078 "CSSGrammar.tab.c"
+#line 3080 "CSSGrammar.tab.c"
     break;
 
   case 153:
-#line 1100 "CSSGrammar.y"
+#line 1102 "CSSGrammar.y"
                     {
         (yyval.tok) = ',';
     }
-#line 3086 "CSSGrammar.tab.c"
+#line 3088 "CSSGrammar.tab.c"
     break;
 
   case 154:
-#line 1103 "CSSGrammar.y"
+#line 1105 "CSSGrammar.y"
                     {
         (yyval.tok) = '+';
     }
-#line 3094 "CSSGrammar.tab.c"
+#line 3096 "CSSGrammar.tab.c"
     break;
 
   case 155:
-#line 1106 "CSSGrammar.y"
+#line 1108 "CSSGrammar.y"
                     {
         (yyval.tok) = '-';
     }
-#line 3102 "CSSGrammar.tab.c"
+#line 3104 "CSSGrammar.tab.c"
     break;
 
   case 156:
-#line 1109 "CSSGrammar.y"
+#line 1111 "CSSGrammar.y"
                     {
         (yyval.tok) = '*';
     }
-#line 3110 "CSSGrammar.tab.c"
+#line 3112 "CSSGrammar.tab.c"
     break;
 
   case 157:
-#line 1112 "CSSGrammar.y"
+#line 1114 "CSSGrammar.y"
                 {
         (yyval.tok) = 0;
   }
-#line 3118 "CSSGrammar.tab.c"
+#line 3120 "CSSGrammar.tab.c"
     break;
 
   case 158:
-#line 1118 "CSSGrammar.y"
+#line 1120 "CSSGrammar.y"
              { (yyval.value) = (yyvsp[0].value); }
-#line 3124 "CSSGrammar.tab.c"
+#line 3126 "CSSGrammar.tab.c"
     break;
 
   case 159:
-#line 1119 "CSSGrammar.y"
+#line 1121 "CSSGrammar.y"
                               { (yyval.value) = (yyvsp[0].value); (yyval.value).fValue *= (yyvsp[-1].i); }
-#line 3130 "CSSGrammar.tab.c"
+#line 3132 "CSSGrammar.tab.c"
     break;
 
   case 160:
-#line 1120 "CSSGrammar.y"
+#line 1122 "CSSGrammar.y"
                        { (yyval.value).id = 0; (yyval.value).string = (yyvsp[-1].string); (yyval.value).unit = CSSPrimitiveValue::CSS_STRING; }
-#line 3136 "CSSGrammar.tab.c"
+#line 3138 "CSSGrammar.tab.c"
     break;
 
   case 161:
-#line 1121 "CSSGrammar.y"
+#line 1123 "CSSGrammar.y"
                       {
       String str = domString((yyvsp[-1].string));
       CString bytes = str.lower().latin1();
@@ -3144,175 +3146,175 @@ yyreduce:
       (yyval.value).unit = CSSPrimitiveValue::CSS_IDENT;
       (yyval.value).string = (yyvsp[-1].string);
   }
-#line 3148 "CSSGrammar.tab.c"
+#line 3150 "CSSGrammar.tab.c"
     break;
 
   case 162:
-#line 1129 "CSSGrammar.y"
+#line 1131 "CSSGrammar.y"
                       { (yyval.value).id = 0; (yyval.value).string = (yyvsp[-1].string); (yyval.value).unit = CSSPrimitiveValue::CSS_DIMENSION; }
-#line 3154 "CSSGrammar.tab.c"
+#line 3156 "CSSGrammar.tab.c"
     break;
 
   case 163:
-#line 1130 "CSSGrammar.y"
+#line 1132 "CSSGrammar.y"
                                      { (yyval.value).id = 0; (yyval.value).string = (yyvsp[-1].string); (yyval.value).unit = CSSPrimitiveValue::CSS_DIMENSION; }
-#line 3160 "CSSGrammar.tab.c"
+#line 3162 "CSSGrammar.tab.c"
     break;
 
   case 164:
-#line 1131 "CSSGrammar.y"
+#line 1133 "CSSGrammar.y"
                     { (yyval.value).id = 0; (yyval.value).string = (yyvsp[-1].string); (yyval.value).unit = CSSPrimitiveValue::CSS_URI; }
-#line 3166 "CSSGrammar.tab.c"
+#line 3168 "CSSGrammar.tab.c"
     break;
 
   case 165:
-#line 1132 "CSSGrammar.y"
+#line 1134 "CSSGrammar.y"
                              { (yyval.value).id = 0; (yyval.value).iValue = 0; (yyval.value).unit = CSSPrimitiveValue::CSS_UNKNOWN;/* ### */ }
-#line 3172 "CSSGrammar.tab.c"
+#line 3174 "CSSGrammar.tab.c"
     break;
 
   case 166:
-#line 1133 "CSSGrammar.y"
+#line 1135 "CSSGrammar.y"
              { (yyval.value).id = 0; (yyval.value).string = (yyvsp[0].string); (yyval.value).unit = CSSPrimitiveValue::CSS_RGBCOLOR; }
-#line 3178 "CSSGrammar.tab.c"
+#line 3180 "CSSGrammar.tab.c"
     break;
 
   case 167:
-#line 1134 "CSSGrammar.y"
+#line 1136 "CSSGrammar.y"
                     { (yyval.value).id = 0; (yyval.value).string = ParseString(); (yyval.value).unit = CSSPrimitiveValue::CSS_RGBCOLOR; }
-#line 3184 "CSSGrammar.tab.c"
+#line 3186 "CSSGrammar.tab.c"
     break;
 
   case 168:
-#line 1136 "CSSGrammar.y"
+#line 1138 "CSSGrammar.y"
              {
       (yyval.value) = (yyvsp[0].value);
   }
-#line 3192 "CSSGrammar.tab.c"
+#line 3194 "CSSGrammar.tab.c"
     break;
 
   case 169:
-#line 1139 "CSSGrammar.y"
+#line 1141 "CSSGrammar.y"
                     {}
-#line 3198 "CSSGrammar.tab.c"
+#line 3200 "CSSGrammar.tab.c"
     break;
 
   case 170:
-#line 1143 "CSSGrammar.y"
+#line 1145 "CSSGrammar.y"
                       { (yyval.value).id = 0; (yyval.value).isInt = true; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_NUMBER; }
-#line 3204 "CSSGrammar.tab.c"
+#line 3206 "CSSGrammar.tab.c"
     break;
 
   case 171:
-#line 1144 "CSSGrammar.y"
+#line 1146 "CSSGrammar.y"
                            { (yyval.value).id = 0; (yyval.value).isInt = false; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_NUMBER; }
-#line 3210 "CSSGrammar.tab.c"
+#line 3212 "CSSGrammar.tab.c"
     break;
 
   case 172:
-#line 1145 "CSSGrammar.y"
+#line 1147 "CSSGrammar.y"
                            { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_PERCENTAGE; }
-#line 3216 "CSSGrammar.tab.c"
+#line 3218 "CSSGrammar.tab.c"
     break;
 
   case 173:
-#line 1146 "CSSGrammar.y"
+#line 1148 "CSSGrammar.y"
                     { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_PX; }
-#line 3222 "CSSGrammar.tab.c"
+#line 3224 "CSSGrammar.tab.c"
     break;
 
   case 174:
-#line 1147 "CSSGrammar.y"
+#line 1149 "CSSGrammar.y"
                     { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_CM; }
-#line 3228 "CSSGrammar.tab.c"
+#line 3230 "CSSGrammar.tab.c"
     break;
 
   case 175:
-#line 1148 "CSSGrammar.y"
+#line 1150 "CSSGrammar.y"
                     { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_MM; }
-#line 3234 "CSSGrammar.tab.c"
+#line 3236 "CSSGrammar.tab.c"
     break;
 
   case 176:
-#line 1149 "CSSGrammar.y"
+#line 1151 "CSSGrammar.y"
                     { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_IN; }
-#line 3240 "CSSGrammar.tab.c"
+#line 3242 "CSSGrammar.tab.c"
     break;
 
   case 177:
-#line 1150 "CSSGrammar.y"
+#line 1152 "CSSGrammar.y"
                     { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_PT; }
-#line 3246 "CSSGrammar.tab.c"
+#line 3248 "CSSGrammar.tab.c"
     break;
 
   case 178:
-#line 1151 "CSSGrammar.y"
+#line 1153 "CSSGrammar.y"
                     { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_PC; }
-#line 3252 "CSSGrammar.tab.c"
+#line 3254 "CSSGrammar.tab.c"
     break;
 
   case 179:
-#line 1152 "CSSGrammar.y"
+#line 1154 "CSSGrammar.y"
                      { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_DEG; }
-#line 3258 "CSSGrammar.tab.c"
+#line 3260 "CSSGrammar.tab.c"
     break;
 
   case 180:
-#line 1153 "CSSGrammar.y"
+#line 1155 "CSSGrammar.y"
                      { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_RAD; }
-#line 3264 "CSSGrammar.tab.c"
+#line 3266 "CSSGrammar.tab.c"
     break;
 
   case 181:
-#line 1154 "CSSGrammar.y"
+#line 1156 "CSSGrammar.y"
                       { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_GRAD; }
-#line 3270 "CSSGrammar.tab.c"
+#line 3272 "CSSGrammar.tab.c"
     break;
 
   case 182:
-#line 1155 "CSSGrammar.y"
+#line 1157 "CSSGrammar.y"
                       { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_MS; }
-#line 3276 "CSSGrammar.tab.c"
+#line 3278 "CSSGrammar.tab.c"
     break;
 
   case 183:
-#line 1156 "CSSGrammar.y"
+#line 1158 "CSSGrammar.y"
                      { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_S; }
-#line 3282 "CSSGrammar.tab.c"
+#line 3284 "CSSGrammar.tab.c"
     break;
 
   case 184:
-#line 1157 "CSSGrammar.y"
+#line 1159 "CSSGrammar.y"
                      { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_HZ; }
-#line 3288 "CSSGrammar.tab.c"
+#line 3290 "CSSGrammar.tab.c"
     break;
 
   case 185:
-#line 1158 "CSSGrammar.y"
+#line 1160 "CSSGrammar.y"
                       { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_KHZ; }
-#line 3294 "CSSGrammar.tab.c"
+#line 3296 "CSSGrammar.tab.c"
     break;
 
   case 186:
-#line 1159 "CSSGrammar.y"
+#line 1161 "CSSGrammar.y"
                     { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_EMS; }
-#line 3300 "CSSGrammar.tab.c"
+#line 3302 "CSSGrammar.tab.c"
     break;
 
   case 187:
-#line 1160 "CSSGrammar.y"
+#line 1162 "CSSGrammar.y"
                      { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = Value::Q_EMS; }
-#line 3306 "CSSGrammar.tab.c"
+#line 3308 "CSSGrammar.tab.c"
     break;
 
   case 188:
-#line 1161 "CSSGrammar.y"
+#line 1163 "CSSGrammar.y"
                     { (yyval.value).id = 0; (yyval.value).fValue = (yyvsp[-1].val); (yyval.value).unit = CSSPrimitiveValue::CSS_EXS; }
-#line 3312 "CSSGrammar.tab.c"
+#line 3314 "CSSGrammar.tab.c"
     break;
 
   case 189:
-#line 1166 "CSSGrammar.y"
+#line 1168 "CSSGrammar.y"
                                               {
         CSSParser* p = static_cast<CSSParser*>(parser);
         Function* f = p->createFloatingFunction();
@@ -3322,11 +3324,11 @@ yyreduce:
         (yyval.value).unit = Value::QFunction;
         (yyval.value).function = f;
     }
-#line 3326 "CSSGrammar.tab.c"
+#line 3328 "CSSGrammar.tab.c"
     break;
 
   case 190:
-#line 1175 "CSSGrammar.y"
+#line 1177 "CSSGrammar.y"
                                {
         CSSParser* p = static_cast<CSSParser*>(parser);
         Function* f = p->createFloatingFunction();
@@ -3336,55 +3338,55 @@ yyreduce:
         (yyval.value).unit = Value::QFunction;
         (yyval.value).function = f;
   }
-#line 3340 "CSSGrammar.tab.c"
+#line 3342 "CSSGrammar.tab.c"
     break;
 
   case 191:
-#line 1191 "CSSGrammar.y"
+#line 1193 "CSSGrammar.y"
                   { (yyval.string) = (yyvsp[-1].string); }
-#line 3346 "CSSGrammar.tab.c"
+#line 3348 "CSSGrammar.tab.c"
     break;
 
   case 192:
-#line 1192 "CSSGrammar.y"
+#line 1194 "CSSGrammar.y"
                       { (yyval.string) = (yyvsp[-1].string); }
-#line 3352 "CSSGrammar.tab.c"
+#line 3354 "CSSGrammar.tab.c"
     break;
 
   case 193:
-#line 1199 "CSSGrammar.y"
+#line 1201 "CSSGrammar.y"
                             {
         (yyval.rule) = 0;
     }
-#line 3360 "CSSGrammar.tab.c"
+#line 3362 "CSSGrammar.tab.c"
     break;
 
   case 194:
-#line 1202 "CSSGrammar.y"
+#line 1204 "CSSGrammar.y"
                   {
         (yyval.rule) = 0;
     }
-#line 3368 "CSSGrammar.tab.c"
+#line 3370 "CSSGrammar.tab.c"
     break;
 
   case 195:
-#line 1208 "CSSGrammar.y"
+#line 1210 "CSSGrammar.y"
            {
         (yyval.rule) = 0;
     }
-#line 3376 "CSSGrammar.tab.c"
+#line 3378 "CSSGrammar.tab.c"
     break;
 
   case 196:
-#line 1214 "CSSGrammar.y"
+#line 1216 "CSSGrammar.y"
                         {
         (yyval.rule) = 0;
     }
-#line 3384 "CSSGrammar.tab.c"
+#line 3386 "CSSGrammar.tab.c"
     break;
 
 
-#line 3388 "CSSGrammar.tab.c"
+#line 3390 "CSSGrammar.tab.c"
 
       default: break;
     }
@@ -3616,5 +3618,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1240 "CSSGrammar.y"
+#line 1242 "CSSGrammar.y"
 

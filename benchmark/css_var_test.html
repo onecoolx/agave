@@ -1,0 +1,36 @@
+<html>
+<head><style>
+* { box-sizing: border-box; margin: 0; }
+/* design tokens on a container (not :root, see known limitation) */
+#theme { --sidebar: 120px; --pad: 16px; --card: 200px; width: 500px; }
+#main { width: var(--card); height: 30px; }
+#wide { width: calc(100% - var(--sidebar)); height: 30px; }
+#padded { width: var(--card); margin-left: var(--pad); height: 30px; }
+#fallback { width: var(--missing, 90px); height: 30px; }
+/* nested var: --card used via another var */
+#alias { --ref: var(--card); width: var(--ref); height: 30px; }
+</style></head>
+<body>
+<div id="theme">
+  <div id="main">M</div>
+  <div id="wide">W</div>
+  <div id="padded">P</div>
+  <div id="fallback">F</div>
+  <div id="alias">A</div>
+</div>
+<script>
+var r=[];
+function ck(n,a,e,t){t=t||2;r.push(n+':'+(Math.abs(a-e)<=t?'PASS':'FAIL('+a+'!='+e+')'));}
+function W(id){return document.getElementById(id).offsetWidth;}
+
+ck('main', W('main'), 200);        // var(--card)
+ck('wide', W('wide'), 380);        // calc(100% - var(--sidebar)) = 500-120
+ck('padded', W('padded'), 200);    // var(--card)
+ck('fallback', W('fallback'), 90); // var(--missing, 90px)
+ck('alias', W('alias'), 200);      // var(--ref) -> var(--card)
+
+var ok=r.every(function(s){return s.indexOf('PASS')>=0;});
+alert((ok?'ALL PASS':'FAILURES')+'|'+r.join('|'));
+</script>
+</body>
+</html>
