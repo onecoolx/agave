@@ -74,12 +74,16 @@ public:
     RunningKeyframeAnimation()
         : m_startTime(0)
         , m_filled(false)
+        , m_paused(false)
+        , m_pausedElapsed(0)
     {
     }
 
     String m_name;
     double m_startTime;
     bool m_filled;                       // finished and retained via fill-mode
+    bool m_paused;                       // animation-play-state: paused
+    double m_pausedElapsed;              // frozen elapsed (sec) while paused
     KeyframeAnimation m_params;          // duration/delay/iteration/direction/...
     Vector<float> m_offsets;             // keyframe offsets in [0,1], ascending
     Vector<RenderStyle*> m_styles;       // resolved & ref'd style per offset

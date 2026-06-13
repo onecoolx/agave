@@ -497,7 +497,10 @@ static double keyframeProgress(const RunningKeyframeAnimation& anim, double now,
     finished = false;
     inDelay = false;
     const KeyframeAnimation& p = anim.m_params;
-    double elapsed = now - anim.m_startTime - p.delay();
+    // When paused, time is frozen at the elapsed value captured at pause; the
+    // wall clock keeps moving but does not advance the animation.
+    double elapsed = anim.m_paused ? anim.m_pausedElapsed
+                                   : (now - anim.m_startTime - p.delay());
     if (elapsed <= 0) {
         inDelay = true;
         return 0.0; // delay phase: hold first keyframe (if fill-mode allows)
@@ -626,16 +629,69 @@ RenderStyle* AnimationController::updateAnimations(RenderObject* renderer, Rende
     double now = currentTime();
     bool startedAny = false;
 
+    // Pragmatic play-state handling: a bare `animation-play-state` longhand
+    // (e.g. set from JS via element.style.animationPlayState) cascades as a
+    // separate, name-less animation entry that would otherwise be ignored. When
+    // the element already has running animations, apply that play-state to all
+    // of them so JS pause/resume works without re-declaring the shorthand.
+    if (anims && !anims->isEmpty()) {
+        bool sawNamed = false;
+        bool wantPaused = false;
+        for (size_t i = 0; i < decls.size(); ++i) {
+            if (!decls[i].name().isEmpty())
+                sawNamed = true;
+            if (decls[i].playState() == AnimPlayPaused)
+                wantPaused = true;
+        }
+        if (!sawNamed) {
+            for (size_t j = 0; j < anims->size(); ++j) {
+                RunningKeyframeAnimation& running = anims->at(j);
+                if (wantPaused && !running.m_paused) {
+                    double e = now - running.m_startTime - running.m_params.delay();
+                    running.m_pausedElapsed = (e > 0) ? e : 0;
+                    running.m_paused = true;
+                } else if (!wantPaused && running.m_paused) {
+                    running.m_startTime = now - running.m_params.delay() - running.m_pausedElapsed;
+                    running.m_paused = false;
+                    running.m_filled = false;
+                }
+            }
+            startTimerIfNeeded();
+            bool anyActive = false;
+            return animatedKeyframeStyle(renderer, newStyle, now, anyActive);
+        }
+    }
+
     for (size_t i = 0; i < decls.size(); ++i) {
         const KeyframeAnimation& decl = decls[i];
         if (decl.name().isEmpty() || decl.duration() <= 0)
             continue;
 
-        // Already running with the same name? Skip (don't restart each restyle).
+        // Already running with the same name? Detect a play-state change
+        // (pause/resume) on the running instance instead of restarting it.
         bool alreadyRunning = false;
         if (anims) {
             for (size_t j = 0; j < anims->size(); ++j) {
-                if (anims->at(j).m_name == decl.name()) { alreadyRunning = true; break; }
+                RunningKeyframeAnimation& running = anims->at(j);
+                if (running.m_name != decl.name())
+                    continue;
+                alreadyRunning = true;
+
+                bool wantPaused = (decl.playState() == AnimPlayPaused);
+                if (wantPaused && !running.m_paused) {
+                    // Pause: freeze elapsed at its current value.
+                    double e = now - running.m_startTime - running.m_params.delay();
+                    running.m_pausedElapsed = (e > 0) ? e : 0;
+                    running.m_paused = true;
+                } else if (!wantPaused && running.m_paused) {
+                    // Resume: shift the start time so progress stays continuous.
+                    running.m_startTime = now - running.m_params.delay() - running.m_pausedElapsed;
+                    running.m_paused = false;
+                    running.m_filled = false; // it may resume past a held end
+                }
+                // Keep the latest play-state in the stored params.
+                running.m_params.setPlayState(decl.playState());
+                break;
             }
         }
         if (alreadyRunning)
@@ -651,6 +707,11 @@ RenderStyle* AnimationController::updateAnimations(RenderObject* renderer, Rende
         anim.m_name = decl.name();
         anim.m_startTime = now;
         anim.m_params = decl;
+        // An animation declared paused starts frozen at elapsed 0.
+        if (decl.playState() == AnimPlayPaused) {
+            anim.m_paused = true;
+            anim.m_pausedElapsed = 0;
+        }
 
         for (unsigned k = 0; k < rule->length(); ++k) {
             CSSKeyframeRule* kf = rule->item(k);
@@ -800,8 +861,9 @@ void AnimationController::animationTimerFired(Timer<AnimationController>*)
     }
 
     // Stop the timer when nothing is still animating. Filled (finished+retained)
-    // keyframe animations stay in the map to hold their final frame, but they no
-    // longer require ticks, so they don't count as "live" here.
+    // and paused keyframe animations stay in the map to hold a fixed frame, but
+    // they no longer require ticks, so they don't count as "live" here. A paused
+    // animation resumes via a play-state restyle (which restarts the timer).
     bool anyLiveKeyframes = false;
     {
         HashMap<RenderObject*, Vector<RunningKeyframeAnimation>*>::iterator kend = m_keyframeAnimations.end();
@@ -809,7 +871,7 @@ void AnimationController::animationTimerFired(Timer<AnimationController>*)
              it != kend && !anyLiveKeyframes; ++it) {
             Vector<RunningKeyframeAnimation>* a = it->second;
             for (size_t i = 0; i < a->size(); ++i) {
-                if (!a->at(i).m_filled) { anyLiveKeyframes = true; break; }
+                if (!a->at(i).m_filled && !a->at(i).m_paused) { anyLiveKeyframes = true; break; }
             }
         }
     }

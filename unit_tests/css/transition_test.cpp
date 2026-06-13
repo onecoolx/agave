@@ -31,6 +31,9 @@
 #include "RenderStyle.h"
 #include "Animation.h"
 #include "Color.h"
+#include "CSSStyleDeclaration.h"
+#include "Element.h"
+#include "ExceptionCode.h"
 
 #if ENABLE(CSS_TRANSITIONS)
 
@@ -394,6 +397,40 @@ TEST_F(AnimationParseTest, ZIndexDiscreteSwitch)
     RenderStyle* late = styleById("a");
     ASSERT_TRUE(late != 0);
     EXPECT_EQ(late->zIndex(), 100);
+}
+
+TEST_F(AnimationParseTest, PlayStatePauseFreezesAndResumeContinues)
+{
+    loadHtml("<style>@keyframes grow { from { width:100px; } to { width:500px; } }</style>"
+             "<div id='a' style='width:100px;height:40px; animation: grow 2s linear;'>x</div>");
+    Element* el = view->mainframe()->document()->getElementById(String("a"));
+    ASSERT_TRUE(el != 0);
+
+    // Run ~400ms (~20% of 2s -> width ~180).
+    for (int i = 0; i < 44; ++i) { Test_EventDispatchOnce(); usleep(9000); }
+
+    // Pause via the inline style longhand (the common JS pattern).
+    ExceptionCode ec = 0;
+    el->style()->setProperty(String("animation-play-state"), String("paused"), ec);
+    el->document()->updateRendering();
+    Test_EventDispatchOnce();
+    usleep(20000);
+    Test_EventDispatchOnce();
+
+    int frozen = el->renderer()->style()->width().value();
+
+    // Wait ~400ms while paused; the width must not advance.
+    for (int i = 0; i < 44; ++i) { Test_EventDispatchOnce(); usleep(9000); }
+    int stillFrozen = el->renderer()->style()->width().value();
+    EXPECT_NEAR(stillFrozen, frozen, 12); // frozen (small jitter tolerance)
+
+    // Resume; the animation should continue advancing from the frozen point.
+    el->style()->setProperty(String("animation-play-state"), String("running"), ec);
+    el->document()->updateRendering();
+    Test_EventDispatchOnce();
+    for (int i = 0; i < 33; ++i) { Test_EventDispatchOnce(); usleep(9000); }
+    int resumed = el->renderer()->style()->width().value();
+    EXPECT_GT(resumed, frozen + 20); // advanced past the frozen value
 }
 
 #endif // ENABLE(CSS_TRANSITIONS)

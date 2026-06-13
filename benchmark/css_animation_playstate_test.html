@@ -1,0 +1,37 @@
+<html>
+<head><style>
+@keyframes grow { from { width: 100px; } to { width: 500px; } }
+#a { width:100px; height:40px; background:#ccc; animation: grow 2s linear; }
+</style></head>
+<body>
+<div id="a">a</div>
+<script>
+var a = document.getElementById('a');
+var results = [];
+function near(name, actual, expected, tol) {
+  results.push(name + (Math.abs(actual - expected) <= tol ? ':PASS' : ':FAIL([' + actual + ']!=[' + expected + '+-' + tol + '])'));
+}
+
+// At ~500ms (25% of 2s -> width ~200): pause.
+setTimeout(function() {
+  a.style.animationPlayState = 'paused';
+  // At ~1200ms: still paused; width must stay frozen near 200.
+  setTimeout(function() {
+    var frozen = a.offsetWidth;
+    near('paused-frozen', frozen, 200, 35);
+    // Resume.
+    a.style.animationPlayState = 'running';
+    // After ~500ms more running: total progress ~500ms + 500ms = 1s of 2s -> ~50% -> ~300.
+    setTimeout(function() {
+      var resumed = a.offsetWidth;
+      near('resumed-continues', resumed, 300, 45);
+      // The resumed value must be greater than the frozen value (it advanced).
+      results.push('resume-advanced:' + (resumed > frozen + 20 ? 'PASS' : 'FAIL([' + resumed + ']<=[' + frozen + '])'));
+      var ok = results.every(function(s){return s.indexOf('PASS')>=0;});
+      alert((ok ? 'ALL PASS' : 'FAILURES') + '|' + results.join('|'));
+    }, 500);
+  }, 700);
+}, 500);
+</script>
+</body>
+</html>
