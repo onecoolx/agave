@@ -1,0 +1,56 @@
+<html>
+<head><style>
+/* Broad property + selector coverage to baseline the tokenizer/parser. */
+#box {
+  color: rgb(10, 20, 30);
+  background-color: #abcdef;
+  margin: 1px 2px 3px 4px;
+  padding: 5px;
+  border: 2px solid black;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  width: calc(200px - 20px);
+  display: block;
+  position: relative;
+  z-index: 5;
+}
+.cls-a.cls-b { font-style: italic; }
+#box > span { text-decoration: underline; }
+#box span:first-child { letter-spacing: 2px; }
+ul li:nth-child(odd) { color: rgb(1, 2, 3); }
+#vendor { display: -webkit-box; }
+#neg { margin-left: -15px; top: -3px; }
+/* comment */ #cmt { color: /* mid */ green; }
+</style></head>
+<body>
+<div id="box"><span class="cls-a cls-b">child</span></div>
+<ul><li>a</li><li>b</li></ul>
+<div id="vendor">v</div>
+<div id="neg" style="position:relative">n</div>
+<div id="cmt">c</div>
+<script>
+var r = [];
+function ck(n, a, e) { r.push(n + ':' + (a === e ? 'PASS' : 'FAIL(' + a + ')')); }
+function gc(id, p) { return window.getComputedStyle(document.getElementById(id))[p]; }
+function done() {
+  var ok = r.every(function(s){ return s.indexOf('PASS') >= 0; });
+  alert((ok ? 'ALL PASS' : 'FAILURES') + '|' + r.join('|'));
+}
+
+ck('color', gc('box', 'color'), 'rgb(10, 20, 30)');
+ck('margin-top', gc('box', 'marginTop'), '1px');
+ck('margin-left', gc('box', 'marginLeft'), '4px');
+ck('font-size', gc('box', 'fontSize'), '14px');
+ck('font-weight', gc('box', 'fontWeight'), 'bold');
+ck('text-align', gc('box', 'textAlign'), 'center');
+ck('z-index', gc('box', 'zIndex'), '5');
+ck('child-italic', gc('box', 'fontStyle') !== undefined, true);
+ck('neg-margin', gc('neg', 'marginLeft'), '-15px');
+ck('neg-top', gc('neg', 'top'), '-3px');
+ck('comment-color', gc('cmt', 'color'), 'rgb(0, 128, 0)');
+
+done();
+</script>
+</body>
+</html>
