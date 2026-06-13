@@ -98,6 +98,10 @@ class StyledElement;
         // single compound selector match the given element?
         bool matchesSelector(Element* e, CSSSelector* selector)
         {
+            // querySelector-style matching does not build a style, so clear the
+            // transient style pointer: checkOneSelector must not record
+            // "affected by attribute selectors" against a stale/freed style.
+            style = 0;
             initElementAndPseudoState(e);
             return checkSelector(selector);
         }

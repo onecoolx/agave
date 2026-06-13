@@ -154,3 +154,25 @@ TEST_F(SelectorsApiTest, ClassListEmptyTokenThrows)
     EXPECT_EQ(ec, SYNTAX_ERR);
 }
 
+TEST_F(SelectorsApiTest, QuerySelectorAttributeSelector)
+{
+    // Regression: an attribute selector in querySelector must not touch the
+    // (absent) build-time style. Previously this caused a use-after-free.
+    loadHtml("<div data-role='nav'>1</div><div data-role='main' id='m'>2</div>");
+    ExceptionCode ec = 0;
+    Element* e = doc()->querySelector("[data-role=main]", ec);
+    ASSERT_TRUE(e);
+    EXPECT_EQ(e->getAttribute("id"), "m");
+}
+
+TEST_F(SelectorsApiTest, QuerySelectorCombinators)
+{
+    loadHtml("<div class='box'><p class='t'>in</p></div><p class='t'>out</p>");
+    ExceptionCode ec = 0;
+    Element* d = doc()->querySelector(".box p.t", ec);
+    ASSERT_TRUE(d);
+    RefPtr<NodeList> child = doc()->querySelectorAll(".box > .t", ec);
+    ASSERT_TRUE(child);
+    EXPECT_EQ(child->length(), 1u);
+}
+
