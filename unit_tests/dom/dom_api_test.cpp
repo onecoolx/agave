@@ -149,3 +149,17 @@ TEST_F(DomApiTest, ClosestWalksAncestors)
     // no ancestor matches.
     EXPECT_FALSE(btn->closest("table", ec));
 }
+
+TEST_F(DomApiTest, DatasetBackedByDataAttributes)
+{
+    // The dataset DOMStringMap is a JS-level exotic object; at the C++ layer we
+    // verify the underlying data-* attribute storage it maps onto.
+    loadHtml("<div id='d' data-role='panel' data-foo-bar='hello'></div>");
+    Element* d = byId("d");
+    ASSERT_TRUE(d);
+    EXPECT_EQ(d->getAttribute("data-role"), "panel");
+    EXPECT_EQ(d->getAttribute("data-foo-bar"), "hello");
+    ExceptionCode ec = 0;
+    d->setAttribute("data-new-prop", "v", ec);
+    EXPECT_EQ(d->getAttribute("data-new-prop"), "v");
+}

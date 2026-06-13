@@ -46,6 +46,30 @@ ck('closest-container', btn.closest('.container').id, 'outer');
 ck('closest-self', btn.closest('button').id, 'btn');
 ck('closest-none', btn.closest('table'), null);
 
+// dataset
+var ds = E('mid');
+ck('dataset-read', ds.dataset.role, 'panel');
+ds.dataset.fooBar = 'hi';
+ck('dataset-write', ds.getAttribute('data-foo-bar'), 'hi');
+
+// addEventListener / removeEventListener / dispatchEvent
+var evtLog = [];
+function onClick() { evtLog.push('c'); }
+btn.addEventListener('click', onClick, false);
+btn.click();
+btn.click();
+ck('addEventListener', evtLog.length, 2);
+btn.removeEventListener('click', onClick, false);
+btn.click();
+ck('removeEventListener', evtLog.length, 2);
+var fired = false;
+btn.addEventListener('custom', function(){ fired = true; }, false);
+var cev = document.createEvent('Event');
+cev.initEvent('custom', true, true);
+var dr = btn.dispatchEvent(cev);
+ck('dispatchEvent-fired', fired, true);
+ck('dispatchEvent-ret', dr, true);
+
 done();
 </script>
 </body>

@@ -48,6 +48,9 @@ module core {
         // Element.classList (DOMTokenList over the class attribute).
         readonly attribute DOMTokenList classList;
 
+        // Element.dataset (DOMStringMap over data-* attributes).
+        readonly attribute [CustomGetter] DOMStringMap dataset;
+
         // DOM Level 2 Core
 
         [OldStyleObjC] DOMString getAttributeNS(in [ConvertNullToNullString] DOMString namespaceURI,

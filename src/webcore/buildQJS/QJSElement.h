@@ -50,12 +50,12 @@ public:
 
     enum {
         // Attributes
-        TagNameAttrNum, ClassListAttrNum, StyleAttrNum, OffsetLeftAttrNum, 
-        OffsetTopAttrNum, OffsetWidthAttrNum, OffsetHeightAttrNum, OffsetParentAttrNum, 
-        ClientLeftAttrNum, ClientTopAttrNum, ClientWidthAttrNum, ClientHeightAttrNum, 
-        ScrollLeftAttrNum, ScrollTopAttrNum, ScrollWidthAttrNum, ScrollHeightAttrNum, 
-        ChildrenAttrNum, FirstElementChildAttrNum, LastElementChildAttrNum, PreviousElementSiblingAttrNum, 
-        NextElementSiblingAttrNum, ChildElementCountAttrNum, 
+        TagNameAttrNum, ClassListAttrNum, DatasetAttrNum, StyleAttrNum, 
+        OffsetLeftAttrNum, OffsetTopAttrNum, OffsetWidthAttrNum, OffsetHeightAttrNum, 
+        OffsetParentAttrNum, ClientLeftAttrNum, ClientTopAttrNum, ClientWidthAttrNum, 
+        ClientHeightAttrNum, ScrollLeftAttrNum, ScrollTopAttrNum, ScrollWidthAttrNum, 
+        ScrollHeightAttrNum, ChildrenAttrNum, FirstElementChildAttrNum, LastElementChildAttrNum, 
+        PreviousElementSiblingAttrNum, NextElementSiblingAttrNum, ChildElementCountAttrNum, 
 
         // The Constructor Attribute
         ConstructorAttrNum, 
@@ -69,6 +69,9 @@ public:
         FocusFuncNum, BlurFuncNum, ScrollIntoViewFuncNum, InsertAdjacentElementFuncNum, 
         ContainsFuncNum, ScrollIntoViewIfNeededFuncNum, ScrollByLinesFuncNum, ScrollByPagesFuncNum
     };
+
+    // Custom attributes
+    static JSValue dataset(JSContext *ctx, Element *impl);
 
     // Custom functions
     static JSValue setAttribute(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Element *impl);

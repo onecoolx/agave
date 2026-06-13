@@ -114,10 +114,22 @@ JSEventListener::JSEventListener(JSValue listener, Window* win, bool html)
         if (m_ctx && !JS_IsNull(m_listener) && !JS_IsUndefined(m_listener))
             m_listener = JS_DupValue(m_ctx, m_listener);
     }
+    // Register in the window's listener map so findJSEventListener() can locate
+    // this wrapper again (needed by removeEventListener). Keyed by the callback
+    // object pointer, matching findJSEventListener's lookup.
+    if (win && JS_IsObject(listener)) {
+        Window::ListenersMap& listeners = html ? win->jsHTMLEventListeners() : win->jsEventListeners();
+        listeners.set(JS_VALUE_GET_PTR(listener), this);
+    }
 }
 
 JSEventListener::~JSEventListener()
 {
+    // Unregister from the window's listener map (mirrors the constructor).
+    if (m_win && !JS_IsNull(m_listener) && !JS_IsUndefined(m_listener) && JS_IsObject(m_listener)) {
+        Window::ListenersMap& listeners = isHTMLEventListener() ? m_win->jsHTMLEventListeners() : m_win->jsEventListeners();
+        listeners.remove(JS_VALUE_GET_PTR(m_listener));
+    }
     if (m_ctx && !JS_IsNull(m_listener) && !JS_IsUndefined(m_listener))
         JS_FreeValue(m_ctx, m_listener);
 }

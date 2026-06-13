@@ -316,7 +316,7 @@ static void init_JSNodePrototypeConstantsFunctions()
 
 /* Prototype functions table */
 
-static JSCFunctionListEntry JSNodePrototypeFunctions[14];
+static JSCFunctionListEntry JSNodePrototypeFunctions[17];
 static bool JSNodePrototypeFunctions_initialized = false;
 
 static void init_JSNodePrototypeFunctions()
@@ -422,6 +422,27 @@ static void init_JSNodePrototypeFunctions()
     JSNodePrototypeFunctions[13].u.func.length = 1;
     JSNodePrototypeFunctions[13].u.func.cproto = JS_CFUNC_generic_magic;
     JSNodePrototypeFunctions[13].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[14].name = "addEventListener";
+    JSNodePrototypeFunctions[14].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[14].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[14].magic = JSNode::AddEventListenerFuncNum;
+    JSNodePrototypeFunctions[14].u.func.length = 3;
+    JSNodePrototypeFunctions[14].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[14].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[15].name = "removeEventListener";
+    JSNodePrototypeFunctions[15].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[15].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[15].magic = JSNode::RemoveEventListenerFuncNum;
+    JSNodePrototypeFunctions[15].u.func.length = 3;
+    JSNodePrototypeFunctions[15].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[15].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
+    JSNodePrototypeFunctions[16].name = "dispatchEvent";
+    JSNodePrototypeFunctions[16].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSNodePrototypeFunctions[16].def_type = JS_DEF_CFUNC;
+    JSNodePrototypeFunctions[16].magic = JSNode::DispatchEventFuncNum;
+    JSNodePrototypeFunctions[16].u.func.length = 1;
+    JSNodePrototypeFunctions[16].u.func.cproto = JS_CFUNC_generic_magic;
+    JSNodePrototypeFunctions[16].u.func.cfunc.generic_magic = JSNodePrototypeFunction::callAsFunction;
 }
 
 JSValue JSNodePrototype::self(JSContext * ctx)
@@ -682,6 +703,15 @@ JSValue JSNodePrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst thi
 
             JSValue result = jsStringOrNull(ctx, imp->lookupNamespaceURI(prefix));
             return result;
+        }
+        case JSNode::AddEventListenerFuncNum: {
+            return JSNode::addEventListener(ctx, this_val, argc, argv, imp);
+        }
+        case JSNode::RemoveEventListenerFuncNum: {
+            return JSNode::removeEventListener(ctx, this_val, argc, argv, imp);
+        }
+        case JSNode::DispatchEventFuncNum: {
+            return JSNode::dispatchEvent(ctx, this_val, argc, argv, imp);
         }
     }
     return JS_NULL;

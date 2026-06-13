@@ -55,6 +55,13 @@
 #include "Notation.h"
 #include "ProcessingInstruction.h"
 #include "Text.h"
+#include "EventTargetNode.h"
+#include "Event.h"
+#include "Frame.h"
+#include "QJSEvent.h"
+#include "qjs_window.h"
+#include "qjs_events.h"
+#include "qjs_binding.h"
 #include <wtf/PassRefPtr.h>
 #include <wtf/RefPtr.h>
 
@@ -110,6 +117,52 @@ JSValue JSNode::appendChild(JSContext *ctx, JSValueConst this_val, int argc, JSV
     if (ok)
         return JS_DupValue(ctx, argv[0]);
     return JS_NULL;
+}
+
+JSValue JSNode::addEventListener(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl)
+{
+    if (!impl || !impl->isEventTargetNode() || argc < 2)
+        return JS_UNDEFINED;
+    Frame* frame = impl->document() ? impl->document()->frame() : 0;
+    if (!frame)
+        return JS_UNDEFINED;
+    QJS::Window* window = QJS::Window::retrieveWindow(frame);
+    if (!window)
+        return JS_UNDEFINED;
+    // The window owns and GC-marks the JSEventListener wrapper, keeping the JS
+    // callback alive for the listener's lifetime.
+    if (JSEventListener* listener = window->findOrCreateJSEventListener(argv[1])) {
+        bool capture = (argc >= 3) ? JS_ToBool(ctx, argv[2]) : false;
+        EventTargetNodeCast(impl)->addEventListener(QJS::valueToString(ctx, argv[0]), listener, capture);
+    }
+    return JS_UNDEFINED;
+}
+
+JSValue JSNode::removeEventListener(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl)
+{
+    if (!impl || !impl->isEventTargetNode() || argc < 2)
+        return JS_UNDEFINED;
+    Frame* frame = impl->document() ? impl->document()->frame() : 0;
+    if (!frame)
+        return JS_UNDEFINED;
+    QJS::Window* window = QJS::Window::retrieveWindow(frame);
+    if (!window)
+        return JS_UNDEFINED;
+    if (JSEventListener* listener = window->findJSEventListener(argv[1])) {
+        bool capture = (argc >= 3) ? JS_ToBool(ctx, argv[2]) : false;
+        EventTargetNodeCast(impl)->removeEventListener(QJS::valueToString(ctx, argv[0]), listener, capture);
+    }
+    return JS_UNDEFINED;
+}
+
+JSValue JSNode::dispatchEvent(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl)
+{
+    if (!impl || !impl->isEventTargetNode() || argc < 1)
+        return JS_FALSE;
+    ExceptionCode ec = 0;
+    bool result = EventTargetNodeCast(impl)->dispatchEvent(toEvent(argv[0]), ec);
+    QJS::setDOMException(ctx, ec);
+    return JS_NewBool(ctx, result);
 }
 
 void JSNode::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *mark_func)

@@ -92,6 +92,11 @@ module core {
         boolean            isDefaultNamespace(in [ConvertNullToNullString] DOMString namespaceURI);
         [ConvertNullStringTo=Null] DOMString          lookupNamespaceURI(in [ConvertNullToNullString] DOMString prefix);
 
+        // EventTarget interface (custom-bound to bridge JS callbacks).
+        [Custom] void addEventListener(in DOMString type, in EventListener listener, in boolean useCapture);
+        [Custom] void removeEventListener(in DOMString type, in EventListener listener, in boolean useCapture);
+        [Custom] boolean dispatchEvent(in Event event);
+
 #if 0
         // DocumentPosition
         const unsigned short      DOCUMENT_POSITION_DISCONNECTED = 0x01;

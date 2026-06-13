@@ -13,6 +13,9 @@
 #include "QJSStyleSheetList.h"
 #include "QJSEvent.h"
 #include "QJSHTMLFormElement.h"
+#include "QJSElement.h"
+#include "Element.h"
+#include "qjs_dataset.h"
 
 #include "CSSStyleDeclaration.h"
 #include "CSSValue.h"
@@ -130,6 +133,14 @@ JSValue JSHTMLFormElement::nameGetter(JSContext* ctx, JSValueConst this_obj, con
     if (nodes.size() == 1)
         return toJS(ctx, nodes[0].get());
     return toJS(ctx, nodes[0].get());
+}
+
+// Element.dataset custom getter: returns the DOMStringMap exotic object.
+JSValue JSElement::dataset(JSContext* ctx, Element* impl)
+{
+    if (!impl)
+        return JS_NULL;
+    return createDatasetObject(ctx, impl);
 }
 
 } // namespace WebCore

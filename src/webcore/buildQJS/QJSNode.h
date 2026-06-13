@@ -63,7 +63,8 @@ public:
         InsertBeforeFuncNum, ReplaceChildFuncNum, RemoveChildFuncNum, AppendChildFuncNum, 
         HasChildNodesFuncNum, CloneNodeFuncNum, NormalizeFuncNum, IsSupportedFuncNum, 
         HasAttributesFuncNum, IsSameNodeFuncNum, IsEqualNodeFuncNum, LookupPrefixFuncNum, 
-        IsDefaultNamespaceFuncNum, LookupNamespaceURIFuncNum
+        IsDefaultNamespaceFuncNum, LookupNamespaceURIFuncNum, AddEventListenerFuncNum, RemoveEventListenerFuncNum, 
+        DispatchEventFuncNum
     };
 
     // Custom functions
@@ -71,6 +72,9 @@ public:
     static JSValue replaceChild(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl);
     static JSValue removeChild(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl);
     static JSValue appendChild(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl);
+    static JSValue addEventListener(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl);
+    static JSValue removeEventListener(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl);
+    static JSValue dispatchEvent(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv, Node *impl);
 };
 
 JSValue toJS(JSContext *ctx, Node* ptr);
