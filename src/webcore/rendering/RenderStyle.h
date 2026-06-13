@@ -1111,6 +1111,7 @@ public:
 
 #if ENABLE(CSS_TRANSITIONS)
     TransitionList m_transitions; // CSS transition declarations (empty = none).
+    AnimationList m_animations;   // CSS animation declarations (empty = none).
 #endif
 
     ContentData* m_content;
@@ -1733,6 +1734,10 @@ public:
     bool hasTransitions() const { return !rareNonInheritedData->m_transitions.isEmpty(); }
     void setTransitions(const TransitionList& list) { SET_VAR(rareNonInheritedData, m_transitions, list); }
     void clearTransitions() { if (!rareNonInheritedData->m_transitions.isEmpty()) rareNonInheritedData.access()->m_transitions.clear(); }
+    const AnimationList& animations() const { return rareNonInheritedData->m_animations; }
+    bool hasAnimations() const { return !rareNonInheritedData->m_animations.isEmpty(); }
+    void setAnimations(const AnimationList& list) { SET_VAR(rareNonInheritedData, m_animations, list); }
+    void clearAnimations() { if (!rareNonInheritedData->m_animations.isEmpty()) rareNonInheritedData.access()->m_animations.clear(); }
 #endif
     float aspectRatio() const { return rareNonInheritedData->m_aspectRatio; }
     bool hasAspectRatio() const { return rareNonInheritedData->m_aspectRatio > 0; }

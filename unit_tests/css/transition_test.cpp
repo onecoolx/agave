@@ -177,4 +177,79 @@ TEST_F(TransitionParseTest, LonghandDuration)
     ASSERT_TRUE(s->hasTransitions());
 }
 
+// --- Animation parsing ------------------------------------------------------
+
+class AnimationParseTest : public ::testing::Test
+{
+protected:
+    static void SetUpTestSuite() { Test_Init(); }
+    static void TearDownTestSuite() { Test_Shutdown(); }
+
+    void SetUp() override { view = new TestWebView(); }
+    void TearDown() override { delete view; }
+
+    void loadHtml(const char* html)
+    {
+        view->loadHtml(html, "http://localhost/test");
+        TestWebView::waitForDocumentComplete(view);
+    }
+
+    RenderStyle* styleById(const char* id)
+    {
+        Element* el = view->mainframe()->document()->getElementById(String(id));
+        return (el && el->renderer()) ? el->renderer()->style() : 0;
+    }
+
+    TestWebView* view;
+};
+
+TEST_F(AnimationParseTest, ShorthandFull)
+{
+    loadHtml("<style>@keyframes k{from{opacity:1;}to{opacity:0;}}</style>"
+             "<div id='a' style='animation: k 2s ease-in 0.5s 3 alternate both;'>x</div>");
+    RenderStyle* s = styleById("a");
+    ASSERT_TRUE(s != 0);
+    ASSERT_TRUE(s->hasAnimations());
+    const AnimationList& list = s->animations();
+    ASSERT_EQ(list.size(), (size_t)1);
+    EXPECT_EQ(list[0].name(), String("k"));
+    EXPECT_NEAR(list[0].duration(), 2.0, 0.001);
+    EXPECT_NEAR(list[0].delay(), 0.5, 0.001);
+    EXPECT_NEAR(list[0].iterationCount(), 3.0, 0.001);
+    EXPECT_EQ(list[0].direction(), AnimDirAlternate);
+    EXPECT_EQ(list[0].fillMode(), AnimFillBoth);
+}
+
+TEST_F(AnimationParseTest, InfiniteIteration)
+{
+    loadHtml("<div id='a' style='animation: spin 1s linear infinite;'>x</div>");
+    RenderStyle* s = styleById("a");
+    ASSERT_TRUE(s != 0);
+    const AnimationList& list = s->animations();
+    ASSERT_EQ(list.size(), (size_t)1);
+    EXPECT_TRUE(list[0].isInfinite());
+}
+
+TEST_F(AnimationParseTest, Longhands)
+{
+    loadHtml("<div id='a' style='animation-name: foo; animation-duration: 1.5s; "
+             "animation-direction: reverse; animation-play-state: paused;'>x</div>");
+    RenderStyle* s = styleById("a");
+    ASSERT_TRUE(s != 0);
+    ASSERT_TRUE(s->hasAnimations());
+    const AnimationList& list = s->animations();
+    ASSERT_GE(list.size(), (size_t)1);
+}
+
+TEST_F(AnimationParseTest, MultipleAnimations)
+{
+    loadHtml("<div id='a' style='animation: a 1s linear, b 2s ease;'>x</div>");
+    RenderStyle* s = styleById("a");
+    ASSERT_TRUE(s != 0);
+    const AnimationList& list = s->animations();
+    ASSERT_EQ(list.size(), (size_t)2);
+    EXPECT_EQ(list[0].name(), String("a"));
+    EXPECT_EQ(list[1].name(), String("b"));
+}
+
 #endif // ENABLE(CSS_TRANSITIONS)

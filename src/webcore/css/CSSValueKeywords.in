@@ -596,3 +596,7 @@ ease-in-out
 linear
 cubic-bezier
 all
+# CSS animation keywords
+alternate-reverse
+running
+paused

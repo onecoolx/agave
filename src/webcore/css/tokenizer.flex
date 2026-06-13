@@ -54,6 +54,8 @@ range           \?{1,6}|{h}(\?{0,5}|{h}(\?{0,4}|{h}(\?{0,3}|{h}(\?{0,2}|{h}(\??|
 "@page"                 {yyTok = PAGE_SYM; return yyTok;}
 "@media"                {BEGIN(mediaquery); yyTok = MEDIA_SYM; return yyTok;}
 "@font-face"            {yyTok = FONT_FACE_SYM; return yyTok;}
+"@-webkit-keyframes"    {yyTok = KEYFRAMES_SYM; return yyTok;}
+"@keyframes"            {yyTok = KEYFRAMES_SYM; return yyTok;}
 "@charset"              {yyTok = CHARSET_SYM; return yyTok;}
 "@namespace"            {yyTok = NAMESPACE_SYM; return yyTok; }
 "@-webkit-rule"         {yyTok = WEBKIT_RULE_SYM; return yyTok; }

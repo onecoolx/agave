@@ -42,6 +42,10 @@ public:
         MEDIA_RULE,
         FONT_FACE_RULE,
         PAGE_RULE
+#if ENABLE(CSS_TRANSITIONS)
+        , WEBKIT_KEYFRAMES_RULE = 7
+        , WEBKIT_KEYFRAME_RULE = 8
+#endif
     };
 
     CSSRule(StyleBase* parent)

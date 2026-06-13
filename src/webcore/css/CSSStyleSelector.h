@@ -28,6 +28,7 @@
 #include "PlatformString.h"
 #include "RenderStyle.h"
 #include <wtf/HashSet.h>
+#include <wtf/HashMap.h>
 #include <wtf/Vector.h>
 #include <wtf/RefPtr.h>
 
@@ -38,6 +39,8 @@ class CSSPrimitiveValue;
 class CSSProperty;
 class CSSFontFace;
 class CSSFontFaceRule;
+class CSSKeyframeRule;
+class CSSKeyframesRule;
 class CSSRuleData;
 class CSSRuleDataList;
 class CSSRuleList;
@@ -251,6 +254,20 @@ class StyledElement;
         RefPtr<CSSFontSelector> m_fontSelector;
 
         HashSet<AtomicStringImpl*> *m_selectorAttrs;
+#if ENABLE(CSS_TRANSITIONS)
+    public:
+        // Returns the @keyframes rule registered under name, or 0 if none.
+        CSSKeyframesRule* keyframesRule(const String& name) const;
+        // Registers an @keyframes rule (last definition with a given name wins).
+        void addKeyframesRule(CSSKeyframesRule*);
+        // Resolves a single keyframe's declaration block against a base style,
+        // producing a ref'd arena style (caller owns the ref). Used by the
+        // animation controller to obtain interpolation endpoints.
+        RenderStyle* styleForKeyframe(Element*, RenderStyle* base, CSSKeyframeRule*);
+    private:
+        // name -> @keyframes rule, populated while collecting style sheets.
+        HashMap<String, RefPtr<CSSKeyframesRule> > m_keyframesRules;
+#endif
         
         void applyProperty(int id, CSSValue *value);
 #if ENABLE(SVG)

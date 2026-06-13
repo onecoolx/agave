@@ -43,6 +43,8 @@
 #include "CSSPrimitiveValue.h"
 #include "CSSCustomPropertyValue.h"
 #include "CSSTransitionsValue.h"
+#include "CSSKeyframeRule.h"
+#include "CSSKeyframesRule.h"
 #include "CSSProperty.h"
 #include "CSSPropertyNames.h"
 #include "CSSQuirkPrimitiveValue.h"
@@ -1400,6 +1402,16 @@ bool CSSParser::parseValue(int propId, bool important)
     case CSS_PROP_TRANSITION_DELAY:
     case CSS_PROP_TRANSITION_TIMING_FUNCTION:
         return parseTransition(propId, important);
+    case CSS_PROP_ANIMATION:
+    case CSS_PROP_ANIMATION_NAME:
+    case CSS_PROP_ANIMATION_DURATION:
+    case CSS_PROP_ANIMATION_DELAY:
+    case CSS_PROP_ANIMATION_ITERATION_COUNT:
+    case CSS_PROP_ANIMATION_DIRECTION:
+    case CSS_PROP_ANIMATION_FILL_MODE:
+    case CSS_PROP_ANIMATION_PLAY_STATE:
+    case CSS_PROP_ANIMATION_TIMING_FUNCTION:
+        return parseAnimation(propId, important);
 #endif
     case CSS_PROP_FLEX_DIRECTION:        // row | row-reverse | column | column-reverse
         if (id == CSS_VAL_ROW || id == CSS_VAL_ROW_REVERSE ||
@@ -2952,6 +2964,163 @@ bool CSSParser::parseTransition(int propId, bool important)
         return false;
 
     addProperty(propId, new CSSTransitionsValue(list), important);
+    return true;
+}
+
+// Parses one animation entry token, updating 'anim'. Tracks which time value
+// has been seen (duration before delay) via sawDuration. Returns false on a
+// token that is invalid in an animation declaration.
+static bool parseOneAnimationToken(Value* value, KeyframeAnimation& anim,
+                                   bool& sawDuration, bool shorthand)
+{
+    // time (s/ms): first is duration, second is delay (shorthand only).
+    double seconds = 0;
+    if (parseTimeSeconds(value, seconds)) {
+        if (!sawDuration) { anim.setDuration(seconds); sawDuration = true; }
+        else anim.setDelay(seconds);
+        return true;
+    }
+
+    TimingFunction tf;
+    if (parseOneTimingFunction(value, tf)) {
+        anim.setTimingFunction(tf);
+        return true;
+    }
+
+    // iteration-count: a number or "infinite".
+    if (value->id == CSS_VAL_INFINITE) {
+        anim.setIterationCount(-1);
+        return true;
+    }
+    if (value->unit == CSSPrimitiveValue::CSS_NUMBER) {
+        if (value->fValue < 0)
+            return false;
+        anim.setIterationCount(value->fValue);
+        return true;
+    }
+
+    // Keyword-valued sub-properties.
+    switch (value->id) {
+        case CSS_VAL_NORMAL: anim.setDirection(AnimDirNormal); return true;
+        case CSS_VAL_REVERSE: anim.setDirection(AnimDirReverse); return true;
+        case CSS_VAL_ALTERNATE: anim.setDirection(AnimDirAlternate); return true;
+        case CSS_VAL_ALTERNATE_REVERSE: anim.setDirection(AnimDirAlternateReverse); return true;
+        case CSS_VAL_FORWARDS: anim.setFillMode(AnimFillForwards); return true;
+        case CSS_VAL_BACKWARDS: anim.setFillMode(AnimFillBackwards); return true;
+        case CSS_VAL_BOTH: anim.setFillMode(AnimFillBoth); return true;
+        case CSS_VAL_RUNNING: anim.setPlayState(AnimPlayRunning); return true;
+        case CSS_VAL_PAUSED: anim.setPlayState(AnimPlayPaused); return true;
+        case CSS_VAL_NONE: anim.setName(String()); return true; // animation-name: none
+        default: break;
+    }
+
+    // Otherwise treat an identifier/string as the animation-name (only in the
+    // shorthand or animation-name longhand; the caller restricts this).
+    if (shorthand && (value->unit == CSSPrimitiveValue::CSS_IDENT || value->unit == CSSPrimitiveValue::CSS_STRING)) {
+        anim.setName(domString(value->string));
+        return true;
+    }
+
+    return false;
+}
+
+bool CSSParser::parseAnimation(int propId, bool important)
+{
+    const int kMaxAnimations = 64;
+    AnimationList list;
+    Value* value = valueList->current();
+    if (!value)
+        return false;
+
+    bool shorthand = (propId == CSS_PROP_ANIMATION);
+    KeyframeAnimation current;
+    bool sawDuration = false;
+    bool entryHasContent = false;
+
+    while (value) {
+        if (value->unit == Value::Operator && value->iValue == ',') {
+            if (!entryHasContent || (int)list.size() >= kMaxAnimations)
+                return false;
+            list.append(current);
+            current = KeyframeAnimation();
+            sawDuration = false;
+            entryHasContent = false;
+            value = valueList->next();
+            continue;
+        }
+
+        entryHasContent = true;
+
+        if (shorthand) {
+            if (!parseOneAnimationToken(value, current, sawDuration, true))
+                return false;
+        } else {
+            // Longhand: route the single token by property id.
+            double seconds = 0;
+            switch (propId) {
+                case CSS_PROP_ANIMATION_NAME:
+                    if (value->id == CSS_VAL_NONE)
+                        current.setName(String());
+                    else if (value->unit == CSSPrimitiveValue::CSS_IDENT || value->unit == CSSPrimitiveValue::CSS_STRING)
+                        current.setName(domString(value->string));
+                    else
+                        return false;
+                    break;
+                case CSS_PROP_ANIMATION_DURATION:
+                    if (!parseTimeSeconds(value, seconds)) return false;
+                    current.setDuration(seconds);
+                    break;
+                case CSS_PROP_ANIMATION_DELAY:
+                    if (!parseTimeSeconds(value, seconds)) return false;
+                    current.setDelay(seconds);
+                    break;
+                case CSS_PROP_ANIMATION_ITERATION_COUNT:
+                    if (value->id == CSS_VAL_INFINITE) current.setIterationCount(-1);
+                    else if (value->unit == CSSPrimitiveValue::CSS_NUMBER && value->fValue >= 0) current.setIterationCount(value->fValue);
+                    else return false;
+                    break;
+                case CSS_PROP_ANIMATION_DIRECTION:
+                    if (value->id == CSS_VAL_NORMAL) current.setDirection(AnimDirNormal);
+                    else if (value->id == CSS_VAL_REVERSE) current.setDirection(AnimDirReverse);
+                    else if (value->id == CSS_VAL_ALTERNATE) current.setDirection(AnimDirAlternate);
+                    else if (value->id == CSS_VAL_ALTERNATE_REVERSE) current.setDirection(AnimDirAlternateReverse);
+                    else return false;
+                    break;
+                case CSS_PROP_ANIMATION_FILL_MODE:
+                    if (value->id == CSS_VAL_NONE) current.setFillMode(AnimFillNone);
+                    else if (value->id == CSS_VAL_FORWARDS) current.setFillMode(AnimFillForwards);
+                    else if (value->id == CSS_VAL_BACKWARDS) current.setFillMode(AnimFillBackwards);
+                    else if (value->id == CSS_VAL_BOTH) current.setFillMode(AnimFillBoth);
+                    else return false;
+                    break;
+                case CSS_PROP_ANIMATION_PLAY_STATE:
+                    if (value->id == CSS_VAL_RUNNING) current.setPlayState(AnimPlayRunning);
+                    else if (value->id == CSS_VAL_PAUSED) current.setPlayState(AnimPlayPaused);
+                    else return false;
+                    break;
+                case CSS_PROP_ANIMATION_TIMING_FUNCTION: {
+                    TimingFunction tf;
+                    if (!parseOneTimingFunction(value, tf)) return false;
+                    current.setTimingFunction(tf);
+                    break;
+                }
+                default:
+                    return false;
+            }
+        }
+
+        value = valueList->next();
+    }
+
+    if (entryHasContent) {
+        if ((int)list.size() >= kMaxAnimations)
+            return false;
+        list.append(current);
+    }
+    if (list.isEmpty())
+        return false;
+
+    addProperty(propId, new CSSAnimationsValue(list), important);
     return true;
 }
 #endif // ENABLE(CSS_TRANSITIONS)
@@ -4666,6 +4835,57 @@ CSSRule* CSSParser::createFontFaceRule()
     clearProperties();
     return rule;
 }
+
+#if ENABLE(CSS_TRANSITIONS)
+void CSSParser::setKeyframesName(const String& name)
+{
+    m_currentKeyframesName = name;
+    // Begin a fresh keyframes rule; keyframe blocks are appended as parsed.
+    m_currentKeyframesRule = new CSSKeyframesRule(styleElement);
+    m_currentKeyframesRule->setName(name);
+    m_currentKeyframeKeys.clear();
+}
+
+void CSSParser::addKeyframeKey(float key)
+{
+    m_currentKeyframeKeys.append(key);
+}
+
+void CSSParser::createKeyframeRule()
+{
+    // Build one keyframe from the accumulated keys and current declarations.
+    // Reject keyframes with any invalid key (-1 sentinel from a bad ident).
+    bool valid = !m_currentKeyframeKeys.isEmpty();
+    for (size_t i = 0; i < m_currentKeyframeKeys.size(); ++i) {
+        if (m_currentKeyframeKeys[i] < 0.0f || m_currentKeyframeKeys[i] > 1.0f)
+            valid = false;
+    }
+
+    if (valid && m_currentKeyframesRule) {
+        RefPtr<CSSKeyframeRule> keyframe = new CSSKeyframeRule(m_currentKeyframesRule.get());
+        keyframe->setKeys(m_currentKeyframeKeys);
+        keyframe->setDeclaration(new CSSMutableStyleDeclaration(keyframe.get(), parsedProperties, numParsedProperties));
+        m_currentKeyframesRule->append(keyframe.release());
+    }
+
+    m_currentKeyframeKeys.clear();
+    clearProperties();
+}
+
+CSSRule* CSSParser::createKeyframesRule()
+{
+    if (!m_currentKeyframesRule) {
+        m_currentKeyframeKeys.clear();
+        return 0;
+    }
+    CSSKeyframesRule* rule = m_currentKeyframesRule.get();
+    m_parsedStyleObjects.append(rule);
+    m_currentKeyframesRule = 0;
+    m_currentKeyframeKeys.clear();
+    return rule;
+}
+#endif // ENABLE(CSS_TRANSITIONS)
+
 
 #define YY_DECL int CSSParser::lex()
 #define yyconst const

@@ -2174,6 +2174,19 @@ void RenderObject::setStyle(RenderStyle* style)
             return;
         }
     }
+
+    // Keyframe animation hook: when the incoming style declares @keyframes
+    // animations, start them and apply the first blended frame.
+    if (!m_settingAnimatedStyle && style && style->hasAnimations() && document()) {
+        RenderStyle* animated = document()->animationController()->updateAnimations(this, style);
+        if (animated) {
+            m_settingAnimatedStyle = true;
+            setStyle(animated);
+            m_settingAnimatedStyle = false;
+            animated->deref(renderArena());
+            return;
+        }
+    }
 #endif
 
     bool affectsParentBlock = false;

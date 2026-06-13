@@ -61,6 +61,10 @@ namespace WebCore {
         virtual bool isFontFaceRule() { return false; }
         virtual bool isPageRule() { return false; }
         virtual bool isUnknownRule() { return false; }
+#if ENABLE(CSS_TRANSITIONS)
+        virtual bool isKeyframeRule() { return false; }
+        virtual bool isKeyframesRule() { return false; }
+#endif
         virtual bool isStyleDeclaration() { return false; }
         virtual bool isValue() { return false; }
         virtual bool isPrimitiveValue() const { return false; }

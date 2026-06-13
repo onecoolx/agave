@@ -29,6 +29,7 @@
 #ifndef Animation_h
 #define Animation_h
 
+#include "PlatformString.h"
 #include <wtf/Vector.h>
 
 namespace WebCore {
@@ -119,6 +120,68 @@ private:
 };
 
 typedef Vector<Transition> TransitionList;
+
+// CSS animation direction / fill-mode / play-state enums.
+enum EAnimationDirection { AnimDirNormal, AnimDirReverse, AnimDirAlternate, AnimDirAlternateReverse };
+enum EAnimationFillMode { AnimFillNone, AnimFillForwards, AnimFillBackwards, AnimFillBoth };
+enum EAnimationPlayState { AnimPlayRunning, AnimPlayPaused };
+
+// One CSS animation declaration entry (a single animation-name binding with its
+// timing parameters). iteration count < 0 means "infinite".
+class KeyframeAnimation {
+public:
+    KeyframeAnimation()
+        : m_name()
+        , m_duration(0)
+        , m_delay(0)
+        , m_iterationCount(1)
+        , m_direction(AnimDirNormal)
+        , m_fillMode(AnimFillNone)
+        , m_playState(AnimPlayRunning)
+        , m_timingFunction()
+    {
+    }
+
+    bool operator==(const KeyframeAnimation& o) const
+    {
+        return m_name == o.m_name && m_duration == o.m_duration && m_delay == o.m_delay
+            && m_iterationCount == o.m_iterationCount && m_direction == o.m_direction
+            && m_fillMode == o.m_fillMode && m_playState == o.m_playState
+            && m_timingFunction == o.m_timingFunction;
+    }
+    bool operator!=(const KeyframeAnimation& o) const { return !(*this == o); }
+
+    const String& name() const { return m_name; }
+    double duration() const { return m_duration; }       // seconds
+    double delay() const { return m_delay; }              // seconds
+    double iterationCount() const { return m_iterationCount; } // <0 = infinite
+    bool isInfinite() const { return m_iterationCount < 0; }
+    EAnimationDirection direction() const { return m_direction; }
+    EAnimationFillMode fillMode() const { return m_fillMode; }
+    EAnimationPlayState playState() const { return m_playState; }
+    const TimingFunction& timingFunction() const { return m_timingFunction; }
+
+    void setName(const String& n) { m_name = n; }
+    void setDuration(double d) { m_duration = d; }
+    void setDelay(double d) { m_delay = d; }
+    void setIterationCount(double c) { m_iterationCount = c; }
+    void setDirection(EAnimationDirection d) { m_direction = d; }
+    void setFillMode(EAnimationFillMode f) { m_fillMode = f; }
+    void setPlayState(EAnimationPlayState p) { m_playState = p; }
+    void setTimingFunction(const TimingFunction& tf) { m_timingFunction = tf; }
+
+private:
+    String m_name;
+    double m_duration;
+    double m_delay;
+    double m_iterationCount;
+    EAnimationDirection m_direction;
+    EAnimationFillMode m_fillMode;
+    EAnimationPlayState m_playState;
+    TimingFunction m_timingFunction;
+};
+
+typedef Vector<KeyframeAnimation> AnimationList;
 
 } // namespace WebCore
 

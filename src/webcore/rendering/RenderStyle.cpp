@@ -635,6 +635,7 @@ StyleRareNonInheritedData::StyleRareNonInheritedData(const StyleRareNonInherited
     , m_transform(o.m_transform)
 #if ENABLE(CSS_TRANSITIONS)
     , m_transitions(o.m_transitions)
+    , m_animations(o.m_animations)
 #endif
     , m_content(0)
     , m_counterDirectives(0)
@@ -699,6 +700,7 @@ bool StyleRareNonInheritedData::operator==(const StyleRareNonInheritedData& o) c
         && shadowDataEquivalent(o)
 #if ENABLE(CSS_TRANSITIONS)
         && m_transitions == o.m_transitions
+        && m_animations == o.m_animations
 #endif
 #if ENABLE(XBL)
         && bindingsEquivalent(o)

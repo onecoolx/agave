@@ -33,11 +33,17 @@
 
 #include "CSSPropertyNames.h"
 #include "Color.h"
+#include "CSSKeyframeRule.h"
+#include "CSSKeyframesRule.h"
+#include "CSSStyleSelector.h"
 #include "Document.h"
+#include "Element.h"
 #include "Length.h"
+#include "Node.h"
 #include "RenderObject.h"
 #include "RenderStyle.h"
 #include "SystemTime.h"
+#include <math.h>
 
 namespace WebCore {
 
@@ -143,6 +149,27 @@ static void applyBlendedProperty(int property, RenderStyle* dst,
     }
 }
 
+// The full set of properties this engine can interpolate. Shared by transitions
+// (which filter by declared transition-property) and keyframe animations.
+static const int kAnimatableProps[] = {
+    CSS_PROP_OPACITY, CSS_PROP_WIDTH, CSS_PROP_HEIGHT,
+    CSS_PROP_MARGIN_TOP, CSS_PROP_MARGIN_BOTTOM, CSS_PROP_MARGIN_LEFT, CSS_PROP_MARGIN_RIGHT,
+    CSS_PROP_PADDING_TOP, CSS_PROP_PADDING_BOTTOM, CSS_PROP_PADDING_LEFT, CSS_PROP_PADDING_RIGHT,
+    CSS_PROP_COLOR
+};
+static const int kNumAnimatableProps = sizeof(kAnimatableProps) / sizeof(kAnimatableProps[0]);
+
+// Interpolates every animatable property that differs between from and to,
+// writing the result into dst.
+static void blendAllProperties(RenderStyle* dst, RenderStyle* from, RenderStyle* to, double p)
+{
+    for (int i = 0; i < kNumAnimatableProps; ++i) {
+        int prop = kAnimatableProps[i];
+        if (propertyDiffers(prop, from, to))
+            applyBlendedProperty(prop, dst, from, to, p);
+    }
+}
+
 // ---- AnimationController ---------------------------------------------------
 
 AnimationController::AnimationController(Document* doc)
@@ -165,28 +192,56 @@ AnimationController::~AnimationController()
         delete list;
     }
     m_transitions.clear();
+
+    HashMap<RenderObject*, Vector<RunningKeyframeAnimation>*>::iterator kend = m_keyframeAnimations.end();
+    for (HashMap<RenderObject*, Vector<RunningKeyframeAnimation>*>::iterator it = m_keyframeAnimations.begin(); it != kend; ++it) {
+        Vector<RunningKeyframeAnimation>* anims = it->second;
+        for (size_t i = 0; i < anims->size(); ++i)
+            clearKeyframeStyles(anims->at(i));
+        delete anims;
+    }
+    m_keyframeAnimations.clear();
 }
 
 void AnimationController::startTimerIfNeeded()
 {
-    if (!m_transitions.isEmpty() && !m_timer.isActive())
+    if ((!m_transitions.isEmpty() || !m_keyframeAnimations.isEmpty()) && !m_timer.isActive())
         m_timer.startRepeating(kAnimationInterval);
+}
+
+void AnimationController::clearKeyframeStyles(RunningKeyframeAnimation& anim)
+{
+    for (size_t i = 0; i < anim.m_styles.size(); ++i) {
+        if (anim.m_styles[i])
+            anim.m_styles[i]->deref(m_document->renderArena());
+    }
+    anim.m_styles.clear();
+    anim.m_offsets.clear();
 }
 
 void AnimationController::clearRenderer(RenderObject* renderer)
 {
     Vector<RunningTransition>* list = m_transitions.get(renderer);
-    if (!list)
-        return;
-    for (size_t i = 0; i < list->size(); ++i) {
-        if (list->at(i).m_fromStyle)
-            list->at(i).m_fromStyle->deref(m_document->renderArena());
-        if (list->at(i).m_toStyle)
-            list->at(i).m_toStyle->deref(m_document->renderArena());
+    if (list) {
+        for (size_t i = 0; i < list->size(); ++i) {
+            if (list->at(i).m_fromStyle)
+                list->at(i).m_fromStyle->deref(m_document->renderArena());
+            if (list->at(i).m_toStyle)
+                list->at(i).m_toStyle->deref(m_document->renderArena());
+        }
+        delete list;
+        m_transitions.remove(renderer);
     }
-    delete list;
-    m_transitions.remove(renderer);
-    if (m_transitions.isEmpty())
+
+    Vector<RunningKeyframeAnimation>* anims = m_keyframeAnimations.get(renderer);
+    if (anims) {
+        for (size_t i = 0; i < anims->size(); ++i)
+            clearKeyframeStyles(anims->at(i));
+        delete anims;
+        m_keyframeAnimations.remove(renderer);
+    }
+
+    if (m_transitions.isEmpty() && m_keyframeAnimations.isEmpty())
         m_timer.stop();
 }
 
@@ -218,18 +273,9 @@ RenderStyle* AnimationController::updateTransitions(RenderObject* renderer,
 
     Vector<RunningTransition>* list = m_transitions.get(renderer);
 
-    // Candidate properties: the union of what we can animate and what changed.
-    static const int kProps[] = {
-        CSS_PROP_OPACITY, CSS_PROP_WIDTH, CSS_PROP_HEIGHT,
-        CSS_PROP_MARGIN_TOP, CSS_PROP_MARGIN_BOTTOM, CSS_PROP_MARGIN_LEFT, CSS_PROP_MARGIN_RIGHT,
-        CSS_PROP_PADDING_TOP, CSS_PROP_PADDING_BOTTOM, CSS_PROP_PADDING_LEFT, CSS_PROP_PADDING_RIGHT,
-        CSS_PROP_COLOR
-    };
-    const int kNumProps = sizeof(kProps) / sizeof(kProps[0]);
-
     bool startedAny = false;
-    for (int i = 0; i < kNumProps; ++i) {
-        int prop = kProps[i];
+    for (int i = 0; i < kNumAnimatableProps; ++i) {
+        int prop = kAnimatableProps[i];
         if (!propertyDiffers(prop, oldStyle, newStyle))
             continue;
 
@@ -312,50 +358,268 @@ RenderStyle* AnimationController::blendedStyle(RenderObject* renderer, RenderSty
     return result;
 }
 
+// Computes the iteration-local progress in [0,1] for a keyframe animation at
+// time now, honoring delay, iteration count and direction. Sets finished=true
+// once the animation has completed all iterations.
+static double keyframeProgress(const RunningKeyframeAnimation& anim, double now, bool& finished)
+{
+    finished = false;
+    const KeyframeAnimation& p = anim.m_params;
+    double elapsed = now - anim.m_startTime - p.delay();
+    if (elapsed <= 0)
+        return 0.0; // delay phase: hold first keyframe
+
+    if (p.duration() <= 0) {
+        finished = true;
+        return 1.0;
+    }
+
+    double rawIteration = elapsed / p.duration();
+    double totalIterations = p.isInfinite() ? 1e18 : p.iterationCount();
+    if (!p.isInfinite() && rawIteration >= totalIterations) {
+        finished = true;
+        rawIteration = totalIterations; // clamp to the end
+    }
+
+    double iterationIndex = (rawIteration < totalIterations) ? floor(rawIteration) : floor(totalIterations - 1e-9);
+    double frac = rawIteration - iterationIndex;
+    if (frac < 0) frac = 0;
+    if (frac > 1) frac = 1;
+
+    // Direction handling: reverse / alternate.
+    EAnimationDirection dir = p.direction();
+    bool reverse = false;
+    if (dir == AnimDirReverse)
+        reverse = true;
+    else if (dir == AnimDirAlternate)
+        reverse = (((long)iterationIndex) & 1) != 0;
+    else if (dir == AnimDirAlternateReverse)
+        reverse = (((long)iterationIndex) & 1) == 0;
+
+    return reverse ? (1.0 - frac) : frac;
+}
+
+RenderStyle* AnimationController::animatedKeyframeStyle(RenderObject* renderer, RenderStyle* base,
+                                                        double now, bool& anyActive)
+{
+    Vector<RunningKeyframeAnimation>* anims = m_keyframeAnimations.get(renderer);
+    if (!anims || anims->isEmpty()) {
+        anyActive = false;
+        return 0;
+    }
+
+    RenderStyle* result = new (m_document->renderArena()) RenderStyle(*base);
+    result->ref();
+
+    anyActive = false;
+    for (size_t a = 0; a < anims->size(); ++a) {
+        RunningKeyframeAnimation& anim = anims->at(a);
+        if (anim.m_offsets.size() < 2)
+            continue;
+        if (anim.m_params.playState() == AnimPlayPaused) {
+            anyActive = true; // paused animations remain "active" (held)
+        }
+
+        bool finished = false;
+        double prog = keyframeProgress(anim, now, finished);
+        if (!finished && anim.m_params.playState() != AnimPlayPaused)
+            anyActive = true;
+
+        // Apply timing function to the progress within the iteration.
+        prog = anim.m_params.timingFunction().evaluate(prog);
+
+        // Find the two surrounding keyframes for the (eased) progress.
+        size_t hi = anim.m_offsets.size() - 1;
+        for (size_t i = 0; i < anim.m_offsets.size(); ++i) {
+            if (anim.m_offsets[i] >= prog) { hi = i; break; }
+        }
+        size_t lo = (hi == 0) ? 0 : hi - 1;
+
+        RenderStyle* fromStyle = anim.m_styles[lo];
+        RenderStyle* toStyle = anim.m_styles[hi];
+        double segLen = anim.m_offsets[hi] - anim.m_offsets[lo];
+        double localP = (segLen > 0) ? (prog - anim.m_offsets[lo]) / segLen : 0.0;
+        if (localP < 0) localP = 0;
+        if (localP > 1) localP = 1;
+
+        if (fromStyle && toStyle)
+            blendAllProperties(result, fromStyle, toStyle, localP);
+    }
+
+    return result;
+}
+
+RenderStyle* AnimationController::updateAnimations(RenderObject* renderer, RenderStyle* newStyle)
+{
+    if (!newStyle || !newStyle->hasAnimations())
+        return 0;
+
+    Element* element = 0;
+    if (renderer->node() && renderer->node()->isElementNode())
+        element = static_cast<Element*>(renderer->node());
+    if (!element)
+        return 0;
+
+    CSSStyleSelector* selector = m_document->styleSelector();
+    if (!selector)
+        return 0;
+
+    const AnimationList& decls = newStyle->animations();
+    Vector<RunningKeyframeAnimation>* anims = m_keyframeAnimations.get(renderer);
+
+    double now = currentTime();
+    bool startedAny = false;
+
+    for (size_t i = 0; i < decls.size(); ++i) {
+        const KeyframeAnimation& decl = decls[i];
+        if (decl.name().isEmpty() || decl.duration() <= 0)
+            continue;
+
+        // Already running with the same name? Skip (don't restart each restyle).
+        bool alreadyRunning = false;
+        if (anims) {
+            for (size_t j = 0; j < anims->size(); ++j) {
+                if (anims->at(j).m_name == decl.name()) { alreadyRunning = true; break; }
+            }
+        }
+        if (alreadyRunning)
+            continue;
+
+        CSSKeyframesRule* rule = selector->keyframesRule(decl.name());
+        if (!rule || rule->length() == 0)
+            continue;
+
+        // Resolve each keyframe into a style, expanding multi-key keyframes into
+        // individual (offset, style) pairs, then sort ascending by offset.
+        RunningKeyframeAnimation anim;
+        anim.m_name = decl.name();
+        anim.m_startTime = now;
+        anim.m_params = decl;
+
+        for (unsigned k = 0; k < rule->length(); ++k) {
+            CSSKeyframeRule* kf = rule->item(k);
+            if (!kf)
+                continue;
+            RenderStyle* kfStyle = selector->styleForKeyframe(element, newStyle, kf);
+            if (!kfStyle)
+                continue;
+            const Vector<float>& keys = kf->keys();
+            for (size_t ki = 0; ki < keys.size(); ++ki) {
+                // Insert (key, style) keeping m_offsets ascending. Ref the style
+                // once per insertion (each slot owns a ref).
+                float key = keys[ki];
+                size_t pos = anim.m_offsets.size();
+                for (size_t p = 0; p < anim.m_offsets.size(); ++p) {
+                    if (key < anim.m_offsets[p]) { pos = p; break; }
+                }
+                kfStyle->ref();
+                anim.m_offsets.insert(pos, key);
+                anim.m_styles.insert(pos, kfStyle);
+            }
+            kfStyle->deref(m_document->renderArena()); // drop the creation ref
+        }
+
+        if (anim.m_offsets.size() < 2) {
+            clearKeyframeStyles(anim);
+            continue;
+        }
+
+        if (!anims) {
+            anims = new Vector<RunningKeyframeAnimation>();
+            m_keyframeAnimations.set(renderer, anims);
+        }
+        anims->append(anim);
+        startedAny = true;
+    }
+
+    if (!startedAny && (!anims || anims->isEmpty()))
+        return 0;
+
+    startTimerIfNeeded();
+
+    bool anyActive = false;
+    return animatedKeyframeStyle(renderer, newStyle, now, anyActive);
+}
+
 void AnimationController::animationTimerFired(Timer<AnimationController>*)
 {
     double now = currentTime();
 
-    // Iterate over a snapshot of renderers, since applying styles may mutate the
-    // map (finished transitions get removed).
+    // Snapshot the union of renderers with transitions and/or keyframe
+    // animations, since applying styles may mutate the maps.
     Vector<RenderObject*> renderers;
-    HashMap<RenderObject*, Vector<RunningTransition>*>::iterator end = m_transitions.end();
-    for (HashMap<RenderObject*, Vector<RunningTransition>*>::iterator it = m_transitions.begin(); it != end; ++it)
-        renderers.append(it->first);
-
-    for (size_t r = 0; r < renderers.size(); ++r) {
-        RenderObject* renderer = renderers[r];
-        Vector<RunningTransition>* list = m_transitions.get(renderer);
-        if (!list)
-            continue;
-
-        bool anyActive = false;
-        RenderStyle* blended = blendedStyle(renderer, renderer->style(), now, anyActive);
-        if (blended) {
-            // Apply without re-entering the transition machinery.
-            renderer->setAnimatedStyle(blended);
-            blended->deref(m_document->renderArena());
-        }
-
-        // Drop finished transitions.
-        for (size_t i = 0; i < list->size();) {
-            RunningTransition& rt = list->at(i);
-            if (now - rt.m_startTime - rt.m_delay >= rt.m_duration) {
-                if (rt.m_fromStyle)
-                    rt.m_fromStyle->deref(m_document->renderArena());
-                if (rt.m_toStyle)
-                    rt.m_toStyle->deref(m_document->renderArena());
-                list->remove(i);
-            } else
-                ++i;
-        }
-        if (list->isEmpty()) {
-            delete list;
-            m_transitions.remove(renderer);
+    {
+        HashMap<RenderObject*, Vector<RunningTransition>*>::iterator end = m_transitions.end();
+        for (HashMap<RenderObject*, Vector<RunningTransition>*>::iterator it = m_transitions.begin(); it != end; ++it)
+            renderers.append(it->first);
+        HashMap<RenderObject*, Vector<RunningKeyframeAnimation>*>::iterator kend = m_keyframeAnimations.end();
+        for (HashMap<RenderObject*, Vector<RunningKeyframeAnimation>*>::iterator it = m_keyframeAnimations.begin(); it != kend; ++it) {
+            if (!m_transitions.contains(it->first))
+                renderers.append(it->first);
         }
     }
 
-    if (m_transitions.isEmpty())
+    for (size_t r = 0; r < renderers.size(); ++r) {
+        RenderObject* renderer = renderers[r];
+
+        // Compose keyframe animation first (it overlays the base style), then
+        // transitions on top, so an explicit transition can still tween.
+        bool kfActive = false;
+        RenderStyle* afterKeyframes = animatedKeyframeStyle(renderer, renderer->style(), now, kfActive);
+        RenderStyle* baseForTransition = afterKeyframes ? afterKeyframes : renderer->style();
+
+        bool trActive = false;
+        RenderStyle* blended = blendedStyle(renderer, baseForTransition, now, trActive);
+
+        RenderStyle* toApply = blended ? blended : afterKeyframes;
+        if (toApply) {
+            renderer->setAnimatedStyle(toApply);
+            if (blended)
+                blended->deref(m_document->renderArena());
+            if (afterKeyframes)
+                afterKeyframes->deref(m_document->renderArena());
+        }
+
+        // Drop finished transitions.
+        Vector<RunningTransition>* list = m_transitions.get(renderer);
+        if (list) {
+            for (size_t i = 0; i < list->size();) {
+                RunningTransition& rt = list->at(i);
+                if (now - rt.m_startTime - rt.m_delay >= rt.m_duration) {
+                    if (rt.m_fromStyle)
+                        rt.m_fromStyle->deref(m_document->renderArena());
+                    if (rt.m_toStyle)
+                        rt.m_toStyle->deref(m_document->renderArena());
+                    list->remove(i);
+                } else
+                    ++i;
+            }
+            if (list->isEmpty()) {
+                delete list;
+                m_transitions.remove(renderer);
+            }
+        }
+
+        // Drop finished keyframe animations (infinite ones never finish).
+        Vector<RunningKeyframeAnimation>* anims = m_keyframeAnimations.get(renderer);
+        if (anims) {
+            for (size_t i = 0; i < anims->size();) {
+                bool finished = false;
+                keyframeProgress(anims->at(i), now, finished);
+                if (finished) {
+                    clearKeyframeStyles(anims->at(i));
+                    anims->remove(i);
+                } else
+                    ++i;
+            }
+            if (anims->isEmpty()) {
+                delete anims;
+                m_keyframeAnimations.remove(renderer);
+            }
+        }
+    }
+
+    if (m_transitions.isEmpty() && m_keyframeAnimations.isEmpty())
         m_timer.stop();
 }
 

@@ -67,6 +67,22 @@ public:
     RenderStyle* m_toStyle;   // ref'd target style
 };
 
+// One in-flight @keyframes animation on an element. Holds the resolved
+// per-keyframe styles (sorted by offset) and timing parameters.
+class RunningKeyframeAnimation {
+public:
+    RunningKeyframeAnimation()
+        : m_startTime(0)
+    {
+    }
+
+    String m_name;
+    double m_startTime;
+    KeyframeAnimation m_params;          // duration/delay/iteration/direction/...
+    Vector<float> m_offsets;             // keyframe offsets in [0,1], ascending
+    Vector<RenderStyle*> m_styles;       // resolved & ref'd style per offset
+};
+
 // Document-level controller that drives CSS transitions with a single shared
 // timer, mirroring the GIF animation timer model (BitmapImage). It owns the set
 // of running transitions per renderer and advances them frame by frame.
@@ -83,6 +99,11 @@ public:
     // no transition applies (caller keeps newStyle).
     RenderStyle* updateTransitions(RenderObject*, RenderStyle* oldStyle, RenderStyle* newStyle);
 
+    // Called from RenderObject::setStyle when the new style declares @keyframes
+    // animations. Starts any not-yet-running animations and returns a blended
+    // style for the current instant (or 0 if none apply).
+    RenderStyle* updateAnimations(RenderObject*, RenderStyle* newStyle);
+
     // Drops all running transitions for a renderer being destroyed.
     void clearRenderer(RenderObject*);
 
@@ -96,9 +117,17 @@ private:
     // running transitions, starting from base. Returns a new ref'd style.
     RenderStyle* blendedStyle(RenderObject*, RenderStyle* base, double now, bool& anyActive);
 
+    // Applies all running keyframe animations for a renderer onto a ref'd style
+    // derived from base, at time now. Returns 0 if none. anyActive reports
+    // whether any animation is still running.
+    RenderStyle* animatedKeyframeStyle(RenderObject*, RenderStyle* base, double now, bool& anyActive);
+
+    void clearKeyframeStyles(RunningKeyframeAnimation&);
+
     Document* m_document;
     Timer<AnimationController> m_timer;
     HashMap<RenderObject*, Vector<RunningTransition>*> m_transitions;
+    HashMap<RenderObject*, Vector<RunningKeyframeAnimation>*> m_keyframeAnimations;
 };
 
 } // namespace WebCore

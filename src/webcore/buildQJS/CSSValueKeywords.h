@@ -389,5 +389,8 @@ WebCore::String getValueName(unsigned short id);
 #define CSS_VAL_LINEAR 380
 #define CSS_VAL_CUBIC_BEZIER 381
 #define CSS_VAL_ALL 382
-#define CSS_VAL_TOTAL 383
+#define CSS_VAL_ALTERNATE_REVERSE 383
+#define CSS_VAL_RUNNING 384
+#define CSS_VAL_PAUSED 385
+#define CSS_VAL_TOTAL 386
 #endif

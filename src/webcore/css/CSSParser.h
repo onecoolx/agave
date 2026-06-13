@@ -40,6 +40,7 @@ namespace WebCore {
     class CSSStyleSheet;
     class CSSValue;
     class CSSValueList;
+    class CSSKeyframesRule;
     class Document;
     class MediaList;
     class MediaList;
@@ -167,6 +168,11 @@ namespace WebCore {
         // transition list (or a single longhand) and adds the corresponding
         // CSS_PROP_TRANSITION* properties. Returns true on success.
         bool parseTransition(int propId, bool important);
+
+        // CSS animation shorthand and longhands. Parses the comma-separated
+        // animation list (or a single longhand) and adds the corresponding
+        // CSS_PROP_ANIMATION* property. Returns true on success.
+        bool parseAnimation(int propId, bool important);
 #endif
 
         // CSS calc(): flattens an expression to a linear (percent, pixels) form
@@ -230,6 +236,16 @@ namespace WebCore {
         CSSRule* createStyleRule(CSSSelector*);
         CSSRule* createFontFaceRule();
 
+#if ENABLE(CSS_TRANSITIONS)
+        // @keyframes parsing: the grammar reports the rule name, the keys of
+        // each keyframe and each keyframe's declaration block via these hooks,
+        // which the parser accumulates into the in-progress keyframes rule.
+        void setKeyframesName(const String&);
+        void addKeyframeKey(float);
+        void createKeyframeRule();
+        CSSRule* createKeyframesRule();
+#endif
+
         MediaQueryExp* createFloatingMediaQueryExp(const AtomicString&, ValueList*);
         MediaQueryExp* sinkFloatingMediaQueryExp(MediaQueryExp*);
         Vector<MediaQueryExp*>* createFloatingMediaQueryExpList();
@@ -255,7 +271,7 @@ namespace WebCore {
 
         // Name of the custom property (--foo) currently being parsed, set by the
         // grammar's property rule and consumed in parseValue.
-        String m_currentCustomPropertyName;
+                String m_currentCustomPropertyName;
 
         AtomicString defaultNamespace;
 
@@ -289,6 +305,12 @@ namespace WebCore {
 
         Vector<RefPtr<StyleBase> > m_parsedStyleObjects;
         Vector<RefPtr<CSSRuleList> > m_parsedRuleLists;
+#if ENABLE(CSS_TRANSITIONS)
+        // In-progress @keyframes rule state, accumulated by the grammar hooks.
+        String m_currentKeyframesName;
+        Vector<float> m_currentKeyframeKeys;
+        RefPtr<CSSKeyframesRule> m_currentKeyframesRule;
+#endif
         HashSet<CSSSelector*> *m_floatingSelectors;
         HashSet<ValueList*> *m_floatingValueLists;
         HashSet<Function*> *m_floatingFunctions;

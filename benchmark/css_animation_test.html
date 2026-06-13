@@ -1,0 +1,35 @@
+<html>
+<head><style>
+@keyframes grow { from { width: 100px; } to { width: 300px; } }
+@keyframes via { 0% { width: 100px; } 50% { width: 400px; } 100% { width: 200px; } }
+@keyframes fade { from { opacity: 1; } to { opacity: 0; } }
+#g { width:100px; height:50px; background:#ccc; animation: grow 1s linear; }
+#v { width:100px; height:50px; background:#ccc; animation: via 1s linear; }
+#f { width:100px; height:50px; opacity:1; animation: fade 1s linear; }
+#r { width:100px; height:50px; background:#ccc; animation: grow 1s linear reverse; }
+</style></head>
+<body>
+<div id="g">grow</div>
+<div id="v">via</div>
+<div id="f">fade</div>
+<div id="r">reverse</div>
+<script>
+var results = [];
+function near(name, actual, expected, tol) {
+  var ok = Math.abs(actual - expected) <= tol;
+  results.push(name + (ok ? ':PASS' : ':FAIL([' + actual + ']!=[' + expected + '+-' + tol + '])'));
+}
+function W(id){return document.getElementById(id).offsetWidth;}
+
+// Sample at ~500ms (mid-animation).
+setTimeout(function() {
+  near('grow-mid', W('g'), 200, 35);          // 100->300 linear, half
+  near('via-seg', W('v'), 400, 60);           // 50% keyframe peak (=400)
+  near('fade-mid', parseFloat(window.getComputedStyle(document.getElementById('f')).opacity), 0.5, 0.18);
+  near('reverse-mid', W('r'), 200, 35);        // reverse: 300->100, half still ~200
+  var ok = results.every(function(s){return s.indexOf('PASS')>=0;});
+  alert((ok ? 'ALL PASS' : 'FAILURES') + '|' + results.join('|'));
+}, 500);
+</script>
+</body>
+</html>

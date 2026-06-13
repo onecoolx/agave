@@ -390,4 +390,7 @@ ease-in-out, CSS_VAL_EASE_IN_OUT
 linear, CSS_VAL_LINEAR
 cubic-bezier, CSS_VAL_CUBIC_BEZIER
 all, CSS_VAL_ALL
+alternate-reverse, CSS_VAL_ALTERNATE_REVERSE
+running, CSS_VAL_RUNNING
+paused, CSS_VAL_PAUSED
 %%

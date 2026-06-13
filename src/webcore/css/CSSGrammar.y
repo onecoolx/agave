@@ -182,6 +182,7 @@ static int cssyylex(YYSTYPE* yylval, void*) { return CSSParser::current()->lex(y
 %token PAGE_SYM
 %token MEDIA_SYM
 %token FONT_FACE_SYM
+%token KEYFRAMES_SYM
 %token CHARSET_SYM
 %token NAMESPACE_SYM
 %token WEBKIT_RULE_SYM
@@ -233,6 +234,8 @@ static int cssyylex(YYSTYPE* yylval, void*) { return CSSParser::current()->lex(y
 %type <rule> import
 %type <rule> page
 %type <rule> font_face
+%type <rule> keyframes
+%type <val> key
 %type <rule> invalid_rule
 %type <rule> invalid_at
 %type <rule> invalid_import
@@ -394,6 +397,7 @@ rule:
   | media
   | page
   | font_face
+  | keyframes
   | invalid_rule
   | invalid_at
   | invalid_import
@@ -572,6 +576,49 @@ font_face:
     }
     | FONT_FACE_SYM error ';' {
       $$ = 0;
+    }
+;
+
+keyframes:
+    KEYFRAMES_SYM maybe_space keyframe_name maybe_space '{' maybe_space keyframe_rules '}' {
+        $$ = static_cast<CSSParser*>(parser)->createKeyframesRule();
+    }
+  | KEYFRAMES_SYM error invalid_block {
+      $$ = 0;
+    }
+;
+
+keyframe_name:
+    IDENT { static_cast<CSSParser*>(parser)->setKeyframesName(domString($1)); }
+  | STRING { static_cast<CSSParser*>(parser)->setKeyframesName(domString($1)); }
+;
+
+keyframe_rules:
+    /* empty */
+  | keyframe_rules keyframe_rule maybe_space
+;
+
+keyframe_rule:
+    key_list maybe_space '{' maybe_space declaration_list '}' {
+        static_cast<CSSParser*>(parser)->createKeyframeRule();
+    }
+;
+
+key_list:
+    key { static_cast<CSSParser*>(parser)->addKeyframeKey($1); }
+  | key_list maybe_space ',' maybe_space key {
+        static_cast<CSSParser*>(parser)->addKeyframeKey($5);
+    }
+;
+
+key:
+    PERCENTAGE { $$ = $1 / 100.0f; }
+  | IDENT {
+        // "from" => 0%, "to" => 100%; anything else is invalid (-1 sentinel).
+        String s = domString($1).lower();
+        if (s == "from") $$ = 0.0f;
+        else if (s == "to") $$ = 1.0f;
+        else $$ = -1.0f;
     }
 ;
 

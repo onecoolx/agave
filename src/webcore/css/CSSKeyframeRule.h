@@ -26,57 +26,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CSSTransitionsValue_h
-#define CSSTransitionsValue_h
+#ifndef CSSKeyframeRule_h
+#define CSSKeyframeRule_h
 
 #include "config.h"
 
 #if ENABLE(CSS_TRANSITIONS)
 
-#include "CSSValue.h"
-#include "Animation.h"
+#include "CSSRule.h"
+#include "PlatformString.h"
+#include <wtf/PassRefPtr.h>
+#include <wtf/RefPtr.h>
+#include <wtf/Vector.h>
 
 namespace WebCore {
 
-// A CSSValue wrapper carrying a fully-parsed CSS transition list. The parser
-// produces this for the `transition` shorthand and the individual longhands so
-// the style selector can copy it straight into RenderStyle.
-class CSSTransitionsValue : public CSSValue {
-public:
-    CSSTransitionsValue(const TransitionList& list)
-        : m_transitions(list)
-    {
-    }
+class CSSMutableStyleDeclaration;
 
-    virtual bool isTransitionsValue() const { return true; }
+// One keyframe inside an @keyframes rule, e.g. "0%, 50% { opacity: 1; }". The
+// keys are the offsets in [0,1] (from = 0, to = 1) at which the declaration
+// block applies.
+class CSSKeyframeRule : public CSSRule {
+public:
+    CSSKeyframeRule(StyleBase* parent);
+    virtual ~CSSKeyframeRule();
+
+    virtual bool isKeyframeRule() { return true; }
+    virtual unsigned short type() const { return WEBKIT_KEYFRAME_RULE; }
     virtual String cssText() const { return String(); }
 
-    const TransitionList& transitions() const { return m_transitions; }
+    const Vector<float>& keys() const { return m_keys; }
+    void setKeys(const Vector<float>& keys) { m_keys = keys; }
+
+    CSSMutableStyleDeclaration* declaration() const { return m_style.get(); }
+    void setDeclaration(PassRefPtr<CSSMutableStyleDeclaration>);
 
 private:
-    TransitionList m_transitions;
-};
-
-// Carries a fully-parsed CSS animation list (the `animation` shorthand or the
-// individual longhands), for the style selector to copy into RenderStyle.
-class CSSAnimationsValue : public CSSValue {
-public:
-    CSSAnimationsValue(const AnimationList& list)
-        : m_animations(list)
-    {
-    }
-
-    virtual bool isAnimationsValue() const { return true; }
-    virtual String cssText() const { return String(); }
-
-    const AnimationList& animations() const { return m_animations; }
-
-private:
-    AnimationList m_animations;
+    Vector<float> m_keys;
+    RefPtr<CSSMutableStyleDeclaration> m_style;
 };
 
 } // namespace WebCore
 
 #endif // ENABLE(CSS_TRANSITIONS)
 
-#endif // CSSTransitionsValue_h
+#endif // CSSKeyframeRule_h

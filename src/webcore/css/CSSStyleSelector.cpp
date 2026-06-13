@@ -46,6 +46,8 @@
 #include "CSSValueList.h"
 #include "CSSCustomPropertyValue.h"
 #include "CSSTransitionsValue.h"
+#include "CSSKeyframeRule.h"
+#include "CSSKeyframesRule.h"
 #include "StyleCustomPropertyData.h"
 #include "CSSPendingSubstitutionValue.h"
 #include "CSSMutableStyleDeclaration.h"
@@ -2007,6 +2009,11 @@ void CSSRuleSet::addRulesFromSheet(CSSStyleSheet* sheet,  MediaQueryEvaluator* m
             const CSSFontFaceRule* fontFaceRule = static_cast<CSSFontFaceRule*>(item);
             styleSelector->ensureFontSelector()->addFontFaceRule(fontFaceRule);
         }
+#if ENABLE(CSS_TRANSITIONS)
+        else if (item->isKeyframesRule() && styleSelector) {
+            styleSelector->addKeyframesRule(static_cast<CSSKeyframesRule*>(item));
+        }
+#endif
     }
 }
 
@@ -4453,6 +4460,26 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
         if (value->isTransitionsValue())
             style->setTransitions(static_cast<CSSTransitionsValue*>(value)->transitions());
         return;
+    case CSS_PROP_ANIMATION:
+    case CSS_PROP_ANIMATION_NAME:
+    case CSS_PROP_ANIMATION_DURATION:
+    case CSS_PROP_ANIMATION_DELAY:
+    case CSS_PROP_ANIMATION_ITERATION_COUNT:
+    case CSS_PROP_ANIMATION_DIRECTION:
+    case CSS_PROP_ANIMATION_FILL_MODE:
+    case CSS_PROP_ANIMATION_PLAY_STATE:
+    case CSS_PROP_ANIMATION_TIMING_FUNCTION:
+        if (isInherit) {
+            style->setAnimations(parentStyle->animations());
+            return;
+        }
+        if (isInitial) {
+            style->clearAnimations();
+            return;
+        }
+        if (value->isAnimationsValue())
+            style->setAnimations(static_cast<CSSAnimationsValue*>(value)->animations());
+        return;
 #endif
     case CSS_PROP_BOX_SIZING:
     case CSS_PROP__WEBKIT_BOX_SIZING:
@@ -5943,5 +5970,70 @@ CSSFontSelector* CSSStyleSelector::ensureFontSelector()
         m_fontSelector = new CSSFontSelector(m_document);
     return m_fontSelector.get();
 }
+
+#if ENABLE(CSS_TRANSITIONS)
+void CSSStyleSelector::addKeyframesRule(CSSKeyframesRule* rule)
+{
+    if (!rule || rule->name().isEmpty())
+        return;
+    // Last definition with a given name wins, matching CSS cascade semantics.
+    m_keyframesRules.set(rule->name(), rule);
+}
+
+CSSKeyframesRule* CSSStyleSelector::keyframesRule(const String& name) const
+{
+    if (name.isEmpty())
+        return 0;
+    HashMap<String, RefPtr<CSSKeyframesRule> >::const_iterator it = m_keyframesRules.find(name);
+    return it != m_keyframesRules.end() ? it->second.get() : 0;
+}
+
+RenderStyle* CSSStyleSelector::styleForKeyframe(Element* e, RenderStyle* base, CSSKeyframeRule* keyframe)
+{
+    if (!e || !base || !keyframe || !keyframe->declaration())
+        return 0;
+
+    initElementAndPseudoState(e);
+    initForStyleResolve(e, base);
+
+    // Start from a clone of the element's base style and overlay the keyframe's
+    // declared properties using the normal applyProperty machinery.
+    style = new (e->document()->renderArena()) RenderStyle(*base);
+    style->ref();
+
+    CSSMutableStyleDeclaration* decl = keyframe->declaration();
+    // Two passes mirror applyDeclarations: font/color-affecting first.
+    for (int pass = 0; pass < 2; ++pass) {
+        for (Deque<CSSProperty>::const_iterator it = decl->valuesIterator();
+             it != decl->valuesEndIterator(); ++it) {
+            const CSSProperty& current = *it;
+            bool first;
+            switch (current.id()) {
+                case CSS_PROP_COLOR:
+                case CSS_PROP_DIRECTION:
+                case CSS_PROP_DISPLAY:
+                case CSS_PROP_FONT:
+                case CSS_PROP_FONT_SIZE:
+                case CSS_PROP_FONT_STYLE:
+                case CSS_PROP_FONT_FAMILY:
+                case CSS_PROP_FONT_WEIGHT:
+                case CSS_PROP_FONT_VARIANT:
+                    first = true;
+                    break;
+                default:
+                    first = false;
+                    break;
+            }
+            if (first == (pass == 0))
+                applyProperty(current.id(), current.value());
+        }
+    }
+
+    RenderStyle* result = style;
+    style = 0;
+    return result;
+}
+
+#endif
 
 } // namespace WebCore

@@ -26,57 +26,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CSSTransitionsValue_h
-#define CSSTransitionsValue_h
-
 #include "config.h"
 
 #if ENABLE(CSS_TRANSITIONS)
 
-#include "CSSValue.h"
-#include "Animation.h"
+#include "CSSKeyframeRule.h"
+#include "CSSKeyframesRule.h"
+#include "CSSMutableStyleDeclaration.h"
 
 namespace WebCore {
 
-// A CSSValue wrapper carrying a fully-parsed CSS transition list. The parser
-// produces this for the `transition` shorthand and the individual longhands so
-// the style selector can copy it straight into RenderStyle.
-class CSSTransitionsValue : public CSSValue {
-public:
-    CSSTransitionsValue(const TransitionList& list)
-        : m_transitions(list)
-    {
-    }
+CSSKeyframeRule::CSSKeyframeRule(StyleBase* parent)
+    : CSSRule(parent)
+{
+}
 
-    virtual bool isTransitionsValue() const { return true; }
-    virtual String cssText() const { return String(); }
+CSSKeyframeRule::~CSSKeyframeRule()
+{
+    if (m_style)
+        m_style->setParent(0);
+}
 
-    const TransitionList& transitions() const { return m_transitions; }
+void CSSKeyframeRule::setDeclaration(PassRefPtr<CSSMutableStyleDeclaration> style)
+{
+    m_style = style;
+    if (m_style)
+        m_style->setParent(this);
+}
 
-private:
-    TransitionList m_transitions;
-};
+CSSKeyframesRule::CSSKeyframesRule(StyleBase* parent)
+    : CSSRule(parent)
+{
+}
 
-// Carries a fully-parsed CSS animation list (the `animation` shorthand or the
-// individual longhands), for the style selector to copy into RenderStyle.
-class CSSAnimationsValue : public CSSValue {
-public:
-    CSSAnimationsValue(const AnimationList& list)
-        : m_animations(list)
-    {
-    }
+CSSKeyframesRule::~CSSKeyframesRule()
+{
+}
 
-    virtual bool isAnimationsValue() const { return true; }
-    virtual String cssText() const { return String(); }
-
-    const AnimationList& animations() const { return m_animations; }
-
-private:
-    AnimationList m_animations;
-};
+void CSSKeyframesRule::append(PassRefPtr<CSSKeyframeRule> rule)
+{
+    m_keyframes.append(rule);
+}
 
 } // namespace WebCore
 
 #endif // ENABLE(CSS_TRANSITIONS)
-
-#endif // CSSTransitionsValue_h
