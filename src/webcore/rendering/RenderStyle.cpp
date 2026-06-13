@@ -603,6 +603,8 @@ void RenderStyle::applyTransform(AffineTransform& t, int boxWidth, int boxHeight
 StyleRareNonInheritedData::StyleRareNonInheritedData()
     : lineClamp(RenderStyle::initialLineClamp())
     , opacity(RenderStyle::initialOpacity())
+    , m_aspectRatio(RenderStyle::initialAspectRatio())
+    , m_objectFit(RenderStyle::initialObjectFit())
     , m_content(0)
     , m_counterDirectives(0)
     , userDrag(RenderStyle::initialUserDrag())
@@ -623,6 +625,8 @@ StyleRareNonInheritedData::StyleRareNonInheritedData(const StyleRareNonInherited
     : Shared<StyleRareNonInheritedData>()
     , lineClamp(o.lineClamp)
     , opacity(o.opacity)
+    , m_aspectRatio(o.m_aspectRatio)
+    , m_objectFit(o.m_objectFit)
     , flexibleBox(o.flexibleBox)
     , modernFlex(o.modernFlex)
     , grid(o.grid)
@@ -672,6 +676,8 @@ bool StyleRareNonInheritedData::operator==(const StyleRareNonInheritedData& o) c
     return lineClamp == o.lineClamp
         && m_dashboardRegions == o.m_dashboardRegions
         && opacity == o.opacity
+        && m_aspectRatio == o.m_aspectRatio
+        && m_objectFit == o.m_objectFit
         && flexibleBox == o.flexibleBox
         && modernFlex == o.modernFlex
         && grid == o.grid

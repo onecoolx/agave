@@ -1379,6 +1379,15 @@ bool CSSParser::parseValue(int propId, bool important)
         valid_primitive = id == CSS_VAL_BORDER_BOX || id == CSS_VAL_CONTENT_BOX;
         break;
 
+    case CSS_PROP_OBJECT_FIT:           // fill | contain | cover | none | scale-down
+        if (id == CSS_VAL_FILL || id == CSS_VAL_CONTAIN || id == CSS_VAL_COVER ||
+            id == CSS_VAL_NONE || id == CSS_VAL_SCALE_DOWN)
+            valid_primitive = true;
+        break;
+
+    case CSS_PROP_ASPECT_RATIO:         // auto | <number> [ / <number> ]
+        return parseAspectRatio(important);
+
     case CSS_PROP_FLEX_DIRECTION:        // row | row-reverse | column | column-reverse
         if (id == CSS_VAL_ROW || id == CSS_VAL_ROW_REVERSE ||
             id == CSS_VAL_COLUMN || id == CSS_VAL_COLUMN_REVERSE)
@@ -2733,6 +2742,49 @@ static float sideToAngle(int side1, int side2)
 // color-matrix filters (grayscale/sepia/invert/saturate/brightness/contrast/
 // hue-rotate) are parsed into ColorMatrixOp but not yet rendered (await a
 // picasso color-transform primitive). Returns 0 on a malformed value.
+bool CSSParser::parseAspectRatio(bool important)
+{
+    // Grammar (subset): auto | <number> | <number> '/' <number>
+    // The computed value stored is the width/height ratio as a number; the
+    // keyword "auto" (or ratio <= 0) stores 0, meaning "no aspect-ratio".
+    Value* value = valueList->current();
+    if (!value)
+        return false;
+
+    // "auto" -> store 0 (none). We deliberately ignore the optional <ratio>
+    // companion of "auto <ratio>" (replaced-element intrinsic preference),
+    // which this engine does not model.
+    if (value->id == CSS_VAL_AUTO) {
+        if (valueList->next())
+            return false; // trailing tokens after auto are invalid
+        addProperty(CSS_PROP_ASPECT_RATIO,
+                    new CSSPrimitiveValue(0.0, CSSPrimitiveValue::CSS_NUMBER), important);
+        return true;
+    }
+
+    if (value->unit != CSSPrimitiveValue::CSS_NUMBER || value->fValue <= 0)
+        return false;
+    double width = value->fValue;
+    double height = 1.0;
+
+    value = valueList->next();
+    if (value) {
+        // Expect '/' <number>.
+        if (value->unit != Value::Operator || value->iValue != '/')
+            return false;
+        value = valueList->next();
+        if (!value || value->unit != CSSPrimitiveValue::CSS_NUMBER || value->fValue <= 0)
+            return false;
+        height = value->fValue;
+        if (valueList->next())
+            return false; // trailing tokens
+    }
+
+    addProperty(CSS_PROP_ASPECT_RATIO,
+                new CSSPrimitiveValue(width / height, CSSPrimitiveValue::CSS_NUMBER), important);
+    return true;
+}
+
 CSSValue* CSSParser::parseFilter()
 {
     const int kMaxFilterOps = 32;

@@ -4415,6 +4415,26 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
             return; // Error case.
         style->setBoxOrdinalGroup((unsigned int)(primitiveValue->getDoubleValue()));
         return;
+    case CSS_PROP_ASPECT_RATIO:
+        HANDLE_INHERIT_AND_INITIAL(aspectRatio, AspectRatio)
+        if (!primitiveValue || primitiveValue->primitiveType() != CSSPrimitiveValue::CSS_NUMBER)
+            return;
+        // The parser already folded "<w>/<h>" into a single ratio number, and
+        // stores 0 for "auto" (no aspect-ratio).
+        style->setAspectRatio(max(0.0f, primitiveValue->getFloatValue()));
+        return;
+    case CSS_PROP_OBJECT_FIT:
+        HANDLE_INHERIT_AND_INITIAL(objectFit, ObjectFit)
+        if (!primitiveValue) return;
+        switch (primitiveValue->getIdent()) {
+            case CSS_VAL_FILL: style->setObjectFit(OF_FILL); break;
+            case CSS_VAL_CONTAIN: style->setObjectFit(OF_CONTAIN); break;
+            case CSS_VAL_COVER: style->setObjectFit(OF_COVER); break;
+            case CSS_VAL_NONE: style->setObjectFit(OF_NONE); break;
+            case CSS_VAL_SCALE_DOWN: style->setObjectFit(OF_SCALE_DOWN); break;
+            default: break;
+        }
+        return;
     case CSS_PROP_BOX_SIZING:
     case CSS_PROP__WEBKIT_BOX_SIZING:
         HANDLE_INHERIT_AND_INITIAL(boxSizing, BoxSizing)

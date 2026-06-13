@@ -378,5 +378,9 @@ WebCore::String getValueName(unsigned short id);
 #define CSS_VAL_MAX_CONTENT 369
 #define CSS_VAL_DENSE 370
 #define CSS_VAL_TO 371
-#define CSS_VAL_TOTAL 372
+#define CSS_VAL_FILL 372
+#define CSS_VAL_CONTAIN 373
+#define CSS_VAL_COVER 374
+#define CSS_VAL_SCALE_DOWN 375
+#define CSS_VAL_TOTAL 376
 #endif

@@ -77,6 +77,11 @@ private:
     int calcAspectRatioWidth() const;
     int calcAspectRatioHeight() const;
 
+    // Computes the destination and source rectangles for painting the image
+    // under the current object-fit value. contentRect is the content box (in
+    // absolute coordinates). On return, destRect/srcRect are filled in.
+    void computeObjectFitRects(const IntRect& contentRect, IntRect& destRect, IntRect& srcRect) const;
+
     bool isWidthSpecified() const;
     bool isHeightSpecified() const;
 

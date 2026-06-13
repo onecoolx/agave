@@ -157,6 +157,11 @@ namespace WebCore {
         CSSValue* parseGradient(Value* function);
         CSSValue* parseFilter();
 
+        // CSS aspect-ratio: parses "auto" | <number> | <number> / <number> and
+        // adds a CSS_PROP_ASPECT_RATIO property holding the width/height ratio
+        // (0 means auto/none). Returns true on success.
+        bool parseAspectRatio(bool important);
+
         // CSS calc(): flattens an expression to a linear (percent, pixels) form
         // and returns a CSSPrimitiveValue of type CSS_CALC, or 0 on failure.
         CSSPrimitiveValue* parseCalc(Value* function);

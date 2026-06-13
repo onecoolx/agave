@@ -7,6 +7,7 @@ struct props {
     int id;
 };
 %%
+aspect-ratio, CSS_PROP_ASPECT_RATIO
 background, CSS_PROP_BACKGROUND
 background-attachment, CSS_PROP_BACKGROUND_ATTACHMENT
 background-color, CSS_PROP_BACKGROUND_COLOR
@@ -82,6 +83,7 @@ max-height, CSS_PROP_MAX_HEIGHT
 max-width, CSS_PROP_MAX_WIDTH
 min-height, CSS_PROP_MIN_HEIGHT
 min-width, CSS_PROP_MIN_WIDTH
+object-fit, CSS_PROP_OBJECT_FIT
 opacity, CSS_PROP_OPACITY
 orphans, CSS_PROP_ORPHANS
 outline, CSS_PROP_OUTLINE

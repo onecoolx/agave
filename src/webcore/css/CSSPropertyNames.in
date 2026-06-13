@@ -8,6 +8,7 @@
 # http://msdn.microsoft.com/workshop/author/css/reference/attributes.asp
 #
 
+aspect-ratio
 background
 background-attachment
 background-color
@@ -83,6 +84,7 @@ max-height
 max-width
 min-height
 min-width
+object-fit
 opacity
 orphans
 outline

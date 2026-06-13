@@ -335,6 +335,9 @@ public:
 
 enum EBoxSizing { CONTENT_BOX, BORDER_BOX };
 
+// CSS object-fit for replaced elements (how the content fits its box).
+enum EObjectFit { OF_FILL, OF_CONTAIN, OF_COVER, OF_NONE, OF_SCALE_DOWN };
+
 class StyleBoxData : public Shared<StyleBoxData> {
 public:
     StyleBoxData();
@@ -1092,6 +1095,8 @@ public:
     int lineClamp; // An Apple extension.
     Vector<StyleDashboardRegion> m_dashboardRegions;
     float opacity; // Whether or not we're transparent.
+    float m_aspectRatio; // CSS aspect-ratio as width/height; 0 means "auto" (none).
+    unsigned m_objectFit : 3; // EObjectFit (object-fit for replaced elements).
 
     DataRef<StyleFlexibleBoxData> flexibleBox; // Flexible box properties 
     DataRef<StyleModernFlexData> modernFlex; // Modern CSS flexbox properties
@@ -1715,6 +1720,9 @@ public:
     float textStrokeWidth() const { return rareInheritedData->textStrokeWidth; }
     Color textFillColor() const { return rareInheritedData->textFillColor; }
     float opacity() const { return rareNonInheritedData->opacity; }
+    float aspectRatio() const { return rareNonInheritedData->m_aspectRatio; }
+    bool hasAspectRatio() const { return rareNonInheritedData->m_aspectRatio > 0; }
+    EObjectFit objectFit() const { return static_cast<EObjectFit>(rareNonInheritedData->m_objectFit); }
     EAppearance appearance() const { return static_cast<EAppearance>(rareNonInheritedData->m_appearance); }
     EBoxAlignment boxAlign() const { return static_cast<EBoxAlignment>(rareNonInheritedData->flexibleBox->align); }
     EBoxDirection boxDirection() const { return static_cast<EBoxDirection>(inherited_flags._box_direction); }
@@ -2007,6 +2015,8 @@ public:
     void setTextStrokeWidth(float w) { SET_VAR(rareInheritedData, textStrokeWidth, w) }
     void setTextFillColor(const Color& c) { SET_VAR(rareInheritedData, textFillColor, c) }
     void setOpacity(float f) { SET_VAR(rareNonInheritedData, opacity, f); }
+    void setAspectRatio(float r) { SET_VAR(rareNonInheritedData, m_aspectRatio, r); }
+    void setObjectFit(EObjectFit f) { SET_VAR(rareNonInheritedData, m_objectFit, f); }
     void setAppearance(EAppearance a) { SET_VAR(rareNonInheritedData, m_appearance, a); }
     void setBoxAlign(EBoxAlignment a) { SET_VAR(rareNonInheritedData.access()->flexibleBox, align, a); }
     void setBoxDirection(EBoxDirection d) { inherited_flags._box_direction = d; }
@@ -2202,6 +2212,8 @@ public:
     static float initialZoom() { return 1.0f; }
     static int initialOutlineOffset() { return 0; }
     static float initialOpacity() { return 1.0f; }
+    static float initialAspectRatio() { return 0; }
+    static EObjectFit initialObjectFit() { return OF_FILL; }
     static EBoxAlignment initialBoxAlign() { return BSTRETCH; }
     static EBoxDirection initialBoxDirection() { return BNORMAL; }
     static EBoxLines initialBoxLines() { return SINGLE; }

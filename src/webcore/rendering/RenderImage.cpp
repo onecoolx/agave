@@ -283,12 +283,89 @@ void RenderImage::paint(PaintInfo& paintInfo, int tx, int ty)
 
         HTMLImageElement* imageElt = (element() && element()->hasTagName(imgTag)) ? static_cast<HTMLImageElement*>(element()) : 0;
         CompositeOperator compositeOperator = imageElt ? imageElt->compositeOperator() : CompositeSourceOver;
-        context->drawImage(image(), rect, compositeOperator, document()->page()->inLowQualityImageInterpolationMode());
+        if (style()->objectFit() == OF_FILL) {
+            // Default behaviour: stretch the whole image over the content box.
+            context->drawImage(image(), rect, compositeOperator, document()->page()->inLowQualityImageInterpolationMode());
+        } else {
+            IntRect destRect;
+            IntRect srcRect;
+            computeObjectFitRects(rect, destRect, srcRect);
+            if (!destRect.isEmpty() && !srcRect.isEmpty())
+                context->drawImage(image(), destRect, srcRect, compositeOperator,
+                                   document()->page()->inLowQualityImageInterpolationMode());
+        }
     }
 
     // draw the selection tint even if the image itself is not available
     if (drawSelectionTint)
         context->fillRect(selectionRect(), selectionBackgroundColor());
+}
+
+void RenderImage::computeObjectFitRects(const IntRect& contentRect, IntRect& destRect, IntRect& srcRect) const
+{
+    IntSize imageSize = intrinsicSize();
+    destRect = contentRect;
+    srcRect = IntRect(IntPoint(), imageSize);
+
+    // Without a usable intrinsic size there is nothing to fit; fall back to
+    // filling the content box with the whole image.
+    if (imageSize.width() <= 0 || imageSize.height() <= 0)
+        return;
+
+    int cw = contentRect.width();
+    int ch = contentRect.height();
+    EObjectFit fit = style()->objectFit();
+
+    // A degenerate (zero-area) content box leaves an empty destination; the
+    // caller skips painting. Returning early also avoids divide-by-zero below.
+    if (cw <= 0 || ch <= 0) {
+        destRect = IntRect();
+        return;
+    }
+
+    // "scale-down" picks the smaller of "none" and "contain": only shrink, never
+    // enlarge. Resolve it to one of those two based on whether the image already
+    // fits inside the box.
+    if (fit == OF_SCALE_DOWN)
+        fit = (imageSize.width() <= cw && imageSize.height() <= ch) ? OF_NONE : OF_CONTAIN;
+
+    if (fit == OF_NONE) {
+        // Render at intrinsic size; clip to the content box if larger and center.
+        int renderW = min(imageSize.width(), cw);
+        int renderH = min(imageSize.height(), ch);
+        // Source rect is the centered crop of the intrinsic image.
+        srcRect = IntRect((imageSize.width() - renderW) / 2,
+                          (imageSize.height() - renderH) / 2, renderW, renderH);
+        destRect = IntRect(contentRect.x() + (cw - renderW) / 2,
+                           contentRect.y() + (ch - renderH) / 2, renderW, renderH);
+        return;
+    }
+
+    // contain / cover: scale the image preserving aspect ratio.
+    // contain -> fit inside (use min scale); cover -> fill box (use max scale).
+    double scaleW = static_cast<double>(cw) / imageSize.width();
+    double scaleH = static_cast<double>(ch) / imageSize.height();
+    double scale = (fit == OF_COVER) ? max(scaleW, scaleH) : min(scaleW, scaleH);
+
+    int scaledW = static_cast<int>(imageSize.width() * scale + 0.5);
+    int scaledH = static_cast<int>(imageSize.height() * scale + 0.5);
+
+    if (fit == OF_CONTAIN) {
+        // Whole image visible, centered; letterboxed within the content box.
+        srcRect = IntRect(IntPoint(), imageSize);
+        destRect = IntRect(contentRect.x() + (cw - scaledW) / 2,
+                           contentRect.y() + (ch - scaledH) / 2, scaledW, scaledH);
+    } else {
+        // cover: fill the box, cropping the overflow via the source rect.
+        // Map the content box back into intrinsic-image coordinates.
+        int srcW = static_cast<int>(cw / scale + 0.5);
+        int srcH = static_cast<int>(ch / scale + 0.5);
+        srcW = min(srcW, imageSize.width());
+        srcH = min(srcH, imageSize.height());
+        srcRect = IntRect((imageSize.width() - srcW) / 2,
+                          (imageSize.height() - srcH) / 2, srcW, srcH);
+        destRect = contentRect;
+    }
 }
 
 void RenderImage::layout()

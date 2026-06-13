@@ -1356,6 +1356,17 @@ void RenderBox::calcHeight()
             // for box-sizing.
             height = h.value() + borderTop() + borderBottom() + paddingTop() + paddingBottom();
 
+        // CSS aspect-ratio: when height is auto and a ratio is set, derive the
+        // content height from the (already computed) content width. m_width is
+        // resolved by calcWidth(), which runs before calcHeight() in layout.
+        if (style()->height().isAuto() && style()->hasAspectRatio() && !treatAsReplaced) {
+            int cw = contentWidth();
+            if (cw > 0) {
+                int contentH = static_cast<int>(cw / style()->aspectRatio() + 0.5f);
+                height = contentH + borderTop() + borderBottom() + paddingTop() + paddingBottom();
+            }
+        }
+
         m_height = height;
     }
 

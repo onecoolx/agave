@@ -87,6 +87,8 @@ static const int computedProperties[] = {
     CSS_PROP_MAX_WIDTH,
     CSS_PROP_MIN_HEIGHT,
     CSS_PROP_MIN_WIDTH,
+    CSS_PROP_OBJECT_FIT,
+    CSS_PROP_ASPECT_RATIO,
     CSS_PROP_OPACITY,
     CSS_PROP_ORPHANS,
     CSS_PROP_OUTLINE_COLOR,
@@ -1233,6 +1235,19 @@ PassRefPtr<CSSValue> CSSComputedStyleDeclaration::getPropertyCSSValue(int proper
             return valueForLength(style->minWidth());
         case CSS_PROP_OPACITY:
             return new CSSPrimitiveValue(style->opacity(), CSSPrimitiveValue::CSS_NUMBER);
+        case CSS_PROP_OBJECT_FIT:
+            switch (style->objectFit()) {
+                case OF_CONTAIN: return new CSSPrimitiveValue(CSS_VAL_CONTAIN);
+                case OF_COVER: return new CSSPrimitiveValue(CSS_VAL_COVER);
+                case OF_NONE: return new CSSPrimitiveValue(CSS_VAL_NONE);
+                case OF_SCALE_DOWN: return new CSSPrimitiveValue(CSS_VAL_SCALE_DOWN);
+                case OF_FILL:
+                default: return new CSSPrimitiveValue(CSS_VAL_FILL);
+            }
+        case CSS_PROP_ASPECT_RATIO:
+            if (!style->hasAspectRatio())
+                return new CSSPrimitiveValue(CSS_VAL_AUTO);
+            return new CSSPrimitiveValue(style->aspectRatio(), CSSPrimitiveValue::CSS_NUMBER);
         case CSS_PROP_ORPHANS:
             return new CSSPrimitiveValue(style->orphans(), CSSPrimitiveValue::CSS_NUMBER);
         case CSS_PROP_OUTLINE_COLOR:

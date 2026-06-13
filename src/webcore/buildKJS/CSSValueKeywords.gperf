@@ -379,4 +379,8 @@ min-content, CSS_VAL_MIN_CONTENT
 max-content, CSS_VAL_MAX_CONTENT
 dense, CSS_VAL_DENSE
 to, CSS_VAL_TO
+fill, CSS_VAL_FILL
+contain, CSS_VAL_CONTAIN
+cover, CSS_VAL_COVER
+scale-down, CSS_VAL_SCALE_DOWN
 %%

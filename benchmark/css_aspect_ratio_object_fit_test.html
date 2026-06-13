@@ -1,0 +1,46 @@
+<html>
+<head><style>
+.box { width: 240px; background: #ccc; }
+#r1 { aspect-ratio: 2 / 1; }       /* -> height 120 */
+#r2 { aspect-ratio: 3; }           /* -> height 80 */
+#r3 { aspect-ratio: 16 / 9; }      /* -> height 135 */
+#r4 { height: 200px; aspect-ratio: 2 / 1; } /* explicit height wins -> 200 */
+#r5 { aspect-ratio: 2 / 1; padding: 20px; } /* content 120 + 40 padding -> 160 */
+img { width: 100px; height: 100px; }
+#f1 { object-fit: contain; }
+#f2 { object-fit: cover; }
+#f3 { object-fit: none; }
+#f4 { object-fit: scale-down; }
+</style></head>
+<body>
+<div class="box" id="r1"></div>
+<div class="box" id="r2"></div>
+<div class="box" id="r3"></div>
+<div class="box" id="r4"></div>
+<div class="box" id="r5"></div>
+<img id="f1" src="x.png"><img id="f2" src="x.png">
+<img id="f3" src="x.png"><img id="f4" src="x.png">
+<script>
+var r = [];
+function ck(n, a, e) { r.push(n + ':' + (a === e ? 'PASS' : 'FAIL([' + a + ']!=[' + e + '])')); }
+function H(id) { return document.getElementById(id).offsetHeight; }
+
+// aspect-ratio derived heights (content-box).
+ck('ar-2-1', H('r1'), 120);
+ck('ar-3', H('r2'), 80);
+ck('ar-16-9', H('r3'), 135);
+ck('ar-explicit-height', H('r4'), 200);
+ck('ar-with-padding', H('r5'), 160);
+
+// object-fit is reflected in computed style.
+function fit(id) { return window.getComputedStyle(document.getElementById(id)).objectFit; }
+ck('fit-contain', fit('f1'), 'contain');
+ck('fit-cover', fit('f2'), 'cover');
+ck('fit-none', fit('f3'), 'none');
+ck('fit-scale-down', fit('f4'), 'scale-down');
+
+var ok = r.every(function(s) { return s.indexOf('PASS') >= 0; });
+alert((ok ? 'ALL PASS' : 'FAILURES') + '|' + r.join('|'));
+</script>
+</body>
+</html>
