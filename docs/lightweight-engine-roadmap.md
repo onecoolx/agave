@@ -253,3 +253,26 @@ flex-direction + grow/shrink/basis + justify-content + align-items，~4-5k 行�
 - docs/embedded_gui_design.md — 嵌入式 GUI 设计
 - examples/watchweb/docs/memory-analysis.md — 内存占用分析
 - examples/watchweb/docs/render-thread-design.md — 渲染线程方案
+
+---
+
+## 后续任务优先级（2026-06-13 决策，按预算排序）
+
+阶段 1/2/3 + 地基补全完成后，按"省预算优先、确定性高优先"推进：
+
+1. **现代选择器 :is() / :where() / :has()** —— 进行中。低风险，复用成熟选择器引擎。
+2. **writing-mode** —— 国际化纵排，触及布局方向。
+3. **aspect-ratio + object-fit** —— 实用、范围可控。
+4. **IntersectionObserver** —— 需视口/布局观察基础设施。
+5. **transition + animation** —— 价值最高（最大单一空白）但最贵、风险最高（需新建
+   帧驱动动画子系统，headless 验证有不确定性）。**视预算情况而定**；推进前先做
+   可行性调研。
+6. **<video> / <audio>（媒体元素）** —— **暂缓**。当前无需求；低端设备上媒体解码
+   管线不实用、不符轻量定位。记录备查，未来按需再评估。
+
+预计成本量级（参考，±50%，主要变数是工具链踩坑）：
+- :is/:where ~150–300k token；:has ~300–500k
+- writing-mode ~600k–1M
+- aspect-ratio + object-fit ~250–450k
+- IntersectionObserver ~400–700k
+- transition+animation ~1.5–2.5M（先 ~150k 可行性调研）
