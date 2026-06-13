@@ -260,7 +260,7 @@ flex-direction + grow/shrink/basis + justify-content + align-items，~4-5k 行�
 
 阶段 1/2/3 + 地基补全完成后，按"省预算优先、确定性高优先"推进：
 
-1. **现代选择器 :is() / :where() / :has()** —— 进行中。低风险，复用成熟选择器引擎。
+1. **现代选择器 :is() / :where() / :has()** —— ✅ 已完成（commit 35785470）。复用成熟选择器引擎，三维审查通过。
 2. **writing-mode** —— 国际化纵排，触及布局方向。
 3. **aspect-ratio + object-fit** —— 实用、范围可控。
 4. **IntersectionObserver** —— 需视口/布局观察基础设施。
