@@ -1,0 +1,52 @@
+<html>
+<head><style>#box{position:absolute;left:5px;top:15px;width:80px;height:40px;}</style></head>
+<body>
+<div id="outer" class="container">
+  <section id="mid" data-role="panel">
+    <ul id="list"><li id="a">A</li><li id="b">B</li><li id="c">C</li></ul>
+    <button id="btn" class="primary">click</button>
+  </section>
+</div>
+<div id="box">geom</div>
+<script>
+var r = [];
+function ck(n, a, e) { r.push(n + ':' + (a === e ? 'PASS' : 'FAIL(' + a + ')')); }
+function E(id){ return document.getElementById(id); }
+function done() {
+  var ok = r.every(function(s){ return s.indexOf('PASS') >= 0; });
+  alert((ok ? 'ALL PASS' : 'FAILURES') + '|' + r.join('|'));
+}
+
+// getComputedStyle
+var cs = window.getComputedStyle(E('box'));
+ck('gcs-width', cs.width, '80px');
+
+// getBoundingClientRect
+var rect = E('box').getBoundingClientRect();
+ck('rect-left', rect.left, 5);
+ck('rect-top', rect.top, 15);
+ck('rect-width', rect.width, 80);
+ck('rect-right', rect.right, 85);
+
+// Element traversal
+var list = E('list');
+ck('count', list.childElementCount, 3);
+ck('first', list.firstElementChild.id, 'a');
+ck('last', list.lastElementChild.id, 'c');
+ck('next', E('b').nextElementSibling.id, 'c');
+ck('prev', E('b').previousElementSibling.id, 'a');
+ck('children', list.children.length, 3);
+
+// matches / closest
+var btn = E('btn');
+ck('matches-class', btn.matches('.primary'), true);
+ck('matches-no', btn.matches('.secondary'), false);
+ck('closest-section', btn.closest('section').id, 'mid');
+ck('closest-container', btn.closest('.container').id, 'outer');
+ck('closest-self', btn.closest('button').id, 'btn');
+ck('closest-none', btn.closest('table'), null);
+
+done();
+</script>
+</body>
+</html>

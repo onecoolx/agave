@@ -35,7 +35,9 @@ class AtomicStringList;
 class Attr;
 class Attribute;
 class CSSStyleDeclaration;
+class ClientRect;
 class DOMTokenList;
+class HTMLCollection;
 class ElementRareData;
 class IntSize;
 
@@ -74,6 +76,7 @@ public:
     int offsetTop();
     int offsetWidth();
     int offsetHeight();
+    PassRefPtr<ClientRect> getBoundingClientRect();
     Element* offsetParent();
     int clientLeft();
     int clientTop();
@@ -96,6 +99,18 @@ public:
     PassRefPtr<Attr> removeAttributeNode(Attr*, ExceptionCode&);
     
     virtual CSSStyleDeclaration* style();
+
+    // HTML5 element-only traversal (skips text/comment nodes).
+    PassRefPtr<HTMLCollection> children();
+    Element* firstElementChild() const;
+    Element* lastElementChild() const;
+    Element* previousElementSibling() const;
+    Element* nextElementSibling() const;
+    unsigned childElementCount() const;
+
+    // Selectors API: matches() tests this element; closest() walks up ancestors.
+    bool matches(const String& selectors, ExceptionCode&);
+    Element* closest(const String& selectors, ExceptionCode&);
 
     const QualifiedName& tagQName() const { return m_tagName; }
     String tagName() const { return nodeName(); }

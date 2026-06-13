@@ -26,8 +26,12 @@
 #include "Element.h"
 
 #include "CSSStyleSelector.h"
+#include "CSSParser.h"
+#include "CSSSelector.h"
 #include "Document.h"
 #include "DOMTokenList.h"
+#include "ClientRect.h"
+#include "HTMLCollection.h"
 #include "Editor.h"
 #include "ExceptionCode.h"
 #include "FocusController.h"
@@ -328,6 +332,122 @@ int Element::offsetHeight()
     if (RenderObject* rend = renderer())
         return adjustForAbsoluteZoom(rend->offsetHeight(), rend);
     return 0;
+}
+
+PassRefPtr<ClientRect> Element::getBoundingClientRect()
+{
+    document()->updateLayoutIgnorePendingStylesheets();
+    RenderObject* rend = renderer();
+    if (!rend)
+        return ClientRect::create();
+    return ClientRect::create(rend->absoluteBoundingBoxRect());
+}
+
+PassRefPtr<HTMLCollection> Element::children()
+{
+    return new HTMLCollection(this, HTMLCollection::NodeChildren);
+}
+
+Element* Element::firstElementChild() const
+{
+    Node* n = firstChild();
+    while (n && !n->isElementNode())
+        n = n->nextSibling();
+    return static_cast<Element*>(n);
+}
+
+Element* Element::lastElementChild() const
+{
+    Node* n = lastChild();
+    while (n && !n->isElementNode())
+        n = n->previousSibling();
+    return static_cast<Element*>(n);
+}
+
+Element* Element::previousElementSibling() const
+{
+    Node* n = previousSibling();
+    while (n && !n->isElementNode())
+        n = n->previousSibling();
+    return static_cast<Element*>(n);
+}
+
+Element* Element::nextElementSibling() const
+{
+    Node* n = nextSibling();
+    while (n && !n->isElementNode())
+        n = n->nextSibling();
+    return static_cast<Element*>(n);
+}
+
+unsigned Element::childElementCount() const
+{
+    unsigned count = 0;
+    for (Node* n = firstChild(); n; n = n->nextSibling())
+        if (n->isElementNode())
+            ++count;
+    return count;
+}
+
+// Tests element against a parsed selector chain using the style engine.
+static bool elementMatchesSelectorChain(CSSStyleSelector* styleSelector, CSSSelector* selector, Element* element)
+{
+    for (CSSSelector* sel = selector; sel; sel = sel->next()) {
+        if (styleSelector->matchesSelector(element, sel))
+            return true;
+    }
+    return false;
+}
+
+bool Element::matches(const String& selectors, ExceptionCode& ec)
+{
+    if (selectors.isEmpty()) {
+        ec = SYNTAX_ERR;
+        return false;
+    }
+    Document* doc = document();
+    if (!doc || !doc->styleSelector())
+        return false;
+
+    CSSParser parser(true);
+    CSSSelector* selector = parser.parseSelector(selectors, doc);
+    if (!selector) {
+        ec = SYNTAX_ERR;
+        return false;
+    }
+    bool matched = elementMatchesSelectorChain(doc->styleSelector(), selector, this);
+    delete selector;
+    return matched;
+}
+
+Element* Element::closest(const String& selectors, ExceptionCode& ec)
+{
+    if (selectors.isEmpty()) {
+        ec = SYNTAX_ERR;
+        return 0;
+    }
+    Document* doc = document();
+    if (!doc || !doc->styleSelector())
+        return 0;
+
+    CSSParser parser(true);
+    CSSSelector* selector = parser.parseSelector(selectors, doc);
+    if (!selector) {
+        ec = SYNTAX_ERR;
+        return 0;
+    }
+
+    Element* result = 0;
+    // Walk up from this element through element ancestors.
+    for (Node* n = this; n; n = n->parentNode()) {
+        if (n->isElementNode()
+            && elementMatchesSelectorChain(doc->styleSelector(), selector, static_cast<Element*>(n))) {
+            result = static_cast<Element*>(n);
+            break;
+        }
+    }
+    delete selector;
+    return result;
 }
 
 Element* Element::offsetParent()

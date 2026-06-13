@@ -54,6 +54,8 @@ public:
         OffsetTopAttrNum, OffsetWidthAttrNum, OffsetHeightAttrNum, OffsetParentAttrNum, 
         ClientLeftAttrNum, ClientTopAttrNum, ClientWidthAttrNum, ClientHeightAttrNum, 
         ScrollLeftAttrNum, ScrollTopAttrNum, ScrollWidthAttrNum, ScrollHeightAttrNum, 
+        ChildrenAttrNum, FirstElementChildAttrNum, LastElementChildAttrNum, PreviousElementSiblingAttrNum, 
+        NextElementSiblingAttrNum, ChildElementCountAttrNum, 
 
         // The Constructor Attribute
         ConstructorAttrNum, 
@@ -63,9 +65,9 @@ public:
         SetAttributeNodeFuncNum, RemoveAttributeNodeFuncNum, GetElementsByTagNameFuncNum, QuerySelectorFuncNum, 
         QuerySelectorAllFuncNum, GetAttributeNSFuncNum, SetAttributeNSFuncNum, RemoveAttributeNSFuncNum, 
         GetElementsByTagNameNSFuncNum, GetAttributeNodeNSFuncNum, SetAttributeNodeNSFuncNum, HasAttributeFuncNum, 
-        HasAttributeNSFuncNum, FocusFuncNum, BlurFuncNum, ScrollIntoViewFuncNum, 
-        InsertAdjacentElementFuncNum, ContainsFuncNum, ScrollIntoViewIfNeededFuncNum, ScrollByLinesFuncNum, 
-        ScrollByPagesFuncNum
+        HasAttributeNSFuncNum, GetBoundingClientRectFuncNum, MatchesFuncNum, ClosestFuncNum, 
+        FocusFuncNum, BlurFuncNum, ScrollIntoViewFuncNum, InsertAdjacentElementFuncNum, 
+        ContainsFuncNum, ScrollIntoViewIfNeededFuncNum, ScrollByLinesFuncNum, ScrollByPagesFuncNum
     };
 
     // Custom functions

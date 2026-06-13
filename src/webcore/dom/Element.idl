@@ -87,6 +87,21 @@ module core {
         readonly attribute long scrollWidth;
         readonly attribute long scrollHeight;
 
+        ClientRect getBoundingClientRect();
+
+        // HTML5 element-only traversal.
+        readonly attribute HTMLCollection children;
+        readonly attribute Element firstElementChild;
+        readonly attribute Element lastElementChild;
+        readonly attribute Element previousElementSibling;
+        readonly attribute Element nextElementSibling;
+        readonly attribute unsigned long childElementCount;
+
+        boolean matches(in DOMString selectors)
+            raises(DOMException);
+        Element closest(in DOMString selectors)
+            raises(DOMException);
+
         void focus();
         void blur();
         void scrollIntoView(in [Optional] boolean alignWithTop);

@@ -35,6 +35,10 @@
 #include "GCController.h"
 #include "QJSDocument.h"
 #include "QJSDOMWindow.h"
+#include "QJSElement.h"
+#include "QJSCSSStyleDeclaration.h"
+#include "CSSStyleDeclaration.h"
+#include "Element.h"
 #include "Page.h"
 #include "Settings.h"
 #include "qjs_events.h"
@@ -273,6 +277,23 @@ static JSValue js_get_sessionStorage(JSContext *ctx, JSValueConst this_val, int 
 }
 #endif // ENABLE(WEB_STORAGE)
 
+// window.getComputedStyle(element[, pseudoElt]) -> CSSStyleDeclaration.
+static JSValue js_getComputedStyle(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv)
+{
+    QJS::ScriptInterpreter* interp = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx);
+    if (!interp || !interp->frame() || !interp->frame()->domWindow())
+        return JS_NULL;
+    if (argc < 1)
+        return JS_NULL;
+    Element* elt = toElement(argv[0]);
+    if (!elt)
+        return JS_NULL;
+    String pseudo = (argc >= 2 && !JS_IsUndefined(argv[1]) && !JS_IsNull(argv[1]))
+        ? valueToString(ctx, argv[1]) : String();
+    RefPtr<CSSStyleDeclaration> style = interp->frame()->domWindow()->getComputedStyle(elt, pseudo);
+    return toJS(ctx, style.get());
+}
+
 void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global)
 {
     JS_SetPropertyStr(ctx, global, "window", JS_DupValue(ctx, global));
@@ -283,6 +304,10 @@ void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global)
     JSValue getter = JS_NewCFunction(ctx, (JSCFunction*)js_get_document, "get document", 0);
     JS_DefinePropertyGetSet(ctx, global, atom, getter, JS_UNDEFINED, JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
     JS_FreeAtom(ctx, atom);
+
+    // window.getComputedStyle(element[, pseudoElt])
+    JS_SetPropertyStr(ctx, global, "getComputedStyle",
+        JS_NewCFunction(ctx, js_getComputedStyle, "getComputedStyle", 2));
 
     // Web Storage getters (window.localStorage / window.sessionStorage).
 #if ENABLE(WEB_STORAGE)

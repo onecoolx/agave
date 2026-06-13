@@ -33,16 +33,20 @@
 #include "Attr.h"
 #include "CSSMutableStyleDeclaration.h"
 #include "CSSStyleDeclaration.h"
+#include "ClientRect.h"
 #include "DOMTokenList.h"
 #include "Element.h"
 #include "ExceptionCode.h"
+#include "HTMLCollection.h"
 #include "NameNodeList.h"
 #include "Node.h"
 #include "NodeList.h"
 #include "QJSAttr.h"
 #include "QJSCSSStyleDeclaration.h"
+#include "QJSClientRect.h"
 #include "QJSDOMTokenList.h"
 #include "QJSElement.h"
+#include "QJSHTMLCollection.h"
 #include "QJSNode.h"
 #include "QJSNodeList.h"
 #include "qjs_dom.h"
@@ -56,7 +60,7 @@ namespace WebCore {
 #define countof(x) (sizeof(x) / sizeof((x)[0]))
 /* Functions table */
 
-static JSCFunctionListEntry JSElementAttributesFunctions[17];
+static JSCFunctionListEntry JSElementAttributesFunctions[23];
 static bool JSElementAttributesFunctions_initialized = false;
 
 static void init_JSElementAttributesFunctions()
@@ -160,12 +164,48 @@ static void init_JSElementAttributesFunctions()
     JSElementAttributesFunctions[15].magic = JSElement::ScrollHeightAttrNum;
     JSElementAttributesFunctions[15].u.getset.get.getter_magic = JSElement::getValueProperty;
     JSElementAttributesFunctions[15].u.getset.set.setter_magic = NULL;
-    JSElementAttributesFunctions[16].name = "constructor";
+    JSElementAttributesFunctions[16].name = "children";
     JSElementAttributesFunctions[16].prop_flags = JS_PROP_CONFIGURABLE;
     JSElementAttributesFunctions[16].def_type = JS_DEF_CGETSET_MAGIC;
-    JSElementAttributesFunctions[16].magic = JSElement::ConstructorAttrNum;
+    JSElementAttributesFunctions[16].magic = JSElement::ChildrenAttrNum;
     JSElementAttributesFunctions[16].u.getset.get.getter_magic = JSElement::getValueProperty;
     JSElementAttributesFunctions[16].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[17].name = "firstElementChild";
+    JSElementAttributesFunctions[17].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[17].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[17].magic = JSElement::FirstElementChildAttrNum;
+    JSElementAttributesFunctions[17].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[17].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[18].name = "lastElementChild";
+    JSElementAttributesFunctions[18].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[18].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[18].magic = JSElement::LastElementChildAttrNum;
+    JSElementAttributesFunctions[18].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[18].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[19].name = "previousElementSibling";
+    JSElementAttributesFunctions[19].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[19].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[19].magic = JSElement::PreviousElementSiblingAttrNum;
+    JSElementAttributesFunctions[19].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[19].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[20].name = "nextElementSibling";
+    JSElementAttributesFunctions[20].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[20].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[20].magic = JSElement::NextElementSiblingAttrNum;
+    JSElementAttributesFunctions[20].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[20].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[21].name = "childElementCount";
+    JSElementAttributesFunctions[21].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[21].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[21].magic = JSElement::ChildElementCountAttrNum;
+    JSElementAttributesFunctions[21].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[21].u.getset.set.setter_magic = NULL;
+    JSElementAttributesFunctions[22].name = "constructor";
+    JSElementAttributesFunctions[22].prop_flags = JS_PROP_CONFIGURABLE;
+    JSElementAttributesFunctions[22].def_type = JS_DEF_CGETSET_MAGIC;
+    JSElementAttributesFunctions[22].magic = JSElement::ConstructorAttrNum;
+    JSElementAttributesFunctions[22].u.getset.get.getter_magic = JSElement::getValueProperty;
+    JSElementAttributesFunctions[22].u.getset.set.setter_magic = NULL;
 }
 
 class JSElementConstructor {
@@ -194,7 +234,7 @@ void JSElementConstructor::initConstructor(JSContext * ctx, JSValue this_obj)
 
 /* Prototype functions table */
 
-static JSCFunctionListEntry JSElementPrototypeFunctions[25];
+static JSCFunctionListEntry JSElementPrototypeFunctions[28];
 static bool JSElementPrototypeFunctions_initialized = false;
 
 static void init_JSElementPrototypeFunctions()
@@ -321,62 +361,83 @@ static void init_JSElementPrototypeFunctions()
     JSElementPrototypeFunctions[16].u.func.length = 2;
     JSElementPrototypeFunctions[16].u.func.cproto = JS_CFUNC_generic_magic;
     JSElementPrototypeFunctions[16].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
-    JSElementPrototypeFunctions[17].name = "focus";
+    JSElementPrototypeFunctions[17].name = "getBoundingClientRect";
     JSElementPrototypeFunctions[17].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
     JSElementPrototypeFunctions[17].def_type = JS_DEF_CFUNC;
-    JSElementPrototypeFunctions[17].magic = JSElement::FocusFuncNum;
+    JSElementPrototypeFunctions[17].magic = JSElement::GetBoundingClientRectFuncNum;
     JSElementPrototypeFunctions[17].u.func.length = 0;
     JSElementPrototypeFunctions[17].u.func.cproto = JS_CFUNC_generic_magic;
     JSElementPrototypeFunctions[17].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
-    JSElementPrototypeFunctions[18].name = "blur";
+    JSElementPrototypeFunctions[18].name = "matches";
     JSElementPrototypeFunctions[18].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
     JSElementPrototypeFunctions[18].def_type = JS_DEF_CFUNC;
-    JSElementPrototypeFunctions[18].magic = JSElement::BlurFuncNum;
-    JSElementPrototypeFunctions[18].u.func.length = 0;
+    JSElementPrototypeFunctions[18].magic = JSElement::MatchesFuncNum;
+    JSElementPrototypeFunctions[18].u.func.length = 1;
     JSElementPrototypeFunctions[18].u.func.cproto = JS_CFUNC_generic_magic;
     JSElementPrototypeFunctions[18].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
-    JSElementPrototypeFunctions[19].name = "scrollIntoView";
+    JSElementPrototypeFunctions[19].name = "closest";
     JSElementPrototypeFunctions[19].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
     JSElementPrototypeFunctions[19].def_type = JS_DEF_CFUNC;
-    JSElementPrototypeFunctions[19].magic = JSElement::ScrollIntoViewFuncNum;
+    JSElementPrototypeFunctions[19].magic = JSElement::ClosestFuncNum;
     JSElementPrototypeFunctions[19].u.func.length = 1;
     JSElementPrototypeFunctions[19].u.func.cproto = JS_CFUNC_generic_magic;
     JSElementPrototypeFunctions[19].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
-    JSElementPrototypeFunctions[20].name = "insertAdjacentElement";
+    JSElementPrototypeFunctions[20].name = "focus";
     JSElementPrototypeFunctions[20].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
     JSElementPrototypeFunctions[20].def_type = JS_DEF_CFUNC;
-    JSElementPrototypeFunctions[20].magic = JSElement::InsertAdjacentElementFuncNum;
-    JSElementPrototypeFunctions[20].u.func.length = 2;
+    JSElementPrototypeFunctions[20].magic = JSElement::FocusFuncNum;
+    JSElementPrototypeFunctions[20].u.func.length = 0;
     JSElementPrototypeFunctions[20].u.func.cproto = JS_CFUNC_generic_magic;
     JSElementPrototypeFunctions[20].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
-    JSElementPrototypeFunctions[21].name = "contains";
+    JSElementPrototypeFunctions[21].name = "blur";
     JSElementPrototypeFunctions[21].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
     JSElementPrototypeFunctions[21].def_type = JS_DEF_CFUNC;
-    JSElementPrototypeFunctions[21].magic = JSElement::ContainsFuncNum;
-    JSElementPrototypeFunctions[21].u.func.length = 1;
+    JSElementPrototypeFunctions[21].magic = JSElement::BlurFuncNum;
+    JSElementPrototypeFunctions[21].u.func.length = 0;
     JSElementPrototypeFunctions[21].u.func.cproto = JS_CFUNC_generic_magic;
     JSElementPrototypeFunctions[21].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
-    JSElementPrototypeFunctions[22].name = "scrollIntoViewIfNeeded";
+    JSElementPrototypeFunctions[22].name = "scrollIntoView";
     JSElementPrototypeFunctions[22].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
     JSElementPrototypeFunctions[22].def_type = JS_DEF_CFUNC;
-    JSElementPrototypeFunctions[22].magic = JSElement::ScrollIntoViewIfNeededFuncNum;
+    JSElementPrototypeFunctions[22].magic = JSElement::ScrollIntoViewFuncNum;
     JSElementPrototypeFunctions[22].u.func.length = 1;
     JSElementPrototypeFunctions[22].u.func.cproto = JS_CFUNC_generic_magic;
     JSElementPrototypeFunctions[22].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
-    JSElementPrototypeFunctions[23].name = "scrollByLines";
+    JSElementPrototypeFunctions[23].name = "insertAdjacentElement";
     JSElementPrototypeFunctions[23].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
     JSElementPrototypeFunctions[23].def_type = JS_DEF_CFUNC;
-    JSElementPrototypeFunctions[23].magic = JSElement::ScrollByLinesFuncNum;
-    JSElementPrototypeFunctions[23].u.func.length = 1;
+    JSElementPrototypeFunctions[23].magic = JSElement::InsertAdjacentElementFuncNum;
+    JSElementPrototypeFunctions[23].u.func.length = 2;
     JSElementPrototypeFunctions[23].u.func.cproto = JS_CFUNC_generic_magic;
     JSElementPrototypeFunctions[23].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
-    JSElementPrototypeFunctions[24].name = "scrollByPages";
+    JSElementPrototypeFunctions[24].name = "contains";
     JSElementPrototypeFunctions[24].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
     JSElementPrototypeFunctions[24].def_type = JS_DEF_CFUNC;
-    JSElementPrototypeFunctions[24].magic = JSElement::ScrollByPagesFuncNum;
+    JSElementPrototypeFunctions[24].magic = JSElement::ContainsFuncNum;
     JSElementPrototypeFunctions[24].u.func.length = 1;
     JSElementPrototypeFunctions[24].u.func.cproto = JS_CFUNC_generic_magic;
     JSElementPrototypeFunctions[24].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[25].name = "scrollIntoViewIfNeeded";
+    JSElementPrototypeFunctions[25].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[25].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[25].magic = JSElement::ScrollIntoViewIfNeededFuncNum;
+    JSElementPrototypeFunctions[25].u.func.length = 1;
+    JSElementPrototypeFunctions[25].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[25].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[26].name = "scrollByLines";
+    JSElementPrototypeFunctions[26].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[26].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[26].magic = JSElement::ScrollByLinesFuncNum;
+    JSElementPrototypeFunctions[26].u.func.length = 1;
+    JSElementPrototypeFunctions[26].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[26].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
+    JSElementPrototypeFunctions[27].name = "scrollByPages";
+    JSElementPrototypeFunctions[27].prop_flags = JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE;
+    JSElementPrototypeFunctions[27].def_type = JS_DEF_CFUNC;
+    JSElementPrototypeFunctions[27].magic = JSElement::ScrollByPagesFuncNum;
+    JSElementPrototypeFunctions[27].u.func.length = 1;
+    JSElementPrototypeFunctions[27].u.func.cproto = JS_CFUNC_generic_magic;
+    JSElementPrototypeFunctions[27].u.func.cfunc.generic_magic = JSElementPrototypeFunction::callAsFunction;
 }
 
 JSValue JSElementPrototype::self(JSContext * ctx)
@@ -505,6 +566,30 @@ JSValue JSElement::getValueProperty(JSContext *ctx, JSValueConst this_val, int t
         case ScrollHeightAttrNum: {
             Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
             return JS_NewInt32(ctx, imp->scrollHeight());
+        }
+        case ChildrenAttrNum: {
+            Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return toJS(ctx, QJS::getPtr(imp->children()));
+        }
+        case FirstElementChildAttrNum: {
+            Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return toJS(ctx, QJS::getPtr(imp->firstElementChild()));
+        }
+        case LastElementChildAttrNum: {
+            Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return toJS(ctx, QJS::getPtr(imp->lastElementChild()));
+        }
+        case PreviousElementSiblingAttrNum: {
+            Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return toJS(ctx, QJS::getPtr(imp->previousElementSibling()));
+        }
+        case NextElementSiblingAttrNum: {
+            Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return toJS(ctx, QJS::getPtr(imp->nextElementSibling()));
+        }
+        case ChildElementCountAttrNum: {
+            Element* imp = (Element*)JS_GetOpaque(this_val, JSNode::js_class_id);
+            return JS_NewInt32(ctx, imp->childElementCount());
         }
         case ConstructorAttrNum:
             return getConstructor(ctx);
@@ -649,6 +734,27 @@ JSValue JSElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst 
             JSValue result = JS_NewBool(ctx, imp->hasAttributeNS(namespaceURI, localName) ? 1 : 0);
             return result;
         }
+        case JSElement::GetBoundingClientRectFuncNum: {
+
+            JSValue result = toJS(ctx, QJS::getPtr(imp->getBoundingClientRect()));
+            return result;
+        }
+        case JSElement::MatchesFuncNum: {
+            ExceptionCode ec = 0;
+            String selectors = valueToString(ctx, argv[0]);
+
+            JSValue result = JS_NewBool(ctx, imp->matches(selectors, ec) ? 1 : 0);
+            setDOMException(ctx, ec);
+            return result;
+        }
+        case JSElement::ClosestFuncNum: {
+            ExceptionCode ec = 0;
+            String selectors = valueToString(ctx, argv[0]);
+
+            JSValue result = toJS(ctx, QJS::getPtr(imp->closest(selectors, ec)));
+            setDOMException(ctx, ec);
+            return result;
+        }
         case JSElement::FocusFuncNum: {
             imp->focus();
             return JS_UNDEFINED;
@@ -720,11 +826,11 @@ JSValue JSElementPrototypeFunction::callAsFunction(JSContext* ctx, JSValueConst 
 Element* toElement(JSValue val)
 {
     if (JS_IsObject(val)) {
-        Element* impl = (Element*)JS_GetOpaque(val, JSElement::js_class_id);
-        return impl;
-    } else {
-        return 0;
+        Node* node = (Node*)JS_GetOpaque(val, JSNode::js_class_id);
+        if (node && node->isElementNode())
+            return (Element*)node;
     }
+    return 0;
 }
 
 }
