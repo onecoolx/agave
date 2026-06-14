@@ -642,6 +642,33 @@ void GraphicsContext::setCompositeOperation(CompositeOperator op)
             break;
     }
 }
+
+void GraphicsContext::setBlendMode(BlendMode mode)
+{
+    if (paintingDisabled())
+        return;
+
+    ps_context* gc = m_data->context;
+    switch (mode) {
+        case BlendModeMultiply:   ps_set_composite_operator(gc, COMPOSITE_MULTIPLY); break;
+        case BlendModeScreen:     ps_set_composite_operator(gc, COMPOSITE_SCREEN); break;
+        case BlendModeOverlay:    ps_set_composite_operator(gc, COMPOSITE_OVERLAY); break;
+        case BlendModeDarken:     ps_set_composite_operator(gc, COMPOSITE_DARKEN); break;
+        case BlendModeLighten:    ps_set_composite_operator(gc, COMPOSITE_LIGHTEN); break;
+        case BlendModeColorDodge: ps_set_composite_operator(gc, COMPOSITE_DODGE); break;
+        case BlendModeColorBurn:  ps_set_composite_operator(gc, COMPOSITE_BURN); break;
+        case BlendModeHardLight:  ps_set_composite_operator(gc, COMPOSITE_HARDLIGHT); break;
+        case BlendModeSoftLight:  ps_set_composite_operator(gc, COMPOSITE_SOFTLIGHT); break;
+        case BlendModeDifference: ps_set_composite_operator(gc, COMPOSITE_DIFFERENCE); break;
+        case BlendModeExclusion:  ps_set_composite_operator(gc, COMPOSITE_EXCLUSION); break;
+        case BlendModeHue:        ps_set_composite_operator(gc, COMPOSITE_HUE); break;
+        case BlendModeSaturation: ps_set_composite_operator(gc, COMPOSITE_SATURATION); break;
+        case BlendModeColor:      ps_set_composite_operator(gc, COMPOSITE_COLOR); break;
+        case BlendModeLuminosity: ps_set_composite_operator(gc, COMPOSITE_LUMINOSITY); break;
+        case BlendModeNormal:
+        default:                  ps_set_composite_operator(gc, COMPOSITE_SRC_OVER); break;
+    }
+}
 void GraphicsContext::clip(const Path& path)
 {
     if (paintingDisabled())

@@ -50,6 +50,28 @@ namespace WebCore {
         CompositePlusLighter
     };
 
+    // CSS mix-blend-mode / background-blend-mode blend modes. Kept separate from
+    // CompositeOperator (Porter-Duff) since these are separable/non-separable
+    // blend functions applied when a layer composites onto its backdrop.
+    enum BlendMode {
+        BlendModeNormal,
+        BlendModeMultiply,
+        BlendModeScreen,
+        BlendModeOverlay,
+        BlendModeDarken,
+        BlendModeLighten,
+        BlendModeColorDodge,
+        BlendModeColorBurn,
+        BlendModeHardLight,
+        BlendModeSoftLight,
+        BlendModeDifference,
+        BlendModeExclusion,
+        BlendModeHue,
+        BlendModeSaturation,
+        BlendModeColor,
+        BlendModeLuminosity
+    };
+
     enum LineCap { ButtCap, RoundCap, SquareCap };
 
     enum LineJoin { MiterJoin, RoundJoin, BevelJoin };

@@ -432,22 +432,51 @@ static IntRect transparencyClipBox(RenderLayer* l)
     return clipRect;
 }
 
+// Maps the style's mix-blend-mode (EBlendMode) to the GraphicsContext BlendMode.
+static BlendMode blendModeForStyle(EBlendMode m)
+{
+    switch (m) {
+        case BM_MULTIPLY: return BlendModeMultiply;
+        case BM_SCREEN: return BlendModeScreen;
+        case BM_OVERLAY: return BlendModeOverlay;
+        case BM_DARKEN: return BlendModeDarken;
+        case BM_LIGHTEN: return BlendModeLighten;
+        case BM_COLOR_DODGE: return BlendModeColorDodge;
+        case BM_COLOR_BURN: return BlendModeColorBurn;
+        case BM_HARD_LIGHT: return BlendModeHardLight;
+        case BM_SOFT_LIGHT: return BlendModeSoftLight;
+        case BM_DIFFERENCE: return BlendModeDifference;
+        case BM_EXCLUSION: return BlendModeExclusion;
+        case BM_HUE: return BlendModeHue;
+        case BM_SATURATION: return BlendModeSaturation;
+        case BM_COLOR: return BlendModeColor;
+        case BM_LUMINOSITY: return BlendModeLuminosity;
+        case BM_NORMAL:
+        default: return BlendModeNormal;
+    }
+}
+
 void RenderLayer::beginTransparencyLayers(GraphicsContext* p, const IntRect& paintDirtyRect)
 {
-    if (p->paintingDisabled() || (isTransparent() && m_usedTransparency))
+    if (p->paintingDisabled() || ((isTransparent() || renderer()->style()->hasBlendMode()) && m_usedTransparency))
         return;
     
     RenderLayer* ancestor = transparentAncestor();
     if (ancestor)
         ancestor->beginTransparencyLayers(p, paintDirtyRect);
     
-    if (isTransparent()) {
+    if (isTransparent() || renderer()->style()->hasBlendMode()) {
         m_usedTransparency = true;
         IntRect clipRect = transparencyClipBox(this);
         clipRect.intersect(paintDirtyRect);
         p->save();
         p->clip(clipRect);
-        p->beginTransparencyLayer(renderer()->opacity());
+        // mix-blend-mode: set the blend function so the isolated layer composites
+        // onto its backdrop with the requested blend when endTransparencyLayer
+        // flushes it. A normal blend mode leaves SrcOver.
+        if (renderer()->style()->hasBlendMode())
+            p->setBlendMode(blendModeForStyle(renderer()->style()->blendMode()));
+        p->beginTransparencyLayer(isTransparent() ? renderer()->opacity() : 1.0f);
     }
 }
 
@@ -1502,7 +1531,7 @@ RenderLayer::paintLayer(RenderLayer* rootLayer, GraphicsContext* p,
     bool selectionOnly = paintRestriction == PaintRestrictionSelectionOnly || paintRestriction == PaintRestrictionSelectionOnlyBlackText;
     bool forceBlackText = paintRestriction == PaintRestrictionSelectionOnlyBlackText;
 
-    if (isTransparent())
+    if (isTransparent() || renderer()->style()->hasBlendMode())
         haveTransparency = true;
 
     // If this layer's renderer is a child of the paintingRoot, we render unconditionally, which
@@ -1586,7 +1615,7 @@ RenderLayer::paintLayer(RenderLayer* rootLayer, GraphicsContext* p,
             it[0]->paintLayer(rootLayer, p, paintDirtyRect, haveTransparency, paintRestriction, paintingRoot);
     
     // End our transparency layer
-    if (isTransparent() && m_usedTransparency) {
+    if ((isTransparent() || renderer()->style()->hasBlendMode()) && m_usedTransparency) {
         p->endTransparencyLayer();
         p->restore();
         m_usedTransparency = false;

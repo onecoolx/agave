@@ -342,6 +342,13 @@ enum EBoxSizing { CONTENT_BOX, BORDER_BOX };
 // CSS object-fit for replaced elements (how the content fits its box).
 enum EObjectFit { OF_FILL, OF_CONTAIN, OF_COVER, OF_NONE, OF_SCALE_DOWN };
 
+// CSS mix-blend-mode (how an element blends with its backdrop).
+enum EBlendMode {
+    BM_NORMAL, BM_MULTIPLY, BM_SCREEN, BM_OVERLAY, BM_DARKEN, BM_LIGHTEN,
+    BM_COLOR_DODGE, BM_COLOR_BURN, BM_HARD_LIGHT, BM_SOFT_LIGHT, BM_DIFFERENCE,
+    BM_EXCLUSION, BM_HUE, BM_SATURATION, BM_COLOR, BM_LUMINOSITY
+};
+
 class StyleBoxData : public Shared<StyleBoxData> {
 public:
     StyleBoxData();
@@ -1101,6 +1108,7 @@ public:
     float opacity; // Whether or not we're transparent.
     float m_aspectRatio; // CSS aspect-ratio as width/height; 0 means "auto" (none).
     unsigned m_objectFit : 3; // EObjectFit (object-fit for replaced elements).
+    unsigned m_blendMode : 4; // EBlendMode (mix-blend-mode).
 
     DataRef<StyleFlexibleBoxData> flexibleBox; // Flexible box properties 
     DataRef<StyleModernFlexData> modernFlex; // Modern CSS flexbox properties
@@ -1742,6 +1750,8 @@ public:
     float aspectRatio() const { return rareNonInheritedData->m_aspectRatio; }
     bool hasAspectRatio() const { return rareNonInheritedData->m_aspectRatio > 0; }
     EObjectFit objectFit() const { return static_cast<EObjectFit>(rareNonInheritedData->m_objectFit); }
+    EBlendMode blendMode() const { return static_cast<EBlendMode>(rareNonInheritedData->m_blendMode); }
+    bool hasBlendMode() const { return rareNonInheritedData->m_blendMode != BM_NORMAL; }
     EAppearance appearance() const { return static_cast<EAppearance>(rareNonInheritedData->m_appearance); }
     EBoxAlignment boxAlign() const { return static_cast<EBoxAlignment>(rareNonInheritedData->flexibleBox->align); }
     EBoxDirection boxDirection() const { return static_cast<EBoxDirection>(inherited_flags._box_direction); }
@@ -2036,6 +2046,7 @@ public:
     void setOpacity(float f) { SET_VAR(rareNonInheritedData, opacity, f); }
     void setAspectRatio(float r) { SET_VAR(rareNonInheritedData, m_aspectRatio, r); }
     void setObjectFit(EObjectFit f) { SET_VAR(rareNonInheritedData, m_objectFit, f); }
+    void setBlendMode(EBlendMode m) { SET_VAR(rareNonInheritedData, m_blendMode, m); }
     void setAppearance(EAppearance a) { SET_VAR(rareNonInheritedData, m_appearance, a); }
     void setBoxAlign(EBoxAlignment a) { SET_VAR(rareNonInheritedData.access()->flexibleBox, align, a); }
     void setBoxDirection(EBoxDirection d) { inherited_flags._box_direction = d; }
@@ -2233,6 +2244,7 @@ public:
     static float initialOpacity() { return 1.0f; }
     static float initialAspectRatio() { return 0; }
     static EObjectFit initialObjectFit() { return OF_FILL; }
+    static EBlendMode initialBlendMode() { return BM_NORMAL; }
     static EBoxAlignment initialBoxAlign() { return BSTRETCH; }
     static EBoxDirection initialBoxDirection() { return BNORMAL; }
     static EBoxLines initialBoxLines() { return SINGLE; }

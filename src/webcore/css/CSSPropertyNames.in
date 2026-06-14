@@ -93,6 +93,7 @@ max-height
 max-width
 min-height
 min-width
+mix-blend-mode
 object-fit
 opacity
 orphans

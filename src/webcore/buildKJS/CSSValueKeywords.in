@@ -600,3 +600,18 @@ all
 alternate-reverse
 running
 paused
+# CSS mix-blend-mode keywords
+multiply
+screen
+darken
+lighten
+color-dodge
+color-burn
+hard-light
+soft-light
+difference
+exclusion
+hue
+saturation
+color
+luminosity

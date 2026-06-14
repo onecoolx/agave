@@ -393,4 +393,18 @@ all, CSS_VAL_ALL
 alternate-reverse, CSS_VAL_ALTERNATE_REVERSE
 running, CSS_VAL_RUNNING
 paused, CSS_VAL_PAUSED
+multiply, CSS_VAL_MULTIPLY
+screen, CSS_VAL_SCREEN
+darken, CSS_VAL_DARKEN
+lighten, CSS_VAL_LIGHTEN
+color-dodge, CSS_VAL_COLOR_DODGE
+color-burn, CSS_VAL_COLOR_BURN
+hard-light, CSS_VAL_HARD_LIGHT
+soft-light, CSS_VAL_SOFT_LIGHT
+difference, CSS_VAL_DIFFERENCE
+exclusion, CSS_VAL_EXCLUSION
+hue, CSS_VAL_HUE
+saturation, CSS_VAL_SATURATION
+color, CSS_VAL_COLOR
+luminosity, CSS_VAL_LUMINOSITY
 %%

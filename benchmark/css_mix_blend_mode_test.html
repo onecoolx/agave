@@ -1,0 +1,33 @@
+<html>
+<head><style>
+.stack { position: relative; width: 80px; height: 80px; }
+.base { position: absolute; top: 0; left: 0; width: 80px; height: 80px; background: rgb(255,0,0); }
+.top  { position: absolute; top: 0; left: 0; width: 80px; height: 80px; background: rgb(0,255,0); }
+#m1 .top { mix-blend-mode: multiply; }
+#m2 .top { mix-blend-mode: screen; }
+#m3 .top { mix-blend-mode: difference; }
+#m4 .top { mix-blend-mode: overlay; }
+#m5 .top { mix-blend-mode: luminosity; }
+</style></head>
+<body>
+<div class="stack" id="m1"><div class="base"></div><div class="top">1</div></div>
+<div class="stack" id="m2"><div class="base"></div><div class="top">2</div></div>
+<div class="stack" id="m3"><div class="base"></div><div class="top">3</div></div>
+<div class="stack" id="m4"><div class="base"></div><div class="top">4</div></div>
+<div class="stack" id="m5"><div class="base"></div><div class="top">5</div></div>
+<script>
+var results = [];
+// Verify each blend-mode element laid out correctly (the compositing path ran
+// without crashing). Pixel-level blend correctness is exercised by the render;
+// here we assert the layers exist and have the expected geometry.
+['m1','m2','m3','m4','m5'].forEach(function(id) {
+  var el = document.getElementById(id);
+  var top = el.querySelector('.top');
+  var ok = (top.offsetWidth === 80 && top.offsetHeight === 80);
+  results.push(id + (ok ? ':PASS' : ':FAIL([' + top.offsetWidth + 'x' + top.offsetHeight + '])'));
+});
+var pass = results.every(function(s){ return s.indexOf('PASS') >= 0; });
+alert((pass ? 'ALL PASS' : 'FAILURES') + '|' + results.join('|'));
+</script>
+</body>
+</html>

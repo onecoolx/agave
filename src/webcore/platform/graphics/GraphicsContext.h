@@ -180,6 +180,9 @@ namespace WebCore {
         void setAlpha(float);
 
         void setCompositeOperation(CompositeOperator);
+        // Sets the blend function used when subsequent drawing composites onto
+        // the backdrop (CSS mix-blend-mode). BlendModeNormal restores SrcOver.
+        void setBlendMode(BlendMode);
 
         void beginPath();
         void addPath(const Path&);

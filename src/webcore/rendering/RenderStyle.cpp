@@ -605,6 +605,7 @@ StyleRareNonInheritedData::StyleRareNonInheritedData()
     , opacity(RenderStyle::initialOpacity())
     , m_aspectRatio(RenderStyle::initialAspectRatio())
     , m_objectFit(RenderStyle::initialObjectFit())
+    , m_blendMode(RenderStyle::initialBlendMode())
     , m_content(0)
     , m_counterDirectives(0)
     , userDrag(RenderStyle::initialUserDrag())
@@ -627,6 +628,7 @@ StyleRareNonInheritedData::StyleRareNonInheritedData(const StyleRareNonInherited
     , opacity(o.opacity)
     , m_aspectRatio(o.m_aspectRatio)
     , m_objectFit(o.m_objectFit)
+    , m_blendMode(o.m_blendMode)
     , flexibleBox(o.flexibleBox)
     , modernFlex(o.modernFlex)
     , grid(o.grid)
@@ -682,6 +684,7 @@ bool StyleRareNonInheritedData::operator==(const StyleRareNonInheritedData& o) c
         && opacity == o.opacity
         && m_aspectRatio == o.m_aspectRatio
         && m_objectFit == o.m_objectFit
+        && m_blendMode == o.m_blendMode
         && flexibleBox == o.flexibleBox
         && modernFlex == o.modernFlex
         && grid == o.grid

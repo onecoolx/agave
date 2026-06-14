@@ -1392,6 +1392,17 @@ bool CSSParser::parseValue(int propId, bool important)
             valid_primitive = true;
         break;
 
+    case CSS_PROP_MIX_BLEND_MODE:       // normal | multiply | screen | ...
+        if (id == CSS_VAL_NORMAL || id == CSS_VAL_MULTIPLY || id == CSS_VAL_SCREEN ||
+            id == CSS_VAL_OVERLAY || id == CSS_VAL_DARKEN || id == CSS_VAL_LIGHTEN ||
+            id == CSS_VAL_COLOR_DODGE || id == CSS_VAL_COLOR_BURN ||
+            id == CSS_VAL_HARD_LIGHT || id == CSS_VAL_SOFT_LIGHT ||
+            id == CSS_VAL_DIFFERENCE || id == CSS_VAL_EXCLUSION ||
+            id == CSS_VAL_HUE || id == CSS_VAL_SATURATION ||
+            id == CSS_VAL_COLOR || id == CSS_VAL_LUMINOSITY)
+            valid_primitive = true;
+        break;
+
     case CSS_PROP_ASPECT_RATIO:         // auto | <number> [ / <number> ]
         return parseAspectRatio(important);
 

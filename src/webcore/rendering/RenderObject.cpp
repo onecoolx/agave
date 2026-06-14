@@ -507,7 +507,8 @@ RenderLayer* RenderObject::enclosingLayer() const
 
 bool RenderObject::requiresLayer()
 {
-    return isRoot() || isPositioned() || isRelPositioned() || isTransparent() || hasOverflowClip();
+    return isRoot() || isPositioned() || isRelPositioned() || isTransparent()
+        || hasOverflowClip() || style()->hasBlendMode();
 }
 
 RenderBlock* RenderObject::firstLineBlock() const

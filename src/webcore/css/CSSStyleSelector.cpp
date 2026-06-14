@@ -4443,6 +4443,29 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
             default: break;
         }
         return;
+    case CSS_PROP_MIX_BLEND_MODE:
+        HANDLE_INHERIT_AND_INITIAL(blendMode, BlendMode)
+        if (!primitiveValue) return;
+        switch (primitiveValue->getIdent()) {
+            case CSS_VAL_NORMAL: style->setBlendMode(BM_NORMAL); break;
+            case CSS_VAL_MULTIPLY: style->setBlendMode(BM_MULTIPLY); break;
+            case CSS_VAL_SCREEN: style->setBlendMode(BM_SCREEN); break;
+            case CSS_VAL_OVERLAY: style->setBlendMode(BM_OVERLAY); break;
+            case CSS_VAL_DARKEN: style->setBlendMode(BM_DARKEN); break;
+            case CSS_VAL_LIGHTEN: style->setBlendMode(BM_LIGHTEN); break;
+            case CSS_VAL_COLOR_DODGE: style->setBlendMode(BM_COLOR_DODGE); break;
+            case CSS_VAL_COLOR_BURN: style->setBlendMode(BM_COLOR_BURN); break;
+            case CSS_VAL_HARD_LIGHT: style->setBlendMode(BM_HARD_LIGHT); break;
+            case CSS_VAL_SOFT_LIGHT: style->setBlendMode(BM_SOFT_LIGHT); break;
+            case CSS_VAL_DIFFERENCE: style->setBlendMode(BM_DIFFERENCE); break;
+            case CSS_VAL_EXCLUSION: style->setBlendMode(BM_EXCLUSION); break;
+            case CSS_VAL_HUE: style->setBlendMode(BM_HUE); break;
+            case CSS_VAL_SATURATION: style->setBlendMode(BM_SATURATION); break;
+            case CSS_VAL_COLOR: style->setBlendMode(BM_COLOR); break;
+            case CSS_VAL_LUMINOSITY: style->setBlendMode(BM_LUMINOSITY); break;
+            default: break;
+        }
+        return;
 #if ENABLE(CSS_TRANSITIONS)
     case CSS_PROP_TRANSITION:
     case CSS_PROP_TRANSITION_PROPERTY:
