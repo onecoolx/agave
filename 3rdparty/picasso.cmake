@@ -24,6 +24,10 @@ ExternalProject_Add(
    -DOPT_FORMAT_ABGR=OFF
    -DOPT_FORMAT_ARGB=OFF
    -DOPT_FORMAT_RGB555=OFF
+   -DOPT_FREE_TYPE2=ON   # enable the FreeType2 font backend (otherwise picasso
+                         # falls back to the dummy adapter and all font metrics
+                         # are zero -- see docs/picasso-2.9.0-font-regression.md)
+   -DOPT_FONT_CONFIG=ON  # use the system font database via fontconfig
    -DOPT_SYSTEM_MALLOC=ON # use system malloc
    -DCMAKE_INSTALL_PREFIX=${PROJ_OUT}
 )

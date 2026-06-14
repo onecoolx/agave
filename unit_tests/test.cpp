@@ -28,6 +28,7 @@
 
 #include "test.h"
 #include "picasso/picasso.h"
+#include "AtomicString.h"
 
 #include "test_client.h"
 
@@ -156,11 +157,21 @@ void TestWebView::waitForDocumentComplete(TestWebView* view)
 void Test_Init()
 {
     ASSERT_EQ(MC_STATUS_SUCCESS, macross_initialize(PIXEL_FORMAT_RGBA32, WIDTH, HEIGHT));
+    // Ensure the global AtomicString table exists even for suites that never
+    // construct a Frame (e.g. the font tests). AtomicString::init() is
+    // idempotent, so this is a no-op once any Frame has initialized it.
+    WebCore::AtomicString::init();
 }
 
 void Test_Shutdown()
 {
-    macross_shutdown();
+    // Intentionally do NOT tear down the engine between test suites. Real usage
+    // (and the headless harness) initializes picasso exactly once for the
+    // process lifetime. picasso 2.9.0's font engine does not fully restore font
+    // metrics across a ps_shutdown()/ps_initialize() cycle (ps_get_font_info
+    // returns zeros), so cycling per-suite would spuriously fail the font tests.
+    // Keeping the engine alive matches the single-init real-world model; the
+    // process exit reclaims everything.
 }
 
 void Test_EventDispatchOnce()

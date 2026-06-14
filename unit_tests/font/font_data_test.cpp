@@ -74,7 +74,10 @@ TEST_F(FontDataTest, Constructor)
     EXPECT_GT(fontData.ascent(), 0);
     EXPECT_GT(fontData.descent(), 0);
     EXPECT_GT(fontData.lineSpacing(), 0);
-    EXPECT_GT(fontData.lineGap(), 0);
+    // lineGap (leading) is legitimately 0 for many fonts; it is the extra
+    // spacing beyond ascent+descent and depends on which fallback font the
+    // platform selects, so only require it to be non-negative.
+    EXPECT_GE(fontData.lineGap(), 0);
     EXPECT_GT(fontData.xHeight(), 0.0f);
     EXPECT_GT(fontData.unitsPerEm(), 0);
 }
