@@ -103,7 +103,19 @@ void WebView::destroy()
     if (m_buffer) { free(m_buffer); m_buffer = nullptr; }
 }
 
-void WebView::loadUrl(const char* url) { if (m_view) macross_view_open_url(m_view, url); }
+void WebView::loadUrl(const char* url)
+{
+    if (!m_view) { return; }
+    /* Reset scroll/tile state and clear the buffer so the new page does not
+       inherit the previous page's scroll position or leave stale pixels in
+       tile regions the new page does not paint. */
+    m_pos_x = m_pos_y = 0;
+    m_engine_x = m_engine_y = 0;
+    m_off_x = m_off_y = 0;
+    if (m_buffer) { memset(m_buffer, 0xFF, TILE_BUF_W * TILE_BUF_H * 4); }
+    macross_view_set_position(m_view, 0, 0);
+    macross_view_open_url(m_view, url);
+}
 void WebView::goBack() { if (m_view) macross_view_backward(m_view); }
 void WebView::goForward() { if (m_view) macross_view_forward(m_view); }
 void WebView::reload() { if (m_view) macross_view_reload(m_view); }
@@ -116,12 +128,16 @@ void WebView::scrollBy(int dx, int dy)
 
     m_pos_x += dx;
     m_pos_y += dy;
+
+    /* Clamp the scroll position to the scrollable range. When the content is
+       not larger than the viewport in a dimension, the max scroll is 0 (no
+       scrolling), which prevents dragging into the empty area beyond the page. */
+    int maxX = (sz.w > m_view_w) ? (sz.w - m_view_w) : 0;
+    int maxY = (sz.h > m_view_h) ? (sz.h - m_view_h) : 0;
     if (m_pos_x < 0) { m_pos_x = 0; }
     if (m_pos_y < 0) { m_pos_y = 0; }
-    if (sz.w > m_view_w && m_pos_x > sz.w - m_view_w) { m_pos_x = sz.w - m_view_w; }
-    if (sz.h > m_view_h && m_pos_y > sz.h - m_view_h) { m_pos_y = sz.h - m_view_h; }
-    if (m_pos_x < 0) { m_pos_x = 0; }
-    if (m_pos_y < 0) { m_pos_y = 0; }
+    if (m_pos_x > maxX) { m_pos_x = maxX; }
+    if (m_pos_y > maxY) { m_pos_y = maxY; }
 
     /* Offset of viewport within the tile buffer (relative to engine render pos) */
     m_off_x = m_pos_x - m_engine_x;
@@ -144,11 +160,12 @@ void WebView::scrollBy(int dx, int dy)
 void WebView::renderTile()
 {
     if (!m_view) { return; }
-    /* Paint the whole tile-buffer region, not just the engine's accumulated
-       dirty rect. After a reposition the engine renders a new slice of the page
-       into the buffer; forcing a full-buffer paint guarantees the entire buffer
-       holds fresh content so later blit-only scrolls never expose stale/blank
-       areas. */
+    /* Clear the buffer to white first: the engine only paints content regions
+       via its dirty rect, so any tile area beyond the page content (short pages,
+       near edges) would otherwise keep stale pixels from a previous render or
+       page. Then force a full-buffer paint so the whole buffer holds fresh
+       content for later blit-only scrolls. */
+    if (m_buffer) { memset(m_buffer, 0xFF, TILE_BUF_W * TILE_BUF_H * 4); }
     MC_RECT full = {0, 0, TILE_BUF_W, TILE_BUF_H};
     macross_view_update(m_view, &full);
     m_engine_repaint = false;
