@@ -25,6 +25,8 @@ private:
     void createCanvas();
     void createProgress();
     void createToolLayer();
+    static void progress_anim_exec(void* obj, int32_t v);
+    static void progress_anim_done(lv_anim_t* a);
     void createAddrLayer();
     void createFab();
     void showToolLayer(bool show);
@@ -47,6 +49,8 @@ private:
     lv_obj_t* m_canvas_img;
     uint8_t* m_canvas_buf;
     lv_obj_t* m_progress;
+    bool m_was_loading; /* previous loading state, to detect finish edge */
+    bool m_finishing; /* progress arc is animating to 99% then hiding */
     lv_obj_t* m_tool_layer; /* full-screen translucent toolbar overlay */
     lv_obj_t* m_addr_layer; /* full-screen translucent URL-input overlay */
     lv_obj_t* m_addr_ta; /* URL text area */

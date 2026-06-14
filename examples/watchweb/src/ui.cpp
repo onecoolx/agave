@@ -10,6 +10,7 @@
 WatchUI::WatchUI()
     : m_bg(nullptr), m_canvas_img(nullptr), m_canvas_buf(nullptr)
     , m_progress(nullptr)
+    , m_was_loading(false), m_finishing(false)
     , m_tool_layer(nullptr), m_addr_layer(nullptr)
     , m_addr_ta(nullptr), m_addr_kb(nullptr), m_fab(nullptr), m_wv(nullptr)
     , m_tx(0), m_ty(0), m_dragging(false)
@@ -246,11 +247,42 @@ void WatchUI::updateCanvas()
 void WatchUI::updateProgress(unsigned int pct, bool loading)
 {
     if (loading) {
+        /* Active load: cancel any pending finish animation and track real
+           progress. Cap at 95 so the arc keeps a little headroom to glide to
+           99% on finish (avoids an abrupt jump). */
+        if (m_finishing) {
+            lv_anim_delete(m_progress, progress_anim_exec);
+            m_finishing = false;
+        }
         lv_obj_clear_flag(m_progress, LV_OBJ_FLAG_HIDDEN);
-        lv_arc_set_value(m_progress, pct);
-    } else {
-        lv_obj_add_flag(m_progress, LV_OBJ_FLAG_HIDDEN);
+        unsigned int v = pct > 95 ? 95 : pct;
+        lv_arc_set_value(m_progress, v);
+    } else if (m_was_loading && !m_finishing) {
+        /* Just finished (main frame laid out / page visible): smoothly glide
+           the arc from its current value to 99%, then hide it. This reads as a
+           natural "almost done" finish instead of vanishing mid-way. */
+        m_finishing = true;
+        lv_obj_clear_flag(m_progress, LV_OBJ_FLAG_HIDDEN);
+        lv_anim_t a;
+        lv_anim_init(&a);
+        lv_anim_set_var(&a, m_progress);
+        lv_anim_set_exec_cb(&a, progress_anim_exec);
+        lv_anim_set_completed_cb(&a, progress_anim_done);
+        lv_anim_set_values(&a, lv_arc_get_value(m_progress), 99);
+        lv_anim_set_duration(&a, 350);
+        lv_anim_start(&a);
     }
+    m_was_loading = loading;
+}
+
+void WatchUI::progress_anim_exec(void* obj, int32_t v)
+{
+    lv_arc_set_value((lv_obj_t*)obj, v);
+}
+
+void WatchUI::progress_anim_done(lv_anim_t* a)
+{
+    lv_obj_add_flag((lv_obj_t*)a->var, LV_OBJ_FLAG_HIDDEN);
 }
 
 /* --- Event handlers --- */
