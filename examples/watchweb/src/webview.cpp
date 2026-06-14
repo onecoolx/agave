@@ -51,15 +51,20 @@ WebView::WebView()
     , m_pos_x(0), m_pos_y(0)
     , m_engine_x(0), m_engine_y(0)
     , m_off_x(0), m_off_y(0), m_engine_repaint(false)
-    , m_zoom(DEFAULT_ZOOM), m_loading(false), m_progress(0)
-    , m_first_layout_done(false)
+    , m_zoom(DEFAULT_ZOOM), m_loading(false)
+    , m_first_layout_done(false), m_progress(0)
     , m_on_update(nullptr), m_ud(nullptr)
     , m_on_state(nullptr), m_sd(nullptr)
     , m_on_blit(nullptr), m_bd(nullptr)
 {
     m_title[0] = 0;
     m_url[0] = 0;
+    m_on_ime = nullptr;
+    m_id = nullptr;
+    s_instance = this;
 }
+
+WebView* WebView::s_instance = nullptr;
 
 WebView::~WebView() { destroy(); }
 
@@ -79,6 +84,7 @@ void WebView::create(int vw, int vh)
     cb.cb_loading_progress = s_loading;
     cb.cb_set_title = s_title;
     cb.cb_set_location = s_url;
+    cb.cb_set_ime_enable = s_ime;
     macross_set_callback(&cb);
 
     /* Tile-buffer mode scrolls the whole page itself; the engine must not draw
@@ -301,4 +307,59 @@ void WebView::s_url(MaCrossView* v, const char* u)
     WebView* self = (WebView*)macross_view_additional_data(v);
     strncpy(self->m_url, u ? u : "", sizeof(self->m_url) - 1);
     if (self->m_on_state) { self->m_on_state(self->m_sd); }
+}
+
+void WebView::s_ime(MC_BOOL enable)
+{
+    /* The engine calls this (with no view argument) when a page editable field
+       gains or loses focus. Forward to the UI so it can show/hide the on-screen
+       keyboard. */
+    WebView* self = s_instance;
+    if (self && self->m_on_ime) { self->m_on_ime(self->m_id, enable ? true : false); }
+}
+
+void WebView::sendChar(unsigned int codepoint)
+{
+    /* Insert a printable character. Printable text must go through the IME text
+       input path (macross_view_input_text -> Editor::confirmComposition);
+       macross_keyboard_event only maps control keys (arrows, Enter, Backspace)
+       to editing commands and ignores literal characters. */
+    if (!m_view || codepoint == 0) { return; }
+    char utf8[5] = {0};
+    if (codepoint < 0x80) {
+        utf8[0] = (char)codepoint;
+    } else if (codepoint < 0x800) {
+        utf8[0] = (char)(0xC0 | (codepoint >> 6));
+        utf8[1] = (char)(0x80 | (codepoint & 0x3F));
+    } else if (codepoint < 0x10000) {
+        utf8[0] = (char)(0xE0 | (codepoint >> 12));
+        utf8[1] = (char)(0x80 | ((codepoint >> 6) & 0x3F));
+        utf8[2] = (char)(0x80 | (codepoint & 0x3F));
+    } else {
+        utf8[0] = (char)(0xF0 | (codepoint >> 18));
+        utf8[1] = (char)(0x80 | ((codepoint >> 12) & 0x3F));
+        utf8[2] = (char)(0x80 | ((codepoint >> 6) & 0x3F));
+        utf8[3] = (char)(0x80 | (codepoint & 0x3F));
+    }
+    macross_view_input_text(m_view, utf8);
+}
+
+void WebView::sendText(const char* utf8_text)
+{
+    /* Insert a UTF-8 string (e.g. a multi-byte key label from the on-screen
+       keyboard) directly through the IME text input path. */
+    if (!m_view || !utf8_text || !utf8_text[0]) { return; }
+    macross_view_input_text(m_view, utf8_text);
+}
+
+void WebView::sendKey(int vkey)
+{
+    if (!m_view) { return; }
+    MC_KEY_EVENT evt;
+    evt.modifier = 0;
+    evt.key = (MC_VIRTUAL_KEY)vkey;
+    evt.type = EVT_KEY_DOWN;
+    macross_keyboard_event(m_view, &evt);
+    evt.type = EVT_KEY_UP;
+    macross_keyboard_event(m_view, &evt);
 }

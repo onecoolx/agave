@@ -12,7 +12,8 @@ WatchUI::WatchUI()
     , m_progress(nullptr)
     , m_was_loading(false), m_finishing(false)
     , m_tool_layer(nullptr), m_addr_layer(nullptr)
-    , m_addr_ta(nullptr), m_addr_kb(nullptr), m_fab(nullptr), m_wv(nullptr)
+    , m_addr_ta(nullptr), m_addr_kb(nullptr)
+    , m_page_kb(nullptr), m_fab(nullptr), m_wv(nullptr)
     , m_tx(0), m_ty(0), m_dragging(false)
 {
 }
@@ -30,7 +31,11 @@ void WatchUI::create(WebView* wv)
     createProgress();
     createToolLayer();
     createAddrLayer();
+    createPageKeyboard();
     createFab();
+
+    /* Show the on-screen keyboard when a page input field gains focus. */
+    m_wv->setImeCb(on_ime, this);
 }
 
 void WatchUI::createBackground()
@@ -183,6 +188,76 @@ void WatchUI::createAddrLayer()
     lv_obj_set_size(m_addr_kb, SCREEN_WIDTH, SCREEN_HEIGHT / 2);
     lv_obj_align(m_addr_kb, LV_ALIGN_BOTTOM_MID, 0, 0);
     lv_keyboard_set_textarea(m_addr_kb, m_addr_ta);
+}
+
+void WatchUI::createPageKeyboard()
+{
+    /* On-screen keyboard for page (DOM) input fields. Unlike the address-bar
+       keyboard it is not bound to an LVGL textarea: each key press is forwarded
+       to the web engine via macross_keyboard_event. LVGL's built-in handler
+       still manages letter-case / symbol mode switches for us. */
+    m_page_kb = lv_keyboard_create(m_bg);
+    lv_obj_set_size(m_page_kb, SCREEN_WIDTH, SCREEN_HEIGHT / 2);
+    lv_obj_align(m_page_kb, LV_ALIGN_BOTTOM_MID, 0, 0);
+    lv_keyboard_set_textarea(m_page_kb, NULL);
+    lv_obj_add_flag(m_page_kb, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_event_cb(m_page_kb, on_page_kb, LV_EVENT_VALUE_CHANGED, this);
+}
+
+void WatchUI::showPageKeyboard(bool show)
+{
+    if (!m_page_kb) { return; }
+    if (show) {
+        lv_obj_clear_flag(m_page_kb, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_move_foreground(m_page_kb);
+    } else {
+        lv_obj_add_flag(m_page_kb, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+void WatchUI::on_page_kb(lv_event_t* e)
+{
+    WatchUI* ui = (WatchUI*)lv_event_get_user_data(e);
+    lv_obj_t* kb = (lv_obj_t*)lv_event_get_target(e);
+    uint32_t id = lv_keyboard_get_selected_button(kb);
+    if (id == LV_BUTTONMATRIX_BUTTON_NONE) { return; }
+    const char* txt = lv_keyboard_get_button_text(kb, id);
+    if (!txt || !ui->m_wv) { return; }
+
+    /* Mode-switch buttons are handled by LVGL's own keyboard handler. */
+    if (!lv_strcmp(txt, "abc") || !lv_strcmp(txt, "ABC") || !lv_strcmp(txt, "1#")) {
+        return;
+    }
+    if (!lv_strcmp(txt, LV_SYMBOL_BACKSPACE)) {
+        ui->m_wv->sendKey(0x08); /* Backspace */
+        return;
+    }
+    if (!lv_strcmp(txt, LV_SYMBOL_NEW_LINE) || !lv_strcmp(txt, LV_SYMBOL_OK)
+        || !lv_strcmp(txt, "Enter")) {
+        ui->m_wv->sendKey(0x0D); /* Enter */
+        return;
+    }
+    if (!lv_strcmp(txt, LV_SYMBOL_LEFT)) {
+        ui->m_wv->sendKey(0x25); /* Left arrow */
+        return;
+    }
+    if (!lv_strcmp(txt, LV_SYMBOL_RIGHT)) {
+        ui->m_wv->sendKey(0x27); /* Right arrow */
+        return;
+    }
+    if (!lv_strcmp(txt, LV_SYMBOL_KEYBOARD) || !lv_strcmp(txt, LV_SYMBOL_CLOSE)) {
+        ui->showPageKeyboard(false);
+        return;
+    }
+
+    /* Regular text: forward the whole (UTF-8) key label as input text. */
+    ui->m_wv->sendText(txt);
+}
+
+void WatchUI::on_ime(void* ud, bool enable)
+{
+    WatchUI* ui = (WatchUI*)ud;
+    ui->showPageKeyboard(enable);
 }
 
 void WatchUI::createFab()

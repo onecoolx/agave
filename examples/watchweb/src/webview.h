@@ -53,12 +53,23 @@ public:
     void mouseMove(int x, int y);
     void mouseRelease(int x, int y);
 
+    /* Forward typed input from an on-screen keyboard to the page. sendChar
+       inserts a character (Unicode code point); sendKey sends a special key
+       such as Backspace or Enter. */
+    void sendChar(unsigned int codepoint);
+    void sendText(const char* utf8_text);
+    void sendKey(int vkey);
+
     MaCrossView* view() const { return m_view; }
 
     typedef void (*Callback)(void*);
+    typedef void (*ImeCallback)(void*, bool enable);
     void setUpdateCb(Callback cb, void* d) { m_on_update = cb; m_ud = d; }
     void setStateCb(Callback cb, void* d) { m_on_state = cb; m_sd = d; }
     void setBlitCb(Callback cb, void* d) { m_on_blit = cb; m_bd = d; }
+    /* Notified when a page editable field gains (enable=true) or loses focus,
+       so the UI can show/hide the on-screen keyboard. */
+    void setImeCb(ImeCallback cb, void* d) { m_on_ime = cb; m_id = d; }
 
 private:
     void repositionEngine();
@@ -68,6 +79,9 @@ private:
     static void s_loading(MaCrossView*, unsigned int, MC_BOOL);
     static void s_title(MaCrossView*, const char*);
     static void s_url(MaCrossView*, const char*);
+    static void s_ime(MC_BOOL enable);
+
+    static WebView* s_instance; /* for the view-less IME callback */
 
     MaCrossView* m_view;
     uint8_t* m_buffer;
@@ -78,7 +92,8 @@ private:
     bool m_engine_repaint;
     float m_zoom;
     bool m_loading;
-    bool m_first_layout_done; /* page visually rendered: end the progress bar */ unsigned int m_progress;
+    bool m_first_layout_done; /* page visually rendered: end the progress bar */
+    unsigned int m_progress;
     char m_title[256];
     char m_url[1024];
     Callback m_on_update;
@@ -87,6 +102,8 @@ private:
     void* m_sd;
     Callback m_on_blit;
     void* m_bd;
+    ImeCallback m_on_ime;
+    void* m_id;
 };
 
 #endif

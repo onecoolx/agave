@@ -24,9 +24,13 @@ private:
     void createBackground();
     void createCanvas();
     void createProgress();
+    void createPageKeyboard();
+    void showPageKeyboard(bool show);
     void createToolLayer();
     static void progress_anim_exec(void* obj, int32_t v);
     static void progress_anim_done(lv_anim_t* a);
+    static void on_page_kb(lv_event_t* e);
+    static void on_ime(void* ud, bool enable);
     void createAddrLayer();
     void createFab();
     void showToolLayer(bool show);
@@ -55,6 +59,7 @@ private:
     lv_obj_t* m_addr_layer; /* full-screen translucent URL-input overlay */
     lv_obj_t* m_addr_ta; /* URL text area */
     lv_obj_t* m_addr_kb; /* on-screen keyboard */
+    lv_obj_t* m_page_kb; /* on-screen keyboard for page input fields */
     lv_obj_t* m_fab; /* floating toggle icon */
     WebView* m_wv;
     int m_tx, m_ty;
