@@ -163,3 +163,38 @@ TEST_F(DomApiTest, DatasetBackedByDataAttributes)
     d->setAttribute("data-new-prop", "v", ec);
     EXPECT_EQ(d->getAttribute("data-new-prop"), "v");
 }
+
+// --- navigator (window.navigator / bare global) ---
+
+TEST_F(DomApiTest, NavigatorBareGlobalDefined)
+{
+    // Bare `navigator` (no window. prefix) must resolve; this was a
+    // ReferenceError that aborted modern page init scripts.
+    loadHtml("<div id='r'>init</div>"
+             "<script>try { document.getElementById('r').innerHTML = "
+             "(typeof navigator !== 'undefined') ? 'ok' : 'undef'; } "
+             "catch (e) { document.getElementById('r').innerHTML = 'err'; }</script>");
+    Element* r = byId("r");
+    ASSERT_TRUE(r);
+    EXPECT_EQ(r->textContent(), "ok");
+}
+
+TEST_F(DomApiTest, NavigatorUserAgentNonEmpty)
+{
+    loadHtml("<div id='r'></div>"
+             "<script>document.getElementById('r').innerHTML = "
+             "(navigator.userAgent && navigator.userAgent.length > 0) ? 'ok' : 'empty';</script>");
+    Element* r = byId("r");
+    ASSERT_TRUE(r);
+    EXPECT_EQ(r->textContent(), "ok");
+}
+
+TEST_F(DomApiTest, NavigatorCommonProperties)
+{
+    loadHtml("<div id='r'></div>"
+             "<script>var n = navigator; document.getElementById('r').innerHTML = "
+             "[n.appName, n.platform, typeof n.javaEnabled].join('|');</script>");
+    Element* r = byId("r");
+    ASSERT_TRUE(r);
+    EXPECT_EQ(r->textContent(), "Netscape|Linux|function");
+}

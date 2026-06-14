@@ -44,6 +44,7 @@
 #include "Settings.h"
 #include "qjs_events.h"
 #include "qjs_window.h"
+#include "qjs_navigator.h"
 
 #include "GCController.h"
 
@@ -260,6 +261,14 @@ static JSValue js_get_document(JSContext *ctx, JSValueConst this_val, int argc, 
     return wrapper;
 }
 
+static JSValue js_get_navigator(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
+    QJS::ScriptInterpreter* interp = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx);
+    if (!interp || !interp->frame())
+        return JS_UNDEFINED;
+    return QJS::Navigator::create(ctx, interp->frame());
+}
+
 #if ENABLE(WEB_STORAGE)
 static JSValue js_get_localStorage(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
 {
@@ -305,6 +314,12 @@ void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global)
     JSValue getter = JS_NewCFunction(ctx, (JSCFunction*)js_get_document, "get document", 0);
     JS_DefinePropertyGetSet(ctx, global, atom, getter, JS_UNDEFINED, JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
     JS_FreeAtom(ctx, atom);
+
+    // navigator getter (bare global `navigator` + window.navigator)
+    JSAtom navAtom = JS_NewAtom(ctx, "navigator");
+    JSValue navGetter = JS_NewCFunction(ctx, (JSCFunction*)js_get_navigator, "get navigator", 0);
+    JS_DefinePropertyGetSet(ctx, global, navAtom, navGetter, JS_UNDEFINED, JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
+    JS_FreeAtom(ctx, navAtom);
 
     // window.getComputedStyle(element[, pseudoElt])
     JS_SetPropertyStr(ctx, global, "getComputedStyle",

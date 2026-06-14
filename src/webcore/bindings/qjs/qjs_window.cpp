@@ -2173,16 +2173,46 @@ void WindowPrototype::initPrototype(JSContext* ctx, JSValue this_obj)
 
 JSClassID Navigator::js_class_id = 0;
 
+static JSValue qjs_navigator_javaEnabled(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv)
+{
+    return JS_NewBool(ctx, false);
+}
+
 JSValue Navigator::create(JSContext* ctx, Frame* frame)
 {
     if (!frame)
         return JS_NULL;
 
-    Navigator::init(ctx);
-    JSValue obj = JS_NewObjectClass(ctx, Navigator::js_class_id);
+    /* Build a plain object with navigator properties set directly. The page
+       reads navigator.userAgent / platform / language etc. for feature
+       detection; expose them as data properties so bare `navigator` access and
+       property reads both work. */
+    JSValue obj = JS_NewObject(ctx);
     if (JS_IsException(obj))
         return JS_NULL;
-    JS_SetOpaque(obj, frame);
+
+    String ua = frame->loader()->userAgent(frame->loader()->url());
+    JS_SetPropertyStr(ctx, obj, "appCodeName", jsString(ctx, "Mozilla"));
+    JS_SetPropertyStr(ctx, obj, "appName", jsString(ctx, "Netscape"));
+    JS_SetPropertyStr(ctx, obj, "appVersion", jsString(ctx, ua));
+    JS_SetPropertyStr(ctx, obj, "userAgent", jsString(ctx, ua));
+    JS_SetPropertyStr(ctx, obj, "language", jsString(ctx, defaultLanguage()));
+    JS_SetPropertyStr(ctx, obj, "languages", jsString(ctx, defaultLanguage()));
+#if PLATFORM(WIN32)
+    JS_SetPropertyStr(ctx, obj, "platform", jsString(ctx, "Win32"));
+#elif PLATFORM(UNIX)
+    JS_SetPropertyStr(ctx, obj, "platform", jsString(ctx, "Linux"));
+#else
+    JS_SetPropertyStr(ctx, obj, "platform", jsString(ctx, ""));
+#endif
+    JS_SetPropertyStr(ctx, obj, "product", jsString(ctx, "Gecko"));
+    JS_SetPropertyStr(ctx, obj, "productSub", jsString(ctx, "20030107"));
+    JS_SetPropertyStr(ctx, obj, "vendor", jsString(ctx, ""));
+    JS_SetPropertyStr(ctx, obj, "vendorSub", jsString(ctx, ""));
+    JS_SetPropertyStr(ctx, obj, "cookieEnabled", JS_NewBool(ctx, cookiesEnabled()));
+    JS_SetPropertyStr(ctx, obj, "onLine", JS_NewBool(ctx, true));
+    JS_SetPropertyStr(ctx, obj, "javaEnabled",
+        JS_NewCFunction(ctx, qjs_navigator_javaEnabled, "javaEnabled", 0));
     return obj;
 }
 
