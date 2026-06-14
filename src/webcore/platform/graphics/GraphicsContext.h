@@ -183,6 +183,12 @@ namespace WebCore {
         // Sets the blend function used when subsequent drawing composites onto
         // the backdrop (CSS mix-blend-mode). BlendModeNormal restores SrcOver.
         void setBlendMode(BlendMode);
+        // CSS mask: sets/clears an alpha mask on the underlying canvas so
+        // subsequent drawing is masked. 'alpha' is a width*height 8-bit buffer
+        // for the box at device position (x, y); the rest of the canvas is left
+        // fully opaque (unmasked). clearMask() removes it.
+        void setMask(const unsigned char* alpha, int x, int y, int width, int height);
+        void clearMask();
 
         void beginPath();
         void addPath(const Path&);

@@ -1410,6 +1410,22 @@ bool CSSParser::parseValue(int propId, bool important)
 #if ENABLE(MODERN_CSS3)
     case CSS_PROP_CLIP_PATH:            // none | inset()/circle()/ellipse()/polygon()
         return parseClipPath(important);
+
+    case CSS_PROP_MASK_IMAGE: {         // none | <gradient> (v1: gradient only)
+        if (id == CSS_VAL_NONE) {
+            // Represent "none" with an implicit-initial value the selector clears on.
+            addProperty(CSS_PROP_MASK_IMAGE, new CSSInitialValue(true), important);
+            return true;
+        }
+        if (value->unit == Value::QFunction) {
+            CSSValue* gradient = parseGradient(value);
+            if (gradient) {
+                addProperty(CSS_PROP_MASK_IMAGE, gradient, important);
+                return true;
+            }
+        }
+        return false;
+    }
 #endif
 
 #if ENABLE(CSS_TRANSITIONS)
@@ -3508,8 +3524,11 @@ CSSValue* CSSParser::parseGradient(Value* function)
         if ((int)gradient->stops.size() >= kMaxGradientStops)
             return 0;
         RGBA32 color = Color::transparent;
-        if (!parseColorFromValue(a, color))
+        if (a->id == CSS_VAL_TRANSPARENT) {
+            color = Color::transparent; // transparent black (rgba 0,0,0,0)
+        } else if (!parseColorFromValue(a, color)) {
             return 0;
+        }
         float pos = -1.0f; // auto
         a = args->next();
         if (a && a->unit == CSSPrimitiveValue::CSS_PERCENTAGE) {

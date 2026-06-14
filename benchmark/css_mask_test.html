@@ -1,0 +1,28 @@
+<html>
+<head><style>
+.box { width: 160px; height: 80px; background: rgb(0,120,220); margin: 6px; }
+#r { mask-image: linear-gradient(to right, black, transparent); }
+#b { mask-image: linear-gradient(to bottom, black 0%, transparent 100%); }
+#a { mask-image: linear-gradient(45deg, black, transparent); }
+#m { mask-image: linear-gradient(to right, transparent, black 50%, transparent); }
+</style></head>
+<body>
+<div class="box" id="r">right</div>
+<div class="box" id="b">bottom</div>
+<div class="box" id="a">angle</div>
+<div class="box" id="m">middle</div>
+<script>
+var results = [];
+// mask-image affects painting only, not layout. Assert each masked element kept
+// its box geometry and the mask alpha-buffer build + canvas mask path ran
+// without crashing.
+['r','b','a','m'].forEach(function(id) {
+  var e = document.getElementById(id);
+  var ok = (e.offsetWidth === 160 && e.offsetHeight === 80);
+  results.push(id + (ok ? ':PASS' : ':FAIL([' + e.offsetWidth + 'x' + e.offsetHeight + '])'));
+});
+var pass = results.every(function(s){ return s.indexOf('PASS') >= 0; });
+alert((pass ? 'ALL PASS' : 'FAILURES') + '|' + results.join('|'));
+</script>
+</body>
+</html>

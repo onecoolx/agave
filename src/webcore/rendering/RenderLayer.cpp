@@ -1515,6 +1515,86 @@ static bool buildClipPath(const ClipPathOperation& op, const IntRect& box, Path&
             return false;
     }
 }
+// Generates an 8-bit alpha buffer (width*height) for a linear-gradient mask
+// over the box. Mask alpha uses the luminance-times-alpha of each gradient
+// stop (CSS default mask-mode is luminance). Returns a malloc'd buffer the
+// caller must fastFree, or 0 on failure. Only linear gradients are supported
+// in this version; radial falls back to no mask (returns 0).
+static unsigned char* buildMaskAlpha(StyleGradient* g, int width, int height)
+{
+    if (!g || width <= 0 || height <= 0)
+        return 0;
+    int stopCount = (int)g->stops.size();
+    if (stopCount < 2)
+        return 0;
+    if (g->type != StyleGradient::Linear)
+        return 0; // radial mask not supported yet
+
+    // Precompute each stop's position (0..1) and effective alpha (luminance *
+    // alpha, 0..255).
+    Vector<float> pos;
+    Vector<float> alpha;
+    for (int i = 0; i < stopCount; ++i) {
+        const GradientColorStop& s = g->stops[i];
+        float p = s.position;
+        if (p < 0.0f)
+            p = (stopCount > 1) ? (float)i / (stopCount - 1) : 0.0f;
+        Color c(s.color);
+        float lum = (0.2126f * c.red() + 0.7152f * c.green() + 0.0722f * c.blue());
+        float a = lum * (c.alpha() / 255.0f);
+        pos.append(p);
+        alpha.append(a);
+    }
+
+    // Gradient direction (matches paintGradientBackground): 0deg = to top,
+    // increasing clockwise. Project each pixel center onto the gradient axis.
+    float rad = (float)(g->angle * M_PI / 180.0);
+    float dx = sinf(rad);
+    float dy = -cosf(rad);
+    float cx = width / 2.0f;
+    float cy = height / 2.0f;
+    float halfLen = (fabsf(dx) * width + fabsf(dy) * height) / 2.0f;
+    if (halfLen < 1e-3f)
+        halfLen = 1.0f;
+
+    unsigned char* buf = (unsigned char*)fastMalloc((size_t)width * height);
+    if (!buf)
+        return 0;
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            float rx = (x + 0.5f) - cx;
+            float ry = (y + 0.5f) - cy;
+            float proj = (rx * dx + ry * dy); // -halfLen .. +halfLen
+            float t = (proj + halfLen) / (2.0f * halfLen);
+            if (t < 0.0f) t = 0.0f;
+            if (t > 1.0f) t = 1.0f;
+
+            float a;
+            if (t <= pos[0]) {
+                a = alpha[0];
+            } else if (t >= pos[stopCount - 1]) {
+                a = alpha[stopCount - 1];
+            } else {
+                a = alpha[stopCount - 1];
+                for (int i = 1; i < stopCount; ++i) {
+                    if (t <= pos[i]) {
+                        float span = pos[i] - pos[i - 1];
+                        float f = (span > 0) ? (t - pos[i - 1]) / span : 0.0f;
+                        a = alpha[i - 1] + (alpha[i] - alpha[i - 1]) * f;
+                        break;
+                    }
+                }
+            }
+            int ai = (int)(a + 0.5f);
+            if (ai < 0) ai = 0;
+            if (ai > 255) ai = 255;
+            buf[(size_t)y * width + x] = (unsigned char)ai;
+        }
+    }
+    return buf;
+}
+
 #endif // ENABLE(MODERN_CSS3)
 
 
@@ -1609,6 +1689,20 @@ RenderLayer::paintLayer(RenderLayer* rootLayer, GraphicsContext* p,
             p->save();
             p->clip(clipShape);
             appliedClipPath = true;
+        }
+    }
+
+    // Apply CSS mask: build an 8-bit alpha buffer from the mask gradient over
+    // the box and install it on the canvas. clearMask() removes it after paint.
+    bool appliedMask = false;
+    if (renderer()->style()->hasMask()) {
+        int mw = renderer()->width();
+        int mh = renderer()->height();
+        unsigned char* alpha = buildMaskAlpha(renderer()->style()->maskGradient(), mw, mh);
+        if (alpha) {
+            p->setMask(alpha, x, y, mw, mh);
+            fastFree(alpha); // setMask builds its own canvas-sized buffer
+            appliedMask = true;
         }
     }
 #endif
@@ -1707,6 +1801,8 @@ RenderLayer::paintLayer(RenderLayer* rootLayer, GraphicsContext* p,
     }
 
 #if ENABLE(MODERN_CSS3)
+    if (appliedMask)
+        p->clearMask();
     if (appliedClipPath)
         p->restore();
     if (appliedFilter) {

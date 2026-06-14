@@ -6,6 +6,8 @@
 */
 #include "config.h"
 #include <wtf/MathExtras.h>
+#include <wtf/FastMalloc.h>
+#include <string.h>
 
 #include "Path.h"
 #include "AffineTransform.h"
@@ -28,10 +30,14 @@ public:
 
     AffineTransform matrix;
     ps_context* context;
+    ps_mask* mask;
+    unsigned char* maskData; // backing buffer for 'mask' (picasso references it)
 };
 
 GraphicsContextPlatformPrivate::GraphicsContextPlatformPrivate()
     :  context(0)
+    , mask(0)
+    , maskData(0)
 {
 }
 
@@ -50,6 +56,10 @@ GraphicsContext::GraphicsContext(ps_context* context)
 GraphicsContext::~GraphicsContext()
 {
     destroyGraphicsContextPrivate(m_common);
+    if (m_data->mask)
+        ps_mask_unref(m_data->mask);
+    if (m_data->maskData)
+        fastFree(m_data->maskData);
 	ps_context_unref(m_data->context);
     delete m_data;
 }
@@ -667,6 +677,80 @@ void GraphicsContext::setBlendMode(BlendMode mode)
         case BlendModeLuminosity: ps_set_composite_operator(gc, COMPOSITE_LUMINOSITY); break;
         case BlendModeNormal:
         default:                  ps_set_composite_operator(gc, COMPOSITE_SRC_OVER); break;
+    }
+}
+
+void GraphicsContext::setMask(const unsigned char* alpha, int bx, int by, int width, int height)
+{
+    if (paintingDisabled() || !alpha || width <= 0 || height <= 0)
+        return;
+
+    ps_canvas* canvas = ps_context_get_canvas(m_data->context);
+    if (!canvas)
+        return;
+
+    ps_size csize;
+    if (!ps_canvas_get_size(canvas, &csize))
+        return;
+    int cw = (int)csize.w;
+    int ch = (int)csize.h;
+    if (cw <= 0 || ch <= 0)
+        return;
+
+    // Build a canvas-sized 8-bit alpha buffer: opaque (255) everywhere except
+    // the masked box, where the supplied per-box alpha applies. Areas of the
+    // box outside the canvas are clipped.
+    unsigned char* full = (unsigned char*)fastMalloc((size_t)cw * ch);
+    if (!full)
+        return;
+    memset(full, 255, (size_t)cw * ch);
+    for (int row = 0; row < height; ++row) {
+        int dy = by + row;
+        if (dy < 0 || dy >= ch)
+            continue;
+        for (int col = 0; col < width; ++col) {
+            int dx = bx + col;
+            if (dx < 0 || dx >= cw)
+                continue;
+            full[(size_t)dy * cw + dx] = alpha[(size_t)row * width + col];
+        }
+    }
+
+    if (m_data->mask) {
+        ps_mask_unref(m_data->mask);
+        m_data->mask = 0;
+    }
+    if (m_data->maskData) {
+        fastFree(m_data->maskData);
+        m_data->maskData = 0;
+    }
+    ps_mask* mask = ps_mask_create_with_data((ps_byte*)full, cw, ch);
+    if (mask) {
+        ps_canvas_set_mask(canvas, mask);
+        m_data->mask = mask;
+        // picasso references (does not copy) the buffer, so keep it alive until
+        // clearMask().
+        m_data->maskData = full;
+    } else {
+        fastFree(full);
+    }
+}
+
+void GraphicsContext::clearMask()
+{
+    if (paintingDisabled())
+        return;
+
+    ps_canvas* canvas = ps_context_get_canvas(m_data->context);
+    if (canvas)
+        ps_canvas_reset_mask(canvas);
+    if (m_data->mask) {
+        ps_mask_unref(m_data->mask);
+        m_data->mask = 0;
+    }
+    if (m_data->maskData) {
+        fastFree(m_data->maskData);
+        m_data->maskData = 0;
     }
 }
 void GraphicsContext::clip(const Path& path)

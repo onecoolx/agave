@@ -636,6 +636,9 @@ StyleRareNonInheritedData::StyleRareNonInheritedData(const StyleRareNonInherited
     , marquee(o.marquee)
     , m_multiCol(o.m_multiCol)
     , m_transform(o.m_transform)
+#if ENABLE(MODERN_CSS3)
+    , m_maskGradient(o.m_maskGradient)
+#endif
 #if ENABLE(CSS_TRANSITIONS)
     , m_transitions(o.m_transitions)
     , m_animations(o.m_animations)
@@ -702,6 +705,10 @@ bool StyleRareNonInheritedData::operator==(const StyleRareNonInheritedData& o) c
         && m_appearance == o.m_appearance
         && m_borderFit == o.m_borderFit
         && shadowDataEquivalent(o)
+#if ENABLE(MODERN_CSS3)
+        && ((m_maskGradient == o.m_maskGradient)
+            || (m_maskGradient && o.m_maskGradient && *m_maskGradient == *o.m_maskGradient))
+#endif
 #if ENABLE(CSS_TRANSITIONS)
         && m_transitions == o.m_transitions
         && m_animations == o.m_animations

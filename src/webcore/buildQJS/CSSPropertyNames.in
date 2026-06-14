@@ -94,6 +94,7 @@ max-height
 max-width
 min-height
 min-width
+mask-image
 mix-blend-mode
 object-fit
 opacity

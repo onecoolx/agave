@@ -93,6 +93,7 @@ max-height, CSS_PROP_MAX_HEIGHT
 max-width, CSS_PROP_MAX_WIDTH
 min-height, CSS_PROP_MIN_HEIGHT
 min-width, CSS_PROP_MIN_WIDTH
+mask-image, CSS_PROP_MASK_IMAGE
 mix-blend-mode, CSS_PROP_MIX_BLEND_MODE
 object-fit, CSS_PROP_OBJECT_FIT
 opacity, CSS_PROP_OPACITY

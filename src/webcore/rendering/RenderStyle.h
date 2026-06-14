@@ -1151,6 +1151,9 @@ public:
     DataRef<StyleMarqueeData> marquee; // Marquee properties
     DataRef<StyleMultiColData> m_multiCol; //  CSS3 multicol properties
     DataRef<StyleTransformData> m_transform; // Transform properties (rotate, scale, skew, etc.)
+#if ENABLE(MODERN_CSS3)
+    RefPtr<StyleGradient> m_maskGradient; // mask-image: linear/radial-gradient (0 = none)
+#endif
 
 #if ENABLE(CSS_TRANSITIONS)
     TransitionList m_transitions; // CSS transition declarations (empty = none).
@@ -1874,6 +1877,8 @@ public:
     bool hasFilter() const { return !rareNonInheritedData->m_transform->m_filterOps.isEmpty(); }
     const ClipPathOperation& clipPath() const { return rareNonInheritedData->m_transform->m_clipPath; }
     bool hasClipPath() const { return rareNonInheritedData->m_transform->m_clipPath.type != ClipPathOperation::NoClip; }
+    StyleGradient* maskGradient() const { return rareNonInheritedData->m_maskGradient.get(); }
+    bool hasMask() const { return rareNonInheritedData->m_maskGradient; }
     // Builds the affine transform for this element's box (width x height),
     // resolving transform-origin and percentage translations. The matrix maps
     // local coordinates to transformed coordinates, pre/post-translated so the
@@ -2171,6 +2176,8 @@ public:
     void clearFilterOperations() { if (!rareNonInheritedData->m_transform->m_filterOps.isEmpty()) rareNonInheritedData.access()->m_transform.access()->m_filterOps.clear(); }
     void setClipPath(const ClipPathOperation& c) { SET_VAR(rareNonInheritedData.access()->m_transform, m_clipPath, c); }
     void clearClipPath() { if (rareNonInheritedData->m_transform->m_clipPath.type != ClipPathOperation::NoClip) rareNonInheritedData.access()->m_transform.access()->m_clipPath = ClipPathOperation(); }
+    void setMaskGradient(PassRefPtr<StyleGradient> g) { rareNonInheritedData.access()->m_maskGradient = g; }
+    void clearMask() { if (rareNonInheritedData->m_maskGradient) rareNonInheritedData.access()->m_maskGradient = 0; }
 #endif
     // End CSS3 Setters
    

@@ -5271,6 +5271,18 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
         if (value->isClipPathValue())
             style->setClipPath(static_cast<CSSClipPathValue*>(value)->clipPath());
         return;
+    case CSS_PROP_MASK_IMAGE:
+        if (isInherit) {
+            style->setMaskGradient(parentStyle->maskGradient());
+            return;
+        }
+        if (isInitial || (value && value->isImplicitInitialValue())) {
+            style->clearMask();
+            return;
+        }
+        if (value->isGradientValue())
+            style->setMaskGradient(static_cast<CSSGradientValue*>(value)->gradient());
+        return;
     case CSS_PROP__WEBKIT_TRANSFORM: {
         if (isInherit) {
             style->setTransformOperations(parentStyle->transformOperations());
