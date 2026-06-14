@@ -52,6 +52,7 @@ WebView::WebView()
     , m_engine_x(0), m_engine_y(0)
     , m_off_x(0), m_off_y(0), m_engine_repaint(false)
     , m_zoom(DEFAULT_ZOOM), m_loading(false), m_progress(0)
+    , m_first_layout_done(false)
     , m_on_update(nullptr), m_ud(nullptr)
     , m_on_state(nullptr), m_sd(nullptr)
     , m_on_blit(nullptr), m_bd(nullptr)
@@ -74,6 +75,7 @@ void WebView::create(int vw, int vh)
     MC_CALLBACK_INFO cb = {};
     cb.cb_invalidate_rect = s_dirty;
     cb.cb_update_view_now = s_update;
+    cb.cb_start_layout = s_layout;
     cb.cb_loading_progress = s_loading;
     cb.cb_set_title = s_title;
     cb.cb_set_location = s_url;
@@ -112,6 +114,7 @@ void WebView::loadUrl(const char* url)
     m_pos_x = m_pos_y = 0;
     m_engine_x = m_engine_y = 0;
     m_off_x = m_off_y = 0;
+    m_first_layout_done = false;
     if (m_buffer) { memset(m_buffer, 0xFF, TILE_BUF_W * TILE_BUF_H * 4); }
     macross_view_set_position(m_view, 0, 0);
     macross_view_open_url(m_view, url);
@@ -270,7 +273,21 @@ void WebView::s_loading(MaCrossView* v, unsigned int prog, MC_BOOL finish)
 {
     WebView* self = (WebView*)macross_view_additional_data(v);
     self->m_progress = prog;
-    self->m_loading = !finish;
+    /* Once the page has had its first layout (main frame content is rendered),
+       treat loading as finished for the UI so the progress bar does not appear
+       stuck while background sub-resources keep trickling in. */
+    self->m_loading = !finish && !self->m_first_layout_done;
+    if (self->m_on_state) { self->m_on_state(self->m_sd); }
+}
+void WebView::s_layout(MaCrossView* v)
+{
+    /* First layout done: the main frame is laid out and the page is visible.
+       End the progress bar now so loading never feels stuck on pages that keep
+       fetching sub-resources (e.g. baidu.com). */
+    WebView* self = (WebView*)macross_view_additional_data(v);
+    self->m_first_layout_done = true;
+    self->m_loading = false;
+    self->m_progress = 100;
     if (self->m_on_state) { self->m_on_state(self->m_sd); }
 }
 void WebView::s_title(MaCrossView* v, const char* t)

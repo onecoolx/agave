@@ -64,6 +64,7 @@ private:
     void repositionEngine();
     static void s_dirty(MaCrossView*, const MC_RECT*);
     static void s_update(MaCrossView*);
+    static void s_layout(MaCrossView*);
     static void s_loading(MaCrossView*, unsigned int, MC_BOOL);
     static void s_title(MaCrossView*, const char*);
     static void s_url(MaCrossView*, const char*);
@@ -77,7 +78,7 @@ private:
     bool m_engine_repaint;
     float m_zoom;
     bool m_loading;
-    unsigned int m_progress;
+    bool m_first_layout_done; /* page visually rendered: end the progress bar */ unsigned int m_progress;
     char m_title[256];
     char m_url[1024];
     Callback m_on_update;
