@@ -62,9 +62,9 @@ int main(int argc, char** argv)
 
         if (g_dirty) {
             g_dirty = false;
-            /* Engine signalled content changed (layout done): render tile
-               buffer, then blit visible region to canvas. */
-            macross_view_update(g_webview->view(), NULL);
+            /* Engine signalled content changed (layout done): render the full
+               tile buffer, then blit visible region to canvas. */
+            g_webview->renderTile();
             g_ui->updateCanvas();
         } else if (g_blit) {
             g_blit = false;

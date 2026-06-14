@@ -5,6 +5,46 @@
 #include <string.h>
 #include "webview.h"
 
+/* Tile-buffer offset model (ported from touchweb's start_offset_X/Y).
+ *
+ * The tile buffer is view*2 wide and view*3 tall. start_offset returns where
+ * the viewport sits inside the buffer for a given scroll position, in three
+ * zones so the engine renders the surrounding region correctly:
+ *   - near the start: offset grows from 0 (top/left edge fully reachable);
+ *   - middle: viewport centered in the buffer (room to scroll either way);
+ *   - near the end: offset = (buffer extent) - (remaining content), so the
+ *     bottom/right edge is reachable without rendering past content.
+ * The engine render position is then (scrollPos - offset), and the blit reads
+ * the visible region from the buffer at 'offset'. This keeps the blit window
+ * inside [0, bufferExtent - view] for every scroll position.
+ */
+static int startOffset(MaCrossView* v, int currentPos, int view, int bufExtent, bool horizontal)
+{
+    MC_SIZE size = {0, 0};
+    macross_view_get_contents_size(v, &size);
+    int contentExtent = horizontal ? size.w : size.h;
+
+    if (currentPos < 0) { currentPos = 0; }
+    int last = (contentExtent - currentPos - view) > 0 ? (contentExtent - currentPos - view) : 0;
+
+    int center = (bufExtent - view) / 2; /* viewport centered in the buffer */
+    int endPos = bufExtent - view; /* viewport at the buffer's far edge */
+
+    if (currentPos < center) {
+        /* Near the start: place the viewport at its true distance from origin. */
+        return currentPos;
+    } else if (last < (bufExtent - view - center)) {
+        /* Near the end: anchor so the last 'last' px of content stays visible
+           and the engine never has to render past the content bottom/right. */
+        int off = endPos - last;
+        if (off < center) { off = center; }
+        if (off > endPos) { off = endPos; }
+        return off;
+    }
+    /* Middle: keep the viewport centered. */
+    return center;
+}
+
 WebView::WebView()
     : m_view(nullptr), m_buffer(nullptr)
     , m_view_w(0), m_view_h(0)
@@ -101,22 +141,33 @@ void WebView::scrollBy(int dx, int dy)
     repositionEngine();
 }
 
+void WebView::renderTile()
+{
+    if (!m_view) { return; }
+    /* Paint the whole tile-buffer region, not just the engine's accumulated
+       dirty rect. After a reposition the engine renders a new slice of the page
+       into the buffer; forcing a full-buffer paint guarantees the entire buffer
+       holds fresh content so later blit-only scrolls never expose stale/blank
+       areas. */
+    MC_RECT full = {0, 0, TILE_BUF_W, TILE_BUF_H};
+    macross_view_update(m_view, &full);
+    m_engine_repaint = false;
+}
+
 void WebView::repositionEngine()
 {
-    MC_SIZE sz = {0, 0};
-    macross_view_get_contents_size(m_view, &sz);
+    /* Compute where the viewport sits inside the tile buffer using the
+       three-zone model, then render the engine at (pos - offset) so the buffer
+       holds the region around the viewport. This makes the top, middle and the
+       bottom/right edge all reachable (the naive "always center" version could
+       not place the engine to cover content near the bottom). */
+    m_off_x = startOffset(m_view, m_pos_x, m_view_w, TILE_BUF_W, true);
+    m_off_y = startOffset(m_view, m_pos_y, m_view_h, TILE_BUF_H, false);
 
-    /* Center the viewport within the tile buffer, clamped to content edges */
-    int cx = (TILE_BUF_W - m_view_w) / 2;
-    int cy = (TILE_BUF_H - m_view_h) / 2;
-
-    m_engine_x = m_pos_x - cx;
-    m_engine_y = m_pos_y - cy;
-    if (m_engine_x < 0) { m_engine_x = 0; }
-    if (m_engine_y < 0) { m_engine_y = 0; }
-
-    m_off_x = m_pos_x - m_engine_x;
-    m_off_y = m_pos_y - m_engine_y;
+    m_engine_x = m_pos_x - m_off_x;
+    m_engine_y = m_pos_y - m_off_y;
+    if (m_engine_x < 0) { m_engine_x = 0; m_off_x = m_pos_x; }
+    if (m_engine_y < 0) { m_engine_y = 0; m_off_y = m_pos_y; }
 
     macross_view_set_position(m_view, m_engine_x, m_engine_y);
     m_engine_repaint = true;
@@ -179,12 +230,19 @@ void WebView::mouseRelease(int x, int y)
 /* Static callbacks */
 void WebView::s_dirty(MaCrossView* v, const MC_RECT* r)
 {
-    /* cb_invalidate_rect only marks a region dirty (like Qt's QWidget::update);
-       it can fire while the engine's layout is still pending. We must NOT paint
-       here, or paintView() would call RenderView::paint() with needsLayout()
-       true and hit its assertion. The actual paint is driven by
-       cb_update_view_now (s_update), which the engine sends once it is safe to
-       flush drawing (after layout). This mirrors the touchweb/Qt model. */
+    /* cb_invalidate_rect marks a region dirty (like Qt's QWidget::update). It is
+       the primary repaint trigger: during a page load most content updates come
+       through here with the engine's "now == false" path, while
+       cb_update_view_now (s_update) only fires for the rarer "paint immediately"
+       case. So we MUST schedule a paint here too, otherwise a page that finishes
+       loading via invalidate-only updates never renders (it just sits blank).
+
+       It is safe to schedule a paint even if layout is still pending: the actual
+       paint goes through macross_view_update -> WebView::paintView(), which
+       calls layoutIfNeededRecursive() before drawing. We only set a flag here;
+       the main loop performs the paint. */
+    WebView* self = (WebView*)macross_view_additional_data(v);
+    if (self && self->m_on_update) { self->m_on_update(self->m_ud); }
 }
 void WebView::s_update(MaCrossView* v)
 {

@@ -27,6 +27,11 @@ public:
     int scrollX() const { return m_pos_x; }
     int scrollY() const { return m_pos_y; }
 
+    /* Repaint the whole tile buffer from the engine (call when the engine has
+       signalled content/position changed). Paints the full buffer region so
+       scrolling within the buffer always finds rendered content. */
+    void renderTile();
+
     void setZoom(float factor);
     float zoom() const { return m_zoom; }
 
