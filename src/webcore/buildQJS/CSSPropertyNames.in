@@ -59,6 +59,7 @@ box-sizing
 caption-side
 clear
 clip
+clip-path
 color
 content
 counter-increment

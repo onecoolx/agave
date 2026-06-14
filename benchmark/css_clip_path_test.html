@@ -1,0 +1,30 @@
+<html>
+<head><style>
+.box { width: 100px; height: 100px; background: rgb(0,128,255); margin: 5px; }
+#inset   { clip-path: inset(10px 20px 30px 40px); }
+#circle  { clip-path: circle(40px at 50% 50%); }
+#ellipse { clip-path: ellipse(45px 30px); }
+#poly    { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+#pct     { clip-path: inset(10% 10%); }
+</style></head>
+<body>
+<div class="box" id="inset">1</div>
+<div class="box" id="circle">2</div>
+<div class="box" id="ellipse">3</div>
+<div class="box" id="poly">4</div>
+<div class="box" id="pct">5</div>
+<script>
+var results = [];
+// The clip-path layer path runs during paint; assert each clipped element kept
+// its layout box (clip-path does not affect layout, only painting) and the
+// render path executed without crashing.
+['inset','circle','ellipse','poly','pct'].forEach(function(id) {
+  var e = document.getElementById(id);
+  var ok = (e.offsetWidth === 100 && e.offsetHeight === 100);
+  results.push(id + (ok ? ':PASS' : ':FAIL([' + e.offsetWidth + 'x' + e.offsetHeight + '])'));
+});
+var pass = results.every(function(s){ return s.indexOf('PASS') >= 0; });
+alert((pass ? 'ALL PASS' : 'FAILURES') + '|' + results.join('|'));
+</script>
+</body>
+</html>

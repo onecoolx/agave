@@ -407,4 +407,7 @@ hue, CSS_VAL_HUE
 saturation, CSS_VAL_SATURATION
 color, CSS_VAL_COLOR
 luminosity, CSS_VAL_LUMINOSITY
+at, CSS_VAL_AT
+evenodd, CSS_VAL_EVENODD
+nonzero, CSS_VAL_NONZERO
 %%

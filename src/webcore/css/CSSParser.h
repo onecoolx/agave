@@ -158,6 +158,10 @@ namespace WebCore {
         CSSValue* parseGradient(Value* function);
         CSSValue* parseFilter();
 
+        // CSS clip-path: parses none | inset()/circle()/ellipse()/polygon() and
+        // adds a CSS_PROP_CLIP_PATH property. Returns true on success.
+        bool parseClipPath(bool important);
+
         // CSS aspect-ratio: parses "auto" | <number> | <number> / <number> and
         // adds a CSS_PROP_ASPECT_RATIO property holding the width/height ratio
         // (0 means auto/none). Returns true on success.

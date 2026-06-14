@@ -406,5 +406,8 @@ WebCore::String getValueName(unsigned short id);
 #define CSS_VAL_SATURATION 397
 #define CSS_VAL_COLOR 398
 #define CSS_VAL_LUMINOSITY 399
-#define CSS_VAL_TOTAL 400
+#define CSS_VAL_AT 400
+#define CSS_VAL_EVENODD 401
+#define CSS_VAL_NONZERO 402
+#define CSS_VAL_TOTAL 403
 #endif

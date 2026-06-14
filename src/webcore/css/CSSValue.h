@@ -53,7 +53,8 @@ public:
     virtual bool isImplicitInitialValue() const { return false; }
     virtual bool isCustomPropertyValue() const { return false; }
     virtual bool isTransitionsValue() const { return false; }
-    virtual bool isAnimationsValue() const { return false; }};
+    virtual bool isAnimationsValue() const { return false; }
+    virtual bool isClipPathValue() const { return false; }};
 
 } // namespace WebCore
 

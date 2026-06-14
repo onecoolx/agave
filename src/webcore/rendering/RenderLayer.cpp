@@ -50,6 +50,7 @@
 #include "EventHandler.h"
 #include "EventNames.h"
 #include "FloatRect.h"
+#include "Path.h"
 #include "Frame.h"
 #include "FrameView.h"
 #include "FrameTree.h"
@@ -1445,6 +1446,77 @@ static void restoreClip(GraphicsContext* p, const IntRect& paintDirtyRect, const
         return;
     p->restore();
 }
+#if ENABLE(MODERN_CSS3)
+// Resolves a clip-path Coord against a reference length (pixels). Percentages
+// are taken of refLength; pixel values pass through.
+static float resolveClipCoord(const ClipPathOperation::Coord& c, float refLength)
+{
+    return c.isPercent ? (c.value / 100.0f) * refLength : c.value;
+}
+
+// Builds a Path for a clip-path basic-shape in absolute coordinates, given the
+// element's border box. Returns false if the shape cannot be built.
+static bool buildClipPath(const ClipPathOperation& op, const IntRect& box, Path& outPath)
+{
+    float bx = box.x();
+    float by = box.y();
+    float bw = box.width();
+    float bh = box.height();
+
+    switch (op.type) {
+        case ClipPathOperation::InsetShape: {
+            float top = resolveClipCoord(op.inset[0], bh);
+            float right = resolveClipCoord(op.inset[1], bw);
+            float bottom = resolveClipCoord(op.inset[2], bh);
+            float left = resolveClipCoord(op.inset[3], bw);
+            float w = bw - left - right;
+            float h = bh - top - bottom;
+            if (w <= 0 || h <= 0)
+                return false;
+            outPath.addRect(FloatRect(bx + left, by + top, w, h));
+            return true;
+        }
+        case ClipPathOperation::CircleShape:
+        case ClipPathOperation::EllipseShape: {
+            // Radii: percentages resolve against width (rx) / height (ry); a
+            // circle's single radius resolves against the box diagonal/sqrt(2).
+            float cx = bx + resolveClipCoord(op.cx, bw);
+            float cy = by + resolveClipCoord(op.cy, bh);
+            float rx, ry;
+            if (op.type == ClipPathOperation::CircleShape) {
+                float ref = op.rx.isPercent
+                    ? (sqrtf(bw * bw + bh * bh) / 1.41421356f) : 1.0f;
+                rx = ry = op.rx.isPercent ? (op.rx.value / 100.0f) * ref : op.rx.value;
+            } else {
+                rx = resolveClipCoord(op.rx, bw);
+                ry = resolveClipCoord(op.ry, bh);
+            }
+            if (rx <= 0 || ry <= 0)
+                return false;
+            outPath.addEllipse(FloatRect(cx - rx, cy - ry, rx * 2, ry * 2));
+            return true;
+        }
+        case ClipPathOperation::PolygonShape: {
+            size_t n = op.polygon.size();
+            if (n < 6 || (n & 1))
+                return false;
+            outPath.moveTo(FloatPoint(bx + resolveClipCoord(op.polygon[0], bw),
+                                      by + resolveClipCoord(op.polygon[1], bh)));
+            for (size_t i = 2; i + 1 < n; i += 2) {
+                outPath.addLineTo(FloatPoint(bx + resolveClipCoord(op.polygon[i], bw),
+                                             by + resolveClipCoord(op.polygon[i + 1], bh)));
+            }
+            outPath.closeSubpath();
+            outPath.setWindingRule(op.windEvenOdd ? RULE_EVENODD : RULE_NONZERO);
+            return true;
+        }
+        case ClipPathOperation::NoClip:
+        default:
+            return false;
+    }
+}
+#endif // ENABLE(MODERN_CSS3)
+
 
 void
 RenderLayer::paintLayer(RenderLayer* rootLayer, GraphicsContext* p,
@@ -1524,6 +1596,19 @@ RenderLayer::paintLayer(RenderLayer* rootLayer, GraphicsContext* p,
                 case FilterOperation::ColorMatrixOp:
                     break;
             }
+        }
+    }
+
+    // Apply CSS clip-path: build a Path for the basic-shape in the box's
+    // absolute coordinates and clip to it for the duration of this layer paint.
+    bool appliedClipPath = false;
+    if (renderer()->style()->hasClipPath()) {
+        Path clipShape;
+        if (buildClipPath(renderer()->style()->clipPath(),
+                          IntRect(x, y, renderer()->width(), renderer()->height()), clipShape)) {
+            p->save();
+            p->clip(clipShape);
+            appliedClipPath = true;
         }
     }
 #endif
@@ -1622,6 +1707,8 @@ RenderLayer::paintLayer(RenderLayer* rootLayer, GraphicsContext* p,
     }
 
 #if ENABLE(MODERN_CSS3)
+    if (appliedClipPath)
+        p->restore();
     if (appliedFilter) {
         while (filterTransparencyLayers-- > 0)
             p->endTransparencyLayer();

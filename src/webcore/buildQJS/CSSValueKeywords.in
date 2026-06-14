@@ -615,3 +615,7 @@ hue
 saturation
 color
 luminosity
+# CSS clip-path keywords
+at
+evenodd
+nonzero

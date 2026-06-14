@@ -43,6 +43,7 @@
 #include "CSSPrimitiveValue.h"
 #include "CSSCustomPropertyValue.h"
 #include "CSSTransitionsValue.h"
+#include "CSSClipPathValue.h"
 #include "CSSKeyframeRule.h"
 #include "CSSKeyframesRule.h"
 #include "CSSProperty.h"
@@ -1405,6 +1406,11 @@ bool CSSParser::parseValue(int propId, bool important)
 
     case CSS_PROP_ASPECT_RATIO:         // auto | <number> [ / <number> ]
         return parseAspectRatio(important);
+
+#if ENABLE(MODERN_CSS3)
+    case CSS_PROP_CLIP_PATH:            // none | inset()/circle()/ellipse()/polygon()
+        return parseClipPath(important);
+#endif
 
 #if ENABLE(CSS_TRANSITIONS)
     case CSS_PROP_TRANSITION:
@@ -3135,6 +3141,131 @@ bool CSSParser::parseAnimation(int propId, bool important)
     return true;
 }
 #endif // ENABLE(CSS_TRANSITIONS)
+
+#if ENABLE(MODERN_CSS3)
+// Reads a <length>/<percentage> token into a ClipPathOperation::Coord.
+static bool readClipCoord(Value* v, ClipPathOperation::Coord& out)
+{
+    if (!v)
+        return false;
+    if (v->unit == CSSPrimitiveValue::CSS_PERCENTAGE) {
+        out = ClipPathOperation::Coord((float)v->fValue, true);
+        return true;
+    }
+    if (v->unit == CSSPrimitiveValue::CSS_PX || v->unit == CSSPrimitiveValue::CSS_NUMBER) {
+        out = ClipPathOperation::Coord((float)v->fValue, false);
+        return true;
+    }
+    return false;
+}
+
+bool CSSParser::parseClipPath(bool important)
+{
+    Value* value = valueList->current();
+    if (!value)
+        return false;
+
+    // none: clear any clip path.
+    if (value->id == CSS_VAL_NONE) {
+        if (valueList->next())
+            return false;
+        ClipPathOperation op; // NoClip
+        addProperty(CSS_PROP_CLIP_PATH, new CSSClipPathValue(op), important);
+        return true;
+    }
+
+    if (value->unit != Value::QFunction || !value->function)
+        return false;
+
+    String fn = domString(value->function->name).lower();
+    ValueList* args = value->function->args;
+    if (!args)
+        return false;
+
+    ClipPathOperation op;
+
+    if (fn == "inset(") {
+        // inset( t [r [b [l]]] ) -- 1..4 edge offsets (CSS shorthand expansion).
+        ClipPathOperation::Coord edges[4];
+        int n = 0;
+        for (Value* a = args->current(); a && n < 4; a = args->next()) {
+            if (!readClipCoord(a, edges[n]))
+                return false;
+            n++;
+        }
+        if (n == 0)
+            return false;
+        // Expand 1/2/3 values like CSS box shorthands.
+        op.inset[0] = edges[0];
+        op.inset[1] = (n >= 2) ? edges[1] : edges[0];
+        op.inset[2] = (n >= 3) ? edges[2] : edges[0];
+        op.inset[3] = (n >= 4) ? edges[3] : op.inset[1];
+        op.type = ClipPathOperation::InsetShape;
+    } else if (fn == "circle(" || fn == "ellipse(") {
+        bool isCircle = (fn == "circle(");
+        // circle( r [at cx cy] ) | ellipse( rx ry [at cx cy] )
+        Value* a = args->current();
+        if (!readClipCoord(a, op.rx))
+            return false;
+        if (isCircle) {
+            op.ry = op.rx;
+            a = args->next();
+        } else {
+            a = args->next();
+            if (!readClipCoord(a, op.ry))
+                return false;
+            a = args->next();
+        }
+        // Default center is 50% 50%.
+        op.cx = ClipPathOperation::Coord(50, true);
+        op.cy = ClipPathOperation::Coord(50, true);
+        if (a && a->id == CSS_VAL_AT) {
+            a = args->next();
+            if (!readClipCoord(a, op.cx))
+                return false;
+            a = args->next();
+            if (!readClipCoord(a, op.cy))
+                return false;
+            a = args->next();
+        }
+        if (a) // trailing tokens
+            return false;
+        op.type = isCircle ? ClipPathOperation::CircleShape : ClipPathOperation::EllipseShape;
+    } else if (fn == "polygon(") {
+        Value* a = args->current();
+        // Optional leading fill-rule: nonzero | evenodd.
+        if (a && (a->id == CSS_VAL_NONZERO || a->id == CSS_VAL_EVENODD)) {
+            op.windEvenOdd = (a->id == CSS_VAL_EVENODD);
+            a = args->next();
+            // Skip the comma after the fill-rule.
+            if (a && a->unit == Value::Operator && a->iValue == ',')
+                a = args->next();
+        }
+        // Vertices: x y, x y, ...
+        while (a) {
+            ClipPathOperation::Coord x, y;
+            if (!readClipCoord(a, x))
+                return false;
+            a = args->next();
+            if (!readClipCoord(a, y))
+                return false;
+            op.polygon.append(x);
+            op.polygon.append(y);
+            a = args->next();
+            if (a && a->unit == Value::Operator && a->iValue == ',')
+                a = args->next();
+        }
+        if (op.polygon.size() < 6) // need at least 3 points
+            return false;
+        op.type = ClipPathOperation::PolygonShape;
+    } else {
+        return false;
+    }
+
+    addProperty(CSS_PROP_CLIP_PATH, new CSSClipPathValue(op), important);
+    return true;
+}
+#endif // ENABLE(MODERN_CSS3)
 
 CSSValue* CSSParser::parseFilter()
 {

@@ -46,6 +46,7 @@
 #include "CSSValueList.h"
 #include "CSSCustomPropertyValue.h"
 #include "CSSTransitionsValue.h"
+#include "CSSClipPathValue.h"
 #include "CSSKeyframeRule.h"
 #include "CSSKeyframesRule.h"
 #include "StyleCustomPropertyData.h"
@@ -5258,6 +5259,18 @@ void CSSStyleSelector::applyProperty(int id, CSSValue *value)
         style->setFilterOperations(static_cast<CSSFilterValue*>(value)->operations());
         return;
     }
+    case CSS_PROP_CLIP_PATH:
+        if (isInherit) {
+            style->setClipPath(parentStyle->clipPath());
+            return;
+        }
+        if (isInitial || (primitiveValue && primitiveValue->getIdent() == CSS_VAL_NONE)) {
+            style->clearClipPath();
+            return;
+        }
+        if (value->isClipPathValue())
+            style->setClipPath(static_cast<CSSClipPathValue*>(value)->clipPath());
+        return;
     case CSS_PROP__WEBKIT_TRANSFORM: {
         if (isInherit) {
             style->setTransformOperations(parentStyle->transformOperations());

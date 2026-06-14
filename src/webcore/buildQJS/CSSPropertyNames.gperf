@@ -58,6 +58,7 @@ box-sizing, CSS_PROP_BOX_SIZING
 caption-side, CSS_PROP_CAPTION_SIDE
 clear, CSS_PROP_CLEAR
 clip, CSS_PROP_CLIP
+clip-path, CSS_PROP_CLIP_PATH
 color, CSS_PROP_COLOR
 content, CSS_PROP_CONTENT
 counter-increment, CSS_PROP_COUNTER_INCREMENT

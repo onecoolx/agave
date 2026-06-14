@@ -737,6 +737,40 @@ struct FilterOperation {
     int shadowX, shadowY, shadowBlur; // drop-shadow() offsets + blur (px)
     RGBA32 shadowColor;  // drop-shadow() color
 };
+
+// A CSS clip-path basic-shape. Lengths are stored as pixel values; percentages
+// are stored as 0..100 with the matching isPercent flag, resolved against the
+// element's border box at paint time.
+struct ClipPathOperation {
+    enum Type { NoClip, InsetShape, CircleShape, EllipseShape, PolygonShape };
+
+    struct Coord {
+        Coord() : value(0), isPercent(false) { }
+        Coord(float v, bool pct) : value(v), isPercent(pct) { }
+        bool operator==(const Coord& o) const { return value == o.value && isPercent == o.isPercent; }
+        bool operator!=(const Coord& o) const { return !(*this == o); }
+        float value;
+        bool isPercent;
+    };
+
+    ClipPathOperation() : type(NoClip), windEvenOdd(false) { }
+
+    bool operator==(const ClipPathOperation& o) const
+    {
+        return type == o.type && windEvenOdd == o.windEvenOdd
+            && inset[0] == o.inset[0] && inset[1] == o.inset[1]
+            && inset[2] == o.inset[2] && inset[3] == o.inset[3]
+            && cx == o.cx && cy == o.cy && rx == o.rx && ry == o.ry
+            && polygon == o.polygon;
+    }
+    bool operator!=(const ClipPathOperation& o) const { return !(*this == o); }
+
+    Type type;
+    bool windEvenOdd;        // polygon() fill-rule evenodd
+    Coord inset[4];          // inset(): top, right, bottom, left
+    Coord cx, cy, rx, ry;    // circle()/ellipse(): center + radii (circle: rx==ry)
+    Vector<Coord> polygon;   // polygon(): x0,y0,x1,y1,... (pairs)
+};
 #endif // ENABLE(MODERN_CSS3)
 
 class StyleTransformData : public Shared<StyleTransformData> {
@@ -754,6 +788,7 @@ public:
 #if ENABLE(MODERN_CSS3)
     Vector<TransformOperation> m_operations;
     Vector<FilterOperation> m_filterOps;
+    ClipPathOperation m_clipPath;
 #endif
 };
 
@@ -1837,6 +1872,8 @@ public:
     bool hasTransform() const { return !rareNonInheritedData->m_transform->m_operations.isEmpty(); }
     const Vector<FilterOperation>& filterOperations() const { return rareNonInheritedData->m_transform->m_filterOps; }
     bool hasFilter() const { return !rareNonInheritedData->m_transform->m_filterOps.isEmpty(); }
+    const ClipPathOperation& clipPath() const { return rareNonInheritedData->m_transform->m_clipPath; }
+    bool hasClipPath() const { return rareNonInheritedData->m_transform->m_clipPath.type != ClipPathOperation::NoClip; }
     // Builds the affine transform for this element's box (width x height),
     // resolving transform-origin and percentage translations. The matrix maps
     // local coordinates to transformed coordinates, pre/post-translated so the
@@ -2132,6 +2169,8 @@ public:
     void clearTransformOperations() { if (!rareNonInheritedData->m_transform->m_operations.isEmpty()) rareNonInheritedData.access()->m_transform.access()->m_operations.clear(); }
     void setFilterOperations(const Vector<FilterOperation>& ops) { SET_VAR(rareNonInheritedData.access()->m_transform, m_filterOps, ops); }
     void clearFilterOperations() { if (!rareNonInheritedData->m_transform->m_filterOps.isEmpty()) rareNonInheritedData.access()->m_transform.access()->m_filterOps.clear(); }
+    void setClipPath(const ClipPathOperation& c) { SET_VAR(rareNonInheritedData.access()->m_transform, m_clipPath, c); }
+    void clearClipPath() { if (rareNonInheritedData->m_transform->m_clipPath.type != ClipPathOperation::NoClip) rareNonInheritedData.access()->m_transform.access()->m_clipPath = ClipPathOperation(); }
 #endif
     // End CSS3 Setters
    
