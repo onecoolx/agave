@@ -6,35 +6,21 @@
 include(ExternalProject)
 
 set(PICASSO_NAME "picasso")
-set(PICASSO_VERSION "2.8.0")
+set(PICASSO_VERSION "2.9.0")
 set(PICASSO_PACKAGE "${PROJ_ROOT}/packages/${PICASSO_NAME}-${PICASSO_VERSION}.tar.gz")
-set(PICASSO_HASH "e569bc89a138a78e089bdc3d4a25914b859ce5ba28c4f08b0ec93e52144159af")
+set(PICASSO_HASH "f7df38418135f7968df7e01dae5e4737e3f91113f90b133c7026654a37043ebd")
 
 ExternalProject_Add(
   ${PICASSO_NAME}
   PREFIX "${PROJ_OUT}/${PICASSO_NAME}"
   URL "${PICASSO_PACKAGE}"
   URL_HASH SHA256=${PICASSO_HASH}
-  PATCH_COMMAND
-     ${CMAKE_COMMAND} -E copy
-    "${PROJ_ROOT}/packages/patchs/${PICASSO_NAME}-${PICASSO_VERSION}/CMakeLists.txt" "${PROJ_OUT}/${PICASSO_NAME}/src/${PICASSO_NAME}/CMakeLists.txt"
-  && ${CMAKE_COMMAND} -E copy
-    "${PROJ_ROOT}/packages/patchs/${PICASSO_NAME}-${PICASSO_VERSION}/src.cmake" "${PROJ_OUT}/${PICASSO_NAME}/src/${PICASSO_NAME}/src/src.cmake"
-  && ${CMAKE_COMMAND} -E copy
-    "${PROJ_ROOT}/packages/patchs/${PICASSO_NAME}-${PICASSO_VERSION}/defines.cmake" "${PROJ_OUT}/${PICASSO_NAME}/src/${PICASSO_NAME}/build/defines.cmake"
-  && ${CMAKE_COMMAND} -E copy
-    "${PROJ_ROOT}/packages/patchs/${PICASSO_NAME}-${PICASSO_VERSION}/picasso_font_api.cpp" "${PROJ_OUT}/${PICASSO_NAME}/src/${PICASSO_NAME}/src/picasso_font_api.cpp"
-  && ${CMAKE_COMMAND} -E copy
-    "${PROJ_ROOT}/packages/patchs/${PICASSO_NAME}-${PICASSO_VERSION}/gfx_font_load_freetype2.cpp" "${PROJ_OUT}/${PICASSO_NAME}/src/${PICASSO_NAME}/src/gfx/gfx_font_load_freetype2.cpp"
-  && ${CMAKE_COMMAND} -E copy
-    "${PROJ_ROOT}/packages/patchs/${PICASSO_NAME}-${PICASSO_VERSION}/gfx_font_adapter_freetype2.cpp" "${PROJ_OUT}/${PICASSO_NAME}/src/${PICASSO_NAME}/src/gfx/gfx_font_adapter_freetype2.cpp"
   BUILD_IN_SOURCE
   CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
    -DOPT_EXTENSIONS=OFF 
    -DOPT_DEMOS=OFF 
    -DOPT_TESTS=OFF 
    -DOPT_FAST_COPY=OFF
-   -DBUILD_SHARED_LIBS=OFF
    -DOPT_FORMAT_ABGR=OFF
    -DOPT_FORMAT_ARGB=OFF
    -DOPT_FORMAT_RGB555=OFF
