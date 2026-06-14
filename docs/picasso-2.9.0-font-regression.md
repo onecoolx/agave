@@ -35,15 +35,22 @@ patch，于是丢失了 FreeType 启用。
 
 在 `3rdparty/picasso.cmake` 的 picasso ExternalProject CMAKE_ARGS 增加：
 ```
--DOPT_FREE_TYPE2=ON   # 启用 FreeType2 字体后端（否则用 dummy 适配器，度量全 0）
--DOPT_FONT_CONFIG=ON  # 用系统 fontconfig 字体库
+-DOPT_FREE_TYPE2=ON    # 启用 FreeType2 字体后端（否则用 dummy 适配器，度量全 0）
+-DOPT_FONT_CONFIG=OFF  # 不用系统 fontconfig；改用 picasso 的 font_config.cfg +
+                       # 自带字体，使嵌入式/可信内容的 CJK 渲染与宿主系统已装字体
+                       # 无关、可确定性复现
 ```
-（系统已具备 freetype 2.13 + fontconfig 2.13 dev，find_package 可成功。）
+
+**为何 FONT_CONFIG 关闭**：fontconfig 走宿主系统字体库，若系统未安装中文字体或未配置，
+中文会缺字/豆腐块。改用 `font_config.cfg` 指向 picasso 自带的中文字体
+（ZCOOLXiaoWei-Regular.ttf），CJK 渲染不依赖宿主环境、可控且可复现——符合嵌入式
+可信内容定位。（系统仍需 freetype dev 供 FreeType 后端链接；不需要 fontconfig。）
 
 清理 picasso 构建产物后重新构建，验证：
-- pconfig.h: `ENABLE_FREE_TYPE2=1`、`ENABLE_FONT_CONFIG=1`。
-- libpicasso 动态依赖 libfreetype.so.6 + libfontconfig.so.1。
-- headless 文本 offsetHeight=26（修复前 0）。
+- pconfig.h: `ENABLE_FREE_TYPE2=1`；`ENABLE_FONT_CONFIG` 未定义。
+- libpicasso 动态依赖 libfreetype.so.6（不依赖 fontconfig）。
+- headless 文本 offsetHeight 非 0；中文 "中文"（24px，inline-block）宽 115、高 24，
+  字形从自带 ZCOOLXiaoWei 正确渲染。
 - 802 单元测试全过；渲染 benchmark（gradient/transform/filter/shadow/real_layouts/
   transition/animation）全 ALL PASS。
 

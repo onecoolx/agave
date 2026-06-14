@@ -27,7 +27,10 @@ ExternalProject_Add(
    -DOPT_FREE_TYPE2=ON   # enable the FreeType2 font backend (otherwise picasso
                          # falls back to the dummy adapter and all font metrics
                          # are zero -- see docs/picasso-2.9.0-font-regression.md)
-   -DOPT_FONT_CONFIG=ON  # use the system font database via fontconfig
+   -DOPT_FONT_CONFIG=OFF # do NOT use system fontconfig: rely on picasso's
+                         # font_config.cfg + bundled font so embedded/trusted
+                         # content renders CJK deterministically regardless of
+                         # what fonts the host system has installed
    -DOPT_SYSTEM_MALLOC=ON # use system malloc
    -DCMAKE_INSTALL_PREFIX=${PROJ_OUT}
 )
