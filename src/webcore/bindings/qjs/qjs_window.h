@@ -301,6 +301,10 @@ namespace QJS {
         static WebCore::Frame* frame(JSValue);
     };
 
+    /* Getter for the bare global `Image` constructor. Lazily creates
+       the constructor and caches it on the global object. */
+    JSValue js_get_image_constructor(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv);
+
 } // namespace
 
 namespace WebCore {

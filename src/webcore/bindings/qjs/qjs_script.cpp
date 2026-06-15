@@ -269,6 +269,35 @@ static JSValue js_get_navigator(JSContext *ctx, JSValueConst this_val, int argc,
     return QJS::Navigator::create(ctx, interp->frame());
 }
 
+static JSValue js_get_location(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
+    QJS::ScriptInterpreter* interp = (QJS::ScriptInterpreter*)JS_GetContextOpaque(ctx);
+    if (!interp || !interp->frame())
+        return JS_UNDEFINED;
+    QJS::Window* win = QJS::Window::retrieveWindow(interp->frame());
+    if (!win)
+        return JS_UNDEFINED;
+    return win->location(ctx);
+}
+
+/* Minimal console stub: console.log/warn/error do nothing, but the object
+   must exist so `console.log(...)` does not throw ReferenceError. */
+static JSValue js_console_log(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv)
+{
+    return JS_UNDEFINED;
+}
+
+static JSValue js_get_console(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
+    JSValue obj = JS_NewObject(ctx);
+    JSValue fn = JS_NewCFunction(ctx, js_console_log, "log", 1);
+    JS_SetPropertyStr(ctx, obj, "log", JS_DupValue(ctx, fn));
+    JS_SetPropertyStr(ctx, obj, "warn", JS_DupValue(ctx, fn));
+    JS_SetPropertyStr(ctx, obj, "error", JS_DupValue(ctx, fn));
+    JS_SetPropertyStr(ctx, obj, "info", fn); /* fn transferred here */
+    return obj;
+}
+
 #if ENABLE(WEB_STORAGE)
 static JSValue js_get_localStorage(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
 {
@@ -320,6 +349,27 @@ void initEssentialDOMWindowProperties(JSContext* ctx, JSValue global)
     JSValue navGetter = JS_NewCFunction(ctx, (JSCFunction*)js_get_navigator, "get navigator", 0);
     JS_DefinePropertyGetSet(ctx, global, navAtom, navGetter, JS_UNDEFINED, JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
     JS_FreeAtom(ctx, navAtom);
+
+    // location getter (bare global `location`)
+    JSAtom locAtom = JS_NewAtom(ctx, "location");
+    JSValue locGetter = JS_NewCFunction(ctx, (JSCFunction*)js_get_location, "get location", 0);
+    JS_DefinePropertyGetSet(ctx, global, locAtom, locGetter, JS_UNDEFINED, JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
+    JS_FreeAtom(ctx, locAtom);
+
+    // console stub (log/warn/error/info are no-ops; prevents ReferenceError)
+    JS_SetPropertyStr(ctx, global, "console", js_get_console(ctx, JS_UNDEFINED, 0, nullptr));
+
+    /* Image constructor: expose bare `new Image()` via a getter so the
+       constructor is resolved lazily (the Window object does not exist yet
+       at initEssentialDOMWindowProperties time). */
+    {
+        JSAtom imgAtom = JS_NewAtom(ctx, "Image");
+        JSValue imgGetter = JS_NewCFunction(ctx, (JSCFunction*)QJS::js_get_image_constructor,
+                                            "get Image", 0);
+        JS_DefinePropertyGetSet(ctx, global, imgAtom, imgGetter, JS_UNDEFINED,
+                                JS_PROP_HAS_GET | JS_PROP_ENUMERABLE);
+        JS_FreeAtom(ctx, imgAtom);
+    }
 
     // window.getComputedStyle(element[, pseudoElt])
     JS_SetPropertyStr(ctx, global, "getComputedStyle",

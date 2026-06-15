@@ -560,6 +560,19 @@ static JSValue qjs_image_constructor(JSContext* c, JSValueConst new_target, int 
     return toJS(c, static_cast<Node*>(image));
 }
 
+JSValue js_get_image_constructor(JSContext* ctx, JSValueConst this_val, int argc, JSValueConst* argv)
+{
+    /* Lazily create and cache the Image constructor on the global object. */
+    JSValue globalObj = JS_GetGlobalObject(ctx);
+    JSValue cached = JS_GetPropertyStr(ctx, globalObj, "[[Image.constructor]]");
+    if (JS_IsUndefined(cached)) {
+        cached = JS_NewCFunction2(ctx, qjs_image_constructor, "Image", 2, JS_CFUNC_constructor, 0);
+        JS_SetPropertyStr(ctx, globalObj, "[[Image.constructor]]", JS_DupValue(ctx, cached));
+    }
+    JS_FreeValue(ctx, globalObj);
+    return cached;
+}
+
 JSValue Window::getValueProperty(JSContext* ctx, JSValueConst this_val, int token)
 {
     Window * window = (Window*)JS_GetOpaque2(ctx, this_val, Window::js_class_id);
