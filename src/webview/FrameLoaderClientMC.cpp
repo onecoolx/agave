@@ -198,23 +198,12 @@ static String agentOS()
 
 String composeUserAgent(void)
 {
-    // This is a liberal interpretation of http://www.mozilla.org/build/revised-user-agent-strings.html
-    // See also http://developer.apple.com/internet/safari/faq.html#anchor2
+    /* Identify as a modern Chrome browser so web sites serve their full
+       layout and CSS rather than a legacy / degraded experience. */
     String ua;
-
-    // Product
-    ua += "Mozilla/5.0 ";
-
-    // Comment
-    ua += "(MaCross; "; // Platform
-    ua += "U; ";  // Security
-    ua += agentOS() + "; "; // OS-or-CPU
-    ua += defaultLanguage() + ";) "; // Localization information
-
-    ua += "MaCross/";
-	ua += VERSION;
-    ua += " (Compatible Gecko 1.8, Firefox/1.5.0)";
-
+    ua += "Mozilla/5.0 (";
+    ua += agentOS();
+    ua += ") AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
     return ua;
 }
 
