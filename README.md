@@ -140,4 +140,4 @@ Technical whitepaper: [`docs/sdk/whitepaper-en.md`](docs/sdk/whitepaper-en.md)
 
 Copyright © 2009–2026 Zhang Ji Peng. All rights reserved.
 
-Third-party components: QuickJS (MIT), Picasso (LGPL), libcurl (curl), FreeType2 (FTL/GPLv2), SQLite3 (public domain).
+Third-party components: QuickJS (MIT), Picasso (BSD), libcurl (curl), FreeType2 (FTL/GPLv2), SQLite3 (public domain).
