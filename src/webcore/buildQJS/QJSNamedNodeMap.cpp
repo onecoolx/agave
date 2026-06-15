@@ -27,12 +27,14 @@
 #include "config.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 #include "QJSNamedNodeMap.h"
 
 #include "ExceptionCode.h"
 #include "NamedNodeMap.h"
 #include "Node.h"
+#include <wtf/RefPtr.h>
 #include "QJSNode.h"
 
 using namespace QJS;
@@ -175,14 +177,70 @@ void JSNamedNodeMapPrototype::initPrototype(JSContext * ctx, JSValue this_obj)
 static JSClassDef JSNamedNodeMapClassDefine;
 static bool JSNamedNodeMapClassDefine_initialized = false;
 
+/* Exotic get_own_property: maps bracket access to getNamedItem (string key)
+   or item (numeric key), so `attributes["onclick"]` and `attributes[0]` work. */
+static int JSNamedNodeMap_get_own_property(JSContext* ctx, JSPropertyDescriptor* desc,
+                                           JSValueConst obj, JSAtom prop)
+{
+    NamedNodeMap* imp = (NamedNodeMap*)JS_GetOpaque(obj, JSNamedNodeMap::js_class_id);
+    if (!imp)
+        return 0;
+
+    JSValue key = JS_AtomToValue(ctx, prop);
+    const char* keyStr = JS_ToCString(ctx, key);
+    JS_FreeValue(ctx, key);
+    if (!keyStr)
+        return 0;
+
+    JSValue result = JS_UNDEFINED;
+    /* Numeric index → item(n) */
+    char* end = nullptr;
+    long idx = strtol(keyStr, &end, 10);
+    if (end && *end == '\0' && idx >= 0) {
+        RefPtr<Node> node = imp->item((unsigned)idx);
+        if (node)
+            result = toJS(ctx, node.get());
+    } else {
+        /* Named access → getNamedItem(name) */
+        RefPtr<Node> node = imp->getNamedItem(String::fromUTF8(keyStr));
+        if (node)
+            result = toJS(ctx, node.get());
+    }
+    JS_FreeCString(ctx, keyStr);
+
+    if (JS_IsUndefined(result))
+        return 0; /* property not found */
+
+    if (desc) {
+        desc->flags = JS_PROP_ENUMERABLE;
+        desc->value = result;
+        desc->getter = JS_UNDEFINED;
+        desc->setter = JS_UNDEFINED;
+    } else {
+        JS_FreeValue(ctx, result);
+    }
+    return 1;
+}
+
+static JSClassExoticMethods JSNamedNodeMapExoticMethods;
+static bool JSNamedNodeMapExoticMethods_initialized = false;
+
 static void init_JSNamedNodeMapClassDefine()
 {
     if (JSNamedNodeMapClassDefine_initialized) return;
     JSNamedNodeMapClassDefine_initialized = true;
+
+    if (!JSNamedNodeMapExoticMethods_initialized) {
+        JSNamedNodeMapExoticMethods_initialized = true;
+        memset(&JSNamedNodeMapExoticMethods, 0, sizeof(JSNamedNodeMapExoticMethods));
+        JSNamedNodeMapExoticMethods.get_own_property = JSNamedNodeMap_get_own_property;
+    }
+
     memset(&JSNamedNodeMapClassDefine, 0, sizeof(JSNamedNodeMapClassDefine));
     JSNamedNodeMapClassDefine.class_name = "NamedNodeMap";
     JSNamedNodeMapClassDefine.finalizer = JSNamedNodeMap::finalizer;
     JSNamedNodeMapClassDefine.gc_mark = JSNamedNodeMap::mark;
+    JSNamedNodeMapClassDefine.exotic = &JSNamedNodeMapExoticMethods;
 }
 
 JSClassID JSNamedNodeMap::js_class_id = 0;
