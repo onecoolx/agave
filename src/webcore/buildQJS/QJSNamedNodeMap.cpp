@@ -192,32 +192,27 @@ static int JSNamedNodeMap_get_own_property(JSContext* ctx, JSPropertyDescriptor*
     if (!keyStr)
         return 0;
 
-    JSValue result = JS_UNDEFINED;
-    /* Numeric index → item(n) */
+    /* Resolve the matching attribute node first; only build the JS wrapper when
+       a descriptor is actually requested (a bare `in`/`has` probe passes
+       desc == NULL and needs no wrapper). */
+    RefPtr<Node> node;
     char* end = nullptr;
     long idx = strtol(keyStr, &end, 10);
     if (end && *end == '\0' && idx >= 0) {
-        RefPtr<Node> node = imp->item((unsigned)idx);
-        if (node)
-            result = toJS(ctx, node.get());
+        node = imp->item((unsigned)idx); /* numeric index → item(n) */
     } else {
-        /* Named access → getNamedItem(name) */
-        RefPtr<Node> node = imp->getNamedItem(String::fromUTF8(keyStr));
-        if (node)
-            result = toJS(ctx, node.get());
+        node = imp->getNamedItem(String::fromUTF8(keyStr)); /* named → getNamedItem */
     }
     JS_FreeCString(ctx, keyStr);
 
-    if (JS_IsUndefined(result))
+    if (!node)
         return 0; /* property not found */
 
     if (desc) {
         desc->flags = JS_PROP_ENUMERABLE;
-        desc->value = result;
+        desc->value = toJS(ctx, node.get());
         desc->getter = JS_UNDEFINED;
         desc->setter = JS_UNDEFINED;
-    } else {
-        JS_FreeValue(ctx, result);
     }
     return 1;
 }
