@@ -448,7 +448,7 @@ void CtrlPanel::draw_button_face(ps_context* gc, const Rect& rc)
     ps_move_to(gc, &t1);
     ps_tangent_arc(gc, &tr, 3.14, 1.57);
     ps_line_to(gc, &t2);
-    ps_quad_curve_to(gc, &t3, &t1);
+    ps_quad_to(gc, &t3, &t1);
 
     ps_matrix_translate(m_impl->t_mtx, r.x, r.y);
     ps_gradient_transform(m_impl->g_light, m_impl->t_mtx);

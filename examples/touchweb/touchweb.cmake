@@ -87,14 +87,6 @@ else()
     set(SYSTEM_LIBS ${QTCore_LIBRARIES} ${QTGui_LIBRARIES} ${QTWidgets_LIBRARIES} freetype fontconfig pthread m z stdc++)
 endif()
 
-include_directories(${APP_MOBILE_DIR}/src
-                    ${APP_MOBILE_DIR}/src/sqlite
-)
-
-set(APP_MOBILE_SRCS ${APP_MOBILE_SRCS}
-    ${APP_MOBILE_DIR}/src/sqlite/sqlite3secure.c
-)
-
 if (WIN32)
 include_directories(${APP_MOBILE_DIR}/vgcl/src/win32)
 set(APP_MOBILE_SRCS ${APP_MOBILE_SRCS}
@@ -125,8 +117,6 @@ add_library(${LIB_VGCL} STATIC ${VGCL_SRCS})
 
 add_executable(${APP_MOBILE} ${APP_TYPE} ${APP_MOBILE_SRCS})
 
-target_compile_definitions(${APP_MOBILE} PRIVATE SQLITE_HAS_CODEC)
-
 if (NOT WIN32)
     target_compile_definitions(${APP_MOBILE} PRIVATE QT5)
     target_compile_options(${APP_MOBILE} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-std=c++11>)
@@ -143,6 +133,7 @@ endif()
 install(TARGETS ${APP_MOBILE} RUNTIME DESTINATION bin)
 
 target_include_directories(${APP_MOBILE} PRIVATE 
+                    ${APP_MOBILE_DIR}/src
                     ${PROJ_ROOT}/include
                     ${PROJ_ROOT}/include/kjs
                     ${PROJ_ROOT}/include/npapi

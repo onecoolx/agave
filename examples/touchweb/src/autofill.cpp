@@ -41,7 +41,9 @@ AutoFill::AutoFill()
     : m_impl(new AutoFillImpl)
 {
     if (DB_OPEN(DB_NAME, &m_impl->pdb) == SQLITE_OK) {
+#ifdef SQLITE_HAS_CODEC
         sqlite3_key(m_impl->pdb, "Qw1236#a5t15", 12);
+#endif
 
         char** result = 0;
         char* err = 0;
