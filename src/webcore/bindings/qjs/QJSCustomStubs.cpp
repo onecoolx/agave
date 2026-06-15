@@ -16,6 +16,7 @@
 #include "QJSHTMLOptionElementConstructor.h"
 #include "QJSHTMLOptionsCollection.h"
 #include "QJSHTMLSelectElement.h"
+#include "QJSHTMLElement.h"
 #include "QJSCustomXPathNSResolver.h"
 #include "QJSDOMExceptionConstructor.h"
 
@@ -63,7 +64,12 @@ void JSHTMLInputElementBase::mark(JSRuntime *rt, JSValueConst val, JS_MarkFunc *
 
 JSValue JSHTMLInputElementBasePrototype::self(JSContext *ctx)
 {
-    return JS_NULL;
+    /* JSHTMLInputElementBase inherits from JSHTMLElement, so the QJS
+       "base" prototype layer must delegate to JSHTMLElement's prototype.
+       Returning JS_NULL here severs the prototype chain and causes all
+       inherited Node/Element/HTMLElement methods (cloneNode, setAttribute, …)
+       to be invisible on HTMLInputElement objects. */
+    return JSHTMLElementPrototype::self(ctx);
 }
 
 // JSDocument custom mark
