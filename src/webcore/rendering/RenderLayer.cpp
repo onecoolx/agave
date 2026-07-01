@@ -592,6 +592,8 @@ void RenderLayer::removeOnlyThisLayer()
     parent->removeChild(this);
     
     // Now walk our kids and reattach them to our parent.
+    // Disable LayoutState before updating positions since we're in a layout context.
+    m_object->view()->disableLayoutState();
     RenderLayer* current = m_first;
     while (current) {
         RenderLayer* next = current->nextSibling();
@@ -600,6 +602,7 @@ void RenderLayer::removeOnlyThisLayer()
         current->updateLayerPositions();
         current = next;
     }
+    m_object->view()->enableLayoutState();
     
     destroy(renderer()->renderArena());
 }
