@@ -10,6 +10,25 @@ set(PICASSO_VERSION "2.9.0")
 set(PICASSO_PACKAGE "${PROJ_ROOT}/packages/${PICASSO_NAME}-${PICASSO_VERSION}.tar.gz")
 set(PICASSO_HASH "f7df38418135f7968df7e01dae5e4737e3f91113f90b133c7026654a37043ebd")
 
+set(PICASSO_FLAGS
+   -DOPT_EXTENSIONS=OFF
+   -DOPT_DEMOS=OFF
+   -DOPT_TESTS=OFF
+   -DOPT_FAST_COPY=OFF
+   -DOPT_FORMAT_ABGR=OFF
+   -DOPT_FORMAT_ARGB=OFF
+   -DOPT_FORMAT_RGB555=OFF
+   -DOPT_SYSTEM_MALLOC=ON
+)
+
+if (UNIX AND NOT APPLE)
+set(PICASSO_FLAGS
+   ${PICASSO_FLAGS}
+   -DOPT_FREE_TYPE2=ON
+   -DOPT_FONT_CONFIG=OFF
+)
+endif()
+
 ExternalProject_Add(
   ${PICASSO_NAME}
   PREFIX "${PROJ_OUT}/${PICASSO_NAME}"
@@ -17,22 +36,8 @@ ExternalProject_Add(
   URL_HASH SHA256=${PICASSO_HASH}
   BUILD_IN_SOURCE
   CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-   -DOPT_EXTENSIONS=OFF 
-   -DOPT_DEMOS=OFF 
-   -DOPT_TESTS=OFF 
-   -DOPT_FAST_COPY=OFF
-   -DOPT_FORMAT_ABGR=OFF
-   -DOPT_FORMAT_ARGB=OFF
-   -DOPT_FORMAT_RGB555=OFF
-   -DOPT_FREE_TYPE2=ON   # enable the FreeType2 font backend (otherwise picasso
-                         # falls back to the dummy adapter and all font metrics
-                         # are zero -- see docs/picasso-2.9.0-font-regression.md)
-   -DOPT_FONT_CONFIG=OFF # do NOT use system fontconfig: rely on picasso's
-                         # font_config.cfg + bundled font so embedded/trusted
-                         # content renders CJK deterministically regardless of
-                         # what fonts the host system has installed
-   -DOPT_SYSTEM_MALLOC=ON # use system malloc
-   -DCMAKE_INSTALL_PREFIX=${PROJ_OUT}
+  ${PICASSO_FLAGS}
+  -DCMAKE_INSTALL_PREFIX=${PROJ_OUT}
 )
 
 include_directories(${PROJ_OUT}/include)
