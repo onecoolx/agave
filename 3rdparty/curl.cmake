@@ -11,6 +11,19 @@ set(CURL_VERSION "8.8.0")
 set(CURL_PACKAGE "${PROJ_ROOT}/packages/${CURL_NAME}-${CURL_VERSION}.tar.gz")
 set(CURL_HASH "77c0e1cd35ab5b45b659645a93b46d660224d0024f1185e8a95cdb27ae3d787d")
 
+if(WIN32)
+    set(TLS_ARGS
+        -DCURL_USE_SCHANNEL=ON
+        -DCURL_USE_OPENSSL=OFF
+        -DCURL_USE_MBEDTLS=OFF
+    )
+else()
+    set(TLS_ARGS
+        -DCURL_USE_MBEDTLS=ON
+        -DMBEDTLS_INCLUDE_DIRS=${PROJ_OUT}/include
+    )
+endif()
+
 ExternalProject_Add(
   ${CURL_LIB}
   PREFIX "${PROJ_OUT}/${CURL_NAME}"
@@ -22,7 +35,6 @@ ExternalProject_Add(
   CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON
     -DBUILD_CURL_EXE=OFF
-    -DCURL_USE_MBEDTLS=ON
     -DCURL_DISABLE_LDAP=ON
     -DCURL_DISABLE_LDAPS=ON
     -DCURL_DISABLE_DICT=ON
@@ -37,7 +49,7 @@ ExternalProject_Add(
     -DCURL_DISABLE_TFTP=ON
     -DENABLE_WEBSOCKETS=ON
     -DCMAKE_INSTALL_PREFIX=${PROJ_OUT}
-    -DMBEDTLS_INCLUDE_DIRS=${PROJ_OUT}/include
+    ${TLS_ARGS}
 )
 
 include_directories(${PROJ_OUT}/include)
@@ -47,14 +59,27 @@ add_dependencies(${CURL_LIB} ${ZLIB_NAME} ${MTLS_NAME})
 
 if (OPT_EXT_LIBS_SHARED)
 add_library(curl SHARED IMPORTED)
-set_target_properties(curl PROPERTIES
-  IMPORTED_LOCATION ${PROJ_OUT}/lib/libcurl${CMAKE_SHARED_LIBRARY_SUFFIX}
-)
+if(WIN32)
+    set_target_properties(curl PROPERTIES
+        IMPORTED_LOCATION ${PROJ_OUT}/bin/libcurl${CMAKE_SHARED_LIBRARY_SUFFIX}
+        IMPORTED_IMPLIB   ${PROJ_OUT}/lib/libcurl_imp${CMAKE_IMPORT_LIBRARY_SUFFIX}
+    )
+else()
+    set_target_properties(curl PROPERTIES
+        IMPORTED_LOCATION ${PROJ_OUT}/lib/libcurl${CMAKE_SHARED_LIBRARY_SUFFIX}
+    )
+endif()
 else()
 add_library(curl STATIC IMPORTED)
-set_target_properties(curl PROPERTIES
-  IMPORTED_LOCATION ${PROJ_OUT}/lib/libcurl${CMAKE_STATIC_LIBRARY_SUFFIX}
-)
+if(WIN32)
+    set_target_properties(curl PROPERTIES
+        IMPORTED_LOCATION ${PROJ_OUT}/lib/libcurl${CMAKE_STATIC_LIBRARY_SUFFIX}
+    )
+else()
+    set_target_properties(curl PROPERTIES
+        IMPORTED_LOCATION ${PROJ_OUT}/lib/libcurl${CMAKE_STATIC_LIBRARY_SUFFIX}
+    )
+endif()
 endif()
 
 set(LIB_DEPS curl ${LIB_DEPS})
