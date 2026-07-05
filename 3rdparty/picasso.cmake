@@ -38,6 +38,7 @@ ExternalProject_Add(
   CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
   ${PICASSO_FLAGS}
   -DCMAKE_INSTALL_PREFIX=${PROJ_OUT}
+  ${LIBS_EXTRA_ARGS}
 )
 
 include_directories(${PROJ_OUT}/include)

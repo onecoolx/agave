@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(Agave LANGUAGES C CXX ASM HOMEPAGE_URL https://github.com/onecoolx/agave)
+project(Agave LANGUAGES C CXX HOMEPAGE_URL https://github.com/onecoolx/agave)
 
 set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

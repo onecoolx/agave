@@ -3,6 +3,15 @@
 # Copyright (C) 2026 Zhang Ji Peng
 # Contact: onecoolx@gmail.com
 
+if(WIN32)
+set(LIBS_EXTRA_ARGS
+    -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=${PROJ_OUT}
+    -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY=${PROJ_OUT}/lib
+)
+else()
+set(LIBS_EXTRA_ARGS "")
+endif()
+
 include (${CMAKE_CURRENT_LIST_DIR}/zlib.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/png.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/jpeg.cmake)

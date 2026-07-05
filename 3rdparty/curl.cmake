@@ -50,6 +50,7 @@ ExternalProject_Add(
     -DENABLE_WEBSOCKETS=ON
     -DCMAKE_INSTALL_PREFIX=${PROJ_OUT}
     ${TLS_ARGS}
+    ${LIBS_EXTRA_ARGS}
 )
 
 include_directories(${PROJ_OUT}/include)
@@ -63,6 +64,7 @@ if(WIN32)
     set_target_properties(curl PROPERTIES
         IMPORTED_LOCATION ${PROJ_OUT}/bin/libcurl${CMAKE_SHARED_LIBRARY_SUFFIX}
         IMPORTED_IMPLIB   ${PROJ_OUT}/lib/libcurl_imp${CMAKE_IMPORT_LIBRARY_SUFFIX}
+        INTERFACE_LINK_LIBRARIES "ws2_32;bcrypt"
     )
 else()
     set_target_properties(curl PROPERTIES
@@ -74,6 +76,7 @@ add_library(curl STATIC IMPORTED)
 if(WIN32)
     set_target_properties(curl PROPERTIES
         IMPORTED_LOCATION ${PROJ_OUT}/lib/libcurl${CMAKE_STATIC_LIBRARY_SUFFIX}
+        INTERFACE_LINK_LIBRARIES "ws2_32;bcrypt"
     )
 else()
     set_target_properties(curl PROPERTIES
