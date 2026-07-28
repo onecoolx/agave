@@ -130,7 +130,6 @@ Technical whitepaper: [`docs/sdk/whitepaper-en.md`](docs/sdk/whitepaper-en.md)
 |--------|---------|-------------|
 | `OPT_USE_ASAN` | ON | Enable AddressSanitizer |
 | `OPT_USE_QJS` | ON | Use QuickJS (ES2020) |
-| `OPT_USE_KJS` | OFF | Use legacy KJS engine |
 | `OPT_MODERN_FLEXBOX` | ON | Modern CSS Flexbox layout |
 | `OPT_UNITTEST` | ON | Build unit tests |
 | `OPT_FREE_TYPE2` | ON | FreeType2 font rendering |

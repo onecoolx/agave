@@ -30,17 +30,6 @@ list(REMOVE_ITEM SOURCES
     ${PROJ_ROOT}/src/webcore/platform/unicode/word_break_data.cpp
 )
 
-if (OPT_USE_KJS)
-file(GLOB_RECURSE KJS_SOURCES ${PROJ_ROOT}/src/javascript/*.cpp
-                              ${PROJ_ROOT}/src/javascript/*.c
-                              ${PROJ_ROOT}/src/webcore/buildKJS/*.cpp
-                              ${PROJ_ROOT}/src/webcore/buildKJS/*.c
-                              ${PROJ_ROOT}/src/webcore/bindings/js/*.cpp
-                              ${PROJ_ROOT}/src/wtf/*.cpp
-)
-
-set(SOURCES ${SOURCES} ${KJS_SOURCES})
-
 list(REMOVE_ITEM SOURCES 
     ${PROJ_ROOT}/src/javascript/pcre/chartables.c
     ${PROJ_ROOT}/src/javascript/pcre/ucptable.c
@@ -52,7 +41,6 @@ list(REMOVE_ITEM SOURCES
     ${PROJ_ROOT}/src/webcore/buildKJS/JSHTMLInputElementBaseTable.cpp
 )
 
-elseif (OPT_USE_QJS)
 file(GLOB_RECURSE QJS_SOURCES ${PROJ_ROOT}/src/webcore/buildQJS/*.cpp
                               ${PROJ_ROOT}/src/webcore/buildQJS/*.c
                               ${PROJ_ROOT}/src/webcore/bindings/qjs/*.cpp
@@ -69,15 +57,12 @@ list(REMOVE_ITEM SOURCES
     ${PROJ_ROOT}/src/webcore/buildQJS/tokenizer.cpp
     ${PROJ_ROOT}/src/wtf/FastMallocPCRE.cpp
 )
-endif()
 
 set(LIB_NAME agave)
 
 add_library(${LIB_NAME} ${SOURCES})
 
 set(HEADERS ${PROJ_ROOT}/include
-            ${PROJ_ROOT}/include/kjs
-            ${PROJ_ROOT}/include/npapi
             ${PROJ_ROOT}/src
             ${PROJ_ROOT}/src/webcore
             ${PROJ_ROOT}/src/webcore/css
@@ -109,19 +94,6 @@ set(HEADERS ${PROJ_ROOT}/include
             ${PROJ_OUT}/
 )
 
-if (OPT_USE_KJS)
-set(KJS_HEADERS ${PROJ_ROOT}/src/wtf
-                ${PROJ_ROOT}/src/javascript
-                ${PROJ_ROOT}/src/javascript/pcre
-                ${PROJ_ROOT}/src/javascript/kjs
-                ${PROJ_ROOT}/src/javascript/bindings
-                ${PROJ_ROOT}/src/javascript/bindings/c
-                ${PROJ_ROOT}/src/webcore/buildKJS
-                ${PROJ_ROOT}/src/webcore/bindings/js
-)
-
-set(HEADERS ${HEADERS} ${KJS_HEADERS})
-elseif (OPT_USE_QJS)
 set(QJS_HEADERS ${PROJ_ROOT}/src/wtf
                 ${PROJ_ROOT}/src/webcore/buildQJS
                 ${PROJ_ROOT}/src/webcore/bindings/qjs
@@ -129,7 +101,6 @@ set(QJS_HEADERS ${PROJ_ROOT}/src/wtf
 )
 
 set(HEADERS ${HEADERS} ${QJS_HEADERS})
-endif()
 
 target_include_directories(${LIB_NAME} PRIVATE ${HEADERS})
 

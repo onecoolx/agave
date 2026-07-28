@@ -1,6 +1,7 @@
 .vscode
 .kiro
 proj
+proj_r
 vcproj
 *.pyc
 */__pycache__/*
