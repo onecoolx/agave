@@ -84,8 +84,7 @@ endif()
 
 option(OPT_EXAMPLES "Build examples" OFF)
 if (OPT_EXAMPLES)
-option(OPT_EXAMPLES_TOUCH "Build example touch phone" ON)
-option(OPT_EXAMPLES_WATCH "Build example watch" OFF)
+option(OPT_EXAMPLES_WATCH "Build example watch" ON)
 include (${CMAKE_CURRENT_LIST_DIR}/examples/examples.cmake)
 endif()
 

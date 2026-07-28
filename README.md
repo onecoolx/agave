@@ -21,7 +21,6 @@ A fast, lightweight and self-contained web rendering engine for embedded systems
 | Example | Description |
 |---------|-------------|
 | `watchweb` | Round-screen watch browser (480×480, LVGL) |
-| `touchweb` | Mobile touch browser (Qt5) |
 | `agave_test` | Headless test harness |
 
 ## Requirements
@@ -31,7 +30,6 @@ A fast, lightweight and self-contained web rendering engine for embedded systems
 - libcurl (network)
 - FreeType2 (fonts)
 - SQLite3 (Web Storage)
-- Qt5 (touchweb only)
 - LVGL (watchweb only)
 
 ## Build
@@ -56,7 +54,6 @@ make -j$(nproc)
 
 ```bash
 make watchweb -j$(nproc)    # watch-face browser (LVGL)
-make touchweb -j$(nproc)    # mobile browser (Qt5)
 make agave_test -j$(nproc)  # headless test runner
 make unit_tests -j$(nproc)  # unit test suite
 ```
@@ -72,11 +69,8 @@ cmake --build . --config Release
 ## Run
 
 ```bash
-# watchweb — round-screen browser (SDL headless for CI)
-env SDL_VIDEODRIVER=dummy ./watchweb https://example.com
-
-# touchweb — Qt5 browser
-./touchweb https://example.com
+# watchweb — round-screen browser (SDL & LVGL)
+./watchweb https://example.com
 
 # unit tests
 ./unit_tests
