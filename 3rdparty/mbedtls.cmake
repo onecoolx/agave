@@ -10,6 +10,12 @@ set(MTLS_VERSION "3.6.0")
 set(MTLS_PACKAGE "${PROJ_ROOT}/packages/${MTLS_NAME}-${MTLS_VERSION}.tar.bz2")
 set(MTLS_HASH "3ecf94fcfdaacafb757786a01b7538a61750ebd85c4b024f56ff8ba1490fcd38")
 
+if (OPT_EXT_LIBS_SHARED)
+set(LIB_BUILD_TYPE "-DUSE_SHARED_MBEDTLS_LIBRARY=ON -DUSE_STATIC_MBEDTLS_LIBRARY=OFF")
+else()
+set(LIB_BUILD_TYPE "-DUSE_SHARED_MBEDTLS_LIBRARY=OFF -DUSE_STATIC_MBEDTLS_LIBRARY=ON")
+endif()
+
 ExternalProject_Add(
   ${MTLS_NAME}
   PREFIX "${PROJ_OUT}/${MTLS_NAME}"
@@ -19,11 +25,30 @@ ExternalProject_Add(
     "${PROJ_ROOT}/packages/patchs/${MTLS_NAME}-${MTLS_VERSION}/library/CMakeLists.txt" "${PROJ_OUT}/${MTLS_NAME}/src/${MTLS_NAME}/library/"
   BUILD_IN_SOURCE
   CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DENABLE_PROGRAMS=OFF -DENABLE_TESTING=OFF -DCMAKE_INSTALL_PREFIX=${PROJ_OUT}
+  ${LIBS_EXTRA_ARGS}
+  ${LIB_BUILD_TYPE}
 )
 
 include_directories(${PROJ_OUT}/include)
 link_directories(${PROJ_OUT}/lib)
 
+if (OPT_EXT_LIBS_SHARED)
+add_library(mbedtls-shared SHARED IMPORTED)
+set_target_properties(mbedtls-shared PROPERTIES
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}mbedtls-s${CMAKE_SHARED_LIBRARY_SUFFIX}
+)
+
+add_library(mbedcrypto SHARED IMPORTED)
+set_target_properties(mbedcrypto PROPERTIES
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}mbedcrypto${CMAKE_SHARED_LIBRARY_SUFFIX}
+)
+
+add_library(mbedx509 SHARED IMPORTED)
+set_target_properties(mbedx509 PROPERTIES
+  IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}mbedx509${CMAKE_SHARED_LIBRARY_SUFFIX}
+)
+
+else()
 add_library(mbedtls-static STATIC IMPORTED)
 set_target_properties(mbedtls-static PROPERTIES
   IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}mbedtls-static${CMAKE_STATIC_LIBRARY_SUFFIX}
@@ -48,5 +73,6 @@ add_library(everest STATIC IMPORTED)
 set_target_properties(everest PROPERTIES
   IMPORTED_LOCATION ${PROJ_OUT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}everest${CMAKE_STATIC_LIBRARY_SUFFIX}
 )
+endif()
 
 set(LIB_DEPS ${LIB_DEPS} mbedtls-static mbedcrypto p256m mbedx509 everest)

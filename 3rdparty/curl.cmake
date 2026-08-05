@@ -20,6 +20,7 @@ if(WIN32)
 else()
     set(TLS_ARGS
         -DCURL_USE_MBEDTLS=ON
+        -DMBEDTLS_USE_STATIC_LIBS=ON
         -DMBEDTLS_INCLUDE_DIRS=${PROJ_OUT}/include
     )
 endif()
