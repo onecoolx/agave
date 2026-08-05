@@ -28,7 +28,7 @@ if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build Type" FORCE)
 endif()
 
-option(OPT_EXT_LIBS_SHARED "Build external libraries to shared." ON)
+option(OPT_EXT_LIBS_SHARED "Build external libraries to shared." OFF)
 
 include (${CMAKE_CURRENT_LIST_DIR}/build/configs.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/build/defines.cmake)
