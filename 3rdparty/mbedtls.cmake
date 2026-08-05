@@ -12,8 +12,10 @@ set(MTLS_HASH "3ecf94fcfdaacafb757786a01b7538a61750ebd85c4b024f56ff8ba1490fcd38"
 
 if (OPT_EXT_LIBS_SHARED)
 set(LIB_BUILD_TYPE "-DUSE_SHARED_MBEDTLS_LIBRARY=ON -DUSE_STATIC_MBEDTLS_LIBRARY=OFF")
+set(LIB_NAME "mbedtls-s")
 else()
 set(LIB_BUILD_TYPE "-DUSE_SHARED_MBEDTLS_LIBRARY=OFF -DUSE_STATIC_MBEDTLS_LIBRARY=ON")
+set(LIB_NAME "mbedtls-static")
 endif()
 
 ExternalProject_Add(
@@ -75,4 +77,4 @@ set_target_properties(everest PROPERTIES
 )
 endif()
 
-set(LIB_DEPS ${LIB_DEPS} mbedtls-static mbedcrypto p256m mbedx509 everest)
+set(LIB_DEPS ${LIB_DEPS} ${LIB_NAME} mbedcrypto p256m mbedx509 everest)
