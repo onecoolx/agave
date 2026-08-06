@@ -72,7 +72,7 @@ if(WIN32)
     set_target_properties(curl PROPERTIES
         IMPORTED_LOCATION ${PROJ_OUT}/bin/libcurl${CMAKE_SHARED_LIBRARY_SUFFIX}
         IMPORTED_IMPLIB   ${PROJ_OUT}/lib/libcurl_imp${CMAKE_IMPORT_LIBRARY_SUFFIX}
-        INTERFACE_LINK_LIBRARIES "ws2_32;bcrypt"
+        INTERFACE_LINK_LIBRARIES "ws2_32;bcrypt;crypt32"
     )
 else()
     set_target_properties(curl PROPERTIES
@@ -83,7 +83,7 @@ else()
 if(WIN32)
     set_target_properties(curl PROPERTIES
         IMPORTED_LOCATION ${PROJ_OUT}/lib/libcurl${CMAKE_STATIC_LIBRARY_SUFFIX}
-        INTERFACE_LINK_LIBRARIES "ws2_32;bcrypt"
+        INTERFACE_LINK_LIBRARIES "ws2_32;bcrypt;crypt32"
     )
 else()
     set_target_properties(curl PROPERTIES
