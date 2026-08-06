@@ -50,6 +50,8 @@ ExternalProject_Add(
     -DCURL_DISABLE_TFTP=ON
     -DENABLE_WEBSOCKETS=ON
     -DCMAKE_INSTALL_PREFIX=${PROJ_OUT}
+    -DBUILD_SHARED_LIBS=${LIB_BUILD_SHARED_VAL}
+    -DBUILD_STATIC_LIBS=${LIB_BUILD_STATIC_VAL}
     ${TLS_ARGS}
     ${LIBS_EXTRA_ARGS}
 )
@@ -61,6 +63,11 @@ add_dependencies(${CURL_LIB} ${ZLIB_NAME} ${MTLS_NAME})
 
 if (OPT_EXT_LIBS_SHARED)
 add_library(curl SHARED IMPORTED)
+else()
+add_library(curl STATIC IMPORTED)
+endif()
+
+if (OPT_EXT_LIBS_SHARED)
 if(WIN32)
     set_target_properties(curl PROPERTIES
         IMPORTED_LOCATION ${PROJ_OUT}/bin/libcurl${CMAKE_SHARED_LIBRARY_SUFFIX}
@@ -73,7 +80,6 @@ else()
     )
 endif()
 else()
-add_library(curl STATIC IMPORTED)
 if(WIN32)
     set_target_properties(curl PROPERTIES
         IMPORTED_LOCATION ${PROJ_OUT}/lib/libcurl${CMAKE_STATIC_LIBRARY_SUFFIX}
