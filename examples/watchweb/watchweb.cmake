@@ -14,9 +14,8 @@ pkg_check_modules(SDL2 REQUIRED sdl2)
 include(FetchContent)
 FetchContent_Declare(
     lvgl
-    GIT_REPOSITORY https://github.com/lvgl/lvgl.git
-    GIT_TAG v9.2.2
-    GIT_SHALLOW TRUE
+    URL "${PROJ_ROOT}/examples/watchweb/lvgl-9.2.2.tar.gz"
+    URL_HASH SHA256=129b4e00e06639fa79d7e8a6cab3c1ecce2445b1a246652ccd34f22e7b17ad6f
 )
 FetchContent_Populate(lvgl)
 
