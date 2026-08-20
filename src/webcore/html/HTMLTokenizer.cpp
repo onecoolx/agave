@@ -48,10 +48,6 @@
 
 #include "HTMLEntityNames.c"
 
-#if ENABLE(KJS)
-#include "kjs_proxy.h"
-#endif
-
 #if ENABLE(QJS)
 #include "qjs_script.h"
 #endif
@@ -1604,12 +1600,6 @@ void HTMLTokenizer::finish()
 
 PassRefPtr<Node> HTMLTokenizer::processToken()
 {
-#if ENABLE(KJS)
-    KJSProxy* jsProxy = (!m_fragment && m_doc->frame()) ? m_doc->frame()->scriptProxy() : 0;
-    if (jsProxy)
-        jsProxy->setEventHandlerLineno(tagStartLineno);
-#endif
-
 #if ENABLE(QJS)
     ScriptController* script = (!m_fragment && m_doc->frame()) ? m_doc->frame()->script() : 0;
     if (script)
@@ -1629,11 +1619,6 @@ PassRefPtr<Node> HTMLTokenizer::processToken()
             currToken.tagName = textAtom;
     } else if (currToken.tagName == nullAtom) {
         currToken.reset();
-#if ENABLE(KJS)
-        if (jsProxy)
-            jsProxy->setEventHandlerLineno(lineno);
-#endif
-
 #if ENABLE(QJS)
         if (script)
             script->setEventHandlerLineno(lineno);
@@ -1676,11 +1661,6 @@ PassRefPtr<Node> HTMLTokenizer::processToken()
             n = parser->parseToken(&currToken);
     }
     currToken.reset();
-#if ENABLE(KJS)
-    if (jsProxy)
-        jsProxy->setEventHandlerLineno(0);
-#endif
-
 #if ENABLE(QJS)
     if (script)
         script->setEventHandlerLineno(0);

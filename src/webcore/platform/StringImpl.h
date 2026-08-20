@@ -31,10 +31,6 @@
 #include <wtf/PassRefPtr.h>
 #include <limits.h>
 
-#if ENABLE(KJS)
-#include <kjs/identifier.h>
-#endif
-
 namespace WebCore {
 
 class AtomicString;
@@ -55,10 +51,6 @@ public:
     StringImpl(const UChar*, unsigned len);
     StringImpl(const char*, unsigned len);
     StringImpl(const char*);
-#if ENABLE(KJS)
-    StringImpl(const KJS::Identifier&);
-    StringImpl(const KJS::UString&);
-#endif
     ~StringImpl();
 
     static PassRefPtr<StringImpl> createStrippingNull(const UChar*, unsigned len);

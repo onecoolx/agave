@@ -76,11 +76,6 @@
 #include "bindings/runtime_root.h"
 #endif
 
-#if ENABLE(KJS)
-#include "kjs_proxy.h"
-#include "kjs_window.h"
-#endif
-
 #if ENABLE(QJS)
 #include "qjs_script.h"
 #include "qjs_window.h"
@@ -94,11 +89,6 @@
 #endif
 
 using namespace std;
-
-#if ENABLE(KJS)
-using KJS::JSLock;
-using KJS::Window;
-#endif
 
 #if ENABLE(QJS)
 using QJS::Window;
@@ -207,11 +197,6 @@ Frame::~Frame()
     --FrameCounter::count;
 #endif
 
-#if ENABLE(KJS)
-    if (d->m_jscript && d->m_jscript->haveInterpreter())
-        static_cast<Window*>(d->m_jscript->interpreter()->globalObject())->disconnectFrame();
-#endif
-
 #if ENABLE(QJS)
     if (d->m_jscript && d->m_jscript->haveInterpreter()) {
         Window* w = static_cast<Window*>(d->m_jscript->interpreter()->globalObjectData());
@@ -272,20 +257,6 @@ void Frame::setView(FrameView* view)
     // pulled from the back/forward cache, reset this flag.
     loader()->resetMultipleFormSubmissionProtection();
 }
-
-#if ENABLE(KJS)
-KJSProxy *Frame::scriptProxy()
-{
-    Settings* settings = this->settings();
-    if (!settings || !settings->isJavaScriptEnabled())
-        return 0;
-
-    if (!d->m_jscript)
-        d->m_jscript = new KJSProxy(this);
-
-    return d->m_jscript;
-}
-#endif
 
 #if ENABLE(QJS)
 ScriptController* Frame::script(void)

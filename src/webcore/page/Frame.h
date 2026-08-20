@@ -80,10 +80,6 @@ class SelectionController;
 class Settings;
 class Widget;
 
-#if ENABLE(KJS)
-class KJSProxy;
-#endif
-
 #if ENABLE(QJS)
 class ScriptController;
 #endif
@@ -156,10 +152,6 @@ public:
 #endif    
     
     void setDocument(PassRefPtr<Document>);
-
-#if ENABLE(KJS)
-    KJSProxy* scriptProxy();
-#endif
 
 #if ENABLE(QJS)
     ScriptController* script(void);

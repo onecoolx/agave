@@ -32,9 +32,6 @@
 #if HAVE(SYS_TYPES_H)
 #include <sys/types.h>
 #endif
-#if ENABLE(KJS)
-#include <pcre/pcre.h>
-#endif
 
 #if ENABLE(QJS)
 #ifndef BOOL
@@ -66,10 +63,7 @@ public:
 
     String pattern;
     String lastMatchString;
-#if ENABLE(KJS)
-    pcre *regex;
-    int lastMatchOffsets[maxOffsets];
-#elif ENABLE(QJS)
+#if ENABLE(QJS)
     WTF::Vector<uint8_t> regexBuf; // RegExp bytecode buffer.
 #endif
     int lastMatchCount;
@@ -123,11 +117,6 @@ void RegularExpression::Private::compile(bool caseSensitive, bool glob)
     // on the regex syntax (see FrameMac.mm for a couple examples).
     
     const char *errorMessage;
-#if ENABLE(KJS)
-    int errorOffset;
-    regex = pcre_compile(reinterpret_cast<const uint16_t *>(p.characters()), p.length(), caseSensitive ? 0 : PCRE_CASELESS, &errorMessage, &errorOffset, NULL);
-#endif
-
 #if ENABLE(QJS)
     char errorMsg[64];
     int relen;
@@ -158,9 +147,6 @@ void RegularExpression::Private::compile(bool caseSensitive, bool glob)
 
 RegularExpression::Private::~Private()
 {
-#if ENABLE(KJS)
-    pcre_free(regex);
-#endif
 }
 
 
@@ -204,27 +190,6 @@ String RegularExpression::pattern() const
 int RegularExpression::match(const String &str, int startFrom, int *matchLength) const
 {
     d->lastMatchString = str;
-#if ENABLE(KJS)
-    // First 2 offsets are start and end offsets; 3rd entry is used internally by pcre
-    d->lastMatchCount = pcre_exec(d->regex, NULL, reinterpret_cast<const uint16_t *>(d->lastMatchString.characters()), d->lastMatchString.length(), startFrom, startFrom == 0 ? 0 : PCRE_NOTBOL, d->lastMatchOffsets, maxOffsets);
-    if (d->lastMatchCount < 0) {
-        if (d->lastMatchCount != PCRE_ERROR_NOMATCH)
-            LOG_ERROR("RegularExpression: pcre_exec() failed with result %d", d->lastMatchCount);
-        d->lastMatchPos = -1;
-        d->lastMatchLength = -1;
-        d->lastMatchString = String();
-        return -1;
-    }
-    // 1 means 1 match; 0 means more than one match. First match is recorded in offsets.
-    //ASSERT(d->lastMatchCount < 2);
-    d->lastMatchPos = d->lastMatchOffsets[0];
-    d->lastMatchLength = d->lastMatchOffsets[1] - d->lastMatchOffsets[0];
-    if (matchLength != NULL) {
-        *matchLength = d->lastMatchLength;
-    }
-    return d->lastMatchPos;
-#endif
-
 #if ENABLE(QJS)
     if (d->regexBuf.isEmpty()) {
         d->lastMatchPos = -1;
@@ -299,17 +264,6 @@ int RegularExpression::matchedLength() const
 
 String RegularExpression::cap(int n) const
 {
-#if ENABLE(KJS)
-    const pcre_char *substring = NULL;
-    int substringLength = pcre_get_substring(reinterpret_cast<const UChar16 *>(d->lastMatchString.characters()), d->lastMatchOffsets, d->lastMatchCount, n, &substring);
-    if (substringLength > 0) {
-       String capture(substring, substringLength);
-       pcre_free_substring(substring);
-       return capture;
-    }
-    return String();
-#endif
-
 #if ENABLE(QJS)
     if (d->regexBuf.isEmpty())
         return String();

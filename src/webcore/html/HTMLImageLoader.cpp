@@ -31,11 +31,6 @@
 #include "HTMLNames.h"
 #include "RenderImage.h"
 
-#if ENABLE(KJS)
-#include "JSNode.h"
-#include "kjs_binding.h"
-#endif
-
 #if ENABLE(QJS)
 #include "Frame.h"
 #include "Page.h"
@@ -170,14 +165,6 @@ void HTMLImageLoader::protectElement()
     if (m_elementIsProtected)
         return;
     
-#if ENABLE(KJS)
-    KJS::JSLock lock;
-    if (JSNode* node = KJS::ScriptInterpreter::getDOMNodeForDocument(m_element->document(), m_element)) {
-        KJS::gcProtect(node);
-        m_elementIsProtected = true;
-    }
-#endif
-
 #if ENABLE(QJS)
     JSValue jsnode = QJS::ScriptInterpreter::getDOMNodeForDocument(m_element->document(), m_element);
     if (!JS_IsNull(jsnode)) {
@@ -196,14 +183,6 @@ void HTMLImageLoader::unprotectElement()
     if (!m_elementIsProtected)
         return;
     
-#if ENABLE(KJS)
-    KJS::JSLock lock;
-    JSNode* node = KJS::ScriptInterpreter::getDOMNodeForDocument(m_element->document(), m_element);
-    ASSERT(node);
-    KJS::gcUnprotect(node);
-    m_elementIsProtected = false;
-#endif
-
 #if ENABLE(QJS)
     JSValue jsnode = QJS::ScriptInterpreter::getDOMNodeForDocument(m_element->document(), m_element);
     ASSERT(!JS_IsNull(jsnode));

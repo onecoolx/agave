@@ -42,14 +42,6 @@
 #include "Widget.h"
 #include <wtf/HashMap.h>
 
-
-#if ENABLE(KJS)
-#include <kjs/collector.h>
-#include <kjs/JSLock.h>
-
-using namespace KJS;
-#endif
-
 #if ENABLE(QJS)
 using namespace QJS;
 #endif

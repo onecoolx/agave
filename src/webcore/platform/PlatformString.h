@@ -46,21 +46,12 @@ public:
     String() { } // gives null string, distinguishable from an empty string
     String(const UChar*, unsigned length);
     explicit String(const UChar*); // Specifically and explicitly for null terminated UTF-16
-#if ENABLE(KJS)
-    String(const KJS::Identifier&);
-    String(const KJS::UString&);
-#endif
     String(const char*);
     String(const char*, unsigned length);
     String(StringImpl* i) : m_impl(i) { }
 
     static String newUninitialized(size_t length, UChar*& characterBuffer);
     static String adopt(Vector<UChar>&);
-
-#if ENABLE(KJS)
-    operator KJS::Identifier() const;
-    operator KJS::UString() const;
-#endif
 
     unsigned length() const;
     const UChar* characters() const;

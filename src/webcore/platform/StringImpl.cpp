@@ -33,20 +33,11 @@
 #include "StringHash.h"
 #include "TextBreakIterator.h"
 #include "TextEncoding.h"
-#if ENABLE(KJS)
-#include <kjs/dtoa.h>
-#include <kjs/identifier.h>
-#endif
 #include <wtf/Assertions.h>
 #include <wtf/unicode/Unicode.h>
 
 using namespace WTF;
 using namespace Unicode;
-
-#if ENABLE(KJS)
-using KJS::Identifier;
-using KJS::UString;
-#endif
 
 namespace WebCore {
 
@@ -1305,18 +1296,6 @@ WTF::Unicode::Direction StringImpl::defaultWritingDirection() const
     }
     return WTF::Unicode::LeftToRight;
 }
-
-#if ENABLE(KJS)
-StringImpl::StringImpl(const Identifier& str)
-{
-    init(reinterpret_cast<const UChar*>(str.data()), str.size());
-}
-
-StringImpl::StringImpl(const UString& str)
-{
-    init(reinterpret_cast<const UChar*>(str.data()), str.size());
-}
-#endif
 
 PassRefPtr<StringImpl> StringImpl::createStrippingNull(const UChar* str, unsigned len)
 {

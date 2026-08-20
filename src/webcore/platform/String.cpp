@@ -30,12 +30,6 @@
 #include <wtf/Vector.h>
 #include <stdarg.h>
 
-#if ENABLE(KJS)
-#include <kjs/identifier.h>
-using KJS::Identifier;
-using KJS::UString;
-#endif
-
 namespace WebCore {
 
 String::String(const UChar* str, unsigned len)
@@ -586,44 +580,6 @@ int String::find(const RegularExpression& re, int start) const
         return -1;
     return re.match(*this, start);
 }
-
-#if ENABLE(KJS)
-String::String(const Identifier& str)
-{
-    if (str.isNull())
-        return;
-    
-    if (str.isEmpty())
-        m_impl = StringImpl::empty();
-    else 
-        m_impl = new StringImpl(reinterpret_cast<const UChar*>(str.data()), str.size());
-}
-
-String::String(const UString& str)
-{
-    if (str.isNull())
-        return;
-    
-    if (str.isEmpty())
-        m_impl = StringImpl::empty();
-    else 
-        m_impl = new StringImpl(reinterpret_cast<const UChar*>(str.data()), str.size());
-}
-
-String::operator Identifier() const
-{
-    if (!m_impl)
-        return Identifier();
-    return Identifier(reinterpret_cast<const KJS::UChar*>(m_impl->characters()), m_impl->length());
-}
-
-String::operator UString() const
-{
-    if (!m_impl)
-        return UString();
-    return UString(reinterpret_cast<const KJS::UChar*>(m_impl->characters()), m_impl->length());
-}
-#endif
 
 String String::newUninitialized(size_t length, UChar*& characterBuffer)
 {

@@ -106,11 +106,6 @@
 #include "HTMLTokenizer.h"
 #endif
 
-#if ENABLE(KJS)
-#include "kjs_binding.h"
-#include "kjs_proxy.h"
-#endif
-
 #if ENABLE(QJS)
 #include "qjs_binding.h"
 #include "qjs_script.h"
@@ -411,10 +406,6 @@ Document::~Document()
 #if ENABLE(AJAX)
     XMLHttpRequest::detachRequests(this);
     {
-#if ENABLE(KJS)
-        KJS::JSLock lock;
-        KJS::ScriptInterpreter::forgetAllDOMNodesForDocument(this);
-#endif
 #if ENABLE(QJS)
         QJS::ScriptInterpreter::forgetAllDOMNodesForDocument(this);
 #endif
@@ -2497,10 +2488,6 @@ bool Document::hasWindowEventListener(const AtomicString &eventType)
 PassRefPtr<EventListener> Document::createHTMLEventListener(const String& functionName, const String& code, Node *node)
 {
     if (Frame* frm = frame())
-#if ENABLE(KJS)
-        if (KJSProxy* proxy = frm->scriptProxy())
-            return proxy->createHTMLEventHandler(functionName, code, node);
-#endif
 #if ENABLE(QJS)
         if (ScriptController* script = frm->script())
             return script->createHTMLEventHandler(functionName, code, node);

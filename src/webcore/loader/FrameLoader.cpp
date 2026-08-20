@@ -78,14 +78,6 @@
 #include "XMLTokenizer.h"
 
 
-#if ENABLE(KJS)
-#include "kjs_binding.h"
-#include "kjs_proxy.h"
-#include "kjs_window.h"
-#include <kjs/JSLock.h>
-#include <kjs/object.h>
-#endif
-
 #if ENABLE(QJS)
 #include "qjs_binding.h"
 #include "qjs_script.h"
@@ -104,12 +96,6 @@
 
 #include "SchemeExtension.h"
 #include "Debug.h"
-
-#if ENABLE(KJS)
-using KJS::UString;
-using KJS::JSLock;
-using KJS::JSValue;
-#endif
 
 namespace WebCore {
 
@@ -190,20 +176,6 @@ struct ScheduledRedirection {
 
 static double storedTimeOfLastCompletedLoad;
 static bool m_restrictAccessToLocal = false;
-
-#if ENABLE(KJS)
-static bool getString(JSValue* result, String& string)
-{
-    if (!result)
-        return false;
-    JSLock lock;
-    UString ustring;
-    if (!result->getString(ustring))
-        return false;
-    string = ustring;
-    return true;
-}
-#endif
 
 #if ENABLE(QJS)
 static bool getString(JSContext* ctx, JSValue result, String& string)
@@ -377,16 +349,6 @@ void FrameLoader::changeLocation(const KURL& URL, const String& referrer, bool l
 {
     if (URL.url().find("javascript:", 0, false) == 0) {
         String script = KURL::decode_string(URL.url().substring(strlen("javascript:")));
-#if ENABLE(KJS)
-        JSValue* result = executeScript(script, userGesture);
-        String scriptResult;
-        if (getString(result, scriptResult)) {
-            begin(m_URL);
-            write(scriptResult);
-            end();
-        }
-        return;
-#endif
 #if ENABLE(QJS)
         ScriptController * controller = m_frame->script();
         JSValue result = executeScript(script, userGesture);
@@ -583,11 +545,7 @@ void FrameLoader::submitForm(const char* action, const String& url, PassRefPtr<F
         String query = u.query();
         if (!query.isEmpty())
             query.append('&');
-#if ENABLE(KJS)
         u.setQuery(query + "body=" + KURL::encode_string(body));
-#else
-        u.setQuery(query + "body=" + KURL::encode_string(body));
-#endif
     }
 
     if (strcmp(action, "GET") == 0) {
@@ -750,12 +708,6 @@ void FrameLoader::didExplicitOpen()
 
 void FrameLoader::replaceContentsWithScriptResult(const KURL& url)
 {
-#if ENABLE(KJS)
-    JSValue* result = executeScript(KURL::decode_string(url.url().substring(strlen("javascript:"))));
-    String scriptResult;
-    if (!getString(result, scriptResult))
-        return;
-#endif
 #if ENABLE(QJS)
     ScriptController * controller = m_frame->script();
     JSValue result = executeScript(KURL::decode_string(url.url().substring(strlen("javascript:"))));
@@ -767,33 +719,6 @@ void FrameLoader::replaceContentsWithScriptResult(const KURL& url)
     write(scriptResult);
     end();
 }
-
-#if ENABLE(KJS)
-JSValue* FrameLoader::executeScript(const String& script, bool forceUserGesture)
-{
-    return executeScript(forceUserGesture ? String() : String(m_URL.url()), 0, script);
-}
-
-JSValue* FrameLoader::executeScript(const String& URL, int baseLine, const String& script)
-{
-    KJSProxy* proxy = m_frame->scriptProxy();
-    if (!proxy)
-        return 0;
-
-    bool wasRunningScript = m_isRunningScript;
-    m_isRunningScript = true;
-
-    JSValue* result = proxy->evaluate(URL, baseLine, script);
-
-    if (!wasRunningScript) {
-        m_isRunningScript = false;
-        submitFormAgain();
-        Document::updateDocumentsRendering();
-    }
-
-    return result;
-}
-#endif
 
 #if ENABLE(QJS)
 JSValue FrameLoader::executeScript(const String& script, bool forceUserGesture)
@@ -1715,10 +1640,6 @@ bool FrameLoader::userGestureHint()
     while (rootFrame->tree()->parent())
         rootFrame = rootFrame->tree()->parent();
 
-#if ENABLE(KJS)
-    if (rootFrame->scriptProxy())
-        return rootFrame->scriptProxy()->interpreter()->wasRunByUserGesture();
-#endif
 #if ENABLE(QJS)
     if (rootFrame->script())
         return rootFrame->script()->interpreter()->wasRunByUserGesture();
@@ -4549,10 +4470,6 @@ String FrameLoader::referrer() const
 void FrameLoader::dispatchWindowObjectAvailable()
 {
     Settings* settings = m_frame->settings();
-#if ENABLE(KJS)
-    if (!settings || !settings->isJavaScriptEnabled() || !m_frame->scriptProxy()->haveInterpreter())
-        return;
-#endif
 #if ENABLE(QJS)
     if (!settings || !settings->isJavaScriptEnabled() || !m_frame->script()->haveInterpreter())
         return;

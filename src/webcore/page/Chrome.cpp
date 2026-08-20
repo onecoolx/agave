@@ -39,11 +39,6 @@
 #include <wtf/RefPtr.h>
 #include <wtf/Vector.h>
 
-
-#if ENABLE(KJS)
-#include "kjs_window.h"
-#endif
-
 #if ENABLE(QJS)
 #include "qjs_window.h"
 #endif
@@ -51,9 +46,6 @@
 namespace WebCore {
 
 using namespace HTMLNames;
-#if ENABLE(KJS)
-using namespace KJS;
-#endif
 #if ENABLE(QJS)
 using namespace QJS;
 #endif

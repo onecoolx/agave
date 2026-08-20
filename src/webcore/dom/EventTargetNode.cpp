@@ -47,10 +47,6 @@
 #include "UIEvent.h"
 #include "WheelEvent.h"
 
-#if ENABLE(KJS)
-#include "kjs_proxy.h"
-#endif
-
 #if ENABLE(QJS)
 #include "qjs_script.h"
 #endif
@@ -303,10 +299,6 @@ bool EventTargetNode::dispatchGenericEvent(PassRefPtr<Event> e, ExceptionCode&, 
     // have a reference to it in a variable.  So there is no need for
     // the interpreter to keep the event in it's cache
     Frame *frame = document()->frame();
-#if ENABLE(KJS)
-    if (tempEvent && frame && frame->scriptProxy())
-        frame->scriptProxy()->finishedWithEvent(evt.get());
-#endif
 #if ENABLE(QJS)
     if (tempEvent && frame && frame->script())
         frame->script()->finishedWithEvent(evt.get());
