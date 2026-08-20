@@ -11,9 +11,9 @@ set(MTLS_PACKAGE "${PROJ_ROOT}/packages/${MTLS_NAME}-${MTLS_VERSION}.tar.bz2")
 set(MTLS_HASH "3ecf94fcfdaacafb757786a01b7538a61750ebd85c4b024f56ff8ba1490fcd38")
 
 if (OPT_EXT_LIBS_SHARED)
-    set(LIB_NAME "mbedtls-s")
+    set(LIB_MTLS_NAME "mbedtls-s")
 else()
-    set(LIB_NAME "mbedtls-static")
+    set(LIB_MTLS_NAME "mbedtls-static")
 endif()
 
 ExternalProject_Add(
@@ -76,4 +76,4 @@ set_target_properties(everest PROPERTIES
 )
 endif()
 
-set(LIB_DEPS ${LIB_DEPS} ${LIB_NAME} mbedcrypto p256m mbedx509 everest)
+set(LIB_DEPS ${LIB_DEPS} ${LIB_MTLS_NAME} mbedcrypto p256m mbedx509 everest)

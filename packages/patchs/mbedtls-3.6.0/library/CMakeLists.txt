@@ -295,6 +295,9 @@ if(USE_STATIC_MBEDTLS_LIBRARY)
     target_link_libraries(${mbedtls_static_target} PUBLIC ${libs} ${mbedx509_static_target})
 endif(USE_STATIC_MBEDTLS_LIBRARY)
 
+# Set RPATH for installed shared libraries to find their dependencies at runtime
+set(CMAKE_INSTALL_RPATH "$ORIGIN" "$ORIGIN/../lib")
+
 if(USE_SHARED_MBEDTLS_LIBRARY)
     set(CMAKE_LIBRARY_PATH ${CMAKE_CURRENT_BINARY_DIR})
     add_library(${mbedcrypto_target} SHARED ${src_crypto})
